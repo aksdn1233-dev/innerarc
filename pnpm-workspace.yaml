@@ -1,0 +1,9 @@
+packages:
+  - "."
+
+allowBuilds:
+  unrs-resolver: true
+
+overrides:
+  "next>sharp": "0.35.3"
+  "next>postcss": "8.5.19"

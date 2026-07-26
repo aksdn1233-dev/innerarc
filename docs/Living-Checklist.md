@@ -1,0 +1,82 @@
+# Living Checklist
+
+Last updated: 2026-07-26
+
+## Phase 0 - Workspace and baseline
+
+- [x] Inspect workspace, code, documents, environment files, build, tests, and reusable assets.
+- [x] Confirm changes are confined to this workspace.
+- [x] Record partial local Git metadata as a non-product blocker.
+
+## Phase 1 - Product foundation
+
+- [x] Next.js/TypeScript structure, design tokens, mobile-first UI, and Korean/English routing.
+- [x] Guest onboarding, first result, consent schema, log masking, CI, unit, browser, and accessibility infrastructure.
+- [x] Security headers, explicit HTTPS-only production switch, manifest, icons, focus management, reduced motion, and minimum touch targets.
+- [x] Document the privacy decision to omit a service worker until sensitive offline caching is reviewed.
+- [x] Guest privacy center with language/time-zone preferences, separately stored optional consents, validated local export, record counts, and complete device deletion.
+- [x] Bilingual pre-release privacy and terms routes with adjacent disclosure links and unresolved launch fields stated explicitly.
+- [x] Context-aware onboarding with stable focus/depth IDs, bounded page-memory-only concern text, explicit disabled-provider status, contextual next action, bilingual parity, and full regression evidence.
+- [ ] Connect email/social auth and PostgreSQL after external projects are authorized.
+- [ ] Verify real account/server export/deletion and administrative audit in staging.
+
+## Phase 2 - Numerology
+
+- [x] Freeze rule/evidence version and implement all seven MVP numbers.
+- [x] Preserve master numbers 11/22/33 and validate invalid dates, leap years, century edges, formats, long names, accents, separators, and non-Latin scripts.
+- [x] Calculation evidence UI and deterministic regression vectors.
+- [ ] Independent numerology editorial review before public launch.
+
+## Phase 3 - AI profile
+
+- [x] Structured schema, canonical-fact guard, overclaim screen, high-risk routing, and deterministic fallback.
+- [x] Eight profile domains, explanatory career families, bilingual parity, metered provider runner, and failure fallback.
+- [x] Owner-scoped consented context retrieval, raw-journal retention gate, bounded untrusted-data envelope, and cost event contract.
+- [x] Disabled-by-default server-only OpenAI Responses candidate with strict schema, minimized payload, `store: false`, metering, refusal/incomplete fallback, startup secret/model/cost validation, and client-bundle leak tests.
+- [ ] Connect an approved provider and pass bilingual quality, latency, cost, privacy/DPA, injection, and safety gates.
+
+## Phase 4 - Tarot
+
+- [x] Canonical bilingual 78-card data, nine spreads, secure/fixed seed, reversals, 1/3-card draw, manual cards, and combinations.
+- [x] Immutable engine/manual provenance, history save/restore/delete/export, idempotency, corrupt data rejection, and explicit device persistence.
+- [x] Safety-gated symbolic interpretation with reality checks and decision ownership.
+- [ ] Independent tarot editorial review before public launch.
+
+## Phase 5 - Relationship and discovery
+
+- [x] Relationship energy sources, ranked plausible meeting contexts, exposure actions, future-partner qualities, green flags, friction, and uncertainty.
+- [x] Per-context relationship-to-Reality-Check handoff with explicit action, editable prefill, clean URL, 30-minute current-tab expiry, one-time consumption, structural sensitive-field exclusion, and fail-closed storage handling.
+- [x] Explicit-use relationship outcome layer with a two-review minimum, relevant/mixed/missed treatment, bounded user learning notes, category isolation, and no calculation mutation or provider transfer.
+- [x] Seven relationship types and eight compatibility operating domains without fate scores.
+- [x] Source-bound date-structure celebrity comparison and authoritative source links.
+- [x] Local allowlisted SVG share cards that omit sensitive inputs.
+- [x] Deterministic accessory form/palette/material directions and music genre/sonic/use lanes with reality checks, bilingual parity, master-number cases, and no efficacy claims.
+- [x] Bilingual `/shop` category preview that is visibly closed and carries no personalized URL data, products, prices, cart, checkout, or affiliate links.
+- [x] Future product-disclosure schema, prohibited-claim and tracking-link rejection, organic/sponsored separation, and a twelve-gate shop-readiness assessment that cannot open the store.
+- [x] Current competitor-pattern review and strict feature-rating rubric with Keep/Improve/Hold/Remove decisions.
+- [ ] Account-backed private invitations after authenticated persistence is connected.
+- [ ] Licensed/source-refresh workflow for a larger celebrity dataset.
+
+## Phase 6 - Reality Check
+
+- [x] Immutable original interpretation, decision/action plan, due date, outcome, five relevance ratings, and monthly grouping.
+- [x] Browser-local review months, newest-first prior-month navigation, disclosed UTC fallback for legacy records, and no-write month switching.
+- [x] Retry idempotency, export/delete, versioned safe browser adapter, and session-only default.
+- [ ] Authenticated reminders and durable server-backed reports.
+
+## Phase 7 - Release foundation
+
+- [x] Free/Plus/Pro entitlement and quota policy.
+- [x] Provider-neutral checkout/cancel and retry-safe subscription ledger.
+- [x] Consent-gated analytics and AI unit-cost event schemas with no raw text/PII.
+- [x] Feature flags, kill switch, deterministic rollout, rate-limit policies, data export/deletion services, and rollback runbook.
+- [x] Desktop/mobile browser, accessibility, performance, security-header, secret-scan, dependency-audit, and recovery regression coverage.
+- [x] CI configured for Chromium and mobile WebKit.
+- [x] Region-labelled official 109/988 crisis-resource registry, source links, no language-based location inference, and refresh protocol.
+- [x] CycloneDX 1.6 production SBOM generation, validation, and CI artifact archival.
+- [x] Korean/English launch-copy draft and fifteen synthetic-data 1242x2688 screenshots with visual, dimension, and external-request checks.
+- [x] Exact-process, occupied-port-safe E2E server lifecycle and WebKit-safe 90-second test timeout.
+- [x] Emergency-kill-switch and explicit-owner-authorization boundaries for any future commerce launch.
+- [ ] Select external providers and implement production adapters.
+- [ ] Verify staging auth, migrations, payments, monitoring, deletion, backup/restore, and incident response.
+- [ ] Complete legal, privacy, age, crisis-escalation, editorial, localization, accessibility, brand, pricing, tax/refund, store-asset, and deployment approvals.
