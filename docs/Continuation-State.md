@@ -9,9 +9,9 @@ Overall progress: 98%
 - `CODEX-WINDOWS-HANDOFF.md` is the exact Windows continuation guide for the current worktree.
 - Version 0.15.0 release evidence is complete for browser-local Reality Check review months and read-only navigation across current and prior monthly reports, including disclosed UTC compatibility fallback for existing records.
 - Version 0.15.0 also adds a restrained tarot reading-room presentation, recognizable portrait card faces, a clearer number-and-cards home motif, render-safe question-result focus, and a fully deferred relationship share bundle.
-- Verified: 251/251 unit/integration tests across 24 files, full ESLint, TypeScript, 25-output production build, desktop Chromium 52/52, a clean pre-UX mobile WebKit baseline of 51 passed with one intentional hardware-keyboard skip, focused changed question flows 3/3, focused mobile safety 1/1, all 27 mobile accessibility checks, and all seven representative performance routes.
-- Release evidence is labelled 0.15.0: CycloneDX 1.6 SBOM with 97 production components. The existing fifteen synthetic-only 1242x2688 launch screenshots remain valid because this release does not change their captured routes.
-- Private GitHub repository `aksdn1233-dev/innerarc` is connected. Local `main` integrates the remote 0.15.0/Codespaces history with the reading-room change; `local-bootstrap` preserves the two original local commits. Generated archives, dependencies, build output, environment files, and test artifacts remain excluded.
+- Verified on the integrated current source: 251/251 unit/integration tests across 24 files, full ESLint, TypeScript, 25-output production build, and one combined GitHub-hosted Chromium/mobile run with 103 passed and one intentional hardware-keyboard skip. GitHub CI run `30232289893` completed all install, audit, SBOM, build, and browser steps with zero annotations.
+- Release evidence is labelled 0.15.0: CycloneDX 1.6 SBOM with 97 production components. All fifteen synthetic-only 1242x2688 launch screenshots were regenerated after the reading-room change; Korean/English home, tarot, relationship, lifestyle, outcome, privacy, and closed-shop routes passed first-party-origin/dimension checks, with the key home, tarot, relationship, shop, and English views visually inspected.
+- Private GitHub repository `aksdn1233-dev/innerarc` is connected. Normal non-force `main` pushes and the full cloud CI gate are working; `local-bootstrap` preserves the two original local commits. Generated archives, dependencies, build output, environment files, and test artifacts remain excluded.
 - Windows WebKit can produce transient worker exits and navigation/click timeouts after a 20+ minute session without a repeated product assertion failure. Use one worker or the file-split clean-process commands in the Windows handoff.
 
 ## Product direction
@@ -44,6 +44,7 @@ Overall progress: 98%
 - Free/Plus/Pro policy, provider-neutral payment contracts, privacy-minimized analytics, feature flags, rate limits, account data-rights contracts, rollback runbook, SBOM, and release evidence.
 - Fifteen Korean/English synthetic mobile screenshots at 1242×2688, including context-aware onboarding, relationship outcome context, lifestyle, and closed-shop views, with first-party-origin and dimension checks plus visual inspection.
 - Exact-process E2E runner that refuses occupied port 3000, starts only this repository's production server, and terminates only the PID it owns.
+- Exact-process launch-capture runner that refuses occupied port 3000, disables AI, starts only this repository's production server, and terminates only the child process it owns.
 - No source, dependency, process, or configuration in another project was changed. All repository writes remain inside this workspace; Playwright browser binaries are the only shared user-cache installation.
 
 ## Current state
@@ -90,6 +91,8 @@ Overall progress: 98%
 - Moved question safety/result focus to render-aware effects. The WebKit regression now waits for the scheduled animation-frame focus before taking its atomic safety snapshot, eliminating an intermittent test race without weakening card suppression.
 - Replaced generic tarot result blocks with CSS-generated portrait cards and retained every title, position, orientation, keyword, and draw-audit field as semantic text.
 - Cleared GitHub's high-severity GHSA-mh99-v99m-4gvg alert by resolving every `brace-expansion` path to 5.0.8. A narrow `minimatch` 3 import-compatibility patch preserves ESLint, and CI now audits development dependencies as well as production dependencies.
+- Removed the prior Node 20 action-runtime deprecation path by upgrading the official GitHub actions to current Node 24-based majors.
+- Removed `pnpm/action-setup` after its current bootstrap logged an advisory-affected pnpm 11.7.0 stage; Corepack now activates only the repository-pinned pnpm 11.9.0, and the replacement CI log has no severity, deprecation, or warning markers.
 
 ## Verified baseline
 
@@ -97,8 +100,8 @@ Overall progress: 98%
 - ESLint: passed with zero warnings.
 - TypeScript strict check: passed.
 - Next.js 16.2.11 production build: passed; 25 static route outputs generated.
-- Playwright desktop Chromium: 52/52 passed.
-- Playwright iPhone 13/WebKit: clean pre-UX full baseline 51 passed and one intentional hardware-keyboard skip; changed question flows 3/3, focused safety 1/1, accessibility 27/27, and performance 7/7 passed after the visual change. A later 20+ minute single-session run produced only browser navigation/click cancellations, so constrained-Windows evidence is split into clean processes.
+- Playwright cloud release gate: combined Chromium and iPhone 13/WebKit run passed 103 tests with one intentional hardware-keyboard skip on the integrated source.
+- Local Windows browser evidence remains available as desktop Chromium 52/52 plus split clean-process mobile checks. A later 20+ minute single-session run produced only browser navigation/click cancellations, so constrained-Windows reruns should remain file-split while GitHub-hosted CI is the canonical combined-browser result.
 - Outcome-informed flow proves zero history reads before explicit use, one read after use, relationship-category isolation, unchanged meeting-context ordering, bounded displayed learning, dynamic focus, and no horizontal mobile overflow.
 - Relationship handoff tests prove explicit current-tab use, clean URL, one-time clearing, editable prefill, no automatic record, no date/name/number transfer, and fail-closed behavior with unavailable storage in both browsers.
 - Monthly-report tests prove local/UTC boundary separation, legacy fallback disclosure, newest-first month options, read-only navigation, and unchanged stored source records.
@@ -108,7 +111,7 @@ Overall progress: 98%
 - CycloneDX 1.6 SBOM: validated with 97 production components for version 0.15.0.
 - Client static bundle: no OpenAI endpoint, key/config name, or test-secret marker found.
 - Workspace secret-pattern scan: no recognized API key, cloud credential, private key, or GitHub token pattern found; only `.env.example` exists.
-- Store assets: fifteen synthetic screenshots passed external-origin and 1242×2688 PNG checks; the Korean/English onboarding context and relationship screenshots passed visual inspection.
+- Store assets: fifteen regenerated synthetic screenshots passed external-origin and 1242×2688 PNG checks; Korean/English home, Korean tarot card, relationship context, and closed-shop views passed visual inspection.
 
 ## User work required
 

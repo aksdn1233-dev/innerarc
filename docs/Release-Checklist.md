@@ -27,11 +27,12 @@
 ## Engineering
 
 - [x] Reproducible pnpm lockfile and CI definition.
-- [x] Unit/integration 251/251, Chromium 52/52, mobile WebKit 51 passed plus one intentional hardware-keyboard skip, accessibility, performance, and local recovery suites green.
+- [x] Unit/integration 251/251 and combined GitHub-hosted Chromium/mobile browser coverage 103 passed plus one intentional hardware-keyboard skip; accessibility, performance, and local recovery suites are green.
 - [x] Next.js 16.2.11 production build and 25 route outputs verified.
 - [x] Full production/development dependency audit reports zero known vulnerabilities.
 - [x] CSP/security headers, opt-in HTTPS-only enforcement, feature flags, rate limits, and rollback runbook.
 - [x] Chromium and WebKit are included in CI browser coverage.
+- [x] GitHub CI uses Node 24-based official actions and Corepack-pinned pnpm 11.9.0 with no advisory, deprecation, warning, or check-annotation markers in the verified run.
 - [x] Exact-process E2E runner refuses occupied port 3000 and terminates only its repository-scoped server.
 - [x] CycloneDX 1.6 production SBOM generation and CI archival verified (97 components in the current artifact).
 - [ ] Verify real monitoring, redacted telemetry, migrations, backup/restore, and rollback in staging.
@@ -47,7 +48,7 @@
 ## Operations
 
 - [x] Local pre-provider operations and rollback runbook.
-- [x] Draft Korean/English store copy and fifteen synthetic-data mobile screenshots generated and technically verified.
+- [x] Draft Korean/English store copy and fifteen synthetic-data mobile screenshots regenerated after the tarot reading-room change, technically verified, and key home/tarot/relationship/shop views visually inspected.
 - [ ] Brand/trademark/domain clearance.
 - [ ] Assign support, incident, data-request, and safety-escalation owners.
 - [ ] Approve final store screenshots, copy, and review notes after brand, legal, native-language, and platform review.

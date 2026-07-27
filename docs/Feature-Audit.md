@@ -1,6 +1,6 @@
 # Feature Audit and Keep/Improve/Hold Decisions
 
-Last reviewed: 2026-07-26  
+Last reviewed: 2026-07-27  
 Scope: Current web-first product state. Ratings are readiness judgments, not user-review scores.
 
 ## Strict scoring method
@@ -27,7 +27,7 @@ Decision bands:
 | Feature | Stars | Decision | Evidence and strict finding |
 | --- | ---: | --- | --- |
 | Deterministic numerology + evidence | 4.7/5 | Keep | Complete MVP values, Unicode/name limits, master numbers, bilingual parity, fixed vectors, and no AI-authored facts. Independent editorial review is still required. |
-| Auditable tarot + manual cards | 4.5/5 | Keep | Full deck, spread rules, secure/fixed seed, reversals, immutable manual/engine provenance, history, export/delete, and safety gate. Editorial review remains. |
+| Auditable tarot + manual cards | 4.6/5 | Keep | Full deck, spread rules, secure/fixed seed, reversals, immutable manual/engine provenance, history, export/delete, safety gate, and a restrained portrait-card reading room now pass the combined desktop/mobile release gate. Independent editorial and moderated comprehension review still cap the score below top-tier readiness. |
 | Reality Check Loop | 4.8/5 | Keep and lead | Strongest differentiation; immutable choice/action/outcome review, five relevance values, misses preserved, browser-local monthly grouping, read-only prior-month navigation, disclosed legacy fallback, idempotency, and an explicit-use next-analysis bridge are implemented. Authenticated reminders and cross-device continuity are still external. |
 | Context-aware guest onboarding | 4.3/5 | Keep | Focus, depth, and optional concern now shape a clearly separate first-result context without changing calculated facts or causing storage/provider requests. The privacy boundary and bilingual structure are tested; moderated comprehension and completion-rate evidence are still required. |
 | Eight-domain profile and career | 4.2/5 | Keep | Full deterministic fallback and canonical evidence are ready. Live AI expansion must not launch until bilingual quality, privacy, latency, safety, and cost gates pass. |

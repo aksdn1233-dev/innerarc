@@ -68,8 +68,9 @@ Write-Output "port3000_listeners=$($listeners.Count)"
 - 전체 의존성 감사: 알려진 취약점 0건. `brace-expansion` 5.0.8 고정과 `minimatch` 3 호환 패치 포함
 - CycloneDX 1.6 SBOM: 97개 프로덕션 구성요소, 버전 0.15.0
 - 출시 이미지: 합성 데이터 15개, 모두 1242×2688, 외부 요청 없음
-- 한국어/영어 새 컨텍스트 온보딩 이미지 시각검사 완료
+- 한국어/영어 홈, 한국어 타로 카드·관계·상점 이미지 시각검사 완료
 - 포트 3000 최종 리스너 0개
+- 비공개 GitHub CI `30232289893`: Corepack pnpm 11.9.0, 단위·통합 251개, 전체 감사, 97개 구성요소 SBOM, Chromium·모바일 103개 통과와 의도된 1개 제외, 경고·주석 0개
 
 이번 변경에서 발견·수정한 오류:
 
@@ -114,7 +115,7 @@ pnpm.cmd dev
 
 한국어 `http://localhost:3000/ko`, 영어 `http://localhost:3000/en`.
 
-출시 이미지 재생성은 프로덕션 빌드 이후에만 한다. 서버는 `Start-Process`로 정확한 PID를 보관하고 `finally`에서 그 PID만 종료한다. 현재 결과는 `artifacts/store-assets/manifest.json`에 15개로 검증돼 있으므로 UI가 바뀌지 않았다면 불필요하게 다시 만들지 않는다.
+출시 이미지 재생성은 프로덕션 빌드 이후 `pnpm.cmd capture:launch`로 실행한다. 이 명령은 포트 3000이 점유돼 있으면 실패하고, AI를 끈 상태로 이 저장소의 프로덕션 서버만 시작한 뒤 자신이 만든 정확한 자식 프로세스만 종료한다. 현재 결과는 `artifacts/store-assets/manifest.json`에 15개로 검증돼 있으므로 UI가 바뀌지 않았다면 불필요하게 다시 만들지 않는다.
 
 ## 5. 핵심 파일 지도
 

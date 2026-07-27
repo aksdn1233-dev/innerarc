@@ -1,13 +1,13 @@
 # Living Checklist
 
-Last updated: 2026-07-26
+Last updated: 2026-07-27
 
 ## Phase 0 - Workspace and baseline
 
 - [x] Inspect workspace, code, documents, environment files, build, tests, and reusable assets.
 - [x] Confirm changes are confined to this workspace.
 - [x] Initialize an isolated local Git repository, exclude generated/sensitive files, secret-scan the staged source, and commit the source baseline (`deb4fcd`).
-- [ ] Create and push a private GitHub remote after the user completes GitHub CLI browser sign-in.
+- [x] Connect private GitHub repository `aksdn1233-dev/innerarc`, preserve the prior local bootstrap history, and verify normal non-force pushes from `main`.
 
 ## Phase 1 - Product foundation
 
@@ -74,10 +74,12 @@ Last updated: 2026-07-26
 - [x] Feature flags, kill switch, deterministic rollout, rate-limit policies, data export/deletion services, and rollback runbook.
 - [x] Desktop/mobile browser, accessibility, performance, security-header, secret-scan, dependency-audit, and recovery regression coverage.
 - [x] CI configured for Chromium and mobile WebKit.
+- [x] CI action runtimes upgraded to Node 24; pnpm is activated through Corepack at the exact package version so no advisory-affected bootstrap action is used.
 - [x] Region-labelled official 109/988 crisis-resource registry, source links, no language-based location inference, and refresh protocol.
 - [x] CycloneDX 1.6 production SBOM generation, validation, and CI artifact archival.
 - [x] Korean/English launch-copy draft and fifteen synthetic-data 1242x2688 screenshots with visual, dimension, and external-request checks.
 - [x] Exact-process, occupied-port-safe E2E server lifecycle and WebKit-safe 90-second test timeout.
+- [x] Exact-process, occupied-port-safe launch-capture lifecycle with AI disabled and automatic release of the owned production server.
 - [x] Emergency-kill-switch and explicit-owner-authorization boundaries for any future commerce launch.
 - [ ] Select external providers and implement production adapters.
 - [ ] Verify staging auth, migrations, payments, monitoring, deletion, backup/restore, and incident response.
