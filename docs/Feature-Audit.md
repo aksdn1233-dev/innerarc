@@ -1,6 +1,6 @@
 # Feature Audit and Keep/Improve/Hold Decisions
 
-Last reviewed: 2026-07-27  
+Last reviewed: 2026-07-27
 Scope: Current web-first product state. Ratings are readiness judgments, not user-review scores.
 
 ## Strict scoring method
