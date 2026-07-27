@@ -2,7 +2,10 @@ packages:
   - "."
 
 allowBuilds:
+  esbuild: true
+  sharp: true
   unrs-resolver: true
+  workerd: true
 
 overrides:
   brace-expansion: "5.0.8"

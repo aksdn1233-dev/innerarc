@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:sites": "vinext build",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
@@ -30,14 +31,21 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "1.37.1",
     "@playwright/test": "1.61.1",
     "@types/node": "^24.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-rsc": "0.5.26",
     "axe-core": "4.12.1",
     "eslint": "9.39.5",
     "eslint-config-next": "16.2.11",
+    "react-server-dom-webpack": "19.2.7",
     "typescript": "6.0.3",
-    "vitest": "4.1.10"
-  }
+    "vinext": "0.0.50",
+    "vite": "8.0.13",
+    "vitest": "4.1.10",
+    "wrangler": "4.92.0"
+  },
+  "type": "module"
 }

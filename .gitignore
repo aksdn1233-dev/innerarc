@@ -3,6 +3,8 @@
 /.pnpm-store
 /.pnpm-debug.log
 /.next
+/dist
+/.wrangler
 /out
 /coverage
 /playwright-report
