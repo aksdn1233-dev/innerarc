@@ -349,3 +349,13 @@
 - Impact: The lockfile contains one `brace-expansion` version, 5.0.8. Full audit, ESLint, TypeScript, and 251 tests pass; the patch changes only how `minimatch` 3 obtains the same expansion function.
 - Revisit when: The lint dependency graph no longer contains `minimatch` 3 or natively supports `brace-expansion` 5, at which point remove the compatibility patch and re-run the full gate.
 - Status: Decided.
+
+## D-036 - CI actions use current Node 24 runtimes
+
+- Date: 2026-07-27
+- Decision: Upgrade the official GitHub workflow actions to `actions/checkout@v7`, `actions/setup-node@v7`, `actions/upload-artifact@v7`, and `pnpm/action-setup@v6` while retaining the pinned project toolchain (`node 24`, `pnpm 11.9.0`).
+- Alternatives: Ignore the Node 20 deprecation annotations; pin obsolete action majors; change the application runtime together with the workflow actions.
+- Reason: The previous action majors completed the release gate but emitted deprecation annotations because their bundled runtime was Node 20. Updating the actions removes a future CI failure risk without changing application code or package resolution.
+- Impact: Repository checkout, pnpm installation, dependency caching, SBOM upload, and the complete release gate must be re-proven on the current GitHub-hosted runner.
+- Revisit when: GitHub announces a runner-runtime deprecation, the selected action majors stop receiving fixes, or supply-chain policy moves from major tags to reviewed commit-SHA pins.
+- Status: Decided.
