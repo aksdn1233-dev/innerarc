@@ -27,7 +27,7 @@
 ## Engineering
 
 - [x] Reproducible pnpm lockfile and CI definition.
-- [x] Unit/integration 262/262 and combined GitHub-hosted Chromium/mobile browser coverage 107 passed plus one intentional hardware-keyboard skip; accessibility, performance, metadata, and local recovery suites are green.
+- [x] Unit/integration 263/263 and combined GitHub-hosted Chromium/mobile browser coverage 117 passed plus one intentional hardware-keyboard skip; accessibility, performance, metadata, native-share, fallback/cancellation, and local recovery suites are green.
 - [x] Next.js 16.2.11 production build and 27 route outputs verified.
 - [x] Full production/development dependency audit reports zero known vulnerabilities.
 - [x] CSP/security headers, opt-in HTTPS-only enforcement, feature flags, rate limits, and rollback runbook.

@@ -108,7 +108,7 @@ Overall progress: 98%
 - ESLint: passed with zero warnings.
 - TypeScript strict check: passed.
 - Next.js 16.2.11 production build: passed without metadata warnings; 27 static route outputs generated.
-- Canonical GitHub release gate `30235858481`: combined Chromium and iPhone 13/mobile run passed 107 tests with one intentional hardware-keyboard skip on source commit `09d9a51`; 262 unit/integration tests, 27 route outputs, full dependency audit, and the 97-component SBOM also passed with zero check annotations or warning/deprecation markers.
+- Canonical GitHub release gate `30239285659`: combined Chromium and iPhone 13/mobile run passed 117 tests with one intentional hardware-keyboard skip on source commit `8cce914`; 263 unit/integration tests, 27 route outputs, full dependency audit, and the version-0.15.2 97-component SBOM also passed with zero open Dependabot alerts, check annotations, or warning/deprecation markers.
 - Local Windows browser evidence remains available as desktop Chromium 52/52 plus split clean-process mobile checks. A later 20+ minute single-session run produced only browser navigation/click cancellations, so constrained-Windows reruns should remain file-split while GitHub-hosted CI is the canonical combined-browser result.
 - Outcome-informed flow proves zero history reads before explicit use, one read after use, relationship-category isolation, unchanged meeting-context ordering, bounded displayed learning, dynamic focus, and no horizontal mobile overflow.
 - Relationship handoff tests prove explicit current-tab use, clean URL, one-time clearing, editable prefill, no automatic record, no date/name/number transfer, and fail-closed behavior with unavailable storage in both browsers.
