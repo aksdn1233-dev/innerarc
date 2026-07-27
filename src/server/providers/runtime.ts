@@ -7,6 +7,7 @@ export type RuntimeEnvironment = Readonly<Record<string, string | undefined>>;
 const providerModeSchema = z.enum(["disabled", "openai"]);
 const pinnedModel = /-\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])$/;
 const sensitivePublicName = /^NEXT_PUBLIC_.*(?:KEY|SECRET|TOKEN|PASSWORD)/i;
+const allowedPublishableCredential = /^sb_publishable_[A-Za-z0-9_-]{16,220}$/;
 
 function requiredInteger(value: string | undefined, name: string, minimum: number, maximum: number): number {
   if (!value?.trim()) throw new Error(`RUNTIME_CONFIG_REQUIRED:${name}`);
@@ -15,7 +16,15 @@ function requiredInteger(value: string | undefined, name: string, minimum: numbe
 
 function assertNoPublicSecrets(env: RuntimeEnvironment): void {
   for (const [name, value] of Object.entries(env)) {
-    if (value?.trim() && sensitivePublicName.test(name)) {
+    const cleaned = value?.trim();
+    if (
+      cleaned &&
+      sensitivePublicName.test(name) &&
+      !(
+        name === "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY" &&
+        allowedPublishableCredential.test(cleaned)
+      )
+    ) {
       throw new Error(`PUBLIC_SECRET_FORBIDDEN:${name}`);
     }
   }

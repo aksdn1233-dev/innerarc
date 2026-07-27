@@ -1,16 +1,17 @@
 # Continuation State
 
 Last updated: 2026-07-27<br>
-Current version: 0.15.2
+Current version: 0.17.0
 Overall progress: 98%
 
 ## Active worktree status
 
 - `CODEX-WINDOWS-HANDOFF.md` is the exact Windows continuation guide for the current worktree.
-- Version 0.15.2 retains the complete 0.15.1 product and release-isolation scope.
-- Version 0.15.2 adds explicit local PNG generation, one-file native sharing, unsupported/technical-failure PNG fallback, cancellation without transfer, selected-app privacy disclosure, accessible busy/status handling, and retained editable SVG download for every allowlisted share-card kind.
-- Verified locally on the integrated current source: 263/263 unit/integration tests across 26 files, full ESLint, TypeScript, 27-output production build, 8/8 new Chromium/mobile share flows, 14/14 clean-process performance flows, 2/2 dynamic share accessibility flows, 36/36 onboarding/relationship/data-rights flows, full audit, and a 0.15.2 SBOM while another project retained port 3000.
-- Release evidence is labelled 0.15.2: CycloneDX 1.6 SBOM with 97 production components and fifteen regenerated synthetic-only 1242×2688 launch assets. The capture manifest reports app version 0.15.2, all files present, and the owned 3012 server released after capture.
+- Version 0.17.0 retains the complete 0.16.0 account-sync scope and adds the premium bilingual homepage plus a disabled-by-default Toss Payments V2 foundation.
+- The homepage preserves InnerArc, the existing analysis engine, routing, authentication, and payment boundaries while adding a report preview, four analysis fields, free-input CTA, 30-day pass summary, trust guidance, and responsive editorial layout.
+- Verified locally on the integrated current source: 275/275 unit/integration tests across 28 files, full ESLint, TypeScript, 40-output production build, Chromium 62/62, and mobile 61/62 with one intentional hardware-keyboard skip.
+- Supabase migrations `20260727000100` through `20260727000400` are applied to the Singapore project. The payment foundation adds owner-scoped orders, events, entitlements, and atomic verified grants while anonymous access fails closed.
+- Remote migration parity and schema lint passed with no errors; the temporary setup database password was then rotated and is not retained in the workspace.
 - Private GitHub repository `aksdn1233-dev/innerarc` is connected. Normal non-force `main` pushes and the full cloud CI gate are working; `local-bootstrap` preserves the two original local commits. Generated archives, dependencies, build output, environment files, and test artifacts remain excluded.
 - Windows WebKit can produce transient worker exits and navigation/click timeouts after a 20+ minute session without a repeated product assertion failure. Use one worker or the file-split clean-process commands in the Windows handoff.
 
@@ -41,6 +42,9 @@ Overall progress: 98%
 - Current competitor-pattern research covering Labyrinthos, Tarot.com, The Pattern, Co-Star, World Numerology, Forceteller, and Stoic, with first-party evidence/inference separation and an InnerArc adoption/adaptation/rejection synthesis.
 - Strict weighted feature audit with Keep/Improve/Hold/Remove decisions. Reality Check is the lead differentiator; lifestyle is an experiment; celebrity is held subordinate; shop remains closed; live AI and native apps remain on hold.
 - Guest privacy center, localized pre-release privacy/terms pages, region-labelled official Korea 109 and US/territories 988 resources, and complete local export/deletion controls.
+- Optional Supabase email account sync with explicit device upload, validated restore, versioned account export, and atomic owner-scoped server deletion.
+- Mobile-first bilingual homepage with the approved Korean headline, report preview, pattern explanation, four analysis fields, free calculation CTA, pass summary, trust guidance, and responsive 320px-to-desktop visual checks.
+- Toss Payments V2 one-time 30-day Plus/Pro foundation with server-owned amounts, server-only secret use, provider re-query webhooks, virtual-account secret verification, and atomic entitlement application.
 - Free/Plus/Pro policy, provider-neutral payment contracts, privacy-minimized analytics, feature flags, rate limits, account data-rights contracts, rollback runbook, SBOM, and release evidence.
 - Fifteen Korean/English synthetic mobile screenshots at 1242×2688, including context-aware onboarding, relationship outcome context, lifestyle, and closed-shop views, with first-party-origin and dimension checks plus visual inspection.
 - Exact-process E2E runner that refuses occupied port 3000, starts only this repository's production server, and terminates only the PID it owns.
@@ -52,13 +56,13 @@ Overall progress: 98%
 ## Current state
 
 - The provider-neutral web MVP, relationship action-to-outcome loop, lifestyle curation, closed shop-preview scope, and tarot reading-room UX are implemented and release-regression tested.
-- Production-backed identity, durable persistence, approved live AI, commerce, telemetry, reminders, monitoring, and deployment remain intentionally disconnected.
+- Supabase-backed identity and explicit durable record sync are connected. Payment code and its database foundation are present but remain disabled until live merchant configuration, pricing, legal disclosures, and the production domain are approved.
 - The closed shop is product architecture only, not an operating store.
 
 ## Next priorities
 
-1. Select and authorize production auth/database, AI, payment, telemetry, monitoring, email/reminder, and hosting services.
-2. Implement approved production adapters against the existing contracts and run staging migration, owner isolation, deletion, backup/restore, failure, load, latency, and cost tests.
+1. Validate the connected Supabase foundation with two real staging accounts, session revocation, administrative audit, backup/restore, and retention/deletion-residue evidence.
+2. Complete Toss Payments merchant review, live method approval, prices, seller/refund disclosures, webhook registration, and production-domain configuration before enabling the existing adapter.
 3. Complete qualified legal/privacy/age/terms, crisis-escalation, numerology/tarot editorial, Korean/English native-language, accessibility, brand/trademark, and security reviews.
 4. Validate Plus/Pro pricing and unit economics. Separately validate accessory/music usefulness and trust before deciding whether to open commerce.
 5. Before shop opening, approve suppliers, provenance, material/allergy/fit disclosures, accessibility, inventory, fulfillment, tax, shipping, return/refund, fraud, support, privacy, and consumer-law operations.
@@ -66,7 +70,7 @@ Overall progress: 98%
 
 ## On hold / external blockers
 
-- Email/social auth, PostgreSQL, transactional email, reminders, live paid AI, payment processing, analytics sink, error monitoring, and deployment require external accounts or user authorization.
+- Social auth, custom transactional email, reminders, live paid AI, payment processing, analytics sink, error monitoring, and deployment require external accounts or user authorization. Supabase's default email auth and PostgreSQL are connected.
 - Final privacy notice, terms, age policy, crisis escalation, trademark/domain/app-store work, editorial review, pricing, and launch approval require qualified human or business decisions.
 - Supplier contracts and every live-commerce operation are unresolved; the shop must remain closed.
 - The approved production domain remains unresolved; `NEXT_PUBLIC_APP_URL` must be set to its path-free HTTPS origin before external link-unfurl validation.
@@ -104,10 +108,14 @@ Overall progress: 98%
 
 ## Verified baseline
 
-- Unit/integration: 263/263 passed across 26 files.
+- Unit/integration: 275/275 passed across 28 files.
 - ESLint: passed with zero warnings.
 - TypeScript strict check: passed.
-- Next.js 16.2.11 production build: passed without metadata warnings; 27 static route outputs generated.
+- Next.js 16.2.11 production build: passed without metadata warnings; 40 route outputs generated.
+- Complete local browser regression: 123/124 passed across Chromium and mobile, with one intentional hardware-keyboard skip.
+- Homepage visual QA: no horizontal overflow at 320×700, 768×1024, or 1440×900; primary CTA, heading order, responsive field layout, focus states, and 44px link/button targets verified.
+- Account browser boundary: Chromium 3/3 focused checks prove no implicit upload, unauthenticated API denial, and locale-aware magic-link callback forwarding.
+- Complete local browser regression: Chromium 62/62; mobile 61/62 with one intentional hardware-keyboard skip.
 - Canonical GitHub release gate `30239285659`: combined Chromium and iPhone 13/mobile run passed 117 tests with one intentional hardware-keyboard skip on source commit `8cce914`; 263 unit/integration tests, 27 route outputs, full dependency audit, and the version-0.15.2 97-component SBOM also passed with zero open Dependabot alerts, check annotations, or warning/deprecation markers.
 - Local Windows browser evidence remains available as desktop Chromium 52/52 plus split clean-process mobile checks. A later 20+ minute single-session run produced only browser navigation/click cancellations, so constrained-Windows reruns should remain file-split while GitHub-hosted CI is the canonical combined-browser result.
 - Outcome-informed flow proves zero history reads before explicit use, one read after use, relationship-category isolation, unchanged meeting-context ordering, bounded displayed learning, dynamic focus, and no horizontal mobile overflow.
@@ -117,11 +125,11 @@ Overall progress: 98%
 - Performance: HTML, resource count, JavaScript/CSS transfer and decoded-size, total payload, and no-third-party-request budgets passed, including `/en/shop`.
 - Full dependency audit: zero known vulnerabilities; PostCSS 8.5.19 and brace-expansion 5.0.8.
 - Link-preview browser regression: four Korean/English Chromium/mobile flows verify native copy, large-image tags, same-origin URLs, image responses, alt/type fields, and 1200×630 PNG headers.
-- CycloneDX 1.6 SBOM: validated with 97 production components for version 0.15.2.
+- CycloneDX 1.6 SBOM: validated with 107 production components for version 0.16.0.
 - Client static bundle: no OpenAI endpoint, key/config name, or test-secret marker found.
 - Workspace secret-pattern scan: no recognized API key, cloud credential, private key, or GitHub token pattern found; only `.env.example` exists.
 - Store assets: fifteen regenerated synthetic screenshots passed external-origin and 1242×2688 PNG checks; Korean/English home, Korean tarot card, relationship context, and closed-shop views passed visual inspection.
 
 ## User work required
 
-No user action is required to run or inspect the current local website or to synchronize the already-authorized private GitHub repository. The next production stage requires service selection and staging/deployment authorization. Legal, editorial, brand, pricing, commerce, and launch decisions also require human sign-off.
+No user action is required to run or inspect the current local website. A real magic-link/account-isolation exercise requires an email inbox, and the next production stage requires hosting/service authorization. Legal, editorial, brand, pricing, commerce, and launch decisions also require human sign-off.

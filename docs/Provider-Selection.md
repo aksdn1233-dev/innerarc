@@ -1,7 +1,7 @@
 # Production Provider Selection Gates
 
-Status: decision packet; providers not selected. A disabled-by-default OpenAI candidate adapter is implemented locally but is not approved or connected.  
-Last updated: 2026-07-24
+Status: Supabase selected for auth/database; other providers remain unselected. A disabled-by-default OpenAI candidate adapter is implemented locally but is not approved or connected.
+Last updated: 2026-07-27
 
 No vendor is approved merely because an adapter contract exists. Score each candidate from 0–3 for privacy/security, regional fit, reliability, cost controls, portability, and implementation effort. Privacy/security or deletion scoring below 2 is an automatic rejection.
 
@@ -19,6 +19,14 @@ No vendor is approved merely because an adapter contract exists. Score each cand
 ### Auth and database
 
 Email verification, session revocation, social-login isolation, row-level owner policy, regional database, point-in-time recovery, migration transactionality, third-party-only deletion, consent receipts, and administrative-access audit.
+
+#### Selected Supabase foundation
+
+- Project `innerarc` (`ytssrbmjyufphjyafjqa`) is hosted in Singapore (`ap-southeast-1`) and linked to the private GitHub repository.
+- Email magic-link auth uses cookie-backed SSR, a public publishable key, and a site-URL callback bridge; no service-role key is present in the application.
+- Three applied migrations create owner-scoped profiles, consent receipts, tarot readings, Reality Checks, data-rights receipts, authenticated-only grants, RLS, and atomic retry-safe deletion.
+- Anonymous REST table access fails closed. Device records are uploaded only after sign-in and an explicit sync action.
+- Still required before public launch: real two-account isolation tests, session revocation, admin audit evidence, DPA/transfer review, retention approval, backup/restore and recovery-time evidence, paid-plan/PITR decision, and production-domain callback validation.
 
 ### AI
 

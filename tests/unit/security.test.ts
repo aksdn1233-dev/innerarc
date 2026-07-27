@@ -21,6 +21,39 @@ describe("security and install metadata", () => {
     expect(buildContentSecurityPolicy("test")).not.toContain("'unsafe-eval'");
   });
 
+  it("allows only explicitly validated HTTPS API origins", () => {
+    const supabaseOrigin = "https://example-ref.supabase.co";
+    expect(buildContentSecurityPolicy("production", false, [supabaseOrigin]))
+      .toContain(`connect-src 'self' ${supabaseOrigin}`);
+    expect(() => buildContentSecurityPolicy("production", false, ["http://example.com"]))
+      .toThrow();
+    expect(() => buildContentSecurityPolicy("production", false, ["https://example.com/path"]))
+      .toThrow();
+  });
+
+  it("adds payment scripts, frames, and popup compatibility only when requested", () => {
+    const policy = buildContentSecurityPolicy(
+      "production",
+      false,
+      ["https://api.tosspayments.com"],
+      ["https://js.tosspayments.com"],
+      ["https://payment-widget.tosspayments.com"],
+    );
+    expect(policy).toContain("script-src 'self' 'unsafe-inline' https://js.tosspayments.com");
+    expect(policy).toContain("frame-src 'self' https://payment-widget.tosspayments.com");
+    const headers = Object.fromEntries(
+      buildSecurityHeaders(
+        "production",
+        false,
+        [],
+        [],
+        [],
+        true,
+      ).map(({ key, value }) => [key, value]),
+    );
+    expect(headers["Cross-Origin-Opener-Policy"]).toBe("same-origin-allow-popups");
+  });
+
   it("sets clickjacking, sniffing, capability, referrer, and transport controls", () => {
     const headers = Object.fromEntries(buildSecurityHeaders("production", true).map(({ key, value }) => [key, value]));
     expect(headers["X-Frame-Options"]).toBe("DENY");

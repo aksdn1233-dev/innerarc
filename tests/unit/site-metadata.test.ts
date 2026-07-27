@@ -15,8 +15,8 @@ describe("site sharing metadata", () => {
     const en = getLocalizedSiteMetadata("en");
     const combined = [ko.title, ko.description, en.title, en.description].join(" ");
 
-    expect(ko.title).toContain("현실의 패턴");
-    expect(en.title).toContain("Lived Patterns");
+    expect(ko.title).toContain("반복되는 결");
+    expect(en.title).toContain("Patterns That Repeat");
     expect(ko.openGraphLocale).toBe("ko_KR");
     expect(en.openGraphLocale).toBe("en_US");
     expect(combined).not.toMatch(/정확도|정확히 예측|반드시|보장|accuracy|predicts? exactly|guaranteed/i);

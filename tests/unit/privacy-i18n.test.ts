@@ -59,9 +59,9 @@ describe("Korean and English content parity", () => {
   it("keeps privacy and terms section structures aligned across locales", () => {
     expect(privacyCopy.ko.sections).toHaveLength(privacyCopy.en.sections.length);
     expect(termsCopy.ko.sections).toHaveLength(termsCopy.en.sections.length);
-    expect(privacyCopy.ko.status).toContain("법률 검토 미완료");
+    expect(privacyCopy.ko.status).toContain("법률 검토 필요");
     expect(privacyCopy.en.status).toContain("legal review pending");
-    expect(termsCopy.ko.intro).toContain("유료 구독 조건이 아닙니다");
-    expect(termsCopy.en.intro).toContain("not a public-service contract");
+    expect(termsCopy.ko.intro).toContain("유료 결제");
+    expect(termsCopy.en.intro).toContain("No paid checkout");
   });
 });

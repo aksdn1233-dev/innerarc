@@ -20,7 +20,9 @@ export function LegalDocument({ locale, copy, kind }: { locale: Locale; copy: Le
         <p className="legal-status">{copy.status}</p>
         <h1>{copy.title}</h1>
         <p className="legal-intro">{copy.intro}</p>
-        <p className="privacy-note">Last updated · {copy.lastUpdated}</p>
+        <p className="privacy-note">
+          {locale === "ko" ? "최종 수정" : "Last updated"} · {copy.lastUpdated}
+        </p>
 
         {copy.sections.map((section) => (
           <section key={section.title}>

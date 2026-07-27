@@ -13,8 +13,14 @@ import {
 } from "@/core/privacy";
 import type { Locale } from "@/i18n/config";
 import type { MeCopy } from "@/i18n/me-copy";
+import { AccountSyncPanel } from "@/components/account-sync-panel";
 
-type Props = { locale: Locale; copy: MeCopy };
+type Props = {
+  locale: Locale;
+  copy: MeCopy;
+  account: Readonly<{ email: string | null }> | null;
+  accountSyncConfigured: boolean;
+};
 type OptionalConsentKey =
   | "aiPersonalization"
   | "modelTraining"
@@ -37,7 +43,7 @@ const emptyConsents: Record<OptionalConsentKey, boolean> = {
   rawJournalRetention: false,
 };
 
-export function MeExperience({ locale, copy }: Props) {
+export function MeExperience({ locale, copy, account, accountSyncConfigured }: Props) {
   const timeZoneInput = useRef<HTMLInputElement>(null);
   const [privacyRequired, setPrivacyRequired] = useState(false);
   const [consents, setConsents] = useState(emptyConsents);
@@ -153,11 +159,23 @@ export function MeExperience({ locale, copy }: Props) {
 
         <section className="me-grid">
           <article className="status-card">
-            <p className="eyebrow">Guest</p>
-            <h2>{copy.guestTitle}</h2>
-            <p>{copy.guestBody}</p>
-            <p className="privacy-note">{copy.providerNote}</p>
+            <p className="eyebrow">{account ? "Account" : "Guest"}</p>
+            <h2>{account ? (locale === "ko" ? "로그인 계정" : "Signed-in account") : copy.guestTitle}</h2>
+            <p>
+              {account
+                ? (locale === "ko"
+                    ? "명시적으로 동기화한 기록만 소유자 전용 서버 저장소에 보관됩니다."
+                    : "Only records you explicitly synchronize are stored in owner-scoped server storage.")
+                : copy.guestBody}
+            </p>
+            {!account && <p className="privacy-note">{copy.providerNote}</p>}
           </article>
+
+          <AccountSyncPanel
+            locale={locale}
+            account={account}
+            configured={accountSyncConfigured}
+          />
 
           <form className="form-card me-preferences" onSubmit={savePreferences} noValidate>
             <h2>{copy.preferencesTitle}</h2>
@@ -198,6 +216,7 @@ export function MeExperience({ locale, copy }: Props) {
             <div className="legal-note">
               <Link href={`/${locale}/privacy`}>{locale === "ko" ? "개인정보 처리 안내 읽기" : "Read the privacy information"}</Link>
               <Link href={`/${locale}/terms`}>{locale === "ko" ? "출시 전 이용조건" : "Pre-release terms"}</Link>
+              <Link href={`/${locale}/plans`}>{locale === "ko" ? "30일 이용권 준비 상태" : "30-day access readiness"}</Link>
             </div>
 
             {consentOptions.map(([key, label]) => (

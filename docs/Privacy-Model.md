@@ -34,9 +34,16 @@ Birth date, names, relationship details, journals, finances, and consultation qu
 - Accessory and music directions are calculated locally from canonical number values. They do not require shopping history, listening history, streaming accounts, location, health, biometrics, or new persistence. Recommendation output omits raw birth date and name.
 - The closed shop route receives only public category anchors. Result facts are not placed in query parameters, URLs, affiliate identifiers, or supplier requests; there are no products or transactions in the current version.
 
+## Connected account controls
+
+- Supabase Auth/PostgreSQL runs in Singapore. Email authentication creates a session but does not upload device records.
+- Explicit sync validates local preferences, tarot history, and Reality Checks before owner-scoped upserts. Restore validates server records again before writing device storage.
+- Authenticated account export is versioned JSON. Atomic deletion removes profiles, consent receipts, tarot readings, and Reality Checks while retaining the auth identity and minimal data-rights request metadata.
+- All account tables use `auth.uid()` owner policies, authenticated-only grants, and no anonymous table privileges.
+
 ## Planned controls
 
-- Row-level ownership and least-privilege service roles.
+- Independent staging verification of cross-account isolation, session revocation, administrative access, backup aging, and restore.
 - Encryption in transit and at rest; application-level encryption considered for raw journals.
 - Separate secret manager and database; no secrets in client bundles.
 - Development uses synthetic data; production data is not copied down.
@@ -54,7 +61,7 @@ Birth date, names, relationship details, journals, finances, and consultation qu
 - The OpenAI candidate envelope omits raw birth date and normalized name, sends `store: false`, and is disabled by default. It may include the optional concern only when the interpretation request is actually authorized; final provider retention/DPA/region evidence remains a launch blocker.
 - Rate-limit and feature-rollout keys are opaque server references. Email, birth date, name, IP address, device fingerprint, question text, and journal content are not valid domain inputs. Edge infrastructure may separately apply short-lived IP abuse controls under the final privacy notice.
 - Export and deletion operate on owner-tagged typed records. Export intentionally returns the requesting owner’s sensitive content in a versioned JSON bundle; it never includes another owner. Third-party-only deletion removes relationship records classified as third-party data without deleting the owner’s independent reflections.
-- Idempotency results retain request metadata and deletion counts, not deleted content. Final production retention/tombstone and backup-aging behavior requires database/provider selection and legal review.
+- Idempotency results retain request metadata and deletion counts, not deleted content. Final production retention/tombstone and backup-aging behavior requires legal review and provider-plan evidence.
 
 ## Retention proposal
 

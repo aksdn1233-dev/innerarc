@@ -9,16 +9,16 @@ export interface LocalizedSiteMetadata {
 
 const SITE_METADATA: Readonly<Record<Locale, LocalizedSiteMetadata>> = {
   ko: {
-    title: "InnerArc | 숫자와 카드에서 현실의 패턴으로",
+    title: "InnerArc | 당신의 삶에 반복되는 결",
     description:
-      "수비학과 타로의 상징을 자기성찰 질문으로 바꾸고, 선택과 실제 결과를 기록해 개인 관련성을 확인하는 자기이해 플랫폼.",
+      "생년월일과 현재의 고민을 바탕으로 성향·관계·직업·재물에서 반복되는 패턴을 구체적으로 분석하는 자기이해 서비스.",
     openGraphLocale: "ko_KR",
     alternateOpenGraphLocale: "en_US",
   },
   en: {
-    title: "InnerArc | From Symbols to Lived Patterns",
+    title: "InnerArc | The Patterns That Repeat in Your Life",
     description:
-      "A self-discovery platform that turns numerology and tarot symbolism into reflection questions, then reviews choices against lived outcomes.",
+      "A premium self-understanding service for exploring recurring patterns across self, relationships, work, and money.",
     openGraphLocale: "en_US",
     alternateOpenGraphLocale: "ko_KR",
   },
@@ -27,4 +27,3 @@ const SITE_METADATA: Readonly<Record<Locale, LocalizedSiteMetadata>> = {
 export function getLocalizedSiteMetadata(locale: Locale): LocalizedSiteMetadata {
   return SITE_METADATA[locale];
 }
-

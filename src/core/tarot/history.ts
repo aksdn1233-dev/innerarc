@@ -212,8 +212,18 @@ const recordSchema = z.object({
 
 const payloadSchema = z.object({ version: z.literal(1), records: z.array(recordSchema).max(200) });
 
+export function validateTarotHistoryRecords(candidate: unknown): SavedTarotReading[] {
+  const records = payloadSchema.parse({ version: 1, records: candidate }).records as SavedTarotReading[];
+  const repository = new InMemoryTarotHistoryRepository();
+  repository.replace(records);
+  return repository.list();
+}
+
 export function saveTarotHistory(storage: TarotHistoryStorage, records: SavedTarotReading[]): void {
-  storage.setItem(TAROT_HISTORY_STORAGE_KEY, JSON.stringify({ version: 1, records }));
+  storage.setItem(
+    TAROT_HISTORY_STORAGE_KEY,
+    JSON.stringify({ version: 1, records: validateTarotHistoryRecords(records) }),
+  );
 }
 
 export function loadTarotHistory(storage: TarotHistoryStorage): SavedTarotReading[] {

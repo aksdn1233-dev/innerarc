@@ -409,3 +409,13 @@
 - Impact: The browser creates no new record or remote request. The operating-system share surface opens only from a user gesture, receives one PNG with no `text` or `url`, and has a clearly disclosed external-app boundary. Unsupported browsers still receive a portable PNG without losing the editable SVG option.
 - Revisit when: Real share completion and trust evidence exists, a native app has an approved share-sheet implementation, or brand review changes the card format.
 - Status: Decided.
+
+## D-042 - Supabase provides optional owner-scoped account persistence
+
+- Date: 2026-07-27
+- Decision: Use the authorized Supabase project in Singapore for email magic-link authentication and PostgreSQL persistence. Keep guest/device storage authoritative until the user explicitly signs in and chooses sync. Apply authenticated-only grants, owner RLS, schema validation on both directions, versioned export, and one transactional deletion function with a retry-safe receipt.
+- Alternatives: Keep all data device-only; connect a service-role key to server routes; upload automatically at login; use broad anonymous table grants; perform multi-table deletion as separate network requests.
+- Reason: Cross-device continuity and real data rights need durable identity and storage, while automatic transfer or privileged browser/server keys would weaken the established guest-first privacy boundary. Database-side atomic deletion prevents partial completion and preserves auditable idempotency.
+- Impact: Supabase Auth/Postgres is now the only connected external application provider. External AI, analytics, monitoring, payments, custom email, reminders, and hosting remain disabled. Public launch still requires real two-account isolation, revocation, admin-audit, DPA/transfer, retention, backup/restore, production-domain callback, and deletion-residue evidence.
+- Revisit when: A production domain is approved, Supabase plan/recovery requirements change, or staging evidence reveals a portability, regional, privacy, reliability, or cost failure.
+- Status: Decided.

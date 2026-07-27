@@ -10,7 +10,12 @@ function localMonthOffset(offset: number): string {
 
 test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await page.goto("/ko");
-  await page.getByRole("button", { name: "첫 패턴 보기" }).click();
+  await expect(page.getByRole("heading", {
+    level: 1,
+    name: "당신의 삶에는 반복되는 결이 있습니다.",
+  })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "나의 기본 결" })).toBeAttached();
+  await page.getByRole("button", { name: "내 삶의 결 확인하기" }).click();
   await page.locator("#birthDate").fill("1994-11-04");
   await page.locator("#name").fill("Minji Kim");
   await page.getByText("개인정보 처리 안내를 확인했습니다.").click();
@@ -314,6 +319,7 @@ test("romantic insight reads saved outcome reviews only after explicit use", asy
   await page.goto("/en/relationship");
   await page.locator("#relationship-birth-date").fill("1994-11-04");
   await page.getByRole("button", { name: "Show my romantic pattern" }).click();
+  await expect(page.locator(".meeting-card h3")).toHaveCount(3);
   const contextsBefore = await page.locator(".meeting-card h3").allTextContents();
   await expect(page.locator("#relationship-outcome-context")).toHaveCount(0);
   expect(await page.evaluate(() =>
@@ -522,10 +528,14 @@ test("pre-release privacy and terms disclose unresolved launch fields", async ({
   await page.goto("/en");
   await expect(page.getByRole("link", { name: "Read the privacy information" })).toHaveAttribute("href", "/en/privacy");
   await page.getByRole("link", { name: "Read the privacy information" }).click();
-  await expect(page.getByText("Pre-release information · legal review pending")).toBeVisible();
-  await expect(page.getByText("No email account, server database, external AI, analytics, marketing, or payment service is currently connected.")).toBeVisible();
-  await expect(page.getByText("Public launch remains blocked until qualified review completes them.", { exact: false })).toBeVisible();
+  await expect(page.getByText("Pre-release draft · operator details and legal review pending")).toBeVisible();
+  await expect(page.getByText("Supabase handles the authentication email", { exact: false })).toBeVisible();
+  await expect(page.getByText("When payments open, InnerArc will retain the order ID", { exact: false })).toBeVisible();
+  await expect(page.getByText("Payments stay disabled until these fields are completed and reviewed.", { exact: false })).toBeVisible();
   await page.getByRole("link", { name: "Terms of use" }).click();
-  await expect(page.getByText("Pre-release terms · legal review pending")).toBeVisible();
-  await expect(page.getByText("The current preview has no account, charge, or auto-renewal.", { exact: false })).toBeVisible();
+  await expect(page.getByText("Pre-release draft · seller details and refund policy pending")).toBeVisible();
+  await expect(page.getByText("Plus and Pro are designed as one-time, non-renewing 30-day passes.", { exact: false })).toBeVisible();
+  await page.goto("/en/plans");
+  await expect(page.getByText("Payments remain closed until merchant review", { exact: false })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Load payment methods" }).first()).toBeDisabled();
 });

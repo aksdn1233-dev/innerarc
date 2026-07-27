@@ -34,127 +34,209 @@ const sharedEn = {
 
 const privacyKo: LegalPageCopy = {
   ...sharedKo,
-  status: "출시 전 안내 · 법률 검토 미완료",
+  status: "출시 전 초안 · 사업자 정보 확정 및 법률 검토 필요",
   title: "개인정보 처리 안내",
-  intro: "이 문서는 현재 InnerArc 로컬 미리보기에서 어떤 정보가 언제 저장되는지 설명합니다. 공개 서비스용 최종 개인정보처리방침이 아니며, 사업자·연락처·관할지역·외부 처리업체가 확정되기 전에는 실제 배포할 수 없습니다.",
-  lastUpdated: "2026-07-23",
+  intro: "현재 기능과 예정된 결제 처리 범위를 설명하는 출시 전 초안입니다. 운영자 상호·대표자·개인정보 보호 연락처·위탁 및 국외이전 세부사항을 확정하기 전에는 실제 유료 서비스를 열지 않습니다.",
+  lastUpdated: "2026-07-27",
   sections: [
     {
-      title: "현재 로컬 미리보기",
+      title: "현재 처리하는 정보",
       bullets: [
-        "생년월일, 선택 입력 이름, 관심사와 고민은 기본 분석 중 브라우저 메모리에서만 사용되며 새로고침하면 사라집니다.",
-        "타로 기록, Reality Check, 언어·시간대·선택 동의는 사용자가 기기 저장을 직접 선택했을 때만 이 브라우저에 저장됩니다.",
-        "이메일 계정, 서버 데이터베이스, 외부 AI, 분석, 마케팅, 결제 서비스는 현재 연결되어 있지 않습니다.",
+        "게스트의 생년월일, 선택 입력 이름, 관심사와 고민은 현재 분석을 위해 브라우저 메모리에서 사용되며 사용자가 저장을 선택하지 않으면 새로고침 시 사라집니다.",
+        "이메일 로그인을 선택하면 Supabase가 인증 이메일, 계정 식별자와 세션 정보를 처리합니다. 사용자가 명시적으로 동기화한 환경설정·타로 기록·Reality Check 기록만 계정에 저장됩니다.",
+        "결제가 개통되면 주문번호, 상품코드, 결제금액, 통화, 결제수단, 결제상태와 이용권 만료일을 보관합니다. 카드번호·계좌 비밀번호·휴대폰 인증정보는 InnerArc 서버에 저장하지 않고 결제대행사가 처리합니다.",
       ],
     },
     {
-      title: "사용 목적과 선택 동의",
-      paragraphs: ["수비학 계산, 카드 기록, 자기성찰, 결과 회고, 설정 복원을 위해 필요한 범위만 처리합니다."],
+      title: "처리 목적과 선택 동의",
       bullets: [
-        "AI 개인화, 모델 학습, 제품 분석, 마케팅, 저널 원문 장기보관은 서로 독립된 선택입니다.",
-        "선택 동의를 거부해도 결정론적 계산과 기본 결과를 이용할 수 있습니다.",
-        "외부 서비스가 비활성인 현재는 선택 동의를 켜도 외부 전송이 발생하지 않습니다.",
+        "필수 정보는 로그인, 주문 확인, 결제 승인·취소·환불, 이용권 제공, 고객문의, 부정 이용 방지 및 법정 거래기록 보존을 위해 처리합니다.",
+        "AI 개인화, 모델 학습, 제품 분석, 마케팅, 장기 원문 보관은 서로 분리된 선택 항목입니다.",
+        "선택 동의를 거부해도 규칙 기반 기본 결과는 이용할 수 있습니다.",
       ],
     },
     {
-      title: "보관·내보내기·삭제",
+      title: "보유, 파기, 내보내기와 삭제",
       bullets: [
-        "게스트 저장은 이 브라우저 기기에만 남으며 공용 기기에서는 사용하지 않는 것이 안전합니다.",
-        "나 탭에서 검증된 로컬 기록을 JSON으로 내보내고 InnerArc 로컬 키를 한 번에 삭제할 수 있습니다.",
-        "기기 삭제는 복구할 수 없으며, 브라우저 자체 데이터 삭제도 같은 기록을 제거할 수 있습니다.",
+        "브라우저 저장 기록과 계정 서버 기록은 서로 별개이며 내 페이지에서 각각 내보내거나 삭제할 수 있습니다.",
+        "결제·계약·공급 및 소비자 분쟁 처리 기록은 전자상거래 관계 법령에 따른 기간 동안 별도 보관한 뒤 파기해야 합니다. 정확한 항목별 보존기간은 운영자와 법률 검토 후 최종 방침에 명시합니다.",
+        "계정 삭제 시 서비스 기록은 삭제하되 법률상 보존 의무가 있는 최소 거래기록과 권리행사 처리기록은 목적별로 분리 보관할 수 있습니다.",
       ],
     },
     {
-      title: "타인의 정보",
-      paragraphs: ["궁합을 위해 타인의 생년월일이나 이름을 입력할 때에는 사적 비교에 사용할 권한과 동의가 있는지 확인해야 합니다. 기본 게스트 비교는 저장하거나 공개하지 않으며, 공유 카드에는 타인의 이름과 생년월일을 포함하지 않습니다."],
+      title: "처리위탁과 국외이전 예정",
+      paragraphs: [
+        "인증·데이터 저장에는 Supabase, 결제에는 토스페이먼츠 및 선택한 결제수단 사업자가 사용될 예정입니다. 사업자명, 이전 국가, 이전 항목·시점·방법·보유기간과 거부 방법을 계약서와 실제 데이터 흐름으로 확인한 뒤 최종 방침에 공개합니다.",
+      ],
     },
     {
-      title: "AI·안전·상징 체계",
-      paragraphs: ["수비학과 타로는 과학적 예측이나 진단이 아닌 자기성찰용 상징 체계입니다. 고위험 질문은 카드 답변보다 현실 정보와 전문 지원을 우선합니다. 언어로 국가를 추정하지 않으며 지역별 위기 연락처는 해당 지역에 있을 때만 사용해야 합니다."],
+      title: "정보주체의 권리와 안전조치",
+      bullets: [
+        "이용자는 자신의 정보 열람, 정정, 삭제, 처리정지 및 동의 철회를 요청할 수 있습니다. 최종 고객지원·개인정보 보호 연락처는 사업자 정보 확정 후 게시합니다.",
+        "계정별 접근통제, 서버 전용 결제키, 최소권한 데이터베이스, 전송구간 암호화, 결제 웹훅 재조회 검증과 로그 마스킹을 적용합니다.",
+        "타인의 정보를 입력할 때에는 적법한 권한과 동의를 확인해야 하며 공유 결과에는 상대방의 생년월일과 이름을 포함하지 않습니다.",
+      ],
     },
     {
-      title: "출시 전 미확정 사항",
-      paragraphs: ["법적 사업자와 개인정보 연락처, 제공 국가, 최소 연령, 법적 근거, 보관기간, 국외 이전, 외부 처리업체, 민원·권리행사 절차는 아직 승인되지 않았습니다. 이 항목들이 법률 검토와 함께 확정되기 전에는 공개 출시하지 않습니다."],
+      title: "출시를 막는 미확정 항목",
+      paragraphs: [
+        "개인정보처리자 상호·주소·대표자, 보호책임자 또는 담당부서 연락처, 최소 이용연령, 정확한 처리 항목·법적 근거·보유기간, 위탁사와 국외이전, 쿠키·분석 도구, 권리행사 절차 및 침해구제 안내가 아직 확정되지 않았습니다. 이 항목이 채워지고 검토되기 전에는 결제를 활성화하지 않습니다.",
+      ],
     },
   ],
 };
 
 const privacyEn: LegalPageCopy = {
   ...sharedEn,
-  status: "Pre-release information · legal review pending",
+  status: "Pre-release draft · operator details and legal review pending",
   title: "Privacy information",
-  intro: "This page explains when the current local InnerArc preview handles or stores information. It is not the final public-service privacy notice. Production cannot launch until the controller, contact, jurisdictions, and processors are approved.",
-  lastUpdated: "2026-07-23",
+  intro: "This pre-release draft describes current functionality and the intended payment data flow. Paid service will remain closed until the operator, privacy contact, processors, and international-transfer details are finalized.",
+  lastUpdated: "2026-07-27",
   sections: [
     {
-      title: "Current local preview",
+      title: "Information currently handled",
       bullets: [
-        "Birth date, optional name, interests, and concern are used in browser memory for the current analysis and disappear on refresh.",
-        "Tarot history, Reality Checks, language/time-zone preferences, and optional consents enter this browser's storage only after an explicit device-storage action.",
-        "No email account, server database, external AI, analytics, marketing, or payment service is currently connected.",
+        "A guest's birth date, optional name, interests, and concern are used in browser memory for the current analysis and disappear on refresh unless the person explicitly saves them.",
+        "If email sign-in is selected, Supabase handles the authentication email, account identifier, and session. Only preferences, tarot records, and Reality Check records explicitly synchronized by the person are stored with the account.",
+        "When payments open, InnerArc will retain the order ID, product code, amount, currency, method, status, and access expiry. Card numbers, bank passwords, and mobile authentication details will be handled by the payment provider rather than stored on InnerArc servers.",
       ],
     },
     {
-      title: "Purpose and optional choices",
-      paragraphs: ["The preview handles only what is needed for deterministic calculation, card records, reflection, outcome review, and preference restoration."],
+      title: "Purposes and optional choices",
       bullets: [
-        "AI personalization, model training, product analytics, marketing, and long-term raw-journal retention are independent choices.",
-        "Declining optional choices does not block deterministic calculation or the basic result.",
-        "With external services disabled, enabling a choice does not currently transmit data outside this browser.",
+        "Required data supports sign-in, order verification, approval, cancellation and refund, access delivery, support, abuse prevention, and legally required transaction records.",
+        "AI personalization, model training, product analytics, marketing, and long-term raw-text retention remain separate optional choices.",
+        "Declining an optional choice does not block the rule-based core result.",
       ],
     },
     {
-      title: "Retention, export, and deletion",
+      title: "Retention, deletion, and export",
       bullets: [
-        "Guest storage remains on this browser device and should not be enabled on a shared device.",
-        "The Me tab exports validated local records as JSON and removes every InnerArc local key in one action.",
-        "Device deletion cannot be undone; clearing browser site data can also remove the records.",
+        "Browser records and account records are separate and can be exported or deleted separately from the Me page.",
+        "Payment, contract, supply, and dispute records must be isolated and retained for the applicable statutory periods before deletion. The final notice will state exact periods after legal review.",
+        "Account deletion removes service records, while minimal transaction and rights-request records may remain separately where law requires retention.",
       ],
     },
     {
-      title: "Information about another person",
-      paragraphs: ["Before entering another person's birth date or name for compatibility, confirm you may use it for a private comparison. The guest comparison is not saved or made public by default, and share cards exclude the other person's name and birth date."],
+      title: "Processors and intended international transfers",
+      paragraphs: [
+        "Supabase is intended for authentication and storage; Toss Payments and the chosen payment-method operator are intended for payment. The final notice will identify the entities, countries, fields, timing, method, retention, and refusal consequences based on signed contracts and verified data flows.",
+      ],
     },
     {
-      title: "AI, safety, and symbolic systems",
-      paragraphs: ["Numerology and tarot are reflection systems, not scientific prediction or diagnosis. High-risk questions prioritize real-world information and qualified support. Language is not used to infer location; a regional crisis contact applies only when the person is actually in that region."],
+      title: "Individual rights and safeguards",
+      bullets: [
+        "Individuals may request access, correction, deletion, restriction, and consent withdrawal. Final support and privacy contact details will be published after operator details are approved.",
+        "Controls include account-scoped access, server-only payment keys, least-privilege database access, encrypted transport, provider re-query for webhook verification, and log redaction.",
+        "Before entering another person's information, confirm lawful authority and consent. Shared outputs exclude the other person's name and birth date.",
+      ],
     },
     {
-      title: "Unresolved pre-launch fields",
-      paragraphs: ["Legal controller and privacy contact, offered jurisdictions, minimum age, lawful bases, retention periods, international transfers, processors, complaint routes, and rights-request operations are not yet approved. Public launch remains blocked until qualified review completes them."],
+      title: "Fields blocking launch",
+      paragraphs: [
+        "Controller name, address, representative, privacy contact, minimum age, exact fields, legal bases, retention, processors, international transfers, analytics and cookies, rights procedures, and complaint routes remain unresolved. Payments stay disabled until these fields are completed and reviewed.",
+      ],
     },
   ],
 };
 
 const termsKo: LegalPageCopy = {
   ...sharedKo,
-  status: "출시 전 이용조건 · 법률 검토 미완료",
+  status: "출시 전 초안 · 판매자 정보와 환불정책 확정 필요",
   title: "InnerArc 이용조건",
-  intro: "현재 버전은 로컬 제품 미리보기입니다. 아래 내용은 제품 경계와 안전한 사용 원칙을 설명하는 초안이며, 공개 서비스 계약이나 유료 구독 조건이 아닙니다.",
-  lastUpdated: "2026-07-23",
+  intro: "이 문서는 현재 제품 경계와 예정된 30일 이용권의 원칙을 설명하는 초안입니다. 판매자 신원, 가격, 고객지원과 최종 환불정책이 확정되기 전에는 유료 결제를 받지 않습니다.",
+  lastUpdated: "2026-07-27",
   sections: [
-    { title: "서비스 성격", paragraphs: ["InnerArc는 수비학·타로 상징과 사용자의 기록을 자기성찰에 활용합니다. 미래, 관계 성공, 성격 동일성, 질병, 법적 결과, 투자 성과를 보장하거나 과학적으로 예측하지 않습니다."] },
-    { title: "전문 판단의 우선", paragraphs: ["의료·정신건강·법률·투자·범죄·폭력·자해 문제는 카드나 숫자로 결정하지 마세요. 즉각적인 위험에서는 현지 응급·위기지원과 신뢰할 수 있는 사람에게 먼저 연락해야 합니다."] },
-    { title: "사용자의 책임", bullets: ["정확한 입력과 계정·기기 보안에 책임을 집니다.", "타인의 정보를 동의 없이 공개·저장·괴롭힘·평가에 사용하지 않습니다.", "불법 행위, 안전 우회, 프롬프트 인젝션, 서비스 방해, 자동 남용을 하지 않습니다."] },
-    { title: "결정과 결과", paragraphs: ["최종 결정권과 현실 확인 책임은 사용자에게 있습니다. Reality Check 평가는 개인 관련성 기록이며 예측 정확도나 전문 검증을 의미하지 않습니다."] },
-    { title: "계정·구독·환불", paragraphs: ["현재 미리보기에는 계정·결제·자동갱신이 없습니다. 판매자, 가격, 세금, 갱신, 취소, 환불, 지원 정책은 결제 제공자와 법률 검토 후 별도 승인되며 그 전에는 유료 결제를 받지 않습니다."] },
-    { title: "출시 전 미확정 사항", paragraphs: ["법적 사업자, 적용법, 분쟁·민원 절차, 책임 제한, 지식재산 라이선스, 최소 연령과 연락처는 미확정입니다. 최종 이용약관 승인 전 공개 출시하지 않습니다."] },
+    {
+      title: "서비스의 성격",
+      paragraphs: [
+        "InnerArc는 수비학과 타로 상징을 자기성찰 질문으로 제공합니다. 미래, 관계 성공, 성격의 본질, 질병, 법률 결과, 투자 수익을 보장하거나 과학적으로 예측하지 않습니다.",
+      ],
+    },
+    {
+      title: "전문 판단과 안전 우선",
+      paragraphs: [
+        "의료·정신건강·법률·투자·범죄·폭력·자해 문제를 카드나 숫자로 결정하지 마세요. 즉각적인 위험에서는 현지 긴급·위기 지원과 신뢰할 수 있는 사람에게 먼저 연락해야 합니다.",
+      ],
+    },
+    {
+      title: "계정과 이용자 책임",
+      bullets: [
+        "정확한 정보를 입력하고 계정과 기기를 보호해야 합니다.",
+        "타인의 정보를 허락 없이 공개·보관·괴롭힘·평가 목적으로 사용하면 안 됩니다.",
+        "불법행위, 안전장치 우회, 서비스 방해, 대량 자동화 오용은 금지됩니다.",
+      ],
+    },
+    {
+      title: "30일 이용권과 결제",
+      bullets: [
+        "Plus와 Pro는 자동 갱신 없는 1회성 30일 이용권으로 설계되어 있습니다. 최종 가격과 제공 기능은 결제 직전 화면에 표시합니다.",
+        "카카오페이·토스페이·가상계좌·휴대폰 결제는 토스페이먼츠 가맹점 계약과 각 결제수단 심사가 완료된 범위에서만 노출됩니다.",
+        "가상계좌 이용권은 실제 입금이 결제대행사 조회로 확인된 시점부터 반영됩니다.",
+      ],
+    },
+    {
+      title: "청약철회, 취소와 환불",
+      paragraphs: [
+        "관계 법령상 청약철회가 가능한 기간과 예외, 디지털콘텐츠 사용 개시 전 동의 절차, 부분 사용 시 환불 산정, 오결제·중복결제·장애 시 처리 기준을 결제 전에 명확히 표시합니다. 표시·광고 또는 계약과 다르게 제공된 경우의 법정 권리는 제한하지 않습니다. 최종 환불 기준이 승인되기 전에는 결제를 열지 않습니다.",
+      ],
+    },
+    {
+      title: "출시를 막는 미확정 항목",
+      paragraphs: [
+        "상호·대표자·주소·사업자등록번호·통신판매업 신고번호·연락처, 상품별 가격·세금·제공시점, 고객지원, 환불 요청 방법, 분쟁처리, 준거법, 지식재산권과 책임 제한 문구가 아직 확정되지 않았습니다.",
+      ],
+    },
   ],
 };
 
 const termsEn: LegalPageCopy = {
   ...sharedEn,
-  status: "Pre-release terms · legal review pending",
+  status: "Pre-release draft · seller details and refund policy pending",
   title: "InnerArc terms of use",
-  intro: "This version is a local product preview. These draft boundaries explain safer use; they are not a public-service contract or paid-subscription terms.",
-  lastUpdated: "2026-07-23",
+  intro: "This draft explains current product boundaries and the intended 30-day passes. No paid checkout will open until seller identity, prices, support, and the final refund policy are approved.",
+  lastUpdated: "2026-07-27",
   sections: [
-    { title: "Nature of the service", paragraphs: ["InnerArc uses numerology and tarot symbols with user records for self-reflection. It does not guarantee or scientifically predict the future, relationship success, personality identity, illness, legal outcomes, or investment performance."] },
-    { title: "Qualified judgment comes first", paragraphs: ["Do not decide medical, mental-health, legal, investment, crime, violence, or self-harm matters from cards or numbers. In immediate danger, contact local emergency or crisis support and a trusted person first."] },
-    { title: "Your responsibilities", bullets: ["Provide accurate inputs and protect your account and device.", "Do not disclose, retain, harass, or evaluate another person with their information without permission.", "Do not use the service for illegal conduct, safety bypass, prompt injection, disruption, or automated abuse."] },
-    { title: "Decisions and outcomes", paragraphs: ["You retain decision ownership and responsibility for real-world verification. Reality Check ratings record personal relevance; they are not prediction accuracy or professional validation."] },
-    { title: "Accounts, subscriptions, and refunds", paragraphs: ["The current preview has no account, charge, or auto-renewal. Seller identity, prices, taxes, renewal, cancellation, refunds, and support policy require payment-provider and legal approval before any charge is accepted."] },
-    { title: "Unresolved pre-launch fields", paragraphs: ["Legal entity, governing law, dispute and complaint route, liability language, intellectual-property license, minimum age, and contact information remain unresolved. Public launch is blocked until final terms are approved."] },
+    {
+      title: "Nature of the service",
+      paragraphs: [
+        "InnerArc uses numerology and tarot symbols as prompts for self-reflection. It does not guarantee or scientifically predict the future, relationship success, identity, illness, legal outcomes, or investment returns.",
+      ],
+    },
+    {
+      title: "Qualified judgment and safety come first",
+      paragraphs: [
+        "Do not decide medical, mental-health, legal, investment, crime, violence, or self-harm matters from cards or numbers. In immediate danger, contact local emergency or crisis support and a trusted person first.",
+      ],
+    },
+    {
+      title: "Accounts and user responsibilities",
+      bullets: [
+        "Provide accurate inputs and protect your account and device.",
+        "Do not disclose, retain, harass, or evaluate another person using their information without permission.",
+        "Illegal conduct, safety bypass, disruption, and abusive automation are prohibited.",
+      ],
+    },
+    {
+      title: "30-day access and payment",
+      bullets: [
+        "Plus and Pro are designed as one-time, non-renewing 30-day passes. Final prices and included features will be displayed immediately before payment.",
+        "KakaoPay, Toss Pay, virtual-account, and mobile-phone methods appear only after the applicable Toss Payments merchant and method reviews.",
+        "Virtual-account access begins only after the deposit is verified through the payment-provider API.",
+      ],
+    },
+    {
+      title: "Withdrawal, cancellation, and refunds",
+      paragraphs: [
+        "Before payment, InnerArc will clearly state statutory withdrawal periods and exceptions, any consent required before digital-content use begins, partial-use calculations, and handling for duplicate charges or outages. Statutory remedies for content supplied differently from its description or contract are not restricted. Checkout remains closed until the final refund rules are approved.",
+      ],
+    },
+    {
+      title: "Fields blocking launch",
+      paragraphs: [
+        "Seller name, representative, address, business and mail-order registration numbers, contact details, item prices, taxes, supply time, support, refund request path, dispute handling, governing law, intellectual-property license, and liability terms remain unresolved.",
+      ],
+    },
   ],
 };
 

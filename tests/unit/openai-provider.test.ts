@@ -87,6 +87,19 @@ describe("OpenAI Responses provider configuration", () => {
     }, { runtimeMode: "production" })).toThrow("OPENAI_PRODUCTION_MODEL_MUST_BE_PINNED");
   });
 
+  it("allows only the explicitly publishable Supabase credential shape", () => {
+    expect(createAIProviderFromEnv({
+      AI_PROVIDER: "disabled",
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: `sb_publishable_${"a".repeat(32)}`,
+    }, { runtimeMode: "development" })).toBeNull();
+    expect(() => createAIProviderFromEnv({
+      AI_PROVIDER: "disabled",
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: apiKey,
+    }, { runtimeMode: "development" })).toThrow(
+      "PUBLIC_SECRET_FORBIDDEN:NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+    );
+  });
+
   it("reports only safe readiness metadata for a pinned production model", () => {
     const readiness = inspectAIProviderReadiness(validEnv, "production");
     expect(readiness).toEqual({

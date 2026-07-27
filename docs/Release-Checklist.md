@@ -16,25 +16,26 @@
 ## Privacy and safety
 
 - [x] Local owner-scope, export, all-data/third-party deletion, retry, and cross-owner denial tests.
+- [x] Supabase owner RLS, authenticated-only grants, anonymous fail-closed probe, validated explicit sync/restore, account export, and atomic deletion migration.
 - [x] Share outputs omit dates, names, contact details, concerns, journals, and questions by construction.
 - [x] Prompt-injection, high-risk-category, overclaim, and authorization adversarial baseline.
 - [x] Local secret scan reports no recognized credentials.
 - [x] Bilingual pre-release privacy/terms disclosures expose unresolved legal fields and are linked next to consent surfaces.
 - [x] Official region-labelled 109/988 crisis-resource baseline, no language-based location inference, and source-refresh protocol.
 - [ ] Final privacy notice, terms, consent receipts, age policy, jurisdiction, and DPA review.
-- [ ] Production administrative audit, environment separation, deletion verification, and locale-aware crisis resources.
+- [ ] Real two-account isolation/session-revocation test, production administrative audit, environment separation, backup aging, and locale-aware crisis resources.
 
 ## Engineering
 
 - [x] Reproducible pnpm lockfile and CI definition.
-- [x] Unit/integration 263/263 and combined GitHub-hosted Chromium/mobile browser coverage 117 passed plus one intentional hardware-keyboard skip; accessibility, performance, metadata, native-share, fallback/cancellation, and local recovery suites are green.
-- [x] Next.js 16.2.11 production build and 27 route outputs verified.
+- [x] Unit/integration 268/268; local Chromium 62/62 and mobile 61/62 with one intentional hardware-keyboard skip; accessibility, performance, metadata, native-share, account-boundary, fallback/cancellation, and local recovery suites are green.
+- [x] Next.js 16.2.11 production build and 31 route outputs verified.
 - [x] Full production/development dependency audit reports zero known vulnerabilities.
 - [x] CSP/security headers, opt-in HTTPS-only enforcement, feature flags, rate limits, and rollback runbook.
 - [x] Chromium and WebKit are included in CI browser coverage.
 - [x] GitHub CI uses Node 24-based official actions and Corepack-pinned pnpm 11.9.0 with no advisory, deprecation, warning, or check-annotation markers in the verified run.
 - [x] Exact-process E2E runner refuses occupied port 3000 and terminates only its repository-scoped server.
-- [x] CycloneDX 1.6 production SBOM generation and CI archival verified (97 components in the current artifact).
+- [x] CycloneDX 1.6 production SBOM generation and CI archival verified (107 components in the current 0.16.0 artifact).
 - [x] Korean/English Open Graph/X titles and descriptions, same-origin 1200×630 PNG responses, alt/type/dimension tags, and non-personalized URL checks are covered in both browser projects.
 - [ ] Verify real monitoring, redacted telemetry, migrations, backup/restore, and rollback in staging.
 
