@@ -141,8 +141,7 @@ await capture("ko-03-manual-tarot", "/ko/question", async (page) => {
   await page.getByText("1장 · 초점", { exact: true }).click();
   await page.locator("#question-form button[type='submit']").click();
   await page.locator("#tarot-result").waitFor();
-  await page.getByText("추첨 감사 정보", { exact: true }).click();
-  await alignToTop(page.locator("#tarot-result details"));
+  await alignToTop(page.locator("#tarot-result"));
 });
 await capture("ko-04-reality-check", "/ko/reality-check", async (page) => {
   await page.locator("#reality-question").fill("결정 전에 무엇을 더 확인할까?");

@@ -14,13 +14,11 @@ jobs:
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
-        with:
-          version: 11.9.0
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-          cache: pnpm
+      - run: corepack enable
+      - run: pnpm --version
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm typecheck

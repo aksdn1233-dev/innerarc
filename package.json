@@ -17,7 +17,7 @@
     "test:watch": "vitest",
     "test:e2e": "node scripts/run-e2e.mjs",
     "generate:sbom": "node scripts/generate-sbom.mjs",
-    "capture:launch": "node scripts/capture-launch-assets.mjs",
+    "capture:launch": "node scripts/run-launch-capture.mjs",
     "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm build"
   },
   "dependencies": {

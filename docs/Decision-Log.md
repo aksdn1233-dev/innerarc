@@ -359,3 +359,23 @@
 - Impact: Repository checkout, pnpm installation, dependency caching, SBOM upload, and the complete release gate must be re-proven on the current GitHub-hosted runner.
 - Revisit when: GitHub announces a runner-runtime deprecation, the selected action majors stop receiving fixes, or supply-chain policy moves from major tags to reviewed commit-SHA pins.
 - Status: Decided.
+
+## D-037 - Launch capture owns and isolates its production server
+
+- Date: 2026-07-27
+- Decision: Run launch-asset capture through a repository script that refuses an already occupied port 3000, starts the local production server with AI disabled, and stops only the exact child process it created.
+- Alternatives: Reuse any server found on port 3000; ask the operator to start and stop a server manually; terminate every local Node process after capture.
+- Reason: Repeatable capture should not depend on an unknown server build and must not interfere with another project when several Codex workspaces are active on the same Windows PC.
+- Impact: `pnpm capture:launch` now has the same exact-process isolation boundary as the E2E runner. A port collision fails closed instead of reusing or terminating another process.
+- Revisit when: Capture moves into a containerized CI job or the production-server lifecycle is consolidated into a shared tested runner.
+- Status: Decided.
+
+## D-038 - CI does not bootstrap through an advisory-affected pnpm release
+
+- Date: 2026-07-27
+- Decision: Remove `pnpm/action-setup` from CI and use the Corepack distributed with the pinned Node 24 runtime to activate the exact `pnpm@11.9.0` declared in `package.json`.
+- Alternatives: Accept the action's transient audit warning; use its standalone executable mode; install pnpm globally with npm; wait for another action release.
+- Reason: `pnpm/action-setup@v6.0.9` first installs its committed pnpm 11.7.0 bootstrap package, which reports one high-severity vulnerability, before self-updating to the project's patched 11.9.0. Release evidence should not normalize or hide an advisory-affected bootstrap stage.
+- Impact: CI loses the convenience action and its pnpm-store cache integration, but removes the affected transient package. The frozen lockfile, full audit, tool version, build, SBOM, and browser gates remain unchanged and must pass again.
+- Revisit when: The action bootstrap is patched beyond the relevant advisory and a measured CI-duration benefit justifies reintroducing it.
+- Status: Decided.

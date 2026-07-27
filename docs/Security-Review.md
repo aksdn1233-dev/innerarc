@@ -21,7 +21,7 @@ Scope: repository source, configuration, local production bundle, and automated 
 - `next>sharp` is overridden to 0.35.3 and `next>postcss` to patched 8.5.19 because the parent dependency graph otherwise resolved advisory-affected releases.
 - `brace-expansion` is overridden to 5.0.8 for GHSA-mh99-v99m-4gvg. The legacy `minimatch` 3 consumer receives a two-line compatibility patch because it expects the older callable CommonJS export; full ESLint execution proves the patched import path while the lockfile contains only 5.0.8.
 - CI runs the full `pnpm audit`, including development tools, rather than limiting the gate to production dependencies.
-- CI uses the current Node 24-based official action majors: `actions/checkout@v7`, `actions/setup-node@v7`, `actions/upload-artifact@v7`, and `pnpm/action-setup@v6`. This removes the prior Node 20 action-runtime deprecation path while the application runtime remains pinned independently.
+- CI uses the current Node 24-based official action majors for checkout, Node setup, and artifact upload. The Node-distributed Corepack activates the exact `pnpm@11.9.0` from `package.json`; `pnpm/action-setup` is intentionally absent because its 11.7.0 bootstrap emitted a high-severity audit finding before self-update.
 - Overrides must be reviewed whenever Next.js is upgraded and removed once the upstream graph resolves equally safe or newer compatible releases.
 
 ## Remaining production work

@@ -47,7 +47,7 @@ Next.js UI
 - `src/i18n`: locale routing and native Korean/English copy.
 - `src/i18n/legal-copy.ts` and localized `/privacy` and `/terms` routes: pre-release disclosures that keep unresolved controller, contact, jurisdiction, age, retention, and vendor fields visible until qualified review.
 - `src/components`: onboarding, tarot, relationship, compatibility, celebrity, lifestyle/shop preview, Reality Check, and share interactions only; no authoritative calculation, card-selection, ranking, curation, or share-safety logic.
-- `scripts/generate-sbom.mjs` and `scripts/capture-launch-assets.mjs`: deterministic release-evidence generation for a validated CycloneDX SBOM and fifteen synthetic-only, first-party mobile screenshots, including the context-aware onboarding and explicit-use outcome-review layers.
+- `scripts/generate-sbom.mjs`, `scripts/run-launch-capture.mjs`, and `scripts/capture-launch-assets.mjs`: deterministic release-evidence generation for a validated CycloneDX SBOM and fifteen synthetic-only, first-party mobile screenshots. The capture runner refuses an occupied port, starts only this repository's production server with AI disabled, and terminates only that exact child process.
 - `scripts/serve-production.mjs` and `scripts/run-e2e.mjs`: an exact-process, fail-closed production-server lifecycle for cross-platform browser regression. The runner refuses an occupied port instead of attaching to an unknown project.
 
 ## Planned data model
