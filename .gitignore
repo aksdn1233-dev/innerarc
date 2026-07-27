@@ -3,6 +3,7 @@
 /.pnpm-store
 /.pnpm-debug.log
 /.next
+/.vinext
 /dist
 /.wrangler
 /out
