@@ -61,7 +61,7 @@ const ko: QuestionCopy = {
   auditHelp: "카드가 임의로 바뀌지 않았는지 확인할 수 있는 기술 기록입니다.",
   eyebrow: "질문형 타로",
   headline: "정답보다,\n확인할 질문을 찾는 시간",
-  intro: "카드는 무작위로 뽑히며 AI가 원하는 카드를 고르지 않습니다. 상징을 현실의 조건과 나란히 놓고 살펴보세요.",
+  intro: "카드는 무작위로 뽑힙니다. 상징을 현실의 조건과 나란히 놓고 살펴보세요.",
   questionLabel: "지금 살펴보고 싶은 질문",
   questionPlaceholder: "예: 새 역할을 선택하기 전에 무엇을 확인해야 할까?",
   categoryLabel: "질문 영역",

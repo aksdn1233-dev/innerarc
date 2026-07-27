@@ -12,6 +12,19 @@ export default async function PaymentSuccessPage({
   const [{ locale }, query] = await Promise.all([params, searchParams]);
   if (!isLocale(locale)) notFound();
 
+  const portOnePaymentId = typeof query.paymentId === "string" ? query.paymentId : "";
+  const guestAccessToken = typeof query.access === "string" ? query.access : undefined;
+  if (/^[A-Za-z0-9]{6,64}$/.test(portOnePaymentId)) {
+    return (
+      <main className="shell payment-result-shell" id="main-content">
+        <PaymentSuccessClient
+          locale={locale}
+          confirmation={{ provider: "portone", paymentId: portOnePaymentId, accessToken: guestAccessToken }}
+        />
+      </main>
+    );
+  }
+
   const paymentKey = typeof query.paymentKey === "string" ? query.paymentKey : "";
   const orderId = typeof query.orderId === "string" ? query.orderId : "";
   const amount = typeof query.amount === "string" ? Number(query.amount) : Number.NaN;
@@ -29,9 +42,7 @@ export default async function PaymentSuccessPage({
     <main className="shell payment-result-shell" id="main-content">
       <PaymentSuccessClient
         locale={locale}
-        paymentKey={paymentKey}
-        orderId={orderId}
-        amount={amount}
+        confirmation={{ provider: "toss", paymentKey, orderId, amount, accessToken: guestAccessToken }}
       />
     </main>
   );

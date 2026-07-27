@@ -8,16 +8,17 @@ type State = "confirming" | "done" | "waiting" | "failed";
 
 export function PaymentSuccessClient({
   locale,
-  paymentKey,
-  orderId,
-  amount,
+  confirmation,
 }: {
   locale: Locale;
-  paymentKey: string;
-  orderId: string;
-  amount: number;
+  confirmation:
+    | Readonly<{ provider: "toss"; paymentKey: string; orderId: string; amount: number; accessToken?: string }>
+    | Readonly<{ provider: "portone"; paymentId: string; accessToken?: string }>;
 }) {
   const [state, setState] = useState<State>("confirming");
+  const orderId = confirmation.provider === "toss"
+    ? confirmation.orderId
+    : confirmation.paymentId;
 
   useEffect(() => {
     let active = true;
@@ -26,7 +27,15 @@ export function PaymentSuccessClient({
         const response = await fetch("/api/payments/confirm", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ paymentKey, orderId, amount }),
+          body: JSON.stringify(
+            confirmation.provider === "toss"
+              ? confirmation
+              : {
+                  provider: "portone",
+                  paymentId: confirmation.paymentId,
+                  accessToken: confirmation.accessToken,
+                },
+          ),
         });
         const body = await response.json() as { payment?: { status?: string } };
         if (!active) return;
@@ -43,7 +52,7 @@ export function PaymentSuccessClient({
     }
     void confirm();
     return () => { active = false; };
-  }, [amount, orderId, paymentKey]);
+  }, [confirmation]);
 
   const messages = locale === "ko"
     ? {
@@ -51,21 +60,30 @@ export function PaymentSuccessClient({
         done: "결제가 확인되어 이용권이 반영되었습니다.",
         waiting: "가상계좌 입금을 기다리고 있습니다. 입금이 확인되면 이용권이 자동 반영됩니다.",
         failed: "결제 확인을 완료하지 못했습니다. 중복 결제를 시도하지 말고 고객지원에 주문번호를 알려 주세요.",
-        home: "내 페이지로",
+        home: "리포트 열기",
       }
     : {
         confirming: "Confirming the payment on the server.",
         done: "Payment confirmed and access applied.",
         waiting: "Waiting for the virtual-account deposit. Access will be applied after verification.",
         failed: "Payment verification could not finish. Do not retry payment; contact support with the order ID.",
-        home: "Go to Me",
+        home: "Open report",
       };
 
   return (
     <section className="payment-result-card" aria-live="polite">
       <h1>{messages[state]}</h1>
       <p>{locale === "ko" ? "주문번호" : "Order ID"}: <code>{orderId}</code></p>
-      <Link className="primary-button link-button" href={`/${locale}/me`}>{messages.home}</Link>
+      <Link
+        className="primary-button link-button"
+        href={`/${locale}/reports/${orderId}${
+          confirmation.accessToken
+            ? `?access=${encodeURIComponent(confirmation.accessToken)}`
+            : ""
+        }`}
+      >
+        {messages.home}
+      </Link>
     </section>
   );
 }

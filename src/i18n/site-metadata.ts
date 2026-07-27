@@ -9,9 +9,9 @@ export interface LocalizedSiteMetadata {
 
 const SITE_METADATA: Readonly<Record<Locale, LocalizedSiteMetadata>> = {
   ko: {
-    title: "InnerArc | 당신의 삶에 반복되는 결",
+    title: "InnerArc | 프리미엄 타로·신점 리딩",
     description:
-      "생년월일과 현재의 고민을 바탕으로 성향·관계·직업·재물에서 반복되는 패턴을 구체적으로 분석하는 자기이해 서비스.",
+      "타로의 상징과 현재의 고민을 연결해 연애·관계·진로·재물의 흐름을 깊고 구체적으로 읽는 프리미엄 타로신점 서비스.",
     openGraphLocale: "ko_KR",
     alternateOpenGraphLocale: "en_US",
   },

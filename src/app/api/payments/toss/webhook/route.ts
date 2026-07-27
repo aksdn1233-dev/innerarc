@@ -7,6 +7,7 @@ import {
   matchesTossWebhookSecret,
   sanitizeTossSnapshot,
 } from "@/server/payments/toss";
+import { finalizePaidReport } from "@/server/reports/paid-report";
 
 const paymentStatusEventSchema = z.object({
   eventType: z.literal("PAYMENT_STATUS_CHANGED"),
@@ -31,7 +32,7 @@ export async function POST(request: Request) {
 
   const readiness = inspectPaymentReadiness();
   const admin = getSupabaseAdminClient();
-  if (!readiness.enabled || !admin) {
+  if (!readiness.enabled || readiness.config.provider !== "toss" || !admin) {
     return NextResponse.json({ error: "PAYMENTS_UNAVAILABLE" }, { status: 503 });
   }
 
@@ -90,15 +91,33 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "PROVIDER_RESULT_MISMATCH" }, { status: 502 });
     }
 
-    const { error: applyError } = await admin.rpc("apply_verified_payment", {
-      p_owner_user_id: order.owner_user_id,
-      p_order_id: order.order_id,
-      p_payment_key: payment.paymentKey,
-      p_status: payment.status,
-      p_method: payment.method ?? null,
-      p_provider_snapshot: sanitizeTossSnapshot(payment),
-    });
-    if (applyError) throw applyError;
+    if (order.owner_user_id) {
+      const { error: applyError } = await admin.rpc("apply_verified_payment", {
+        p_owner_user_id: order.owner_user_id,
+        p_order_id: order.order_id,
+        p_payment_key: payment.paymentKey,
+        p_status: payment.status,
+        p_method: payment.method ?? null,
+        p_provider_snapshot: sanitizeTossSnapshot(payment),
+      });
+      if (applyError) throw applyError;
+    } else {
+      const { error: applyError } = await admin
+        .from("payment_orders")
+        .update({
+          payment_key: payment.paymentKey,
+          status: payment.status,
+          method: payment.method ?? null,
+          provider_snapshot: sanitizeTossSnapshot(payment),
+          updated_at: new Date().toISOString(),
+        })
+        .eq("order_id", order.order_id)
+        .is("owner_user_id", null);
+      if (applyError) throw applyError;
+    }
+    if (payment.status === "DONE") {
+      await finalizePaidReport(admin, order.owner_user_id, order.order_id);
+    }
 
     const { error: eventError } = await admin.from("payment_events").insert({
       transmission_id: transmissionId,

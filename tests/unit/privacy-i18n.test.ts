@@ -62,6 +62,6 @@ describe("Korean and English content parity", () => {
     expect(privacyCopy.ko.status).toContain("법률 검토 필요");
     expect(privacyCopy.en.status).toContain("legal review pending");
     expect(termsCopy.ko.intro).toContain("유료 결제");
-    expect(termsCopy.en.intro).toContain("No paid checkout");
+    expect(termsCopy.en.intro).toContain("Paid checkout remains closed");
   });
 });

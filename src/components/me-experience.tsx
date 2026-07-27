@@ -14,12 +14,20 @@ import {
 import type { Locale } from "@/i18n/config";
 import type { MeCopy } from "@/i18n/me-copy";
 import { AccountSyncPanel } from "@/components/account-sync-panel";
+import {
+  AccountReportsPanel,
+  type AccountReportSummary,
+  type NotificationPreferences,
+} from "@/components/account-reports-panel";
 
 type Props = {
   locale: Locale;
   copy: MeCopy;
   account: Readonly<{ email: string | null }> | null;
   accountSyncConfigured: boolean;
+  reports: readonly AccountReportSummary[];
+  notificationPreferences: NotificationPreferences;
+  adminAccess: boolean;
 };
 type OptionalConsentKey =
   | "aiPersonalization"
@@ -43,7 +51,15 @@ const emptyConsents: Record<OptionalConsentKey, boolean> = {
   rawJournalRetention: false,
 };
 
-export function MeExperience({ locale, copy, account, accountSyncConfigured }: Props) {
+export function MeExperience({
+  locale,
+  copy,
+  account,
+  accountSyncConfigured,
+  reports,
+  notificationPreferences,
+  adminAccess,
+}: Props) {
   const timeZoneInput = useRef<HTMLInputElement>(null);
   const [privacyRequired, setPrivacyRequired] = useState(false);
   const [consents, setConsents] = useState(emptyConsents);
@@ -169,6 +185,11 @@ export function MeExperience({ locale, copy, account, accountSyncConfigured }: P
                 : copy.guestBody}
             </p>
             {!account && <p className="privacy-note">{copy.providerNote}</p>}
+            {adminAccess && (
+              <Link className="secondary-button" href={`/${locale}/admin`}>
+                {locale === "ko" ? "관리자 페이지 열기" : "Open admin"}
+              </Link>
+            )}
           </article>
 
           <AccountSyncPanel
@@ -176,6 +197,14 @@ export function MeExperience({ locale, copy, account, accountSyncConfigured }: P
             account={account}
             configured={accountSyncConfigured}
           />
+
+          {account && (
+            <AccountReportsPanel
+              locale={locale}
+              reports={reports}
+              initialPreferences={notificationPreferences}
+            />
+          )}
 
           <form className="form-card me-preferences" onSubmit={savePreferences} noValidate>
             <h2>{copy.preferencesTitle}</h2>

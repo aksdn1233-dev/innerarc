@@ -8,6 +8,7 @@ import {
   matchesTossWebhookSecret,
   sanitizeTossSnapshot,
 } from "@/server/payments/toss";
+import { toInternalPaymentStatus } from "@/server/payments/portone";
 
 const validEnvironment = {
   PAYMENTS_PROVIDER: "toss",
@@ -18,6 +19,29 @@ const validEnvironment = {
   TOSS_AGREEMENT_VARIANT_KEY: "AGREEMENT",
   INNERARC_PLUS_30D_PRICE_KRW: "5900",
   INNERARC_PRO_30D_PRICE_KRW: "12900",
+  INNERARC_PREMIUM_PDF_PRICE_KRW: "79000",
+};
+
+const validPortOneEnvironment = {
+  PAYMENTS_PROVIDER: "portone",
+  PORTONE_STORE_ID: "store-4ff4af41-85e3-4559-8eb8-0d08a2c6ceec",
+  PORTONE_KPN_CHANNEL_KEY: "channel-key-9987cb87-6458-4888-b94e-68d9a2da896d",
+  PORTONE_API_SECRET: `portone-api-${"a".repeat(32)}`,
+  PORTONE_WEBHOOK_SECRET: `portone-webhook-${"b".repeat(32)}`,
+  INNERARC_PLUS_30D_PRICE_KRW: "19000",
+  INNERARC_PRO_30D_PRICE_KRW: "39000",
+  INNERARC_PREMIUM_PDF_PRICE_KRW: "79000",
+};
+
+const validManualTransferEnvironment = {
+  PAYMENTS_PROVIDER: "manual_transfer",
+  MANUAL_BANK_NAME: "테스트은행",
+  MANUAL_BANK_ACCOUNT: "123-456-789012",
+  MANUAL_BANK_HOLDER: "테스트상점",
+  MANUAL_DEPOSIT_WINDOW_HOURS: "24",
+  INNERARC_PLUS_30D_PRICE_KRW: "19000",
+  INNERARC_PRO_30D_PRICE_KRW: "39000",
+  INNERARC_PREMIUM_PDF_PRICE_KRW: "79000",
 };
 
 describe("payment readiness", () => {
@@ -38,6 +62,7 @@ describe("payment readiness", () => {
     if (development.enabled) {
       expect(development.config.products.plus_30d.amount).toBe(5900);
       expect(development.config.products.pro_30d.amount).toBe(12900);
+      expect(development.config.products.premium_pdf.amount).toBe(79000);
     }
 
     expect(inspectPaymentReadiness(validEnvironment, "production")).toEqual({
@@ -57,6 +82,44 @@ describe("payment readiness", () => {
     expect(first).toBe(second);
     expect(first).not.toContain("user@example.com");
     expect(first.length).toBeLessThanOrEqual(50);
+  });
+
+  it("accepts a complete PortOne KPN configuration and rejects malformed channel IDs", () => {
+    const readiness = inspectPaymentReadiness(validPortOneEnvironment, "production");
+    expect(readiness.enabled).toBe(true);
+    if (readiness.enabled) {
+      expect(readiness.config.provider).toBe("portone");
+      expect(readiness.config.products.plus_30d.amount).toBe(19000);
+      expect(readiness.config.products.premium_pdf.amount).toBe(79000);
+    }
+    expect(inspectPaymentReadiness({
+      ...validPortOneEnvironment,
+      PORTONE_KPN_CHANNEL_KEY: "wrong-channel",
+    }, "production")).toEqual({ enabled: false, reason: "INVALID" });
+  });
+
+  it("accepts a complete manual bank-transfer configuration without PG keys", () => {
+    const readiness = inspectPaymentReadiness(validManualTransferEnvironment, "production");
+    expect(readiness.enabled).toBe(true);
+    if (readiness.enabled) {
+      expect(readiness.config.provider).toBe("manual_transfer");
+      if (readiness.config.provider === "manual_transfer") {
+        expect(readiness.config.bankName).toBe("테스트은행");
+        expect(readiness.config.depositWindowHours).toBe(24);
+      }
+    }
+    expect(inspectPaymentReadiness({
+      ...validManualTransferEnvironment,
+      MANUAL_BANK_ACCOUNT: "not-an-account",
+    }, "production")).toEqual({ enabled: false, reason: "INVALID" });
+  });
+
+  it("normalizes PortOne lifecycle states before applying entitlements", () => {
+    expect(toInternalPaymentStatus("PAID")).toBe("DONE");
+    expect(toInternalPaymentStatus("VIRTUAL_ACCOUNT_ISSUED")).toBe("WAITING_FOR_DEPOSIT");
+    expect(toInternalPaymentStatus("CANCELLED")).toBe("CANCELED");
+    expect(toInternalPaymentStatus("PARTIAL_CANCELLED")).toBe("PARTIAL_CANCELED");
+    expect(toInternalPaymentStatus("FAILED")).toBe("ABORTED");
   });
 });
 

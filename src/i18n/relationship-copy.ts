@@ -52,7 +52,7 @@ export type RelationshipCopy = {
 const ko: RelationshipCopy = {
   eyebrow: "연애 패턴 인사이트",
   headline: "사람을 예언하기보다,\n만남이 자랄 조건을 찾기",
-  intro: "어디서 접점이 생기기 쉬운지, 어떤 관계 특성이 나를 살리는지 수비학 상징을 현실 행동 가설로 바꿔봅니다.",
+  intro: "어디서 접점이 생기기 쉬운지, 어떤 관계 특성이 나를 살리는지 생년월일의 흐름을 현실 행동 질문으로 바꿔봅니다.",
   birthDate: "생년월일",
   birthHelp: "결정론적 계산에만 사용하며 이 게스트 화면에서는 서버로 전송하지 않습니다.",
   name: "이름 또는 로마자 표기 (선택)",
@@ -94,7 +94,7 @@ const ko: RelationshipCopy = {
   uncertainOutcomes: "불확실·일부",
   notRelevantOutcomes: "맞지 않음",
   savedLearnings: "사용자가 기록한 다음 확인사항",
-  outcomePrivacy: "버튼을 누르기 전에는 저장 기록을 읽지 않습니다. 불러온 내용은 이 기기에서만 처리되며 외부 AI로 전송되지 않습니다.",
+  outcomePrivacy: "버튼을 누르기 전에는 저장 기록을 읽지 않습니다. 불러온 내용은 이 기기에서만 처리됩니다.",
   contextRule: "컨텍스트 규칙",
   evidence: "사용한 계산 근거",
   reset: "다른 입력으로 보기",

@@ -15,7 +15,7 @@ describe("site sharing metadata", () => {
     const en = getLocalizedSiteMetadata("en");
     const combined = [ko.title, ko.description, en.title, en.description].join(" ");
 
-    expect(ko.title).toContain("반복되는 결");
+    expect(ko.title).toContain("타로·신점");
     expect(en.title).toContain("Patterns That Repeat");
     expect(ko.openGraphLocale).toBe("ko_KR");
     expect(en.openGraphLocale).toBe("en_US");

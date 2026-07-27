@@ -19,7 +19,7 @@ export type LegalPageCopy = Readonly<{
 }>;
 
 const sharedKo = {
-  brandTagline: "개인 패턴 인텔리전스",
+  brandTagline: "프리미엄 타로·신점 리딩",
   home: "홈으로",
   privacy: "개인정보 처리 안내",
   terms: "이용조건",
@@ -45,7 +45,7 @@ const privacyKo: LegalPageCopy = {
         "상호: 별루프",
         "대표자: 박서준",
         "사업자등록번호: 482-12-03629",
-        "사업장 주소: 부산광역시 북구 상학로 36, 207동 1108호",
+        "사업장 소재지: 부산광역시 북구 (상세 공개 주소 확정 전)",
       ],
     },
     {
@@ -60,7 +60,7 @@ const privacyKo: LegalPageCopy = {
       title: "처리 목적과 선택 동의",
       bullets: [
         "필수 정보는 로그인, 주문 확인, 결제 승인·취소·환불, 이용권 제공, 고객문의, 부정 이용 방지 및 법정 거래기록 보존을 위해 처리합니다.",
-        "AI 개인화, 모델 학습, 제품 분석, 마케팅, 장기 원문 보관은 서로 분리된 선택 항목입니다.",
+        "맞춤 리딩, 서비스 개선, 제품 분석, 마케팅, 장기 원문 보관은 서로 분리된 선택 항목입니다.",
         "선택 동의를 거부해도 규칙 기반 기본 결과는 이용할 수 있습니다.",
       ],
     },
@@ -108,7 +108,7 @@ const privacyEn: LegalPageCopy = {
         "Legal business name: 별루프",
         "Representative: 박서준",
         "Business registration number: 482-12-03629",
-        "Business address: 부산광역시 북구 상학로 36, 207동 1108호, Republic of Korea",
+        "Business location: Buk-gu, Busan, Republic of Korea (public service address pending)",
       ],
     },
     {
@@ -162,7 +162,7 @@ const termsKo: LegalPageCopy = {
   ...sharedKo,
   status: "운영 전 이용조건 · 연락처와 통신판매 신고정보 최종 확인 필요",
   title: "InnerArc 이용조건",
-  intro: "현재 제품 경계와 자동 갱신 없는 30일 이용권의 유료 결제·환불 원칙을 설명합니다. 연락처와 통신판매 신고정보는 운영 개시 전에 최종 갱신합니다.",
+  intro: "현재 제품 경계와 자동 갱신 없는 1회성 리딩 상품의 유료 결제·전달·환불 원칙을 설명합니다. 연락처와 통신판매 신고정보는 운영 개시 전에 최종 갱신합니다.",
   lastUpdated: "2026-07-27",
   sections: [
     {
@@ -171,14 +171,14 @@ const termsKo: LegalPageCopy = {
         "상호: 별루프",
         "대표자: 박서준",
         "사업자등록번호: 482-12-03629",
-        "사업장 주소: 부산광역시 북구 상학로 36, 207동 1108호",
+        "사업장 소재지: 부산광역시 북구 (상세 공개 주소 확정 전)",
         "업태·종목: 도매 및 소매업 · 전자상거래 소매업",
       ],
     },
     {
       title: "서비스의 성격",
       paragraphs: [
-        "InnerArc는 수비학과 타로 상징을 자기성찰 질문으로 제공합니다. 미래, 관계 성공, 성격의 본질, 질병, 법률 결과, 투자 수익을 보장하거나 과학적으로 예측하지 않습니다.",
+        "InnerArc는 생년월일의 흐름과 타로 상징을 자기성찰 질문으로 제공합니다. 미래, 관계 성공, 성격의 본질, 질병, 법률 결과, 투자 수익을 보장하거나 과학적으로 예측하지 않습니다.",
       ],
     },
     {
@@ -196,12 +196,12 @@ const termsKo: LegalPageCopy = {
       ],
     },
     {
-      title: "30일 이용권과 결제",
+      title: "리딩 상품과 결제",
       bullets: [
-        "Plus는 19,000원, Pro는 39,000원인 자동 갱신 없는 1회성 30일 이용권입니다. 부가세가 포함된 최종 결제금액과 제공 기능을 결제 직전 화면에 다시 표시합니다.",
-        "79,000원 프리미엄 맞춤 PDF는 생성·검수·전달 기능이 완성되기 전까지 판매하지 않습니다.",
-        "카카오페이·토스페이·가상계좌·휴대폰 결제는 토스페이먼츠 가맹점 계약과 각 결제수단 심사가 완료된 범위에서만 노출됩니다.",
-        "가상계좌 이용권은 실제 입금이 결제대행사 조회로 확인된 시점부터 반영됩니다.",
+        "간단 타로 리딩은 19,000원, 타로·생년월일 종합 리딩은 39,000원, 프리미엄 맞춤 리포트는 79,000원입니다. 모두 자동 갱신 없는 1회성 상품이며 최종 결제금액과 제공 범위를 결제 직전에 다시 표시합니다.",
+        "결제 승인 뒤 리포트를 즉시 열고 내려받을 수 있습니다. 로그인하면 마이페이지에도 저장되며, 비회원은 안전한 전용 주소와 내려받은 파일을 직접 보관해야 합니다.",
+        "카카오페이·토스페이·카드·가상계좌는 포트원과 KPN 가맹점 계약 및 각 결제수단 심사가 완료된 범위에서만 노출됩니다.",
+        "가상계좌 리포트는 실제 입금이 결제대행사 조회로 확인된 시점부터 제공됩니다.",
       ],
     },
     {
@@ -223,7 +223,7 @@ const termsEn: LegalPageCopy = {
   ...sharedEn,
   status: "Pre-release draft · seller details and refund policy pending",
   title: "InnerArc terms of use",
-  intro: "This draft explains current product boundaries and the intended 30-day passes. No paid checkout will open until seller identity, prices, support, and the final refund policy are approved.",
+  intro: "This draft explains current product boundaries and the intended one-time readings. Paid checkout remains closed until seller identity, support, and the final refund policy are approved.",
   lastUpdated: "2026-07-27",
   sections: [
     {
@@ -232,13 +232,13 @@ const termsEn: LegalPageCopy = {
         "Legal business name: 별루프",
         "Representative: 박서준",
         "Business registration number: 482-12-03629",
-        "Business address: 부산광역시 북구 상학로 36, 207동 1108호, Republic of Korea",
+        "Business location: Buk-gu, Busan, Republic of Korea (public service address pending)",
       ],
     },
     {
       title: "Nature of the service",
       paragraphs: [
-        "InnerArc uses numerology and tarot symbols as prompts for self-reflection. It does not guarantee or scientifically predict the future, relationship success, identity, illness, legal outcomes, or investment returns.",
+        "InnerArc uses birth-date themes and tarot symbols as prompts for self-reflection. It does not guarantee or scientifically predict the future, relationship success, identity, illness, legal outcomes, or investment returns.",
       ],
     },
     {
@@ -256,12 +256,12 @@ const termsEn: LegalPageCopy = {
       ],
     },
     {
-      title: "30-day access and payment",
+      title: "Reading products and payment",
       bullets: [
-        "Plus is KRW 19,000 and Pro is KRW 39,000. Both are one-time, non-renewing 30-day passes, with the tax-inclusive final amount and included features shown immediately before payment.",
-        "The KRW 79,000 custom PDF is not sold until generation, review, and delivery are implemented.",
-        "KakaoPay, Toss Pay, virtual-account, and mobile-phone methods appear only after the applicable Toss Payments merchant and method reviews.",
-        "Virtual-account access begins only after the deposit is verified through the payment-provider API.",
+        "The quick reading is KRW 19,000, the comprehensive reading is KRW 39,000, and the premium custom report is KRW 79,000. Each is a one-time, non-renewing purchase.",
+        "Reports open and download after verified payment. Signed-in purchases are also saved in My Page; guest customers must retain the private access link and downloaded file.",
+        "KakaoPay, Toss Pay, cards, and virtual accounts appear only after the applicable PortOne and KPN merchant and method reviews.",
+        "Virtual-account reports open only after the deposit is verified through the payment-provider API.",
       ],
     },
     {

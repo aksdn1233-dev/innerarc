@@ -14,7 +14,7 @@ const supabaseConfig = getSupabasePublicConfig(process.env);
 const paymentReadiness = inspectPaymentReadiness(process.env, runtimeMode);
 const browserConnectOrigins = [
   ...(supabaseConfig ? [supabaseConfig.url] : []),
-  ...(paymentReadiness.enabled
+  ...(paymentReadiness.enabled && paymentReadiness.config.provider === "toss"
     ? [
         "https://api.tosspayments.com",
         "https://apigw.tosspayments.com",
@@ -23,11 +23,16 @@ const browserConnectOrigins = [
         "https://log.tosspayments.com",
       ]
     : []),
+  ...(paymentReadiness.enabled && paymentReadiness.config.provider === "portone"
+    ? ["https://api.portone.io"]
+    : []),
 ];
 const browserScriptOrigins = paymentReadiness.enabled
-  ? ["https://js.tosspayments.com"]
+  ? paymentReadiness.config.provider === "toss"
+    ? ["https://js.tosspayments.com"]
+    : ["https://cdn.portone.io"]
   : [];
-const browserFrameOrigins = paymentReadiness.enabled
+const browserFrameOrigins = paymentReadiness.enabled && paymentReadiness.config.provider === "toss"
   ? [
       "https://payment-widget.tosspayments.com",
       "https://payment-gateway.tosspayments.com",
