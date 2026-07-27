@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { socialImageAlt, socialImageContentType, socialImageSize } from "@/app/social-image";
+import {
+  socialImageAlt,
+  socialImageContentType,
+  socialImagePath,
+  socialImageSize,
+} from "@/app/social-image";
 import { isLocale, locales } from "@/i18n/config";
 import { getLocalizedSiteMetadata } from "@/i18n/site-metadata";
 
 const openGraphImage = {
-  url: "/opengraph-image",
+  url: socialImagePath,
   alt: socialImageAlt,
   type: socialImageContentType,
   ...socialImageSize,
@@ -40,7 +45,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: copy.title,
       description: copy.description,
-      images: [{ ...openGraphImage, url: "/twitter-image" }],
+      images: [openGraphImage],
     },
   };
 }

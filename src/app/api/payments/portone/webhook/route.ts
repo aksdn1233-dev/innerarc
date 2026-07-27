@@ -9,7 +9,7 @@ import {
   sanitizePortOneSnapshot,
   toInternalPaymentStatus,
 } from "@/server/payments/portone";
-import { finalizePaidReport } from "@/server/reports/paid-report";
+import { finalizePaidReport, revokeGuestPaidReport } from "@/server/reports/paid-report";
 
 const verifiedWebhookSchema = z.object({
   type: z.string().min(1).max(100),
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
 
   const { data: order, error: orderError } = await admin
     .from("payment_orders")
-    .select("order_id,owner_user_id,provider,amount,currency")
+    .select("order_id,owner_user_id,provider,amount,currency,status")
     .eq("order_id", verified.data.paymentId)
     .maybeSingle();
   if (orderError || !order || order.provider !== "portone") {
@@ -105,6 +105,11 @@ export async function POST(request: Request) {
         .eq("order_id", order.order_id)
         .is("owner_user_id", null);
       if (applyError) throw applyError;
+      // A guest order has no owner row for apply_verified_payment to revoke, so a
+      // cancellation or refund after delivery must withdraw report access here.
+      if (order.status === "DONE" && internalStatus !== "DONE") {
+        await revokeGuestPaidReport(admin, order.order_id);
+      }
     }
     if (internalStatus === "DONE") {
       await finalizePaidReport(admin, order.owner_user_id, order.order_id);

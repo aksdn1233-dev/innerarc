@@ -86,6 +86,18 @@ export function createPaidReport(orderId: string, rawInput: unknown): PaidReport
   };
 }
 
+export async function revokeGuestPaidReport(
+  admin: SupabaseClient,
+  orderId: string,
+): Promise<void> {
+  const { error } = await admin
+    .from("purchased_reports")
+    .update({ status: "revoked", updated_at: new Date().toISOString() })
+    .eq("order_id", orderId)
+    .is("owner_user_id", null);
+  if (error) throw error;
+}
+
 export async function finalizePaidReport(
   admin: SupabaseClient,
   ownerUserId: string | null,

@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Gowun_Batang, Gowun_Dodum } from "next/font/google";
-import { socialImageAlt, socialImageContentType, socialImageSize } from "@/app/social-image";
+import {
+  socialImageAlt,
+  socialImageContentType,
+  socialImagePath,
+  socialImageSize,
+} from "@/app/social-image";
 import { resolvePublicAppUrl } from "@/core/site-url";
 import "./globals.css";
 
@@ -19,7 +24,7 @@ const displayFont = Gowun_Batang({
 });
 
 const openGraphImage = {
-  url: "/opengraph-image",
+  url: socialImagePath,
   alt: socialImageAlt,
   type: socialImageContentType,
   ...socialImageSize,
@@ -47,7 +52,7 @@ export const metadata: Metadata = {
     title: "결 GYEOL — 프리미엄 타로·신점 상담",
     description:
       "연애·관계·진로·재물의 흐름과 지금 필요한 조언을 쉽게 확인하세요.",
-    images: [{ ...openGraphImage, url: "/twitter-image" }],
+    images: [openGraphImage],
   },
 };
 
