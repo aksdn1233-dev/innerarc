@@ -37,9 +37,11 @@ export type PortOnePaymentConfig = Readonly<{
 
 export type ManualTransferPaymentConfig = Readonly<{
   provider: "manual_transfer";
-  bankName: string;
-  accountNumber: string;
-  accountHolder: string;
+  bankAccounts: readonly Readonly<{
+    bankName: string;
+    accountNumber: string;
+    accountHolder: string;
+  }>[];
   depositWindowHours: number;
   products: Readonly<Record<PaymentProductCode, PaymentProduct>>;
 }>;
@@ -61,6 +63,11 @@ const bankNameSchema = z.string().min(2).max(80);
 const bankAccountSchema = z.string().regex(/^[0-9-]{6,40}$/);
 const accountHolderSchema = z.string().min(2).max(80);
 const depositWindowSchema = z.coerce.number().int().min(1).max(168);
+const bankAccountsSchema = z.array(z.object({
+  bankName: bankNameSchema,
+  accountNumber: bankAccountSchema,
+  accountHolder: accountHolderSchema,
+}).strict()).min(1).max(5);
 
 function buildProducts(quickPrice: number, comprehensivePrice: number, premiumPdfPrice: number) {
   return {
@@ -139,29 +146,44 @@ export function inspectPaymentReadiness(
   if (!prices.success) return { enabled: false, reason: "INVALID" };
 
   if (provider === "manual_transfer") {
+    const rawAccounts = environment.MANUAL_BANK_ACCOUNTS_JSON?.trim();
+    let bankAccounts: z.infer<typeof bankAccountsSchema> | null = null;
+    if (rawAccounts) {
+      try {
+        const parsedAccounts = bankAccountsSchema.safeParse(JSON.parse(rawAccounts));
+        if (!parsedAccounts.success) return { enabled: false, reason: "INVALID" };
+        bankAccounts = parsedAccounts.data;
+      } catch {
+        return { enabled: false, reason: "INVALID" };
+      }
+    } else {
+      const legacyAccount = bankAccountsSchema.safeParse([{
+        bankName: environment.MANUAL_BANK_NAME?.trim(),
+        accountNumber: environment.MANUAL_BANK_ACCOUNT?.trim(),
+        accountHolder: environment.MANUAL_BANK_HOLDER?.trim(),
+      }]);
+      if (legacyAccount.success) bankAccounts = legacyAccount.data;
+    }
+
     const parsed = z.object({
-      bankName: bankNameSchema,
-      accountNumber: bankAccountSchema,
-      accountHolder: accountHolderSchema,
       depositWindowHours: depositWindowSchema,
     }).safeParse({
-      bankName: environment.MANUAL_BANK_NAME?.trim(),
-      accountNumber: environment.MANUAL_BANK_ACCOUNT?.trim(),
-      accountHolder: environment.MANUAL_BANK_HOLDER?.trim(),
       depositWindowHours: environment.MANUAL_DEPOSIT_WINDOW_HOURS?.trim() || "24",
     });
-    if (!parsed.success) {
+    if (!parsed.success || !bankAccounts) {
       const missing = [
+        environment.MANUAL_BANK_ACCOUNTS_JSON,
         environment.MANUAL_BANK_NAME,
         environment.MANUAL_BANK_ACCOUNT,
         environment.MANUAL_BANK_HOLDER,
-      ].some((value) => !value?.trim());
+      ].every((value) => !value?.trim());
       return { enabled: false, reason: missing ? "INCOMPLETE" : "INVALID" };
     }
     return {
       enabled: true,
       config: {
         provider: "manual_transfer",
+        bankAccounts,
         ...parsed.data,
         products: buildProducts(
           prices.data.quickPrice,

@@ -35,9 +35,18 @@ const validPortOneEnvironment = {
 
 const validManualTransferEnvironment = {
   PAYMENTS_PROVIDER: "manual_transfer",
-  MANUAL_BANK_NAME: "테스트은행",
-  MANUAL_BANK_ACCOUNT: "123-456-789012",
-  MANUAL_BANK_HOLDER: "테스트상점",
+  MANUAL_BANK_ACCOUNTS_JSON: JSON.stringify([
+    {
+      bankName: "테스트은행",
+      accountNumber: "123-456-789012",
+      accountHolder: "테스트상점",
+    },
+    {
+      bankName: "두번째은행",
+      accountNumber: "3333-01-2345678",
+      accountHolder: "테스트상점",
+    },
+  ]),
   MANUAL_DEPOSIT_WINDOW_HOURS: "24",
   INNERARC_PLUS_30D_PRICE_KRW: "19000",
   INNERARC_PRO_30D_PRICE_KRW: "39000",
@@ -104,13 +113,14 @@ describe("payment readiness", () => {
     if (readiness.enabled) {
       expect(readiness.config.provider).toBe("manual_transfer");
       if (readiness.config.provider === "manual_transfer") {
-        expect(readiness.config.bankName).toBe("테스트은행");
+        expect(readiness.config.bankAccounts).toHaveLength(2);
+        expect(readiness.config.bankAccounts[0]?.bankName).toBe("테스트은행");
         expect(readiness.config.depositWindowHours).toBe(24);
       }
     }
     expect(inspectPaymentReadiness({
       ...validManualTransferEnvironment,
-      MANUAL_BANK_ACCOUNT: "not-an-account",
+      MANUAL_BANK_ACCOUNTS_JSON: "not-json",
     }, "production")).toEqual({ enabled: false, reason: "INVALID" });
   });
 

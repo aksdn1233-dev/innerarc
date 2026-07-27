@@ -221,6 +221,20 @@
   font-weight: 800;
 }
 
+.manual-bank-account dd {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.manual-bank-account dd strong {
+  font-size: 1.05rem;
+}
+
+.manual-bank-account dd small {
+  color: var(--muted);
+  font-weight: 500;
+}
+
 .manual-transfer-card > p:last-child {
   margin-bottom: 0;
   color: var(--muted);

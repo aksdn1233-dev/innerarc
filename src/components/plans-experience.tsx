@@ -54,9 +54,11 @@ type ManualTransferCheckoutSession = Readonly<{
   orderName: string;
   amount: number;
   currency: "KRW";
-  bankName: string;
-  accountNumber: string;
-  accountHolder: string;
+  bankAccounts: readonly Readonly<{
+    bankName: string;
+    accountNumber: string;
+    accountHolder: string;
+  }>[];
   depositorName: string;
   depositDeadline: string;
   reportUrl: string;
@@ -432,9 +434,15 @@ export function PlansExperience({
             <div className="manual-transfer-card">
               <p className="eyebrow">{t.manualTitle}</p>
               <dl>
-                <div><dt>{locale === "ko" ? "은행" : "Bank"}</dt><dd>{session.bankName}</dd></div>
-                <div><dt>{locale === "ko" ? "계좌번호" : "Account"}</dt><dd>{session.accountNumber}</dd></div>
-                <div><dt>{locale === "ko" ? "예금주" : "Holder"}</dt><dd>{session.accountHolder}</dd></div>
+                {session.bankAccounts.map((account) => (
+                  <div className="manual-bank-account" key={`${account.bankName}-${account.accountNumber}`}>
+                    <dt>{account.bankName}</dt>
+                    <dd>
+                      <strong>{account.accountNumber}</strong>
+                      <small>{locale === "ko" ? "예금주" : "Holder"} {account.accountHolder}</small>
+                    </dd>
+                  </div>
+                ))}
                 <div><dt>{t.manualAmount}</dt><dd>{formatWon(session.amount, locale)}</dd></div>
                 <div><dt>{t.depositorName}</dt><dd>{session.depositorName}</dd></div>
                 <div>
