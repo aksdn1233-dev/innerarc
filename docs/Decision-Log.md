@@ -329,3 +329,13 @@
 - Impact: All seven performance routes pass the unchanged budget. Relationship share preview remains functional and excludes the entered name and birth date in Chromium and mobile WebKit.
 - Revisit when: Share usage evidence justifies a different interaction or a smaller common share runtime.
 - Status: Decided.
+
+## D-034 - Tarot presentation uses a restrained reflective reading-room metaphor
+
+- Date: 2026-07-26
+- Decision: Give the home and question flow a clearer tarot presence through first-party card-back geometry, portrait-format drawn-card faces, tactile paper/ink contrast, and progressive disclosure. Keep the product positioned as premium self-reflection: no neon mysticism, crystal-ball imagery, fear, certainty, or theatrical prediction language.
+- Alternatives: Keep the current generic wellness-card treatment; imitate a traditional fortune shop; add externally sourced Rider-Waite artwork; redesign every product route before receiving more specific direction.
+- Reason: The current interface is calm and readable but the card experience is too abstract to feel like a tarot reading. A bounded visual layer can make the ritual legible without changing calculations, safety, privacy, or the user’s decision authority.
+- Impact: Decorative artwork is derived only from canonical card metadata and CSS. Card names, positions, orientations, keywords, and audit facts stay accessible text. The initial relationship share feature is deferred from the route bundle to recover the existing 285-byte decoded-JavaScript budget overage.
+- Revisit when: Brand testing, licensed original card art, or specific owner art direction is available.
+- Status: Decided.

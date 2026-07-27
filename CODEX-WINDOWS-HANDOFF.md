@@ -23,7 +23,7 @@ Write-Output "port3000_listeners=$($listeners.Count)"
 
 포트 3000에 리스너가 있으면 소유 프로세스를 확인하기 전에는 테스트나 개발 서버를 시작하지 않는다. 광범위한 `node`/`npm` 프로세스 종료는 금지한다. 이 프로젝트의 브라우저 실행기는 포트가 사용 중이면 실패하고, 자신이 만든 정확한 서버 PID만 종료한다.
 
-`.openai/hosting.json`은 없다. 실제 배포, 외부 계정, 결제, 도메인, 앱스토어, 법적 계약은 사용자 승인 없이는 진행하지 않는다. `.git`은 샌드박스에서 거부된 불완전 메타데이터라 유효한 저장소가 아니다.
+`.openai/hosting.json`은 없다. 실제 배포, 외부 계정, 결제, 도메인, 앱스토어, 법적 계약은 사용자 승인 없이는 진행하지 않는다. 로컬 Git 저장소는 `main`에서 유효하며 초기 소스 기준선은 `deb4fcd`다. 비공개 GitHub 원격 저장소 생성·푸시는 GitHub CLI 브라우저 로그인이 완료되는 즉시 진행한다.
 
 ## 2. 현재 구현된 제품
 
@@ -33,6 +33,7 @@ Write-Output "port3000_listeners=$($listeners.Count)"
 - 고민 원문은 현재 페이지 메모리에만 있고 계산, URL, 저장소, 공유, 분석, 로그, 외부 AI 요청에 포함되지 않음
 - 8개 영역 통합 프로필과 근거형 직업군 분석
 - 78장 타로, 1장/3장 및 질문별 스프레드, 고정 시드 감사 기록, 역방향, 실제 카드 직접 입력
+- 차분한 리딩룸 도입부, 세로형 카드 결과, 펼쳐보는 추첨 감사 기록을 갖춘 타로 시각 경험
 - 관계 에너지, 현실적 만남 환경, 미래 배우자/파트너의 관찰 가능한 성향, 갈등과 그린 플래그
 - 관계 결과에서 편집 가능한 일회성 Reality Check 초안으로 이어지는 현재 탭 전용 연결
 - 7개 관계 유형 궁합과 8개 관계 운영 영역, 운명 점수 없음
@@ -60,7 +61,7 @@ Write-Output "port3000_listeners=$($listeners.Count)"
 - 단위·통합: 251/251, 24개 파일
 - Next.js 16.2.11 프로덕션 빌드: 25개 출력
 - 데스크톱 Chromium: 52/52
-- 모바일 WebKit: 51 통과, 데스크톱 하드웨어 키보드 전용 1건 의도적 제외
+- 모바일 WebKit: 변경 전 전체 51 통과와 하드웨어 키보드 전용 1건 의도적 제외, 변경 질문 흐름 3/3, 안전 포커스 1/1, 접근성 27/27, 성능 7/7 통과. 장시간 단일 세션에서 자원 고갈이 보이면 파일별 새 프로세스로 재검증
 - 접근성: 20개 한·영 경로와 동적 온보딩/관계 결과/Reality Check 연결의 axe critical·serious 0건
 - 성능: 7개 대표 경로의 HTML, 요청 수, JS/CSS 전송·해제 크기, 전체 페이로드 예산 통과
 - 프로덕션 의존성 감사: 알려진 취약점 0건
@@ -94,6 +95,10 @@ $env:NEXT_TELEMETRY_DISABLED='1'
 & '.\node_modules\.bin\next.cmd' build
 node scripts/run-e2e.mjs --project=chromium
 node scripts/run-e2e.mjs --project=mobile --workers=1
+# 장시간 WebKit 세션이 불안정할 때 아래 파일별 명령으로 대체
+node scripts/run-e2e.mjs tests/e2e/accessibility.spec.ts --project=mobile --timeout=180000
+node scripts/run-e2e.mjs tests/e2e/onboarding.spec.ts --project=mobile --timeout=180000
+node scripts/run-e2e.mjs tests/e2e/performance.spec.ts --project=mobile --timeout=180000
 pnpm.cmd audit --prod
 node scripts/generate-sbom.mjs
 ```
@@ -174,5 +179,5 @@ pnpm.cmd dev
 ## 8. 새 Windows Codex 시작 프롬프트
 
 ```text
-이 작업공간의 CODEX-WINDOWS-HANDOFF.md와 docs/Continuation-State.md를 먼저 읽고 현재 0.15.0 검증 기준선을 유지해라. 다른 프로젝트의 파일·포트·프로세스를 건드리지 말고, 포트 3000이 점유돼 있으면 중단해라. 명세→수용기준→개인정보/안전 검토→구현→단위/통합/브라우저/회귀→문서 갱신 순서를 지켜 다음 미완료 우선순위를 진행해라. 외부 계정, 결제, 법적 결정, 도메인, 앱스토어, 실제 배포는 승인 없이 수행하지 마라. Windows 브라우저 회귀는 Chromium과 mobile 프로젝트를 분리하고 mobile은 한 작업자로 실행해라.
+이 작업공간의 CODEX-WINDOWS-HANDOFF.md와 docs/Continuation-State.md를 먼저 읽고 현재 0.15.0 검증 기준선을 유지해라. 다른 프로젝트의 파일·포트·프로세스를 건드리지 말고, 포트 3000이 점유돼 있으면 중단해라. 명세→수용기준→개인정보/안전 검토→구현→단위/통합/브라우저/회귀→문서 갱신 순서를 지켜 다음 미완료 우선순위를 진행해라. 외부 계정, 결제, 법적 결정, 도메인, 앱스토어, 실제 배포는 승인 없이 수행하지 마라. Windows 브라우저 회귀는 Chromium과 mobile을 분리하고 mobile은 한 작업자 또는 파일별 새 프로세스로 실행해라.
 ```

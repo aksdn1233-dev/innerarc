@@ -14,17 +14,16 @@ import {
   type RelationshipInsight,
 } from "@/core/relationship";
 import type { NextAnalysisContext } from "@/core/reality-check";
-import { buildRomanticPatternShare } from "@/core/share";
 import { focusAndScroll, scrollToElement } from "@/components/accessibility";
 import type { Locale } from "@/i18n/config";
 import type { RelationshipCopy } from "@/i18n/relationship-copy";
 
-const ShareCardPanel = lazy(async () => {
-  const shareCardModule = await import("@/components/share-card-panel");
-  return { default: shareCardModule.ShareCardPanel };
-});
-
 type Props = { locale: Locale; copy: RelationshipCopy };
+
+const RelationshipSharePanel = lazy(async () => {
+  const loaded = await import("@/components/relationship-share-panel");
+  return { default: loaded.RelationshipSharePanel };
+});
 
 export function RelationshipExperience({ locale, copy }: Props) {
   const router = useRouter();
@@ -303,7 +302,7 @@ export function RelationshipExperience({ locale, copy }: Props) {
             </details>
 
             <Suspense fallback={null}>
-              <ShareCardPanel payload={buildRomanticPatternShare({ locale, insight })} />
+              <RelationshipSharePanel locale={locale} insight={insight} />
             </Suspense>
 
             <p className="disclaimer">{insight.uncertainty} {copy.disclaimer}</p>

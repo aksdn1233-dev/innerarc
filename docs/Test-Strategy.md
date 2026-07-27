@@ -36,6 +36,7 @@
 - Operational controls: rate-limit allowed/denied/retried/reset decisions, isolated policies, invalid counters and timestamps, feature-flag kill switch, tier gates, deterministic rollout, and non-opaque subject rejection.
 - Data rights: empty/full owner exports, JSON safety, cross-owner adapter leakage, all-data and third-party-only deletion, collection counts, identical retry replay, idempotency conflict, and post-deletion export state.
 - Crisis resources and legal disclosure: official HTTPS sources, region labels, no language-to-location inference, self-harm card suppression, bilingual pre-release privacy/terms structural parity, unresolved launch fields, and adjacent consent links.
+- Question tarot presentation: pre-draw reading-room framing, three semantic card results, orientation-preserving text, collapsed deterministic audit, no-card high-risk routing, render-aware result/safety focus, and mobile WebKit focus retry before an atomic safety snapshot.
 - Release evidence: CycloneDX 1.6 format/component/dependency validation, no local workspace path in the SBOM, synthetic-only screenshot scenarios, rejection of unexpected origins, PNG header validation at 1242x2688, and visual framing review.
 
 ## Performance budgets
@@ -47,7 +48,18 @@
 
 The split budgets prevent compression from hiding parse cost while avoiding the mistake of treating decoded runtime size as network transfer. The first measured Next.js/React baseline was 934–979 KB decoded JavaScript with zero third-party requests; the 1.05 MB gate allows limited headroom and must not be raised without a documented bundle review.
 
-`pnpm test:e2e` owns a repository-scoped custom production server through `scripts/run-e2e.mjs`, fails closed if port 3000 is already occupied, waits for the localized health route, runs Playwright with `PLAYWRIGHT_EXTERNAL_SERVER=1`, and terminates only the exact child process it created. This avoids Windows Playwright web-server teardown hangs and prevents reuse of another project's server. Direct Playwright CLI use retains a config fallback for environments that support its lifecycle. WebKit/axe runs use the explicit 90-second per-test ceiling; on constrained Windows environments they run with one worker to avoid browser contention. On the validated Windows workstation, release evidence uses `node scripts/run-e2e.mjs --project=chromium` and `node scripts/run-e2e.mjs --project=mobile --workers=1`; clean project-scoped runs completed 52/52 and 51 passed plus one intentional skip.
+`pnpm test:e2e` owns a repository-scoped custom production server through `scripts/run-e2e.mjs`, fails closed if port 3000 is already occupied, waits for the localized health route, runs Playwright with `PLAYWRIGHT_EXTERNAL_SERVER=1`, and terminates only the exact child process it created. This avoids Windows Playwright web-server teardown hangs and prevents reuse of another project's server. Direct Playwright CLI use retains a config fallback for environments that support its lifecycle. WebKit/axe runs use an explicit extended per-test ceiling and one worker on constrained Windows environments. Clean project-scoped release runs completed Chromium 52/52 and mobile WebKit 51 passed plus one intentional hardware-keyboard skip.
+
+Use the following file-split fallback when the host is under load or a long WebKit process shows provisional-navigation cancellation:
+
+```powershell
+node scripts/run-e2e.mjs --project=chromium --timeout=180000
+node scripts/run-e2e.mjs tests/e2e/accessibility.spec.ts --project=mobile --timeout=180000
+node scripts/run-e2e.mjs tests/e2e/onboarding.spec.ts --project=mobile --timeout=180000
+node scripts/run-e2e.mjs tests/e2e/performance.spec.ts --project=mobile --timeout=180000
+```
+
+A 20+ minute WebKit process has produced provisional-navigation cancellation and unrelated click timeouts after earlier checks passed. Reproduce a failure in a clean focused process before classifying it as a product defect.
 
 Transport enforcement is separately tested with `APP_HTTPS_ONLY=true`. Local HTTP production-bundle runs leave it false so WebKit does not upgrade first-party test assets to an unavailable HTTPS origin; CSP, framing, MIME, referrer, capability, opener, and resource-isolation headers remain active.
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import {
   analyzeCardCombination,
   clearTarotHistory,
@@ -17,6 +17,7 @@ import {
   TarotInputError,
   type CombinationInsight,
   type SavedTarotReading,
+  type TarotDrawnCard,
   type TarotOrientation,
   type TarotQuestionCategory,
   type TarotReading,
@@ -31,6 +32,38 @@ import type { QuestionCopy } from "@/i18n/question-copy";
 import { focusAndScroll, scrollToElement } from "@/components/accessibility";
 
 type Props = { locale: Locale; copy: QuestionCopy };
+
+const suitMarks = {
+  wands: "│",
+  cups: "◡",
+  swords: "†",
+  pentacles: "◇",
+} as const;
+
+function TarotCardPortrait({ drawn }: { drawn: TarotDrawnCard }) {
+  const indexLabel = drawn.card.arcana === "major"
+    ? String(drawn.card.number ?? 0).padStart(2, "0")
+    : drawn.card.rank?.slice(0, 2).toUpperCase() ?? "–";
+  const mark = drawn.card.suit ? suitMarks[drawn.card.suit] : "○";
+
+  return (
+    <div
+      className="tarot-card-face"
+      data-arcana={drawn.card.arcana}
+      data-orientation={drawn.orientation}
+      aria-hidden="true"
+    >
+      <span className="tarot-card-index tarot-card-index-top">{indexLabel}</span>
+      <div className="tarot-illustration">
+        <span className="tarot-halo" />
+        <span className="tarot-sigil">{mark}</span>
+        <span className="tarot-horizon" />
+        <span className="tarot-path" />
+      </div>
+      <span className="tarot-card-index tarot-card-index-bottom">{indexLabel}</span>
+    </div>
+  );
+}
 
 export function QuestionTarotExperience({ locale, copy }: Props) {
   const historyRepository = useRef(new InMemoryTarotHistoryRepository());
@@ -48,6 +81,14 @@ export function QuestionTarotExperience({ locale, copy }: Props) {
   const [devicePersistence, setDevicePersistence] = useState(false);
   const [currentSavedId, setCurrentSavedId] = useState<string | null>(null);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (assessment) focusAndScroll("#tarot-safety");
+  }, [assessment]);
+
+  useEffect(() => {
+    if (reading) focusAndScroll("#tarot-result");
+  }, [reading]);
 
   function performReading(question: string) {
     try {
@@ -68,7 +109,6 @@ export function QuestionTarotExperience({ locale, copy }: Props) {
       setPendingQuestion(question);
       setCurrentSavedId(null);
       setError("");
-      focusAndScroll("#tarot-result");
     } catch (caught) {
       setReading(null);
       setCombination(null);
@@ -88,7 +128,6 @@ export function QuestionTarotExperience({ locale, copy }: Props) {
     setPendingQuestion(question);
     if (nextAssessment.category !== "general") {
       setAssessment(nextAssessment);
-      focusAndScroll("#tarot-safety");
       return;
     }
     performReading(question);
@@ -163,7 +202,6 @@ export function QuestionTarotExperience({ locale, copy }: Props) {
     setManualOrientations(restored.cards.map((item) => item.orientation));
     setAssessment(null);
     setCurrentSavedId(saved.id);
-    focusAndScroll("#tarot-result");
   }
 
   function downloadHistory() {
@@ -193,9 +231,20 @@ export function QuestionTarotExperience({ locale, copy }: Props) {
         </header>
 
         <section className="question-intro">
-          <p className="eyebrow">{copy.eyebrow}</p>
-          <h1>{copy.headline}</h1>
-          <p>{copy.intro}</p>
+          <div className="question-intro-copy">
+            <p className="eyebrow">{copy.eyebrow}</p>
+            <h1>{copy.headline}</h1>
+            <p>{copy.intro}</p>
+          </div>
+          <aside className="reading-room-note">
+            <span className="reading-room-label">{copy.roomLabel}</span>
+            <div className="card-back-fan" aria-hidden="true">
+              <span className="card-back card-back-left" />
+              <span className="card-back card-back-center"><i /></span>
+              <span className="card-back card-back-right" />
+            </div>
+            <p>{copy.roomPrompt}</p>
+          </aside>
         </section>
 
         <form className="question-form" id="question-form" onSubmit={submit}>
@@ -355,25 +404,27 @@ export function QuestionTarotExperience({ locale, copy }: Props) {
 
         {reading && (
           <section className="tarot-result" id="tarot-result" aria-live="polite" tabIndex={-1}>
-            <p className="eyebrow">{copy.resultTitle}</p>
+            <header className="tarot-result-heading">
+              <p className="eyebrow">{copy.roomLabel}</p>
+              <h2>{copy.resultTitle}</h2>
+              <p>{copy.resultIntro}</p>
+            </header>
             <div className="tarot-grid">
               {reading.cards.map((drawn) => (
-                <article className="tarot-card" key={drawn.position.en}>
-                  <span className="tarot-position">{drawn.position[locale]}</span>
-                  <div className="tarot-mark" aria-hidden="true">
-                    {drawn.card.arcana === "major"
-                      ? String(drawn.card.number ?? 0).padStart(2, "0")
-                      : drawn.card.suit?.slice(0, 1).toUpperCase()}
+                <article className="tarot-card" key={drawn.position.en} data-orientation={drawn.orientation}>
+                  <TarotCardPortrait drawn={drawn} />
+                  <div className="tarot-card-copy">
+                    <span className="tarot-position">{drawn.position[locale]}</span>
+                    <h3>{drawn.card.name[locale]}</h3>
+                    <p className="orientation">
+                      {drawn.orientation === "upright" ? copy.upright : copy.reversed}
+                    </p>
+                    <p>
+                      {drawn.orientation === "upright"
+                        ? drawn.card.uprightKeywords[locale]
+                        : drawn.card.reversedKeywords[locale]}
+                    </p>
                   </div>
-                  <h2>{drawn.card.name[locale]}</h2>
-                  <p className="orientation">
-                    {drawn.orientation === "upright" ? copy.upright : copy.reversed}
-                  </p>
-                  <p>
-                    {drawn.orientation === "upright"
-                      ? drawn.card.uprightKeywords[locale]
-                      : drawn.card.reversedKeywords[locale]}
-                  </p>
                 </article>
               ))}
             </div>
@@ -390,8 +441,9 @@ export function QuestionTarotExperience({ locale, copy }: Props) {
               <ol>{copy.realityItems.map((item) => <li key={item}>{item}</li>)}</ol>
             </section>
 
-            <details>
+            <details className="tarot-audit">
               <summary>{copy.audit}</summary>
+              <p>{copy.auditHelp}</p>
               <dl className="audit-list">
                 <div><dt>{copy.source}</dt><dd>{reading.audit.source === "engine" ? copy.engineSource : copy.manualSource}</dd></div>
                 <div><dt>Event</dt><dd>{reading.audit.eventId}</dd></div>

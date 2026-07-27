@@ -16,4 +16,6 @@
 Thumbs.db
 *.log
 *.tsbuildinfo
+INNERARC*.zip
+INNERARC*.txt
 next-env.d.ts

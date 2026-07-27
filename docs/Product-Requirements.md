@@ -91,6 +91,17 @@ Date: 2026-07-18
 - Acceptance: AI cannot select or replace cards.
 - Acceptance: engine and manual readings remain visibly distinguishable after save/load; retries do not create duplicates; corrupt or version-incompatible stored readings fail closed.
 
+#### Reflective reading-room experience
+
+- The home hero must signal that the product combines numbers, cards, and lived outcomes without looking like a generic AI dashboard or a low-cost fortune site.
+- The question flow uses a quiet, tactile reading-room metaphor: a restrained card-back arrangement before the draw and a recognizable portrait-format card face after the draw. It avoids neon, crystal balls, fear copy, prediction theatre, and decorative effects that obscure text.
+- Card position, title, orientation, and keywords remain semantic text outside the decorative illustration. A reversed card may rotate only its decorative artwork; reading order and text never rotate.
+- The first screen keeps one primary action. Draw provenance, event ID, deck version, algorithm version, and seed remain available in a collapsed disclosure instead of competing with the reflection.
+- The treatment uses first-party CSS and canonical card data only. It introduces no remote art, tracking request, AI-selected visual, or change to the deterministic draw.
+- Acceptance: Korean and English expose the same card order, orientation, meaning, audit fields, and safety boundary.
+- Acceptance: 320px mobile through desktop layouts have no horizontal overflow, visible focus, reduced-motion support, WCAG AA text contrast, and a card face that remains legible without relying on color.
+- Acceptance: initial route performance remains inside the existing decoded-JavaScript and request budgets; share-card code is deferred until the relationship result is explicitly produced.
+
 ### Career
 
 - Explain fit reasons, adverse conditions, complementary skills, preferred environment, and avoid conditions for role families.

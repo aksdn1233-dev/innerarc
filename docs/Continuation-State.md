@@ -8,9 +8,11 @@ Overall progress: 98%
 
 - `CODEX-WINDOWS-HANDOFF.md` is the exact Windows continuation guide for the current worktree.
 - Version 0.15.0 release evidence is complete for browser-local Reality Check review months and read-only navigation across current and prior monthly reports, including disclosed UTC compatibility fallback for existing records.
-- Verified: 251/251 unit/integration tests across 24 files, full ESLint, TypeScript, 25-output production build, desktop Chromium 52/52, and mobile WebKit 51 passed with one intentional desktop-hardware-keyboard skip.
+- Version 0.15.0 also adds a restrained tarot reading-room presentation, recognizable portrait card faces, a clearer number-and-cards home motif, render-safe question-result focus, and a fully deferred relationship share bundle.
+- Verified: 251/251 unit/integration tests across 24 files, full ESLint, TypeScript, 25-output production build, desktop Chromium 52/52, a clean pre-UX mobile WebKit baseline of 51 passed with one intentional hardware-keyboard skip, focused changed question flows 3/3, focused mobile safety 1/1, all 27 mobile accessibility checks, and all seven representative performance routes.
 - Release evidence is labelled 0.15.0: CycloneDX 1.6 SBOM with 97 production components. The existing fifteen synthetic-only 1242x2688 launch screenshots remain valid because this release does not change their captured routes.
-- Windows WebKit produced transient worker exits and navigation timeouts under higher parallelism without a repeated product assertion failure. The complete mobile suite passed with one worker; use the separate commands and `--workers=1` in the Windows handoff for stable release evidence.
+- The valid local `main` now integrates the remote 0.15.0/Codespaces history with the reading-room change; `local-bootstrap` preserves the two original local commits. Generated archives, dependencies, build output, environment files, and test artifacts remain excluded.
+- Windows WebKit can produce transient worker exits and navigation/click timeouts after a 20+ minute session without a repeated product assertion failure. Use one worker or the file-split clean-process commands in the Windows handoff.
 
 ## Product direction
 
@@ -28,6 +30,7 @@ Overall progress: 98%
 - Phase 3 canonical AI schema/fact guard, high-risk routing, deterministic eight-domain/career fallback, metered runner, consented context contract, and a disabled-by-default OpenAI Responses candidate.
 - The OpenAI candidate uses strict JSON Schema, `store: false`, raw-date/name minimization, fixed endpoint/no redirects, refusal/incomplete metering, abort propagation, explicit cost rates, production model pinning, and client-bundle secret checks. It is not approved or enabled.
 - Phase 4 canonical bilingual 78-card tarot data, nine spreads, secure/fixed seeded draws, reversals, manual physical-card input, immutable provenance, history, export/delete, and safety handling.
+- Reflective reading-room UX with first-party card-back geometry, portrait-format drawn cards, upright semantic text for reversed cards, progressive audit disclosure, reduced-motion/forced-color support, and no remote art or prediction theatre.
 - Phase 5 relationship energy, realistic meeting-context hypotheses, future-partner qualities, seven-type compatibility, source-bound celebrity comparison, and privacy-safe share cards.
 - Explicit per-context relationship-to-Reality-Check handoff: purpose-limited editable draft, 30-minute current-tab expiry, one-time consumption, clean URL, no profile/third-party/location transfer, no automatic record, and fail-closed storage handling.
 - Phase 6 immutable Reality Check records, five relevance ratings, outcome review, idempotency, export/delete, browser-local review-month capture, prior-month navigation, disclosed legacy fallback, and monthly pattern grouping.
@@ -45,7 +48,7 @@ Overall progress: 98%
 
 ## Current state
 
-- The provider-neutral web MVP, relationship action-to-outcome loop, lifestyle curation, and closed shop-preview scope are implemented and release-regression tested.
+- The provider-neutral web MVP, relationship action-to-outcome loop, lifestyle curation, closed shop-preview scope, and tarot reading-room UX are implemented and release-regression tested.
 - Production-backed identity, durable persistence, approved live AI, commerce, telemetry, reminders, monitoring, and deployment remain intentionally disconnected.
 - The closed shop is product architecture only, not an operating store.
 
@@ -63,7 +66,8 @@ Overall progress: 98%
 - Email/social auth, PostgreSQL, transactional email, reminders, live paid AI, payment processing, analytics sink, error monitoring, and deployment require external accounts or user authorization.
 - Final privacy notice, terms, age policy, crisis escalation, trademark/domain/app-store work, editorial review, pricing, and launch approval require qualified human or business decisions.
 - Supplier contracts and every live-commerce operation are unresolved; the shop must remain closed.
-- A sandbox-denied `git init` left partial `.git` metadata. It is not a valid repository and does not affect source, build, or tests; repairing it requires permission to rewrite only this project's `.git` directory.
+- Publishing the valid local repository to a new private GitHub remote requires the user to finish the GitHub CLI browser sign-in. The connected read-only GitHub profile is visible, but it cannot create a repository.
+- This constrained Windows host becomes unstable during a 20+ minute single WebKit process: clean focused runs pass, while later unrelated navigations/clicks can be canceled or time out. Mobile release evidence is therefore split by test file or focused flow; do not treat a long-session browser-process failure as a product assertion without a clean-process reproduction.
 
 ## Resolved defects in this version
 
@@ -83,6 +87,9 @@ Overall progress: 98%
 - Deferred the relationship share-card panel after the monthly-report work pushed initial decoded JavaScript to 1,050,285 bytes, 285 bytes over the unchanged budget. The relationship share flow remains functional and privacy-safe in Chromium and mobile WebKit.
 - Moved outcome-layer focus into a render-aware effect after deferred loading exposed a keyboard-focus race; focused Chromium/mobile accessibility tests and both full project suites pass.
 - Updated the deterministic capture script to target the underlying onboarding radio controls after their visible text layer intercepted pointer automation; all fifteen assets now generate and validate.
+- Deferred the relationship share builder and renderer until a relationship result exists after the initial route exceeded its decoded-JavaScript budget by 285 bytes; all seven representative routes now pass without raising the budget.
+- Moved question safety/result focus to render-aware effects. The WebKit regression now waits for the scheduled animation-frame focus before taking its atomic safety snapshot, eliminating an intermittent test race without weakening card suppression.
+- Replaced generic tarot result blocks with CSS-generated portrait cards and retained every title, position, orientation, keyword, and draw-audit field as semantic text.
 
 ## Verified baseline
 
@@ -91,7 +98,7 @@ Overall progress: 98%
 - TypeScript strict check: passed.
 - Next.js 16.2.11 production build: passed; 25 static route outputs generated.
 - Playwright desktop Chromium: 52/52 passed.
-- Playwright iPhone 13/WebKit: 51 passed; one desktop-hardware-keyboard-only test intentionally skipped.
+- Playwright iPhone 13/WebKit: clean pre-UX full baseline 51 passed and one intentional hardware-keyboard skip; changed question flows 3/3, focused safety 1/1, accessibility 27/27, and performance 7/7 passed after the visual change. A later 20+ minute single-session run produced only browser navigation/click cancellations, so constrained-Windows evidence is split into clean processes.
 - Outcome-informed flow proves zero history reads before explicit use, one read after use, relationship-category isolation, unchanged meeting-context ordering, bounded displayed learning, dynamic focus, and no horizontal mobile overflow.
 - Relationship handoff tests prove explicit current-tab use, clean URL, one-time clearing, editable prefill, no automatic record, no date/name/number transfer, and fail-closed behavior with unavailable storage in both browsers.
 - Monthly-report tests prove local/UTC boundary separation, legacy fallback disclosure, newest-first month options, read-only navigation, and unchanged stored source records.
@@ -105,4 +112,4 @@ Overall progress: 98%
 
 ## User work required
 
-No user action is required to run or inspect the current local website. The next production stage requires the user to select or authorize external service accounts and approve staging/deployment. Legal, editorial, brand, pricing, commerce, and launch decisions also require human sign-off.
+No user action is required to run or inspect the current local website or to synchronize the already-authorized private GitHub repository. The next production stage requires service selection and staging/deployment authorization. Legal, editorial, brand, pricing, commerce, and launch decisions also require human sign-off.

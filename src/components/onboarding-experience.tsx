@@ -124,6 +124,11 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
           </div>
           <div className="hero-object" aria-hidden="true">
             <span className="hero-number">11</span>
+            <div className="hero-card-stack">
+              <span className="hero-card hero-card-left" />
+              <span className="hero-card hero-card-center"><i /></span>
+              <span className="hero-card hero-card-right" />
+            </div>
           </div>
         </section>
 

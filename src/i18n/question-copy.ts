@@ -4,6 +4,8 @@ export type QuestionCopy = {
   eyebrow: string;
   headline: string;
   intro: string;
+  roomLabel: string;
+  roomPrompt: string;
   questionLabel: string;
   questionPlaceholder: string;
   categoryLabel: string;
@@ -25,12 +27,14 @@ export type QuestionCopy = {
   realityFirst: string;
   urgentGuidance: string;
   resultTitle: string;
+  resultIntro: string;
   upright: string;
   reversed: string;
   realityChecks: string;
   realityItems: readonly [string, string, string];
   combination: string;
   audit: string;
+  auditHelp: string;
   source: string;
   engineSource: string;
   manualSource: string;
@@ -51,6 +55,10 @@ export type QuestionCopy = {
 };
 
 const ko: QuestionCopy = {
+  roomLabel: "카드를 펼치는 자리",
+  roomPrompt: "질문을 잠시 내려놓고, 카드가 보여주는 관점을 천천히 살펴보세요.",
+  resultIntro: "미래의 정답이 아니라, 지금 놓치기 쉬운 관점을 펼쳐봅니다.",
+  auditHelp: "카드가 임의로 바뀌지 않았는지 확인할 수 있는 기술 기록입니다.",
   eyebrow: "질문형 타로",
   headline: "정답보다,\n확인할 질문을 찾는 시간",
   intro: "카드는 무작위로 뽑히며 AI가 원하는 카드를 고르지 않습니다. 상징을 현실의 조건과 나란히 놓고 살펴보세요.",
@@ -116,6 +124,8 @@ const en: QuestionCopy = {
   eyebrow: "Question tarot",
   headline: "Look for what to verify,\nnot a fixed answer",
   intro: "Cards are randomly drawn; AI does not choose a convenient card. Place the symbolism beside real-world conditions.",
+  roomLabel: "A place to lay out the cards",
+  roomPrompt: "Set the question down for a moment. Notice what each card brings into view.",
   questionLabel: "What would you like to examine?",
   questionPlaceholder: "e.g. What should I verify before choosing a new role?",
   categoryLabel: "Question area",
@@ -145,6 +155,7 @@ const en: QuestionCopy = {
   realityFirst: "This may involve an important medical, legal, or financial decision. Check qualified advice, documents, numbers, and risk conditions first. Cards can only help organize feelings and questions.",
   urgentGuidance: "If there is an immediate risk of self-harm or violence, do not stay alone: contact local emergency or crisis support now and tell someone you trust what is happening. This flow will not draw cards.",
   resultTitle: "Cards for this reflection",
+  resultIntro: "Not a fixed future, but angles you may be overlooking now.",
   upright: "Upright",
   reversed: "Reversed",
   realityChecks: "Reality checks",
@@ -155,6 +166,7 @@ const en: QuestionCopy = {
   ],
   combination: "Structure visible across the cards",
   audit: "Draw audit",
+  auditHelp: "A technical record that lets you verify the cards were not silently changed.",
   source: "Source",
   engineSource: "Auditable app draw",
   manualSource: "Entered by user",

@@ -6,7 +6,8 @@ Last updated: 2026-07-26
 
 - [x] Inspect workspace, code, documents, environment files, build, tests, and reusable assets.
 - [x] Confirm changes are confined to this workspace.
-- [x] Record partial local Git metadata as a non-product blocker.
+- [x] Initialize an isolated local Git repository, exclude generated/sensitive files, secret-scan the staged source, and commit the source baseline (`deb4fcd`).
+- [ ] Create and push a private GitHub remote after the user completes GitHub CLI browser sign-in.
 
 ## Phase 1 - Product foundation
 
@@ -40,6 +41,7 @@ Last updated: 2026-07-26
 - [x] Canonical bilingual 78-card data, nine spreads, secure/fixed seed, reversals, 1/3-card draw, manual cards, and combinations.
 - [x] Immutable engine/manual provenance, history save/restore/delete/export, idempotency, corrupt data rejection, and explicit device persistence.
 - [x] Safety-gated symbolic interpretation with reality checks and decision ownership.
+- [x] Restrained bilingual reading-room UX with portrait card faces, semantic upright text, collapsed draw audit, mobile layout, focus handling, and no remote artwork.
 - [ ] Independent tarot editorial review before public launch.
 
 ## Phase 5 - Relationship and discovery

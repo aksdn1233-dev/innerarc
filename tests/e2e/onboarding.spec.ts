@@ -144,13 +144,20 @@ test("physical tarot cards remain manual and saved history is session-only by de
 test("high-risk self-harm language does not draw cards", async ({ page }) => {
   await page.goto("/en/question");
   await page.locator("#tarot-question").fill("I want to kill myself. What do the cards say?");
-  await page.getByRole("button", { name: "Draw cards" }).click();
-  await expect(page.getByText("Safety comes before cards right now")).toBeVisible();
-  await expect(page.getByRole("link", { name: "Call 109" })).toHaveAttribute("href", "tel:109");
-  await expect(page.getByRole("link", { name: "Call 988" })).toHaveAttribute("href", "tel:988");
-  await expect(page.getByText("We do not infer your country from language.", { exact: false })).toBeVisible();
-  await expect(page.locator(".crisis-resource-list a[href^='https://']")).toHaveCount(2);
-  await expect(page.locator(".tarot-card")).toHaveCount(0);
+  await page.locator("#question-form button[type='submit']").click();
+  const safetyPanel = page.locator("#tarot-safety");
+  await expect(safetyPanel).toBeVisible();
+  await expect(safetyPanel).toBeFocused();
+  const safetySnapshot = await safetyPanel.evaluate((element) => ({
+    text: element.textContent ?? "",
+    hrefs: Array.from(element.querySelectorAll("a")).map((anchor) => anchor.getAttribute("href")),
+    tarotCardCount: element.ownerDocument.querySelectorAll(".tarot-card").length,
+  }));
+  expect(safetySnapshot.text).toContain("Safety comes before cards right now");
+  expect(safetySnapshot.text).toContain("We do not infer your country from language.");
+  expect(safetySnapshot.hrefs).toEqual(expect.arrayContaining(["tel:109", "tel:988"]));
+  expect(safetySnapshot.hrefs.filter((href) => href?.startsWith("https://"))).toHaveLength(2);
+  expect(safetySnapshot.tarotCardCount).toBe(0);
 });
 
 test("romantic insight shows meeting contexts without probability claims", async ({ page }) => {
