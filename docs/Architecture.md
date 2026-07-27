@@ -37,7 +37,7 @@ Next.js UI
 - `src/core/commerce`: future product-disclosure schema, prohibited-claim validation, tracking-free public links, strict separation of organic and sponsored collections, and an evidence-backed twelve-gate launch assessment. Even a passing assessment cannot render purchase controls or perform deployment.
 - `src/core/compatibility`: versioned two-profile relationship reflection for seven relationship types, eight required operating domains, pair evidence, symmetric observations, and explicit power-role cautions.
 - `src/core/celebrity`: source-bound public birth-date records, date-only structural comparison, field filters, uncertainty, and non-identity match labels.
-- `src/core/share`: purpose-specific allowlisted payload builders, sensitive-pattern/overclaim validation, XML escaping, and self-contained local SVG rendering without remote assets.
+- `src/core/share`: purpose-specific allowlisted payload builders, sensitive-pattern/overclaim validation, XML escaping, and self-contained local SVG rendering without remote assets. The client share adapter converts only that validated SVG to an in-memory 1080×1350 PNG, uses explicit native file sharing when supported, and otherwise downloads locally.
 - `src/core/reality-check`: versioned reflection records, five-level relevance reviews, idempotent repository contracts, UTC audit time plus bounded browser-local review month, newest-first read-only prior-month navigation with disclosed legacy fallback, evidence-preserving monthly pattern summaries, and a pure category-scoped next-analysis derivation. The derived outcome layer cannot mutate calculation, card, or symbolic outputs and does not read storage itself.
 - `src/core/privacy`: consent schema, log masking, IANA time-zone preference validation, fail-closed device inspection, aggregate export, and complete local deletion.
 - `src/core/analytics`: strict allowlisted product/AI cost events, consent gating, idempotent sink contract, and no free-text payloads.
@@ -74,7 +74,7 @@ Every user-owned row carries `owner_user_id`, timestamps, deletion state, and en
 4. AI output is parsed, checked for canonical fact references, screened for safety language, then rendered.
 5. Secrets remain server-only. Browser environment variables are public by definition.
 6. Logs receive identifiers, categories, latency, and masked error details—not raw journal or birth data.
-7. Share payloads cross a separate allowlist boundary and are rendered on-device; raw inputs and third-party identifiers are never accepted by the renderer.
+7. Share payloads cross a separate allowlist boundary and are rendered on-device; raw inputs and third-party identifiers are never accepted by the renderer. The native share envelope contains one PNG and a generic title only—no product URL, result text, analytics event, storage write, or automatic recipient.
 8. Safety resources are selected by explicit region labels, never inferred from locale. Legal pages describe the current local boundary and do not imply that unavailable production providers are active.
 9. Lifestyle curation receives a canonical profile, not raw form data. The closed shop accepts only public category IDs; personalized facts are not encoded in shop URLs or sent to suppliers.
 10. Commercial ranking is a separate future boundary. Sponsorship, margin, inventory, or affiliate data cannot rewrite the deterministic symbolic ordering.

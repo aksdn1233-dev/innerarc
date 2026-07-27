@@ -4,7 +4,7 @@ InnerArc is an AI self-discovery and personal pattern intelligence platform. It 
 
 ## Current scope
 
-Version 0.15.1 provides a web-first, guest-first Korean/English application with:
+Version 0.15.2 provides a web-first, guest-first Korean/English application with:
 
 - deterministic Pythagorean numerology and calculation evidence;
 - a context-aware first result that uses stable focus/depth choices and optional page-memory-only concern text without changing calculations, storage, sharing, analytics, or provider state;
@@ -18,7 +18,7 @@ Version 0.15.1 provides a web-first, guest-first Korean/English application with
 - fail-closed future commerce contracts that require product disclosures, isolate sponsored placement, reject outcome claims, and cannot open the shop;
 - seven-type two-person compatibility reflection;
 - source-bound public-birth-date celebrity comparison;
-- privacy-safe local SVG share cards;
+- privacy-safe local PNG/SVG share cards with explicit native file sharing, cancellation handling, and a download fallback that adds no upload, tracking, or browser storage;
 - native Korean/English link-preview metadata and a first-party 1200×630 InnerArc social card with no personal result data or tracking dependency;
 - the Reality Check Loop, browser-local review-month capture, and read-only navigation across current and prior monthly pattern reports;
 - a guest privacy center for independent consent, language/time-zone preferences, validated device export, and complete local deletion;
@@ -60,7 +60,7 @@ On a new machine, Playwright may first need `pnpm exec playwright install --with
 - Calculated facts, traditional symbolism, contextual inference, and limitations remain visibly separate.
 - Guest input stays in browser memory unless the user explicitly enables on-device history.
 - A relationship environment reaches Reality Check only after an explicit click through a strict 30-minute, one-time current-tab draft; it never uses URL parameters or persistent fallback storage.
-- Share cards are rendered locally from allowlisted payloads and omit birth dates, names, questions, journals, and contact details.
+- Share cards are rendered locally from allowlisted payloads and omit birth dates, names, questions, journals, and contact details. Native sharing passes one generic-titled PNG with no text or URL only after a user click; unsupported devices download the same PNG locally.
 - Marketing, AI personalization, model training, and raw-journal retention require separate consent.
 - Medical, legal, investment, self-harm, violence, and crime questions are routed to reality-first safety handling.
 - Crisis contacts are shown as region-labelled options with official sources; language is never treated as the user's location.

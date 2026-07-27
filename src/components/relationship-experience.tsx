@@ -3,16 +3,8 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { lazy, Suspense, useEffect, useState, type FormEvent } from "react";
-import {
-  calculateNumerologyProfile,
-  NumerologyInputError,
-  type NumerologyProfile,
-} from "@/core/numerology";
-import {
-  createRelationshipInsight,
-  type MeetingContextId,
-  type RelationshipInsight,
-} from "@/core/relationship";
+import type { NumerologyProfile } from "@/core/numerology";
+import type { MeetingContextId, RelationshipInsight } from "@/core/relationship";
 import type { NextAnalysisContext } from "@/core/reality-check";
 import { focusAndScroll, scrollToElement } from "@/components/accessibility";
 import type { Locale } from "@/i18n/config";
@@ -38,11 +30,18 @@ export function RelationshipExperience({ locale, copy }: Props) {
     if (outcomeContext) focusAndScroll("#relationship-outcome-context");
   }, [outcomeContext]);
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
     const form = new FormData(event.currentTarget);
     try {
+      const [
+        { calculateNumerologyProfile },
+        { createRelationshipInsight },
+      ] = await Promise.all([
+        import("@/core/numerology"),
+        import("@/core/relationship"),
+      ]);
       const nextProfile = calculateNumerologyProfile({
         birthDate: String(form.get("birthDate") ?? ""),
         name: String(form.get("name") ?? ""),
@@ -53,10 +52,10 @@ export function RelationshipExperience({ locale, copy }: Props) {
       setOutcomeContext(null);
       setHandoffError("");
       focusAndScroll("#relationship-result");
-    } catch (caught) {
+    } catch {
       setProfile(null);
       setInsight(null);
-      setError(caught instanceof NumerologyInputError ? copy.invalidDate : copy.invalidDate);
+      setError(copy.invalidDate);
     }
   }
 
@@ -162,14 +161,14 @@ export function RelationshipExperience({ locale, copy }: Props) {
           <p className="privacy-note">{copy.privacyNote}</p>
         </form>
 
-        {profile && insight && (
+        {insight && (
           <section className="relationship-result" id="relationship-result" aria-live="polite" tabIndex={-1}>
             <header className="relationship-summary">
               <p className="eyebrow">{copy.summary}</p>
               <h2>{insight.summary}</h2>
               <p className="profile-facts">
-                Life Path {profile.lifePath.value} · Attitude {profile.attitude.value} ·
-                Personal Year {profile.personalYear.value}
+                Life Path {profile!.lifePath.value} · Attitude {profile!.attitude.value} ·
+                Personal Year {profile!.personalYear.value}
               </p>
             </header>
 

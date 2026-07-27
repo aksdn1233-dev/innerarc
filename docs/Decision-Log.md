@@ -399,3 +399,13 @@
 - Impact: Invalid or occupied alternatives still fail. The runner continues to terminate only its own direct server child; every E2E origin assertion reads the exact forwarded base URL instead of hardcoding port 3000, and no file, process, or configuration in the other workspace changes.
 - Revisit when: Test execution moves into isolated containers with allocated ephemeral ports and equivalent ownership evidence.
 - Status: Decided.
+
+## D-041 - Share cards use an explicit local PNG and native file-share boundary
+
+- Date: 2026-07-27
+- Decision: Keep the existing allowlisted share payload and SVG renderer authoritative, derive a 1080×1350 PNG only in browser memory after a click, and pass exactly one generic-titled PNG to the native share surface when file sharing is supported. Retain explicit PNG/SVG downloads; use PNG download as the unsupported or technical-failure fallback, but never after user cancellation.
+- Alternatives: Keep SVG download only; upload cards to a share service; encode the result in a public URL; share free text; silently copy to the clipboard; add a third-party rasterization dependency.
+- Reason: Mobile users need a direct path from a safe result card to their chosen app, while public URLs, uploads, clipboard mutation, remote rasterizers, and text envelopes would expand privacy and tracking risk. The existing renderer already enforces the product's strongest allowlist boundary.
+- Impact: The browser creates no new record or remote request. The operating-system share surface opens only from a user gesture, receives one PNG with no `text` or `url`, and has a clearly disclosed external-app boundary. Unsupported browsers still receive a portable PNG without losing the editable SVG option.
+- Revisit when: Real share completion and trust evidence exists, a native app has an approved share-sheet implementation, or brand review changes the card format.
+- Status: Decided.

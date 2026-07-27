@@ -1,16 +1,16 @@
 # Continuation State
 
 Last updated: 2026-07-27<br>
-Current version: 0.15.1
+Current version: 0.15.2
 Overall progress: 98%
 
 ## Active worktree status
 
 - `CODEX-WINDOWS-HANDOFF.md` is the exact Windows continuation guide for the current worktree.
-- Version 0.15.1 retains the complete Reality Check, tarot reading-room, relationship reflection, lifestyle, and closed-shop release scope from 0.15.0.
-- Version 0.15.1 adds a visually verified 1200×630 first-party social card, native Korean/English Open Graph/X metadata, a validated public-origin policy, and explicit safe alternative ports for repository-owned E2E and launch capture.
-- Verified locally on the integrated current source: 262/262 unit/integration tests across 26 files, full ESLint, TypeScript, 27-output production build, 54/54 directly affected Chromium/mobile metadata, onboarding, privacy-request, navigation, and performance flows on port 3011, full audit, 0.15.1 SBOM, and the complete fifteen-image launch capture through alternate ports while another project retained port 3000.
-- Release evidence is labelled 0.15.1: CycloneDX 1.6 SBOM with 97 production components. All fifteen synthetic-only 1242x2688 launch screenshots regenerated at version 0.15.1 and the new social asset passed exact text, dimension, byte-size, first-party, and visual checks.
+- Version 0.15.2 retains the complete 0.15.1 product and release-isolation scope.
+- Version 0.15.2 adds explicit local PNG generation, one-file native sharing, unsupported/technical-failure PNG fallback, cancellation without transfer, selected-app privacy disclosure, accessible busy/status handling, and retained editable SVG download for every allowlisted share-card kind.
+- Verified locally on the integrated current source: 263/263 unit/integration tests across 26 files, full ESLint, TypeScript, 27-output production build, 8/8 new Chromium/mobile share flows, 14/14 clean-process performance flows, 2/2 dynamic share accessibility flows, 36/36 onboarding/relationship/data-rights flows, full audit, and a 0.15.2 SBOM while another project retained port 3000.
+- Release evidence is labelled 0.15.2: CycloneDX 1.6 SBOM with 97 production components and fifteen regenerated synthetic-only 1242×2688 launch assets. The capture manifest reports app version 0.15.2, all files present, and the owned 3012 server released after capture.
 - Private GitHub repository `aksdn1233-dev/innerarc` is connected. Normal non-force `main` pushes and the full cloud CI gate are working; `local-bootstrap` preserves the two original local commits. Generated archives, dependencies, build output, environment files, and test artifacts remain excluded.
 - Windows WebKit can produce transient worker exits and navigation/click timeouts after a 20+ minute session without a repeated product assertion failure. Use one worker or the file-split clean-process commands in the Windows handoff.
 
@@ -100,10 +100,11 @@ Overall progress: 98%
 - Added explicit localized image metadata after the first browser run proved that a child `openGraph`/`twitter` object replaced inherited file-based image fields.
 - Preserved another workspace's active port-3000 server and completed E2E/capture through validated ports 3011/3012; both owned alternatives were released and the other listener remained active.
 - Fixed the alternate-port regression exposed by the full 3011 run: the metadata fallback now uses the runner's canonical loopback host, and all E2E same-origin, navigation, privacy-request, and performance checks derive their expected origin from `E2E_BASE_URL` instead of hardcoding port 3000. The 54 directly affected Chromium/mobile flows pass on 3011.
+- Added a local PNG/native-share path without weakening the existing share allowlist. The first implementation pushed the relationship route from below budget to 1,051,745 decoded JavaScript bytes. Deferring raster/file helpers reduced this to 1,050,057, removing a redundant branch reduced it to 1,050,003, and removing one duplicate result guard reached the still-failing exact ceiling of 1,050,000. The final fix defers deterministic numerology and relationship engines until form submission; the unchanged `<1,050,000` budget, relationship results, Reality Check handoff, outcome context, and share paths all pass.
 
 ## Verified baseline
 
-- Unit/integration: 262/262 passed across 26 files.
+- Unit/integration: 263/263 passed across 26 files.
 - ESLint: passed with zero warnings.
 - TypeScript strict check: passed.
 - Next.js 16.2.11 production build: passed without metadata warnings; 27 static route outputs generated.
@@ -116,7 +117,7 @@ Overall progress: 98%
 - Performance: HTML, resource count, JavaScript/CSS transfer and decoded-size, total payload, and no-third-party-request budgets passed, including `/en/shop`.
 - Full dependency audit: zero known vulnerabilities; PostCSS 8.5.19 and brace-expansion 5.0.8.
 - Link-preview browser regression: four Korean/English Chromium/mobile flows verify native copy, large-image tags, same-origin URLs, image responses, alt/type fields, and 1200×630 PNG headers.
-- CycloneDX 1.6 SBOM: validated with 97 production components for version 0.15.1.
+- CycloneDX 1.6 SBOM: validated with 97 production components for version 0.15.2.
 - Client static bundle: no OpenAI endpoint, key/config name, or test-secret marker found.
 - Workspace secret-pattern scan: no recognized API key, cloud credential, private key, or GitHub token pattern found; only `.env.example` exists.
 - Store assets: fifteen regenerated synthetic screenshots passed external-origin and 1242×2688 PNG checks; Korean/English home, Korean tarot card, relationship context, and closed-shop views passed visual inspection.

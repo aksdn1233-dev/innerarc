@@ -116,6 +116,38 @@ test("generated onboarding context has no serious accessibility violation", asyn
   expect(violations, JSON.stringify(violations, null, 2)).toEqual([]);
 });
 
+test("generated share controls have no serious accessibility violation", async ({ page }) => {
+  await page.goto("/en");
+  await page.locator("#birthDate").fill("1994-11-04");
+  await page.getByText("I have read the privacy notice.").click();
+  await page.getByRole("button", { name: "Show my core pattern" }).click();
+  await page.getByText("Privacy-safe share card", { exact: true }).click();
+  await page.addScriptTag({ content: axe.source });
+  const result = await page.locator(".share-panel").evaluate(async (context) => {
+    const browserAxe = (window as typeof window & {
+      axe: { run: (context: Element, options: object) => Promise<{ violations: AxeViolation[] }> };
+    }).axe;
+    const audit = await browserAxe.run(context, {
+      runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"] },
+    });
+    const undersized = Array.from(context.querySelectorAll("button"))
+      .filter((button) => {
+        const rect = button.getBoundingClientRect();
+        return rect.width < 44 || rect.height < 44;
+      })
+      .map((button) => button.textContent?.trim());
+    return {
+      violations: audit.violations.filter(
+        ({ impact }) => impact === "critical" || impact === "serious",
+      ),
+      undersized,
+    };
+  });
+  expect(result.violations, JSON.stringify(result.violations, null, 2)).toEqual([]);
+  expect(result.undersized).toEqual([]);
+  await expect(page.getByRole("status")).toHaveAttribute("aria-live", "polite");
+});
+
 test("skip link and generated result move keyboard focus", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name === "mobile", "Mobile WebKit does not expose desktop hardware-Tab focus order.");
   await page.goto("/en");

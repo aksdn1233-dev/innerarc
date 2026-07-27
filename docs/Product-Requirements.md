@@ -189,9 +189,12 @@ Date: 2026-07-18
 
 - Share core number, archetype, one-line pattern, celebrity comparison, and relationship summary.
 - Share-card builders accept only purpose-specific public fields; they have no birth-date, concern, journal, question, third-party name, or contact field. Core profile, romantic pattern, compatibility summary, and celebrity match use separate typed builders.
-- The guest MVP renders a self-contained local SVG preview/download without uploading data or loading remote images. The card includes a non-predictive context label and product brand, not hidden tracking parameters.
+- The guest MVP renders a self-contained local preview plus 1080×1350 PNG and SVG files without uploading data or loading remote images. The card includes a non-predictive context label and product brand, not hidden tracking parameters.
+- `Share image` is always an explicit user action. The browser converts the already validated SVG to a PNG in memory. If the device supports file sharing, InnerArc opens the native share surface with exactly one generic-titled `image/png` file and no URL or free-text message. If file sharing is unavailable or fails technically, the same click downloads the PNG and announces the fallback. A user cancellation does not trigger a download.
+- PNG, SVG, native-share, fallback, and cancellation paths create no application record, browser-storage entry, analytics event, provider request, remote asset request, or automatic recipient. A selected operating-system/app share target is outside InnerArc and is disclosed next to the action.
 - Acceptance: full birth date and sensitive concern are absent by default.
 - Acceptance: ISO dates, emails, phone-like contact strings, prohibited certainty, unescaped SVG markup, oversized copy, and accidental third-party identifiers are rejected; Korean/English layouts use the same safe schema.
+- Acceptance: downloaded PNGs have a valid PNG header and exact 1080×1350 dimensions; native sharing receives one PNG file with no `text` or `url`; unsupported sharing downloads once; cancellation downloads nothing; busy/error/status states are accessible and duplicate clicks cannot create duplicate share actions.
 
 ### Accessibility, security, and installability
 

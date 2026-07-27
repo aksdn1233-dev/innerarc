@@ -1201,6 +1201,40 @@ summary {
   font-size: 0.78rem;
 }
 
+.share-external-note {
+  max-width: 620px;
+  color: var(--muted);
+  font-size: 0.74rem;
+}
+
+.share-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.share-actions button:not(.primary-button) {
+  min-height: 44px;
+  padding: 11px 15px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.share-actions button:disabled {
+  cursor: wait;
+  opacity: 0.58;
+}
+
+.share-status {
+  min-height: 1.4em;
+  margin: 10px 0 0;
+  color: var(--sage-dark);
+  font-size: 0.78rem;
+}
+
 .disclaimer {
   margin-top: 28px;
   padding: 16px;

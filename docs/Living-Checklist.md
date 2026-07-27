@@ -51,7 +51,7 @@ Last updated: 2026-07-27
 - [x] Explicit-use relationship outcome layer with a two-review minimum, relevant/mixed/missed treatment, bounded user learning notes, category isolation, and no calculation mutation or provider transfer.
 - [x] Seven relationship types and eight compatibility operating domains without fate scores.
 - [x] Source-bound date-structure celebrity comparison and authoritative source links.
-- [x] Local allowlisted SVG share cards that omit sensitive inputs.
+- [x] Local allowlisted PNG/SVG share cards that omit sensitive inputs, support explicit one-file native sharing, disclose the selected-app privacy boundary, handle cancellation without fallback transfer, and retain a local download path without storage or upload.
 - [x] Deterministic accessory form/palette/material directions and music genre/sonic/use lanes with reality checks, bilingual parity, master-number cases, and no efficacy claims.
 - [x] Bilingual `/shop` category preview that is visibly closed and carries no personalized URL data, products, prices, cart, checkout, or affiliate links.
 - [x] Future product-disclosure schema, prohibited-claim and tracking-link rejection, organic/sponsored separation, and a twelve-gate shop-readiness assessment that cannot open the store.

@@ -13,6 +13,11 @@ import {
   UnsafeSharePayloadError,
   type ShareCardPayload,
 } from "@/core/share";
+import {
+  isShareCancellation,
+  SHARE_CARD_PNG_HEIGHT,
+  SHARE_CARD_PNG_WIDTH,
+} from "@/components/share-card-file";
 
 const profileA = calculateNumerologyProfile({ birthDate: "1994-11-04", name: "Minji Kim", personalYear: 2026 });
 const profileB = calculateNumerologyProfile({ birthDate: "1988-03-17", name: "Alex Lee", personalYear: 2026 });
@@ -81,5 +86,13 @@ describe("self-contained share SVG", () => {
     expect(svg).not.toMatch(/<image|href=/);
     expect(svg).toContain('width="1080"');
     expect(svg).toContain('height="1350"');
+  });
+
+  it("keeps raster dimensions fixed and distinguishes cancellation from failure", () => {
+    expect([SHARE_CARD_PNG_WIDTH, SHARE_CARD_PNG_HEIGHT]).toEqual([1080, 1350]);
+    expect(isShareCancellation(new DOMException("cancelled", "AbortError"))).toBe(true);
+    expect(isShareCancellation(new Error("failed"))).toBe(false);
+    expect(isShareCancellation({ name: "AbortError" })).toBe(true);
+    expect(isShareCancellation(null)).toBe(false);
   });
 });
