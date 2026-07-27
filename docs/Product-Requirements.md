@@ -16,6 +16,7 @@ Date: 2026-07-18
 8. Retried writes use idempotency keys to prevent duplicate records.
 9. Primary guest flows remain keyboard operable, expose programmatic labels and status/error announcements, preserve a visible focus indicator, and honor reduced-motion preferences.
 10. Production responses apply a restrictive same-origin security baseline. Install metadata must not imply that sensitive reflection data is available offline when no privacy-reviewed offline store exists.
+11. Shared website links expose native Korean/English titles and descriptions plus one first-party brand image. Preview metadata contains no user inputs, tracking URL, prediction claim, or remote asset dependency.
 
 ## MVP requirements and acceptance
 
@@ -31,6 +32,15 @@ Date: 2026-07-18
 - Account-identity removal is orchestrated only after owned-data deletion reaches a terminal state. Legally required audit/consent tombstones need a separately documented retention basis and are never silently mixed into the user-content export.
 - Acceptance: empty exports, sensitive owned export, cross-owner leakage, third-party-only deletion, complete deletion, repeated requests, conflicting requests, malformed JSON payloads, and deletion counts are tested.
 - Acceptance: Korean and English privacy/terms routes render without optional consent, are included in accessibility regression, cross-link each other, and identify unresolved controller/contact/jurisdiction fields as launch blockers rather than inventing them.
+
+### Link sharing and discovery metadata
+
+- The root product and each localized route expose a concise product title and description that position numerology and tarot as symbolic self-reflection connected to lived outcomes.
+- Korean and English copy is native rather than literal translation and must not imply scientific validation, prediction accuracy, fate, diagnosis, or guaranteed results.
+- One 1200×630 first-party social image uses the established ivory, sage, clay, number, and card-back visual language. It contains only public product branding and no generated user result, birth date, name, question, relationship data, or hidden tracking metadata.
+- Next.js file-based Open Graph and X image routes resolve against a validated `NEXT_PUBLIC_APP_URL`. Local builds use an explicit loopback fallback; production accepts only a path-free HTTPS origin, so no public domain is guessed before hosting is approved.
+- Acceptance: both localized home routes emit the expected native title/description, `summary_large_image`, image alt text, PNG content type, and 1200×630 dimensions; the resolved image is same-origin, under platform size limits, and contains no external request.
+- Local release tooling must never reuse or terminate another project's server. It fails closed on an occupied default port and accepts only an explicit valid alternate port for repository-owned E2E or launch-capture processes.
 
 ### Three-minute onboarding
 

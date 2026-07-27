@@ -1,16 +1,16 @@
 # Continuation State
 
 Last updated: 2026-07-27<br>
-Current version: 0.15.0  
+Current version: 0.15.1
 Overall progress: 98%
 
 ## Active worktree status
 
 - `CODEX-WINDOWS-HANDOFF.md` is the exact Windows continuation guide for the current worktree.
-- Version 0.15.0 release evidence is complete for browser-local Reality Check review months and read-only navigation across current and prior monthly reports, including disclosed UTC compatibility fallback for existing records.
-- Version 0.15.0 also adds a restrained tarot reading-room presentation, recognizable portrait card faces, a clearer number-and-cards home motif, render-safe question-result focus, and a fully deferred relationship share bundle.
-- Verified on the integrated current source: 251/251 unit/integration tests across 24 files, full ESLint, TypeScript, 25-output production build, and one combined GitHub-hosted Chromium/mobile run with 103 passed and one intentional hardware-keyboard skip. GitHub CI run `30232289893` completed all install, audit, SBOM, build, and browser steps with zero annotations.
-- Release evidence is labelled 0.15.0: CycloneDX 1.6 SBOM with 97 production components. All fifteen synthetic-only 1242x2688 launch screenshots were regenerated after the reading-room change; Korean/English home, tarot, relationship, lifestyle, outcome, privacy, and closed-shop routes passed first-party-origin/dimension checks, with the key home, tarot, relationship, shop, and English views visually inspected.
+- Version 0.15.1 retains the complete Reality Check, tarot reading-room, relationship reflection, lifestyle, and closed-shop release scope from 0.15.0.
+- Version 0.15.1 adds a visually verified 1200×630 first-party social card, native Korean/English Open Graph/X metadata, a validated public-origin policy, and explicit safe alternative ports for repository-owned E2E and launch capture.
+- Verified locally on the integrated current source: 262/262 unit/integration tests across 26 files, full ESLint, TypeScript, 27-output production build, four focused Chromium/mobile metadata flows, full audit, 0.15.1 SBOM, and the complete fifteen-image launch capture through alternate ports while another project retained port 3000.
+- Release evidence is labelled 0.15.1: CycloneDX 1.6 SBOM with 97 production components. All fifteen synthetic-only 1242x2688 launch screenshots regenerated at version 0.15.1 and the new social asset passed exact text, dimension, byte-size, first-party, and visual checks.
 - Private GitHub repository `aksdn1233-dev/innerarc` is connected. Normal non-force `main` pushes and the full cloud CI gate are working; `local-bootstrap` preserves the two original local commits. Generated archives, dependencies, build output, environment files, and test artifacts remain excluded.
 - Windows WebKit can produce transient worker exits and navigation/click timeouts after a 20+ minute session without a repeated product assertion failure. Use one worker or the file-split clean-process commands in the Windows handoff.
 
@@ -45,6 +45,8 @@ Overall progress: 98%
 - Fifteen Korean/English synthetic mobile screenshots at 1242×2688, including context-aware onboarding, relationship outcome context, lifestyle, and closed-shop views, with first-party-origin and dimension checks plus visual inspection.
 - Exact-process E2E runner that refuses occupied port 3000, starts only this repository's production server, and terminates only the PID it owns.
 - Exact-process launch-capture runner that refuses occupied port 3000, disables AI, starts only this repository's production server, and terminates only the child process it owns.
+- Native Korean/English share-link metadata with a static first-party social image, a strict loopback/HTTPS origin resolver, and no user-derived or tracking-bearing fields.
+- Explicit `E2E_PORT` and `CAPTURE_PORT` alternatives that retain occupied-port refusal and exact child ownership.
 - No source, dependency, process, or configuration in another project was changed. All repository writes remain inside this workspace; Playwright browser binaries are the only shared user-cache installation.
 
 ## Current state
@@ -67,6 +69,7 @@ Overall progress: 98%
 - Email/social auth, PostgreSQL, transactional email, reminders, live paid AI, payment processing, analytics sink, error monitoring, and deployment require external accounts or user authorization.
 - Final privacy notice, terms, age policy, crisis escalation, trademark/domain/app-store work, editorial review, pricing, and launch approval require qualified human or business decisions.
 - Supplier contracts and every live-commerce operation are unresolved; the shop must remain closed.
+- The approved production domain remains unresolved; `NEXT_PUBLIC_APP_URL` must be set to its path-free HTTPS origin before external link-unfurl validation.
 - This constrained Windows host becomes unstable during a 20+ minute single WebKit process: clean focused runs pass, while later unrelated navigations/clicks can be canceled or time out. Mobile release evidence is therefore split by test file or focused flow; do not treat a long-session browser-process failure as a product assertion without a clean-process reproduction.
 
 ## Resolved defects in this version
@@ -93,13 +96,16 @@ Overall progress: 98%
 - Cleared GitHub's high-severity GHSA-mh99-v99m-4gvg alert by resolving every `brace-expansion` path to 5.0.8. A narrow `minimatch` 3 import-compatibility patch preserves ESLint, and CI now audits development dependencies as well as production dependencies.
 - Removed the prior Node 20 action-runtime deprecation path by upgrading the official GitHub actions to current Node 24-based majors.
 - Removed `pnpm/action-setup` after its current bootstrap logged an advisory-affected pnpm 11.7.0 stage; Corepack now activates only the repository-pinned pnpm 11.9.0, and the replacement CI log has no severity, deprecation, or warning markers.
+- Replaced an O(n) structural equality assertion over a 907 KB PNG after it exceeded the five-second unit-test ceiling; SHA-256 now proves byte identity in under one second.
+- Added explicit localized image metadata after the first browser run proved that a child `openGraph`/`twitter` object replaced inherited file-based image fields.
+- Preserved another workspace's active port-3000 server and completed E2E/capture through validated ports 3011/3012; both owned alternatives were released and the other listener remained active.
 
 ## Verified baseline
 
-- Unit/integration: 251/251 passed across 24 files.
+- Unit/integration: 262/262 passed across 26 files.
 - ESLint: passed with zero warnings.
 - TypeScript strict check: passed.
-- Next.js 16.2.11 production build: passed; 25 static route outputs generated.
+- Next.js 16.2.11 production build: passed without metadata warnings; 27 static route outputs generated.
 - Playwright cloud release gate: combined Chromium and iPhone 13/WebKit run passed 103 tests with one intentional hardware-keyboard skip on the integrated source.
 - Local Windows browser evidence remains available as desktop Chromium 52/52 plus split clean-process mobile checks. A later 20+ minute single-session run produced only browser navigation/click cancellations, so constrained-Windows reruns should remain file-split while GitHub-hosted CI is the canonical combined-browser result.
 - Outcome-informed flow proves zero history reads before explicit use, one read after use, relationship-category isolation, unchanged meeting-context ordering, bounded displayed learning, dynamic focus, and no horizontal mobile overflow.
@@ -108,7 +114,8 @@ Overall progress: 98%
 - Accessibility: automated axe critical/serious checks passed on all 20 Korean/English application routes, the generated onboarding context, the generated outcome-review layer, and the relationship handoff-prefilled form.
 - Performance: HTML, resource count, JavaScript/CSS transfer and decoded-size, total payload, and no-third-party-request budgets passed, including `/en/shop`.
 - Full dependency audit: zero known vulnerabilities; PostCSS 8.5.19 and brace-expansion 5.0.8.
-- CycloneDX 1.6 SBOM: validated with 97 production components for version 0.15.0.
+- Link-preview browser regression: four Korean/English Chromium/mobile flows verify native copy, large-image tags, same-origin URLs, image responses, alt/type fields, and 1200×630 PNG headers.
+- CycloneDX 1.6 SBOM: validated with 97 production components for version 0.15.1.
 - Client static bundle: no OpenAI endpoint, key/config name, or test-secret marker found.
 - Workspace secret-pattern scan: no recognized API key, cloud credential, private key, or GitHub token pattern found; only `.env.example` exists.
 - Store assets: fifteen regenerated synthetic screenshots passed external-origin and 1242×2688 PNG checks; Korean/English home, Korean tarot card, relationship context, and closed-shop views passed visual inspection.

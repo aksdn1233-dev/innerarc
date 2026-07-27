@@ -1,7 +1,7 @@
 # InnerArc Windows Codex 인수인계
 
 마지막 갱신: 2026-07-27<br>
-현재 버전: 0.15.0  
+현재 버전: 0.15.1
 전체 진행률: 98%  
 제품 상태: 웹/PWA 우선 로컬 MVP와 출시 기반 검증 완료, 외부 서비스와 실제 배포는 미연결
 
@@ -54,23 +54,25 @@ Write-Output "port3000_listeners=$($listeners.Count)"
 4. 미래 만남, 배우자, 궁합을 확률·운명·보장으로 표현하지 않는다.
 5. 상점은 명시적 승인과 모든 운영 게이트 전까지 닫혀 있어야 한다.
 
-## 3. 0.15.0 검증 결과
+## 3. 0.15.1 검증 결과
 
 - ESLint: 오류·경고 0건
 - TypeScript strict: 통과
-- 단위·통합: 251/251, 24개 파일
-- Next.js 16.2.11 프로덕션 빌드: 25개 출력
+- 단위·통합: 262/262, 26개 파일
+- Next.js 16.2.11 프로덕션 빌드: 27개 출력
 - 데스크톱 Chromium: 52/52
 - 모바일 WebKit: 변경 전 전체 51 통과와 하드웨어 키보드 전용 1건 의도적 제외, 변경 질문 흐름 3/3, 안전 포커스 1/1, 접근성 27/27, 성능 7/7 통과. 장시간 단일 세션에서 자원 고갈이 보이면 파일별 새 프로세스로 재검증
 - 접근성: 20개 한·영 경로와 동적 온보딩/관계 결과/Reality Check 연결의 axe critical·serious 0건
 - 성능: 7개 대표 경로의 HTML, 요청 수, JS/CSS 전송·해제 크기, 전체 페이로드 예산 통과
 - 프로덕션 의존성 감사: 알려진 취약점 0건
 - 전체 의존성 감사: 알려진 취약점 0건. `brace-expansion` 5.0.8 고정과 `minimatch` 3 호환 패치 포함
-- CycloneDX 1.6 SBOM: 97개 프로덕션 구성요소, 버전 0.15.0
+- CycloneDX 1.6 SBOM: 97개 프로덕션 구성요소, 버전 0.15.1
 - 출시 이미지: 합성 데이터 15개, 모두 1242×2688, 외부 요청 없음
 - 한국어/영어 홈, 한국어 타로 카드·관계·상점 이미지 시각검사 완료
 - 포트 3000 최종 리스너 0개
 - 비공개 GitHub CI `30232289893`: Corepack pnpm 11.9.0, 단위·통합 251개, 전체 감사, 97개 구성요소 SBOM, Chromium·모바일 103개 통과와 의도된 1개 제외, 경고·주석 0개
+- 새 링크 미리보기: 한·영 제목·설명, 1200×630 PNG, Open Graph/X 태그와 Chromium·모바일 4개 집중 흐름 통과
+- 다른 프로젝트가 포트 3000을 사용 중일 때 해당 프로세스를 유지하고 `E2E_PORT=3011`로 이 저장소 검증 통과
 
 이번 변경에서 발견·수정한 오류:
 
@@ -97,6 +99,12 @@ $env:NEXT_TELEMETRY_DISABLED='1'
 & '.\node_modules\.bin\next.cmd' build
 node scripts/run-e2e.mjs --project=chromium
 node scripts/run-e2e.mjs --project=mobile --workers=1
+# 포트 3000이 다른 프로젝트에 필요하면 명시적 대체 포트 사용
+$env:E2E_PORT='3011'
+$env:NEXT_PUBLIC_APP_URL='http://127.0.0.1:3011'
+& '.\node_modules\.bin\next.cmd' build
+node scripts/run-e2e.mjs tests/e2e/metadata.spec.ts --project=chromium --project=mobile
+Remove-Item Env:E2E_PORT, Env:NEXT_PUBLIC_APP_URL
 # 장시간 WebKit 세션이 불안정할 때 아래 파일별 명령으로 대체
 node scripts/run-e2e.mjs tests/e2e/accessibility.spec.ts --project=mobile --timeout=180000
 node scripts/run-e2e.mjs tests/e2e/onboarding.spec.ts --project=mobile --timeout=180000
@@ -105,7 +113,7 @@ pnpm.cmd audit
 node scripts/generate-sbom.mjs
 ```
 
-각 브라우저 명령 전에 포트 3000이 비었는지 확인한다. 테스트 실행기는 점유 포트를 재사용하지 않는다.
+각 브라우저 명령 전에 사용할 포트가 비었는지 확인한다. 테스트 실행기는 점유 포트를 재사용하지 않으며, 다른 프로젝트가 3000을 사용 중이면 그 프로세스를 건드리지 말고 `E2E_PORT`에 명시적 대체 포트를 지정한다.
 
 로컬 사이트 실행:
 
@@ -115,7 +123,7 @@ pnpm.cmd dev
 
 한국어 `http://localhost:3000/ko`, 영어 `http://localhost:3000/en`.
 
-출시 이미지 재생성은 프로덕션 빌드 이후 `pnpm.cmd capture:launch`로 실행한다. 이 명령은 포트 3000이 점유돼 있으면 실패하고, AI를 끈 상태로 이 저장소의 프로덕션 서버만 시작한 뒤 자신이 만든 정확한 자식 프로세스만 종료한다. 현재 결과는 `artifacts/store-assets/manifest.json`에 15개로 검증돼 있으므로 UI가 바뀌지 않았다면 불필요하게 다시 만들지 않는다.
+출시 이미지 재생성은 프로덕션 빌드 이후 `pnpm.cmd capture:launch`로 실행한다. 이 명령은 사용할 포트가 점유돼 있으면 실패하고, AI를 끈 상태로 이 저장소의 프로덕션 서버만 시작한 뒤 자신이 만든 정확한 자식 프로세스만 종료한다. 3000이 다른 프로젝트에 필요하면 `$env:CAPTURE_PORT='3012'`처럼 명시적 대체 포트를 사용할 수 있다. 현재 결과는 `artifacts/store-assets/manifest.json`에 15개로 검증돼 있으므로 UI가 바뀌지 않았다면 불필요하게 다시 만들지 않는다.
 
 ## 5. 핵심 파일 지도
 
@@ -181,5 +189,5 @@ pnpm.cmd dev
 ## 8. 새 Windows Codex 시작 프롬프트
 
 ```text
-이 작업공간의 CODEX-WINDOWS-HANDOFF.md와 docs/Continuation-State.md를 먼저 읽고 현재 0.15.0 검증 기준선을 유지해라. 다른 프로젝트의 파일·포트·프로세스를 건드리지 말고, 포트 3000이 점유돼 있으면 중단해라. 명세→수용기준→개인정보/안전 검토→구현→단위/통합/브라우저/회귀→문서 갱신 순서를 지켜 다음 미완료 우선순위를 진행해라. 외부 계정, 결제, 법적 결정, 도메인, 앱스토어, 실제 배포는 승인 없이 수행하지 마라. Windows 브라우저 회귀는 Chromium과 mobile을 분리하고 mobile은 한 작업자 또는 파일별 새 프로세스로 실행해라.
+이 작업공간의 CODEX-WINDOWS-HANDOFF.md와 docs/Continuation-State.md를 먼저 읽고 현재 0.15.1 검증 기준선을 유지해라. 다른 프로젝트의 파일·포트·프로세스를 건드리지 말고, 기본 포트가 점유돼 있으면 재사용·종료하지 말고 명시적 대체 포트를 사용해라. 명세→수용기준→개인정보/안전 검토→구현→단위/통합/브라우저/회귀→문서 갱신 순서를 지켜 다음 미완료 우선순위를 진행해라. 외부 계정, 결제, 법적 결정, 도메인, 앱스토어, 실제 배포는 승인 없이 수행하지 마라. Windows 브라우저 회귀는 Chromium과 mobile을 분리하고 mobile은 한 작업자 또는 파일별 새 프로세스로 실행해라.
 ```

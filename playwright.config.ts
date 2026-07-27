@@ -1,6 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const useExternalServer = process.env.PLAYWRIGHT_EXTERNAL_SERVER === "1";
+const baseURL = useExternalServer
+  ? process.env.E2E_BASE_URL ?? "http://127.0.0.1:3000"
+  : "http://127.0.0.1:3000";
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -10,7 +13,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: "html",
   use: {
-    baseURL: "http://127.0.0.1:3000",
+    baseURL,
     trace: "on-first-retry",
   },
   webServer: useExternalServer

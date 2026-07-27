@@ -2,7 +2,12 @@ import { once } from "node:events";
 import { spawn } from "node:child_process";
 
 const host = "127.0.0.1";
-const port = 3_000;
+const portInput = process.env.CAPTURE_PORT ?? "3000";
+if (!/^\d+$/.test(portInput)) throw new Error("CAPTURE_PORT must be an integer from 1 to 65535.");
+const port = Number.parseInt(portInput, 10);
+if (!Number.isSafeInteger(port) || port < 1 || port > 65_535) {
+  throw new Error("CAPTURE_PORT must be an integer from 1 to 65535.");
+}
 const baseURL = `http://${host}:${port}`;
 const healthUrl = `${baseURL}/ko`;
 const node = process.execPath;

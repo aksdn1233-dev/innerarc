@@ -80,6 +80,8 @@ Last updated: 2026-07-27
 - [x] Korean/English launch-copy draft and fifteen synthetic-data 1242x2688 screenshots with visual, dimension, and external-request checks.
 - [x] Exact-process, occupied-port-safe E2E server lifecycle and WebKit-safe 90-second test timeout.
 - [x] Exact-process, occupied-port-safe launch-capture lifecycle with AI disabled and automatic release of the owned production server.
+- [x] Native Korean/English Open Graph/X metadata, first-party 1200×630 brand image, validated production-origin policy, and desktop/mobile link-preview regression.
+- [x] Explicit validated alternative ports for E2E and launch capture, preserving fail-closed behavior without stopping or reusing another project's server.
 - [x] Emergency-kill-switch and explicit-owner-authorization boundaries for any future commerce launch.
 - [ ] Select external providers and implement production adapters.
 - [ ] Verify staging auth, migrations, payments, monitoring, deletion, backup/restore, and incident response.

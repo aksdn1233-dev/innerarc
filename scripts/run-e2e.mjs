@@ -2,7 +2,13 @@ import { once } from "node:events";
 import { spawn } from "node:child_process";
 
 const host = "127.0.0.1";
-const port = 3_000;
+const portInput = process.env.E2E_PORT ?? "3000";
+if (!/^\d+$/.test(portInput)) throw new Error("E2E_PORT must be an integer from 1 to 65535.");
+const port = Number.parseInt(portInput, 10);
+if (!Number.isSafeInteger(port) || port < 1 || port > 65_535) {
+  throw new Error("E2E_PORT must be an integer from 1 to 65535.");
+}
+const baseURL = `http://${host}:${port}`;
 const healthUrl = `http://${host}:${port}/ko`;
 const node = process.execPath;
 const playwrightArguments = [
@@ -73,7 +79,7 @@ try {
   await waitForServer();
   const tests = spawn(node, playwrightArguments, {
     cwd: process.cwd(),
-    env: { ...process.env, PLAYWRIGHT_EXTERNAL_SERVER: "1" },
+    env: { ...process.env, E2E_BASE_URL: baseURL, PLAYWRIGHT_EXTERNAL_SERVER: "1" },
     stdio: "inherit",
     windowsHide: true,
   });

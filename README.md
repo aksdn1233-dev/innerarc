@@ -4,7 +4,7 @@ InnerArc is an AI self-discovery and personal pattern intelligence platform. It 
 
 ## Current scope
 
-Version 0.15.0 provides a web-first, guest-first Korean/English application with:
+Version 0.15.1 provides a web-first, guest-first Korean/English application with:
 
 - deterministic Pythagorean numerology and calculation evidence;
 - a context-aware first result that uses stable focus/depth choices and optional page-memory-only concern text without changing calculations, storage, sharing, analytics, or provider state;
@@ -19,6 +19,7 @@ Version 0.15.0 provides a web-first, guest-first Korean/English application with
 - seven-type two-person compatibility reflection;
 - source-bound public-birth-date celebrity comparison;
 - privacy-safe local SVG share cards;
+- native Korean/English link-preview metadata and a first-party 1200×630 InnerArc social card with no personal result data or tracking dependency;
 - the Reality Check Loop, browser-local review-month capture, and read-only navigation across current and prior monthly pattern reports;
 - a guest privacy center for independent consent, language/time-zone preferences, validated device export, and complete local deletion;
 - bilingual pre-release privacy and terms pages that surface unresolved launch-review fields;

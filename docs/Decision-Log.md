@@ -379,3 +379,23 @@
 - Impact: CI loses the convenience action and its pnpm-store cache integration, but removes the affected transient package. The frozen lockfile, full audit, tool version, build, SBOM, and browser gates remain unchanged and must pass again.
 - Revisit when: The action bootstrap is patched beyond the relevant advisory and a measured CI-duration benefit justifies reintroducing it.
 - Status: Decided.
+
+## D-039 - Public link previews use one static first-party brand asset
+
+- Date: 2026-07-27
+- Decision: Add one 1200×630 InnerArc social card, native Korean/English titles and descriptions, and explicit Open Graph/X metadata. Serve the same raster through first-party static image routes with accessible alt, type, and dimension fields.
+- Alternatives: Share raw result cards; use a remote image CDN; omit preview imagery; guess an unapproved production domain; generate a personalized preview per user.
+- Reason: Shared links need recognizable premium product identity without exposing a birth date, name, question, relationship context, or generated result. One static asset keeps previews consistent, cacheable, and independent of external tracking or storage.
+- Impact: The image contains only the public brand, number 11, and abstract card backs. `NEXT_PUBLIC_APP_URL` accepts loopback locally and requires a path-free HTTPS origin for production. Two localized browser cases verify the complete preview response in both Chromium and mobile.
+- Revisit when: The final brand name/domain is cleared or a qualified native-language/brand review requests localized image variants.
+- Status: Decided.
+
+## D-040 - Release tooling supports explicit alternative ports without process reuse
+
+- Date: 2026-07-27
+- Decision: Keep port 3000 as the default, fail closed when it is occupied, and allow an explicit validated `E2E_PORT` or `CAPTURE_PORT` for a repository-owned server. Forward the exact E2E origin into Playwright.
+- Alternatives: Stop the occupying process; attach to whatever responds on 3000; scan automatically for a free port; block all validation until the other project stops.
+- Reason: Another active workspace can legitimately own the default port. Automatic reuse, termination, or silent port scanning would weaken isolation, while an explicit alternative preserves operator intent and deterministic metadata origin testing.
+- Impact: Invalid or occupied alternatives still fail. The runner continues to terminate only its own direct server child; no file, process, or configuration in the other workspace changes.
+- Revisit when: Test execution moves into isolated containers with allocated ephemeral ports and equivalent ownership evidence.
+- Status: Decided.

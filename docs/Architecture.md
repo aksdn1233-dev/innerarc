@@ -44,11 +44,12 @@ Next.js UI
 - `src/core/billing`: versioned Free/Plus/Pro capability policies, quota evaluation, provider-neutral checkout/cancel contracts, and idempotent/stale-safe subscription state.
 - `src/core/operations`: typed feature-flag evaluation with deterministic anonymous rollout plus retry-safe named rate-limit policies. Production adapters must use atomic shared storage.
 - `src/core/account`: owner-scoped JSON export, all-data/third-party deletion scopes, cross-owner fail-closed validation, and request-id conflict protection. Auth identity removal remains an external adapter step.
-- `src/i18n`: locale routing and native Korean/English copy.
+- `src/i18n`: locale routing, native Korean/English product copy, and non-predictive localized discovery metadata.
 - `src/i18n/legal-copy.ts` and localized `/privacy` and `/terms` routes: pre-release disclosures that keep unresolved controller, contact, jurisdiction, age, retention, and vendor fields visible until qualified review.
 - `src/components`: onboarding, tarot, relationship, compatibility, celebrity, lifestyle/shop preview, Reality Check, and share interactions only; no authoritative calculation, card-selection, ranking, curation, or share-safety logic.
-- `scripts/generate-sbom.mjs`, `scripts/run-launch-capture.mjs`, and `scripts/capture-launch-assets.mjs`: deterministic release-evidence generation for a validated CycloneDX SBOM and fifteen synthetic-only, first-party mobile screenshots. The capture runner refuses an occupied port, starts only this repository's production server with AI disabled, and terminates only that exact child process.
-- `scripts/serve-production.mjs` and `scripts/run-e2e.mjs`: an exact-process, fail-closed production-server lifecycle for cross-platform browser regression. The runner refuses an occupied port instead of attaching to an unknown project.
+- `public/og.png`, `src/app/social-image.ts`, and the Open Graph/X image routes: one public 1200×630 brand asset, explicit accessible metadata, immutable first-party responses, and no user-derived or remote content.
+- `scripts/generate-sbom.mjs`, `scripts/run-launch-capture.mjs`, and `scripts/capture-launch-assets.mjs`: deterministic release-evidence generation for a validated CycloneDX SBOM and fifteen synthetic-only, first-party mobile screenshots. The capture runner refuses an occupied port, supports a validated explicit alternative, starts only this repository's production server with AI disabled, and terminates only that exact child process.
+- `scripts/serve-production.mjs` and `scripts/run-e2e.mjs`: an exact-process, fail-closed production-server lifecycle for cross-platform browser regression. The runner refuses an occupied port instead of attaching to an unknown project and supports a validated explicit alternative through `E2E_PORT`.
 
 ## Planned data model
 
@@ -81,6 +82,7 @@ Every user-owned row carries `owner_user_id`, timestamps, deletion state, and en
 12. Outcome-informed analysis has two gates: the user explicitly requests a read of already opted-in device history, then a pure category-scoped derivation produces an `outcome_review` layer. The relationship engine remains unchanged and derived user text is never treated as an instruction.
 13. Relationship-to-Reality-Check handoff is a separate, purpose-limited session boundary. A context-card click creates a strict 30-minute payload in the current tab; the destination validates, consumes, and clears it once. URL state carries no handoff or personal data, and prefill never equals record creation.
 14. Onboarding context is separate from numerology evidence. Stable focus/depth IDs may change copy, disclosure, and the next suggested action, but raw concern text remains labelled user input and cannot enter calculations, sharing, persistence, logging, analytics, or provider calls in the guest website.
+15. Public link-preview metadata is a static first-party boundary. It contains only native product copy and an abstract brand image; the production origin must be an explicitly configured path-free HTTPS URL and no user field can enter the tags or asset.
 
 ## Reliability
 
