@@ -34,11 +34,20 @@ const sharedEn = {
 
 const privacyKo: LegalPageCopy = {
   ...sharedKo,
-  status: "출시 전 초안 · 사업자 정보 확정 및 법률 검토 필요",
+  status: "운영 전 안내 · 연락처·국외이전 세부사항 및 법률 검토 필요",
   title: "개인정보 처리 안내",
-  intro: "현재 기능과 예정된 결제 처리 범위를 설명하는 출시 전 초안입니다. 운영자 상호·대표자·개인정보 보호 연락처·위탁 및 국외이전 세부사항을 확정하기 전에는 실제 유료 서비스를 열지 않습니다.",
+  intro: "InnerArc 운영자와 현재 기능, 계정·결제 처리 범위를 설명합니다. 개인정보 권리행사 연락처와 위탁·국외이전 세부사항은 실제 계약 확인 후 최종 갱신합니다.",
   lastUpdated: "2026-07-27",
   sections: [
+    {
+      title: "개인정보처리자",
+      bullets: [
+        "상호: 별루프",
+        "대표자: 박서준",
+        "사업자등록번호: 482-12-03629",
+        "사업장 주소: 부산광역시 북구 상학로 36, 207동 1108호",
+      ],
+    },
     {
       title: "현재 처리하는 정보",
       bullets: [
@@ -80,7 +89,7 @@ const privacyKo: LegalPageCopy = {
     {
       title: "출시를 막는 미확정 항목",
       paragraphs: [
-        "개인정보처리자 상호·주소·대표자, 보호책임자 또는 담당부서 연락처, 최소 이용연령, 정확한 처리 항목·법적 근거·보유기간, 위탁사와 국외이전, 쿠키·분석 도구, 권리행사 절차 및 침해구제 안내가 아직 확정되지 않았습니다. 이 항목이 채워지고 검토되기 전에는 결제를 활성화하지 않습니다.",
+        "개인정보 보호 담당 연락처, 최소 이용연령, 정확한 처리 항목·법적 근거·보유기간, 위탁사와 국외이전, 쿠키·분석 도구, 권리행사 절차 및 침해구제 안내의 최종 확인이 남아 있습니다.",
       ],
     },
   ],
@@ -88,11 +97,20 @@ const privacyKo: LegalPageCopy = {
 
 const privacyEn: LegalPageCopy = {
   ...sharedEn,
-  status: "Pre-release draft · operator details and legal review pending",
+  status: "Pre-operation notice · contact, transfer details, and legal review pending",
   title: "Privacy information",
-  intro: "This pre-release draft describes current functionality and the intended payment data flow. Paid service will remain closed until the operator, privacy contact, processors, and international-transfer details are finalized.",
+  intro: "This notice identifies the InnerArc operator and describes current account and payment data flows. Contact, processor, and international-transfer details will be finalized against the operating contracts.",
   lastUpdated: "2026-07-27",
   sections: [
+    {
+      title: "Controller",
+      bullets: [
+        "Legal business name: 별루프",
+        "Representative: 박서준",
+        "Business registration number: 482-12-03629",
+        "Business address: 부산광역시 북구 상학로 36, 207동 1108호, Republic of Korea",
+      ],
+    },
     {
       title: "Information currently handled",
       bullets: [
@@ -142,11 +160,21 @@ const privacyEn: LegalPageCopy = {
 
 const termsKo: LegalPageCopy = {
   ...sharedKo,
-  status: "출시 전 초안 · 판매자 정보와 환불정책 확정 필요",
+  status: "운영 전 이용조건 · 연락처와 통신판매 신고정보 최종 확인 필요",
   title: "InnerArc 이용조건",
-  intro: "이 문서는 현재 제품 경계와 예정된 30일 이용권의 원칙을 설명하는 초안입니다. 판매자 신원, 가격, 고객지원과 최종 환불정책이 확정되기 전에는 유료 결제를 받지 않습니다.",
+  intro: "현재 제품 경계와 자동 갱신 없는 30일 이용권의 유료 결제·환불 원칙을 설명합니다. 연락처와 통신판매 신고정보는 운영 개시 전에 최종 갱신합니다.",
   lastUpdated: "2026-07-27",
   sections: [
+    {
+      title: "판매자 정보",
+      bullets: [
+        "상호: 별루프",
+        "대표자: 박서준",
+        "사업자등록번호: 482-12-03629",
+        "사업장 주소: 부산광역시 북구 상학로 36, 207동 1108호",
+        "업태·종목: 도매 및 소매업 · 전자상거래 소매업",
+      ],
+    },
     {
       title: "서비스의 성격",
       paragraphs: [
@@ -170,7 +198,8 @@ const termsKo: LegalPageCopy = {
     {
       title: "30일 이용권과 결제",
       bullets: [
-        "Plus와 Pro는 자동 갱신 없는 1회성 30일 이용권으로 설계되어 있습니다. 최종 가격과 제공 기능은 결제 직전 화면에 표시합니다.",
+        "Plus는 19,000원, Pro는 39,000원인 자동 갱신 없는 1회성 30일 이용권입니다. 부가세가 포함된 최종 결제금액과 제공 기능을 결제 직전 화면에 다시 표시합니다.",
+        "79,000원 프리미엄 맞춤 PDF는 생성·검수·전달 기능이 완성되기 전까지 판매하지 않습니다.",
         "카카오페이·토스페이·가상계좌·휴대폰 결제는 토스페이먼츠 가맹점 계약과 각 결제수단 심사가 완료된 범위에서만 노출됩니다.",
         "가상계좌 이용권은 실제 입금이 결제대행사 조회로 확인된 시점부터 반영됩니다.",
       ],
@@ -178,13 +207,13 @@ const termsKo: LegalPageCopy = {
     {
       title: "청약철회, 취소와 환불",
       paragraphs: [
-        "관계 법령상 청약철회가 가능한 기간과 예외, 디지털콘텐츠 사용 개시 전 동의 절차, 부분 사용 시 환불 산정, 오결제·중복결제·장애 시 처리 기준을 결제 전에 명확히 표시합니다. 표시·광고 또는 계약과 다르게 제공된 경우의 법정 권리는 제한하지 않습니다. 최종 환불 기준이 승인되기 전에는 결제를 열지 않습니다.",
+        "구매자는 계약내용을 받은 날 또는 이용 가능일 중 늦은 날부터 7일 이내에 청약철회를 요청할 수 있습니다. 서비스가 표시·광고 또는 계약과 다르게 제공된 경우에는 공급일로부터 3개월 이내 또는 그 사실을 안 날부터 30일 이내의 법정 권리를 제한하지 않습니다. 중복결제, 결제 후 이용권 미반영, 사업자 귀책 장애는 확인 후 전액 환불합니다. 환불은 요청 확인 후 원 결제수단으로 처리합니다.",
       ],
     },
     {
       title: "출시를 막는 미확정 항목",
       paragraphs: [
-        "상호·대표자·주소·사업자등록번호·통신판매업 신고번호·연락처, 상품별 가격·세금·제공시점, 고객지원, 환불 요청 방법, 분쟁처리, 준거법, 지식재산권과 책임 제한 문구가 아직 확정되지 않았습니다.",
+        "대표 전화, 고객지원 이메일, 통신판매업 신고번호, 환불 접수 방법과 분쟁처리 연락처의 최종 입력이 남아 있습니다.",
       ],
     },
   ],
@@ -197,6 +226,15 @@ const termsEn: LegalPageCopy = {
   intro: "This draft explains current product boundaries and the intended 30-day passes. No paid checkout will open until seller identity, prices, support, and the final refund policy are approved.",
   lastUpdated: "2026-07-27",
   sections: [
+    {
+      title: "Seller",
+      bullets: [
+        "Legal business name: 별루프",
+        "Representative: 박서준",
+        "Business registration number: 482-12-03629",
+        "Business address: 부산광역시 북구 상학로 36, 207동 1108호, Republic of Korea",
+      ],
+    },
     {
       title: "Nature of the service",
       paragraphs: [
@@ -220,7 +258,8 @@ const termsEn: LegalPageCopy = {
     {
       title: "30-day access and payment",
       bullets: [
-        "Plus and Pro are designed as one-time, non-renewing 30-day passes. Final prices and included features will be displayed immediately before payment.",
+        "Plus is KRW 19,000 and Pro is KRW 39,000. Both are one-time, non-renewing 30-day passes, with the tax-inclusive final amount and included features shown immediately before payment.",
+        "The KRW 79,000 custom PDF is not sold until generation, review, and delivery are implemented.",
         "KakaoPay, Toss Pay, virtual-account, and mobile-phone methods appear only after the applicable Toss Payments merchant and method reviews.",
         "Virtual-account access begins only after the deposit is verified through the payment-provider API.",
       ],

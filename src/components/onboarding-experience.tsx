@@ -78,6 +78,7 @@ const landingCopy = {
       ["현실 확인", "좋았던 해석뿐 아니라 맞지 않았던 부분도 기록해 개인 관련성을 다시 확인합니다."],
     ],
     footerNote: "숫자를 답으로 믿기보다, 내 경험을 더 정확히 읽기 위해 사용합니다.",
+    seller: "별루프 · 대표 박서준 · 사업자등록번호 482-12-03629 · 부산광역시 북구 상학로 36, 207동 1108호",
     footerLinks: [
       { href: "privacy", label: "개인정보 처리 안내" },
       { href: "terms", label: "이용조건" },
@@ -133,6 +134,7 @@ const landingCopy = {
       ["Reality checks", "Record what missed as well as what fit, then review personal relevance over time."],
     ],
     footerNote: "Use numbers to read your experience more carefully—not as answers to believe.",
+    seller: "별루프 · Representative 박서준 · Business registration 482-12-03629 · Busan, Republic of Korea",
     footerLinks: [
       { href: "privacy", label: "Privacy" },
       { href: "terms", label: "Terms" },
@@ -691,6 +693,7 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
               <small>{d.brandTagline}</small>
             </Link>
             <p>{home.footerNote}</p>
+            <p className="seller-line">{home.seller}</p>
           </div>
           <nav aria-label={locale === "ko" ? "정책 및 데이터" : "Policy and data"}>
             {home.footerLinks.map((item) => (
