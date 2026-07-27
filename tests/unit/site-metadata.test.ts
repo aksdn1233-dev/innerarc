@@ -16,7 +16,7 @@ describe("site sharing metadata", () => {
     const combined = [ko.title, ko.description, en.title, en.description].join(" ");
 
     expect(ko.title).toContain("타로·신점");
-    expect(en.title).toContain("Patterns That Repeat");
+    expect(en.title).toContain("Premium Tarot Reading");
     expect(ko.openGraphLocale).toBe("ko_KR");
     expect(en.openGraphLocale).toBe("en_US");
     expect(combined).not.toMatch(/정확도|정확히 예측|반드시|보장|accuracy|predicts? exactly|guaranteed/i);

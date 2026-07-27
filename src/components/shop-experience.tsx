@@ -12,7 +12,7 @@ export function ShopExperience({ locale, copy }: { locale: Locale; copy: ShopCop
       <main className="shell shop-shell" id="main-content" tabIndex={-1}>
         <header className="topbar">
           <Link className="brand" href={`/${locale}`}>
-            <strong>InnerArc</strong>
+            <strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong>
             <small>{copy.brandTagline}</small>
           </Link>
           <Link className="locale-switch" href={`/${otherLocale}/shop`}>

@@ -67,17 +67,18 @@ const copy = {
   ko: {
     navLabel: "홈페이지 탐색",
     nav: [
-      ["#products", "대표 상품"],
-      ["#onboarding", "리딩 신청"],
-      ["#trust", "안전 안내"],
+      ["#about", "서비스 소개"],
+      ["#fields", "상담 분야"],
+      ["#products", "상품 안내"],
+      ["#voices", "후기"],
     ],
-    primary: "상품 선택하고 시작하기",
-    secondary: "대표 상품 보기",
+    primary: "지금 상담 시작하기",
+    secondary: "상담 사례 보기",
     heroNote: "결제 전 정보 확인 · 1회 결제 · 자동 갱신 없음",
     sampleEyebrow: "리딩 방식",
     sampleTitle: "막연한 예언보다, 지금 필요한 선택과 주의사항을 분명하게.",
     sampleBody: "질문과 생년월일을 바탕으로 현재 흐름을 정리하고, 오늘부터 확인할 행동과 조심할 상황을 이해하기 쉬운 말로 안내합니다.",
-    aboutEyebrow: "InnerArc 타로신점",
+    aboutEyebrow: "결 GYEOL",
     aboutTitle: "답이 흐릿한 순간, 지금 보아야 할 흐름을 선명하게 읽습니다.",
     aboutBody: "타로의 상징과 현재의 고민을 연결해 연애·관계·진로·재물의 흐름을 구체적인 언어로 풀어냅니다. 겁을 주는 말이나 결과 보장 대신 현실에서 확인할 선택에 집중합니다.",
     fields: [
@@ -87,14 +88,14 @@ const copy = {
       ["04", "지금의 흐름", "현재 변화의 속도와 미루지 말아야 할 작은 행동을 확인합니다."],
     ],
     formTitle: "원하는 상품을 먼저 선택해 주세요",
-    formBody: "선택한 상품에 필요한 정보만 받습니다. 입력 후 결제 페이지로 이동하며, 결제 승인 뒤 리포트가 마이페이지에 저장됩니다.",
+    formBody: "선택한 상품에 필요한 정보만 받습니다. 입력 후 결제 페이지로 이동하며, 결제 확인 뒤 비회원도 전용 주소에서 리포트를 볼 수 있습니다.",
     submit: "입력 완료하고 결제하러 가기",
     privacy: "입력 정보는 결제 완료 후 구매한 리포트를 만들고 저장하는 데 사용됩니다.",
     productsTitle: "대표 상품 3가지",
     productsBody: "빠른 한 가지 답변부터 장문 맞춤 리포트까지 필요한 깊이만 선택하세요.",
     trust: [
-      ["결제 후 제공", "승인되거나 가상계좌 입금이 확인된 주문에만 전체 리포트를 제공합니다."],
-      ["언제든 다시 보기", "구매 리포트는 로그인한 마이페이지에 저장되고 PC와 휴대폰에서 열 수 있습니다."],
+      ["결제 후 제공", "자동결제가 승인되거나 계좌입금이 확인된 주문에만 전체 리포트를 제공합니다."],
+      ["언제든 다시 보기", "비회원은 전용 주소에서, 로그인한 회원은 마이페이지에서도 리포트를 다시 볼 수 있습니다."],
       ["다운로드 가능", "리포트를 파일로 내려받거나 인쇄 메뉴에서 PDF로 저장할 수 있습니다."],
       ["알림 직접 설정", "마이페이지에서 주의사항 알림과 이메일 알림을 켜거나 끌 수 있습니다."],
     ],
@@ -114,7 +115,7 @@ const copy = {
     sampleEyebrow: "How it works",
     sampleTitle: "Clear choices and cautions instead of vague prediction.",
     sampleBody: "Your question and birth date shape a plain-language report with a current theme, a practical next step, and situations to watch.",
-    aboutEyebrow: "InnerArc reading",
+    aboutEyebrow: "GYEOL reading",
     aboutTitle: "When the answer feels unclear, make the next decision easier to see.",
     aboutBody: "Tarot symbolism is connected to your present concern across relationships, career, and money. The service focuses on practical reflection rather than guaranteed outcomes.",
     fields: [
@@ -181,19 +182,19 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
 
   return (
     <>
-      <main className="shell" id="main-content" tabIndex={-1}>
+      <main className="shell home-shell" id="main-content" tabIndex={-1}>
         <header className="topbar home-topbar">
           <Link className="brand" href={`/${locale}`}>
-            <strong>InnerArc</strong>
+            <strong>{locale === "ko" ? "결" : "GYEOL"}</strong>
             <small>{d.brandTagline}</small>
           </Link>
           <nav className="home-nav" aria-label={t.navLabel}>
             {t.nav.map(([href, label]) => <a href={href} key={href}>{label}</a>)}
           </nav>
           <div className="home-header-actions">
-            <Link className="header-account-link" href={`/${locale}/me`}>
-              {locale === "ko" ? "마이페이지" : "My Page"}
-            </Link>
+            <a className="header-start-link" href="#onboarding">
+              {locale === "ko" ? "상담 시작하기" : "Start reading"}
+            </a>
             <Link className="locale-switch" href={`/${otherLocale}`}>
               {otherLocale === "ko" ? "한국어" : "English"}
             </Link>
@@ -203,11 +204,15 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
         <section className="hero home-hero" aria-labelledby="hero-title">
           <div className="home-hero-copy">
             <p className="eyebrow">{d.eyebrow}</p>
-            <h1 id="hero-title">{d.headline}</h1>
+            <h1 id="hero-title">
+              {locale === "ko" ? (
+                <>막막한 순간,<br /><span>결이 답의 방향을<br />밝혀드립니다.</span></>
+              ) : d.headline}
+            </h1>
             <p className="hero-copy">{d.intro}</p>
             <div className="hero-actions">
               <a className="primary-button" href="#onboarding">{t.primary}</a>
-              <a className="secondary-link" href="#products">{t.secondary}</a>
+              <a className="secondary-link" href="#voices">{t.secondary}</a>
             </div>
             <p className="hero-note">{t.heroNote}</p>
           </div>
@@ -234,7 +239,13 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
           <div className="about-gyeol-body"><p>{t.aboutBody}</p></div>
         </section>
 
-        <section className="pattern-fields" aria-label={locale === "ko" ? "리딩 분야" : "Reading areas"}>
+        <section className="pattern-fields" id="fields" aria-labelledby="fields-title">
+          <div className="section-heading">
+            <p className="eyebrow">{locale === "ko" ? "상담 분야" : "Reading areas"}</p>
+            <h2 id="fields-title">
+              {locale === "ko" ? "지금 가장 답이 필요한 분야를 선택하세요" : "Choose the area that needs clarity now"}
+            </h2>
+          </div>
           <div className="pattern-field-grid">
             {t.fields.map(([index, title, body]) => (
               <article key={index}><span>{index}</span><h3>{title}</h3><p>{body}</p></article>
@@ -347,7 +358,7 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
           </div>
         </section>
 
-        <section className="voice-stream" aria-labelledby="voices-title">
+        <section className="voice-stream" id="voices" aria-labelledby="voices-title">
           <div className="section-heading">
             <p className="eyebrow">{locale === "ko" ? "이용 경험 예시" : "Experience examples"}</p>
             <h2 id="voices-title">{locale === "ko" ? "읽기 쉽고, 다시 보기 편하게" : "Readable and easy to revisit"}</h2>
@@ -355,13 +366,18 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
           </div>
           <div className="voice-marquee">
             <div className="voice-track">
-              {[...t.voices, ...t.voices].map((voice, index) => <blockquote key={`${voice}-${index}`}>{voice}</blockquote>)}
+              {[...t.voices, ...t.voices].map((voice, index) => (
+                <blockquote className="voice-card" key={`${voice}-${index}`}>
+                  <p>{voice}</p>
+                  <footer>{locale === "ko" ? "서비스 이용 경험 예시" : "Illustrative experience"}</footer>
+                </blockquote>
+              ))}
             </div>
           </div>
         </section>
 
         <footer className="home-footer">
-          <div><strong>InnerArc</strong><p>{locale === "ko" ? "타로·신점 기반 자기이해 리딩" : "Reflective tarot readings"}</p></div>
+          <div><strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong><p>{locale === "ko" ? "타로·신점 상담 서비스" : "Reflective tarot readings"}</p></div>
           <nav aria-label={locale === "ko" ? "법률 안내" : "Legal"}>
             <Link href={`/${locale}/terms`}>{locale === "ko" ? "이용조건" : "Terms"}</Link>
             <Link href={`/${locale}/privacy`}>{locale === "ko" ? "개인정보" : "Privacy"}</Link>

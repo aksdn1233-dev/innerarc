@@ -3,8 +3,8 @@ import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/",
-    name: "InnerArc — Personal Pattern Intelligence",
-    short_name: "InnerArc",
+    name: "결 GYEOL — 프리미엄 타로·신점 상담",
+    short_name: "결 GYEOL",
     description: "Symbolic self-reflection connected to real-world outcome reviews.",
     start_url: "/ko",
     scope: "/",

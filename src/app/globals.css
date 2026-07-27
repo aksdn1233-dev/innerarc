@@ -21,9 +21,40 @@
   padding-bottom: 6rem;
 }
 
+.plans-shell {
+  width: min(100% - 28px, 1120px);
+}
+
+.plans-shell .topbar,
+.paid-report-shell .topbar,
+.admin-shell .topbar {
+  margin-top: 14px;
+  padding-inline: clamp(18px, 4vw, 36px);
+  border: 1px solid rgba(220, 183, 119, 0.24);
+  border-radius: 18px;
+  background: linear-gradient(135deg, #041022, #0a1d32);
+  color: #fffaf0;
+}
+
+.plans-shell .topbar small,
+.paid-report-shell .topbar small,
+.admin-shell .topbar small {
+  color: #ddb978;
+}
+
+.plans-shell .locale-switch {
+  color: #f0ca8c;
+}
+
 .plans-intro {
-  max-width: 48rem;
-  padding: clamp(3rem, 8vw, 6rem) 0 2rem;
+  max-width: none;
+  margin-top: 18px;
+  padding: clamp(3rem, 8vw, 6rem) clamp(24px, 6vw, 72px);
+  border-radius: 24px;
+  background:
+    linear-gradient(90deg, rgba(3, 8, 25, 0.72), rgba(3, 8, 25, 0.48)),
+    url("/images/gyeol-night-hero.png") center / cover no-repeat;
+  color: #fffaf0;
 }
 
 .plans-intro h1 {
@@ -36,6 +67,15 @@
 .plans-notice {
   color: var(--muted);
   line-height: 1.75;
+}
+
+.plans-intro > p:last-child {
+  max-width: 46rem;
+  color: rgba(255, 250, 240, 0.82);
+}
+
+.plans-intro .eyebrow {
+  color: #edc57f;
 }
 
 .plans-gate {
@@ -82,9 +122,9 @@
 
 .plan-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
-  max-width: 58rem;
+  max-width: none;
 }
 
 .plan-card,
@@ -93,12 +133,20 @@
   padding: clamp(1.4rem, 4vw, 2.5rem);
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  background: var(--white);
+  background: #fffaf1;
   box-shadow: var(--shadow);
 }
 
 .plan-card h2 {
   margin: 0 0 1rem;
+}
+
+.plan-card {
+  border-color: #d8cab8;
+}
+
+.plan-card .eyebrow {
+  color: #8a6232;
 }
 
 .plan-card .plan-price,
@@ -133,7 +181,7 @@
 }
 
 .payment-widget-shell {
-  max-width: 58rem;
+  max-width: none;
   margin-top: 1rem;
 }
 
@@ -3107,9 +3155,40 @@ summary {
 }
 
 .home-topbar {
-  position: relative;
-  z-index: 5;
+  position: absolute;
+  z-index: 10;
+  top: 18px;
+  left: clamp(24px, 5vw, 72px);
+  right: clamp(24px, 5vw, 72px);
   gap: 24px;
+  min-height: 74px;
+  border-bottom-color: rgba(255, 255, 255, 0.13);
+  color: #fffaf0;
+}
+
+.home-shell {
+  position: relative;
+  width: min(100% - 24px, 1440px);
+}
+
+.home-topbar .brand {
+  align-items: center;
+  flex-direction: column;
+  gap: 0;
+  min-width: 64px;
+}
+
+.home-topbar .brand strong {
+  font-size: 2.05rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.home-topbar .brand small {
+  margin-top: 4px;
+  color: #dcb777;
+  font-size: 0.66rem;
+  letter-spacing: 0.24em;
 }
 
 .home-nav,
@@ -3125,7 +3204,7 @@ summary {
 }
 
 .home-nav a,
-.header-account-link,
+.header-start-link,
 .secondary-link,
 .home-footer a {
   color: inherit;
@@ -3133,13 +3212,13 @@ summary {
 }
 
 .home-nav a,
-.header-account-link {
+.header-start-link {
   display: inline-flex;
   min-height: 44px;
   min-width: 44px;
   align-items: center;
   justify-content: center;
-  color: var(--muted);
+  color: rgba(255, 250, 240, 0.86);
   font-size: 0.84rem;
   font-weight: 700;
 }
@@ -3151,49 +3230,80 @@ summary {
 }
 
 .home-nav a:hover,
-.header-account-link:hover {
-  color: var(--ink);
+.header-start-link:hover {
+  color: #f2cc8c;
 }
 
 .home-header-actions {
   gap: 16px;
 }
 
+.header-start-link {
+  min-height: 46px;
+  padding: 0 20px;
+  border: 1px solid rgba(226, 181, 110, 0.8);
+  border-radius: 999px;
+  color: #f2cc8c;
+}
+
+.home-topbar .locale-switch {
+  border-color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.78);
+}
+
 .home-hero {
-  min-height: min(720px, calc(100vh - 72px));
-  margin-top: 20px;
-  padding: clamp(42px, 7vw, 84px);
-  border-radius: clamp(22px, 4vw, 40px);
+  min-height: min(820px, 94vh);
+  grid-template-columns: 1fr;
+  place-items: center;
+  margin-top: 12px;
+  padding: clamp(132px, 18vh, 190px) clamp(28px, 7vw, 100px) clamp(70px, 10vh, 110px);
+  border-radius: clamp(18px, 2.4vw, 32px);
   background:
-    linear-gradient(115deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    #17262b;
-  background-size: 26px 26px, auto;
-  color: #f7f1e5;
+    linear-gradient(180deg, rgba(1, 5, 20, 0.36), rgba(1, 5, 20, 0.18) 48%, rgba(1, 5, 20, 0.52)),
+    linear-gradient(90deg, rgba(1, 5, 20, 0.36), transparent 25%, transparent 74%, rgba(1, 5, 20, 0.22)),
+    url("/images/gyeol-night-hero.png") center / cover no-repeat;
+  color: #fffaf0;
   overflow: hidden;
+  box-shadow: 0 24px 70px rgba(3, 8, 25, 0.24);
 }
 
 .home-hero-copy {
   position: relative;
   z-index: 2;
+  max-width: 880px;
+  text-align: center;
 }
 
 .home-hero .eyebrow {
-  color: #c09a68;
+  color: #efc47f;
+  font-size: clamp(0.82rem, 1.4vw, 1.03rem);
+  letter-spacing: 0.16em;
 }
 
 .home-hero h1 {
-  max-width: 12ch;
-  font-size: clamp(2.55rem, 6.3vw, 5.7rem);
-  letter-spacing: -0.06em;
+  max-width: 18ch;
+  margin-inline: auto;
+  font-size: clamp(2.7rem, 6.5vw, 6.1rem);
+  font-weight: 400;
+  letter-spacing: -0.055em;
+  line-height: 1.15;
+  text-shadow: 0 4px 28px rgba(0, 0, 0, 0.4);
+}
+
+.home-hero h1 span {
+  color: #eabf78;
 }
 
 .home-hero .hero-copy {
-  max-width: 640px;
-  color: rgba(247, 241, 229, 0.76);
+  max-width: 620px;
+  margin-inline: auto;
+  color: rgba(255, 250, 240, 0.9);
+  font-size: clamp(1rem, 1.7vw, 1.2rem);
   line-height: 1.8;
 }
 
 .hero-actions {
+  justify-content: center;
   flex-wrap: wrap;
   gap: 12px 20px;
 }
@@ -3206,10 +3316,11 @@ summary {
 }
 
 .home-hero .primary-button {
-  min-height: 56px;
-  background: #d0ad78;
-  color: #17262b;
-  box-shadow: none;
+  min-width: 230px;
+  min-height: 58px;
+  background: linear-gradient(90deg, #d9a95f, #f3d59d);
+  color: #171424;
+  box-shadow: 0 12px 34px rgba(4, 7, 23, 0.28);
 }
 
 .home-hero .primary-button:hover {
@@ -3220,23 +3331,24 @@ summary {
   display: inline-flex;
   min-height: 48px;
   align-items: center;
-  padding: 0 4px;
-  border-bottom: 1px solid rgba(247, 241, 229, 0.46);
+  min-width: 190px;
+  min-height: 58px;
+  justify-content: center;
+  padding: 0 24px;
+  border: 1px solid rgba(255, 250, 240, 0.55);
+  border-radius: 999px;
   color: #f7f1e5;
   font-weight: 700;
 }
 
 .hero-note {
   margin: 20px 0 0;
-  color: rgba(247, 241, 229, 0.58);
+  color: rgba(255, 250, 240, 0.67);
   font-size: 0.78rem;
 }
 
 .gyeol-motif {
-  position: relative;
-  width: min(100%, 360px);
-  aspect-ratio: 0.78;
-  justify-self: center;
+  display: none;
 }
 
 .gyeol-motif::before {
@@ -3311,6 +3423,12 @@ summary {
   grid-template-columns: minmax(0, 0.86fr) minmax(360px, 1.14fr);
   gap: clamp(38px, 8vw, 110px);
   align-items: end;
+  margin-top: 0;
+  padding-inline: clamp(24px, 7vw, 90px);
+  border-radius: 0 0 30px 30px;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(209, 171, 111, 0.13), transparent 17rem),
+    #fbf6ed;
 }
 
 .preview-reading {
@@ -3396,7 +3514,24 @@ summary {
 }
 
 .pattern-fields {
-  border-top: 1px solid var(--line);
+  margin: 0;
+  padding-inline: clamp(24px, 6vw, 76px);
+  border: 1px solid rgba(218, 176, 107, 0.22);
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 82% 8%, rgba(69, 56, 128, 0.34), transparent 26rem),
+    linear-gradient(145deg, #041022, #071a2e 58%, #071326);
+  color: #fffaf0;
+  box-shadow: 0 24px 64px rgba(4, 12, 29, 0.18);
+}
+
+.pattern-fields .section-heading {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.pattern-fields .eyebrow {
+  color: #e9bd76;
 }
 
 .pattern-field-grid {
@@ -3404,13 +3539,13 @@ summary {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0;
   margin-top: clamp(42px, 7vw, 82px);
-  border-top: 1px solid var(--line);
+  border-top: 1px solid rgba(232, 192, 127, 0.32);
 }
 
 .pattern-field-grid article {
   min-width: 0;
   padding: 26px clamp(16px, 2.6vw, 30px) 18px;
-  border-right: 1px solid var(--line);
+  border-right: 1px solid rgba(255, 255, 255, 0.13);
 }
 
 .pattern-field-grid article:first-child {
@@ -3423,7 +3558,7 @@ summary {
 }
 
 .pattern-field-grid article > span {
-  color: #9b7651;
+  color: #e9bd76;
   font: 700 0.86rem/1 var(--display-font);
 }
 
@@ -3438,6 +3573,10 @@ summary {
   margin: 0;
   color: var(--muted);
   line-height: 1.75;
+}
+
+.pattern-fields .pattern-field-grid p {
+  color: rgba(255, 250, 240, 0.72);
 }
 
 .home-form-section {
@@ -3835,8 +3974,12 @@ summary {
   margin-top: clamp(72px, 10vw, 140px);
   padding-inline: clamp(26px, 6vw, 72px);
   border-radius: clamp(20px, 3vw, 34px);
-  background: #17262b;
+  border: 1px solid rgba(218, 176, 107, 0.24);
+  background:
+    radial-gradient(circle at 88% 12%, rgba(77, 59, 132, 0.34), transparent 25rem),
+    linear-gradient(145deg, #041022, #071a2e);
   color: #f7f1e5;
+  box-shadow: 0 24px 64px rgba(4, 12, 29, 0.16);
 }
 
 .pass-summary .eyebrow {
@@ -3996,6 +4139,10 @@ summary {
 }
 
 @media (max-width: 940px) {
+  .plan-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .home-nav {
     display: none;
   }
@@ -4030,6 +4177,10 @@ summary {
 }
 
 @media (max-width: 760px) {
+  .plan-grid {
+    grid-template-columns: 1fr;
+  }
+
   .brand small {
     display: none;
   }
@@ -4156,18 +4307,31 @@ summary {
     gap: 8px;
   }
 
-  .header-account-link {
+  .header-account-link,
+  .header-start-link {
     display: none;
+  }
+
+  .home-topbar {
+    top: 10px;
+    left: 20px;
+    right: 20px;
+  }
+
+  .home-topbar .brand small {
+    display: block;
   }
 
   .home-hero {
     gap: 28px;
     margin-top: 12px;
-    padding: 48px clamp(22px, 7vw, 42px) 36px;
+    min-height: 720px;
+    padding: 128px clamp(22px, 7vw, 42px) 52px;
+    background-position: 58% center;
   }
 
   .home-hero h1 {
-    font-size: clamp(2.45rem, 13vw, 4.2rem);
+    font-size: clamp(2.35rem, 11vw, 4.2rem);
   }
 
   .home-hero .hero-copy {
@@ -4195,7 +4359,7 @@ summary {
   .pattern-field-grid article:nth-child(3),
   .pattern-field-grid article:last-child {
     padding: 24px 0 28px;
-    border-top: 1px solid var(--line);
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
     border-right: 0;
   }
 

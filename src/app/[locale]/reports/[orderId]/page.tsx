@@ -50,7 +50,7 @@ export default async function PurchasedReportPage({
   return (
     <main className="shell paid-report-shell" id="main-content">
       <header className="paid-report-header">
-        <Link className="brand" href={`/${locale}`}><strong>InnerArc</strong></Link>
+        <Link className="brand" href={`/${locale}`}><strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong></Link>
         <p className="eyebrow">{locale === "ko" ? "구매 리포트" : "Purchased report"}</p>
         <h1>{report.title}</h1>
         {report.customerName && <p>{report.customerName}</p>}
