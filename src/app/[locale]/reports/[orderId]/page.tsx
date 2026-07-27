@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PaymentStatusWaiting } from "@/components/payment-status-waiting";
 import { ReportActions } from "@/components/report-actions";
 import { isLocale } from "@/i18n/config";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -34,13 +35,15 @@ export default async function PurchasedReportPage({
   if (stored.status !== "ready" || !stored.report) {
     return (
       <main className="shell paid-report-shell" id="main-content">
-        <p className="eyebrow">{locale === "ko" ? "결제 확인" : "Payment status"}</p>
-        <h1>
-          {stored.status === "pending_payment"
-            ? locale === "ko" ? "입금 확인을 기다리고 있습니다." : "Waiting for payment confirmation."
-            : locale === "ko" ? "리포트를 준비하고 있습니다." : "The report is being prepared."}
-        </h1>
-        <p>{locale === "ko" ? "잠시 후 이 페이지를 다시 열어 주세요." : "Please open this page again shortly."}</p>
+        {stored.status === "pending_payment" ? (
+          <PaymentStatusWaiting locale={locale} />
+        ) : (
+          <>
+            <p className="eyebrow">{locale === "ko" ? "리포트 준비" : "Preparing report"}</p>
+            <h1>{locale === "ko" ? "리포트를 준비하고 있습니다." : "The report is being prepared."}</h1>
+            <p>{locale === "ko" ? "잠시 후 이 페이지를 다시 열어 주세요." : "Please open this page again shortly."}</p>
+          </>
+        )}
       </main>
     );
   }
