@@ -1,6 +1,6 @@
 # Continuation State
 
-Last updated: 2026-07-26  
+Last updated: 2026-07-27<br>
 Current version: 0.15.0  
 Overall progress: 98%
 
@@ -11,7 +11,7 @@ Overall progress: 98%
 - Version 0.15.0 also adds a restrained tarot reading-room presentation, recognizable portrait card faces, a clearer number-and-cards home motif, render-safe question-result focus, and a fully deferred relationship share bundle.
 - Verified: 251/251 unit/integration tests across 24 files, full ESLint, TypeScript, 25-output production build, desktop Chromium 52/52, a clean pre-UX mobile WebKit baseline of 51 passed with one intentional hardware-keyboard skip, focused changed question flows 3/3, focused mobile safety 1/1, all 27 mobile accessibility checks, and all seven representative performance routes.
 - Release evidence is labelled 0.15.0: CycloneDX 1.6 SBOM with 97 production components. The existing fifteen synthetic-only 1242x2688 launch screenshots remain valid because this release does not change their captured routes.
-- The valid local `main` now integrates the remote 0.15.0/Codespaces history with the reading-room change; `local-bootstrap` preserves the two original local commits. Generated archives, dependencies, build output, environment files, and test artifacts remain excluded.
+- Private GitHub repository `aksdn1233-dev/innerarc` is connected. Local `main` integrates the remote 0.15.0/Codespaces history with the reading-room change; `local-bootstrap` preserves the two original local commits. Generated archives, dependencies, build output, environment files, and test artifacts remain excluded.
 - Windows WebKit can produce transient worker exits and navigation/click timeouts after a 20+ minute session without a repeated product assertion failure. Use one worker or the file-split clean-process commands in the Windows handoff.
 
 ## Product direction
@@ -66,7 +66,6 @@ Overall progress: 98%
 - Email/social auth, PostgreSQL, transactional email, reminders, live paid AI, payment processing, analytics sink, error monitoring, and deployment require external accounts or user authorization.
 - Final privacy notice, terms, age policy, crisis escalation, trademark/domain/app-store work, editorial review, pricing, and launch approval require qualified human or business decisions.
 - Supplier contracts and every live-commerce operation are unresolved; the shop must remain closed.
-- Publishing the valid local repository to a new private GitHub remote requires the user to finish the GitHub CLI browser sign-in. The connected read-only GitHub profile is visible, but it cannot create a repository.
 - This constrained Windows host becomes unstable during a 20+ minute single WebKit process: clean focused runs pass, while later unrelated navigations/clicks can be canceled or time out. Mobile release evidence is therefore split by test file or focused flow; do not treat a long-session browser-process failure as a product assertion without a clean-process reproduction.
 
 ## Resolved defects in this version
@@ -90,6 +89,7 @@ Overall progress: 98%
 - Deferred the relationship share builder and renderer until a relationship result exists after the initial route exceeded its decoded-JavaScript budget by 285 bytes; all seven representative routes now pass without raising the budget.
 - Moved question safety/result focus to render-aware effects. The WebKit regression now waits for the scheduled animation-frame focus before taking its atomic safety snapshot, eliminating an intermittent test race without weakening card suppression.
 - Replaced generic tarot result blocks with CSS-generated portrait cards and retained every title, position, orientation, keyword, and draw-audit field as semantic text.
+- Cleared GitHub's high-severity GHSA-mh99-v99m-4gvg alert by resolving every `brace-expansion` path to 5.0.8. A narrow `minimatch` 3 import-compatibility patch preserves ESLint, and CI now audits development dependencies as well as production dependencies.
 
 ## Verified baseline
 
@@ -104,7 +104,7 @@ Overall progress: 98%
 - Monthly-report tests prove local/UTC boundary separation, legacy fallback disclosure, newest-first month options, read-only navigation, and unchanged stored source records.
 - Accessibility: automated axe critical/serious checks passed on all 20 Korean/English application routes, the generated onboarding context, the generated outcome-review layer, and the relationship handoff-prefilled form.
 - Performance: HTML, resource count, JavaScript/CSS transfer and decoded-size, total payload, and no-third-party-request budgets passed, including `/en/shop`.
-- Production dependency audit: zero known vulnerabilities; PostCSS 8.5.19.
+- Full dependency audit: zero known vulnerabilities; PostCSS 8.5.19 and brace-expansion 5.0.8.
 - CycloneDX 1.6 SBOM: validated with 97 production components for version 0.15.0.
 - Client static bundle: no OpenAI endpoint, key/config name, or test-secret marker found.
 - Workspace secret-pattern scan: no recognized API key, cloud credential, private key, or GitHub token pattern found; only `.env.example` exists.

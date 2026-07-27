@@ -1,11 +1,11 @@
 # Local Security Review
 
-Date: 2026-07-26  
+Date: 2026-07-27<br>
 Scope: repository source, configuration, local production bundle, and automated tests. This is an engineering baseline, not a substitute for an independent penetration test or legal/privacy review.
 
 ## Passed checks
 
-- Production dependency audit: zero known vulnerabilities.
+- Full production and development dependency audit: zero known vulnerabilities.
 - Recognized-secret scan: no API-key, cloud-access-key, private-key, Google API-key, or GitHub-token pattern found outside ignored build/dependency artifacts.
 - Environment files: only `.env.example`; provider and database values are empty placeholders.
 - Security headers: content-type sniffing, referrer, frame, permissions, cross-origin resource, and CSP controls are tested.
@@ -19,6 +19,8 @@ Scope: repository source, configuration, local production bundle, and automated 
 
 - Next.js and `eslint-config-next` are pinned to 16.2.11.
 - `next>sharp` is overridden to 0.35.3 and `next>postcss` to patched 8.5.19 because the parent dependency graph otherwise resolved advisory-affected releases.
+- `brace-expansion` is overridden to 5.0.8 for GHSA-mh99-v99m-4gvg. The legacy `minimatch` 3 consumer receives a two-line compatibility patch because it expects the older callable CommonJS export; full ESLint execution proves the patched import path while the lockfile contains only 5.0.8.
+- CI runs the full `pnpm audit`, including development tools, rather than limiting the gate to production dependencies.
 - Overrides must be reviewed whenever Next.js is upgraded and removed once the upstream graph resolves equally safe or newer compatible releases.
 
 ## Remaining production work

@@ -29,7 +29,7 @@
 - [x] Reproducible pnpm lockfile and CI definition.
 - [x] Unit/integration 251/251, Chromium 52/52, mobile WebKit 51 passed plus one intentional hardware-keyboard skip, accessibility, performance, and local recovery suites green.
 - [x] Next.js 16.2.11 production build and 25 route outputs verified.
-- [x] Production dependency audit reports zero known vulnerabilities.
+- [x] Full production/development dependency audit reports zero known vulnerabilities.
 - [x] CSP/security headers, opt-in HTTPS-only enforcement, feature flags, rate limits, and rollback runbook.
 - [x] Chromium and WebKit are included in CI browser coverage.
 - [x] Exact-process E2E runner refuses occupied port 3000 and terminates only its repository-scoped server.

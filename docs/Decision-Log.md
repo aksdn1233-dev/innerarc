@@ -339,3 +339,13 @@
 - Impact: Decorative artwork is derived only from canonical card metadata and CSS. Card names, positions, orientations, keywords, and audit facts stay accessible text. The initial relationship share feature is deferred from the route bundle to recover the existing 285-byte decoded-JavaScript budget overage.
 - Revisit when: Brand testing, licensed original card art, or specific owner art direction is available.
 - Status: Decided.
+
+## D-035 - Development dependency advisories block release evidence
+
+- Date: 2026-07-27
+- Decision: Resolve all `brace-expansion` paths to patched 5.0.8 for GHSA-mh99-v99m-4gvg, add a narrow import-compatibility patch for the legacy `minimatch` 3 consumer, and run the full `pnpm audit` in CI.
+- Alternatives: Ignore the alert because it is development-only; keep the vulnerable legacy branch; force the incompatible package without a consumer patch; upgrade the complete lint stack in an unrelated major-version change.
+- Reason: A crafted brace pattern can exhaust Node memory, and launch evidence must include the development/CI supply chain. The first global override cleared the advisory but broke ESLint because `minimatch` 3 expected a callable CommonJS export, so compatibility must be proven rather than assumed.
+- Impact: The lockfile contains one `brace-expansion` version, 5.0.8. Full audit, ESLint, TypeScript, and 251 tests pass; the patch changes only how `minimatch` 3 obtains the same expansion function.
+- Revisit when: The lint dependency graph no longer contains `minimatch` 3 or natively supports `brace-expansion` 5, at which point remove the compatibility patch and re-run the full gate.
+- Status: Decided.

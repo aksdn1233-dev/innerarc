@@ -1,6 +1,6 @@
 # InnerArc Windows Codex 인수인계
 
-마지막 갱신: 2026-07-26  
+마지막 갱신: 2026-07-27<br>
 현재 버전: 0.15.0  
 전체 진행률: 98%  
 제품 상태: 웹/PWA 우선 로컬 MVP와 출시 기반 검증 완료, 외부 서비스와 실제 배포는 미연결
@@ -23,7 +23,7 @@ Write-Output "port3000_listeners=$($listeners.Count)"
 
 포트 3000에 리스너가 있으면 소유 프로세스를 확인하기 전에는 테스트나 개발 서버를 시작하지 않는다. 광범위한 `node`/`npm` 프로세스 종료는 금지한다. 이 프로젝트의 브라우저 실행기는 포트가 사용 중이면 실패하고, 자신이 만든 정확한 서버 PID만 종료한다.
 
-`.openai/hosting.json`은 없다. 실제 배포, 외부 계정, 결제, 도메인, 앱스토어, 법적 계약은 사용자 승인 없이는 진행하지 않는다. 로컬 Git 저장소는 `main`에서 유효하며 초기 소스 기준선은 `deb4fcd`다. 비공개 GitHub 원격 저장소 생성·푸시는 GitHub CLI 브라우저 로그인이 완료되는 즉시 진행한다.
+`.openai/hosting.json`은 없다. 실제 배포, 외부 계정, 결제, 도메인, 앱스토어, 법적 계약은 사용자 승인 없이는 진행하지 않는다. 로컬 `main`은 비공개 GitHub 저장소 `aksdn1233-dev/innerarc`를 추적한다. `local-bootstrap` 브랜치는 원격 통합 전 로컬 두 커밋을 보존한다.
 
 ## 2. 현재 구현된 제품
 
@@ -65,6 +65,7 @@ Write-Output "port3000_listeners=$($listeners.Count)"
 - 접근성: 20개 한·영 경로와 동적 온보딩/관계 결과/Reality Check 연결의 axe critical·serious 0건
 - 성능: 7개 대표 경로의 HTML, 요청 수, JS/CSS 전송·해제 크기, 전체 페이로드 예산 통과
 - 프로덕션 의존성 감사: 알려진 취약점 0건
+- 전체 의존성 감사: 알려진 취약점 0건. `brace-expansion` 5.0.8 고정과 `minimatch` 3 호환 패치 포함
 - CycloneDX 1.6 SBOM: 97개 프로덕션 구성요소, 버전 0.15.0
 - 출시 이미지: 합성 데이터 15개, 모두 1242×2688, 외부 요청 없음
 - 한국어/영어 새 컨텍스트 온보딩 이미지 시각검사 완료
@@ -99,7 +100,7 @@ node scripts/run-e2e.mjs --project=mobile --workers=1
 node scripts/run-e2e.mjs tests/e2e/accessibility.spec.ts --project=mobile --timeout=180000
 node scripts/run-e2e.mjs tests/e2e/onboarding.spec.ts --project=mobile --timeout=180000
 node scripts/run-e2e.mjs tests/e2e/performance.spec.ts --project=mobile --timeout=180000
-pnpm.cmd audit --prod
+pnpm.cmd audit
 node scripts/generate-sbom.mjs
 ```
 
