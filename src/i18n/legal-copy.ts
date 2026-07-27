@@ -42,7 +42,7 @@ const privacyKo: LegalPageCopy = {
     {
       title: "개인정보처리자",
       bullets: [
-        "상호: 별루프",
+        "상호: 벨루프",
         "대표자: 박서준",
         "사업자등록번호: 482-12-03629",
         "사업장 소재지: 부산광역시 북구 (상세 공개 주소 확정 전)",
@@ -53,7 +53,7 @@ const privacyKo: LegalPageCopy = {
       bullets: [
         "게스트의 생년월일, 선택 입력 이름, 관심사와 고민은 현재 분석을 위해 브라우저 메모리에서 사용되며 사용자가 저장을 선택하지 않으면 새로고침 시 사라집니다.",
         "이메일 로그인을 선택하면 Supabase가 인증 이메일, 계정 식별자와 세션 정보를 처리합니다. 사용자가 명시적으로 동기화한 환경설정·타로 기록·Reality Check 기록만 계정에 저장됩니다.",
-        "결제가 개통되면 주문번호, 상품코드, 결제금액, 통화, 결제수단, 결제상태와 이용권 만료일을 보관합니다. 카드번호·계좌 비밀번호·휴대폰 인증정보는 InnerArc 서버에 저장하지 않고 결제대행사가 처리합니다.",
+        "결제 시 주문번호, 상품코드, 결제금액, 통화, 결제수단, 결제상태와 이용권 만료일을 보관합니다. 결제 안내에 필요한 휴대폰 번호와 카드번호·계좌 비밀번호·휴대폰 인증정보는 InnerArc 서버에 저장하지 않고 결제대행사 페이앱이 처리합니다.",
       ],
     },
     {
@@ -75,7 +75,7 @@ const privacyKo: LegalPageCopy = {
     {
       title: "처리위탁과 국외이전 예정",
       paragraphs: [
-        "인증·데이터 저장에는 Supabase, 결제에는 토스페이먼츠 및 선택한 결제수단 사업자가 사용될 예정입니다. 사업자명, 이전 국가, 이전 항목·시점·방법·보유기간과 거부 방법을 계약서와 실제 데이터 흐름으로 확인한 뒤 최종 방침에 공개합니다.",
+        "인증·데이터 저장에는 Supabase, 결제 요청·승인·가상계좌 입금 통보에는 페이앱 운영사 (주)유디아이디와 구매자가 선택한 결제수단 사업자가 사용됩니다. 국외이전 여부, 이전 항목·시점·방법·보유기간과 거부 방법은 각 계약과 실제 데이터 흐름을 확인해 최종 방침에 공개합니다.",
       ],
     },
     {
@@ -105,7 +105,7 @@ const privacyEn: LegalPageCopy = {
     {
       title: "Controller",
       bullets: [
-        "Legal business name: 별루프",
+        "Legal business name: 벨루프",
         "Representative: 박서준",
         "Business registration number: 482-12-03629",
         "Business location: Buk-gu, Busan, Republic of Korea (public service address pending)",
@@ -116,14 +116,14 @@ const privacyEn: LegalPageCopy = {
       bullets: [
         "A guest's birth date, optional name, interests, and concern are used in browser memory for the current analysis and disappear on refresh unless the person explicitly saves them.",
         "If email sign-in is selected, Supabase handles the authentication email, account identifier, and session. Only preferences, tarot records, and Reality Check records explicitly synchronized by the person are stored with the account.",
-        "When payments open, InnerArc will retain the order ID, product code, amount, currency, method, status, and access expiry. Card numbers, bank passwords, and mobile authentication details will be handled by the payment provider rather than stored on InnerArc servers.",
+        "For payment, InnerArc retains the order ID, product code, amount, currency, method, status, and access expiry. PayApp handles the mobile number needed for payment instructions as well as card, bank, and mobile-authentication data; InnerArc does not store those values.",
       ],
     },
     {
       title: "Purposes and optional choices",
       bullets: [
         "Required data supports sign-in, order verification, approval, cancellation and refund, access delivery, support, abuse prevention, and legally required transaction records.",
-        "AI personalization, model training, product analytics, marketing, and long-term raw-text retention remain separate optional choices.",
+        "Personalization, product analytics, marketing, and long-term raw-text retention remain separate optional choices.",
         "Declining an optional choice does not block the rule-based core result.",
       ],
     },
@@ -138,7 +138,7 @@ const privacyEn: LegalPageCopy = {
     {
       title: "Processors and intended international transfers",
       paragraphs: [
-        "Supabase is intended for authentication and storage; Toss Payments and the chosen payment-method operator are intended for payment. The final notice will identify the entities, countries, fields, timing, method, retention, and refusal consequences based on signed contracts and verified data flows.",
+        "Supabase supports authentication and storage. PayApp operator UDID Co., Ltd. and the customer-selected payment-method operator process checkout, approval, and virtual-account deposit notifications. International-transfer details will be finalized against signed contracts and verified data flows.",
       ],
     },
     {
@@ -168,7 +168,7 @@ const termsKo: LegalPageCopy = {
     {
       title: "판매자 정보",
       bullets: [
-        "상호: 별루프",
+        "상호: 벨루프",
         "대표자: 박서준",
         "사업자등록번호: 482-12-03629",
         "사업장 소재지: 부산광역시 북구 (상세 공개 주소 확정 전)",
@@ -200,8 +200,8 @@ const termsKo: LegalPageCopy = {
       bullets: [
         "간단 타로 리딩은 19,000원, 타로·생년월일 종합 리딩은 39,000원, 프리미엄 맞춤 리포트는 79,000원입니다. 모두 자동 갱신 없는 1회성 상품이며 최종 결제금액과 제공 범위를 결제 직전에 다시 표시합니다.",
         "결제 승인 뒤 리포트를 즉시 열고 내려받을 수 있습니다. 로그인하면 마이페이지에도 저장되며, 비회원은 안전한 전용 주소와 내려받은 파일을 직접 보관해야 합니다.",
-        "카카오페이·토스페이·카드·가상계좌는 포트원과 KPN 가맹점 계약 및 각 결제수단 심사가 완료된 범위에서만 노출됩니다.",
-        "가상계좌 리포트는 실제 입금이 결제대행사 조회로 확인된 시점부터 제공됩니다.",
+        "카카오페이·토스페이·카드·휴대폰·계좌이체·가상계좌는 페이앱 판매자 설정과 각 결제수단 심사가 완료된 범위에서만 노출됩니다.",
+        "가상계좌 리포트는 페이앱의 서명값·주문번호·결제금액을 검증한 입금완료 통보를 받은 시점부터 제공됩니다.",
       ],
     },
     {
@@ -229,7 +229,7 @@ const termsEn: LegalPageCopy = {
     {
       title: "Seller",
       bullets: [
-        "Legal business name: 별루프",
+        "Legal business name: 벨루프",
         "Representative: 박서준",
         "Business registration number: 482-12-03629",
         "Business location: Buk-gu, Busan, Republic of Korea (public service address pending)",
@@ -260,7 +260,7 @@ const termsEn: LegalPageCopy = {
       bullets: [
         "The quick reading is KRW 19,000, the comprehensive reading is KRW 39,000, and the premium custom report is KRW 79,000. Each is a one-time, non-renewing purchase.",
         "Reports open and download after verified payment. Signed-in purchases are also saved in My Page; guest customers must retain the private access link and downloaded file.",
-        "KakaoPay, Toss Pay, cards, and virtual accounts appear only after the applicable PortOne and KPN merchant and method reviews.",
+        "KakaoPay, Toss Pay, cards, mobile, bank transfer, and virtual accounts appear only when enabled for the PayApp merchant account and approved for the applicable method.",
         "Virtual-account reports open only after the deposit is verified through the payment-provider API.",
       ],
     },

@@ -11,12 +11,14 @@ import {
   inspectPaymentReadiness,
   paymentProductCodes,
 } from "@/server/payments/config";
+import { requestPayAppPayment } from "@/server/payments/payapp";
 
 const bodySchema = z.object({
   productCode: z.enum(paymentProductCodes),
   locale: z.string().refine(isLocale),
   readingInput: PaidReadingInputSchema,
   depositorName: z.string().trim().min(2).max(80).optional(),
+  customerPhone: z.string().trim().regex(/^01[016789]-?\d{3,4}-?\d{4}$/).optional(),
 }).strict();
 
 export async function POST(request: Request) {
@@ -61,6 +63,9 @@ export async function POST(request: Request) {
   const orderId = `ia${randomUUID().replaceAll("-", "")}`;
   if (readiness.config.provider === "manual_transfer" && !parsed.data.depositorName) {
     return NextResponse.json({ error: "DEPOSITOR_NAME_REQUIRED" }, { status: 400 });
+  }
+  if (readiness.config.provider === "payapp" && !parsed.data.customerPhone) {
+    return NextResponse.json({ error: "CUSTOMER_PHONE_REQUIRED" }, { status: 400 });
   }
   const depositDeadline = readiness.config.provider === "manual_transfer"
     ? new Date(Date.now() + readiness.config.depositWindowHours * 60 * 60 * 1_000)
@@ -108,9 +113,9 @@ export async function POST(request: Request) {
   const failUrl = new URL(`/${locale}/payments/fail`, baseUrl).toString();
   const success = new URL(successUrl);
   if (guestAccessToken) success.searchParams.set("access", guestAccessToken);
+  const reportUrl = new URL(`/${locale}/reports/${orderId}`, baseUrl);
+  if (guestAccessToken) reportUrl.searchParams.set("access", guestAccessToken);
   if (readiness.config.provider === "manual_transfer") {
-    const reportUrl = new URL(`/${locale}/reports/${orderId}`, baseUrl);
-    if (guestAccessToken) reportUrl.searchParams.set("access", guestAccessToken);
     return NextResponse.json({
       provider: "manual_transfer",
       orderId,
@@ -124,6 +129,55 @@ export async function POST(request: Request) {
     }, {
       headers: { "Cache-Control": "no-store" },
     });
+  }
+  if (readiness.config.provider === "payapp") {
+    const returnUrl = new URL("/api/payments/payapp/return", baseUrl);
+    returnUrl.searchParams.set("locale", locale);
+    returnUrl.searchParams.set("orderId", orderId);
+
+    try {
+      const payApp = await requestPayAppPayment({
+        userId: readiness.config.userId,
+        orderId,
+        productCode: product.code,
+        orderName: product.names[locale],
+        amount: product.amount,
+        customerPhone: parsed.data.customerPhone!.replaceAll("-", ""),
+        customerEmail: auth.user?.email ?? undefined,
+        openPayTypes: readiness.config.openPayTypes,
+        feedbackUrl: new URL("/api/payments/payapp/feedback", baseUrl).toString(),
+        returnUrl: returnUrl.toString(),
+      });
+      const { error: requestUpdateError } = await admin
+        .from("payment_orders")
+        .update({
+          status: "READY",
+          provider_snapshot: {
+            requestNumber: payApp.requestNumber,
+            requestedAt: new Date().toISOString(),
+          },
+          updated_at: new Date().toISOString(),
+        })
+        .eq("order_id", orderId)
+        .eq("provider", "payapp");
+      if (requestUpdateError) throw requestUpdateError;
+
+      return NextResponse.json({
+        provider: "payapp",
+        orderId,
+        orderName: product.names[locale],
+        amount: product.amount,
+        currency: "KRW",
+        payUrl: payApp.payUrl,
+        reportUrl: reportUrl.toString(),
+      }, {
+        headers: { "Cache-Control": "no-store" },
+      });
+    } catch {
+      await admin.from("purchased_reports").delete().eq("order_id", orderId);
+      await admin.from("payment_orders").delete().eq("order_id", orderId);
+      return NextResponse.json({ error: "PAYAPP_REQUEST_FAILED" }, { status: 502 });
+    }
   }
   if (readiness.config.provider === "portone") {
     return NextResponse.json({

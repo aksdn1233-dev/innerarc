@@ -46,10 +46,20 @@ export type ManualTransferPaymentConfig = Readonly<{
   products: Readonly<Record<PaymentProductCode, PaymentProduct>>;
 }>;
 
+export type PayAppPaymentConfig = Readonly<{
+  provider: "payapp";
+  userId: string;
+  linkKey: string;
+  linkValue: string;
+  openPayTypes: string;
+  products: Readonly<Record<PaymentProductCode, PaymentProduct>>;
+}>;
+
 export type PaymentConfig =
   | TossPaymentConfig
   | PortOnePaymentConfig
-  | ManualTransferPaymentConfig;
+  | ManualTransferPaymentConfig
+  | PayAppPaymentConfig;
 
 export type PaymentReadiness =
   | Readonly<{ enabled: false; reason: "DISABLED" | "INCOMPLETE" | "INVALID" }>
@@ -63,6 +73,21 @@ const bankNameSchema = z.string().min(2).max(80);
 const bankAccountSchema = z.string().regex(/^[0-9-]{6,40}$/);
 const accountHolderSchema = z.string().min(2).max(80);
 const depositWindowSchema = z.coerce.number().int().min(1).max(168);
+const payAppUserIdSchema = z.string().regex(/^[A-Za-z0-9_.@-]{3,100}$/);
+const payAppSecretSchema = z.string().min(8).max(500);
+const payAppMethodSchema = z.enum([
+  "card",
+  "phone",
+  "kakaopay",
+  "naverpay",
+  "smilepay",
+  "rbank",
+  "vbank",
+  "applepay",
+  "payco",
+  "myaccount",
+  "tosspay",
+]);
 const bankAccountsSchema = z.array(z.object({
   bankName: bankNameSchema,
   accountNumber: bankAccountSchema,
@@ -120,7 +145,8 @@ export function inspectPaymentReadiness(
   if (
     provider !== "toss" &&
     provider !== "portone" &&
-    provider !== "manual_transfer"
+    provider !== "manual_transfer" &&
+    provider !== "payapp"
   ) {
     return { enabled: false, reason: "INVALID" };
   }
@@ -144,6 +170,44 @@ export function inspectPaymentReadiness(
     premiumPdfPrice: priceSchema,
   }).safeParse({ quickPrice, comprehensivePrice, premiumPdfPrice });
   if (!prices.success) return { enabled: false, reason: "INVALID" };
+
+  if (provider === "payapp") {
+    const rawMethods = environment.PAYAPP_OPEN_PAY_TYPES?.trim() ||
+      "card,kakaopay,tosspay,vbank,phone,rbank";
+    const parsedMethods = z.array(payAppMethodSchema).min(1).max(11).safeParse(
+      rawMethods.split(",").map((method) => method.trim()).filter(Boolean),
+    );
+    const parsed = z.object({
+      userId: payAppUserIdSchema,
+      linkKey: payAppSecretSchema,
+      linkValue: payAppSecretSchema,
+    }).safeParse({
+      userId: environment.PAYAPP_USER_ID?.trim(),
+      linkKey: environment.PAYAPP_LINK_KEY?.trim(),
+      linkValue: environment.PAYAPP_LINK_VALUE?.trim(),
+    });
+    if (!parsed.success || !parsedMethods.success) {
+      const missing = [
+        environment.PAYAPP_USER_ID,
+        environment.PAYAPP_LINK_KEY,
+        environment.PAYAPP_LINK_VALUE,
+      ].some((value) => !value?.trim());
+      return { enabled: false, reason: missing ? "INCOMPLETE" : "INVALID" };
+    }
+    return {
+      enabled: true,
+      config: {
+        provider: "payapp",
+        ...parsed.data,
+        openPayTypes: parsedMethods.data.join(","),
+        products: buildProducts(
+          prices.data.quickPrice,
+          prices.data.comprehensivePrice,
+          prices.data.premiumPdfPrice,
+        ),
+      },
+    };
+  }
 
   if (provider === "manual_transfer") {
     const rawAccounts = environment.MANUAL_BANK_ACCOUNTS_JSON?.trim();

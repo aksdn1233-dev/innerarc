@@ -9,6 +9,12 @@ import {
   sanitizeTossSnapshot,
 } from "@/server/payments/toss";
 import { toInternalPaymentStatus } from "@/server/payments/portone";
+import {
+  payAppMethodName,
+  requestPayAppPayment,
+  securePayAppValueMatches,
+  toInternalPayAppStatus,
+} from "@/server/payments/payapp";
 
 const validEnvironment = {
   PAYMENTS_PROVIDER: "toss",
@@ -48,6 +54,17 @@ const validManualTransferEnvironment = {
     },
   ]),
   MANUAL_DEPOSIT_WINDOW_HOURS: "24",
+  INNERARC_PLUS_30D_PRICE_KRW: "19000",
+  INNERARC_PRO_30D_PRICE_KRW: "39000",
+  INNERARC_PREMIUM_PDF_PRICE_KRW: "79000",
+};
+
+const validPayAppEnvironment = {
+  PAYMENTS_PROVIDER: "payapp",
+  PAYAPP_USER_ID: "test-seller",
+  PAYAPP_LINK_KEY: "link-key-secret",
+  PAYAPP_LINK_VALUE: "link-value-secret",
+  PAYAPP_OPEN_PAY_TYPES: "card,kakaopay,tosspay,vbank,phone,rbank",
   INNERARC_PLUS_30D_PRICE_KRW: "19000",
   INNERARC_PRO_30D_PRICE_KRW: "39000",
   INNERARC_PREMIUM_PDF_PRICE_KRW: "79000",
@@ -124,12 +141,71 @@ describe("payment readiness", () => {
     }, "production")).toEqual({ enabled: false, reason: "INVALID" });
   });
 
+  it("accepts PayApp secrets and rejects unknown payment methods", () => {
+    const readiness = inspectPaymentReadiness(validPayAppEnvironment, "production");
+    expect(readiness.enabled).toBe(true);
+    if (readiness.enabled && readiness.config.provider === "payapp") {
+      expect(readiness.config.userId).toBe("test-seller");
+      expect(readiness.config.openPayTypes).toContain("vbank");
+      expect(readiness.config.products.plus_30d.amount).toBe(19000);
+    }
+    expect(inspectPaymentReadiness({
+      ...validPayAppEnvironment,
+      PAYAPP_OPEN_PAY_TYPES: "card,not-a-method",
+    }, "production")).toEqual({ enabled: false, reason: "INVALID" });
+  });
+
   it("normalizes PortOne lifecycle states before applying entitlements", () => {
     expect(toInternalPaymentStatus("PAID")).toBe("DONE");
     expect(toInternalPaymentStatus("VIRTUAL_ACCOUNT_ISSUED")).toBe("WAITING_FOR_DEPOSIT");
     expect(toInternalPaymentStatus("CANCELLED")).toBe("CANCELED");
     expect(toInternalPaymentStatus("PARTIAL_CANCELLED")).toBe("PARTIAL_CANCELED");
     expect(toInternalPaymentStatus("FAILED")).toBe("ABORTED");
+  });
+});
+
+describe("PayApp API boundary", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("creates a server-side checkout and accepts only PayApp HTTPS URLs", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(
+      "state=1&errorMessage=&mul_no=20001234&payurl=https%3A%2F%2Fpayapp.kr%2FL%2Fcheckout",
+      { status: 200 },
+    ));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const checkout = await requestPayAppPayment({
+      userId: "test-seller",
+      orderId: "iaorder123456",
+      productCode: "plus_30d",
+      orderName: "간단 타로 리딩",
+      amount: 19000,
+      customerPhone: "01012345678",
+      openPayTypes: "card,kakaopay,tosspay,vbank,phone,rbank",
+      feedbackUrl: "https://example.com/api/payments/payapp/feedback",
+      returnUrl: "https://example.com/api/payments/payapp/return",
+    });
+
+    expect(checkout.requestNumber).toBe("20001234");
+    expect(checkout.payUrl).toBe("https://payapp.kr/L/checkout");
+    const [, options] = fetchMock.mock.calls[0] as [string, RequestInit];
+    const sent = new URLSearchParams(String(options.body));
+    expect(sent.get("var1")).toBe("iaorder123456");
+    expect(sent.get("price")).toBe("19000");
+    expect(sent.get("checkretry")).toBe("y");
+    expect(sent.get("reqaddr")).toBe("0");
+  });
+
+  it("validates webhook secrets and normalizes completion states", () => {
+    expect(securePayAppValueMatches("same-secret", "same-secret")).toBe(true);
+    expect(securePayAppValueMatches("same-secret", "different-secret")).toBe(false);
+    expect(toInternalPayAppStatus("10")).toBe("WAITING_FOR_DEPOSIT");
+    expect(toInternalPayAppStatus("4")).toBe("DONE");
+    expect(toInternalPayAppStatus("64")).toBe("CANCELED");
+    expect(payAppMethodName("7")).toBe("VIRTUAL_ACCOUNT");
+    expect(payAppMethodName("25")).toBe("TOSSPAY");
   });
 });
 

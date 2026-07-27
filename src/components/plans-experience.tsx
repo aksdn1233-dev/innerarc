@@ -64,10 +64,21 @@ type ManualTransferCheckoutSession = Readonly<{
   reportUrl: string;
 }>;
 
+type PayAppCheckoutSession = Readonly<{
+  provider: "payapp";
+  orderId: string;
+  orderName: string;
+  amount: number;
+  currency: "KRW";
+  payUrl: string;
+  reportUrl: string;
+}>;
+
 type CheckoutSession =
   | TossCheckoutSession
   | PortOneCheckoutSession
-  | ManualTransferCheckoutSession;
+  | ManualTransferCheckoutSession
+  | PayAppCheckoutSession;
 type PortOneMethod = "kakaopay" | "tosspay" | "card" | "virtual_account";
 
 const copy = {
@@ -90,7 +101,7 @@ const copy = {
     },
     failed: "결제창을 준비하지 못했습니다. 잠시 후 다시 시도해 주세요.",
     missingDraft: "먼저 상품과 리딩 정보를 입력해 주세요.",
-    notice: "결제수단 노출 여부와 한도는 포트원·KPN 가맹점 계약 및 각 결제수단 심사 결과에 따라 달라집니다.",
+    notice: "결제수단 노출 여부와 한도는 페이앱 판매자 설정 및 각 결제수단 심사 결과에 따라 달라집니다.",
     terms: "결제 전에 이용조건·환불정책·개인정보 처리 안내를 확인해 주세요.",
     duration: "1회 결제 · 자동 갱신 없음",
     depositorName: "입금자명",
@@ -102,12 +113,16 @@ const copy = {
     manualDeadline: "입금 기한",
     manualStatus: "입금 확인 · 리포트 보기",
     manualNotice: "입금 확인 후 리포트가 자동으로 열립니다. 확인 전에는 대기 화면이 표시됩니다.",
+    customerPhone: "휴대폰 번호",
+    customerPhonePlaceholder: "010-1234-5678",
+    customerPhoneHelp: "결제 안내와 가상계좌 발급에 사용됩니다. 주소는 받지 않습니다.",
+    payAppNotice: "다음 화면에서 카카오페이·토스페이·카드·가상계좌·휴대폰 결제 중 하나를 선택할 수 있습니다.",
   },
   en: {
     brand: "Personal pattern intelligence",
     eyebrow: "30-day access",
     title: "Broad payment choice, strict server-side approval",
-    intro: "A one-time 30-day pass with no automatic renewal. Approved KakaoPay, Toss Pay, card, and virtual-account methods are supported.",
+    intro: "A one-time purchase with no automatic renewal. Approved KakaoPay, Toss Pay, card, mobile, bank-transfer, and virtual-account methods are supported.",
     unavailable: "Payments remain closed until merchant review, prices, the production domain, and legal notices are finalized.",
     signin: "Sign in to keep reports in My Page and receive optional event notices.",
     signinAction: "Optional sign-in",
@@ -122,7 +137,7 @@ const copy = {
     },
     failed: "The payment window could not be prepared. Please try again.",
     missingDraft: "Choose a product and enter the reading information first.",
-    notice: "Available methods and limits depend on the PortOne/KPN merchant contract and payment-method review.",
+    notice: "Available methods and limits depend on PayApp merchant settings and payment-method review.",
     terms: "Review the terms, refund policy, and privacy notice before payment.",
     duration: "30 days from purchase",
     depositorName: "Depositor name",
@@ -134,6 +149,10 @@ const copy = {
     manualDeadline: "Deadline",
     manualStatus: "Check payment and report",
     manualNotice: "Your report opens after the administrator verifies the deposit.",
+    customerPhone: "Mobile phone",
+    customerPhonePlaceholder: "010-1234-5678",
+    customerPhoneHelp: "Used only for payment instructions and virtual-account issuance.",
+    payAppNotice: "Choose KakaoPay, Toss Pay, card, virtual account, mobile, or bank transfer on the next screen.",
   },
 } as const;
 
@@ -158,7 +177,7 @@ export function PlansExperience({
   products: readonly PublicProduct[];
   signedIn: boolean;
   paymentsEnabled: boolean;
-  paymentProvider: "toss" | "portone" | "manual_transfer" | null;
+  paymentProvider: "toss" | "portone" | "manual_transfer" | "payapp" | null;
   initialProduct: PaymentProductCode | null;
 }) {
   const t = copy[locale];
@@ -168,6 +187,7 @@ export function PlansExperience({
   const [ready, setReady] = useState(false);
   const [error, setError] = useState(false);
   const [depositorName, setDepositorName] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
   const [portOneMethod, setPortOneMethod] = useState<PortOneMethod>("kakaopay");
   const [readingInput] = useState<PaidReadingInput | null>(() => {
     if (typeof window === "undefined") return null;
@@ -240,6 +260,13 @@ export function PlansExperience({
       setError(true);
       return;
     }
+    if (
+      paymentProvider === "payapp" &&
+      !/^01[016789]-?\d{3,4}-?\d{4}$/.test(customerPhone.trim())
+    ) {
+      setError(true);
+      return;
+    }
     setError(false);
     setReady(false);
     setSession(null);
@@ -255,13 +282,20 @@ export function PlansExperience({
           depositorName: paymentProvider === "manual_transfer"
             ? depositorName.trim()
             : undefined,
+          customerPhone: paymentProvider === "payapp"
+            ? customerPhone.trim()
+            : undefined,
         }),
       });
       const body: unknown = await response.json();
       if (!response.ok) throw new Error("order failed");
       const checkout = body as CheckoutSession;
       setSession(checkout);
-      if (checkout.provider === "portone" || checkout.provider === "manual_transfer") {
+      if (
+        checkout.provider === "portone" ||
+        checkout.provider === "manual_transfer" ||
+        checkout.provider === "payapp"
+      ) {
         setReady(true);
         setLoadingCode(null);
       }
@@ -275,6 +309,14 @@ export function PlansExperience({
     if (!session) return;
     if (session.provider === "manual_transfer") {
       window.location.assign(session.reportUrl);
+      return;
+    }
+    if (session.provider === "payapp") {
+      window.sessionStorage.setItem(
+        `gyeol.payappReport.${session.orderId}`,
+        session.reportUrl,
+      );
+      window.location.assign(session.payUrl);
       return;
     }
     setError(false);
@@ -379,6 +421,24 @@ export function PlansExperience({
         </div>
       )}
 
+      {paymentsEnabled && paymentProvider === "payapp" && (
+        <div className="manual-depositor-field">
+          <label htmlFor="customer-phone">{t.customerPhone}</label>
+          <input
+            autoComplete="tel"
+            id="customer-phone"
+            inputMode="tel"
+            maxLength={13}
+            onChange={(event) => setCustomerPhone(event.target.value)}
+            placeholder={t.customerPhonePlaceholder}
+            required
+            type="tel"
+            value={customerPhone}
+          />
+          <small>{t.customerPhoneHelp}</small>
+        </div>
+      )}
+
       <section className="plan-grid" aria-label={locale === "ko" ? "이용권" : "Access plans"}>
         {products.map((product) => (
           <article
@@ -429,6 +489,12 @@ export function PlansExperience({
                   {t.methods[method]}
                 </button>
               ))}
+            </div>
+          ) : session.provider === "payapp" ? (
+            <div className="payapp-payment-card">
+              <p className="eyebrow">{locale === "ko" ? "안전한 결제" : "Secure checkout"}</p>
+              <strong>{formatWon(session.amount, locale)}</strong>
+              <p>{t.payAppNotice}</p>
             </div>
           ) : (
             <div className="manual-transfer-card">

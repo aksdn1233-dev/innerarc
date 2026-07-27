@@ -241,6 +241,29 @@
   line-height: 1.7;
 }
 
+.payapp-payment-card {
+  display: grid;
+  gap: 0.75rem;
+  padding: clamp(1rem, 3vw, 1.75rem);
+  border: 1px solid #b59a78;
+  border-radius: 16px;
+  background: var(--paper);
+}
+
+.payapp-payment-card p,
+.payapp-payment-card strong {
+  margin: 0;
+}
+
+.payapp-payment-card strong {
+  font: 700 clamp(1.45rem, 4vw, 2rem)/1.2 var(--display-font);
+}
+
+.payapp-payment-card p:last-child {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
 .payment-choice-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
