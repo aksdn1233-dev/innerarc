@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { E2E_ORIGIN } from "./test-origin";
 
 const routes = [
   "/en",
@@ -19,7 +20,7 @@ for (const route of routes) {
     const unexpectedOrigins = new Set<string>();
     page.on("request", (requestEvent) => {
       const url = new URL(requestEvent.url());
-      if (url.origin !== "http://127.0.0.1:3000") unexpectedOrigins.add(url.origin);
+      if (url.origin !== E2E_ORIGIN) unexpectedOrigins.add(url.origin);
     });
     await page.goto(route, { waitUntil: "networkidle" });
     const metrics = await page.evaluate(() => {

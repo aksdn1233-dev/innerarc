@@ -3,7 +3,7 @@ import { resolvePublicAppUrl } from "@/core/site-url";
 
 describe("public application URL", () => {
   it("uses a stable loopback origin when no deployment URL exists", () => {
-    expect(resolvePublicAppUrl(undefined).href).toBe("http://localhost:3000/");
+    expect(resolvePublicAppUrl(undefined).href).toBe("http://127.0.0.1:3000/");
     expect(resolvePublicAppUrl(" http://127.0.0.1:3000 ").href).toBe("http://127.0.0.1:3000/");
   });
 
@@ -23,4 +23,3 @@ describe("public application URL", () => {
     expect(() => resolvePublicAppUrl(value)).toThrow(/NEXT_PUBLIC_APP_URL/);
   });
 });
-

@@ -396,6 +396,6 @@
 - Decision: Keep port 3000 as the default, fail closed when it is occupied, and allow an explicit validated `E2E_PORT` or `CAPTURE_PORT` for a repository-owned server. Forward the exact E2E origin into Playwright.
 - Alternatives: Stop the occupying process; attach to whatever responds on 3000; scan automatically for a free port; block all validation until the other project stops.
 - Reason: Another active workspace can legitimately own the default port. Automatic reuse, termination, or silent port scanning would weaken isolation, while an explicit alternative preserves operator intent and deterministic metadata origin testing.
-- Impact: Invalid or occupied alternatives still fail. The runner continues to terminate only its own direct server child; no file, process, or configuration in the other workspace changes.
+- Impact: Invalid or occupied alternatives still fail. The runner continues to terminate only its own direct server child; every E2E origin assertion reads the exact forwarded base URL instead of hardcoding port 3000, and no file, process, or configuration in the other workspace changes.
 - Revisit when: Test execution moves into isolated containers with allocated ephemeral ports and equivalent ownership evidence.
 - Status: Decided.

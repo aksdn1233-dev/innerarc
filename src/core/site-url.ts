@@ -1,4 +1,4 @@
-const LOCAL_METADATA_BASE = "http://localhost:3000";
+const LOCAL_METADATA_BASE = "http://127.0.0.1:3000";
 
 function isLoopback(hostname: string): boolean {
   return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "[::1]";
@@ -31,4 +31,3 @@ export function resolvePublicAppUrl(value: string | undefined): URL {
 
   return new URL(`${parsed.origin}/`);
 }
-

@@ -99,6 +99,7 @@ Overall progress: 98%
 - Replaced an O(n) structural equality assertion over a 907 KB PNG after it exceeded the five-second unit-test ceiling; SHA-256 now proves byte identity in under one second.
 - Added explicit localized image metadata after the first browser run proved that a child `openGraph`/`twitter` object replaced inherited file-based image fields.
 - Preserved another workspace's active port-3000 server and completed E2E/capture through validated ports 3011/3012; both owned alternatives were released and the other listener remained active.
+- Fixed the alternate-port regression exposed by the full 3011 run: the metadata fallback now uses the runner's canonical loopback host, and all E2E same-origin, navigation, privacy-request, and performance checks derive their expected origin from `E2E_BASE_URL` instead of hardcoding port 3000. The 54 directly affected Chromium/mobile flows pass on 3011.
 
 ## Verified baseline
 

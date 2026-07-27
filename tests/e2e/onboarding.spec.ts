@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { E2E_ORIGIN } from "./test-origin";
 
 function localMonthOffset(offset: number): string {
   const date = new Date();
@@ -44,7 +45,7 @@ test("onboarding focus, concern, depth, and AI consent create a local context la
   const externalRequests: string[] = [];
   page.on("request", (request) => {
     const url = new URL(request.url());
-    if (url.origin !== "http://127.0.0.1:3000") externalRequests.push(url.href);
+    if (url.origin !== E2E_ORIGIN) externalRequests.push(url.href);
   });
 
   await page.goto("/en");
@@ -103,7 +104,7 @@ test("result offers claim-free accessory and music directions with a closed shop
   await expect(page.locator(".shop-category-grid article")).toHaveCount(3);
   await expect(page.getByText("Purchasing unavailable")).toHaveCount(3);
   await expect(page.locator("main")).not.toContainText(/add to cart|checkout|\$\d|₩\d/i);
-  expect(page.url()).toBe("http://127.0.0.1:3000/en/shop");
+  expect(page.url()).toBe(`${E2E_ORIGIN}/en/shop`);
 });
 
 test("invalid dates cannot be submitted through the engine flow", async ({ page }) => {
@@ -186,7 +187,7 @@ test("a selected relationship setting becomes an editable one-time Reality Check
   const selectedTitle = await page.locator(".meeting-card h3").first().innerText();
   await page.locator(".context-handoff").first().click();
 
-  await expect(page).toHaveURL("http://127.0.0.1:3000/en/reality-check");
+  await expect(page).toHaveURL(`${E2E_ORIGIN}/en/reality-check`);
   await expect(page.getByText(
     "Your selected relationship setting was loaded as a one-time draft.",
   )).toBeVisible();
@@ -233,7 +234,7 @@ test("relationship handoff stays put when session storage is unavailable", async
   await page.getByRole("button", { name: "Show my romantic pattern" }).click();
   await page.locator(".context-handoff").first().click();
 
-  await expect(page).toHaveURL("http://127.0.0.1:3000/en/relationship");
+  await expect(page).toHaveURL(`${E2E_ORIGIN}/en/relationship`);
   await expect(page.locator(".meeting-contexts .error")).toContainText(
     "could not be created safely",
   );
