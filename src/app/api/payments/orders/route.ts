@@ -12,7 +12,7 @@ import {
   paymentProductCodes,
 } from "@/server/payments/config";
 import { requestPayAppPayment } from "@/server/payments/payapp";
-import { hashCustomerPhone } from "@/server/order-pass";
+import { hashCustomerPhone, issueOrderTicket } from "@/server/order-pass";
 
 const bodySchema = z.object({
   productCode: z.enum(paymentProductCodes),
@@ -139,6 +139,10 @@ export async function POST(request: Request) {
     const returnUrl = new URL("/api/payments/payapp/return", baseUrl);
     returnUrl.searchParams.set("locale", locale);
     returnUrl.searchParams.set("orderId", orderId);
+    // Carried through the provider so the buyer lands on their report on return,
+    // whatever browsing context the payment app sends them back in.
+    const ticket = issueOrderTicket(orderId, new Date());
+    if (ticket) returnUrl.searchParams.set("rt", ticket);
 
     try {
       const payApp = await requestPayAppPayment({

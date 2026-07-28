@@ -49,6 +49,8 @@ export async function getAuthorizedStoredReport(input: {
   userId?: string;
   accessToken?: string;
   lookupProof?: string;
+  /** Order id proven by a signed return ticket or order pass held by this browser. */
+  provenOrderId?: string;
 }): Promise<StoredReport | null> {
   const { data, error } = await input.admin
     .from("purchased_reports")
@@ -60,6 +62,10 @@ export async function getAuthorizedStoredReport(input: {
     return data.owner_user_id === input.userId ? data as StoredReport : null;
   }
   if (tokenMatches(input.accessToken, data.guest_access_token_hash)) {
+    return data as StoredReport;
+  }
+  // Only ever set from a signature this server issued for this exact order.
+  if (input.provenOrderId && input.provenOrderId === input.orderId) {
     return data as StoredReport;
   }
   return await lookupProofMatches(input.admin, input.orderId, input.lookupProof)

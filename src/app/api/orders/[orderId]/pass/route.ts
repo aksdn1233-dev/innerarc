@@ -7,6 +7,7 @@ import {
   ORDER_PASS_COOKIE,
   issueOrderPass,
   orderPassMaxAgeSeconds,
+  readOrderTicket,
   tierForProduct,
 } from "@/server/order-pass";
 import { getAuthorizedStoredReport } from "@/server/reports/access";
@@ -35,6 +36,8 @@ export async function GET(
     userId: auth.user?.id,
     accessToken: url.searchParams.get("access") ?? undefined,
     lookupProof: url.searchParams.get("proof") ?? undefined,
+    provenOrderId: readOrderTicket(url.searchParams.get("t") ?? undefined, new Date())
+      ?? undefined,
   });
   if (!stored || stored.status !== "ready") {
     return NextResponse.json({ error: "REPORT_NOT_FOUND" }, { status: 404 });

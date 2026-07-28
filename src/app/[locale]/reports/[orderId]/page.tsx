@@ -1,5 +1,7 @@
+import { cookies } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ORDER_PASS_COOKIE, readOrderPass, readOrderTicket } from "@/server/order-pass";
 import { PaymentStatusWaiting } from "@/components/payment-status-waiting";
 import { ReportActions } from "@/components/report-actions";
 import { isLocale } from "@/i18n/config";
@@ -14,22 +16,29 @@ export default async function PurchasedReportPage({
   searchParams,
 }: {
   params: Promise<{ locale: string; orderId: string }>;
-  searchParams: Promise<{ access?: string; proof?: string }>;
+  searchParams: Promise<{ access?: string; proof?: string; t?: string }>;
 }) {
-  const [{ locale, orderId }, query, auth] = await Promise.all([
+  const [{ locale, orderId }, query, auth, cookieStore] = await Promise.all([
     params,
     searchParams,
     requireSupabaseUser(),
+    cookies(),
   ]);
   if (!isLocale(locale) || !/^[A-Za-z0-9_-]{6,64}$/.test(orderId)) notFound();
   const admin = getSupabaseAdminClient();
   if (!admin) notFound();
+  // A buyer coming back from the payment app carries the ticket in the return URL, and
+  // the pass cookie covers later visits from the same browser.
+  const now = new Date();
+  const provenOrderId = readOrderTicket(query.t, now) ??
+    readOrderPass(cookieStore.get(ORDER_PASS_COOKIE)?.value, now)?.orderId;
   const stored = await getAuthorizedStoredReport({
     admin,
     orderId,
     userId: auth.user?.id,
     accessToken: query.access,
     lookupProof: query.proof,
+    provenOrderId: provenOrderId ?? undefined,
   });
   if (!stored) notFound();
 
@@ -88,12 +97,17 @@ export default async function PurchasedReportPage({
   }
 
   const report = stored.report;
-  const accessQuery = query.access ? `?access=${encodeURIComponent(query.access)}` : "";
+  const downloadParams = new URLSearchParams();
+  if (query.access) downloadParams.set("access", query.access);
+  if (query.proof) downloadParams.set("proof", query.proof);
+  if (query.t) downloadParams.set("t", query.t);
+  const accessQuery = downloadParams.size > 0 ? `?${downloadParams.toString()}` : "";
   // Carries this buyer's proof into the pass route, which is what opens the larger
   // features without an account.
   const passParams = new URLSearchParams({ locale, next: "compatibility" });
   if (query.access) passParams.set("access", query.access);
   if (query.proof) passParams.set("proof", query.proof);
+  if (query.t) passParams.set("t", query.t);
   const compatibilityUrl = `/api/orders/${orderId}/pass?${passParams.toString()}`;
   const proTier = report.productCode !== "plus_30d";
   return (

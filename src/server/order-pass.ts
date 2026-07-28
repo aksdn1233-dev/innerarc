@@ -10,9 +10,14 @@ const PASS_DAYS = 30;
 export const orderPassMaxAgeSeconds = PASS_DAYS * 24 * 60 * 60;
 const ORDER_ID_PATTERN = /^[A-Za-z0-9_-]{6,64}$/;
 
+// "none" means this browser owns the order but the provider has not confirmed payment
+// yet. It unlocks nothing on its own; the report page still shows the waiting screen
+// until the callback lands, and every paid feature requires plus or above.
+export type PassTier = EntitlementTier | "none";
+
 export type OrderPass = Readonly<{
   orderId: string;
-  tier: EntitlementTier;
+  tier: PassTier;
   expiresAt: number;
 }>;
 
@@ -41,7 +46,7 @@ function signaturesMatch(actual: string, expected: string): boolean {
 }
 
 export function issueOrderPass(
-  input: Readonly<{ orderId: string; tier: EntitlementTier; now: Date }>,
+  input: Readonly<{ orderId: string; tier: PassTier; now: Date }>,
   environment: EnvironmentLike = process.env,
 ): string | null {
   if (!ORDER_ID_PATTERN.test(input.orderId)) return null;
@@ -62,7 +67,7 @@ export function readOrderPass(
   if (parts.length !== 4) return null;
   const [orderId, tier, expiresAtRaw, signature] = parts;
   if (!ORDER_ID_PATTERN.test(orderId)) return null;
-  if (tier !== "plus" && tier !== "pro") return null;
+  if (tier !== "plus" && tier !== "pro" && tier !== "none") return null;
   const expiresAt = Number(expiresAtRaw);
   if (!Number.isSafeInteger(expiresAt) || expiresAt <= now.getTime()) return null;
 
@@ -78,6 +83,47 @@ export function tierForProduct(productCode: string): EntitlementTier | null {
   if (productCode === "plus_30d") return "plus";
   if (productCode === "pro_30d" || productCode === "premium_pdf") return "pro";
   return null;
+}
+
+const TICKET_DAYS = 7;
+
+/**
+ * Handed to the payment provider inside the return URL and echoed back when the buyer
+ * returns. It proves this browser is finishing the checkout that created the order, so
+ * the report opens immediately even when the provider returns through a different
+ * browsing context — an in-app browser after a KakaoPay or Toss hand-off keeps none of
+ * the storage the checkout wrote.
+ */
+export function issueOrderTicket(
+  orderId: string,
+  now: Date,
+  environment: EnvironmentLike = process.env,
+): string | null {
+  if (!ORDER_ID_PATTERN.test(orderId)) return null;
+  const secret = secretFor("order-ticket", environment);
+  if (!secret) return null;
+  const expiresAt = now.getTime() + TICKET_DAYS * 24 * 60 * 60 * 1_000;
+  const payload = `${orderId}.${expiresAt}`;
+  return `${payload}.${sign(payload, secret)}`;
+}
+
+/** The order this ticket belongs to, or null when it is missing, expired, or edited. */
+export function readOrderTicket(
+  value: string | undefined,
+  now: Date,
+  environment: EnvironmentLike = process.env,
+): string | null {
+  if (!value) return null;
+  const parts = value.split(".");
+  if (parts.length !== 3) return null;
+  const [orderId, expiresAtRaw, signature] = parts;
+  if (!ORDER_ID_PATTERN.test(orderId)) return null;
+  const expiresAt = Number(expiresAtRaw);
+  if (!Number.isSafeInteger(expiresAt) || expiresAt <= now.getTime()) return null;
+  const secret = secretFor("order-ticket", environment);
+  if (!secret) return null;
+  if (!signaturesMatch(signature, sign(`${orderId}.${expiresAt}`, secret))) return null;
+  return orderId;
 }
 
 /** Digits only, so "010-1234-5678" and "01012345678" resolve to the same buyer. */

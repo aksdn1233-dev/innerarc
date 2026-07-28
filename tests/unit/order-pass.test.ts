@@ -58,6 +58,47 @@ describe("order pass", () => {
   });
 });
 
+describe("return ticket", () => {
+  it("round-trips the order it was issued for", async () => {
+    const { issueOrderTicket, readOrderTicket } = await import("@/server/order-pass");
+    const ticket = issueOrderTicket(ORDER, NOW, ENV) as string;
+
+    expect(readOrderTicket(ticket, NOW, ENV)).toBe(ORDER);
+  });
+
+  it("cannot be pointed at a different order", async () => {
+    const { issueOrderTicket, readOrderTicket } = await import("@/server/order-pass");
+    const ticket = issueOrderTicket(ORDER, NOW, ENV) as string;
+    const forged = ticket.replace(ORDER, "ia9999999999999999");
+
+    expect(readOrderTicket(forged, NOW, ENV)).toBeNull();
+  });
+
+  it("expires and does not verify under another key", async () => {
+    const { issueOrderTicket, readOrderTicket } = await import("@/server/order-pass");
+    const ticket = issueOrderTicket(ORDER, NOW, ENV) as string;
+    const afterExpiry = new Date(NOW.getTime() + 8 * 24 * 60 * 60 * 1_000);
+
+    expect(readOrderTicket(ticket, afterExpiry, ENV)).toBeNull();
+    expect(readOrderTicket(ticket, NOW, OTHER_ENV)).toBeNull();
+  });
+
+  it("rejects malformed values without throwing", async () => {
+    const { readOrderTicket } = await import("@/server/order-pass");
+    for (const value of ["", "a.b", "a.b.c.d", `${ORDER}.notanumber.sig`]) {
+      expect(readOrderTicket(value, NOW, ENV)).toBeNull();
+    }
+    expect(readOrderTicket(undefined, NOW, ENV)).toBeNull();
+  });
+
+  it("is a different signature from an order pass for the same order", async () => {
+    // Separate purposes must not be interchangeable: a ticket is not an entitlement.
+    const { issueOrderTicket, readOrderPass } = await import("@/server/order-pass");
+    const ticket = issueOrderTicket(ORDER, NOW, ENV) as string;
+    expect(readOrderPass(ticket, NOW, ENV)).toBeNull();
+  });
+});
+
 describe("phone lookup hash", () => {
   it("matches the same number written in different formats", () => {
     expect(normalizePhone("010-1234-5678")).toBe("01012345678");

@@ -1,5 +1,7 @@
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
+import { ORDER_PASS_COOKIE, readOrderPass, readOrderTicket } from "@/server/order-pass";
 import { requireSupabaseUser } from "@/lib/supabase/auth";
 import { getAuthorizedStoredReport } from "@/server/reports/access";
 
@@ -22,8 +24,13 @@ export async function GET(
   const auth = await requireSupabaseUser();
   const admin = getSupabaseAdminClient();
   if (!admin) return NextResponse.json({ error: "UNAVAILABLE" }, { status: 503 });
-  const accessToken = new URL(request.url).searchParams.get("access") ?? undefined;
+  const query = new URL(request.url).searchParams;
+  const accessToken = query.get("access") ?? undefined;
+  const provenOrderId = readOrderTicket(query.get("t") ?? undefined, new Date()) ??
+    readOrderPass((await cookies()).get(ORDER_PASS_COOKIE)?.value, new Date())?.orderId;
   const stored = await getAuthorizedStoredReport({
+    lookupProof: query.get("proof") ?? undefined,
+    provenOrderId: provenOrderId ?? undefined,
     admin,
     orderId,
     userId: auth.user?.id,

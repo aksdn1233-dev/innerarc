@@ -9,10 +9,11 @@ export type EntitlementTier = "plus" | "pro";
 // unexpired entitlement exists opened two-person compatibility to the cheapest one.
 const TIER_RANK: Record<EntitlementTier, number> = { plus: 1, pro: 2 };
 
-function meetsTier(tier: EntitlementTier | null, minimumTier: EntitlementTier): boolean {
-  // An unrecognized tier fails closed instead of being treated as the highest one.
+function meetsTier(tier: string | null, minimumTier: EntitlementTier): boolean {
+  // An unrecognized tier — including the "none" a pass carries before the provider
+  // confirms payment — fails closed instead of being treated as the highest one.
   if (!tier || !(tier in TIER_RANK)) return false;
-  return TIER_RANK[tier] >= TIER_RANK[minimumTier];
+  return TIER_RANK[tier as EntitlementTier] >= TIER_RANK[minimumTier];
 }
 
 export async function hasPaidFeatureAccess(
