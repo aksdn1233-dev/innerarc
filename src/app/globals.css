@@ -4602,3 +4602,90 @@ summary {
   justify-self: start;
   min-height: 44px;
 }
+
+.admin-empty {
+  color: var(--muted);
+}
+
+.admin-inquiry-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-inquiry {
+  display: grid;
+  gap: 0.6rem;
+  padding: clamp(0.9rem, 3vw, 1.4rem);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fffaf1;
+}
+
+.admin-inquiry header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.admin-inquiry header small {
+  color: var(--muted);
+}
+
+.admin-badge {
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: #e6e0d4;
+  font-size: 0.8rem;
+}
+
+.admin-badge.is-open {
+  background: #f6d9c8;
+}
+
+.admin-badge.is-closed {
+  background: #dfe6da;
+}
+
+.admin-inquiry-contact code {
+  overflow-wrap: anywhere;
+}
+
+.admin-inquiry-message {
+  margin: 0;
+  padding: 0.7rem 0.9rem;
+  border-radius: 10px;
+  background: #fff;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.admin-inquiry-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.admin-inquiry-actions span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.admin-cancel-form {
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+  padding: 0.8rem;
+  border: 1px solid #b59a78;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.admin-cancel-result {
+  display: block;
+  margin-top: 0.4rem;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}

@@ -103,6 +103,52 @@ export async function requestPayAppPayment(input: {
   } as const;
 }
 
+/**
+ * Asks PayApp to cancel a completed payment. Returns the provider's own verdict rather
+ * than throwing, because the caller has to show the operator why a refund was refused.
+ * Payment state is not written here: the feedback callback remains the single writer.
+ */
+export async function cancelPayAppPayment(input: {
+  userId: string;
+  linkKey: string;
+  requestNumber: string;
+  memo: string;
+}): Promise<{ ok: true } | { ok: false; message: string }> {
+  const form = new URLSearchParams({
+    cmd: "paycancel",
+    userid: input.userId,
+    linkkey: input.linkKey,
+    mul_no: input.requestNumber,
+    cancelmemo: input.memo,
+    partcancel: "0",
+  });
+
+  let response: Response;
+  try {
+    response = await fetch("https://api.payapp.kr/oapi/apiLoad.html", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+      body: form.toString(),
+      cache: "no-store",
+      signal: AbortSignal.timeout(15_000),
+    });
+  } catch {
+    return { ok: false, message: "페이앱에 연결하지 못했습니다." };
+  }
+  if (!response.ok) {
+    return { ok: false, message: `페이앱 응답 오류 (HTTP ${response.status})` };
+  }
+
+  const parsed = Object.fromEntries(new URLSearchParams(await response.text()));
+  if (parsed.state === "1") return { ok: true };
+  return {
+    ok: false,
+    message: typeof parsed.errorMessage === "string" && parsed.errorMessage
+      ? parsed.errorMessage
+      : "페이앱이 취소를 거부했습니다.",
+  };
+}
+
 export function securePayAppValueMatches(actual: string, expected: string): boolean {
   const actualBytes = Buffer.from(actual);
   const expectedBytes = Buffer.from(expected);

@@ -413,7 +413,8 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
           <nav aria-label={locale === "ko" ? "법률 안내" : "Legal"}>
             <Link href={`/${locale}/terms`}>{locale === "ko" ? "이용조건" : "Terms"}</Link>
             <Link href={`/${locale}/privacy`}>{locale === "ko" ? "개인정보" : "Privacy"}</Link>
-            <Link href={`/${locale}/me`}>{locale === "ko" ? "마이페이지" : "My Page"}</Link>
+            <Link href={`/${locale}/orders`}>{locale === "ko" ? "구매 내역" : "Find a purchase"}</Link>
+            <Link href={`/${locale}/support`}>{locale === "ko" ? "고객 문의" : "Support"}</Link>
           </nav>
           <small>{locale === "ko" ? "별루프 · 대표 박서준 · 사업자등록번호 482-12-03629 · 부산광역시 북구" : "Byeolloof · Busan, Republic of Korea"}</small>
         </footer>

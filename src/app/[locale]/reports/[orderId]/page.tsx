@@ -34,17 +34,55 @@ export default async function PurchasedReportPage({
   if (!stored) notFound();
 
   if (stored.status !== "ready" || !stored.report) {
+    // A revoked report follows a cancellation or refund, so telling the reader to wait
+    // would leave them expecting something that is never going to arrive.
     return (
       <main className="shell paid-report-shell" id="main-content">
         {stored.status === "pending_payment" ? (
           <PaymentStatusWaiting locale={locale} />
+        ) : stored.status === "revoked" ? (
+          <>
+            <p className="eyebrow">{locale === "ko" ? "결제 취소됨" : "Payment cancelled"}</p>
+            <h1>
+              {locale === "ko"
+                ? "결제가 취소되어 리포트 열람이 종료되었습니다."
+                : "This payment was cancelled, so the report is closed."}
+            </h1>
+            <p>
+              {locale === "ko"
+                ? "환불은 결제하신 수단으로 처리됩니다. 반영까지 며칠 걸릴 수 있어요. 다시 보고 싶으시면 새로 결제해 주세요."
+                : "The refund returns to your original payment method and can take a few days. Purchase again to receive a new report."}
+            </p>
+            <p className="report-link-order">
+              {locale === "ko" ? "주문번호" : "Order number"} <code>{orderId}</code>
+            </p>
+          </>
         ) : (
           <>
             <p className="eyebrow">{locale === "ko" ? "리포트 준비" : "Preparing report"}</p>
-            <h1>{locale === "ko" ? "리포트를 준비하고 있습니다." : "The report is being prepared."}</h1>
-            <p>{locale === "ko" ? "잠시 후 이 페이지를 다시 열어 주세요." : "Please open this page again shortly."}</p>
+            <h1>
+              {locale === "ko"
+                ? "리포트를 만드는 중에 문제가 생겼습니다."
+                : "Something went wrong while building the report."}
+            </h1>
+            <p>
+              {locale === "ko"
+                ? "결제는 정상 처리되었습니다. 아래 주문번호로 문의해 주시면 바로 도와드리겠습니다."
+                : "Your payment went through. Please contact support with the order number below."}
+            </p>
+            <p className="report-link-order">
+              {locale === "ko" ? "주문번호" : "Order number"} <code>{orderId}</code>
+            </p>
           </>
         )}
+        <p className="payment-result-links">
+          <Link className="link-button" href={`/${locale}/support`}>
+            {locale === "ko" ? "문의하기" : "Contact support"}
+          </Link>
+          <Link className="link-button" href={`/${locale}`}>
+            {locale === "ko" ? "홈으로" : "Home"}
+          </Link>
+        </p>
       </main>
     );
   }

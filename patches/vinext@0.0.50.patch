@@ -1,0 +1,13 @@
+diff --git a/dist/entries/app-rsc-entry.js b/dist/entries/app-rsc-entry.js
+index 1111111..2222222 100644
+--- a/dist/entries/app-rsc-entry.js
++++ b/dist/entries/app-rsc-entry.js
+@@ -439,7 +439,7 @@
+       probePage() {
+         if (!PageComponent) return null;
+         const _asyncSearchParams = makeThenableParams(
+-          __collectAppPageSearchParams(searchParams).searchParamsObject,
++          __collectAppPageSearchParams(searchParams).pageSearchParams,
+         );
+         return PageComponent({ params: _asyncRouteParams, searchParams: _asyncSearchParams });
+       },
