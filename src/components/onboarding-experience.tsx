@@ -233,7 +233,7 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
             <p className="eyebrow">{d.eyebrow}</p>
             <h1 id="hero-title">
               {locale === "ko" ? (
-                <>내 유형은 알겠는데,<br /><span>지금 뭘 해야 할지<br />모르겠다면.</span></>
+                <>막막한 순간,<br /><span>결이 답의 방향을<br />밝혀드립니다.</span></>
               ) : d.headline}
             </h1>
             <p className="hero-copy">{d.intro}</p>
