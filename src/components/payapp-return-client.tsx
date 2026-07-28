@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useSyncExternalStore } from "react";
 import { readGuestReportLink } from "@/core/report-handoff";
 
 const copy = {
@@ -33,6 +33,34 @@ const copy = {
   },
 } as const;
 
+// Local storage is an external store, so it is read through useSyncExternalStore
+// rather than assigned into state from an effect. The snapshot is memoised per order
+// because getSnapshot must be referentially stable. `undefined` means "not determined
+// yet", which is what the server renders, so hydration does not flash the recovery
+// view at a buyer whose link is present.
+let snapshotCache: { orderId: string; value: string | null } | null = null;
+
+function subscribeToStorage() {
+  return () => {};
+}
+
+function readSnapshot(orderId: string): string | null {
+  if (snapshotCache?.orderId === orderId) return snapshotCache.value;
+  let value: string | null = null;
+  try {
+    value = readGuestReportLink(window.localStorage, {
+      orderId,
+      origin: window.location.origin,
+      now: new Date(),
+    });
+  } catch {
+    // Storage can be unavailable; fall through to the recovery view.
+    value = null;
+  }
+  snapshotCache = { orderId, value };
+  return value;
+}
+
 export function PayAppReturnClient({
   locale,
   orderId,
@@ -41,25 +69,18 @@ export function PayAppReturnClient({
   orderId: string;
 }) {
   const t = copy[locale];
-  const [reportUrl, setReportUrl] = useState<string | null>(null);
-  const [resolved, setResolved] = useState(false);
+  const getSnapshot = useCallback(() => readSnapshot(orderId), [orderId]);
+  const getServerSnapshot = useCallback(() => undefined, []);
+  const reportUrl = useSyncExternalStore<string | null | undefined>(
+    subscribeToStorage,
+    getSnapshot,
+    getServerSnapshot,
+  );
+  const resolved = reportUrl !== undefined;
 
   useEffect(() => {
-    let stored: string | null = null;
-    try {
-      stored = readGuestReportLink(window.localStorage, {
-        orderId,
-        origin: window.location.origin,
-        now: new Date(),
-      });
-    } catch {
-      // Storage can be unavailable; fall through to the recovery view.
-      stored = null;
-    }
-    setReportUrl(stored);
-    setResolved(true);
-    if (stored) window.location.replace(stored);
-  }, [orderId]);
+    if (reportUrl) window.location.replace(reportUrl);
+  }, [reportUrl]);
 
   // Never dead-end a buyer who has paid: without a stored link the page explains how
   // to recover instead of silently bouncing to a page that shows nothing.

@@ -111,7 +111,7 @@ function feedbackRequest(fields: Record<string, string>) {
 
 let recorder: Recorder;
 
-function useOrder(order: OrderRow | null) {
+function stubOrder(order: OrderRow | null) {
   recorder = { rpc: [], updates: [], events: [] };
   getSupabaseAdminClient.mockReturnValue(createAdmin(order, recorder));
   return recorder;
@@ -127,7 +127,7 @@ beforeEach(() => {
   vi.stubEnv("INNERARC_PREMIUM_PDF_PRICE_KRW", "79000");
   finalizePaidReport.mockResolvedValue(undefined);
   revokeGuestPaidReport.mockResolvedValue(undefined);
-  useOrder(defaultOrder());
+  stubOrder(defaultOrder());
 });
 
 afterEach(() => {
@@ -137,7 +137,7 @@ afterEach(() => {
 
 describe("PayApp feedback callback", () => {
   it("opens the report only for an approved, order-bound callback", async () => {
-    const recorded = useOrder(defaultOrder());
+    const recorded = stubOrder(defaultOrder());
     const response = await POST(feedbackRequest({}));
 
     expect(response.status).toBe(200);
@@ -149,12 +149,13 @@ describe("PayApp feedback callback", () => {
   });
 
   it("rejects a forged callback whose secrets do not match", async () => {
-    for (const forged of [
+    const forgeries: Record<string, string>[] = [
       { linkkey: "wrong-link-key-value" },
       { linkval: "wrong-link-value-value" },
       { userid: "someone-else" },
-    ]) {
-      const recorded = useOrder(defaultOrder());
+    ];
+    for (const forged of forgeries) {
+      const recorded = stubOrder(defaultOrder());
       const response = await POST(feedbackRequest(forged));
 
       expect(response.status).toBe(401);
@@ -164,7 +165,7 @@ describe("PayApp feedback callback", () => {
   });
 
   it("rejects a callback whose amount does not match the server-owned order", async () => {
-    const recorded = useOrder(defaultOrder({ amount: 79_000 }));
+    const recorded = stubOrder(defaultOrder({ amount: 79_000 }));
     const response = await POST(feedbackRequest({ price: "39000" }));
 
     expect(response.status).toBe(400);
@@ -173,7 +174,7 @@ describe("PayApp feedback callback", () => {
   });
 
   it("rejects a callback bound to a different payment request", async () => {
-    const recorded = useOrder(defaultOrder({ provider_snapshot: { requestNumber: "19999999" } }));
+    const recorded = stubOrder(defaultOrder({ provider_snapshot: { requestNumber: "19999999" } }));
     const response = await POST(feedbackRequest({ mul_no: REQUEST_NUMBER }));
 
     expect(response.status).toBe(400);
@@ -183,15 +184,15 @@ describe("PayApp feedback callback", () => {
   it("rejects callbacks for unknown orders and other providers", async () => {
     expect((await POST(feedbackRequest({}))).status).toBe(200);
 
-    useOrder(null);
+    stubOrder(null);
     expect((await POST(feedbackRequest({}))).status).toBe(400);
 
-    useOrder(defaultOrder({ provider: "portone" }));
+    stubOrder(defaultOrder({ provider: "portone" }));
     expect((await POST(feedbackRequest({}))).status).toBe(400);
   });
 
   it("holds the report closed while a virtual account is unpaid", async () => {
-    const recorded = useOrder(defaultOrder());
+    const recorded = stubOrder(defaultOrder());
     const response = await POST(feedbackRequest({ pay_state: "10", pay_type: "7" }));
 
     expect(response.status).toBe(200);
@@ -200,7 +201,7 @@ describe("PayApp feedback callback", () => {
   });
 
   it("ignores a late pre-payment event for an already approved order", async () => {
-    const recorded = useOrder(defaultOrder({ status: "DONE" }));
+    const recorded = stubOrder(defaultOrder({ status: "DONE" }));
     const response = await POST(feedbackRequest({ pay_state: "10", pay_type: "7" }));
 
     expect(response.status).toBe(200);
@@ -209,7 +210,7 @@ describe("PayApp feedback callback", () => {
   });
 
   it("withdraws a delivered guest report when the payment is cancelled", async () => {
-    const recorded = useOrder(defaultOrder({ status: "DONE" }));
+    const recorded = stubOrder(defaultOrder({ status: "DONE" }));
     const response = await POST(feedbackRequest({ pay_state: "8" }));
 
     expect(response.status).toBe(200);
@@ -219,7 +220,7 @@ describe("PayApp feedback callback", () => {
   });
 
   it("routes a signed-in buyer through the atomic entitlement function", async () => {
-    const recorded = useOrder(defaultOrder({ owner_user_id: "11111111-2222-3333-4444-555555555555" }));
+    const recorded = stubOrder(defaultOrder({ owner_user_id: "11111111-2222-3333-4444-555555555555" }));
     const response = await POST(feedbackRequest({}));
 
     expect(response.status).toBe(200);
@@ -230,9 +231,9 @@ describe("PayApp feedback callback", () => {
   });
 
   it("derives one stable event id so retried callbacks stay idempotent", async () => {
-    const first = useOrder(defaultOrder());
+    const first = stubOrder(defaultOrder());
     await POST(feedbackRequest({ pay_date: "2026-07-28 10:00:00" }));
-    const second = useOrder(defaultOrder());
+    const second = stubOrder(defaultOrder());
     await POST(feedbackRequest({ pay_date: "2026-07-28 10:00:00" }));
 
     expect(first.events[0]?.transmission_id).toBe(second.events[0]?.transmission_id);
