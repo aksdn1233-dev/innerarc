@@ -1,7 +1,7 @@
 # Continuation State
 
-Last updated: 2026-07-27<br>
-Current version: 0.17.0
+Last updated: 2026-07-28<br>
+Current version: 0.18.0
 Overall progress: 98%
 
 ## Active worktree status
@@ -56,17 +56,29 @@ Overall progress: 98%
 ## Current state
 
 - The provider-neutral web MVP, relationship action-to-outcome loop, lifestyle curation, closed shop-preview scope, and tarot reading-room UX are implemented and release-regression tested.
-- Supabase-backed identity and explicit durable record sync are connected. Payment code and its database foundation are present but remain disabled until live merchant configuration, pricing, legal disclosures, and the production domain are approved.
+- The site is restyled as the paid GYEOL tarot service with three server-priced products and a PayApp hosted checkout, with bank transfer, PortOne, and Toss adapters kept as alternates.
+- Supabase-backed identity and explicit durable record sync are connected. Payment code and its database foundation are present but remain disabled until live merchant keys, legal disclosures, and the production domain are approved.
+- A Cloudflare Workers build target exists and is deployed to a temporary preview URL, `https://innerarc.truth-bakery.workers.dev`, with payments unconfigured. This is not a permanent address.
 - The closed shop is product architecture only, not an operating store.
+
+## Payment defects found and fixed after the first deployment
+
+- Guest orders were never revoked. `apply_verified_payment` withdraws report access when a delivered order later leaves `DONE`, but that function only runs for owner-scoped orders. The PayApp feedback and PortOne webhook guest branches updated `payment_orders` alone, so a cancelled or refunded guest purchase kept serving its report. Both branches now withdraw access.
+- The post-payment hand-off lived in `sessionStorage`, which a virtual-account deposit hours later or a payment-app context switch does not preserve. A guest's report URL is their only proof of purchase, so losing it meant paying and receiving nothing. The link is now shown and copyable before payment, kept in expiring per-order local storage, and the return screen explains recovery with the order number instead of dead-ending.
+- `src/app/icon.tsx` rendered a constant icon through `next/og`, pulling the resvg rasterizer into the worker twice and pushing it past the size limit so the deployment failed outright. The icon ships as a static PNG.
+- `vinext` 0.0.50 emits `@font-face` sources as build-machine absolute paths, so every custom font 404s once deployed. `build:sites` now rewrites them to the uploaded asset URLs.
+- The social card was produced by a route handler reading `public/og.png` through `node:fs`, which has no filesystem on Workers and returned 500 to every link-preview crawl. Metadata points at the static asset instead.
 
 ## Next priorities
 
-1. Validate the connected Supabase foundation with two real staging accounts, session revocation, administrative audit, backup/restore, and retention/deletion-residue evidence.
-2. Complete Toss Payments merchant review, live method approval, prices, seller/refund disclosures, webhook registration, and production-domain configuration before enabling the existing adapter.
-3. Complete qualified legal/privacy/age/terms, crisis-escalation, numerology/tarot editorial, Korean/English native-language, accessibility, brand/trademark, and security reviews.
-4. Validate Plus/Pro pricing and unit economics. Separately validate accessory/music usefulness and trust before deciding whether to open commerce.
-5. Before shop opening, approve suppliers, provenance, material/allergy/fit disclosures, accessibility, inventory, fulfillment, tax, shipping, return/refund, fraud, support, privacy, and consumer-law operations.
-6. Perform only an explicitly authorized staging/production deployment. Evaluate native apps after web cohort evidence.
+1. Configure the live PayApp link key/value and Supabase keys as deployment secrets, register the feedback URL, and run one real low-value approval, cancellation, and virtual-account deposit end to end.
+2. Connect transactional email so a guest receives their report address after purchase. Local storage is a convenience, not a durable receipt, and it is currently the only recovery path for a guest who clears their browser.
+3. Validate the connected Supabase foundation with two real staging accounts, session revocation, administrative audit, backup/restore, and retention/deletion-residue evidence.
+4. Resolve the seller disclosures that a public paid launch requires: the 통신판매업 registration number and a lawful published business address.
+5. Complete qualified legal/privacy/age/terms, crisis-escalation, numerology/tarot editorial, Korean/English native-language, accessibility, brand/trademark, and security reviews.
+6. Validate product pricing and unit economics. Separately validate accessory/music usefulness and trust before deciding whether to open commerce.
+7. Before shop opening, approve suppliers, provenance, material/allergy/fit disclosures, accessibility, inventory, fulfillment, tax, shipping, return/refund, fraud, support, privacy, and consumer-law operations.
+8. Move off the temporary preview deployment to an approved permanent domain. Evaluate native apps after web cohort evidence.
 
 ## On hold / external blockers
 
@@ -108,7 +120,7 @@ Overall progress: 98%
 
 ## Verified baseline
 
-- Unit/integration: 275/275 passed across 28 files.
+- Unit/integration: 304/304 passed across 31 files, including PayApp callback route coverage for forged secrets, amount mismatch, wrong payment request, unknown order, unpaid virtual account, stale pre-payment events, cancellation revocation, owner-path entitlement, and retry idempotency.
 - ESLint: passed with zero warnings.
 - TypeScript strict check: passed.
 - Next.js 16.2.11 production build: passed without metadata warnings; 40 route outputs generated.

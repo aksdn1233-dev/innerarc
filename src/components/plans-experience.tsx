@@ -7,6 +7,7 @@ import {
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { PaidReadingInputSchema, type PaidReadingInput } from "@/core/paid-reading";
+import { saveGuestReportLink } from "@/core/report-handoff";
 import type { Locale } from "@/i18n/config";
 import type { PaymentProductCode } from "@/server/payments/config";
 
@@ -117,6 +118,11 @@ const copy = {
     customerPhonePlaceholder: "010-1234-5678",
     customerPhoneHelp: "결제 안내와 가상계좌 발급에 사용됩니다. 주소는 받지 않습니다.",
     payAppNotice: "다음 화면에서 카카오페이·토스페이·카드·가상계좌·휴대폰 결제 중 하나를 선택할 수 있습니다.",
+    keepLinkTitle: "이 주소를 먼저 저장해 주세요",
+    keepLinkBody: "결제가 끝나면 이 주소에서 리포트를 보실 수 있습니다. 이 브라우저에도 자동으로 저장되지만, 가상계좌로 나중에 입금하시거나 다른 기기에서 여실 계획이라면 직접 복사해 두시는 편이 안전합니다.",
+    keepLinkCopy: "주소 복사",
+    keepLinkCopied: "복사했습니다",
+    orderNumber: "주문번호",
   },
   en: {
     brand: "Personal pattern intelligence",
@@ -153,6 +159,11 @@ const copy = {
     customerPhonePlaceholder: "010-1234-5678",
     customerPhoneHelp: "Used only for payment instructions and virtual-account issuance.",
     payAppNotice: "Choose KakaoPay, Toss Pay, card, virtual account, mobile, or bank transfer on the next screen.",
+    keepLinkTitle: "Save this address first",
+    keepLinkBody: "Your report opens at this address once payment completes. It is also saved in this browser, but copy it yourself if you plan to deposit to a virtual account later or open the report on another device.",
+    keepLinkCopy: "Copy address",
+    keepLinkCopied: "Copied",
+    orderNumber: "Order number",
   },
 } as const;
 
@@ -189,6 +200,7 @@ export function PlansExperience({
   const [depositorName, setDepositorName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [portOneMethod, setPortOneMethod] = useState<PortOneMethod>("kakaopay");
+  const [linkCopied, setLinkCopied] = useState(false);
   const [readingInput] = useState<PaidReadingInput | null>(() => {
     if (typeof window === "undefined") return null;
     const raw = window.sessionStorage.getItem("innerarc.checkoutDraft.v1");
@@ -305,17 +317,38 @@ export function PlansExperience({
     }
   }
 
+  async function copyReportLink(url: string) {
+    try {
+      await navigator.clipboard.writeText(url);
+      setLinkCopied(true);
+    } catch {
+      // Clipboard access can be denied; the address stays selectable in the field.
+      setLinkCopied(false);
+    }
+  }
+
   async function requestPayment() {
     if (!session) return;
     if (session.provider === "manual_transfer") {
+      saveGuestReportLink(window.localStorage, {
+        orderId: session.orderId,
+        url: session.reportUrl,
+        origin: window.location.origin,
+        now: new Date(),
+      });
       window.location.assign(session.reportUrl);
       return;
     }
     if (session.provider === "payapp") {
-      window.sessionStorage.setItem(
-        `gyeol.payappReport.${session.orderId}`,
-        session.reportUrl,
-      );
+      // Durable, because the provider can return through a different browsing context
+      // (app hand-off) or hours later (virtual-account deposit). The link is also shown
+      // on screen above, so a failed write here does not strand a paying guest.
+      saveGuestReportLink(window.localStorage, {
+        orderId: session.orderId,
+        url: session.reportUrl,
+        origin: window.location.origin,
+        now: new Date(),
+      });
       window.location.assign(session.payUrl);
       return;
     }
@@ -470,6 +503,34 @@ export function PlansExperience({
 
       {session && (
         <section className="payment-widget-shell" aria-live="polite">
+          {(session.provider === "payapp" || session.provider === "manual_transfer") && (
+            <div className="report-link-card">
+              <p className="eyebrow">{t.keepLinkTitle}</p>
+              <p>{t.keepLinkBody}</p>
+              <p className="report-link-order">
+                {t.orderNumber} <code>{session.orderId}</code>
+              </p>
+              <div className="report-link-row">
+                <input
+                  aria-label={t.keepLinkTitle}
+                  className="report-link-value"
+                  onFocus={(event) => event.currentTarget.select()}
+                  readOnly
+                  value={session.reportUrl}
+                />
+                <button
+                  className="secondary-button"
+                  onClick={() => void copyReportLink(session.reportUrl)}
+                  type="button"
+                >
+                  {linkCopied ? t.keepLinkCopied : t.keepLinkCopy}
+                </button>
+              </div>
+              <p aria-live="polite" className="visually-hidden">
+                {linkCopied ? t.keepLinkCopied : ""}
+              </p>
+            </div>
+          )}
           {session.provider === "toss" ? (
             <>
               <div id="payment-method" />
