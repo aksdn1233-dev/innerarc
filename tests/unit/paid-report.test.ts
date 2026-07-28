@@ -42,6 +42,32 @@ describe("paid report delivery", () => {
     }
   });
 
+  it("describes different birth dates differently, not just under a different label", () => {
+    // getRuleBasedProfile returns one hard-coded strength list for every life path, so
+    // a core-pattern section sourced from it would read identically for every buyer.
+    const bodies = [
+      "1980-01-01", "1985-06-11", "1990-03-15", "1993-11-27", "2001-08-08",
+    ].map((birthDate) => {
+      const report = createPaidReport("iavariety123", {
+        ...baseInput,
+        birthDate,
+        productCode: "plus_30d",
+      });
+      return report.sections.find((section) => section.title === "당신의 핵심 성향")?.body ?? "";
+    });
+
+    expect(bodies.every((body) => body.length > 0)).toBe(true);
+    expect(new Set(bodies).size).toBe(bodies.length);
+  });
+
+  it("returns the same reading for the same person every time", () => {
+    // Variety must come from the person's own numbers, never from randomness: a buyer
+    // who reopens their report has to see what they paid for.
+    const twice = [1, 2].map(() =>
+      createPaidReport("iastable123", { ...baseInput, productCode: "pro_30d" }).sections);
+    expect(JSON.stringify(twice[0])).toBe(JSON.stringify(twice[1]));
+  });
+
   it("keeps the core pattern free of guarantees in both languages", () => {
     for (const locale of ["ko", "en"] as const) {
       const report = createPaidReport("iacore123", {

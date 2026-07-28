@@ -1,3 +1,4 @@
+import { withParticle } from "@/core/korean-particles";
 import type { NumerologyProfile } from "@/core/numerology";
 import type { Locale } from "@/i18n/config";
 
@@ -154,10 +155,10 @@ function domain(
     title: text(DOMAIN_TITLE[id], locale),
     calculatedFacts: values.map((item) => fact(item.id, item.value, locale)),
     traditionalInterpretation: ko
-      ? `${text(primary.label, locale)}의 ${text(primary.drive, locale)}와 ${text(secondary.label, locale)}의 ${text(secondary.drive, locale)}를 함께 보는 상징적 관점입니다.`
+      ? `${text(primary.label, locale)}의 ${withParticle(text(primary.drive, locale), "with")} ${text(secondary.label, locale)}의 ${withParticle(text(secondary.drive, locale), "object")} 함께 보는 상징적 관점입니다.`
       : `This symbolic lens combines the ${text(primary.drive, locale)} of the ${text(primary.label, locale)} with the ${text(secondary.drive, locale)} of the ${text(secondary.label, locale)}.`,
     personalizedInference: ko
-      ? `${text(primary.strength, locale)}이 도움이 될 수 있지만, ${text(secondary.shadow, locale)}이 나타나는 조건에서는 다른 전략이 필요할 수 있습니다.`
+      ? `${withParticle(text(primary.strength, locale), "subject")} 도움이 될 수 있지만, ${withParticle(text(secondary.shadow, locale), "subject")} 나타나는 조건에서는 다른 전략이 필요할 수 있습니다.`
       : `${text(primary.strength, locale)} may help, while conditions involving ${text(secondary.shadow, locale)} may call for a different strategy.`,
     realityCheck: text(checks[id], locale),
     uncertainty: ko
@@ -238,7 +239,7 @@ export function createIntegratedProfile(profile: NumerologyProfile, locale: Loca
   return {
     ruleVersion: INTEGRATED_PROFILE_RULE_VERSION,
     summary: ko
-      ? `${text(theme(lp.value).label, locale)}의 관점에서 ${text(theme(lp.value).drive, locale)}을 중심축으로 삼되, 실제 선택 기록으로 적합성을 확인하는 프로필입니다.`
+      ? `${text(theme(lp.value).label, locale)}의 관점에서 ${withParticle(text(theme(lp.value).drive, locale), "object")} 중심축으로 삼되, 실제 선택 기록으로 적합성을 확인하는 프로필입니다.`
       : `A profile centered on ${text(theme(lp.value).drive, locale)} through the lens of the ${text(theme(lp.value).label, locale)}, with personal fit checked against recorded choices.`,
     domains,
     careerRecommendations: careerRecommendations(profile, locale),
