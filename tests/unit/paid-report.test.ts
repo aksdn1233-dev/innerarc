@@ -30,6 +30,37 @@ describe("paid report delivery", () => {
     expect(premium.cautions.length).toBeGreaterThan(1);
   });
 
+  it("tells even the cheapest buyer something about themselves", () => {
+    for (const productCode of ["plus_30d", "pro_30d", "premium_pdf"] as const) {
+      const report = createPaidReport(`ia${productCode}9999`, { ...baseInput, productCode });
+      const core = report.sections.find((section) => section.title === "당신의 핵심 성향");
+
+      expect(core, `${productCode} is missing the core pattern section`).toBeDefined();
+      // Life path for 1980-01-01 is a stable fixed vector for this engine.
+      expect(core?.body).toContain("생명수");
+      expect(core?.body.length).toBeGreaterThan(60);
+    }
+  });
+
+  it("keeps the core pattern free of guarantees in both languages", () => {
+    for (const locale of ["ko", "en"] as const) {
+      const report = createPaidReport("iacore123", {
+        ...baseInput,
+        locale,
+        productCode: "plus_30d",
+      });
+      const core = report.sections.find((section) =>
+        section.title === (locale === "ko" ? "당신의 핵심 성향" : "Your core pattern"));
+
+      expect(core?.body).toBeDefined();
+      expect(core?.body).not.toMatch(/반드시|보장|틀림없|guaranteed|will definitely/i);
+      expect(core?.body).not.toContain("undefined");
+      // Korean 은/는 depends on the final consonant of the preceding word, and the
+      // risk phrase is data, so no sentence may attach a particle straight to it.
+      if (locale === "ko") expect(core?.body).not.toMatch(/[가-힣]기은\s|하기은\s/);
+    }
+  });
+
   it("uses an environment allowlist instead of a hard-coded admin password", () => {
     const environment = { ADMIN_EMAILS: "owner@example.com, second@example.com" };
     expect(isAdminEmail("OWNER@example.com", environment)).toBe(true);

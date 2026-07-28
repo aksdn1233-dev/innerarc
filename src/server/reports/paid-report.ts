@@ -47,6 +47,20 @@ export function createPaidReport(orderId: string, rawInput: unknown): PaidReport
       title: ko ? "지금의 핵심 흐름" : "Current theme",
       body: `${context.contextualInference} ${overview.summary}`,
     },
+    // Every tier includes this. Even the cheapest reading is bought by someone who
+    // wants to hear something about themselves, not only about their one question.
+    {
+      title: ko ? "당신의 핵심 성향" : "Your core pattern",
+      body: ko
+        // The risk phrase is data, so it can end in either a vowel or a consonant.
+        // Quoting it keeps the sentence correct without picking an 은/는 particle.
+        ? `생명수 ${profile.lifePath.value}, ${overview.archetype} 유형입니다. ${integrated.summary} ` +
+          `잘 드러나는 강점은 ${overview.strengths.join(", ")}입니다. ` +
+          `반대로 스스로 점검해 볼 지점은 '${overview.risks[0]}'입니다.`
+        : `Life path ${profile.lifePath.value}, read through the ${overview.archetype} pattern. ${integrated.summary} ` +
+          `Strengths that tend to show up: ${overview.strengths.join(", ")}. ` +
+          `The counterweight to watch in yourself is ${overview.risks[0].toLowerCase()}.`,
+    },
     ...domainOrder.map((domain) => ({
       title: domain.title,
       body: `${domain.personalizedInference} ${domain.realityCheck}`,

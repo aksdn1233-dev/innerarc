@@ -8,6 +8,25 @@ import type { Dictionary } from "@/i18n/dictionaries";
 type Props = { locale: Locale; dictionary: Dictionary };
 type ReadingProductId = "quick" | "comprehensive" | "premium_pdf";
 
+type FocusId = "work" | "relationships" | "growth" | "money";
+
+// The example has to match the area the person just picked. A relationship prompt
+// shown to someone asking about money reads as "this service is not for me".
+const concernExamples: Record<Locale, Record<FocusId, string>> = {
+  ko: {
+    work: "예: 지금 회사에 계속 있는 게 맞을까요, 옮길 준비를 시작해야 할까요?",
+    relationships: "예: 그 사람과 다시 잘될 수 있을까요?",
+    growth: "예: 요즘 계속 제자리인 것 같은데, 뭘 먼저 바꿔야 할까요?",
+    money: "예: 지금 목돈을 쓰는 게 맞을지 계속 망설여집니다.",
+  },
+  en: {
+    work: "e.g. Should I stay in this job, or start preparing to move?",
+    relationships: "e.g. Is there a realistic way back with this person?",
+    growth: "e.g. I feel stuck lately — what should I change first?",
+    money: "e.g. I keep hesitating over a large spend right now.",
+  },
+};
+
 const productCodeByReading: Record<ReadingProductId, "plus_30d" | "pro_30d" | "premium_pdf"> = {
   quick: "plus_30d",
   comprehensive: "pro_30d",
@@ -147,6 +166,7 @@ const copy = {
 
 export function OnboardingExperience({ locale, dictionary: d }: Props) {
   const [selectedProduct, setSelectedProduct] = useState<ReadingProductId>("quick");
+  const [focusId, setFocusId] = useState<FocusId>("relationships");
   const [error, setError] = useState("");
   const t = copy[locale];
   const otherLocale = locale === "ko" ? "en" : "ko";
@@ -302,9 +322,15 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
             <fieldset className="field simple-topic-picker">
               <legend>{locale === "ko" ? "3. 가장 궁금한 영역" : "3. Main area"}</legend>
               <div className="choice-row">
-                {d.interests.slice(0, 4).map((option, index) => (
+                {d.interests.slice(0, 4).map((option) => (
                   <label className="choice" key={option.value}>
-                    <input defaultChecked={index === 1} name="interest" type="radio" value={option.value} />
+                    <input
+                      checked={focusId === option.value}
+                      name="interest"
+                      onChange={() => setFocusId(option.value as FocusId)}
+                      type="radio"
+                      value={option.value}
+                    />
                     <span>{option.label}</span>
                   </label>
                 ))}
@@ -324,7 +350,13 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
                   ? selectedProduct === "quick" ? "4. 한 가지 궁금한 것" : "4. 자세히 보고 싶은 고민"
                   : "4. Your concern"}
               </label>
-              <textarea id="concern" name="concern" maxLength={1_000} required placeholder={locale === "ko" ? "예: 그 사람과 다시 잘될 수 있을까요?" : "Write one clear concern."} />
+              <textarea
+                id="concern"
+                maxLength={1_000}
+                name="concern"
+                placeholder={concernExamples[locale][focusId]}
+                required
+              />
             </div>
 
             {selectedProduct === "premium_pdf" && (
