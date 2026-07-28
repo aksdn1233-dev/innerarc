@@ -1,8 +1,8 @@
 diff --git a/dist/entries/app-rsc-entry.js b/dist/entries/app-rsc-entry.js
-index 1111111..2222222 100644
+index 451f100269afdd2fb116a59b26a9044de6790efc..0c108b0b6d4616d792bd4daea3adc11d5823f8fd 100644
 --- a/dist/entries/app-rsc-entry.js
-+++ b/dist/entries/app-rsc-entry.js
-@@ -439,7 +439,7 @@
++++ b/dist/entries/app-rsc-entry.js	
+@@ -439,7 +439,7 @@ export default __createAppRscHandler({
        probePage() {
          if (!PageComponent) return null;
          const _asyncSearchParams = makeThenableParams(
@@ -11,3 +11,37 @@ index 1111111..2222222 100644
          );
          return PageComponent({ params: _asyncRouteParams, searchParams: _asyncSearchParams });
        },
+diff --git a/dist/server/app-page-execution.js b/dist/server/app-page-execution.js
+index 9a2211403942b9084a92c0c605058646f2d0f256..a69fc2c81b167a2d69654ba49348b7f43ff8a452 100644
+--- a/dist/server/app-page-execution.js
++++ b/dist/server/app-page-execution.js	
+@@ -167,8 +167,10 @@ function teeAppPageRscStreamForCapture(stream, shouldCapture) {
+ 	};
+ }
+ function buildAppPageFontLinkHeader(preloads) {
+-	if (!preloads || preloads.length === 0) return "";
+-	return preloads.map((preload) => `<${preload.href}>; rel=preload; as=font; type=${preload.type}; crossorigin`).join(", ");
++	// Same reason as the markup preloads: an early-hint header listing every subset
++	// asks the browser to download the entire family up front.
++	void preloads;
++	return "";
+ }
+ //#endregion
+ export { buildAppPageFontLinkHeader, buildAppPageSpecialErrorResponse, probeAppPageComponent, probeAppPageLayouts, readAppPageBinaryStream, resolveAppPageSpecialError, teeAppPageRscStreamForCapture };
+diff --git a/dist/server/app-ssr-entry.js b/dist/server/app-ssr-entry.js
+index 30a8d4ab95e9321688564f71bff31952f7da2230..792e12d925b155cdcb347782ed26130b31343889 100644
+--- a/dist/server/app-ssr-entry.js
++++ b/dist/server/app-ssr-entry.js	
+@@ -49,7 +49,11 @@ function renderFontHtml(fontData, nonce) {
+ 	let fontHTML = "";
+ 	const nonceAttr = createNonceAttribute(nonce);
+ 	for (const url of fontData.links ?? []) fontHTML += `<link rel="stylesheet"${nonceAttr} href="${escapeHtmlAttr(url)}" />\n`;
+-	for (const preload of fontData.preloads ?? []) fontHTML += `<link rel="preload"${nonceAttr} href="${escapeHtmlAttr(preload.href)}" as="font" type="${escapeHtmlAttr(preload.type)}" crossorigin />\n`;
++	// Preloading every subset defeats unicode-range: a CJK family is split into
++	// hundreds of subsets so a page fetches only the few it renders, and preloading
++	// them all downloads the whole family before first paint. The @font-face rules
++	// below still ship, so the browser fetches exactly the subsets it needs.
++	void fontData.preloads;
+ 	if (fontData.styles && fontData.styles.length > 0) fontHTML += `<style data-vinext-fonts${nonceAttr}>${fontData.styles.join("\n")}</style>\n`;
+ 	return fontHTML;
+ }

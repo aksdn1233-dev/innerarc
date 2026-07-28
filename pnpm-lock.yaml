@@ -11,7 +11,7 @@ overrides:
 
 patchedDependencies:
   minimatch@3.1.5: fb1ec767fbaa9ec19b7793fdb792f5e03d0011fea6a3ce0c2ee32aa2f6e6930c
-  vinext@0.0.50: 5151b28ffa58940328fcff662b8adcbb2fb05c73a56e55a7b01ec8fc3daa4615
+  vinext@0.0.50: 4fdf5abbfeac0ca917be2bc0f6b046866fc9bb930102f971d740d859822978fa
 
 importers:
 
@@ -80,7 +80,7 @@ importers:
         version: 6.0.3
       vinext:
         specifier: 0.0.50
-        version: 0.0.50(patch_hash=5151b28ffa58940328fcff662b8adcbb2fb05c73a56e55a7b01ec8fc3daa4615)(@vitejs/plugin-react@6.0.4(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(terser@5.49.0)))(@vitejs/plugin-rsc@0.5.30(react-dom@19.2.8(react@19.2.8))(react-server-dom-webpack@19.2.8(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(webpack@5.109.0(esbuild@0.28.1)))(react@19.2.8)(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(terser@5.49.0)))(next@16.2.12(@babel/core@7.29.7)(@playwright/test@1.62.0)(@types/node@24.13.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react-server-dom-webpack@19.2.8(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(webpack@5.109.0(esbuild@0.28.1)))(react@19.2.8)(typescript@6.0.3)(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(terser@5.49.0))
+        version: 0.0.50(patch_hash=4fdf5abbfeac0ca917be2bc0f6b046866fc9bb930102f971d740d859822978fa)(@vitejs/plugin-react@6.0.4(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(terser@5.49.0)))(@vitejs/plugin-rsc@0.5.30(react-dom@19.2.8(react@19.2.8))(react-server-dom-webpack@19.2.8(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(webpack@5.109.0(esbuild@0.28.1)))(react@19.2.8)(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(terser@5.49.0)))(next@16.2.12(@babel/core@7.29.7)(@playwright/test@1.62.0)(@types/node@24.13.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react-server-dom-webpack@19.2.8(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(webpack@5.109.0(esbuild@0.28.1)))(react@19.2.8)(typescript@6.0.3)(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(terser@5.49.0))
       vite:
         specifier: 8.1.5
         version: 8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(terser@5.49.0)
@@ -6098,7 +6098,7 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
-  vinext@0.0.50(patch_hash=5151b28ffa58940328fcff662b8adcbb2fb05c73a56e55a7b01ec8fc3daa4615)(@vitejs/plugin-react@6.0.4(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(terser@5.49.0)))(@vitejs/plugin-rsc@0.5.30(react-dom@19.2.8(react@19.2.8))(react-server-dom-webpack@19.2.8(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(webpack@5.109.0(esbuild@0.28.1)))(react@19.2.8)(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(terser@5.49.0)))(next@16.2.12(@babel/core@7.29.7)(@playwright/test@1.62.0)(@types/node@24.13.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react-server-dom-webpack@19.2.8(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(webpack@5.109.0(esbuild@0.28.1)))(react@19.2.8)(typescript@6.0.3)(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(terser@5.49.0)):
+  vinext@0.0.50(patch_hash=4fdf5abbfeac0ca917be2bc0f6b046866fc9bb930102f971d740d859822978fa)(@vitejs/plugin-react@6.0.4(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(terser@5.49.0)))(@vitejs/plugin-rsc@0.5.30(react-dom@19.2.8(react@19.2.8))(react-server-dom-webpack@19.2.8(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(webpack@5.109.0(esbuild@0.28.1)))(react@19.2.8)(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(terser@5.49.0)))(next@16.2.12(@babel/core@7.29.7)(@playwright/test@1.62.0)(@types/node@24.13.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react-server-dom-webpack@19.2.8(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(webpack@5.109.0(esbuild@0.28.1)))(react@19.2.8)(typescript@6.0.3)(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(terser@5.49.0)):
     dependencies:
       '@unpic/react': 1.0.2(next@16.2.12(@babel/core@7.29.7)(@playwright/test@1.62.0)(@types/node@24.13.3)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@vercel/og': 0.8.6
