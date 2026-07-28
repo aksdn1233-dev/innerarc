@@ -134,6 +134,35 @@ function fact(id: string, value: number, locale: Locale): string {
   return `${text(names[id], locale)} ${value}`;
 }
 
+function domainSentenceKo(id: ProfileDomainId, strength: string, shadow: string): string {
+  const lead = withParticle(strength, "subject");
+  const frames: Record<ProfileDomainId, string> = {
+    thinking: `판단할 때는 ${lead} 먼저 작동하는 편이에요. 다만 ${shadow} 생각이 한자리에 오래 머물 수 있어요.`,
+    action: `실제로 움직일 때 ${lead} 힘을 냅니다. 다만 ${shadow} 속도가 눈에 띄게 떨어질 수 있어요.`,
+    relationships: `사람 사이에서는 ${lead} 잘 드러나요. 다만 ${shadow} 거리 조절이 어려워질 수 있어요.`,
+    leadership: `누군가를 이끌 때 ${lead} 신뢰를 만듭니다. 다만 ${shadow} 결정을 혼자 떠안게 될 수 있어요.`,
+    career: `일에서는 ${lead} 성과로 이어지기 쉬워요. 다만 ${shadow} 오래 버티기 힘든 자리가 됩니다.`,
+    money: `돈 문제에서는 ${lead} 판단을 도와줍니다. 다만 ${shadow} 결정을 미루거나 반대로 서두르게 될 수 있어요.`,
+    stress: `압박을 받을 때도 ${lead} 남아 있는 편이에요. 다만 ${shadow} 회복이 늦어질 수 있어요.`,
+    growth: `무언가 바꾸려 할 때 ${lead} 출발점이 됩니다. 다만 ${shadow} 시도가 흐지부지될 수 있어요.`,
+  };
+  return frames[id];
+}
+
+function domainSentenceEn(id: ProfileDomainId, strength: string, shadow: string): string {
+  const frames: Record<ProfileDomainId, string> = {
+    thinking: `When judging, ${strength} tends to lead. Thinking can circle in one place while ${shadow}.`,
+    action: `${strength} carries the actual doing. Pace can drop noticeably while ${shadow}.`,
+    relationships: `${strength} shows up most clearly between people. Distance gets harder to set while ${shadow}.`,
+    leadership: `${strength} is what builds trust when leading. Decisions can end up carried alone while ${shadow}.`,
+    career: `At work, ${strength} turns into results. A role becomes hard to sustain while ${shadow}.`,
+    money: `Around money, ${strength} supports the judgment. Decisions get postponed or rushed while ${shadow}.`,
+    stress: `Under pressure, ${strength} usually remains. Recovery takes longer while ${shadow}.`,
+    growth: `${strength} is the starting point for changing something. Attempts fade out while ${shadow}.`,
+  };
+  return frames[id];
+}
+
 function domain(
   id: ProfileDomainId,
   values: Array<{ id: string; value: number }>,
@@ -159,9 +188,12 @@ function domain(
     traditionalInterpretation: ko
       ? `${text(primary.label, locale)}의 ${withParticle(text(primary.drive, locale), "with")} ${text(secondary.label, locale)}의 ${withParticle(text(secondary.drive, locale), "object")} 함께 놓고 보는 풀이예요.`
       : `This symbolic lens combines the ${text(primary.drive, locale)} of the ${text(primary.label, locale)} with the ${text(secondary.drive, locale)} of the ${text(secondary.label, locale)}.`,
+    // One shared sentence made eight sections read as the same paragraph eight times.
+    // Each domain now speaks in its own terms, so a long report is worth reading to
+    // the end. Strengths end in a noun and shadows in "~때", which both frames rely on.
     personalizedInference: ko
-      ? `${withParticle(text(primary.strength, locale), "subject")} 여기서 도움이 될 거예요. 다만 ${withParticle(text(secondary.shadow, locale), "topic")} 다른 방법이 필요할 수 있어요.`
-      : `${text(primary.strength, locale)} may help, while conditions involving ${text(secondary.shadow, locale)} may call for a different strategy.`,
+      ? domainSentenceKo(id, text(primary.strength, locale), text(secondary.shadow, locale))
+      : domainSentenceEn(id, text(primary.strength, locale), text(secondary.shadow, locale)),
     realityCheck: text(checks[id], locale),
     uncertainty: ko
       ? "이 해석은 일반화된 상징 가설입니다. 실제 행동 기록과 주변의 구체적 피드백으로 개인 관련성을 확인하세요."
@@ -226,15 +258,21 @@ export function createIntegratedProfile(profile: NumerologyProfile, locale: Loca
   const personality = profile.name.status === "calculated" && profile.name.personality
     ? { id: "personality", value: profile.name.personality.value }
     : bd;
+  // The leading number decides which strength a domain talks about. Life path used to
+  // lead five of the eight, so five sections opened with the same sentence and a
+  // long report read like one paragraph repeated. Each domain now leads with the
+  // number that traditionally speaks to it — soul urge for relationships, personality
+  // for leadership, expression for career — which both varies the text and is the
+  // more defensible mapping.
   const domains = [
     domain("thinking", [lp, at], locale),
     domain("action", [bd, at], locale),
-    domain("relationships", [lp, soul], locale),
-    domain("leadership", [lp, personality], locale),
-    domain("career", [lp, destiny], locale),
+    domain("relationships", [soul, lp], locale),
+    domain("leadership", [personality, lp], locale),
+    domain("career", [destiny, lp], locale),
     domain("money", [at, bd], locale),
-    domain("stress", [lp, at], locale),
-    domain("growth", [py, lp], locale),
+    domain("stress", [at, lp], locale),
+    domain("growth", [py, bd], locale),
   ];
   const selectedThemes = [theme(lp.value), theme(at.value), theme(bd.value)];
   const ko = locale === "ko";

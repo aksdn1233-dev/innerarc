@@ -3875,6 +3875,11 @@ summary {
   line-height: 1.85;
 }
 
+/* Report bodies are plain text and some sections lay out one item per line. */
+.paid-report-section p {
+  white-space: pre-wrap;
+}
+
 .paid-report-section.caution {
   border-color: #d9b7a8;
   background: #fff9f4;

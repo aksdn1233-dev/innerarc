@@ -87,6 +87,37 @@ describe("paid report delivery", () => {
     }
   });
 
+  it("does not repeat the same opening across the long report's sections", () => {
+    // Five of eight domains once led with the life-path number and shared one sentence
+    // frame, so a 79,000 KRW report read as the same paragraph eight times.
+    const premium = createPaidReport("iarepeat123", {
+      ...baseInput,
+      birthDate: "1994-11-04",
+      productCode: "premium_pdf",
+    });
+    const domainBodies = premium.sections
+      .filter((section) => !["지금의 핵심 흐름", "당신의 핵심 성향"].includes(section.title))
+      .filter((section) => !section.title.includes("일과 역할"))
+      .map((section) => section.body);
+
+    expect(domainBodies.length).toBeGreaterThanOrEqual(8);
+    const openings = domainBodies.map((body) => body.slice(0, 24));
+    expect(new Set(openings).size).toBe(openings.length);
+  });
+
+  it("lays the career roles out one per line instead of running them together", () => {
+    const premium = createPaidReport("iacareer123", {
+      ...baseInput,
+      birthDate: "1994-11-04",
+      productCode: "premium_pdf",
+    });
+    const career = premium.sections.find((section) => section.title.includes("일과 역할"));
+
+    expect(career?.body).toContain("잘 맞는 자리 —");
+    expect(career?.body).toContain("피할 자리 —");
+    expect(career?.body.split("\n").length).toBeGreaterThan(5);
+  });
+
   it("uses an environment allowlist instead of a hard-coded admin password", () => {
     const environment = { ADMIN_EMAILS: "owner@example.com, second@example.com" };
     expect(isAdminEmail("OWNER@example.com", environment)).toBe(true);

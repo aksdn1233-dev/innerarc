@@ -75,9 +75,14 @@ export function createPaidReport(orderId: string, rawInput: unknown): PaidReport
   if (input.productCode === "premium_pdf") {
     sections.push({
       title: ko ? "일과 역할에서 확인할 조건" : "Conditions to check in work",
+      // One role per line with its two halves labelled. Joined with a space these ran
+      // together into a single wall of text where each role's fit and its warning were
+      // indistinguishable.
       body: integrated.careerRecommendations
-        .map((role) => `${role.title}: ${role.fitReason} ${role.avoidCondition}`)
-        .join(" "),
+        .map((role) => ko
+          ? `· ${role.title}\n  잘 맞는 자리 — ${role.fitReason}\n  피할 자리 — ${role.avoidCondition}`
+          : `· ${role.title}\n  Fits — ${role.fitReason}\n  Avoid — ${role.avoidCondition}`)
+        .join("\n\n"),
     });
   }
 
