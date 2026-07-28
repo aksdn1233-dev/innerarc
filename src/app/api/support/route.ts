@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
+import { checkInquiryLimit, tooManyRequests } from "@/server/request-limit";
 
 // Buyers have no account, so the order number they quote is the only thread back to
 // their purchase. Everything here is written by an untrusted visitor and is bounded
@@ -20,6 +21,10 @@ export async function POST(request: Request) {
 
   const admin = getSupabaseAdminClient();
   if (!admin) return NextResponse.json({ error: "UNAVAILABLE" }, { status: 503 });
+
+  // Every accepted message becomes a row a person has to read.
+  const limit = await checkInquiryLimit(admin, parsed.data.contact, new Date());
+  if (!limit.allowed) return tooManyRequests(limit);
 
   const { error } = await admin.from("support_inquiries").insert({
     order_id: parsed.data.orderId ?? null,

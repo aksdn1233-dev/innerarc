@@ -138,6 +138,11 @@ export async function finalizePaidReport(
   const { data, error } = await selectQuery.maybeSingle();
   if (error || !data) throw error ?? new Error("REPORT_DRAFT_NOT_FOUND");
   if (data.status === "ready") return;
+  // A revoked report follows a cancellation or refund. The provider retries a callback
+  // whose response it did not accept, so a delivery confirmation can land after the
+  // money has already gone back — reopening a report the buyer no longer paid for.
+  // Only a draft awaiting payment may become readable.
+  if (data.status !== "pending_payment") return;
 
   try {
     const report = createPaidReport(orderId, data.input);
@@ -149,7 +154,10 @@ export async function finalizePaidReport(
         ready_at: report.createdAt,
         updated_at: report.createdAt,
       })
-      .eq("order_id", orderId);
+      .eq("order_id", orderId)
+      // Concurrent callbacks for the same order both pass the read above; the writer
+      // that loses this condition changes nothing instead of writing a second time.
+      .eq("status", "pending_payment");
     updateQuery = ownerUserId
       ? updateQuery.eq("owner_user_id", ownerUserId)
       : updateQuery.is("owner_user_id", null);

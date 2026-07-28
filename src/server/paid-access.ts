@@ -26,11 +26,23 @@ export async function hasPaidFeatureAccess(
     (await cookies()).get(ORDER_PASS_COOKIE)?.value,
     new Date(),
   );
-  if (pass && meetsTier(pass.tier, minimumTier)) return true;
+  const admin = getSupabaseAdminClient();
+
+  if (pass && meetsTier(pass.tier, minimumTier)) {
+    // The pass lives for thirty days, but a refund can happen on day two. Its signature
+    // proves who issued it, not that the order is still paid, so the order is checked
+    // again here — otherwise a refunded buyer keeps the paid features for a month.
+    if (!admin) return false;
+    const { data: order } = await admin
+      .from("payment_orders")
+      .select("status")
+      .eq("order_id", pass.orderId)
+      .maybeSingle();
+    if (order?.status === "DONE") return true;
+  }
 
   const auth = await requireSupabaseUser();
   if (!auth.user) return false;
-  const admin = getSupabaseAdminClient();
   if (!admin) return false;
   const { data } = await admin
     .from("account_entitlements")

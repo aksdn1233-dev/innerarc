@@ -63,6 +63,15 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
     now,
     days: METRIC_DAYS,
   });
+
+  // A buyer whose report failed to build has paid and is looking at an error screen.
+  // Nothing surfaced that anywhere, so it could sit unnoticed indefinitely.
+  const { data: stuckReports } = await admin
+    .from("purchased_reports")
+    .select("order_id,product_code,status,created_at")
+    .eq("status", "failed")
+    .order("created_at", { ascending: false })
+    .limit(20);
   const readiness = inspectPaymentReadiness();
 
   return (
@@ -120,6 +129,25 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
           ))}
         </div>
       </section>
+      {(stuckReports ?? []).length > 0 && (
+        <section className="admin-orders">
+          <h2>⚠ 리포트 생성 실패 — 결제는 되었으나 열람 불가</h2>
+          <p className="plans-notice">
+            이 주문들은 결제가 처리된 뒤 리포트를 만들지 못했습니다. 고객이 오류
+            화면을 보고 있으니 환불하거나 직접 연락해 주세요.
+          </p>
+          <div className="admin-order-list">
+            {(stuckReports ?? []).map((report) => (
+              <div key={report.order_id}>
+                <code>{report.order_id}</code>
+                <span>{report.product_code}</span>
+                <span>{new Date(report.created_at).toLocaleString("ko-KR")}</span>
+                <AdminCancelButton orderId={report.order_id} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
       <section className="admin-orders">
         <h2>고객 문의</h2>
         <AdminInquiryList inquiries={(inquiries.data ?? []) as AdminInquiry[]} />

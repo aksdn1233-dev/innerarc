@@ -17,14 +17,25 @@ vi.mock("next/headers", () => ({
 
 const { hasPaidFeatureAccess } = await import("@/server/paid-access");
 
-function adminReturning(row: { tier: string; valid_until: string } | null) {
-  const query = {
-    select: () => query,
-    eq: () => query,
-    gt: () => query,
+function adminReturning(
+  row: { tier: string; valid_until: string } | null,
+  orderStatus: string = "DONE",
+) {
+  const entitlementQuery = {
+    select: () => entitlementQuery,
+    eq: () => entitlementQuery,
+    gt: () => entitlementQuery,
     maybeSingle: async () => ({ data: row, error: null }),
   };
-  return { from: () => query };
+  const orderQuery = {
+    select: () => orderQuery,
+    eq: () => orderQuery,
+    gt: () => orderQuery,
+    maybeSingle: async () => ({ data: { status: orderStatus }, error: null }),
+  };
+  return {
+    from: (table: string) => table === "payment_orders" ? orderQuery : entitlementQuery,
+  };
 }
 
 const FUTURE = new Date(Date.now() + 86_400_000).toISOString();
@@ -79,9 +90,29 @@ describe("paid feature access", () => {
     });
     cookieValue.mockReturnValue(pass ?? undefined);
     requireSupabaseUser.mockResolvedValue({ user: null });
-    getSupabaseAdminClient.mockReturnValue(null);
+    getSupabaseAdminClient.mockReturnValue(adminReturning(null, "DONE"));
 
     expect(await hasPaidFeatureAccess("pro")).toBe(true);
+    vi.unstubAllEnvs();
+  });
+
+  it("stops honouring a pass once its order is refunded", async () => {
+    // The pass is valid for thirty days but a refund can happen on day two. Its
+    // signature proves who issued it, not that the order is still paid.
+    const { issueOrderPass } = await import("@/server/order-pass");
+    vi.stubEnv("SUPABASE_SERVICE_ROLE_KEY", "sb_secret_test_key_for_signing_0001");
+    cookieValue.mockReturnValue(issueOrderPass({
+      orderId: "ia0123456789abcdef",
+      tier: "pro",
+      now: new Date(),
+    }) ?? undefined);
+    requireSupabaseUser.mockResolvedValue({ user: null });
+
+    for (const status of ["CANCELED", "PARTIAL_CANCELED", "READY", "EXPIRED"]) {
+      getSupabaseAdminClient.mockReturnValue(adminReturning(null, status));
+      expect(await hasPaidFeatureAccess("pro"), `${status} still granted access`)
+        .toBe(false);
+    }
     vi.unstubAllEnvs();
   });
 
@@ -94,6 +125,7 @@ describe("paid feature access", () => {
       now: new Date(),
     }) ?? undefined);
     requireSupabaseUser.mockResolvedValue({ user: null });
+    getSupabaseAdminClient.mockReturnValue(adminReturning(null, "DONE"));
 
     expect(await hasPaidFeatureAccess("plus")).toBe(true);
     expect(await hasPaidFeatureAccess("pro")).toBe(false);

@@ -13,6 +13,7 @@ import {
 } from "@/server/payments/config";
 import { requestPayAppPayment } from "@/server/payments/payapp";
 import { hashCustomerPhone, issueOrderTicket } from "@/server/order-pass";
+import { checkCheckoutLimit, tooManyRequests } from "@/server/request-limit";
 
 const bodySchema = z.object({
   productCode: z.enum(paymentProductCodes),
@@ -68,6 +69,13 @@ export async function POST(request: Request) {
   if (readiness.config.provider === "payapp" && !parsed.data.customerPhone) {
     return NextResponse.json({ error: "CUSTOMER_PHONE_REQUIRED" }, { status: 400 });
   }
+  // Each accepted request creates a real payment request at the provider.
+  const phoneHash = parsed.data.customerPhone
+    ? hashCustomerPhone(parsed.data.customerPhone)
+    : null;
+  const limit = await checkCheckoutLimit(admin, phoneHash, new Date());
+  if (!limit.allowed) return tooManyRequests(limit);
+
   const depositDeadline = readiness.config.provider === "manual_transfer"
     ? new Date(Date.now() + readiness.config.depositWindowHours * 60 * 60 * 1_000)
     : null;
@@ -91,9 +99,7 @@ export async function POST(request: Request) {
       : null,
     deposit_deadline: depositDeadline?.toISOString() ?? null,
     // Lets the buyer find this order again later without an account.
-    customer_phone_hash: parsed.data.customerPhone
-      ? hashCustomerPhone(parsed.data.customerPhone)
-      : null,
+    customer_phone_hash: phoneHash,
   });
   if (error) {
     return NextResponse.json({ error: "ORDER_CREATE_FAILED" }, { status: 500 });
