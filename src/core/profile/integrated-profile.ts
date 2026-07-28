@@ -76,18 +76,20 @@ type NumberTheme = {
 const n = (ko: string, en: string) => ({ ko, en });
 
 const THEMES: Record<number, NumberTheme> = {
-  1: { label: n("시작하는 사람", "Initiator"), drive: n("자율성과 시작", "autonomy and initiation"), strength: n("스스로 방향을 세우는 힘", "setting an independent direction"), shadow: n("혼자 밀어붙이거나 도움을 늦게 청함", "pushing alone or asking for help late"), roles: ["entrepreneurship", "sales", "strategy"] },
-  2: { label: n("조율하는 사람", "Harmonizer"), drive: n("협력과 세심한 조율", "cooperation and careful coordination"), strength: n("미묘한 관계 신호를 읽는 감각", "noticing subtle relational signals"), shadow: n("갈등을 피하다 자기 기준을 놓침", "losing personal criteria while avoiding conflict"), roles: ["education_counseling", "public_admin", "operations_finance"] },
-  3: { label: n("표현하는 사람", "Communicator"), drive: n("표현과 창조", "expression and creation"), strength: n("아이디어에 언어와 생기를 주는 힘", "giving ideas language and vitality"), shadow: n("흥미가 흩어져 마무리가 약해짐", "scattering attention and weakening follow-through"), roles: ["marketing_content", "arts_entertainment", "sales"] },
-  4: { label: n("구조를 세우는 사람", "Builder"), drive: n("질서와 신뢰 가능한 구조", "order and dependable structure"), strength: n("복잡한 일을 반복 가능한 과정으로 만듦", "turning complexity into repeatable process"), shadow: n("변화를 위험으로만 보고 경직됨", "treating change only as risk and becoming rigid"), roles: ["operations_finance", "public_admin", "research_data"] },
-  5: { label: n("탐색하는 사람", "Explorer"), drive: n("변화와 경험", "change and experience"), strength: n("새 환경에서 빠르게 배우고 연결함", "learning and connecting quickly in new settings"), shadow: n("새로움 때문에 지속성을 놓침", "losing continuity in pursuit of novelty"), roles: ["sales", "marketing_content", "entrepreneurship"] },
-  6: { label: n("돌보는 사람", "Steward"), drive: n("책임과 돌봄", "responsibility and care"), strength: n("사람과 환경의 질을 꾸준히 높임", "steadily improving the quality of people and environments"), shadow: n("타인의 몫까지 책임지며 지침", "over-carrying others' responsibilities"), roles: ["education_counseling", "public_admin", "arts_entertainment"] },
-  7: { label: n("탐구하는 사람", "Investigator"), drive: n("깊이와 검증", "depth and verification"), strength: n("표면 아래의 원리와 패턴을 찾음", "finding principles and patterns beneath the surface"), shadow: n("확신이 생길 때까지 행동을 미룸", "delaying action until certainty arrives"), roles: ["research_data", "strategy", "education_counseling"] },
-  8: { label: n("실행을 조직하는 사람", "Executive"), drive: n("성과와 자원 운영", "outcomes and resource stewardship"), strength: n("목표와 자원을 현실적 결과로 연결함", "connecting goals and resources to practical outcomes"), shadow: n("성과 압박으로 관계와 회복을 후순위로 둠", "putting relationships and recovery behind performance pressure"), roles: ["entrepreneurship", "operations_finance", "strategy"] },
-  9: { label: n("의미를 잇는 사람", "Humanitarian"), drive: n("의미와 더 넓은 관점", "meaning and a wider perspective"), strength: n("다른 경험을 하나의 큰 맥락으로 연결함", "connecting different experiences into a larger context"), shadow: n("이상과 현실의 간극에서 소진됨", "burning out in the gap between ideals and reality"), roles: ["arts_entertainment", "education_counseling", "marketing_content"] },
-  11: { label: n("통찰을 번역하는 사람", "Insight Translator"), drive: n("직관과 균형 감각", "intuition and balance"), strength: n("긴장되는 관점을 섬세한 언어로 연결함", "connecting tensions through nuanced language"), shadow: n("높은 민감도와 기준으로 과부하됨", "becoming overloaded by sensitivity and high standards"), roles: ["strategy", "education_counseling", "marketing_content"] },
-  22: { label: n("비전을 구현하는 사람", "Systems Builder"), drive: n("큰 비전과 현실적 구축", "large vision and practical construction"), strength: n("장기 비전을 작동하는 시스템으로 바꿈", "turning long-range vision into working systems"), shadow: n("규모와 책임을 혼자 감당하려 함", "trying to carry scale and responsibility alone"), roles: ["strategy", "operations_finance", "entrepreneurship"] },
-  33: { label: n("성장을 돕는 사람", "Growth Steward"), drive: n("돌봄과 공동 성장", "care and shared growth"), strength: n("사람의 성장을 장기적으로 지지함", "supporting people's growth over time"), shadow: n("도움이 자기희생으로 바뀜", "letting support turn into self-sacrifice"), roles: ["education_counseling", "arts_entertainment", "public_admin"] },
+  // Korean strengths end in a noun (힘/감각/눈/재주) and Korean shadows end in "~때", so
+  // both slot into the spoken-register sentences that quote them without reshaping.
+  1: { label: n("시작하는 사람", "Initiator"), drive: n("자율성과 시작", "autonomy and initiation"), strength: n("혼자서도 방향을 정하고 밀고 나가는 힘", "setting an independent direction"), shadow: n("혼자 다 짊어지고 도움을 늦게 청할 때", "pushing alone or asking for help late"), roles: ["entrepreneurship", "sales", "strategy"] },
+  2: { label: n("조율하는 사람", "Harmonizer"), drive: n("협력과 세심한 조율", "cooperation and careful coordination"), strength: n("말하지 않아도 분위기를 알아채는 감각", "noticing subtle relational signals"), shadow: n("부딪히기 싫어서 내 기준을 뒤로 미룰 때", "losing personal criteria while avoiding conflict"), roles: ["education_counseling", "public_admin", "operations_finance"] },
+  3: { label: n("표현하는 사람", "Communicator"), drive: n("표현과 창조", "expression and creation"), strength: n("떠오른 생각에 말과 생기를 입히는 힘", "giving ideas language and vitality"), shadow: n("관심이 여기저기 흩어져 끝맺음이 흐려질 때", "scattering attention and weakening follow-through"), roles: ["marketing_content", "arts_entertainment", "sales"] },
+  4: { label: n("구조를 세우는 사람", "Builder"), drive: n("질서와 신뢰 가능한 구조", "order and dependable structure"), strength: n("복잡한 일을 굴러가는 절차로 만드는 힘", "turning complexity into repeatable process"), shadow: n("변화를 위험으로만 보고 몸이 굳을 때", "treating change only as risk and becoming rigid"), roles: ["operations_finance", "public_admin", "research_data"] },
+  5: { label: n("탐색하는 사람", "Explorer"), drive: n("변화와 경험", "change and experience"), strength: n("낯선 자리에서 빨리 배우고 사람을 잇는 감각", "learning and connecting quickly in new settings"), shadow: n("새로운 게 눈에 들어와 하던 일을 놓을 때", "losing continuity in pursuit of novelty"), roles: ["sales", "marketing_content", "entrepreneurship"] },
+  6: { label: n("돌보는 사람", "Steward"), drive: n("책임과 돌봄", "responsibility and care"), strength: n("곁에 있는 사람과 자리를 꾸준히 살피는 눈", "steadily improving the quality of people and environments"), shadow: n("남의 몫까지 떠안다가 지칠 때", "over-carrying others' responsibilities"), roles: ["education_counseling", "public_admin", "arts_entertainment"] },
+  7: { label: n("탐구하는 사람", "Investigator"), drive: n("깊이와 검증", "depth and verification"), strength: n("겉이 아니라 속의 원리를 파고드는 힘", "finding principles and patterns beneath the surface"), shadow: n("확신이 설 때까지 좀처럼 움직이지 못할 때", "delaying action until certainty arrives"), roles: ["research_data", "strategy", "education_counseling"] },
+  8: { label: n("실행을 조직하는 사람", "Executive"), drive: n("성과와 자원 운영", "outcomes and resource stewardship"), strength: n("목표와 자원을 실제 결과로 잇는 감각", "connecting goals and resources to practical outcomes"), shadow: n("성과에 쫓겨 관계와 쉼을 뒤로 미룰 때", "putting relationships and recovery behind performance pressure"), roles: ["entrepreneurship", "operations_finance", "strategy"] },
+  9: { label: n("의미를 잇는 사람", "Humanitarian"), drive: n("의미와 더 넓은 관점", "meaning and a wider perspective"), strength: n("흩어진 경험을 하나의 이야기로 엮는 힘", "connecting different experiences into a larger context"), shadow: n("바라는 모습과 지금 사이가 멀어 지칠 때", "burning out in the gap between ideals and reality"), roles: ["arts_entertainment", "education_counseling", "marketing_content"] },
+  11: { label: n("통찰을 번역하는 사람", "Insight Translator"), drive: n("직관과 균형 감각", "intuition and balance"), strength: n("팽팽한 이야기를 부드러운 말로 풀어내는 재주", "connecting tensions through nuanced language"), shadow: n("너무 잘 느끼고 기준까지 높아 버거워질 때", "becoming overloaded by sensitivity and high standards"), roles: ["strategy", "education_counseling", "marketing_content"] },
+  22: { label: n("비전을 구현하는 사람", "Systems Builder"), drive: n("큰 비전과 현실적 구축", "large vision and practical construction"), strength: n("멀리 그린 그림을 실제로 돌아가게 만드는 힘", "turning long-range vision into working systems"), shadow: n("규모와 책임을 혼자 감당하려 할 때", "trying to carry scale and responsibility alone"), roles: ["strategy", "operations_finance", "entrepreneurship"] },
+  33: { label: n("성장을 돕는 사람", "Growth Steward"), drive: n("돌봄과 공동 성장", "care and shared growth"), strength: n("사람이 자라는 걸 오래 지켜보고 받쳐주는 힘", "supporting people's growth over time"), shadow: n("돕는 마음이 나를 깎는 쪽으로 기울 때", "letting support turn into self-sacrifice"), roles: ["education_counseling", "arts_entertainment", "public_admin"] },
 };
 
 const ROLE_COPY: Record<CareerRoleId, {
@@ -155,10 +157,10 @@ function domain(
     title: text(DOMAIN_TITLE[id], locale),
     calculatedFacts: values.map((item) => fact(item.id, item.value, locale)),
     traditionalInterpretation: ko
-      ? `${text(primary.label, locale)}의 ${withParticle(text(primary.drive, locale), "with")} ${text(secondary.label, locale)}의 ${withParticle(text(secondary.drive, locale), "object")} 함께 보는 상징적 관점입니다.`
+      ? `${text(primary.label, locale)}의 ${withParticle(text(primary.drive, locale), "with")} ${text(secondary.label, locale)}의 ${withParticle(text(secondary.drive, locale), "object")} 함께 놓고 보는 풀이예요.`
       : `This symbolic lens combines the ${text(primary.drive, locale)} of the ${text(primary.label, locale)} with the ${text(secondary.drive, locale)} of the ${text(secondary.label, locale)}.`,
     personalizedInference: ko
-      ? `${withParticle(text(primary.strength, locale), "subject")} 도움이 될 수 있지만, ${withParticle(text(secondary.shadow, locale), "subject")} 나타나는 조건에서는 다른 전략이 필요할 수 있습니다.`
+      ? `${withParticle(text(primary.strength, locale), "subject")} 여기서 도움이 될 거예요. 다만 ${withParticle(text(secondary.shadow, locale), "topic")} 다른 방법이 필요할 수 있어요.`
       : `${text(primary.strength, locale)} may help, while conditions involving ${text(secondary.shadow, locale)} may call for a different strategy.`,
     realityCheck: text(checks[id], locale),
     uncertainty: ko
@@ -239,7 +241,7 @@ export function createIntegratedProfile(profile: NumerologyProfile, locale: Loca
   return {
     ruleVersion: INTEGRATED_PROFILE_RULE_VERSION,
     summary: ko
-      ? `${text(theme(lp.value).label, locale)}의 관점에서 ${withParticle(text(theme(lp.value).drive, locale), "object")} 중심축으로 삼되, 실제 선택 기록으로 적합성을 확인하는 프로필입니다.`
+      ? `${text(theme(lp.value).label, locale)} 쪽에 가까운 결이에요. ${withParticle(text(theme(lp.value).drive, locale), "object")} 중심에 두고 움직이는 편인데, 정말 그런지는 그동안 어떤 선택을 해왔는지 떠올려 보시면 알 수 있어요.`
       : `A profile centered on ${text(theme(lp.value).drive, locale)} through the lens of the ${text(theme(lp.value).label, locale)}, with personal fit checked against recorded choices.`,
     domains,
     careerRecommendations: careerRecommendations(profile, locale),

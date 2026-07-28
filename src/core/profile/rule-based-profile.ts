@@ -49,7 +49,7 @@ export function getRuleBasedProfile(lifePath: number, locale: Locale): ProfileCo
 
   if (ko) {
     return {
-      summary: `${archetype}의 관점으로, 주도성과 타인의 피드백 사이에서 자신만의 균형을 찾아가는 사람.`,
+      summary: `${archetype} 자리에서, 스스로 밀고 나가는 힘과 주변의 말 사이에서 나만의 균형점을 찾아가는 중이에요.`,
       archetype,
       strengths: ["선택을 자기 언어로 정리하는 힘", "새로운 관점을 시도하는 태도", "경험에서 패턴을 찾는 감각"],
       risks: ["상징을 정답처럼 받아들이기", "한 번의 결과로 자신을 고정하기"],

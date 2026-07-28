@@ -50,7 +50,7 @@ const FOCUS: Record<OnboardingFocusId, FocusDefinition> = {
     label: n("일·진로", "Work & career"),
     title: n("직업 이름보다 반복 가능한 업무 조건을 보세요", "Compare repeatable work conditions, not job-title destiny"),
     contextualInference: n(
-      "숫자 상징은 직업을 확정하지 않습니다. 에너지가 유지되는 과제, 권한, 협업 방식과 회복 조건을 비교하는 질문으로 사용하세요.",
+      "직업을 딱 정해드리는 건 아니에요. 대신 어떤 일에서 힘이 덜 빠지는지, 어떤 권한과 협업 방식이 나에게 맞는지 견줘 보는 데 쓰시면 좋아요.",
       "Number symbolism does not determine a vocation. Use it to compare tasks, decision rights, collaboration, and recovery conditions that remain workable.",
     ),
     practicalAction: n(
@@ -68,7 +68,7 @@ const FOCUS: Record<OnboardingFocusId, FocusDefinition> = {
     label: n("관계", "Relationships"),
     title: n("상대의 운명보다 반복되는 상호작용을 보세요", "Observe recurring interaction, not another person’s fate"),
     contextualInference: n(
-      "관계 상징은 특정 사람이나 만남을 예측하지 않습니다. 편안함, 경계, 속도와 말·행동의 일치를 관찰하는 출발점으로 사용하세요.",
+      "특정한 사람이나 만남을 맞히는 건 아니에요. 대신 누구와 있을 때 마음이 편한지, 선이 어디서 흐려지는지, 말과 행동이 맞아떨어지는지 살펴보는 출발점으로 보시면 좋아요.",
       "Relationship symbolism predicts neither a person nor a meeting. Use it to observe ease, boundaries, pace, and whether words match repeated behavior.",
     ),
     practicalAction: n(
@@ -86,7 +86,7 @@ const FOCUS: Record<OnboardingFocusId, FocusDefinition> = {
     label: n("성장", "Growth"),
     title: n("큰 변화보다 확인 가능한 한 번의 실험을 고르세요", "Choose one observable experiment instead of a total transformation"),
     contextualInference: n(
-      "성장 상징은 더 나은 사람이 되어야 한다는 명령이 아닙니다. 반복되는 패턴 하나를 작게 시험하고 결과를 회고하는 렌즈입니다.",
+      "더 나은 사람이 되라는 이야기가 아니에요. 반복되는 습관 하나를 작게 시험해 보고 어땠는지 돌아보는 데 쓰는 거예요.",
       "Growth symbolism is not an order to become a better person. It is a lens for testing one recurring pattern at a small scale and reviewing the outcome.",
     ),
     practicalAction: n(
@@ -104,7 +104,7 @@ const FOCUS: Record<OnboardingFocusId, FocusDefinition> = {
     label: n("돈", "Money"),
     title: n("운보다 실제 돈의 흐름과 책임 조건을 보세요", "Examine real money flows and responsibility, not luck"),
     contextualInference: n(
-      "숫자 상징은 투자·수익 또는 재정적 성공을 예측하지 않습니다. 소비 압력, 책임 분담과 의사결정 습관을 관찰하는 질문으로만 사용하세요.",
+      "돈이 얼마나 들어올지는 알 수 없어요. 대신 어디서 지출 압박을 받는지, 책임이 어떻게 나뉘는지, 결정을 어떤 식으로 내리는지 돌아보는 데만 쓰시면 좋아요.",
       "Number symbolism predicts neither investments, returns, nor financial success. Use it only to examine spending pressure, shared responsibility, and decision habits.",
     ),
     practicalAction: n(

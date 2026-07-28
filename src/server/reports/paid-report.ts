@@ -59,10 +59,10 @@ export function createPaidReport(orderId: string, rawInput: unknown): PaidReport
         //
         // The phrases are data and can end in either a vowel or a consonant, so they are
         // followed by a fixed noun rather than an 은/는 particle.
-        ? `생명수 ${profile.lifePath.value}, '${overview.archetype}' 유형입니다. ${integrated.summary} ` +
-          `${integrated.strengths.join(", ")} 같은 면이 강점으로 잘 드러납니다. ` +
-          `반대로 ${integrated.risks.map((risk) => `'${risk}'`).join(", ")} 같은 흐름은 ` +
-          `스스로 한 번 점검해 볼 지점입니다.`
+        ? `생명수 ${profile.lifePath.value}, 타로로 치면 '${overview.archetype}' 자리예요. ${integrated.summary} ` +
+          `${integrated.strengths.join(", ")} — 이런 면이 특히 잘 드러나는 편이에요. ` +
+          `다만 ${integrated.risks.join(", ")} 같은 순간이 올 수 있어요. ` +
+          `이 부분만 한 번 살펴보시면 좋겠어요.`
         : `Life path ${profile.lifePath.value}, read through the ${overview.archetype} pattern. ${integrated.summary} ` +
           `Strengths that tend to show up: ${integrated.strengths.join(", ")}. ` +
           `The counterweights worth watching in yourself: ${integrated.risks.join(", ")}.`,
