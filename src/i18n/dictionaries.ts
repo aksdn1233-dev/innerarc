@@ -84,9 +84,12 @@ export type Dictionary = {
 const ko: Dictionary = {
   brandTagline: "GYEOL",
   nav: ["홈", "나", "관계", "질문", "성장"],
-  eyebrow: "대한민국 프리미엄 타로·신점 상담",
-  headline: "막막한 순간,\n결이 답의 방향을 밝혀드립니다.",
-  intro: "생년월일과 지금 가장 궁금한 내용을 알려주세요. 연애·관계·진로·재물의 흐름과 조심할 점을 쉽고 또렷하게 정리해 드립니다.",
+  eyebrow: "생년월일로 읽는 나의 결",
+  headline: "내 유형은 알겠는데,\n지금 뭘 해야 할지 모르겠다면.",
+  // States a difference in what each thing answers, not a claim to be more accurate:
+  // this is symbolic reflection, and a comparative accuracy claim would be both false
+  // and the kind of 비교표시광고 that 표시광고법 prohibits.
+  intro: "MBTI 같은 성격 검사가 '나는 어떤 사람인가'를 알려준다면, 결은 '지금 내 상황에서 무엇을 확인해야 하는가'를 짚어드립니다. 생년월일과 가장 궁금한 것만 알려주세요.",
   start: "내 흐름 확인하기",
   birthDate: "생년월일",
   birthHelp: "날짜는 계산에만 사용하며 게스트 입력은 서버로 전송하지 않습니다.",

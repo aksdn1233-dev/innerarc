@@ -30,7 +30,7 @@ export default async function PlansPage({
           name: readiness.config.products.plus_30d.names[locale],
           amount: readiness.config.products.plus_30d.amount,
           features: locale === "ko"
-            ? ["한 가지 고민 집중", "핵심 흐름과 다음 행동", "결제 후 열람·다운로드"]
+            ? ["기본 성향·강점·주의점", "궁금한 고민 1가지 심층", "실천 행동 2가지", "결제 후 열람·다운로드"]
             : ["One focused concern", "Core flow and next action", "Saved and downloadable"],
         },
         {
@@ -39,7 +39,7 @@ export default async function PlansPage({
           name: readiness.config.products.pro_30d.names[locale],
           amount: readiness.config.products.pro_30d.amount,
           features: locale === "ko"
-            ? ["연애·관계·일·재물 종합", "생년월일 기반 상세 흐름", "결제 후 열람·다운로드"]
+            ? ["기본 성향·강점·주의점", "4개 영역 심층 분석", "실천 행동 4가지", "두 사람 궁합 이용", "결제 후 열람·다운로드"]
             : ["Love, work, and money", "Detailed birth-date flow", "Saved and downloadable"],
         },
         {
@@ -48,7 +48,7 @@ export default async function PlansPage({
           name: readiness.config.products.premium_pdf.names[locale],
           amount: readiness.config.products.premium_pdf.amount,
           features: locale === "ko"
-            ? ["여러 고민을 묶은 장문 리포트", "실천 지침과 주의 알림", "결제 후 열람·다운로드"]
+            ? ["기본 성향·강점·주의점", "8개 영역 전부", "잘 맞는 일·역할 분석", "두 사람 궁합 이용", "결제 후 열람·다운로드"]
             : ["Long-form custom report", "Actions and caution reminders", "Saved and downloadable"],
         },
       ]
@@ -59,7 +59,7 @@ export default async function PlansPage({
           name: locale === "ko" ? "간단 타로 리딩" : "Quick tarot reading",
           amount: 19_000,
           features: locale === "ko"
-            ? ["한 가지 고민 집중", "핵심 흐름과 다음 행동", "결제 후 열람·다운로드"]
+            ? ["기본 성향·강점·주의점", "궁금한 고민 1가지 심층", "실천 행동 2가지", "결제 후 열람·다운로드"]
             : ["One focused concern", "Core flow and next action", "Saved and downloadable"],
         },
         {
@@ -68,7 +68,7 @@ export default async function PlansPage({
           name: locale === "ko" ? "타로·생년월일 종합 리딩" : "Tarot and birth-date reading",
           amount: 39_000,
           features: locale === "ko"
-            ? ["연애·관계·일·재물 종합", "생년월일 기반 상세 흐름", "결제 후 열람·다운로드"]
+            ? ["기본 성향·강점·주의점", "4개 영역 심층 분석", "실천 행동 4가지", "두 사람 궁합 이용", "결제 후 열람·다운로드"]
             : ["Love, work, and money", "Detailed birth-date flow", "Saved and downloadable"],
         },
         {
@@ -77,7 +77,7 @@ export default async function PlansPage({
           name: locale === "ko" ? "프리미엄 맞춤 PDF" : "Premium custom PDF",
           amount: 79_000,
           features: locale === "ko"
-            ? ["여러 고민을 묶은 장문 리포트", "실천 지침과 주의 알림", "결제 후 열람·다운로드"]
+            ? ["기본 성향·강점·주의점", "8개 영역 전부", "잘 맞는 일·역할 분석", "두 사람 궁합 이용", "결제 후 열람·다운로드"]
             : ["Long-form custom report", "Actions and caution reminders", "Saved and downloadable"],
         },
       ];

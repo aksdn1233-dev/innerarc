@@ -39,22 +39,24 @@ const readingProducts = {
       id: "quick",
       name: "간단 타로 리딩",
       price: "19,000원",
-      description: "한 가지 고민의 현재 흐름, 조심할 점, 다음 행동을 간결하게 정리합니다.",
-      badge: "빠른 답변",
+      description: "생년월일로 읽은 기본 성향과 강점·주의점, 그리고 가장 궁금한 고민 하나의 흐름과 다음 행동까지.",
+      badge: "처음이라면",
     },
     {
       id: "comprehensive",
       name: "타로·생년월일 종합 리딩",
       price: "39,000원",
-      description: "연애·관계·진로·재물 중 선택한 영역을 생년월일과 고민에 맞춰 자세히 봅니다.",
-      badge: "가장 많이 선택",
+      description: "기본 성향에 더해 연애·관계·일·재물 네 영역을 함께 봅니다. 두 사람 궁합도 이용하실 수 있어요.",
+      // Describes the product, not its sales: nothing has been sold yet, and inventing
+      // popularity is exactly what 표시광고법 treats as false advertising.
+      badge: "가장 균형 잡힌 선택",
     },
     {
       id: "premium_pdf",
       name: "프리미엄 맞춤 PDF",
       price: "79,000원",
-      description: "여러 고민을 함께 살펴보고 장문 해석, 실천 지침, 주의사항을 맞춤 리포트로 제공합니다.",
-      badge: "가장 깊은 리딩",
+      description: "여덟 개 영역을 모두 살펴보고, 잘 맞을 일과 역할까지 짚어 장문 리포트로 정리합니다. 궁합 포함.",
+      badge: "전부 보고 싶다면",
     },
   ],
   en: [
@@ -62,22 +64,22 @@ const readingProducts = {
       id: "quick",
       name: "Quick tarot reading",
       price: "KRW 19,000",
-      description: "A concise reading for one concern, one caution, and one next step.",
-      badge: "Quick answer",
+      description: "Your core pattern from your birth date, plus one concern read in depth with a next step.",
+      badge: "Start here",
     },
     {
       id: "comprehensive",
       name: "Tarot and birth-date reading",
       price: "KRW 39,000",
-      description: "A detailed reading for your chosen relationship, career, or money concern.",
-      badge: "Most selected",
+      description: "Your core pattern plus love, relationships, work, and money. Includes two-person compatibility.",
+      badge: "Best balance",
     },
     {
       id: "premium_pdf",
       name: "Premium custom PDF",
       price: "KRW 79,000",
-      description: "A long-form report with several concerns, practical guidance, and cautions.",
-      badge: "Deepest reading",
+      description: "All eight areas, the work and roles that tend to fit you, as a long-form report. Compatibility included.",
+      badge: "The full picture",
     },
   ],
 } as const;
@@ -89,10 +91,10 @@ const copy = {
       ["#about", "서비스 소개"],
       ["#fields", "상담 분야"],
       ["#products", "상품 안내"],
-      ["#voices", "후기"],
+      ["#voices", "이런 고민"],
     ],
     primary: "지금 상담 시작하기",
-    secondary: "상담 사례 보기",
+    secondary: "어떤 고민을 보나요",
     heroNote: "결제 전 정보 확인 · 1회 결제 · 자동 갱신 없음",
     sampleEyebrow: "리딩 방식",
     sampleTitle: "막연한 예언보다, 지금 필요한 선택과 주의사항을 분명하게.",
@@ -113,16 +115,20 @@ const copy = {
     productsTitle: "대표 상품 3가지",
     productsBody: "빠른 한 가지 답변부터 장문 맞춤 리포트까지 필요한 깊이만 선택하세요.",
     trust: [
-      ["결제 후 제공", "자동결제가 승인되거나 계좌입금이 확인된 주문에만 전체 리포트를 제공합니다."],
-      ["언제든 다시 보기", "비회원은 전용 주소에서, 로그인한 회원은 마이페이지에서도 리포트를 다시 볼 수 있습니다."],
-      ["다운로드 가능", "리포트를 파일로 내려받거나 인쇄 메뉴에서 PDF로 저장할 수 있습니다."],
-      ["알림 직접 설정", "마이페이지에서 주의사항 알림과 이메일 알림을 켜거나 끌 수 있습니다."],
+      ["회원가입 없음", "이름과 비밀번호를 만들 필요가 없습니다. 생년월일과 궁금한 것, 연락받을 번호만 받습니다."],
+      ["결제 확인 후 제공", "결제가 실제로 승인된 주문에만 리포트를 엽니다. 취소하시면 열람도 함께 닫힙니다."],
+      ["언제든 다시 보기", "결제하신 휴대폰 번호와 주문번호만 있으면 나중에도 같은 리포트를 다시 여실 수 있습니다."],
+      ["1회 결제·자동갱신 없음", "구독이 아닙니다. 결제한 그 리포트만 제공되고 다음 달에 다시 청구되지 않습니다."],
     ],
+    // Real customer quotes would be invented at this point, and fabricated reviews are
+    // false advertising. These are the situations people arrive with, which is honest
+    // and speaks to the reader more directly than a made-up testimonial anyway.
     voices: [
-      "복잡한 말을 줄이고 지금 할 일을 먼저 알려줘서 좋았어요.",
-      "휴대폰에서도 글자가 커서 천천히 읽기 편했어요.",
-      "겁주는 말보다 조심할 상황을 현실적으로 설명해 줬어요.",
-      "결과를 마이페이지에서 다시 볼 수 있어 편했어요.",
+      "그 사람 마음을 모르겠어서 며칠째 같은 생각만 맴돌 때",
+      "이직해야 할지, 조금 더 버텨야 할지 결정이 안 설 때",
+      "큰돈 쓸 일 앞에서 계속 망설여질 때",
+      "뭘 해도 제자리 같아서 뭐부터 바꿔야 할지 모를 때",
+      "주변에 털어놓기엔 사소한데, 혼자 두기엔 자꾸 걸릴 때",
     ],
   },
   en: {
@@ -150,16 +156,17 @@ const copy = {
     productsTitle: "Three clear products",
     productsBody: "Choose only the depth you need, from one quick answer to a long custom report.",
     trust: [
-      ["After payment", "Full reports open only after verified payment or virtual-account deposit."],
-      ["Available again", "Purchased reports stay in your signed-in account on phone and desktop."],
-      ["Downloadable", "Download the report or save it as a PDF from the print menu."],
-      ["Your notification choice", "Turn caution and email notifications on or off in My Page."],
+      ["No account needed", "No username or password. Only your birth date, your question, and a contact number."],
+      ["Opens after payment", "Reports open only on verified payments, and close again if a payment is cancelled."],
+      ["Reopen any time", "Your order number and the phone number used at checkout reopen the same report later."],
+      ["One-time purchase", "Not a subscription. You receive the report you paid for and are never billed again."],
     ],
     voices: [
-      "It helped to see one practical step first.",
-      "The large type was comfortable to read on my phone.",
-      "The cautions felt grounded rather than frightening.",
-      "I liked being able to reopen the report later.",
+      "When the same thought about someone keeps circling for days",
+      "When you cannot decide whether to leave a job or stay a while longer",
+      "When a large spend keeps getting postponed",
+      "When nothing seems to move and you do not know what to change first",
+      "When it feels too small to raise with anyone, but too persistent to ignore",
     ],
   },
 } as const;
@@ -226,7 +233,7 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
             <p className="eyebrow">{d.eyebrow}</p>
             <h1 id="hero-title">
               {locale === "ko" ? (
-                <>막막한 순간,<br /><span>결이 답의 방향을<br />밝혀드립니다.</span></>
+                <>내 유형은 알겠는데,<br /><span>지금 뭘 해야 할지<br />모르겠다면.</span></>
               ) : d.headline}
             </h1>
             <p className="hero-copy">{d.intro}</p>
@@ -392,16 +399,24 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
 
         <section className="voice-stream" id="voices" aria-labelledby="voices-title">
           <div className="section-heading">
-            <p className="eyebrow">{locale === "ko" ? "이용 경험 예시" : "Experience examples"}</p>
-            <h2 id="voices-title">{locale === "ko" ? "읽기 쉽고, 다시 보기 편하게" : "Readable and easy to revisit"}</h2>
-            <p className="voice-stream-note">{locale === "ko" ? "아래 문구는 실제 후기 인용이 아닌 서비스 이용 경험 예시입니다." : "Illustrative examples, not customer testimonials."}</p>
+            <p className="eyebrow">{locale === "ko" ? "이럴 때 찾으세요" : "When people come"}</p>
+            <h2 id="voices-title">
+              {locale === "ko"
+                ? "누구한테 말하기도 애매한 고민일수록"
+                : "The questions that are hard to ask anyone"}
+            </h2>
+            <p className="voice-stream-note">
+              {locale === "ko"
+                ? "아래는 실제 후기가 아니라, 상담을 찾게 되는 대표적인 상황입니다."
+                : "These are common situations people arrive with, not customer testimonials."}
+            </p>
           </div>
           <div className="voice-marquee">
             <div className="voice-track">
               {[...t.voices, ...t.voices].map((voice, index) => (
                 <blockquote className="voice-card" key={`${voice}-${index}`}>
                   <p>{voice}</p>
-                  <footer>{locale === "ko" ? "서비스 이용 경험 예시" : "Illustrative experience"}</footer>
+                  <footer>{locale === "ko" ? "자주 오는 상담 상황" : "A common reason people come"}</footer>
                 </blockquote>
               ))}
             </div>
