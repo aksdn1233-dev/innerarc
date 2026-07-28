@@ -12,10 +12,10 @@ const copy = {
     recoverTitle: "결제는 접수되었습니다. 리포트 주소를 확인해 주세요.",
     recoverBody:
       "이 브라우저에 저장된 리포트 주소를 찾지 못했습니다. 결제 화면에서 복사해 두신 주소로 바로 들어가실 수 있습니다. 가상계좌로 입금하신 경우에는 입금이 확인된 뒤에 리포트가 열립니다.",
-    recoverSignedIn: "로그인해서 구매하셨다면 마이페이지에 리포트가 그대로 있습니다.",
+    recoverSignedIn: "주문번호와 결제하신 휴대폰 번호가 있으면 아래에서 바로 찾으실 수 있어요.",
     orderNumber: "주문번호",
     orderNumberHelp: "문의하실 때 이 번호를 알려주시면 가장 빠릅니다.",
-    myPage: "마이페이지에서 확인",
+    myPage: "주문번호로 찾기",
     home: "홈으로",
   },
   en: {
@@ -25,10 +25,10 @@ const copy = {
     recoverTitle: "Your payment was received. Please open your report address.",
     recoverBody:
       "This browser has no saved report address. Use the address you copied on the payment screen. If you paid to a virtual account, the report opens once the deposit is confirmed.",
-    recoverSignedIn: "If you purchased while signed in, the report is in My Page.",
+    recoverSignedIn: "With your order number and the phone number used at checkout, you can find it below.",
     orderNumber: "Order number",
     orderNumberHelp: "Quote this number if you need to contact support.",
-    myPage: "Open My Page",
+    myPage: "Find by order number",
     home: "Home",
   },
 } as const;
@@ -110,7 +110,7 @@ export function PayAppReturnClient({
           </>
         )}
         <p className="payment-result-links">
-          <Link className="link-button" href={`/${locale}/me`}>
+          <Link className="link-button" href={`/${locale}/orders`}>
             {t.myPage}
           </Link>
           <Link className="link-button" href={`/${locale}`}>

@@ -12,6 +12,7 @@ import {
   paymentProductCodes,
 } from "@/server/payments/config";
 import { requestPayAppPayment } from "@/server/payments/payapp";
+import { hashCustomerPhone } from "@/server/order-pass";
 
 const bodySchema = z.object({
   productCode: z.enum(paymentProductCodes),
@@ -89,6 +90,10 @@ export async function POST(request: Request) {
       ? parsed.data.depositorName
       : null,
     deposit_deadline: depositDeadline?.toISOString() ?? null,
+    // Lets the buyer find this order again later without an account.
+    customer_phone_hash: parsed.data.customerPhone
+      ? hashCustomerPhone(parsed.data.customerPhone)
+      : null,
   });
   if (error) {
     return NextResponse.json({ error: "ORDER_CREATE_FAILED" }, { status: 500 });

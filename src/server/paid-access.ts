@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import { requireSupabaseUser } from "@/lib/supabase/auth";
 
@@ -8,9 +9,24 @@ export type EntitlementTier = "plus" | "pro";
 // unexpired entitlement exists opened two-person compatibility to the cheapest one.
 const TIER_RANK: Record<EntitlementTier, number> = { plus: 1, pro: 2 };
 
+function meetsTier(tier: EntitlementTier | null, minimumTier: EntitlementTier): boolean {
+  // An unrecognized tier fails closed instead of being treated as the highest one.
+  if (!tier || !(tier in TIER_RANK)) return false;
+  return TIER_RANK[tier] >= TIER_RANK[minimumTier];
+}
+
 export async function hasPaidFeatureAccess(
   minimumTier: EntitlementTier = "plus",
 ): Promise<boolean> {
+  // Purchases are guest-first, so the usual proof is a pass issued from the buyer's
+  // own completed order rather than a signed-in account.
+  const { ORDER_PASS_COOKIE, readOrderPass } = await import("@/server/order-pass");
+  const pass = readOrderPass(
+    (await cookies()).get(ORDER_PASS_COOKIE)?.value,
+    new Date(),
+  );
+  if (pass && meetsTier(pass.tier, minimumTier)) return true;
+
   const auth = await requireSupabaseUser();
   if (!auth.user) return false;
   const admin = getSupabaseAdminClient();
@@ -22,9 +38,5 @@ export async function hasPaidFeatureAccess(
     .gt("valid_until", new Date().toISOString())
     .maybeSingle();
   if (!data) return false;
-
-  const tier = data.tier as EntitlementTier | null;
-  // An unrecognized tier fails closed instead of being treated as the highest one.
-  if (!tier || !(tier in TIER_RANK)) return false;
-  return TIER_RANK[tier] >= TIER_RANK[minimumTier];
+  return meetsTier(data.tier as EntitlementTier | null, minimumTier);
 }

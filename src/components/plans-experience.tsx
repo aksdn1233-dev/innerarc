@@ -87,10 +87,10 @@ const copy = {
     brand: "프리미엄 타로·신점 리딩",
     eyebrow: "대표 리딩 상품",
     title: "원하는 깊이에 맞춰 먼저 선택하세요",
-    intro: "모든 상품은 1회 결제이며 자동 갱신되지 않습니다. 결제 확인 뒤 PC와 휴대폰에서 바로 열고 내려받을 수 있으며, 로그인하면 마이페이지에도 저장됩니다.",
+    intro: "모든 상품은 1회 결제이며 자동 갱신되지 않습니다. 회원가입 없이 바로 구매하고, 결제 확인 뒤 PC와 휴대폰에서 열거나 내려받을 수 있습니다.",
     unavailable: "아직 결제를 받을 준비가 끝나지 않았습니다. 가맹점 계약, 가격, 운영 도메인, 법정 고지를 모두 확정한 뒤 열립니다.",
-    signin: "로그인하면 구매 리포트를 마이페이지에 계속 보관하고 이벤트 안내를 받을 수 있습니다.",
-    signinAction: "선택 로그인",
+    signin: "이미 구매하셨나요? 주문번호와 결제하신 휴대폰 번호로 리포트를 다시 여실 수 있어요.",
+    signinAction: "구매 내역 확인",
     choose: "결제수단 불러오기",
     loading: "안전한 결제창을 불러오는 중…",
     pay: "결제하기",
@@ -130,8 +130,8 @@ const copy = {
     title: "Broad payment choice, strict server-side approval",
     intro: "A one-time purchase with no automatic renewal. Approved KakaoPay, Toss Pay, card, mobile, bank-transfer, and virtual-account methods are supported.",
     unavailable: "Payments remain closed until merchant review, prices, the production domain, and legal notices are finalized.",
-    signin: "Sign in to keep reports in My Page and receive optional event notices.",
-    signinAction: "Optional sign-in",
+    signin: "Already purchased? Reopen your report with your order number and the phone number used at checkout.",
+    signinAction: "Find a purchase",
     choose: "Load payment methods",
     loading: "Loading the secure payment window…",
     pay: "Pay now",
@@ -434,7 +434,7 @@ export function PlansExperience({
       {!paymentsEnabled && <p className="plans-gate" role="status">{t.unavailable}</p>}
       {!signedIn && (
         <p className="plans-gate">
-          {t.signin} <Link href={`/${locale}/me`}>{t.signinAction}</Link>
+          {t.signin} <Link href={`/${locale}/orders`}>{t.signinAction}</Link>
         </p>
       )}
 

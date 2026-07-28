@@ -4585,3 +4585,20 @@ summary {
     border: 1px solid ButtonText;
   }
 }
+
+.order-lookup-form {
+  display: grid;
+  gap: 1.1rem;
+  max-width: 30rem;
+  margin: 1.75rem 0;
+}
+
+.order-lookup-form small {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.order-lookup-form .primary-button {
+  justify-self: start;
+  min-height: 44px;
+}

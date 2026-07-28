@@ -17,11 +17,38 @@ function tokenMatches(token: string | undefined, expectedHash: string | null): b
   const expected = Buffer.from(expectedHash);
   return actual.length === expected.length && timingSafeEqual(actual, expected);
 }
+
+/**
+ * A buyer who lost their original link can prove ownership with the order number and
+ * the phone number used at checkout. Order lookup restates that pair as this value;
+ * the stored access token is a hash, so the original link cannot be reconstructed.
+ */
+async function lookupProofMatches(
+  admin: SupabaseClient,
+  orderId: string,
+  proof: string | undefined,
+): Promise<boolean> {
+  if (!proof || !/^[a-f0-9]{64}$/.test(proof)) return false;
+  const { data } = await admin
+    .from("payment_orders")
+    .select("customer_phone_hash")
+    .eq("order_id", orderId)
+    .maybeSingle();
+  const phoneHash: string | null = data?.customer_phone_hash ?? null;
+  if (!phoneHash) return false;
+  const expected = Buffer.from(
+    createHash("sha256").update(`${orderId}:${phoneHash}`).digest("hex"),
+  );
+  const actual = Buffer.from(proof);
+  return actual.length === expected.length && timingSafeEqual(actual, expected);
+}
+
 export async function getAuthorizedStoredReport(input: {
   admin: SupabaseClient;
   orderId: string;
   userId?: string;
   accessToken?: string;
+  lookupProof?: string;
 }): Promise<StoredReport | null> {
   const { data, error } = await input.admin
     .from("purchased_reports")
@@ -32,7 +59,10 @@ export async function getAuthorizedStoredReport(input: {
   if (data.owner_user_id) {
     return data.owner_user_id === input.userId ? data as StoredReport : null;
   }
-  return tokenMatches(input.accessToken, data.guest_access_token_hash)
+  if (tokenMatches(input.accessToken, data.guest_access_token_hash)) {
+    return data as StoredReport;
+  }
+  return await lookupProofMatches(input.admin, input.orderId, input.lookupProof)
     ? data as StoredReport
     : null;
 }

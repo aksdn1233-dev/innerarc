@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { MeExperience } from "@/components/me-experience";
+import { customerAccountsEnabled } from "@/core/customer-accounts";
 import { isLocale } from "@/i18n/config";
 import { meCopy } from "@/i18n/me-copy";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
@@ -44,7 +45,7 @@ export default async function MePage({ params }: { params: Promise<{ locale: str
       locale={locale}
       copy={meCopy[locale]}
       account={user ? { email: user.email ?? null } : null}
-      accountSyncConfigured={configured}
+      accountSyncConfigured={configured && customerAccountsEnabled}
       reports={reports}
       notificationPreferences={{
         inAppEnabled: preferences?.in_app_enabled ?? true,

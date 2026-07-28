@@ -14,7 +14,7 @@ export default async function PurchasedReportPage({
   searchParams,
 }: {
   params: Promise<{ locale: string; orderId: string }>;
-  searchParams: Promise<{ access?: string }>;
+  searchParams: Promise<{ access?: string; proof?: string }>;
 }) {
   const [{ locale, orderId }, query, auth] = await Promise.all([
     params,
@@ -29,6 +29,7 @@ export default async function PurchasedReportPage({
     orderId,
     userId: auth.user?.id,
     accessToken: query.access,
+    lookupProof: query.proof,
   });
   if (!stored) notFound();
 
@@ -50,6 +51,13 @@ export default async function PurchasedReportPage({
 
   const report = stored.report;
   const accessQuery = query.access ? `?access=${encodeURIComponent(query.access)}` : "";
+  // Carries this buyer's proof into the pass route, which is what opens the larger
+  // features without an account.
+  const passParams = new URLSearchParams({ locale, next: "compatibility" });
+  if (query.access) passParams.set("access", query.access);
+  if (query.proof) passParams.set("proof", query.proof);
+  const compatibilityUrl = `/api/orders/${orderId}/pass?${passParams.toString()}`;
+  const proTier = report.productCode !== "plus_30d";
   return (
     <main className="shell paid-report-shell" id="main-content">
       <header className="paid-report-header">
@@ -81,12 +89,28 @@ export default async function PurchasedReportPage({
         locale={locale}
         downloadUrl={`/api/reports/${orderId}/download${accessQuery}`}
       />
+      {proTier && (
+        <section className="report-link-card">
+          <p className="eyebrow">{locale === "ko" ? "함께 볼 수 있어요" : "Also included"}</p>
+          <p>
+            {locale === "ko"
+              ? "이 상품에는 두 사람 궁합 보기가 포함되어 있어요. 상대방 생년월일만 있으면 바로 볼 수 있습니다."
+              : "This purchase includes two-person compatibility. You only need the other person's birth date."}
+          </p>
+          <a className="primary-button" href={compatibilityUrl}>
+            {locale === "ko" ? "궁합 보러 가기" : "Open compatibility"}
+          </a>
+        </section>
+      )}
       <p className="paid-report-account-note">
-        {auth.user
-          ? locale === "ko" ? "이 리포트는 마이페이지에도 저장되어 있습니다." : "This report is saved in My Page."
-          : locale === "ko"
-            ? "비회원 구매 리포트입니다. 이 페이지 주소와 내려받은 파일을 안전하게 보관해 주세요."
-            : "This is a guest purchase. Keep this page address and downloaded file safe."}
+        {locale === "ko"
+          ? "이 페이지 주소와 내려받은 파일을 보관해 주세요. 주소를 잃어버려도 주문번호와 결제하신 휴대폰 번호로 다시 찾을 수 있어요."
+          : "Keep this page address and the downloaded file. If you lose the address, you can find it again with your order number and the phone number used at checkout."}
+      </p>
+      <p className="payment-result-links">
+        <Link className="link-button" href={`/${locale}/orders`}>
+          {locale === "ko" ? "구매 내역 확인" : "Find a purchase"}
+        </Link>
       </p>
     </main>
   );
