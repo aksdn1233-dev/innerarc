@@ -1,3 +1,4 @@
+import { crossOriginRefused, isSameOriginRequest } from "@/server/same-origin";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -17,6 +18,7 @@ export async function POST(
   request: Request,
   context: { params: Promise<{ orderId: string }> },
 ) {
+  if (!isSameOriginRequest(request)) return crossOriginRefused();
   const auth = await requireSupabaseUser();
   if (!auth.user) {
     return NextResponse.json({ error: "AUTH_REQUIRED" }, { status: 401 });

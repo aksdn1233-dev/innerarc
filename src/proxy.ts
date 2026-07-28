@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { robotsTagFor } from "@/core/security/headers";
 import { refreshSupabaseSession } from "@/lib/supabase/request";
 
 export async function proxy(request: NextRequest) {
@@ -15,7 +16,12 @@ export async function proxy(request: NextRequest) {
     return response;
   }
 
-  return refreshSupabaseSession(request);
+  const response = await refreshSupabaseSession(request);
+  // Travels with the response itself, so anything that fetched a purchased reading or
+  // the console without reading robots.txt is still told not to index or archive it.
+  const robotsTag = robotsTagFor(request.nextUrl.pathname);
+  if (robotsTag) response.headers.set("X-Robots-Tag", robotsTag);
+  return response;
 }
 
 export const config = {

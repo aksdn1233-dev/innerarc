@@ -1,3 +1,4 @@
+import { crossOriginRefused, isSameOriginRequest } from "@/server/same-origin";
 import { createHash, timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -42,6 +43,7 @@ function guestTokenMatches(token: string | undefined, expectedHash: string | nul
 }
 
 export async function POST(request: Request) {
+  if (!isSameOriginRequest(request)) return crossOriginRefused();
   const auth = await requireSupabaseUser();
   if (auth.error === "SUPABASE_DISABLED") {
     return NextResponse.json({ error: auth.error }, { status: 503 });

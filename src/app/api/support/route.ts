@@ -1,3 +1,4 @@
+import { crossOriginRefused, isSameOriginRequest } from "@/server/same-origin";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -14,6 +15,7 @@ const bodySchema = z.object({
 }).strict();
 
 export async function POST(request: Request) {
+  if (!isSameOriginRequest(request)) return crossOriginRefused();
   const parsed = bodySchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
     return NextResponse.json({ error: "INVALID_INQUIRY" }, { status: 400 });

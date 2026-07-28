@@ -1,4 +1,5 @@
 import { createHash, timingSafeEqual } from "node:crypto";
+import { crossOriginRefused, isSameOriginRequest } from "@/server/same-origin";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { resolvePublicAppUrl } from "@/core/site-url";
@@ -31,6 +32,7 @@ function hashesMatch(actual: string | null, expected: string | null): boolean {
 }
 
 export async function POST(request: Request) {
+  if (!isSameOriginRequest(request)) return crossOriginRefused();
   const parsed = bodySchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
     return NextResponse.json({ error: "INVALID_LOOKUP" }, { status: 400 });

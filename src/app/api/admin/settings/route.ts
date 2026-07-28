@@ -1,3 +1,4 @@
+import { crossOriginRefused, isSameOriginRequest } from "@/server/same-origin";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -10,6 +11,7 @@ const bodySchema = z.object({
 }).strict();
 
 export async function PUT(request: Request) {
+  if (!isSameOriginRequest(request)) return crossOriginRefused();
   const auth = await requireSupabaseUser();
   if (!auth.user || !isAdminEmail(auth.user.email)) {
     return NextResponse.json({ error: "ADMIN_REQUIRED" }, { status: 403 });

@@ -1,3 +1,4 @@
+import { crossOriginRefused, isSameOriginRequest } from "@/server/same-origin";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { validateDevicePreferences, DevicePreferencesSchema } from "@/core/privacy";
@@ -85,6 +86,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  if (!isSameOriginRequest(request)) return crossOriginRefused();
   const auth = await requireSupabaseUser();
   if (auth.error || !auth.client || !auth.user) return unauthorized(auth.error!);
 

@@ -52,6 +52,36 @@ export function buildContentSecurityPolicy(
   return `${directives.join("; ")};`;
 }
 
+// Paths whose contents belong to one buyer or to the operator. robots.txt asks a
+// crawler not to fetch these; this header tells anything that fetched one anyway not
+// to index or archive it, and it travels with the response rather than a separate file
+// a crawler may never read.
+const PRIVATE_PATH_PREFIXES = [
+  "/api/",
+  "/auth/",
+  "/ko/admin",
+  "/en/admin",
+  "/ko/reports/",
+  "/en/reports/",
+  "/ko/orders",
+  "/en/orders",
+  "/ko/me",
+  "/en/me",
+  "/ko/payments/",
+  "/en/payments/",
+] as const;
+
+export function isPrivatePath(pathname: string): boolean {
+  return PRIVATE_PATH_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+}
+
+/** Value for X-Robots-Tag, or null when the path may be indexed normally. */
+export function robotsTagFor(pathname: string): string | null {
+  return isPrivatePath(pathname)
+    ? "noindex, nofollow, noarchive, nosnippet, noimageindex"
+    : null;
+}
+
 export function buildSecurityHeaders(
   mode: RuntimeMode,
   enforceHttps = false,

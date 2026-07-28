@@ -1,3 +1,4 @@
+import { crossOriginRefused, isSameOriginRequest } from "@/server/same-origin";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireSupabaseUser } from "@/lib/supabase/auth";
@@ -9,6 +10,7 @@ const bodySchema = z.object({
 }).strict();
 
 export async function PUT(request: Request) {
+  if (!isSameOriginRequest(request)) return crossOriginRefused();
   const auth = await requireSupabaseUser();
   if (auth.error || !auth.client || !auth.user) {
     return NextResponse.json({ error: auth.error }, { status: auth.error === "AUTH_REQUIRED" ? 401 : 503 });
