@@ -1,9 +1,11 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { AdminCancelButton } from "@/components/admin-cancel-button";
 import { AdminDepositButton } from "@/components/admin-deposit-button";
 import { AdminInquiryList, type AdminInquiry } from "@/components/admin-inquiry-list";
+import { AdminMetricsPanel } from "@/components/admin-metrics-panel";
 import { AdminOperationsPanel } from "@/components/admin-operations-panel";
+import { summarizeOrders, type OrderRow } from "@/server/admin-metrics";
 import { isLocale } from "@/i18n/config";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import { requireSupabaseUser } from "@/lib/supabase/auth";
@@ -16,7 +18,10 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const auth = await requireSupabaseUser();
-  if (!auth.user || !isAdminEmail(auth.user.email)) notFound();
+  // Signed out goes to the console's own sign-in. A signed-in non-administrator still
+  // gets a 404, so the console never confirms its own existence to a stranger.
+  if (!auth.user) redirect(`/${locale}/admin/login`);
+  if (!isAdminEmail(auth.user.email)) notFound();
   const admin = getSupabaseAdminClient();
   if (!admin) notFound();
 
@@ -46,13 +51,25 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
       .eq("status", "DONE"),
   ]);
   const revenue = (paidOrders.data ?? []).reduce((total, row) => total + (row.amount ?? 0), 0);
+
+  const METRIC_DAYS = 30;
+  const now = new Date();
+  const since = new Date(now.getTime() - METRIC_DAYS * 24 * 60 * 60 * 1_000).toISOString();
+  const recent = await admin
+    .from("payment_orders")
+    .select("product_code,amount,status,provider,created_at")
+    .gte("created_at", since);
+  const metrics = summarizeOrders((recent.data ?? []) as OrderRow[], {
+    now,
+    days: METRIC_DAYS,
+  });
   const readiness = inspectPaymentReadiness();
 
   return (
     <main className="shell admin-shell" id="main-content">
       <header className="topbar">
         <Link className="brand" href={`/${locale}`}><strong>결 GYEOL</strong><small>관리자</small></Link>
-        <Link href={`/${locale}/me`}>마이페이지</Link>
+        <Link href={`/${locale}/orders`}>주문조회</Link>
       </header>
       <section className="admin-hero">
         <p className="eyebrow">OWNER CONSOLE</p>
@@ -73,6 +90,7 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
           <span>신규 판매</span>
         </article>
       </section>
+      <AdminMetricsPanel days={METRIC_DAYS} metrics={metrics} />
       <AdminOperationsPanel
         initialSalesEnabled={settings.data?.sales_enabled ?? true}
         initialNotice={settings.data?.notice ?? ""}

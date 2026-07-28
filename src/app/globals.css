@@ -4694,3 +4694,111 @@ summary {
   color: var(--muted);
   overflow-wrap: anywhere;
 }
+
+.admin-metrics {
+  display: grid;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.admin-metrics h3 {
+  margin: 0.5rem 0 0;
+}
+
+.admin-funnel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+  gap: 0.6rem;
+}
+
+.admin-funnel article {
+  padding: 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fffaf1;
+  text-align: center;
+}
+
+.admin-funnel article.is-good {
+  border-color: var(--sage-dark);
+  background: #f3f6f1;
+}
+
+.admin-funnel article.is-warn {
+  border-color: #d9b7a8;
+  background: #fff9f4;
+}
+
+.admin-funnel strong {
+  display: block;
+  font: 700 1.6rem/1.2 var(--display-font);
+}
+
+.admin-funnel span {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.admin-daybars {
+  display: flex;
+  gap: 3px;
+  align-items: flex-end;
+  overflow-x: auto;
+  padding-bottom: 0.3rem;
+}
+
+.admin-daybar {
+  display: grid;
+  flex: 0 0 auto;
+  justify-items: center;
+  gap: 0.25rem;
+  width: 1.6rem;
+}
+
+.admin-daybar-track {
+  position: relative;
+  width: 100%;
+  height: 76px;
+  border-radius: 4px;
+  background: #efe9dd;
+}
+
+.admin-daybar-track span {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  border-radius: 4px;
+}
+
+.admin-daybar-started {
+  background: #cbbba2;
+}
+
+.admin-daybar-paid {
+  background: var(--sage-dark);
+}
+
+.admin-daybar small {
+  color: var(--muted);
+  font-size: 0.65rem;
+  white-space: nowrap;
+}
+
+.admin-daybar-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.admin-daybar-key {
+  display: inline-block;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 3px;
+}
+
+.admin-daybar-key.is-started { background: #cbbba2; }
+.admin-daybar-key.is-paid { background: var(--sage-dark); margin-left: 0.8rem; }
