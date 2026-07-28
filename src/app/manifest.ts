@@ -14,8 +14,10 @@ export default function manifest(): MetadataRoute.Manifest {
     lang: "ko",
     categories: ["lifestyle", "education"],
     icons: [
-      { src: "/icon", sizes: "512x512", type: "image/png", purpose: "any" },
-      { src: "/icon", sizes: "512x512", type: "image/png", purpose: "maskable" },
+      // Must stay in step with the static icon file. The dynamic /icon route was
+      // removed because it pulled a rasterizer into the worker bundle.
+      { src: "/icon.png", sizes: "512x512", type: "image/png", purpose: "any" },
+      { src: "/icon.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
     ],
   };
 }
