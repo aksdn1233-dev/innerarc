@@ -25,6 +25,13 @@
   width: min(100% - 28px, 1120px);
 }
 
+/* Same reason as .home-shell: a per-page width must not undercut the phone gutter. */
+@media (max-width: 680px) {
+  .plans-shell {
+    width: min(100% - 44px, 1120px);
+  }
+}
+
 .plans-shell .topbar,
 .paid-report-shell .topbar,
 .admin-shell .topbar {
@@ -724,6 +731,18 @@ a:focus-visible {
   width: min(100% - 32px, var(--content));
   margin: 0 auto;
   padding-bottom: 120px;
+}
+
+/*
+ * Reading gutter on phones. The page used to sit 12px from the edge in bare sections
+ * while text inside cards sat at 39px, so headings and the footer read as glued to the
+ * left next to everything else. One gutter is set here and the card padding below is
+ * pulled toward it, so the eye follows a single left edge down the page.
+ */
+@media (max-width: 680px) {
+  .shell {
+    width: min(100% - 44px, var(--content));
+  }
 }
 
 .topbar {
@@ -3297,6 +3316,15 @@ summary {
   width: min(100% - 24px, 1440px);
 }
 
+/* The home page is wider than the rest of the site, but on a phone it still has to
+   share the one reading gutter; 24px here was overriding it and leaving headings and
+   the footer 12px from the edge. */
+@media (max-width: 680px) {
+  .home-shell {
+    width: min(100% - 44px, 1440px);
+  }
+}
+
 .home-topbar .brand {
   align-items: center;
   flex-direction: column;
@@ -4523,10 +4551,6 @@ summary {
 }
 
 @media (max-width: 420px) {
-  .shell {
-    width: min(100% - 24px, var(--content));
-  }
-
   .home-hero {
     border-radius: 20px;
   }
@@ -4802,3 +4826,49 @@ summary {
 
 .admin-daybar-key.is-started { background: #cbbba2; }
 .admin-daybar-key.is-paid { background: var(--sage-dark); margin-left: 0.8rem; }
+
+/*
+ * Phone reading rhythm. Cards keep a visible inset on desktop, but on a narrow screen
+ * a large inset pushes their text far past the bare headings above them, which is what
+ * made the page look ragged. These pull the inset toward the page gutter so text inside
+ * and outside a card starts at nearly the same place.
+ */
+@media (max-width: 680px) {
+  .plan-card,
+  .payment-widget-shell,
+  .payment-result-card,
+  .report-link-card,
+  .payapp-payment-card,
+  .manual-transfer-card,
+  .admin-inquiry,
+  .paid-report-section,
+  .pass-summary,
+  .form-card,
+  .preview-reading,
+  .trust-card,
+  .field-card {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .home-hero {
+    padding-left: 1.1rem;
+    padding-right: 1.1rem;
+  }
+
+  /* Korean wraps mid-word without this, which reads as a ragged left edge on the
+     following line. */
+  p,
+  li,
+  blockquote,
+  dd {
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+
+  h1,
+  h2,
+  h3 {
+    word-break: keep-all;
+  }
+}
