@@ -4,6 +4,8 @@ import { createOnboardingReflectionContext } from "@/core/onboarding";
 import type { PaidReadingInput, PaidReport } from "@/core/paid-reading";
 import { PaidReadingInputSchema } from "@/core/paid-reading";
 import { createIntegratedProfile, getRuleBasedProfile } from "@/core/profile";
+import { assessQuestionSafety } from "@/core/ai/safety";
+import { resolveConcernTopic, topicText } from "@/core/topics/concern-topics";
 
 function reportName(productCode: PaidReadingInput["productCode"], locale: PaidReadingInput["locale"]) {
   const names = locale === "ko"
@@ -37,6 +39,31 @@ export function createPaidReport(orderId: string, rawInput: unknown): PaidReport
     aiPersonalizationConsent: false,
   });
   const ko = input.locale === "ko";
+  // The sentence the buyer actually wrote. Read it, answer that situation, and route
+  // it to reality-first handling when it belongs to a clinician, a lawyer, or a
+  // helpline rather than to symbolism.
+  const safety = assessQuestionSafety(input.concern);
+  const { topic, matched } = resolveConcernTopic(input.concern, input.focusId);
+  const topicSection = safety.requiresRealityFirstGuidance
+    ? {
+        title: ko ? "먼저 확인해야 할 것" : "What comes first",
+        body: ko
+          ? "적어주신 내용은 상징으로 답할 수 있는 범위를 넘어섭니다. 의료·법률·금전·안전에 관한 판단은 해당 분야의 자격을 갖춘 곳에서 확인하셔야 하고, 이 리포트는 그 결정을 대신하지 않습니다. 아래 내용은 그 확인을 마친 뒤 참고용으로만 보시기 바랍니다."
+          : "What you wrote goes beyond what symbolism can answer. Medical, legal, financial, and safety questions belong to a qualified professional, and this report does not stand in for that decision. Read the rest only as reflection once that is done.",
+      }
+    : {
+        title: ko ? `이 고민에서 확인할 것 · ${topic.label.ko}` : `On your question · ${topic.label.en}`,
+        body: [
+          topicText(topic.framing, input.locale),
+          topicText(topic.observe, input.locale),
+          topicText(topic.caution, input.locale),
+          matched
+            ? ""
+            : ko
+              ? "적어주신 내용에서 구체적인 상황을 특정하지 못해, 선택하신 관심 영역을 기준으로 정리했습니다. 다음에는 상황을 한 문장 더 적어주시면 더 좁혀 드릴 수 있어요."
+              : "The situation could not be identified from what you wrote, so this follows the area you selected. One more sentence next time lets it narrow further.",
+        ].filter(Boolean).join(" "),
+      };
   const domainOrder = input.productCode === "plus_30d"
     ? integrated.domains.slice(0, 1)
     : input.productCode === "pro_30d"
@@ -67,6 +94,8 @@ export function createPaidReport(orderId: string, rawInput: unknown): PaidReport
           `Strengths that tend to show up: ${integrated.strengths.join(", ")}. ` +
           `The counterweights worth watching in yourself: ${integrated.risks.join(", ")}.`,
     },
+    // Placed before the domain sections: the buyer came for this, not for the profile.
+    topicSection,
     ...domainOrder.map((domain) => ({
       title: domain.title,
       body: `${domain.personalizedInference} ${domain.realityCheck}`,
@@ -98,10 +127,13 @@ export function createPaidReport(orderId: string, rawInput: unknown): PaidReport
     summary: context.title,
     sections,
     actions: [
+      // The topic's own step leads, because it answers the question that was asked.
+      ...(safety.requiresRealityFirstGuidance ? [] : [topicText(topic.action, input.locale)]),
       context.practicalAction,
       ...integrated.practicalActions.slice(0, input.productCode === "plus_30d" ? 1 : 3),
     ],
     cautions: [
+      ...(safety.requiresRealityFirstGuidance ? [] : [topicText(topic.caution, input.locale)]),
       context.realityCheck,
       ...integrated.risks.slice(0, input.productCode === "premium_pdf" ? 3 : 2),
     ],
