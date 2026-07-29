@@ -1,41 +1,47 @@
-import type { Locale } from "@/i18n/config";
+import { n, type ConcernFocusId, type ConcernTopic } from "./topic-types";
+import { URGENT_TOPICS } from "./topics-urgent";
+import { WORK_EXTRA_TOPICS } from "./topics-work-extra";
+import { RELATIONSHIP_EXTRA_TOPICS } from "./topics-relationship-extra";
+import { LIFE_EXTRA_TOPICS, MONEY_EXTRA_TOPICS } from "./topics-life-extra";
 
-// The buyer writes one sentence about what is actually on their mind — a debut
-// audition, a reunion, a parent's illness, a first hire. Until now that sentence was
-// stored and echoed back but never read, so an idol trainee and a factory worker who
-// both picked "일·진로" received the same paragraphs. This maps the sentence onto a
-// specific situation and answers that situation.
+export { concernFocusIds, topicText } from "./topic-types";
+export type { Bilingual, ConcernFocusId, ConcernTopic } from "./topic-types";
+
+// The buyer writes one sentence about what is actually on their mind. This maps that
+// sentence onto a concrete situation and answers it. Matching is deterministic keyword
+// work, not inference: the same sentence always resolves the same way.
 //
-// Matching is deterministic keyword work, not inference: the same sentence always
-// resolves to the same topic, and an unmatched sentence falls back to the area the
-// buyer selected rather than guessing.
-export const concernFocusIds = ["work", "relationships", "growth", "money"] as const;
-export type ConcernFocusId = (typeof concernFocusIds)[number];
+// Order is load-bearing, so the groups are assembled explicitly rather than left to
+// where a topic happens to sit in a file. Situations that must win outright come
+// first, then narrower groups before the broader ones that would swallow them —
+// family before generic conflict, specific work situations before feeling stuck.
+// Broadest of all, so it is appended last and only catches what nothing else did.
+const CATCH_ALL_TOPICS: readonly ConcernTopic[] = [
+  {
+    id: "direction",
+    focus: "growth",
+    label: n("방향 잃음", "Feeling stuck"),
+    framing: n(
+      "무엇을 해야 할지 모를 때는 큰 방향보다 확인 가능한 작은 실험 하나가 더 빨리 답을 줍니다.",
+      "When the direction is unclear, one checkable experiment answers faster than a grand plan.",
+    ),
+    observe: n(
+      "최근 1년 중 시간이 빨리 갔던 순간 세 가지를 적고, 그때 하고 있던 활동의 공통점을 찾아보세요.",
+      "List three moments this year when time passed quickly and find what the activity had in common.",
+    ),
+    action: n(
+      "그 공통점과 닿는 일 하나를 이번 주에 20분만 해보고, 끝난 뒤 기분을 한 줄로 기록하세요.",
+      "Spend twenty minutes on something touching that overlap and write one line about how it felt.",
+    ),
+    caution: n(
+      "지금 결정하지 않아도 되는 일까지 한꺼번에 정하려 하면 더 막힙니다. 이번 달에 확인할 것 하나만 고르세요.",
+      "Trying to settle everything at once blocks further. Choose one thing to check this month.",
+    ),
+    patterns: [/제자리|방향|뭘 해야|막막|길을? 잃|의미를? 모르/u, /stuck|no direction|lost/i],
+  },
+];
 
-type Bilingual = Readonly<{ ko: string; en: string }>;
-
-export type ConcernTopic = Readonly<{
-  id: string;
-  focus: ConcernFocusId;
-  label: Bilingual;
-  /** How to look at this particular situation. */
-  framing: Bilingual;
-  /** What to observe, phrased so the buyer can actually check it. */
-  observe: Bilingual;
-  /** One thing to do this week. */
-  action: Bilingual;
-  /** What tends to go wrong in this situation specifically. */
-  caution: Bilingual;
-  patterns: readonly RegExp[];
-}>;
-
-function n(ko: string, en: string): Bilingual {
-  return { ko, en };
-}
-
-// Ordered: the first topic whose pattern matches wins, so narrower situations are
-// listed before the broader ones they would otherwise be swallowed by.
-export const concernTopics: readonly ConcernTopic[] = [
+const BASE_TOPICS: readonly ConcernTopic[] = [
   // ── 일·진로 ────────────────────────────────────────────────────────────────
   {
     id: "debut",
@@ -123,7 +129,8 @@ export const concernTopics: readonly ConcernTopic[] = [
       "돈을 먼저 요구하는 채용, 계약서 없는 근무, 지나치게 좋은 조건은 확인 전에는 응하지 마세요.",
       "Do not proceed with hiring that asks for money first, work without a contract, or terms that look too good.",
     ),
-    patterns: [/취업|취준|입사|채용|면접|이력서|자소서/u, /job hunt|resume|interview/i],
+    // Neither 재취업 nor 해외 취업 belongs here; both have their own situation.
+    patterns: [/(?<!재)(?<!해외 )취업|취준|입사|채용|면접|이력서|자소서/u, /job hunt|resume|interview/i],
   },
   {
     id: "startup",
@@ -256,7 +263,12 @@ export const concernTopics: readonly ConcernTopic[] = [
       "상대의 근황을 계속 확인하는 행동은 회복을 늦춥니다. 힘들면 주변 사람이나 상담 창구를 먼저 찾으세요.",
       "Monitoring their updates slows recovery. If it is heavy, reach a person or a counselling line first.",
     ),
-    patterns: [/이별|헤어졌|헤어질|정리해야|끝내야 할까/u, /breakup|broke up|should I end it/i],
+    // "정리해야" on its own also fits tidying a policy or a debt, so it only counts
+    // here alongside something that marks a relationship.
+    patterns: [
+      /이별|헤어졌|헤어질|(관계|만남|연애|이 사람)[^.。]{0,10}(정리|끝내)/u,
+      /breakup|broke up|should I end (it|this relationship)/i,
+    ],
   },
   {
     id: "marriage",
@@ -412,7 +424,13 @@ export const concernTopics: readonly ConcernTopic[] = [
       "수익이나 시세를 알려줄 수는 없습니다. 원금을 잃어도 되는 돈이 아니면 확신을 주는 말을 특히 조심하세요.",
       "No return or price can be told to you. If the money cannot be lost, be most careful with certainty.",
     ),
-    patterns: [/목돈|큰돈|지출|살까|구매|차를? 살|명품/u, /large purchase|should I buy/i],
+    // Saving up is the opposite situation and has its own topic.
+    // Saving up is the opposite situation and has its own topic, so a sentence about
+    // accumulating a sum must not be read as one about spending it.
+    patterns: [
+      /목돈(?!\s*을?\s*(모|저축|만들))|큰돈|지출|살까|구매|차를?\s*살|명품/u,
+      /large purchase|should I buy/i,
+    ],
   },
   {
     id: "debt",
@@ -501,7 +519,7 @@ export const concernTopics: readonly ConcernTopic[] = [
       "2주 이상 잠·식욕·의욕이 계속 무너져 있다면 상징이 아니라 진료나 상담이 필요한 신호입니다.",
       "If sleep, appetite, and drive have been down for more than two weeks, that is a signal for a clinician.",
     ),
-    patterns: [/번아웃|지친|무기력|소진|다 놓고 싶|의욕이 없/u, /burnout|exhausted|no motivation/i],
+    patterns: [/번아웃|지친|지쳐|지쳤|무기력|소진|다 놓고 싶|의욕이 없/u, /burnout|exhausted|no motivation/i],
   },
   {
     id: "habit",
@@ -525,29 +543,21 @@ export const concernTopics: readonly ConcernTopic[] = [
     ),
     patterns: [/습관|꾸준|작심삼일|루틴|운동을? 시작|공부 습관/u, /habit|routine|consistency/i],
   },
-  {
-    id: "direction",
-    focus: "growth",
-    label: n("방향 잃음", "Feeling stuck"),
-    framing: n(
-      "무엇을 해야 할지 모를 때는 큰 방향보다 확인 가능한 작은 실험 하나가 더 빨리 답을 줍니다.",
-      "When the direction is unclear, one checkable experiment answers faster than a grand plan.",
-    ),
-    observe: n(
-      "최근 1년 중 시간이 빨리 갔던 순간 세 가지를 적고, 그때 하고 있던 활동의 공통점을 찾아보세요.",
-      "List three moments this year when time passed quickly and find what the activity had in common.",
-    ),
-    action: n(
-      "그 공통점과 닿는 일 하나를 이번 주에 20분만 해보고, 끝난 뒤 기분을 한 줄로 기록하세요.",
-      "Spend twenty minutes on something touching that overlap and write one line about how it felt.",
-    ),
-    caution: n(
-      "지금 결정하지 않아도 되는 일까지 한꺼번에 정하려 하면 더 막힙니다. 이번 달에 확인할 것 하나만 고르세요.",
-      "Trying to settle everything at once blocks further. Choose one thing to check this month.",
-    ),
-    patterns: [/제자리|방향|뭘 해야|막막|길을? 잃|의미를? 모르/u, /stuck|no direction|lost/i],
-  },
+
 ];
+
+export const concernTopics: readonly ConcernTopic[] = [
+  ...URGENT_TOPICS,
+  // Evaluated before the base set: caring for a parent and money inside the family are
+  // narrower than the general parent and argument topics that would otherwise take them.
+  ...RELATIONSHIP_EXTRA_TOPICS,
+  ...WORK_EXTRA_TOPICS,
+  ...MONEY_EXTRA_TOPICS,
+  ...LIFE_EXTRA_TOPICS,
+  ...BASE_TOPICS,
+  ...CATCH_ALL_TOPICS,
+];
+
 
 const TOPIC_BY_ID = new Map(concernTopics.map((topic) => [topic.id, topic]));
 
@@ -581,6 +591,3 @@ export function resolveConcernTopic(
   return { topic: fallback, matched: false };
 }
 
-export function topicText(value: Bilingual, locale: Locale): string {
-  return value[locale];
-}

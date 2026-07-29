@@ -56,6 +56,9 @@ export function createPaidReport(orderId: string, rawInput: unknown): PaidReport
         body: [
           topicText(topic.framing, input.locale),
           topicText(topic.observe, input.locale),
+          // For a situation with a working formal channel, the channel belongs in the
+          // section itself rather than further down a list the reader may not reach.
+          topic.escalate ? topicText(topic.action, input.locale) : "",
           topicText(topic.caution, input.locale),
           matched
             ? ""

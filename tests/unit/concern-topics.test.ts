@@ -97,6 +97,73 @@ describe("reading the sentence the buyer wrote", () => {
   });
 });
 
+describe("the wider set of situations", () => {
+  it("recognises the rest of what people write about", () => {
+    const cases: readonly [string, string][] = [
+      ["승진에서 계속 밀리는 것 같습니다", "승진"],
+      ["프리랜서로 독립해도 될까요", "프리랜서"],
+      ["경력 단절 후 재취업이 될까요", "재취업"],
+      ["부업을 하나 시작해볼까 합니다", "부업"],
+      ["전역하고 뭘 해야 할지 모르겠습니다", "군 복무"],
+      ["해외 취업을 준비 중입니다", "해외 취업"],
+      ["은퇴 후가 막막합니다", "은퇴"],
+      ["남자친구 외도가 의심됩니다", "외도"],
+      ["집안 반대가 심합니다", "집안 반대"],
+      ["장거리 연애 중인데 힘듭니다", "장거리"],
+      ["권태기가 온 것 같아요", "권태기"],
+      ["동거를 시작해도 될까요", "동거"],
+      ["재혼을 고민 중입니다", "재혼"],
+      ["언니와 사이가 안 좋습니다", "형제자매"],
+      ["부모님 간병을 하고 있습니다", "간병"],
+      ["강아지 입양할까 고민입니다", "반려동물"],
+      ["목돈을 모으고 싶습니다", "저축"],
+      ["보험을 정리해야 할까요", "보험"],
+      ["상속 문제로 다툼이 있습니다", "상속"],
+      ["운동 습관을 만들고 싶어요", "건강 습관"],
+      ["불면증이 심합니다", "수면"],
+      ["사람 만나기가 너무 힘듭니다", "사람 만나기"],
+      ["요즘 너무 외롭습니다", "외로움"],
+      ["외모 때문에 자신감이 없어요", "외모"],
+      ["귀농을 생각하고 있습니다", "지역 이동"],
+    ];
+
+    for (const [concern, expected] of cases) {
+      const section = topicSection(concern, "growth");
+      expect(section?.title, `"${concern}" was not recognised`).toContain(expected);
+    }
+  });
+
+  it("sends situations with a working formal channel there instead of reading them", () => {
+    for (const [concern, marker] of [
+      ["학교에서 왕따를 당하고 있습니다", "학교폭력"],
+      ["도박을 끊지 못하겠습니다", "중독"],
+      ["아버지가 돌아가셨습니다", "사별"],
+    ] as const) {
+      const report = createPaidReport("iaescalate123", {
+        ...base,
+        focusId: "growth",
+        concern,
+      });
+      const section = report.sections.find((s) => s.title.includes(marker));
+      expect(section, `${concern} was not escalated`).toBeDefined();
+      expect(section?.body).toMatch(/신고|센터|상담|1577|117/);
+    }
+  });
+
+  it("keeps a specific situation from being swallowed by a broader one", () => {
+    // Each of these contains a word that a broader topic also matches.
+    const pairs: readonly [string, string][] = [
+      ["부모님과 자꾸 부딪힙니다", "부모"],
+      ["가족한테 돈을 빌려줬는데", "가족 간 돈"],
+      ["학교폭력 신고를 해야 할까요", "학교폭력"],
+      ["상사와 갈등이 있습니다", "직장 인간관계"],
+    ];
+    for (const [concern, expected] of pairs) {
+      expect(topicSection(concern, "growth")?.title, concern).toContain(expected);
+    }
+  });
+});
+
 describe("topic definitions", () => {
   it("has no duplicate ids and every topic carries all four pieces", () => {
     const ids = concernTopics.map((topic) => topic.id);
@@ -108,6 +175,23 @@ describe("topic definitions", () => {
         expect(topic[field].en.length, `${topic.id}.${field} en`).toBeGreaterThan(20);
       }
       expect(topic.patterns.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("recognises the conjugated forms people actually type", () => {
+    // Korean stems change shape between syllables: 외로움 and 외롭습니다 share no
+    // substring at all, so a pattern written from one form silently misses the other.
+    const forms: readonly [string, string][] = [
+      ["요즘 너무 외롭습니다", "외로움"],
+      ["외로워서 힘들어요", "외로움"],
+      ["다 지쳤습니다", "번아웃"],
+      ["지쳐서 아무것도 못 하겠어요", "번아웃"],
+      ["부모님과 부딪혀서 힘듭니다", "부모"],
+      ["막막합니다", "방향"],
+      ["무기력합니다", "번아웃"],
+    ];
+    for (const [concern, expected] of forms) {
+      expect(topicSection(concern, "growth")?.title, concern).toContain(expected);
     }
   });
 
