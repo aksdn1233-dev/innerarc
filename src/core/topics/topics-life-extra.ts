@@ -5,6 +5,10 @@ export const MONEY_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "saving",
     focus: "money",
     label: n("저축·목돈 모으기", "Saving up"),
+    verdict: n(
+      "모을 수 있는 조건입니다. 의지가 아니라 순서 문제입니다. 월급날 다음 날 자동이체 하나면 대부분 해결됩니다.",
+      "This is achievable. It is an ordering problem, not a willpower one; one automatic transfer the day after payday settles most of it.",
+    ),
     framing: n(
       "저축은 의지보다 순서에서 갈립니다. 쓰고 남기면 대개 남지 않고, 먼저 떼면 대개 남습니다.",
       "Saving turns on order more than will. What is left after spending rarely remains; what is taken first usually does.",
@@ -27,6 +31,10 @@ export const MONEY_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "insurance",
     focus: "money",
     label: n("보험", "Insurance"),
+    verdict: n(
+      "지금 구성은 손볼 여지가 있습니다. 보험은 수익이 아니라 감당 못 할 손실만 막으면 됩니다. 그 기준으로 보면 줄일 곳이 보입니다.",
+      "There is room to adjust. Insurance only needs to cover what you could not absorb; judged that way, the excess shows.",
+    ),
     framing: n(
       "보험은 수익이 아니라 감당 못 할 손실을 막는 도구입니다. 그 기준으로 보면 필요한 것이 훨씬 줄어듭니다.",
       "Insurance covers losses you could not absorb; it is not a return. Judged that way, far less is needed.",
@@ -49,6 +57,10 @@ export const MONEY_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "inheritance",
     focus: "money",
     label: n("상속·증여", "Inheritance"),
+    verdict: n(
+      "정리 가능한 사안입니다. 다만 감정보다 기한이 먼저입니다. 채무까지 함께 확인하고 기한 안에 움직이면 문제되지 않습니다.",
+      "This is resolvable, but deadlines come before feeling. Check debts alongside assets and move inside the window.",
+    ),
     framing: n(
       "상속은 감정보다 법과 기한이 정합니다. 상의보다 확인이 먼저입니다.",
       "Inheritance is decided by law and deadlines rather than by feeling. Verification comes before discussion.",
@@ -74,6 +86,10 @@ export const LIFE_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "health_habit",
     focus: "growth",
     label: n("건강 습관", "Health habits"),
+    verdict: n(
+      "유지 가능합니다. 강도보다 시각이 결과를 정합니다. 목표를 절반으로 줄이고 정해진 시간에 붙이면 이어집니다.",
+      "This holds. When beats how hard; halve the target and attach it to a fixed time.",
+    ),
     framing: n(
       "이 리포트는 몸 상태를 판단하지 않습니다. 다만 습관이 유지되는 조건은 함께 볼 수 있습니다.",
       "This report does not judge your body. It can look at the conditions under which a habit holds.",
@@ -96,6 +112,10 @@ export const LIFE_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "sleep",
     focus: "growth",
     label: n("수면", "Sleep"),
+    verdict: n(
+      "회복 가능한 패턴입니다. 자는 시간을 맞추려 하면 어렵고, 깨는 시간을 고정하면 대부분 따라옵니다.",
+      "This pattern recovers. Fixing the waking time works where fixing the bedtime does not.",
+    ),
     framing: n(
       "잠은 의지로 조절되지 않고 조건으로 조절됩니다. 자는 시간보다 깨는 시간을 고정하는 편이 효과적입니다.",
       "Sleep answers to conditions, not will. Fixing the waking time works better than fixing the bedtime.",
@@ -118,6 +138,10 @@ export const LIFE_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "social_difficulty",
     focus: "growth",
     label: n("사람 만나기 어려움", "Finding people hard"),
+    verdict: n(
+      "성격 문제가 아닙니다. 만남 뒤 얼마나 지치는지가 핵심이고, 덜 지쳤던 자리의 조건을 반복하면 훨씬 수월해집니다.",
+      "This is not a defect. Recovery cost is the point; repeating the conditions that drained you less makes it far easier.",
+    ),
     framing: n(
       "사람 만나는 일이 어려운 것은 성격 결함이 아니라 대개 회복 비용의 문제입니다. 만남 뒤 얼마나 지치는지가 핵심입니다.",
       "Finding people hard is usually about recovery cost rather than a defect. How drained you are afterwards is the point.",
@@ -140,6 +164,10 @@ export const LIFE_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "loneliness",
     focus: "growth",
     label: n("외로움", "Loneliness"),
+    verdict: n(
+      "해소 가능합니다. 사람 수를 늘리는 것보다 한 사람에게 조금 더 구체적으로 말하는 쪽이 훨씬 빠릅니다.",
+      "This eases. Saying something more specific to one person works faster than adding people.",
+    ),
     framing: n(
       "외로움은 사람 수보다 연결의 깊이에서 옵니다. 많이 만나도 남는 경우가 흔합니다.",
       "Loneliness tracks depth rather than headcount. It survives a full calendar.",
@@ -164,6 +192,10 @@ export const LIFE_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "appearance",
     focus: "growth",
     label: n("외모·자신감", "Appearance and confidence"),
+    verdict: n(
+      "지금 느끼는 부담은 외모 자체보다 비교하는 환경에서 커진 쪽에 가깝습니다. 그 환경을 하나 줄이면 체감이 달라집니다.",
+      "The weight of this grows in the comparison environment more than in the mirror. Removing one such setting shifts it.",
+    ),
     framing: n(
       "외모에 대한 고민은 대개 외모 자체보다 비교하는 환경에서 커집니다. 무엇을 보고 있는지가 크게 작용합니다.",
       "Worry about appearance usually grows in the comparison environment more than in the mirror.",
@@ -186,6 +218,10 @@ export const LIFE_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "faith",
     focus: "growth",
     label: n("신앙·마음공부", "Faith and practice"),
+    verdict: n(
+      "지금 선택을 바꾸지 않아도 됩니다. 옳고 그름보다 그 활동 뒤에 마음이 가벼워지는지가 기준입니다.",
+      "You do not have to change this. Whether you feel lighter afterwards is the measure, not whether it is right.",
+    ),
     framing: n(
       "믿음의 옳고 그름은 이 리포트가 판단할 일이 아닙니다. 다만 그 선택이 지금 생활에 어떻게 작용하는지는 볼 수 있습니다.",
       "This report does not rule on belief. It can look at how the choice is working in your daily life.",
@@ -208,6 +244,10 @@ export const LIFE_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "moving_city",
     focus: "growth",
     label: n("지역 이동·정착", "Where to settle"),
+    verdict: n(
+      "옮기셔도 됩니다. 다만 집값이나 인프라보다 그곳에 아는 사람이 있는지가 만족도를 정합니다. 평범한 주말을 한 번 보내보시면 답이 나옵니다.",
+      "The move is workable. Knowing people there decides satisfaction more than prices; spend one ordinary weekend to find out.",
+    ),
     framing: n(
       "지역 선택은 집값이나 인프라보다 그곳에서 아는 사람이 있는지가 만족도를 더 크게 좌우합니다.",
       "Satisfaction with a place depends on knowing people there more than on prices or amenities.",

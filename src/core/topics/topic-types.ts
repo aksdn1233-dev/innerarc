@@ -9,6 +9,13 @@ export type ConcernTopic = Readonly<{
   id: string;
   focus: ConcernFocusId;
   label: Bilingual;
+  /**
+   * The verdict, written as the first thing the buyer reads. It commits to a direction
+   * — "해볼 만합니다", "지금은 아닙니다", "순서를 바꾸셔야 합니다" — and names the
+   * condition that decides it. A reading that opens by explaining what it cannot do has
+   * already lost the reader, so this must never begin with a limitation.
+   */
+  verdict: Bilingual;
   /** How to look at this particular situation. */
   framing: Bilingual;
   /** What to observe, phrased so the buyer can actually check it. */

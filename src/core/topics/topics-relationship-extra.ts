@@ -7,6 +7,10 @@ export const RELATIONSHIP_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "infidelity",
     focus: "relationships",
     label: n("외도 의심", "Suspecting an affair"),
+    verdict: n(
+      "의심을 안고 유지하는 상태가 관계를 가장 빨리 깎습니다. 확인할지 말지를 먼저 정하셔야 합니다. 알게 된 뒤 어떻게 할지 답이 없다면 지금은 확인하지 않는 편이 낫습니다.",
+      "Holding the suspicion erodes it fastest. Decide whether to settle it; without an answer for what you would do, not now.",
+    ),
     framing: n(
       "의심은 확인되기 전까지 관계를 계속 깎습니다. 상징으로 사실을 판정할 수는 없고, 확인할지 말지는 정할 수 있습니다.",
       "Suspicion erodes the relationship until it is settled. Symbolism cannot rule on fact, but you can decide whether to settle it.",
@@ -29,6 +33,10 @@ export const RELATIONSHIP_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "family_objection",
     focus: "relationships",
     label: n("집안 반대", "Family objection"),
+    verdict: n(
+      "반대가 있어도 진행 가능한 관계입니다. 다만 설득을 반복하면 길어집니다. 둘이 먼저 시기를 정하면 대화의 성격이 바뀝니다.",
+      "This can proceed despite objection. Repeating the persuasion prolongs it; agreeing a timeline between you changes the conversation.",
+    ),
     framing: n(
       "반대는 상대에 대한 평가일 때도 있지만, 부모 자신의 불안일 때가 더 많습니다. 어느 쪽인지에 따라 대응이 완전히 달라집니다.",
       "Objection is sometimes about the person and more often about the parent's own anxiety. Which it is changes everything.",
@@ -51,6 +59,10 @@ export const RELATIONSHIP_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "long_distance",
     focus: "relationships",
     label: n("장거리", "Long distance"),
+    verdict: n(
+      "장거리는 유지 가능합니다. 다만 마음보다 다음 만날 날짜가 관계를 지탱합니다. 언제까지 떨어져 있을지 정해두면 훨씬 안정됩니다.",
+      "Distance is sustainable, held by the next date rather than by feeling. Naming an end to it steadies things.",
+    ),
     framing: n(
       "장거리는 마음보다 일정과 비용에서 무너지는 경우가 많습니다. 언제 만날 수 있는지가 실제로 관계를 지탱합니다.",
       "Distance usually breaks on schedule and cost before it breaks on feeling. When you can next meet is what holds it.",
@@ -73,6 +85,10 @@ export const RELATIONSHIP_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "staleness",
     focus: "relationships",
     label: n("권태기", "A flat stretch"),
+    verdict: n(
+      "관계가 끝난 신호는 아닙니다. 설렘이 주는 것은 자연스럽고, 대화와 존중이 함께 줄었는지가 실제 기준입니다. 상황을 바꾸면 회복됩니다.",
+      "This is not the end signal. Excitement fading is ordinary; whether conversation and respect faded with it is the real test.",
+    ),
     framing: n(
       "설렘이 줄어드는 것 자체는 문제가 아닙니다. 문제가 되는 것은 대화와 존중까지 함께 줄었을 때입니다.",
       "Excitement fading is not the problem. It becomes one when conversation and respect fade with it.",
@@ -95,6 +111,10 @@ export const RELATIONSHIP_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "cohabitation",
     focus: "relationships",
     label: n("동거", "Living together"),
+    verdict: n(
+      "같이 살아도 되는 관계입니다. 다만 성격보다 생활 습관에서 부딪힙니다. 생활비와 집안일을 숫자로 정해두면 대부분 예방됩니다.",
+      "Living together is workable. Habits clash before character does; settling money and chores in numbers prevents most of it.",
+    ),
     framing: n(
       "함께 살면 성격보다 생활 습관이 훨씬 크게 드러납니다. 청소, 소음, 돈, 손님이 실제 쟁점입니다.",
       "Living together exposes habits far more than character. Cleaning, noise, money, and guests are the real subjects.",
@@ -117,6 +137,10 @@ export const RELATIONSHIP_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "remarriage",
     focus: "relationships",
     label: n("재혼·재혼가정", "Remarriage"),
+    verdict: n(
+      "재혼은 가능한 조건입니다. 다만 두 사람만의 문제가 아니라 아이와 양가까지 포함된 조정입니다. 속도를 늦추는 쪽이 거의 항상 유리합니다.",
+      "Remarriage is workable, but it adjusts more than two people. Going slower almost always helps.",
+    ),
     framing: n(
       "재혼은 두 사람만의 문제가 아니라 아이와 양가까지 포함된 조정입니다. 속도를 늦추는 것이 거의 항상 유리합니다.",
       "Remarriage adjusts more than two people. Going slower almost always helps.",
@@ -139,6 +163,10 @@ export const RELATIONSHIP_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "siblings",
     focus: "relationships",
     label: n("형제자매", "Siblings"),
+    verdict: n(
+      "형제 관계는 다시 정할 수 있습니다. 어린 시절의 역할이 그대로 남아 있는 것이 원인인 경우가 많습니다. 역할과 비용을 나누면 달라집니다.",
+      "This can be renegotiated. Childhood roles still running is the usual cause; splitting roles and costs changes it.",
+    ),
     framing: n(
       "형제 문제는 대개 어린 시절의 역할이 어른이 되어서도 유지되는 데서 옵니다. 지금의 관계를 다시 정하는 편이 낫습니다.",
       "Trouble between siblings usually comes from childhood roles that never got renegotiated.",
@@ -161,6 +189,10 @@ export const RELATIONSHIP_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "family_money",
     focus: "money",
     label: n("가족 간 돈", "Money inside the family"),
+    verdict: n(
+      "회복 가능한 관계입니다. 다만 액수보다 조건이 없다는 점이 문제를 만듭니다. 빌려준 것인지 준 것인지부터 정하면 정리됩니다.",
+      "The relationship is recoverable. The absence of terms causes this, not the amount; deciding loan or gift settles it.",
+    ),
     framing: n(
       "가족 간 돈은 액수보다 조건이 없다는 점에서 문제가 됩니다. 빌려준 것인지 준 것인지부터 정해야 합니다.",
       "Money inside a family goes wrong for lack of terms rather than size. Decide first whether it is a loan or a gift.",
@@ -189,6 +221,10 @@ export const RELATIONSHIP_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "caregiving",
     focus: "relationships",
     label: n("부모 간병", "Caring for a parent"),
+    verdict: n(
+      "지금 방식으로는 오래 못 갑니다. 간병은 혼자 감당하는 구조에서 대부분 무너집니다. 쓸 수 있는 제도를 확인하는 것이 가장 빠른 해결입니다.",
+      "The current arrangement will not last. Care collapses when it rests on one person; checking available services is the fastest fix.",
+    ),
     framing: n(
       "간병은 오래 가는 일이라 혼자 감당하는 구조가 되면 대부분 무너집니다. 분담과 제도를 먼저 보세요.",
       "Care lasts, so any arrangement resting on one person usually collapses. Look at sharing and at services first.",
@@ -211,6 +247,10 @@ export const RELATIONSHIP_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "pet",
     focus: "relationships",
     label: n("반려동물", "A pet"),
+    verdict: n(
+      "함께 지내는 데 무리는 없습니다. 다만 동물의 마음보다 사람의 일정과 비용이 실제 변수입니다. 혼자 두는 시간이 기준이 됩니다.",
+      "This is workable. Your schedule and budget are the real variables, and hours left alone is the measure.",
+    ),
     framing: n(
       "반려동물 문제는 대개 사람의 일정과 비용에서 시작됩니다. 동물의 마음을 읽기보다 조건을 보는 편이 실제로 도움이 됩니다.",
       "Questions about a pet usually start in the person's schedule and budget. Conditions help more than reading an animal's mind.",

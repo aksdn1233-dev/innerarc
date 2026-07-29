@@ -8,6 +8,10 @@ export const URGENT_TOPICS: readonly ConcernTopic[] = [
     focus: "relationships",
     label: n("학교폭력", "Bullying at school"),
     escalate: true,
+    verdict: n(
+      "이건 참아서 끝나는 일이 아니고, 신고하면 실제로 멈출 수 있는 일입니다. 기록을 남기고 알리는 것이 가장 확실한 방법입니다.",
+      "This does not end by enduring it, and reporting does stop it. Keeping records and telling someone is the surest route.",
+    ),
     framing: n(
       "학교폭력은 참고 견딜 문제가 아니라 신고와 기록으로 다루는 문제입니다. 상징 풀이보다 절차가 훨씬 강력합니다.",
       "Bullying is handled by reporting and records, not by endurance. The formal process is far stronger than any reading.",
@@ -31,6 +35,10 @@ export const URGENT_TOPICS: readonly ConcernTopic[] = [
     focus: "growth",
     label: n("중독", "Addiction"),
     escalate: true,
+    verdict: n(
+      "혼자 끊으려다 실패한 것은 의지의 문제가 아닙니다. 치료로 다뤄지는 영역이고, 도움을 받으면 실제로 달라집니다.",
+      "Failing to stop alone is not a matter of will. This is treated, and help does change it.",
+    ),
     framing: n(
       "중독은 의지의 문제가 아니라 치료의 영역입니다. 혼자 끊으려다 실패한 경험은 실패가 아니라 도움이 필요하다는 신호입니다.",
       "Addiction is treated, not out-willed. Failing alone is not a personal failure; it is a sign that help is needed.",
@@ -54,6 +62,10 @@ export const URGENT_TOPICS: readonly ConcernTopic[] = [
     focus: "growth",
     label: n("사별·상실", "Loss and grief"),
     escalate: true,
+    verdict: n(
+      "지금 느끼는 것은 대부분 자연스러운 반응이고, 회복에 정해진 기간은 없습니다. 앞날을 점치는 것보다 오늘을 넘기는 방법이 필요합니다.",
+      "Most of what you feel is an ordinary response, and there is no schedule. Getting through today matters more than reading ahead.",
+    ),
     framing: n(
       "상실에는 정해진 회복 기간이 없고, 지금 느끼는 것은 대부분 자연스러운 반응입니다. 앞날을 점치는 것보다 지금을 견디는 방법이 필요합니다.",
       "Grief has no schedule, and most of what you feel now is an ordinary response. Getting through today matters more than reading the future.",

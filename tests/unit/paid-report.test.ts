@@ -33,12 +33,13 @@ describe("paid report delivery", () => {
   it("tells even the cheapest buyer something about themselves", () => {
     for (const productCode of ["plus_30d", "pro_30d", "premium_pdf"] as const) {
       const report = createPaidReport(`ia${productCode}9999`, { ...baseInput, productCode });
-      const core = report.sections.find((section) => section.title === "당신의 핵심 성향");
+      const core = report.sections.find((section) => section.title === "당신은 어떤 사람인가");
 
       expect(core, `${productCode} is missing the core pattern section`).toBeDefined();
-      // Life path for 1980-01-01 is a stable fixed vector for this engine.
-      expect(core?.body).toContain("생명수");
+      // The raw numbers moved to the premium tier's calculation section; what every
+      // buyer gets here is the character label and the strengths behind it.
       expect(core?.body.length).toBeGreaterThan(60);
+      expect(core?.body, productCode).toMatch(/자|사람|설계|관리|연결|통역/);
     }
   });
 
@@ -53,7 +54,7 @@ describe("paid report delivery", () => {
         birthDate,
         productCode: "plus_30d",
       });
-      return report.sections.find((section) => section.title === "당신의 핵심 성향")?.body ?? "";
+      return report.sections.find((section) => section.title === "당신은 어떤 사람인가")?.body ?? "";
     });
 
     expect(bodies.every((body) => body.length > 0)).toBe(true);
@@ -76,7 +77,7 @@ describe("paid report delivery", () => {
         productCode: "plus_30d",
       });
       const core = report.sections.find((section) =>
-        section.title === (locale === "ko" ? "당신의 핵심 성향" : "Your core pattern"));
+        section.title === (locale === "ko" ? "당신은 어떤 사람인가" : "Who you are"));
 
       expect(core?.body).toBeDefined();
       expect(core?.body).not.toMatch(/반드시|보장|틀림없|guaranteed|will definitely/i);
@@ -96,7 +97,7 @@ describe("paid report delivery", () => {
       productCode: "premium_pdf",
     });
     const domainBodies = premium.sections
-      .filter((section) => !["지금의 핵심 흐름", "당신의 핵심 성향"].includes(section.title))
+      .filter((section) => !["지금의 핵심 흐름", "당신은 어떤 사람인가"].includes(section.title))
       .filter((section) => !section.title.includes("일과 역할"))
       .map((section) => section.body);
 

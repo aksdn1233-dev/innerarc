@@ -21,6 +21,10 @@ const CATCH_ALL_TOPICS: readonly ConcernTopic[] = [
     id: "direction",
     focus: "growth",
     label: n("방향 잃음", "Feeling stuck"),
+    verdict: n(
+      "지금 막막한 것은 방향이 없어서가 아니라 확인할 것이 너무 많아서입니다. 이번 달에 확인할 것 하나만 고르면 풀립니다.",
+      "The block is too many things to settle at once, not the absence of a direction. Choose one thing to check this month.",
+    ),
     framing: n(
       "무엇을 해야 할지 모를 때는 큰 방향보다 확인 가능한 작은 실험 하나가 더 빨리 답을 줍니다.",
       "When the direction is unclear, one checkable experiment answers faster than a grand plan.",
@@ -47,6 +51,10 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     id: "debut",
     focus: "work",
     label: n("데뷔·오디션", "Debut and auditions"),
+    verdict: n(
+      "데뷔는 지금 상태로도 가능성이 있습니다. 다만 실력보다 노출 횟수에서 갈립니다. 준비를 더 다듬는 쪽보다 지금 수준으로 지원 건수를 늘리는 쪽이 결과를 앞당깁니다.",
+      "A debut is realistic from where you are, but it turns on how often you are seen rather than on more polish. Raising the number of attempts at your current level moves it faster.",
+    ),
     framing: n(
       "데뷔 여부는 실력만으로 정해지지 않고, 준비된 상태와 기회가 만나는 시점에 갈립니다. 그래서 '되느냐'보다 '지금 어느 쪽이 부족한가'를 보는 편이 실제로 도움이 됩니다.",
       "A debut turns on preparation meeting an opening, not on skill alone, so which of the two is short right now is the more useful question.",
@@ -69,6 +77,10 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     id: "exam",
     focus: "work",
     label: n("시험·자격", "Exams and qualifications"),
+    verdict: n(
+      "남은 기간이 있다면 합격권에 들어갈 수 있는 준비입니다. 관건은 총 공부량이 아니라 실제 착석 시간의 규칙성입니다. 매일 같은 시각에 앉는 쪽이 확실합니다.",
+      "With time remaining this is a workable plan. What decides it is the regularity of hours actually seated, not the total planned.",
+    ),
     framing: n(
       "시험은 남은 기간과 실제 공부 시간으로 거의 정해집니다. 상징은 합격 여부가 아니라 어떤 조건에서 집중이 유지되는지를 보는 데만 쓰세요.",
       "An exam is mostly time remaining multiplied by hours actually studied. Use symbolism only to see which conditions keep your focus.",
@@ -91,6 +103,10 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     id: "job_change",
     focus: "work",
     label: n("이직", "Changing jobs"),
+    verdict: n(
+      "옮기는 방향 자체는 맞습니다. 다만 지금 자리가 힘들어서 옮기면 같은 문제가 따라옵니다. 갈 곳의 조건을 확인한 뒤 움직이면 이번 이동은 성과가 됩니다.",
+      "The direction is right, but moving because this seat is hard carries the problem along. Verify the next role first and this move pays off.",
+    ),
     framing: n(
       "이직은 지금 자리가 나쁜지가 아니라, 옮길 자리가 지금보다 나은지로 결정하는 편이 안전합니다. 두 질문은 다릅니다.",
       "A move is safer decided on whether the next seat is better, not on whether this one is bad. They are different questions.",
@@ -113,6 +129,10 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     id: "job_hunt",
     focus: "work",
     label: n("취업 준비", "Job hunting"),
+    verdict: n(
+      "지금 방식으로도 결과는 나옵니다. 다만 어느 단계에서 막히는지 모른 채 지원 수만 늘리면 시간이 길어집니다. 막히는 지점을 특정하는 순간 속도가 붙습니다.",
+      "This will land, but raising volume without knowing where it stalls stretches it out. Pinpointing the stage that stops you is what accelerates it.",
+    ),
     framing: n(
       "취업은 지원 수와 서류의 질이 결과를 대부분 설명합니다. 상징은 어떤 일에서 힘이 덜 빠지는지 좁히는 데 쓰세요.",
       "Applications sent and their quality explain most of the outcome. Use symbolism to narrow which work drains you least.",
@@ -136,6 +156,10 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     id: "startup",
     focus: "work",
     label: n("창업·사업", "Starting a business"),
+    verdict: n(
+      "사업 자체는 해볼 만합니다. 성패는 아이디어가 아니라 매출 0원으로 버틸 수 있는 개월 수에서 갈립니다. 그 숫자가 6개월 이상이면 시작해도 되는 조건입니다.",
+      "The venture is worth attempting. It turns on how many months you can continue at zero revenue; six or more is a workable starting condition.",
+    ),
     framing: n(
       "창업의 성패는 아이디어보다 얼마를 얼마 동안 버틸 수 있는지에 더 크게 걸립니다. 상징으로 수익을 예측하지는 않습니다.",
       "Survival depends more on how long you can fund the attempt than on the idea. Symbolism does not forecast revenue.",
@@ -158,6 +182,10 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     id: "workplace_people",
     focus: "work",
     label: n("직장 인간관계", "People at work"),
+    verdict: n(
+      "관계 자체는 회복 가능합니다. 다만 성격 문제로 접근하면 풀리지 않습니다. 누가 무엇을 결정하는지를 명확히 하는 순간 대부분 정리됩니다.",
+      "This is recoverable, but not by treating it as a personality problem. Most of it settles once who decides what is made explicit.",
+    ),
     framing: n(
       "직장 관계는 감정보다 역할과 권한에서 어긋나는 경우가 많습니다. 사람 성격으로 설명하기 전에 구조를 먼저 보세요.",
       "Friction at work usually starts in roles and authority rather than personality. Look at the structure first.",
@@ -180,6 +208,10 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     id: "study_major",
     focus: "work",
     label: n("전공·진학", "Study and majors"),
+    verdict: n(
+      "선택하신 방향은 무리가 없습니다. 다만 전공 이름이 아니라 그 안에서 매일 하는 작업이 맞아야 오래갑니다. 그 작업을 한 번 해보면 답이 나옵니다.",
+      "The direction is sound. What sustains it is the daily task inside the field rather than its name; trying that task once answers it.",
+    ),
     framing: n(
       "전공은 이름보다 그 안에서 매일 하게 되는 활동으로 고르는 편이 오래갑니다.",
       "A field lasts longer when chosen by the daily activity inside it rather than the name on it.",
@@ -203,6 +235,10 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     id: "reunion",
     focus: "relationships",
     label: n("재회", "Getting back together"),
+    verdict: n(
+      "재회 가능성은 남아 있습니다. 다만 상대의 마음보다 헤어진 이유가 달라졌는지가 결정합니다. 그 조건이 그대로면 다시 만나도 같은 지점에서 끝납니다.",
+      "There is room for this to work again, decided by whether the reason it ended has changed rather than by their feelings.",
+    ),
     framing: n(
       "재회 가능성은 상대의 마음보다, 헤어진 이유가 실제로 달라졌는지에 더 크게 걸립니다. 그 조건이 그대로면 같은 결말이 반복되기 쉽습니다.",
       "Whether it works again depends less on their feelings than on whether the reason it ended actually changed.",
@@ -225,6 +261,10 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     id: "crush",
     focus: "relationships",
     label: n("짝사랑·고백", "Unspoken feelings"),
+    verdict: n(
+      "표현해도 되는 상황입니다. 다만 상대의 마음을 확인하려 기다릴수록 판단이 흐려집니다. 거절당해도 유지하고 싶은 관계인지가 기준입니다.",
+      "Speaking is workable. Waiting for certainty only clouds it; the test is whether you want this relationship even after a no.",
+    ),
     framing: n(
       "상대의 마음은 알 수 없지만, 나에게 편한 거리와 감당할 수 있는 결과는 미리 정할 수 있습니다.",
       "Their feelings are unknowable, but the distance you are comfortable with and the outcome you can carry are decidable now.",
@@ -247,6 +287,10 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     id: "breakup",
     focus: "relationships",
     label: n("이별", "A breakup"),
+    verdict: n(
+      "지금 내리는 결정은 회복 상태에 좌우됩니다. 관계 자체보다 지금 몸과 잠이 어떤지가 판단을 정합니다. 기간을 정해두고 그 안에는 결정하지 않는 편이 낫습니다.",
+      "What you decide now tracks how recovered you are. Set a period in which you will not decide.",
+    ),
     framing: n(
       "이별 직후의 판단은 대개 회복 상태에 좌우됩니다. 결정을 서두르기보다 지금 상태를 아는 편이 낫습니다.",
       "Judgment right after a breakup mostly tracks how recovered you are. Knowing that beats deciding fast.",
@@ -274,6 +318,10 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     id: "marriage",
     focus: "relationships",
     label: n("결혼", "Marriage"),
+    verdict: n(
+      "결혼해도 되는 관계입니다. 다만 감정보다 생활 조건에서 갈립니다. 돈·가족·집안일 세 가지를 말로 확인했다면 넘어가셔도 됩니다.",
+      "This is a workable marriage, decided by living conditions rather than feeling. If money, family, and housework have been talked through, proceed.",
+    ),
     framing: n(
       "결혼은 감정보다 생활 조건이 오래 남습니다. 돈, 시간, 가족, 거주지에 대한 합의가 실제로 있는지를 보세요.",
       "Living conditions outlast feeling. Look for actual agreement on money, time, family, and where you live.",
@@ -296,6 +344,10 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     id: "meeting",
     focus: "relationships",
     label: n("새로운 만남", "Meeting someone"),
+    verdict: n(
+      "만남은 충분히 생깁니다. 다만 사람을 찾기보다 편했던 자리의 조건을 반복하는 쪽이 확률이 높습니다. 그 조건을 한 번 만들어 보시면 달라집니다.",
+      "Meetings will happen. Repeating the setting that felt easy works better than searching for a person.",
+    ),
     framing: n(
       "언제 누구를 만날지는 알 수 없지만, 어떤 자리에서 편했는지는 이미 데이터가 있습니다.",
       "When or whom you meet is unknowable, but which settings felt easy is already recorded in your past.",
@@ -319,6 +371,10 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     id: "parents",
     focus: "relationships",
     label: n("부모와의 관계", "Parents"),
+    verdict: n(
+      "이 관계는 나아집니다. 다만 옳고 그름을 가리려 하면 반복됩니다. 거리와 역할을 다시 정하는 쪽이 실제로 작동합니다.",
+      "This improves, but not by settling who is right. Renegotiating distance and role is what actually works.",
+    ),
     framing: n(
       "부모와의 문제는 대개 옳고 그름이 아니라 거리와 역할에서 생깁니다. 설득보다 경계가 효과적인 경우가 많습니다.",
       "Trouble with parents usually sits in distance and role rather than who is right. A boundary often works where persuasion does not.",
@@ -341,6 +397,10 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     id: "children",
     focus: "relationships",
     label: n("자녀·육아", "Children"),
+    verdict: n(
+      "걱정하시는 만큼 나쁜 상황은 아닙니다. 아이의 미래보다 지금의 조건에서 확인할 수 있는 것이 많습니다. 함께 보내는 시간이 가장 크게 작용합니다.",
+      "This is less bad than it feels. More is visible in today's conditions than in the child's future, and time together weighs most.",
+    ),
     framing: n(
       "아이에 대한 걱정은 대개 미래에 있고, 확인할 수 있는 것은 대개 오늘의 조건에 있습니다.",
       "Worry about a child lives in the future; what can be checked lives in today's conditions.",
@@ -363,6 +423,10 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     id: "inlaws",
     focus: "relationships",
     label: n("시댁·처가", "In-laws"),
+    verdict: n(
+      "조정 가능한 문제입니다. 다만 상대 가족을 바꾸려 하면 지칩니다. 배우자와 먼저 합의하는 순서로 가면 대부분 정리됩니다.",
+      "This is adjustable, but aiming to change their family exhausts you. Agreeing with your partner first settles most of it.",
+    ),
     framing: n(
       "이 문제는 대부분 배우자와의 합의가 먼저이고, 상대 가족과의 대화는 그다음입니다. 순서가 바뀌면 같은 일이 반복됩니다.",
       "This is usually settled with your partner first and their family second. Reversed, it repeats.",
@@ -385,6 +449,10 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     id: "conflict",
     focus: "relationships",
     label: n("다툼·갈등", "A recurring argument"),
+    verdict: n(
+      "이 갈등은 풀립니다. 다만 주제를 바꾼다고 해결되지 않습니다. 다툼이 시작되는 시간대와 상태를 바꾸면 대부분 줄어듭니다.",
+      "This resolves, but not by changing the subject. Changing when and in what state it starts reduces most of it.",
+    ),
     framing: n(
       "반복되는 다툼은 주제가 아니라 방식에서 되풀이되는 경우가 많습니다. 무엇으로 싸웠는지보다 어떻게 시작됐는지를 보세요.",
       "A repeating argument usually repeats in its method, not its topic. Look at how it starts.",
@@ -408,6 +476,10 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     id: "big_spend",
     focus: "money",
     label: n("목돈 지출", "A large purchase"),
+    verdict: n(
+      "지출해도 되는지는 금액이 아니라 회복 가능성으로 정해집니다. 이 지출 뒤에도 3개월을 버틸 수 있다면 진행하셔도 됩니다.",
+      "This is decided by recoverability rather than size. If three months would still be covered afterwards, proceed.",
+    ),
     framing: n(
       "큰 지출은 감당 가능한 손실 범위 안에 있는지로 판단하는 편이 안전합니다. 좋은 선택인지보다 회복 가능한 선택인지를 보세요.",
       "A large spend is safer judged by whether the loss is survivable than by whether it is a good idea.",
@@ -436,6 +508,10 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     id: "debt",
     focus: "money",
     label: n("빚·상환", "Debt"),
+    verdict: n(
+      "정리 가능한 규모입니다. 다만 전부를 한 번에 갚으려 하면 오래 갑니다. 금리가 가장 높은 것 하나부터 잡으면 순서가 잡힙니다.",
+      "This is a manageable shape. Paying everything at once drags; taking the highest rate first sets the order.",
+    ),
     framing: n(
       "빚은 순서 문제입니다. 금리가 높은 것부터인지, 금액이 작은 것부터인지만 정해도 대부분 정리됩니다.",
       "Debt is an ordering problem. Choosing highest rate first or smallest balance first settles most of it.",
@@ -458,6 +534,10 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     id: "investment",
     focus: "money",
     label: n("투자", "Investing"),
+    verdict: n(
+      "지금 판단은 종목이 아니라 결정 방식에서 갈립니다. 파는 기준을 미리 적어두면 결과가 달라집니다. 수익 자체는 알려드릴 수 없습니다.",
+      "What decides this is how you decide, not what you hold. Writing the exit condition in advance changes the outcome.",
+    ),
     framing: n(
       "투자 결과는 알려드릴 수 없습니다. 대신 결정 방식과 감당 범위는 지금 점검할 수 있습니다.",
       "Investment outcomes cannot be told. How you decide and what you can absorb can be checked now.",
@@ -480,6 +560,10 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     id: "relocation",
     focus: "money",
     label: n("이사·거주", "Moving house"),
+    verdict: n(
+      "이사는 진행하셔도 됩니다. 다만 집보다 이동 시간과 고정비가 일상을 더 크게 바꿉니다. 그 두 숫자를 재보시면 답이 나옵니다.",
+      "The move is workable. Commute and fixed costs change daily life more than the home does; measure those two.",
+    ),
     framing: n(
       "이사는 집보다 이동 시간과 고정비가 일상을 더 크게 바꿉니다.",
       "A move changes daily life through commute and fixed costs more than through the home itself.",
@@ -503,6 +587,10 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     id: "burnout",
     focus: "growth",
     label: n("번아웃·소진", "Burnout"),
+    verdict: n(
+      "회복됩니다. 다만 지금 상태에서 큰 결정을 내리면 후회가 남습니다. 회복이 먼저이고 방향은 그 다음입니다.",
+      "This recovers. Large decisions made from here tend to be regretted; recovery first, direction after.",
+    ),
     framing: n(
       "지친 상태에서는 큰 결정을 미루는 편이 대체로 낫습니다. 회복이 먼저이고 방향은 그다음입니다.",
       "When depleted, large decisions are usually better postponed. Recovery first, direction after.",
@@ -525,6 +613,10 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     id: "habit",
     focus: "growth",
     label: n("습관·꾸준함", "Habits"),
+    verdict: n(
+      "만들 수 있습니다. 의지가 부족한 것이 아니라 목표가 큰 것입니다. 절반으로 줄이고 시각을 고정하면 유지됩니다.",
+      "This is buildable. The target is too large rather than the will too small; halve it and fix the time.",
+    ),
     framing: n(
       "습관은 의지보다 조건에서 갈립니다. 하려는 일을 작게 만들고 방해물을 치우는 쪽이 효과적입니다.",
       "Habits turn on conditions more than will. Make the action smaller and remove what blocks it.",

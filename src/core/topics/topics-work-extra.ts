@@ -5,6 +5,10 @@ export const WORK_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "promotion",
     focus: "work",
     label: n("승진·평가", "Promotion and reviews"),
+    verdict: n(
+      "승진 가능성은 남아 있습니다. 성과가 부족한 것이 아니라 결정권자에게 도달하지 않았을 가능성이 큽니다. 전달 경로를 만드는 것이 다음 단계입니다.",
+      "Promotion is still open. The likelier gap is that results have not reached the decision-maker, so building that path is the next step.",
+    ),
     framing: n(
       "승진은 성과만이 아니라 그 성과가 보이는지에도 걸립니다. 잘하고 있는데 안 보이는 경우가 생각보다 많습니다.",
       "Promotion turns on whether the work is visible as much as on the work. Being good and being unseen is common.",
@@ -27,6 +31,10 @@ export const WORK_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "freelance",
     focus: "work",
     label: n("프리랜서·독립", "Going independent"),
+    verdict: n(
+      "독립해도 되는 조건입니다. 다만 실력보다 일이 끊겼을 때 버틸 구조가 먼저입니다. 다시 찾을 고객이 세 명 이상이면 넘어가셔도 됩니다.",
+      "Going independent is viable. What comes first is what holds when work stops; three returning clients is a workable threshold.",
+    ),
     framing: n(
       "독립은 실력보다 일이 끊겼을 때 버티는 구조에서 갈립니다. 첫해는 대개 수입이 고르지 않습니다.",
       "Independence turns on what holds when work stops, more than on skill. The first year is rarely even.",
@@ -49,6 +57,10 @@ export const WORK_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "career_gap",
     focus: "work",
     label: n("경력 단절·재취업", "Returning to work"),
+    verdict: n(
+      "재취업은 충분히 가능합니다. 공백 자체가 아니라 공백을 설명할 문장이 없는 상태가 발목을 잡습니다. 그 문장을 만들면 통과율이 달라집니다.",
+      "Returning is very achievable. What holds it back is not the gap but the absence of a sentence explaining it.",
+    ),
     framing: n(
       "공백은 설명할 수 있으면 약점이 아닙니다. 문제는 공백 자체가 아니라 그 기간을 어떻게 말할지 준비되지 않은 상태입니다.",
       "A gap explained is not a weakness. The problem is usually not the gap but not having a way to say it.",
@@ -71,6 +83,10 @@ export const WORK_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "side_job",
     focus: "work",
     label: n("부업·투잡", "A second income"),
+    verdict: n(
+      "부업은 시작해도 됩니다. 다만 수익보다 남는 시간이 기준입니다. 주당 확보 가능한 시간이 5시간 미만이면 규모를 더 줄이셔야 합니다.",
+      "A side income is workable, judged on spare hours rather than revenue. Under five hours a week, shrink the scope.",
+    ),
     framing: n(
       "부업의 성패는 수익보다 지속 가능한 시간에서 갈립니다. 본업이 흔들리면 둘 다 잃습니다.",
       "A side income turns on sustainable hours more than on revenue. If the main job wobbles, both go.",
@@ -93,6 +109,10 @@ export const WORK_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "military",
     focus: "work",
     label: n("군 복무·전역", "Military service"),
+    verdict: n(
+      "복무 기간은 손해가 아닙니다. 나올 때 무엇을 들고 나오느냐로 갈립니다. 남은 개월 수에 맞는 목표 하나를 정하면 그 기간이 자산이 됩니다.",
+      "The term is not lost time; what you carry out of it decides. One goal sized to the months remaining turns it into an asset.",
+    ),
     framing: n(
       "복무 기간은 정해져 있고 바꿀 수 없습니다. 바꿀 수 있는 것은 그 기간을 무엇으로 채우고 나올지입니다.",
       "The term is fixed. What is not fixed is what you come out holding.",
@@ -115,6 +135,10 @@ export const WORK_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "work_abroad",
     focus: "work",
     label: n("해외 취업·이민", "Working abroad"),
+    verdict: n(
+      "해외 이동은 가능한 경로가 있습니다. 다만 직업보다 체류 자격이 먼저 막습니다. 비자 요건 하나를 정확히 확인하면 전체 일정이 잡힙니다.",
+      "There is a workable route abroad, but residency blocks before the job does. Pinning one visa requirement sets the whole timeline.",
+    ),
     framing: n(
       "해외 이동은 직업보다 체류 자격에서 먼저 막힙니다. 비자 조건이 사실상 선택지를 정합니다.",
       "A move abroad stops at residency before it stops at the job. The visa route decides the options.",
@@ -137,6 +161,10 @@ export const WORK_EXTRA_TOPICS: readonly ConcernTopic[] = [
     id: "retirement",
     focus: "work",
     label: n("은퇴·인생 2막", "Retirement and what follows"),
+    verdict: n(
+      "은퇴 이후 준비는 지금부터로 충분합니다. 돈보다 하루의 구조가 먼저 무너집니다. 지금 시작한 활동 하나가 그때 가장 큰 자산이 됩니다.",
+      "Starting now is enough. The shape of the day collapses before the money does, so one activity begun now becomes the largest asset then.",
+    ),
     framing: n(
       "은퇴 후의 어려움은 돈만이 아니라 하루의 구조가 사라지는 데서 옵니다. 둘을 따로 준비하는 편이 낫습니다.",
       "What is hard after retiring is not only money but the loss of a shaped day. Prepare the two separately.",

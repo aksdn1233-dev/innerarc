@@ -4,6 +4,7 @@ import { createOnboardingReflectionContext } from "@/core/onboarding";
 import type { PaidReadingInput, PaidReport } from "@/core/paid-reading";
 import { PaidReadingInputSchema } from "@/core/paid-reading";
 import { createIntegratedProfile, getRuleBasedProfile } from "@/core/profile";
+import { buildCharacterLabel } from "@/core/profile/character-label";
 import { assessQuestionSafety } from "@/core/ai/safety";
 import { resolveConcernTopic, topicText } from "@/core/topics/concern-topics";
 
@@ -72,30 +73,33 @@ export function createPaidReport(orderId: string, rawInput: unknown): PaidReport
     : input.productCode === "pro_30d"
       ? integrated.domains.slice(0, 4)
       : integrated.domains;
+  const character = buildCharacterLabel(
+    profile.lifePath.value,
+    profile.attitude.value,
+    input.locale,
+  );
   const sections = [
+    // The verdict comes first. A reading that opens by explaining what it cannot tell
+    // you has already lost the reader; the limitation belongs at the end, if anywhere.
     {
-      title: ko ? "지금의 핵심 흐름" : "Current theme",
-      body: `${context.contextualInference} ${overview.summary}`,
+      title: ko ? "질문에 대한 답" : "The answer",
+      body: safety.requiresRealityFirstGuidance
+        ? (ko
+            ? "적어주신 내용은 상징으로 답할 수 있는 범위를 넘어섭니다. 의료·법률·금전·안전에 관한 판단은 해당 분야의 자격을 갖춘 곳에서 확인하셔야 하고, 이 리포트는 그 결정을 대신하지 않습니다."
+            : "What you wrote goes beyond what symbolism can answer. Medical, legal, financial, and safety questions belong to a qualified professional, and this report does not stand in for that decision.")
+        : topicText(topic.verdict, input.locale),
     },
-    // Every tier includes this. Even the cheapest reading is bought by someone who
-    // wants to hear something about themselves, not only about their one question.
+    // Named from the numbers that were actually calculated. No tarot card is referenced
+    // because none was drawn for this product.
     {
-      title: ko ? "당신의 핵심 성향" : "Your core pattern",
+      title: ko ? "당신은 어떤 사람인가" : "Who you are",
       body: ko
-        // Strengths and risks come from the integrated profile, which derives them from
-        // the life-path, attitude, and birthday numbers together. getRuleBasedProfile
-        // returns the same three strengths for every life path, so reading from it here
-        // would hand every buyer an identical description under a different label.
-        //
-        // The phrases are data and can end in either a vowel or a consonant, so they are
-        // followed by a fixed noun rather than an 은/는 particle.
-        ? `생명수 ${profile.lifePath.value}, 타로로 치면 '${overview.archetype}' 자리예요. ${integrated.summary} ` +
+        ? `${character.label}. ${integrated.summary} ` +
           `${integrated.strengths.join(", ")} — 이런 면이 특히 잘 드러나는 편이에요. ` +
-          `다만 ${integrated.risks.join(", ")} 같은 순간이 올 수 있어요. ` +
-          `이 부분만 한 번 살펴보시면 좋겠어요.`
-        : `Life path ${profile.lifePath.value}, read through the ${overview.archetype} pattern. ${integrated.summary} ` +
+          `다만 ${integrated.risks.join(", ")} 같은 순간이 올 수 있어요.`
+        : `You read as ${character.label}. ${integrated.summary} ` +
           `Strengths that tend to show up: ${integrated.strengths.join(", ")}. ` +
-          `The counterweights worth watching in yourself: ${integrated.risks.join(", ")}.`,
+          `The counterweights worth watching: ${integrated.risks.join(", ")}.`,
     },
     // Placed before the domain sections: the buyer came for this, not for the profile.
     topicSection,
@@ -104,6 +108,51 @@ export function createPaidReport(orderId: string, rawInput: unknown): PaidReport
       body: `${domain.personalizedInference} ${domain.realityCheck}`,
     })),
   ];
+
+  // Tiers differ in what they explain, not only in how many domain sections they carry.
+  // The quick reading answers the question; the detailed one explains why the pattern
+  // occurs and what changes it; the premium one adds the numbers behind it and the
+  // conditions under which each direction holds.
+  if (input.productCode !== "plus_30d") {
+    sections.push({
+      title: ko ? "왜 이런 흐름이 나오나" : "Why this pattern",
+      body: `${context.contextualInference} ${overview.summary}`.trim(),
+    });
+    sections.push({
+      title: ko ? "잘될 조건과 어긋나는 조건" : "What makes it work, and what does not",
+      body: ko
+        ? `${integrated.strengths[0] ?? ""}이(가) 살아나는 조건에서 이 방향은 잘 굴러갑니다. ` +
+          `반대로 ${integrated.risks[0] ?? ""} 상황이 이어지면 같은 노력을 해도 결과가 잘 남지 않습니다. ` +
+          `${topicText(topic.observe, input.locale)}`
+        : `This direction runs well where ${integrated.strengths[0] ?? ""} is available. ` +
+          `Where ${integrated.risks[0] ?? ""} persists, the same effort leaves less behind. ` +
+          `${topicText(topic.observe, input.locale)}`,
+    });
+  }
+  if (input.productCode === "premium_pdf") {
+    sections.push({
+      title: ko ? "계산 근거" : "The numbers behind this",
+      body: ko
+        // A digit takes its particle from how it is read aloud, which the template
+        // cannot know, so the sentence ends on a fixed noun instead.
+        ? `생명수 ${profile.lifePath.value}, 태도수 ${profile.attitude.value}, 생일수 ${profile.birthday.value} — 이 세 값을 함께 놓고 본 결과입니다. ` +
+          `${character.qualifier} 성향과 ${character.noun}의 기질이 만나는 지점에서 위 해석이 나옵니다. ` +
+          `계산 자체는 생년월일에서 결정론적으로 나오며, 같은 생일이면 같은 값이 나옵니다.`
+        : `This reads life path ${profile.lifePath.value}, attitude ${profile.attitude.value}, and birthday ${profile.birthday.value} together. ` +
+          `The interpretation sits where a ${character.qualifier} approach meets the temperament of ${character.noun}. ` +
+          `The calculation is deterministic: the same birth date always yields the same values.`,
+    });
+    sections.push({
+      title: ko ? "이렇게 갈 수 있습니다" : "How this can go",
+      body: ko
+        ? `가장 잘 풀리는 경우는 ${topicText(topic.action, input.locale)} 이 방향이 자리를 잡을 때입니다. ` +
+          `가장 흔한 경우는 방향은 맞지만 속도가 붙지 않는 상태이고, 이때는 확인할 것을 하나로 줄이면 다시 움직입니다. ` +
+          `주의해야 할 경우는 ${topicText(topic.caution, input.locale)}`
+        : `The best case is where this takes hold: ${topicText(topic.action, input.locale)} ` +
+          `The likeliest case is the right direction without momentum, which moves again once you narrow what to check to one thing. ` +
+          `The case to watch: ${topicText(topic.caution, input.locale)}`,
+    });
+  }
   if (input.productCode === "premium_pdf") {
     sections.push({
       title: ko ? "일과 역할에서 확인할 조건" : "Conditions to check in work",

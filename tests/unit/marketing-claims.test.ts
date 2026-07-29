@@ -21,7 +21,7 @@ describe("what the copy promises matches what the reader gets", () => {
     for (const productCode of ["plus_30d", "pro_30d", "premium_pdf"] as const) {
       const report = createPaidReport("iaclaims123", { ...baseInput, productCode });
       expect(
-        report.sections.some((section) => section.title === "당신의 핵심 성향"),
+        report.sections.some((section) => section.title === "당신은 어떤 사람인가"),
         `${productCode} promises a core pattern but does not include one`,
       ).toBe(true);
     }
