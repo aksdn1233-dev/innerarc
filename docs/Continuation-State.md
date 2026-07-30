@@ -1,8 +1,51 @@
 # Continuation State
 
-Last updated: 2026-07-30<br>
+Last updated: 2026-07-30 (round 3)<br>
 Current version: 0.18.0
 Overall progress: 98%
+
+## 2026-07-30 (round 3) — Tier centralization, sharp insights, character label surfaced
+
+- Confirmed no 17,000 KRW reference exists anywhere in source (grep + a permanent test
+  guard, `tests/unit/tiers.test.ts`). Prices were already centralized in
+  `src/server/payments/config.ts`'s `buildProducts()`, env-driven, correctly
+  19,000/39,000/79,000. Added `src/core/tiers.ts` as a *display* single source of truth
+  (canonical names BASIC_19000/DETAIL_39000/PREMIUM_79000, tier badge labels, sharp-
+  insight counts per tier) without renaming the payment-critical `plus_30d`/`pro_30d`/
+  `premium_pdf` codes — those are load-bearing across payment config, DB rows, order-pass
+  tokens, and ~15 test files, so renaming them was judged higher-risk than the benefit.
+- Added `src/core/profile/sharp-insights.ts`: 8 bilingual "behavioral contradiction"
+  sentences per life-path number (12 × 8 = 96), authored via a parallel Workflow grounded
+  strictly in the existing THEMES strength/shadow table so they stay consistent with the
+  rest of the profile system. Sliced 2/5/8 by tier, always as an ordered prefix (a lower
+  tier's insights are always the start of a higher tier's, never a different set).
+- `PaidReport` gained four additive, optional fields: `tierLabel`, `characterLabel`,
+  `sharpInsights`, `contentVersion`. Legacy stored reports lack them; the renderer
+  (`src/app/[locale]/reports/[orderId]/page.tsx`) guards every one with `??`/`&&` so old
+  records still render unchanged. The tier badge now shows in the header eyebrow
+  ("핵심 리딩 · 19,000원" etc.) and the character label as its own styled line.
+- Added two concern topics found missing while building the regression cases:
+  `child_temperament` (자녀 성향·진로 — distinct from the existing worry-framed
+  `children` topic; suppresses the premium tier's adult career-role section, since
+  naming job titles like 전략기획/영업 for a child's own numbers was a real bug found
+  this round) and `client_acquisition` (고객·수강생 확보, for freelancer/instructor
+  "will I get customers" questions — needed for the violin-lesson regression case).
+- Regression tests added for the three new cases from this round's instructions
+  (education/lesson business, relationship contact-timing, child temperament) plus a
+  "premium is not detail with adjectives" length/exclusivity guard. Note: the
+  relationship case as specified gives two birth dates, but `createPaidReport`'s schema
+  takes one birth date and free text — that is by design (the second-person case
+  belongs to the separate `src/core/compatibility` feature); tested here the way a real
+  buyer would actually use this product.
+- Depth for the standing regression case (birth 1994-11-04, web-business question) is
+  now 1,100 / 2,080 / 3,655 characters for basic/detail/premium — up again from last
+  round's 828/1,735/3,105, still short of the 1,800–3,000 / 4,000–7,000 / 8,000–14,000
+  character targets floated this round. See prior entry for why: the remaining gap is
+  bulk domain-specific content (business/career/money/love/child/health/housing detail
+  per number combination), which is a large authoring project, not a wiring one.
+- Verified: `tsc --noEmit` clean, `eslint .` clean, `vitest run` 417/417 passing (was
+  400). Built, deployed (Version ID `c2933cad-ba9b-42c1-9fa1-8b90db3566a3`), smoke-tested
+  live with no console errors.
 
 ## 2026-07-30 — Reading-quality and content-depth pass
 

@@ -33,4 +33,13 @@ export type PaidReport = Readonly<{
   actions: readonly string[];
   cautions: readonly string[];
   disclaimer: string;
+  /**
+   * Additive fields introduced after the first reports were sold. Optional because
+   * reports stored before this change do not have them — the renderer must not assume
+   * they exist. New reports always populate all four.
+   */
+  tierLabel?: string;
+  characterLabel?: string;
+  sharpInsights?: readonly string[];
+  contentVersion?: string;
 }>;

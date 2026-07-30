@@ -3892,6 +3892,12 @@ summary {
   line-height: 1.75;
 }
 
+.paid-report-character-label {
+  margin: 18px 0 0;
+  font: 700 clamp(1.15rem, 3vw, 1.55rem)/1.4 var(--display-font);
+  color: #9b7651;
+}
+
 .paid-report-section h2,
 .admin-settings-card h2,
 .admin-orders h2 {

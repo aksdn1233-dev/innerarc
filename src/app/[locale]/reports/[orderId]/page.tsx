@@ -114,7 +114,9 @@ export default async function PurchasedReportPage({
     <main className="shell paid-report-shell" id="main-content">
       <header className="paid-report-header">
         <Link className="brand" href={`/${locale}`}><strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong></Link>
-        <p className="eyebrow">{locale === "ko" ? "구매 리포트" : "Purchased report"}</p>
+        <p className="eyebrow">
+          {report.tierLabel ?? (locale === "ko" ? "구매 리포트" : "Purchased report")}
+        </p>
         <h1>{report.title}</h1>
         {report.customerName && <p>{report.customerName}</p>}
         <small>{new Intl.DateTimeFormat(locale === "ko" ? "ko-KR" : "en-US").format(new Date(report.createdAt))}</small>
@@ -122,6 +124,9 @@ export default async function PurchasedReportPage({
       <section className="paid-report-summary">
         <h2>{report.summary}</h2>
         <blockquote>{report.concern}</blockquote>
+        {report.characterLabel && (
+          <p className="paid-report-character-label">{report.characterLabel}</p>
+        )}
       </section>
       {report.sections.map((section) => (
         <section className="paid-report-section" key={section.title}>

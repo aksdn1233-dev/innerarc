@@ -6,8 +6,12 @@ import { PaidReadingInputSchema } from "@/core/paid-reading";
 import { createIntegratedProfile } from "@/core/profile";
 import { buildCharacterLabel } from "@/core/profile/character-label";
 import { describePersonalYear } from "@/core/profile/personal-year-theme";
+import { pickSharpInsights } from "@/core/profile/sharp-insights";
 import { assessQuestionSafety } from "@/core/ai/safety";
 import { resolveConcernTopic, topicText } from "@/core/topics/concern-topics";
+import { TIER_META, tierBadgeLabel } from "@/core/tiers";
+
+const CONTENT_VERSION = "paid-report-composer-1.1.0";
 
 function reportName(productCode: PaidReadingInput["productCode"], locale: PaidReadingInput["locale"]) {
   const names = locale === "ko"
@@ -79,6 +83,9 @@ export function createPaidReport(orderId: string, rawInput: unknown): PaidReport
     profile.attitude.value,
     input.locale,
   );
+  const sharpInsightCount = TIER_META[input.productCode].sharpInsightCount;
+  const sharpInsights = pickSharpInsights(profile.lifePath.value, sharpInsightCount, input.locale);
+  const [leadInsight, ...restInsights] = sharpInsights;
   const sections = [
     // The verdict comes first. A reading that opens by explaining what it cannot tell
     // you has already lost the reader; the limitation belongs at the end, if anywhere.
@@ -97,10 +104,12 @@ export function createPaidReport(orderId: string, rawInput: unknown): PaidReport
       body: ko
         ? `${character.label}. ${integrated.summary} ` +
           `${integrated.strengths.join(", ")} — 이런 면이 특히 잘 드러나는 편이에요. ` +
-          `다만 ${integrated.risks.join(", ")} 같은 순간이 올 수 있어요.`
+          `다만 ${integrated.risks.join(", ")} 같은 순간이 올 수 있어요.` +
+          (leadInsight ? ` ${leadInsight}` : "")
         : `You read as ${character.label}. ${integrated.summary} ` +
           `Strengths that tend to show up: ${integrated.strengths.join(", ")}. ` +
-          `The counterweights worth watching: ${integrated.risks.join(", ")}.`,
+          `The counterweights worth watching: ${integrated.risks.join(", ")}.` +
+          (leadInsight ? ` ${leadInsight}` : ""),
     },
     // Placed before the domain sections: the buyer came for this, not for the profile.
     topicSection,
@@ -109,6 +118,16 @@ export function createPaidReport(orderId: string, rawInput: unknown): PaidReport
       body: `${domain.personalizedInference} ${domain.realityCheck}`,
     })),
   ];
+
+  // Beyond the basic tier's single lead insight, the rest of the ordered set gets its
+  // own section — each higher tier shows a longer prefix of the same list, never a
+  // different one, so nothing here contradicts what a cheaper tier already said.
+  if (restInsights.length > 0) {
+    sections.push({
+      title: ko ? "핵심 통찰" : "Core insights",
+      body: restInsights.join("\n\n"),
+    });
+  }
 
   // Tiers differ in what they explain, not only in how many domain sections they carry.
   // The quick reading answers the question; the detailed one explains why the pattern
@@ -158,7 +177,10 @@ export function createPaidReport(orderId: string, rawInput: unknown): PaidReport
           `The case to watch: ${topicText(topic.caution, input.locale)} This year in particular: ${personalYear.timing}`,
     });
   }
-  if (input.productCode === "premium_pdf") {
+  // Career-role recommendations name adult job titles (전략기획, 영업, ...), which is
+  // the wrong frame for a child's own numbers — this section is skipped whenever the
+  // resolved topic is specifically about a child's temperament and direction.
+  if (input.productCode === "premium_pdf" && topic.id !== "child_temperament") {
     sections.push({
       title: ko ? "일과 역할에서 확인할 조건" : "Conditions to check in work",
       // One role per line with its two halves labelled. Joined with a space these ran
@@ -197,6 +219,10 @@ export function createPaidReport(orderId: string, rawInput: unknown): PaidReport
     disclaimer: ko
       ? "이 리포트는 자기이해와 선택 정리를 위한 참고 자료이며 미래, 건강, 투자 수익 또는 타인의 마음을 보장하지 않습니다."
       : "This report supports reflection and decision-making. It does not guarantee the future, health outcomes, investment returns, or another person's feelings.",
+    tierLabel: tierBadgeLabel(input.productCode, input.locale),
+    characterLabel: character.label,
+    sharpInsights,
+    contentVersion: CONTENT_VERSION,
   };
 }
 

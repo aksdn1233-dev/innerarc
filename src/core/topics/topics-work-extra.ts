@@ -209,4 +209,33 @@ export const WORK_EXTRA_TOPICS: readonly ConcernTopic[] = [
     ),
     patterns: [/동업|공동창업|사업\s?파트너|지분\s?문제|동업자/u, /business partner|co-founder conflict/i],
   },
+  {
+    id: "client_acquisition",
+    focus: "work",
+    label: n("고객·수강생 확보", "Attracting clients or students"),
+    verdict: n(
+      "지금 상태에서도 흐름은 생깁니다. 다만 여러 명이 한꺼번에 들어오기보다 문의와 체험이 먼저 생기고, 그중 일부가 정규 고객으로 이어지는 방식이 현실적입니다. 성패는 실력보다 그 실력이 밖에서 보이는지에 달려 있습니다.",
+      "A flow can develop even from zero. Rather than several arriving at once, inquiries and trials come first, and some of those convert to regular clients — that is the realistic shape. What decides it is not skill itself but whether that skill is visible from outside.",
+    ),
+    framing: n(
+      "실력이 부족해서 고객이 없는 경우보다, 잘한다는 증거가 밖에서 보이지 않아 선택받지 못하는 경우가 더 흔합니다. 무엇을 잘하는지보다 누구에게 어떤 변화를 만들어주는지를 보여주는 쪽이 더 크게 작용합니다.",
+      "More often than a lack of skill, it is a lack of visible proof of that skill that keeps clients from choosing you. Showing who you help and what changes for them matters more than describing what you are good at.",
+    ),
+    observe: n(
+      "지금까지 문의나 소개가 몇 건 있었는지, 그중 실제로 시작한 사람이 몇 명인지 세어보세요. 문의 자체가 없다면 노출의 문제이고, 문의는 있는데 시작하지 않는다면 제안 방식의 문제입니다.",
+      "Count how many inquiries or referrals have come so far, and how many of those actually started. No inquiries at all points to a visibility problem; inquiries that do not convert point to how the offer is presented.",
+    ),
+    action: n(
+      "이번 달에는 잘한다는 증거 하나(전후 변화, 후기, 짧은 영상 등)를 만들어 눈에 보이게 걸어두고, 원하는 고객층을 한 문장으로 정해 그 표현으로만 홍보해보세요.",
+      "This month, create one piece of visible proof — a before/after, a review, a short clip — and post it where it can be seen, and define your target client in one sentence and use only that language in your outreach.",
+    ),
+    caution: n(
+      "학생·고객 수나 정확한 시기를 보장할 수는 없습니다. 무료 체험을 계속 늘리기보다, 체험이 정규 등록으로 전환되는 비율을 먼저 확인하세요. 전환이 안 되면 체험을 늘려도 결과는 같습니다.",
+      "The number of students or clients, or the exact timing, cannot be guaranteed. Rather than adding more free trials, check the conversion rate from trial to regular enrollment first — more trials do not help if that rate stays the same.",
+    ),
+    patterns: [
+      /수강생|학생이 생길|학생을? 모집|과외\s?문의|레슨\s?문의|고객이 생길|손님이 생길|의뢰가 들어올|클라이언트를? 구/u,
+      /get students|attract clients|find clients|new students/i,
+    ],
+  },
 ];

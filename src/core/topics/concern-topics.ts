@@ -394,6 +394,37 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     patterns: [/부모|엄마|아빠|어머니|아버지|친정|본가/u, /parents|mother|father/i],
   },
   {
+    id: "child_temperament",
+    focus: "relationships",
+    label: n("자녀 성향·진로", "Child's temperament and direction"),
+    verdict: n(
+      "아이의 진로를 지금 하나로 정할 필요는 없습니다. 지금 나이에서 뚜렷한 것은 직업이 아니라 배우는 방식과 힘을 내는 조건입니다. 그 조건에 맞는 활동을 넓게 경험시키는 쪽이 지금은 맞습니다.",
+      "There is no need to fix the child's future occupation now. What is actually visible at this age is how they learn and what conditions bring out their effort, not a job title. Broad exposure to activities that fit those conditions is the right move for now.",
+    ),
+    framing: n(
+      "이 나이의 아이는 재능보다 학습 방식과 압박에 반응하는 방식이 먼저 드러납니다. 어떤 직업이 맞는지보다, 어떤 상황에서 아이가 스스로 몰입하는지를 보는 편이 지금은 더 정확합니다.",
+      "At this age, how a child learns and reacts to pressure shows up before any specific talent does. Watching what situation makes the child absorbed on their own is more accurate right now than asking which career fits.",
+    ),
+    observe: n(
+      "아이가 스스로 오래 붙잡고 있는 활동과, 시키면 금방 지루해하는 활동을 각각 세 가지 적어보세요. 잘하는 것보다 스스로 이어가는 것이 지금은 더 중요한 신호입니다.",
+      "Write down three activities the child sticks with on their own and three they tire of quickly when assigned. What they continue unprompted is a more important signal right now than what they are good at.",
+    ),
+    action: n(
+      "이번 달에는 아이가 관심을 보인 활동과 가까운 다른 종류를 하나 더 경험시켜 보세요. 넓게 겪어보게 하는 편이 하나를 깊게 시키는 것보다 지금 시기에는 낫습니다. 잘했다는 칭찬보다 무엇을 어떻게 했는지 구체적으로 물어보는 대화가 동기를 더 오래 지속시킵니다.",
+      "This month, let the child try one more activity adjacent to something they already showed interest in. Broad exposure beats deep specialization at this age. Asking specifically what they did and how, rather than just praising the result, sustains motivation longer than praise alone.",
+    ),
+    caution: n(
+      "지금 나타나는 성향으로 직업을 단정하지 마세요. 압박에 유난히 예민하게 반응하거나 또래 관계를 계속 피한다면, 그건 진로 문제가 아니라 소아과나 아동상담 전문가가 봐야 할 신호일 수 있습니다.",
+      "Do not lock in an occupation from what shows up now. If the child reacts unusually sharply to pressure or keeps avoiding peers, that is not a career question — it may be a sign for a pediatrician or a child counsellor to look at.",
+    ),
+    // Needs 아이/자녀 near 성향/진로/적성/재능/기질 in either order, so a generic
+    // worry about a child (which belongs to "children" below) does not match here.
+    patterns: [
+      /(아이|자녀|아들|딸)[^.。]{0,10}(성향|진로|적성|재능|기질)|(성향|진로|적성|재능|기질)[^.。]{0,10}(아이|자녀|아들|딸)/u,
+      /child('s)? (temperament|personality|career|aptitude|talent)/i,
+    ],
+  },
+  {
     id: "children",
     focus: "relationships",
     label: n("자녀·육아", "Children"),
