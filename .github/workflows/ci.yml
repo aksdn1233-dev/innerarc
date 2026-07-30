@@ -11,7 +11,7 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -34,3 +34,7 @@ jobs:
           retention-days: 30
       - run: pnpm exec playwright install --with-deps chromium webkit
       - run: pnpm test:e2e --project=chromium --project=mobile
+      - name: Verify checkout UI with isolated fake provider shell
+        run: pnpm test:e2e tests/e2e/payments.spec.ts --project=chromium --project=mobile --workers=1 --reporter=line
+        env:
+          E2E_PAYMENT_CHECKOUT: "1"

@@ -31,6 +31,8 @@
 
 필수 운영 환경변수:
 
+- 모든 운영 결제 경로 공통:
+  - `PAYMENTS_LAUNCH_APPROVED=true` — 이 문서의 판매자·법률·도메인·환불·지원·가맹점 실결제 검증을 마친 뒤에만 설정
 - 페이앱 경로(현재 기본):
   - `PAYMENTS_PROVIDER=payapp`
   - `PAYAPP_USER_ID` — 페이앱 판매자 아이디

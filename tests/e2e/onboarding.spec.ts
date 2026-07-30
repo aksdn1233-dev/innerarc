@@ -12,10 +12,11 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await page.goto("/ko");
   await expect(page.getByRole("heading", {
     level: 1,
-    name: "당신의 삶에는 반복되는 결이 있습니다.",
+    name: "막막한 순간, 결이 답의 방향을 밝혀드립니다.",
   })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "나의 기본 결" })).toBeAttached();
-  await page.getByRole("button", { name: "내 삶의 결 확인하기" }).click();
+  await page.getByRole("link", { name: "무료 핵심 패턴 먼저 보기" }).click();
+  await expect(page).toHaveURL(`${E2E_ORIGIN}/ko/profile`);
+  await expect(page.getByRole("heading", { name: "내 흐름 확인하기" })).toBeAttached();
   await page.locator("#birthDate").fill("1994-11-04");
   await page.locator("#name").fill("Minji Kim");
   await page.getByText("개인정보 처리 안내를 확인했습니다.").click();
@@ -28,6 +29,8 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
 
 test("English page keeps the same calculated core meaning", async ({ page }) => {
   await page.goto("/en");
+  await page.getByRole("link", { name: "See my free core pattern first" }).click();
+  await expect(page).toHaveURL(`${E2E_ORIGIN}/en/profile`);
   await page.locator("#birthDate").fill("1994-11-04");
   await page.getByText("I have read the privacy notice.").click();
   await page.getByRole("button", { name: "Show my core pattern" }).click();
@@ -53,14 +56,14 @@ test("onboarding focus, concern, depth, and AI consent create a local context la
     if (url.origin !== E2E_ORIGIN) externalRequests.push(url.href);
   });
 
-  await page.goto("/en");
+  await page.goto("/en/profile");
   await page.locator("#birthDate").fill("1994-11-04");
   await page.locator("#name").fill("Minji Kim");
   await page.getByText("Relationships", { exact: true }).click();
   await page.locator("#concern").fill(privateConcern);
   await page.getByText("Deep", { exact: true }).click();
   await page.getByText("I have read the privacy notice.").click();
-  await page.getByText("I agree to use this input for AI personalization.", { exact: false }).click();
+  await page.getByText("I agree to use this input for personalization.", { exact: false }).click();
   await page.getByRole("button", { name: "Show my core pattern" }).click();
 
   const context = page.locator(".onboarding-context-card");
@@ -91,7 +94,7 @@ test("onboarding focus, concern, depth, and AI consent create a local context la
 });
 
 test("result offers claim-free accessory and music directions with a closed shop", async ({ page }) => {
-  await page.goto("/en");
+  await page.goto("/en/profile");
   await page.locator("#birthDate").fill("1994-11-04");
   await page.getByText("I have read the privacy notice.").click();
   await page.getByRole("button", { name: "Show my core pattern" }).click();
@@ -104,7 +107,10 @@ test("result offers claim-free accessory and music directions with a closed shop
 
   const shopLink = page.getByRole("link", { name: "Preview shop categories" });
   await expect(shopLink).toHaveAttribute("href", "/en/shop");
-  await shopLink.click();
+  await Promise.all([
+    page.waitForURL("**/en/shop"),
+    shopLink.click(),
+  ]);
   await expect(page.getByRole("status")).toHaveText("Opening later");
   await expect(page.locator(".shop-category-grid article")).toHaveCount(3);
   await expect(page.getByText("Purchasing unavailable")).toHaveCount(3);
@@ -113,7 +119,7 @@ test("result offers claim-free accessory and music directions with a closed shop
 });
 
 test("invalid dates cannot be submitted through the engine flow", async ({ page }) => {
-  await page.goto("/en");
+  await page.goto("/en/profile");
   await page.locator("#birthDate").evaluate((element: HTMLInputElement) => {
     element.value = "2023-02-29";
   });
@@ -525,16 +531,16 @@ test("guest privacy center saves explicitly, exports, and deletes all device dat
 });
 
 test("pre-release privacy and terms disclose unresolved launch fields", async ({ page }) => {
-  await page.goto("/en");
+  await page.goto("/en/profile");
   await expect(page.getByRole("link", { name: "Read the privacy information" })).toHaveAttribute("href", "/en/privacy");
   await page.getByRole("link", { name: "Read the privacy information" }).click();
-  await expect(page.getByText("Pre-release draft · operator details and legal review pending")).toBeVisible();
+  await expect(page.getByText("Pre-operation notice · contact, transfer details, and legal review pending")).toBeVisible();
   await expect(page.getByText("Supabase handles the authentication email", { exact: false })).toBeVisible();
-  await expect(page.getByText("When payments open, InnerArc will retain the order ID", { exact: false })).toBeVisible();
-  await expect(page.getByText("Payments stay disabled until these fields are completed and reviewed.", { exact: false })).toBeVisible();
+  await expect(page.getByText("For payment, InnerArc retains the order ID", { exact: false })).toBeVisible();
+  await expect(page.getByText("Final support and privacy contact details will be published", { exact: false })).toBeVisible();
   await page.getByRole("link", { name: "Terms of use" }).click();
   await expect(page.getByText("Pre-release draft · seller details and refund policy pending")).toBeVisible();
-  await expect(page.getByText("Plus and Pro are designed as one-time, non-renewing 30-day passes.", { exact: false })).toBeVisible();
+  await expect(page.getByText("Each is a one-time, non-renewing purchase.", { exact: false })).toBeVisible();
   await page.goto("/en/plans");
   await expect(page.getByText("Payments remain closed until merchant review", { exact: false })).toBeVisible();
   await expect(page.getByRole("button", { name: "Load payment methods" }).first()).toBeDisabled();

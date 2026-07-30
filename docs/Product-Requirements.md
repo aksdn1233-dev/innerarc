@@ -67,6 +67,7 @@ Date: 2026-07-18
 
 - The web product exposes a bilingual `/shop` preview with the three approved accessory categories and an unambiguous `coming later` state.
 - Before launch approval there is no product catalog, stock claim, price, cart, checkout, payment collection, scarcity message, affiliate tracking, or recommendation presented as necessary for luck or safety.
+- The paid-reading homepage keeps a clearly labelled first-party path to a deterministic free core numerology result. A guest can complete that result before creating an order, and the free route does not require a checkout draft, provider availability, or payment consent.
 - Result cards may deep-link only to a category anchor. Birth dates, names, concerns, result numbers, or tracking identifiers are never placed in the URL.
 - Future products require supplier identity/provenance, material and allergy disclosure, dimensions/fit, care, accessible media, regional price/tax, shipping, return/refund, inventory, moderation, and consumer-law review before the category can open.
 - Personalized ranking and commercial placement remain separate. Payment or sponsorship must never silently change the symbolic recommendation order.
@@ -111,6 +112,7 @@ Date: 2026-07-18
 - Acceptance: Korean and English expose the same card order, orientation, meaning, audit fields, and safety boundary.
 - Acceptance: 320px mobile through desktop layouts have no horizontal overflow, visible focus, reduced-motion support, WCAG AA text contrast, and a card face that remains legible without relying on color.
 - Acceptance: initial route performance remains inside the existing decoded-JavaScript and request budgets; share-card code is deferred until the relationship result is explicitly produced.
+- First-load typography must not fan out into per-glyph webfont downloads. Localized pages use a bounded first-party font strategy or a system stack and remain below the established resource and transfer budgets.
 
 ### Career
 
@@ -210,9 +212,14 @@ Date: 2026-07-18
 - Product analytics is opt-in and disabled when no approved sink is configured. Event contracts contain only enumerated operational properties; they have no free-text, name, birth-date, question, outcome, account-email, or third-party-data field.
 - Outcome-review events may include only the five-level relevance label required for aggregate quality measurement. AI run events may include provider/model aliases, token counts, latency, fallback state, and estimated micro-cost, never prompts or responses.
 - Free/Plus/Pro access decisions are deterministic from a versioned entitlement policy and measured usage window. A denial explains the limit and upgrade tier without fear, urgency, or safety-content withholding.
+- The local deterministic basic routes for question tarot, romantic reflection, compatibility summary, celebrity comparison, and Reality Check remain available to guests. Payment gates apply to purchased reports and genuinely paid depth, not to the existing Free tier or safety/data-rights controls.
 - Checkout, customer portal, cancellation, and subscription updates cross a provider-neutral server interface. Requests and webhook events are idempotent; stale events cannot overwrite newer state.
 - Failed/incomplete/canceled billing always resolves to at least Free access. `past_due` may retain the prior paid tier only through an explicit current-period grace boundary.
-- Acceptance: unknown analytics properties fail closed; analytics consent off produces no write; repeated event/request IDs produce one record/result; payment failure never mutates subscription state; duplicate/stale subscription events are harmless.
+- A buyer may change the selected reading depth on the plan page before order creation. The chosen product code must update both the server-priced order request and the stored report input together; a prior page selection must not produce a false payment-window failure.
+- Checkout validation distinguishes missing reading input, invalid depositor name, invalid mobile number, temporarily paused/unavailable sales, rate limiting, order creation failure, payment-widget preparation failure, and provider payment failure. Buyer-facing copy remains actionable without exposing internal credentials or provider responses.
+- Production payment readiness additionally requires the explicit server-only `PAYMENTS_LAUNCH_APPROVED=true` gate. Provider credentials and prices alone cannot open checkout; the gate is set only after seller identity, legal notices, domain/callback, refund/support, merchant-method, and live payment-path approvals are recorded.
+- Acceptance: unknown analytics properties fail closed; analytics consent off produces no write; repeated event/request IDs produce one record/result; payment failure never mutates subscription state; duplicate/stale subscription events are harmless; plan switching produces a matched product/input request; invalid local checkout fields make no order request; provider readiness and rate-limit errors remain distinguishable; private-storage refusal cannot block a hosted-payment redirect.
+- Acceptance: the Korean and English paid-reading homepages expose the free core-result path; the same fixed birth-date vector produces Life Path 11 and the same archetype in both languages without an order request.
 
 ### Consented personalization context
 

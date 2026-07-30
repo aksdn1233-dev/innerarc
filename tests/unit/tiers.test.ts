@@ -77,11 +77,11 @@ describe("sharp insight sentences meet the per-tier minimum", () => {
   it("gives every one of the twelve life-path numbers a full set of eight, with no duplicates", () => {
     for (const lifePath of [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 22, 33]) {
       const insights = pickSharpInsights(lifePath, 8, "ko");
-      expect(insights.length, lifePath).toBe(8);
-      expect(new Set(insights).size, lifePath).toBe(8);
+      expect(insights.length, String(lifePath)).toBe(8);
+      expect(new Set(insights).size, String(lifePath)).toBe(8);
       for (const sentence of insights) {
         expect(sentence.length, `${lifePath}: "${sentence}"`).toBeGreaterThan(20);
-        expect(sentence, lifePath).not.toMatch(/반드시|보장|틀림없|100%/);
+        expect(sentence, String(lifePath)).not.toMatch(/반드시|보장|틀림없|100%/);
       }
     }
   });

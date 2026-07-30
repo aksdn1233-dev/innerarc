@@ -1,16 +1,17 @@
 import { expect, test } from "@playwright/test";
+import { resolvePublicAppUrl } from "../../src/core/site-url";
 
 const cases = [
   {
     locale: "ko",
-    title: "InnerArc | 당신의 삶에 반복되는 결",
+    title: "결 GYEOL | 프리미엄 타로·신점 상담",
     description:
-      "생년월일과 현재의 고민을 바탕으로 성향·관계·직업·재물에서 반복되는 패턴을 구체적으로 분석하는 자기이해 서비스.",
+      "타로의 상징과 현재의 고민을 연결해 연애·관계·진로·재물의 흐름을 깊고 구체적으로 읽는 프리미엄 타로신점 서비스.",
     openGraphLocale: "ko_KR",
   },
   {
     locale: "en",
-    title: "InnerArc | The Patterns That Repeat in Your Life",
+    title: "GYEOL | Premium Tarot Reading",
     description:
       "A premium self-understanding service for exploring recurring patterns across self, relationships, work, and money.",
     openGraphLocale: "en_US",
@@ -42,7 +43,7 @@ for (const expected of cases) {
       expected.description,
     );
 
-    const pageOrigin = new URL(page.url()).origin;
+    const canonicalOrigin = resolvePublicAppUrl(process.env.NEXT_PUBLIC_APP_URL).origin;
     const openGraphImage = await page.locator('meta[property="og:image"]').getAttribute("content");
     const twitterImage = await page.locator('meta[name="twitter:image"]').getAttribute("content");
     expect(openGraphImage).toBeTruthy();
@@ -50,11 +51,11 @@ for (const expected of cases) {
 
     for (const imageUrl of [openGraphImage!, twitterImage!]) {
       const parsed = new URL(imageUrl);
-      expect(parsed.origin).toBe(pageOrigin);
+      expect(parsed.origin).toBe(canonicalOrigin);
       expect([...parsed.searchParams.keys()]).not.toEqual(
         expect.arrayContaining(["birthDate", "name", "question", "relationship"]),
       );
-      const imageResponse = await request.get(imageUrl);
+      const imageResponse = await request.get(parsed.pathname);
       expect(imageResponse.ok()).toBe(true);
       expect(imageResponse.headers()["content-type"]).toContain("image/png");
       const image = await imageResponse.body();
@@ -64,7 +65,7 @@ for (const expected of cases) {
 
     await expect(page.locator('meta[property="og:image:alt"]')).toHaveAttribute(
       "content",
-      /InnerArc/,
+      /GYEOL/,
     );
     await expect(page.locator('meta[property="og:image:type"]')).toHaveAttribute("content", "image/png");
     await expect(page.locator('meta[property="og:image:width"]')).toHaveAttribute("content", "1200");

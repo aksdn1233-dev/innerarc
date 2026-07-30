@@ -1,29 +1,32 @@
 # InnerArc Windows Codex 인수인계
 
-마지막 갱신: 2026-07-28<br>
-현재 버전: 0.18.0
-전체 진행률: 98%  
-제품 상태: 결 GYEOL 유료 타로 서비스로 리스타일. 페이앱 결제와 유료 리포트 구현 완료, Cloudflare Workers에 임시 배포됨. 운영 결제 키는 미설정
+마지막 갱신: 2026-07-30<br>
+현재 버전: 0.17.1
+전체 진행률: 92% (웹 MVP 코드 97%, 유료 운영 출시 준비 82%, 네이티브 앱 미착수)
+제품 상태: GYEOL 웹/PWA, 무료 핵심 수비학, 페이앱 결제·유료 리포트 코드가 구현됨. 운영 결제는 판매자·법률·환불·지원·도메인·실결제 검증 뒤 `PAYMENTS_LAUNCH_APPROVED=true`를 명시하기 전까지 닫힘
 
 ## 1. 새 Codex가 가장 먼저 할 일
 
-이 파일과 `docs/Continuation-State.md`를 먼저 읽는다. 작업 경로를 아래 폴더로 고정하고, 다른 프로젝트의 파일·포트·프로세스는 수정하거나 종료하지 않는다.
+이 파일과 `docs/Continuation-State.md`를 먼저 읽는다. PC마다 절대경로가 다르므로 아래 비공개 GitHub 저장소를 복제한 루트로 이동하고, 다른 프로젝트의 파일·포트·프로세스는 수정하거나 종료하지 않는다.
 
 ```text
-C:\Users\HighTech\Documents\Codex\2026-07-27\s\work\innerarc
+https://github.com/aksdn1233-dev/innerarc.git
 ```
 
 PowerShell 기준:
 
 ```powershell
-Set-Location -LiteralPath 'C:\Users\HighTech\Documents\Codex\2026-07-27\s\work\innerarc'
+git clone https://github.com/aksdn1233-dev/innerarc.git
+Set-Location -LiteralPath '.\innerarc'
+git fetch --all --prune
+git switch agent/supabase-toss-payments
 $listeners = @(Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue)
 Write-Output "port3000_listeners=$($listeners.Count)"
 ```
 
 포트 3000에 리스너가 있으면 소유 프로세스를 확인하기 전에는 테스트나 개발 서버를 시작하지 않는다. 광범위한 `node`/`npm` 프로세스 종료는 금지한다. 이 프로젝트의 브라우저 실행기는 포트가 사용 중이면 실패하고, 자신이 만든 정확한 서버 PID만 종료한다.
 
-외부 계정, 운영 결제 키, 도메인, 앱스토어, 법적 계약은 사용자 승인 없이는 진행하지 않는다. 로컬 `main`은 비공개 GitHub 저장소 `aksdn1233-dev/innerarc`를 추적한다. `local-bootstrap` 브랜치는 원격 통합 전 로컬 두 커밋을 보존한다.
+외부 계정, 운영 결제 키, 도메인, 앱스토어, 법적 계약, 실제 배포는 사용자 승인 없이는 진행하지 않는다. 결제·출시품질 감사 작업은 Draft PR의 `agent/supabase-toss-payments` 브랜치에서 이어가며, 검증 전 `main`에 직접 합치지 않는다. `local-bootstrap` 브랜치는 원격 통합 전 로컬 두 커밋을 보존한다.
 
 배포 대상은 Cloudflare Workers다. `pnpm build:sites` 뒤 `wrangler deploy --config dist/server/wrangler.json`으로 올린다. 사용자 승인 아래 임시 프리뷰 계정으로 `https://innerarc.truth-bakery.workers.dev`에 배포되어 있으며, 이는 영구 주소가 아니다. 고정 주소가 필요하면 `wrangler login` 뒤 다시 배포한다.
 
@@ -67,20 +70,20 @@ Write-Output "port3000_listeners=$($listeners.Count)"
 4. 미래 만남, 배우자, 궁합을 확률·운명·보장으로 표현하지 않는다.
 5. 상점은 명시적 승인과 모든 운영 게이트 전까지 닫혀 있어야 한다.
 
-## 3. 0.17.0 검증 결과
+## 3. 0.17.1 검증 결과
 
 - ESLint: 오류·경고 0건
 - TypeScript strict: 통과
-- 단위·통합: 275/275, 28개 파일
-- Next.js 16.2.11 프로덕션 빌드: 40개 출력
-- 데스크톱 Chromium: 62/62
-- 모바일 WebKit: 61/62 통과, 하드웨어 키보드 전용 1건 의도적 제외
+- 단위·통합: 425/425, 45개 파일
+- Next.js 16.2.12 프로덕션 빌드: 58개 경로
+- 데스크톱 Chromium 집중 회귀: 66개 통과
+- 모바일 WebKit 온보딩·결제 집중 회귀: 20개 통과
 - Supabase: Singapore 프로젝트에 4개 마이그레이션 적용, 결제 주문·이벤트·이용권·원자적 권한 부여 기반까지 확인
 - 접근성: 20개 한·영 경로와 동적 온보딩/관계 결과/Reality Check 연결의 axe critical·serious 0건
 - 성능: 7개 대표 경로의 HTML, 요청 수, JS/CSS 전송·해제 크기, 전체 페이로드 예산 통과
 - 프로덕션 의존성 감사: 알려진 취약점 0건
 - 전체 의존성 감사: 알려진 취약점 0건. `brace-expansion` 5.0.8 고정과 `minimatch` 3 호환 패치 포함
-- CycloneDX 1.6 SBOM: 버전 0.16.0, 프로덕션 구성요소 107개
+- CycloneDX 1.6 SBOM: 버전 0.17.1, 프로덕션 구성요소 110개
 - 출시 이미지: 합성 데이터 15개, 모두 1242×2688, 외부 요청 없음
 - 한국어/영어 홈, 한국어 타로 카드·관계·상점 이미지 시각검사 완료
 - 새 홈을 320×700, 768×1024, 1440×900에서 시각검사했으며 가로 넘침 0, 핵심 CTA·제목 구조·터치 영역을 확인
@@ -206,5 +209,5 @@ pnpm.cmd dev
 ## 8. 새 Windows Codex 시작 프롬프트
 
 ```text
-이 작업공간의 CODEX-WINDOWS-HANDOFF.md와 docs/Continuation-State.md를 먼저 읽고 현재 0.16.0 검증 기준선을 유지해라. 다른 프로젝트의 파일·포트·프로세스를 건드리지 말고, 기본 포트가 점유돼 있으면 재사용·종료하지 말고 명시적 대체 포트를 사용해라. 명세→수용기준→개인정보/안전 검토→구현→단위/통합/브라우저/회귀→문서 갱신 순서를 지켜 다음 미완료 우선순위를 진행해라. 외부 계정, 결제, 법적 결정, 도메인, 앱스토어, 실제 배포는 승인 없이 수행하지 마라. Windows 브라우저 회귀는 Chromium과 mobile을 분리하고 mobile은 한 작업자 또는 파일별 새 프로세스로 실행해라.
+이 작업공간의 CODEX-WINDOWS-HANDOFF.md와 docs/Continuation-State.md를 먼저 읽고 현재 0.17.1 검증 기준선을 유지해라. 다른 프로젝트의 파일·포트·프로세스를 건드리지 말고, 기본 포트가 점유돼 있으면 재사용·종료하지 말고 명시적 대체 포트를 사용해라. 명세→수용기준→개인정보/안전 검토→구현→단위/통합/브라우저/회귀→문서 갱신 순서를 지켜 다음 미완료 우선순위를 진행해라. 외부 계정, 운영 결제, 법적 결정, 도메인, 앱스토어, 실제 배포는 승인 없이 수행하지 마라. Windows 브라우저 회귀는 Chromium과 mobile을 분리하고 mobile은 한 작업자 또는 파일별 새 프로세스로 실행해라.
 ```

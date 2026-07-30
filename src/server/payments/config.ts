@@ -62,7 +62,7 @@ export type PaymentConfig =
   | PayAppPaymentConfig;
 
 export type PaymentReadiness =
-  | Readonly<{ enabled: false; reason: "DISABLED" | "INCOMPLETE" | "INVALID" }>
+  | Readonly<{ enabled: false; reason: "DISABLED" | "UNAPPROVED" | "INCOMPLETE" | "INVALID" }>
   | Readonly<{ enabled: true; config: PaymentConfig }>;
 
 const storeIdSchema = z.string().regex(/^store-[0-9a-f-]{36}$/i);
@@ -142,6 +142,12 @@ export function inspectPaymentReadiness(
 ): PaymentReadiness {
   const provider = environment.PAYMENTS_PROVIDER?.trim() || "disabled";
   if (provider === "disabled") return { enabled: false, reason: "DISABLED" };
+  if (
+    runtimeMode === "production" &&
+    environment.PAYMENTS_LAUNCH_APPROVED?.trim() !== "true"
+  ) {
+    return { enabled: false, reason: "UNAPPROVED" };
+  }
   if (
     provider !== "toss" &&
     provider !== "portone" &&

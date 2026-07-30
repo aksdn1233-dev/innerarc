@@ -12,8 +12,8 @@
   --radius-md: 22px;
   --shadow: 0 18px 45px rgba(49, 43, 35, 0.08);
   --content: 1120px;
-  --body-font: var(--font-body), "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-  --display-font: var(--font-display), "Nanum Myeongjo", "Batang", serif;
+  --body-font: "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", Arial, sans-serif;
+  --display-font: Georgia, "Nanum Myeongjo", "Batang", serif;
 }
 
 .plans-shell,
@@ -60,7 +60,7 @@
   border-radius: 24px;
   background:
     linear-gradient(90deg, rgba(3, 8, 25, 0.72), rgba(3, 8, 25, 0.48)),
-    url("/images/gyeol-night-hero.png") center / cover no-repeat;
+    url("/images/gyeol-night-hero.webp") center / cover no-repeat;
   color: #fffaf0;
 }
 
@@ -3415,7 +3415,7 @@ summary {
   background:
     linear-gradient(180deg, rgba(1, 5, 20, 0.36), rgba(1, 5, 20, 0.18) 48%, rgba(1, 5, 20, 0.52)),
     linear-gradient(90deg, rgba(1, 5, 20, 0.36), transparent 25%, transparent 74%, rgba(1, 5, 20, 0.22)),
-    url("/images/gyeol-night-hero.png") center / cover no-repeat;
+    url("/images/gyeol-night-hero.webp") center / cover no-repeat;
   color: #fffaf0;
   overflow: hidden;
   box-shadow: 0 24px 70px rgba(3, 8, 25, 0.24);
@@ -3803,7 +3803,7 @@ summary {
 
 .product-choice small {
   grid-column: 1 / -1;
-  color: #8a6745;
+  color: #765334;
   font-size: 0.76rem;
   font-weight: 800;
 }
@@ -3819,7 +3819,7 @@ summary {
 
 .product-choice em {
   grid-column: 1 / -1;
-  color: var(--muted);
+  color: #5f625b;
   font-size: 0.9rem;
   font-style: normal;
   line-height: 1.6;

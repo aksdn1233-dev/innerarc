@@ -25,7 +25,7 @@ describe("site sharing metadata", () => {
   it("ships one bounded first-party PNG with explicit accessible metadata", async () => {
     // The card is served straight from the static asset host, so the shipped file
     // itself is what link-preview crawlers receive. No route handler is involved.
-    expect(socialImagePath).toBe("/og.png");
+    expect(socialImagePath).toBe("/gyeol-og.png");
     expect(socialImageContentType).toBe("image/png");
 
     const bytes = new Uint8Array(await readFile(join("public", socialImagePath)));
@@ -35,6 +35,6 @@ describe("site sharing metadata", () => {
     expect(String.fromCharCode(...bytes.slice(1, 4))).toBe("PNG");
     expect(new DataView(bytes.buffer).getUint32(16)).toBe(socialImageSize.width);
     expect(new DataView(bytes.buffer).getUint32(20)).toBe(socialImageSize.height);
-    expect(socialImageAlt).toContain("InnerArc");
+    expect(socialImageAlt).toContain("GYEOL");
   });
 });

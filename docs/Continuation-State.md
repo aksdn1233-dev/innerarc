@@ -1,8 +1,43 @@
 # Continuation State
 
-Last updated: 2026-07-30 (round 3)<br>
-Current version: 0.18.0
-Overall progress: 98%
+Last updated: 2026-07-30 (payment and release-quality audit)<br>
+Current version: 0.17.1
+Overall progress: 92% (web MVP code 97%; paid production launch 82%; native app not started)
+
+## 2026-07-30 — Payment and release-quality audit
+
+- Work was performed in the isolated `innerarc-payment-audit` worktree on branch
+  `agent/supabase-toss-payments`. The original workspace, its uncommitted Reality Check
+  work, and the unrelated service occupying port 3000 were not changed or stopped.
+- Checkout now updates the chosen product and paid-reading input atomically, validates
+  phone/depositor fields before creating an order, and distinguishes paused sales,
+  rate limiting, order, widget, and provider failures. A hosted payment remains usable
+  if optional local report-link persistence fails.
+- Production checkout now additionally requires the server-only
+  `PAYMENTS_LAUNCH_APPROVED=true` flag. This prevents valid merchant credentials from
+  silently opening sales while seller, legal, refund, support, domain, or live-path
+  approval remains incomplete.
+- Restored the payment-independent Korean/English free core profile at
+  `/{locale}/profile` and removed whole-route entitlement redirects from deterministic
+  Free-tier question, relationship, compatibility, celebrity, and Reality Check routes.
+  Purchased report delivery remains fail-closed.
+- Removed the more-than-100-file Korean webfont request fan-out, switched to bounded
+  system stacks, and replaced the 1.78 MB hero PNG in production CSS with a visually
+  reviewed 41.8 KB WebP. Replaced stale InnerArc social artwork with the 1200×630 GYEOL
+  asset and corrected metadata/icon browser assertions.
+- Verified locally: 425/425 unit/integration tests, ESLint, strict TypeScript, 58-route
+  Next.js production build, 66 focused Chromium scenarios, and 20 iPhone/WebKit
+  onboarding/payment scenarios. The mobile run exposed and fixed a hydration race in
+  checkout testing and a navigation-completion race; no real order or payment was made.
+- Full dependency audit reports zero known vulnerabilities. The validated CycloneDX 1.6
+  SBOM for version 0.17.1 contains 110 production components.
+- The final Vinext/Cloudflare Workers build completed for all application and API routes.
+  No deployment was performed.
+- Remaining launch blockers are external evidence, not hidden code completion:
+  real seller/legal/refund/support disclosures, approved permanent domain/callbacks,
+  live low-value approval/cancel/virtual-account tests, two-account staging isolation,
+  monitoring/transactional email, and explicit owner launch approval. The accessory
+  shop remains closed and native apps remain deferred until web evidence is accepted.
 
 ## 2026-07-30 (round 3) — Tier centralization, sharp insights, character label surfaced
 
@@ -135,7 +170,7 @@ Overall progress: 98%
 
 - The provider-neutral web MVP, relationship action-to-outcome loop, lifestyle curation, closed shop-preview scope, and tarot reading-room UX are implemented and release-regression tested.
 - The site is restyled as the paid GYEOL tarot service with three server-priced products and a PayApp hosted checkout, with bank transfer, PortOne, and Toss adapters kept as alternates.
-- Supabase-backed identity and explicit durable record sync are connected. Payment code and its database foundation are present but remain disabled until live merchant keys, legal disclosures, and the production domain are approved.
+- Supabase-backed identity and explicit durable record sync are connected. PayApp checkout and its database foundation are implemented; production checkout is deliberately closed unless provider readiness, database access, the sales switch, and the separate server-only launch-approval gate all pass.
 - A Cloudflare Workers build target exists and is deployed to a temporary preview URL, `https://innerarc.truth-bakery.workers.dev`, with payments unconfigured. This is not a permanent address.
 - The closed shop is product architecture only, not an operating store.
 
@@ -196,7 +231,10 @@ Overall progress: 98%
 - Fixed the alternate-port regression exposed by the full 3011 run: the metadata fallback now uses the runner's canonical loopback host, and all E2E same-origin, navigation, privacy-request, and performance checks derive their expected origin from `E2E_BASE_URL` instead of hardcoding port 3000. The 54 directly affected Chromium/mobile flows pass on 3011.
 - Added a local PNG/native-share path without weakening the existing share allowlist. The first implementation pushed the relationship route from below budget to 1,051,745 decoded JavaScript bytes. Deferring raster/file helpers reduced this to 1,050,057, removing a redundant branch reduced it to 1,050,003, and removing one duplicate result guard reached the still-failing exact ceiling of 1,050,000. The final fix defers deterministic numerology and relationship engines until form submission; the unchanged `<1,050,000` budget, relationship results, Reality Check handoff, outcome context, and share paths all pass.
 
-## Verified baseline
+## Prior release evidence
+
+The current 0.17.1 audit evidence at the top of this document supersedes the historical
+counts below. The entries remain only as provenance for earlier releases and CI runs.
 
 - Unit/integration: 304/304 passed across 31 files, including PayApp callback route coverage for forged secrets, amount mismatch, wrong payment request, unknown order, unpaid virtual account, stale pre-payment events, cancellation revocation, owner-path entitlement, and retry idempotency.
 - ESLint: passed with zero warnings.

@@ -7,6 +7,11 @@ import {
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { PaidReadingInputSchema, type PaidReadingInput } from "@/core/paid-reading";
+import {
+  checkoutErrorFromResponse,
+  selectCheckoutReadingInput,
+  type CheckoutErrorCode,
+} from "@/core/checkout-ui";
 import { saveGuestReportLink } from "@/core/report-handoff";
 import type { Locale } from "@/i18n/config";
 import type { PaymentProductCode } from "@/server/payments/config";
@@ -100,8 +105,16 @@ const copy = {
       card: "신용·체크카드",
       virtual_account: "가상계좌",
     },
-    failed: "결제창을 준비하지 못했습니다. 잠시 후 다시 시도해 주세요.",
-    missingDraft: "먼저 상품과 리딩 정보를 입력해 주세요.",
+    errors: {
+      missing_draft: "먼저 상품과 리딩 정보를 입력해 주세요.",
+      invalid_depositor: "실제 입금 내역에 표시될 입금자명을 두 글자 이상 입력해 주세요.",
+      invalid_phone: "결제 안내를 받을 국내 휴대폰 번호를 확인해 주세요.",
+      temporarily_unavailable: "현재 결제를 잠시 멈춘 상태입니다. 입력 내용은 그대로 있으니 잠시 후 다시 확인해 주세요.",
+      rate_limited: "짧은 시간에 결제 요청이 반복되었습니다. 잠시 후 다시 시도해 주세요.",
+      order_failed: "주문을 만들지 못했습니다. 입력 내용을 유지했으니 잠시 후 다시 시도해 주세요.",
+      widget_failed: "결제수단 화면을 불러오지 못했습니다. 네트워크 상태를 확인한 뒤 다시 시도해 주세요.",
+      payment_failed: "결제 요청을 완료하지 못했습니다. 승인 여부를 확인한 뒤 다시 시도해 주세요.",
+    },
     notice: "결제수단 노출 여부와 한도는 페이앱 판매자 설정 및 각 결제수단 심사 결과에 따라 달라집니다.",
     terms: "결제 전에 이용조건·환불정책·개인정보 처리 안내를 확인해 주세요.",
     duration: "1회 결제 · 자동 갱신 없음",
@@ -141,8 +154,16 @@ const copy = {
       card: "Credit / debit card",
       virtual_account: "Virtual account",
     },
-    failed: "The payment window could not be prepared. Please try again.",
-    missingDraft: "Choose a product and enter the reading information first.",
+    errors: {
+      missing_draft: "Choose a product and enter the reading information first.",
+      invalid_depositor: "Enter at least two characters matching the depositor name on the transfer.",
+      invalid_phone: "Check the Korean mobile number used for payment instructions.",
+      temporarily_unavailable: "Checkout is temporarily paused. Your reading details are still here; please try again shortly.",
+      rate_limited: "Too many checkout attempts were made in a short time. Please wait and try again.",
+      order_failed: "The order could not be created. Your input is still here; please try again shortly.",
+      widget_failed: "Payment methods could not be loaded. Check your connection and try again.",
+      payment_failed: "The payment request did not finish. Check whether it was approved before trying again.",
+    },
     notice: "Available methods and limits depend on PayApp merchant settings and payment-method review.",
     terms: "Review the terms, refund policy, and privacy notice before payment.",
     duration: "30 days from purchase",
@@ -196,12 +217,12 @@ export function PlansExperience({
   const [session, setSession] = useState<CheckoutSession | null>(null);
   const [loadingCode, setLoadingCode] = useState<PaymentProductCode | null>(null);
   const [ready, setReady] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<CheckoutErrorCode | null>(null);
   const [depositorName, setDepositorName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [portOneMethod, setPortOneMethod] = useState<PortOneMethod>("kakaopay");
   const [linkCopied, setLinkCopied] = useState(false);
-  const [readingInput] = useState<PaidReadingInput | null>(() => {
+  const [readingInput, setReadingInput] = useState<PaidReadingInput | null>(() => {
     if (typeof window === "undefined") return null;
     const raw = window.sessionStorage.getItem("innerarc.checkoutDraft.v1");
     if (!raw) return null;
@@ -250,7 +271,7 @@ export function PlansExperience({
           setReady(true);
         }
       } catch {
-        if (active) setError(true);
+        if (active) setError("widget_failed");
       } finally {
         if (active) setLoadingCode(null);
       }
@@ -264,22 +285,32 @@ export function PlansExperience({
   }, [session]);
 
   async function createOrder(productCode: PaymentProductCode) {
-    if (!readingInput || readingInput.productCode !== productCode) {
-      setError(true);
+    if (!readingInput) {
+      setError("missing_draft");
       return;
     }
     if (paymentProvider === "manual_transfer" && depositorName.trim().length < 2) {
-      setError(true);
+      setError("invalid_depositor");
       return;
     }
     if (
       paymentProvider === "payapp" &&
       !/^01[016789]-?\d{3,4}-?\d{4}$/.test(customerPhone.trim())
     ) {
-      setError(true);
+      setError("invalid_phone");
       return;
     }
-    setError(false);
+    const selectedReadingInput = selectCheckoutReadingInput(readingInput, productCode);
+    setReadingInput(selectedReadingInput);
+    try {
+      window.sessionStorage.setItem(
+        "innerarc.checkoutDraft.v1",
+        JSON.stringify(selectedReadingInput),
+      );
+    } catch {
+      // The in-memory draft is sufficient for this checkout attempt.
+    }
+    setError(null);
     setReady(false);
     setSession(null);
     setLoadingCode(productCode);
@@ -290,7 +321,7 @@ export function PlansExperience({
         body: JSON.stringify({
           productCode,
           locale,
-          readingInput,
+          readingInput: selectedReadingInput,
           depositorName: paymentProvider === "manual_transfer"
             ? depositorName.trim()
             : undefined,
@@ -300,7 +331,11 @@ export function PlansExperience({
         }),
       });
       const body: unknown = await response.json();
-      if (!response.ok) throw new Error("order failed");
+      if (!response.ok) {
+        setError(checkoutErrorFromResponse(response.status, body));
+        setLoadingCode(null);
+        return;
+      }
       const checkout = body as CheckoutSession;
       setSession(checkout);
       if (
@@ -312,7 +347,7 @@ export function PlansExperience({
         setLoadingCode(null);
       }
     } catch {
-      setError(true);
+      setError("order_failed");
       setLoadingCode(null);
     }
   }
@@ -352,7 +387,7 @@ export function PlansExperience({
       window.location.assign(session.payUrl);
       return;
     }
-    setError(false);
+    setError(null);
     try {
       if (session.provider === "portone") {
         // PortOne V2 + KPN:
@@ -409,7 +444,7 @@ export function PlansExperience({
         customerEmail: session.customerEmail,
       });
     } catch {
-      setError(true);
+      setError("payment_failed");
     }
   }
 
@@ -594,10 +629,10 @@ export function PlansExperience({
         </section>
       )}
 
-      {error && <p className="error" role="alert">{readingInput ? t.failed : t.missingDraft}</p>}
+      {error && <p className="error" role="alert">{t.errors[error]}</p>}
       {!readingInput && (
         <p className="plans-gate">
-          {t.missingDraft}{" "}
+          {t.errors.missing_draft}{" "}
           <Link href={`/${locale}#onboarding`}>
             {locale === "ko" ? "상품 선택하러 가기" : "Choose a product"}
           </Link>

@@ -4,7 +4,7 @@ InnerArc is an AI self-discovery and personal pattern intelligence platform. It 
 
 ## Current scope
 
-Version 0.17.0 provides a web-first, guest-first Korean/English application with:
+Version 0.17.1 provides a web-first, guest-first Korean/English application with:
 
 - a mobile-first premium homepage that introduces the InnerArc pattern model, previews a result, explains four analysis fields, and leads clearly into the existing free calculation flow;
 - deterministic Pythagorean numerology and calculation evidence;
@@ -20,7 +20,7 @@ Version 0.17.0 provides a web-first, guest-first Korean/English application with
 - seven-type two-person compatibility reflection;
 - source-bound public-birth-date celebrity comparison;
 - privacy-safe local PNG/SVG share cards with explicit native file sharing, cancellation handling, and a download fallback that adds no upload, tracking, or browser storage;
-- native Korean/English link-preview metadata and a first-party 1200×630 InnerArc social card with no personal result data or tracking dependency;
+- native Korean/English link-preview metadata and a first-party 1200×630 GYEOL social card with no personal result data or tracking dependency;
 - the Reality Check Loop, browser-local review-month capture, and read-only navigation across current and prior monthly pattern reports;
 - a guest privacy center for independent consent, language/time-zone preferences, validated device export, and complete local deletion;
 - optional Supabase email sign-in with explicit owner-scoped upload/restore, account export, and atomic server-record deletion;
@@ -30,7 +30,7 @@ Version 0.17.0 provides a web-first, guest-first Korean/English application with
 - consent-gated analytics, personalization, entitlement, billing, data-rights, and AI-provider contracts;
 - accessibility, mobile WebKit, security-header, PWA manifest, performance, release regression, CycloneDX SBOM, and deterministic store-asset coverage.
 
-The responsive website/PWA is the canonical first product. Native apps follow only after web activation, Reality Check return behavior, accessibility, safety, deletion, and unit economics are proven. Supabase Auth/Postgres is connected for optional account sync. Payment code is present but remains disabled until the production domain, merchant keys, prices, seller disclosures, refund rules, and payment database migration are approved; live paid AI, monitoring, physical commerce, and deployment also remain disconnected.
+The responsive website/PWA is the canonical first product. Native apps follow only after web activation, Reality Check return behavior, accessibility, safety, deletion, and unit economics are proven. Supabase Auth/Postgres is connected for optional account sync. The PayApp checkout adapter and payment database foundation are implemented, but production checkout fails closed unless the server-only `PAYMENTS_LAUNCH_APPROVED=true` gate is explicitly set after domain, merchant-method, seller-disclosure, refund/support, and live approval/cancel/virtual-account checks are approved. Live paid AI, monitoring, and physical commerce remain outside the current launch boundary.
 
 ## Local setup
 

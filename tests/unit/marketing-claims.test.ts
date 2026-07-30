@@ -12,7 +12,7 @@ const baseInput = {
   createdAt: "2026-07-28T10:00:00.000Z",
 };
 
-const homepage = await readFile("src/components/onboarding-experience.tsx", "utf8");
+const homepage = await readFile("src/components/home-experience.tsx", "utf8");
 const plansPage = await readFile("src/app/[locale]/plans/page.tsx", "utf8");
 const dictionaries = await readFile("src/i18n/dictionaries.ts", "utf8");
 
@@ -36,16 +36,20 @@ describe("what the copy promises matches what the reader gets", () => {
     expect(premium.sections.some((section) => section.title.includes("일과 역할"))).toBe(true);
   });
 
-  it("advertises compatibility only where the tier gate actually allows it", async () => {
-    // Compatibility requires the pro tier, which plus_30d does not grant.
+  it("keeps paid compatibility depth out of the quick product while the Free summary stays open", async () => {
     const gate = await readFile("src/app/[locale]/compatibility/page.tsx", "utf8");
-    expect(gate).toContain('hasPaidFeatureAccess("pro")');
+    expect(gate).not.toContain("hasPaidFeatureAccess");
 
     const quickBlock = plansPage.slice(
       plansPage.indexOf('code: "plus_30d"'),
       plansPage.indexOf('code: "pro_30d"'),
     );
     expect(quickBlock).not.toContain("궁합");
+    const comprehensiveBlock = plansPage.slice(
+      plansPage.indexOf('code: "pro_30d"'),
+      plansPage.indexOf('code: "premium_pdf"'),
+    );
+    expect(comprehensiveBlock).toContain("궁합");
   });
 });
 

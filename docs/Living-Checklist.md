@@ -1,6 +1,6 @@
 # Living Checklist
 
-Last updated: 2026-07-27
+Last updated: 2026-07-30
 
 ## Phase 0 - Workspace and baseline
 
@@ -85,6 +85,9 @@ Last updated: 2026-07-27
 - [x] Explicit validated alternative ports for E2E and launch capture, preserving fail-closed behavior without stopping or reusing another project's server.
 - [x] Emergency-kill-switch and explicit-owner-authorization boundaries for any future commerce launch.
 - [x] Supabase Singapore auth/database project, three applied migrations, public-key runtime configuration, anonymous fail-closed probe, and account-boundary browser regression.
-- [ ] Select external providers and implement production adapters.
+- [x] PayApp hosted-checkout adapter, verified callback/order/report/revocation foundation, field-specific checkout errors, atomic plan/input switching, and an independent production launch-approval gate.
+- [x] Payment-independent localized free core result and deterministic guest access to the approved Free-tier reflection routes.
+- [x] Bounded system typography, compressed first-party hero artwork, GYEOL social metadata, and current performance/metadata regression.
+- [ ] Approve PayApp production operation and run real low-value approval, cancellation, virtual-account, receipt/recovery, and refund-support exercises.
 - [ ] Verify staging auth, migrations, payments, monitoring, deletion, backup/restore, and incident response.
 - [ ] Complete legal, privacy, age, crisis-escalation, editorial, localization, accessibility, brand, pricing, tax/refund, store-asset, and deployment approvals.

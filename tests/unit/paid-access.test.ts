@@ -132,8 +132,11 @@ describe("paid feature access", () => {
     vi.unstubAllEnvs();
   });
 
-  it("requires the pro tier on the two-person compatibility route", async () => {
-    const page = await readFile("src/app/[locale]/compatibility/page.tsx", "utf8");
-    expect(page).toContain('hasPaidFeatureAccess("pro")');
+  it("does not erase the deterministic Free routes after a failed payment", async () => {
+    const routes = ["question", "relationship", "reality-check", "celebrity", "compatibility"];
+    for (const route of routes) {
+      const page = await readFile(`src/app/[locale]/${route}/page.tsx`, "utf8");
+      expect(page, route).not.toContain("hasPaidFeatureAccess");
+    }
   });
 });

@@ -16,6 +16,21 @@ const playwrightArguments = [
   "test",
   ...process.argv.slice(2).filter((argument) => argument !== "--"),
 ];
+const paymentCheckoutTestEnvironment = process.env.E2E_PAYMENT_CHECKOUT === "1"
+  ? {
+      // These values only unlock the server-rendered checkout shell. Payment E2E
+      // tests intercept the order endpoint before it can reach any provider.
+      PAYMENTS_PROVIDER: "payapp",
+      PAYMENTS_LAUNCH_APPROVED: "true",
+      PAYAPP_USER_ID: "e2e-seller",
+      PAYAPP_LINK_KEY: "e2e-link-key",
+      PAYAPP_LINK_VALUE: "e2e-link-value",
+      INNERARC_QUICK_TAROT_PRICE_KRW: "19000",
+      INNERARC_COMPREHENSIVE_PRICE_KRW: "39000",
+      INNERARC_PREMIUM_PDF_PRICE_KRW: "79000",
+      SUPABASE_SERVICE_ROLE_KEY: "e2e-service-role-not-a-secret",
+    }
+  : {};
 
 async function requestHealth(timeoutMs = 2_000) {
   try {
@@ -33,6 +48,7 @@ const server = spawn(node, ["./scripts/serve-production.mjs"], {
   cwd: process.cwd(),
   env: {
     ...process.env,
+    ...paymentCheckoutTestEnvironment,
     AI_PROVIDER: process.env.AI_PROVIDER ?? "disabled",
     NODE_ENV: "production",
     PORT: String(port),

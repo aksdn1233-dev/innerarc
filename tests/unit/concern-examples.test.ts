@@ -8,7 +8,7 @@ import { dictionaries } from "@/i18n/dictionaries";
 // four selectable areas must each have their own example in each language.
 const FOCUS_IDS = ["work", "relationships", "growth", "money"] as const;
 
-const source = await readFile("src/components/onboarding-experience.tsx", "utf8");
+const source = await readFile("src/components/home-experience.tsx", "utf8");
 
 function examplesFor(locale: (typeof locales)[number]): Record<string, string> {
   const block = source.match(
