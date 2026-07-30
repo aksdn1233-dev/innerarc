@@ -1,8 +1,129 @@
 # Continuation State
 
-Last updated: 2026-07-30 (payment and release-quality audit)<br>
-Current version: 0.17.1
-Overall progress: 92% (web MVP code 97%; paid production launch 82%; native app not started)
+Last updated: 2026-07-31 (PREMIUM_79000 strict-superset correction)<br>
+Current version: 0.18.0
+Overall progress: 94% (web MVP code 99%; paid production launch 86%; native app not started)
+
+## 2026-07-31 — PREMIUM_79000 strict-superset correction
+
+- The 79,000 KRW product keeps the payment, entitlement, environment, and persistence
+  code `premium_pdf`, but all new purchases now route to the isolated deterministic
+  `premium-report-composer-2.0.0`. The customer label is consistently
+  `프리미엄 심층 리딩 · 79,000원`; PDF is no longer part of the product name.
+- Premium is now a machine-audited strict superset of DETAIL_39000. It calls the
+  detailed composer for the same input, preserves its character label and all
+  calculated facts, deepens every one of 21 detailed categories, and adds 14 premium
+  categories. Runtime creation fails closed if coverage, enrichment, logic, or
+  calculation comparison arrays are non-empty.
+- Premium adds four-number synthesis, hidden motivation and defense, the
+  strength-to-failure paradox and root cause, three complete scenarios with triggers,
+  actions, results, observable signs, responses, and thresholds, a five-part decision
+  framework, a six-gate execution manual, seven risk checks, six hold/stop/pivot
+  conditions, long-term strategy, consultant verdict, and grounded closing advice.
+- The 1968-06-23 fixture is locked as Life Path 8, Birthday 23/5, Attitude 29/11/2,
+  Birth Year 24/6, and 2026 Personal Year 3. Premium combines authority and resource
+  operation, adaptability, social sensing and coordination, and responsibility and
+  protection without inventing private facts or future years.
+- Question input is optional for Premium. A blank question produces a complete
+  person/work/money/collaboration/close-relationship/2026 report; a supplied question
+  additionally focuses the direct answer, scenarios, signs, execution gates, and risk
+  criteria. Question routing covers business, career, promotion, money, love,
+  reconciliation, compatibility, child, study/exams, lesson business, health,
+  housing, private facts, and general growth.
+- The result renderer now has a premium mobile-first plan: tier, birth-date basis,
+  question or birth-date title, direct answer, character and first analysis appear
+  before progressive calculations. Inherited detail, actions/manual, stop criteria,
+  premium synthesis/scenarios/checklists, verdict, safety and closing advice follow in
+  decision order. Saved HTML uses the same order and old stored reports retain their
+  legacy render path.
+- Payment names and plan copy changed only at the customer-facing label boundary.
+  Provider product code, environment price key, server-authoritative 79,000 KRW price,
+  callback verification, refund revocation, order access, and stored-report schema
+  remain compatible.
+- Verified: strict TypeScript, warning-free ESLint, 474/474 unit/integration tests,
+  a 58-route Next.js production build and deployable Sites build, a 14-domain Premium matrix, sensitive-question
+  safety tests, empty-question checkout entry, and visual mobile (390×844) plus desktop
+  (1440×900) browser checks with no horizontal overflow. No real order or payment was
+  created.
+
+## 2026-07-30 — DETAIL_39000 consultant-report correction
+
+- The 39,000 KRW product keeps the payment and persistence code `pro_30d` and price
+  39,000 KRW, but now routes after shared input validation to the isolated,
+  deterministic `detail-report-composer-2.0.0`. BASIC_19000, PREMIUM_79000, order
+  authorization, callbacks, entitlements, and stored-report lookup retain their
+  existing contracts.
+- Question mode now produces 16 meaningful sections around one routed domain; blank
+  question mode produces an 18-section general detailed report. Both include five
+  calculation facts, a character label, temperament, internal contradiction, decision
+  sequence, strongest ability, explained failure mechanisms, stress response, 2026
+  application, phases, 4–5 situations, five prioritized actions, three stop criteria,
+  and a final conclusion.
+- Stored exact content for the standing 1994-11-04 vector locks Life Path 11/2,
+  Birthday 4, Attitude 6, Birth Year 5, and 2026 Personal Year 7. It covers market
+  intuition, system building, intuition-before-evidence, completion and delegation
+  risks, AI/web/platform/content/automation directions, cash-flow and relationship
+  failure modes, and 2026 validation, legal, privacy, security, and technical review.
+- Detailed routing now covers business, career, promotion, money, love,
+  reconciliation, compatibility, child, lesson/education, health, housing,
+  private-fact uncertainty, and two-person relationship questions. Medical/legal and
+  loan-result questions keep qualified reality checks; private facts and future years
+  are not invented.
+- New detailed reports use additive optional `sectionPlan`, `calculationBasis`, and
+  internal-only `contentReferences` fields. Existing stored reports without these
+  fields still render through the legacy branch. Content references are excluded from
+  the web page and saved download.
+- The mobile-first result header now places tier, birth-date basis, question/title,
+  direct answer, character label, and character analysis before progressive
+  calculation detail. Body text is at least 16 px with 1.72 line-height and 20 px
+  mobile card padding. Execution, stop criteria, final conclusion, and safety guidance
+  use distinct ordered cards; the saved HTML download follows the same order.
+- Customer-facing 39,000 KRW labels now say `상세 리딩` / `Detailed reading`; the
+  question is optional for this tier so a birth-date-only general report can be
+  purchased. Price, currency, product code, and provider boundary are unchanged.
+- Verified: strict TypeScript, ESLint, 468/468 unit/integration tests, a 58-route
+  Next.js production build, 129/129 applicable default Chromium/mobile E2E scenarios
+  (9 payment-environment scenarios skipped), and all 8 explicitly enabled checkout
+  scenarios. No real payment was created.
+
+## 2026-07-30 — BASIC_19000 complete-report correction
+
+- The 19,000 KRW product keeps the payment-critical code `plus_30d` and canonical
+  display tier `BASIC_19000`, but now routes after input validation to an isolated,
+  deterministic `basic-report-composer-2.0.0`. The 39,000/79,000 KRW composers,
+  authorization, order creation, payment callbacks, stored-order lookup, and
+  entitlements were not renamed or rewritten.
+- The composer combines the existing deterministic calculation and stored profile/topic
+  tables into either a complete ten-section general report or an eight-section,
+  one-domain question report. It always includes five calculation facts, a memorable
+  character phrase, core temperament, repeated weakness, 2026 direction, exactly three
+  actions, and a final conclusion. A blank question is now valid only as an intake
+  choice for producing the general report; the birth date remains required.
+- The standing 1994-11-04 vector is locked as Life Path 11/2, Birthday 4, Attitude 6,
+  Birth Year 5, and 2026 Personal Year 7. Stored combination copy names it
+  "가능성을 구조로 만드는 설계자" and covers people/market intuition,
+  idea-to-system execution, scattered projects, premature expansion, close-relationship
+  risk, and a 2026 validation/completion direction.
+- Added explicit routing and regression cases for general, business, career, money,
+  love, reconciliation, child, lesson/education, health, housing, private-fact, and
+  compatibility questions. Health copy no longer invents a precise two-week/5-percent
+  threshold; private facts are not fabricated; a two-person comparison asks for the
+  second birth date and stays in the separate compatibility flow.
+- New reports carry additive optional `sectionPlan` and `calculationBasis` fields.
+  Because both are optional, reports stored before this change continue through the
+  legacy renderer. The new mobile renderer uses a compact five-number strip, 16 px
+  minimum body type, 1.72 line-height, 20 px card padding, and places exactly three
+  actions immediately before the final conclusion. Download output uses the same order.
+- Customer-facing 19,000 KRW labels now say "핵심 리딩" / "Core reading" instead of
+  implying a tarot draw. Price, currency, product code, and payment-provider boundary
+  remain unchanged.
+- Verified: strict TypeScript, ESLint, 445/445 unit/integration tests, a 58-route
+  production build, and 129/129 applicable Chromium/mobile E2E scenarios (7
+  environment-gated scenarios skipped). The 6 checkout/payment scenarios were then
+  unlocked explicitly and all 6 passed in Chromium/mobile. Coverage includes report length
+  (2,500–4,000 Korean characters), routing, deterministic facts, exact action count,
+  safety, legacy compatibility, payment configuration, mobile renderer structure, and
+  blank-question checkout intake.
 
 ## 2026-07-30 — Payment and release-quality audit
 

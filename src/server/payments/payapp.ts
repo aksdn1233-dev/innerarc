@@ -13,7 +13,19 @@ export const payAppFeedbackSchema = z.object({
   linkkey: z.string().min(1).max(500),
   linkval: z.string().min(1).max(500),
   price: z.string().regex(/^\d{3,10}$/),
-  pay_state: z.enum(["1", "4", "8", "9", "10", "32", "64", "70", "71"]),
+  pay_state: z.enum([
+    "1",
+    "4",
+    "8",
+    "9",
+    "10",
+    "16",
+    "31",
+    "32",
+    "64",
+    "70",
+    "71",
+  ]),
   pay_type: z.string().regex(/^\d{1,3}$/),
   var1: z.string().regex(/^[A-Za-z0-9_-]{6,64}$/),
   var2: z.string().max(100).optional().default(""),
@@ -91,12 +103,23 @@ export async function requestPayAppPayment(input: {
     throw new PayAppApiError("INVALID_RESPONSE");
   }
   const payUrl = new URL(parsed.data.payurl);
-  if (
-    payUrl.protocol !== "https:" ||
-    !(payUrl.hostname === "payapp.kr" || payUrl.hostname.endsWith(".payapp.kr"))
-  ) {
+  const isPayAppHost =
+    payUrl.hostname === "payapp.kr" || payUrl.hostname.endsWith(".payapp.kr");
+  const isDefaultPort =
+    !payUrl.port ||
+    (payUrl.protocol === "http:" && payUrl.port === "80") ||
+    (payUrl.protocol === "https:" && payUrl.port === "443");
+  if (!isPayAppHost || !isDefaultPort || payUrl.username || payUrl.password) {
     throw new PayAppApiError("INVALID_RESPONSE");
   }
+  // Some PayApp REST responses still use the legacy http scheme even though the
+  // same hosted checkout is available over HTTPS. Upgrade only verified PayApp
+  // hosts; never follow an insecure or off-domain provider redirect.
+  if (payUrl.protocol === "http:") {
+    payUrl.protocol = "https:";
+    payUrl.port = "";
+  }
+  if (payUrl.protocol !== "https:") throw new PayAppApiError("INVALID_RESPONSE");
   return {
     requestNumber: parsed.data.mul_no,
     payUrl: payUrl.toString(),
@@ -169,6 +192,8 @@ export function toInternalPayAppStatus(state: PayAppFeedback["pay_state"]) {
       return "PARTIAL_CANCELED";
     case "8":
     case "9":
+    case "16":
+    case "31":
     case "32":
     case "64":
       return "CANCELED";
@@ -179,11 +204,14 @@ export function payAppMethodName(payType: string): string {
   return {
     "1": "CARD",
     "2": "MOBILE",
+    "4": "FACE_TO_FACE",
     "6": "TRANSFER",
     "7": "VIRTUAL_ACCOUNT",
     "15": "KAKAOPAY",
     "16": "NAVERPAY",
+    "17": "REGISTERED_PAYMENT",
     "21": "SMILEPAY",
+    "22": "WECHATPAY",
     "23": "APPLEPAY",
     "24": "MYACCOUNT",
     "25": "TOSSPAY",

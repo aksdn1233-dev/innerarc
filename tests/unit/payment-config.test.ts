@@ -190,9 +190,9 @@ describe("PayApp API boundary", () => {
     vi.unstubAllGlobals();
   });
 
-  it("creates a server-side checkout and accepts only PayApp HTTPS URLs", async () => {
+  it("creates a server-side checkout and upgrades a PayApp URL to HTTPS", async () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response(
-      "state=1&errorMessage=&mul_no=20001234&payurl=https%3A%2F%2Fpayapp.kr%2FL%2Fcheckout",
+      "state=1&errorMessage=&mul_no=20001234&payurl=http%3A%2F%2Fpayapp.kr%2FL%2Fcheckout",
       { status: 200 },
     ));
     vi.stubGlobal("fetch", fetchMock);
@@ -201,7 +201,7 @@ describe("PayApp API boundary", () => {
       userId: "test-seller",
       orderId: "iaorder123456",
       productCode: "plus_30d",
-      orderName: "간단 타로 리딩",
+      orderName: "핵심 리딩",
       amount: 19000,
       customerPhone: "01012345678",
       openPayTypes: "card,kakaopay,tosspay,vbank,phone,rbank",
@@ -219,13 +219,37 @@ describe("PayApp API boundary", () => {
     expect(sent.get("reqaddr")).toBe("0");
   });
 
+  it("rejects an off-domain PayApp checkout URL", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(
+      "state=1&errorMessage=&mul_no=20001234&payurl=https%3A%2F%2Fevil.example%2Fcheckout",
+      { status: 200 },
+    )));
+
+    await expect(requestPayAppPayment({
+      userId: "test-seller",
+      orderId: "iaorder123456",
+      productCode: "plus_30d",
+      orderName: "핵심 리딩",
+      amount: 19000,
+      customerPhone: "01012345678",
+      openPayTypes: "card",
+      feedbackUrl: "https://example.com/api/payments/payapp/feedback",
+      returnUrl: "https://example.com/api/payments/payapp/return",
+    })).rejects.toMatchObject({ code: "INVALID_RESPONSE" });
+  });
+
   it("validates webhook secrets and normalizes completion states", () => {
     expect(securePayAppValueMatches("same-secret", "same-secret")).toBe(true);
     expect(securePayAppValueMatches("same-secret", "different-secret")).toBe(false);
     expect(toInternalPayAppStatus("10")).toBe("WAITING_FOR_DEPOSIT");
     expect(toInternalPayAppStatus("4")).toBe("DONE");
+    expect(toInternalPayAppStatus("16")).toBe("CANCELED");
+    expect(toInternalPayAppStatus("31")).toBe("CANCELED");
     expect(toInternalPayAppStatus("64")).toBe("CANCELED");
+    expect(payAppMethodName("4")).toBe("FACE_TO_FACE");
     expect(payAppMethodName("7")).toBe("VIRTUAL_ACCOUNT");
+    expect(payAppMethodName("17")).toBe("REGISTERED_PAYMENT");
+    expect(payAppMethodName("22")).toBe("WECHATPAY");
     expect(payAppMethodName("25")).toBe("TOSSPAY");
   });
 });

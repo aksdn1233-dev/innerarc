@@ -30,7 +30,7 @@ test("checkout validates locally and switches product and report input together"
       body: JSON.stringify({
         provider: "payapp",
         orderId: "e2e_order_01",
-        orderName: "Premium custom PDF",
+        orderName: "Premium in-depth reading",
         amount: 79_000,
         currency: "KRW",
         payUrl: "https://pay.example.invalid/e2e_order_01",
@@ -92,4 +92,85 @@ test("temporarily unavailable checkout is not reported as a payment-window failu
     "Checkout is temporarily paused. Your reading details are still here; please try again shortly.",
   );
   await expect(page.locator(".payment-widget-shell")).toHaveCount(0);
+  await expect(page.locator(".payment-retry-notice")).toContainText(
+    "do not pay the same order again",
+  );
+});
+
+test("a rapid double click creates only one payment order", async ({ page }) => {
+  let requestCount = 0;
+  await page.route("**/api/payments/orders", async (route) => {
+    requestCount += 1;
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    await route.fulfill({
+      contentType: "application/json",
+      status: 200,
+      body: JSON.stringify({
+        provider: "payapp",
+        orderId: "e2e_order_once",
+        orderName: "Core reading",
+        amount: 19_000,
+        currency: "KRW",
+        payUrl: "https://pay.example.invalid/e2e_order_once",
+        reportUrl: `${new URL(route.request().url()).origin}/en/reports/e2e_order_once`,
+      }),
+    });
+  });
+
+  await page.goto("/en/plans?product=plus_30d");
+  const checkout = page.locator('[data-product="plus_30d"]')
+    .getByRole("button", { name: "Load payment methods" });
+  await expect(checkout).toBeEnabled();
+  await page.locator("#customer-phone").fill("01012345678");
+  await checkout.evaluate((button) => {
+    (button as HTMLButtonElement).click();
+    (button as HTMLButtonElement).click();
+  });
+  await expect(page.locator(".payment-widget-shell")).toBeVisible();
+  expect(requestCount).toBe(1);
+});
+
+test("the 39,000 KRW detailed report can be purchased with birth date only", async ({ page }) => {
+  const requests: unknown[] = [];
+  await page.addInitScript((value) => {
+    window.sessionStorage.setItem("innerarc.checkoutDraft.v1", JSON.stringify(value));
+  }, {
+    ...draft,
+    productCode: "pro_30d",
+    concern: "",
+  });
+  await page.route("**/api/payments/orders", async (route) => {
+    requests.push(route.request().postDataJSON());
+    await route.fulfill({
+      contentType: "application/json",
+      status: 200,
+      body: JSON.stringify({
+        provider: "payapp",
+        orderId: "e2e_order_detail",
+        orderName: "Detailed reading",
+        amount: 39_000,
+        currency: "KRW",
+        payUrl: "https://pay.example.invalid/e2e_order_detail",
+        reportUrl: `${new URL(route.request().url()).origin}/en/reports/e2e_order_detail`,
+      }),
+    });
+  });
+
+  await page.goto("/en/plans?product=pro_30d");
+  const detailCheckout = page.locator('[data-product="pro_30d"]')
+    .getByRole("button", { name: "Load payment methods" });
+  await expect(detailCheckout).toBeEnabled();
+  await page.locator("#customer-phone").fill("01012345678");
+  await detailCheckout.click();
+  await expect(page.locator(".payment-widget-shell")).toBeVisible();
+
+  expect(requests).toHaveLength(1);
+  expect(requests[0]).toMatchObject({
+    productCode: "pro_30d",
+    readingInput: {
+      productCode: "pro_30d",
+      birthDate: "1994-11-04",
+      concern: "",
+    },
+  });
 });

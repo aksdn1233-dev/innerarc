@@ -89,7 +89,7 @@ type PortOneMethod = "kakaopay" | "tosspay" | "card" | "virtual_account";
 
 const copy = {
   ko: {
-    brand: "프리미엄 타로·신점 리딩",
+    brand: "나·관계·올해의 흐름 리딩",
     eyebrow: "대표 리딩 상품",
     title: "원하는 깊이에 맞춰 먼저 선택하세요",
     intro: "모든 상품은 1회 결제이며 자동 갱신되지 않습니다. 회원가입 없이 바로 구매하고, 결제 확인 뒤 PC와 휴대폰에서 열거나 내려받을 수 있습니다.",
@@ -116,7 +116,7 @@ const copy = {
       payment_failed: "결제 요청을 완료하지 못했습니다. 승인 여부를 확인한 뒤 다시 시도해 주세요.",
     },
     notice: "결제수단 노출 여부와 한도는 페이앱 판매자 설정 및 각 결제수단 심사 결과에 따라 달라집니다.",
-    terms: "결제 전에 이용조건·환불정책·개인정보 처리 안내를 확인해 주세요.",
+    terms: "환불은 고객지원 이메일로 접수하며 접수일로부터 7일 이내 처리합니다. 결제 전에 이용조건·환불정책·개인정보 처리 안내를 확인해 주세요.",
     duration: "1회 결제 · 자동 갱신 없음",
     depositorName: "입금자명",
     depositorPlaceholder: "실제로 송금할 분의 이름",
@@ -165,7 +165,7 @@ const copy = {
       payment_failed: "The payment request did not finish. Check whether it was approved before trying again.",
     },
     notice: "Available methods and limits depend on PayApp merchant settings and payment-method review.",
-    terms: "Review the terms, refund policy, and privacy notice before payment.",
+    terms: "Refund requests are accepted by support email and processed within seven days after receipt. Review the terms, refund policy, and privacy notice before payment.",
     duration: "30 days from purchase",
     depositorName: "Depositor name",
     depositorPlaceholder: "Name shown on the bank transfer",
@@ -222,6 +222,8 @@ export function PlansExperience({
   const [customerPhone, setCustomerPhone] = useState("");
   const [portOneMethod, setPortOneMethod] = useState<PortOneMethod>("kakaopay");
   const [linkCopied, setLinkCopied] = useState(false);
+  const checkoutInFlightRef = useRef(false);
+  const paymentInFlightRef = useRef(false);
   const [readingInput, setReadingInput] = useState<PaidReadingInput | null>(() => {
     if (typeof window === "undefined") return null;
     const raw = window.sessionStorage.getItem("innerarc.checkoutDraft.v1");
@@ -285,6 +287,7 @@ export function PlansExperience({
   }, [session]);
 
   async function createOrder(productCode: PaymentProductCode) {
+    if (checkoutInFlightRef.current) return;
     if (!readingInput) {
       setError("missing_draft");
       return;
@@ -300,6 +303,7 @@ export function PlansExperience({
       setError("invalid_phone");
       return;
     }
+    checkoutInFlightRef.current = true;
     const selectedReadingInput = selectCheckoutReadingInput(readingInput, productCode);
     setReadingInput(selectedReadingInput);
     try {
@@ -349,6 +353,8 @@ export function PlansExperience({
     } catch {
       setError("order_failed");
       setLoadingCode(null);
+    } finally {
+      checkoutInFlightRef.current = false;
     }
   }
 
@@ -363,7 +369,8 @@ export function PlansExperience({
   }
 
   async function requestPayment() {
-    if (!session) return;
+    if (!session || paymentInFlightRef.current) return;
+    paymentInFlightRef.current = true;
     if (session.provider === "manual_transfer") {
       saveGuestReportLink(window.localStorage, {
         orderId: session.orderId,
@@ -445,6 +452,8 @@ export function PlansExperience({
       });
     } catch {
       setError("payment_failed");
+    } finally {
+      paymentInFlightRef.current = false;
     }
   }
 
@@ -639,6 +648,14 @@ export function PlansExperience({
         </p>
       )}
       <p className="plans-notice">{t.notice}</p>
+      <p className="plans-notice payment-retry-notice">
+        {locale === "ko"
+          ? "결제창이 닫히거나 응답이 늦어져도 승인 여부를 확인하기 전 같은 주문을 다시 결제하지 마세요. 주문번호와 결제 휴대폰 번호로 구매 내역을 먼저 확인할 수 있습니다."
+          : "If the payment window closes or responds slowly, do not pay the same order again before checking its status. Use the order number and payment phone number to look up the purchase first."}{" "}
+        <Link href={`/${locale}/orders`}>
+          {locale === "ko" ? "결제 상태 확인" : "Check payment status"}
+        </Link>
+      </p>
       <p className="plans-notice">
         {t.terms}{" "}
         <Link href={`/${locale}/terms`}>{locale === "ko" ? "이용조건" : "Terms"}</Link>

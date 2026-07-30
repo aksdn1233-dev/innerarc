@@ -30,17 +30,17 @@ export default async function PlansPage({
           name: readiness.config.products.plus_30d.names[locale],
           amount: readiness.config.products.plus_30d.amount,
           features: locale === "ko"
-            ? ["기본 성향·강점·주의점", "궁금한 고민 1가지 심층", "실천 행동 2가지", "결제 후 열람·다운로드"]
-            : ["One focused concern", "Core flow and next action", "Saved and downloadable"],
+            ? ["핵심 숫자·성향·반복 약점", "한 가지 질문 분석 또는 일반 핵심 리포트", "2026년 방향", "구체적인 행동 정확히 3가지", "결제 후 열람·다운로드"]
+            : ["Complete core temperament", "One focused concern or general report", "2026 direction", "Exactly three actions", "Saved and downloadable"],
         },
         {
           code: "pro_30d" as const,
-          tier: locale === "ko" ? "종합 분석" : "Comprehensive",
+          tier: locale === "ko" ? "상세 분석" : "Detailed",
           name: readiness.config.products.pro_30d.names[locale],
           amount: readiness.config.products.pro_30d.amount,
           features: locale === "ko"
-            ? ["기본 성향·강점·주의점", "4개 영역 심층 분석", "실천 행동 4가지", "두 사람 궁합 이용", "결제 후 열람·다운로드"]
-            : ["Love, work, and money", "Detailed birth-date flow", "Saved and downloadable"],
+            ? ["5가지 핵심 숫자와 성향의 모순", "한 질문 분야 상세 분석 또는 일반 상세 리포트", "두 사람 궁합 이용", "상황별 대처 4~5가지", "우선 실행 계획 5단계", "중단·재검토 기준", "결제 후 열람·다운로드"]
+            : ["Five calculated facts and internal contradiction", "Detailed question or general report", "Two-person compatibility", "Situation guidance", "Five-step execution plan", "Stop criteria", "Saved and downloadable"],
         },
         {
           code: "premium_pdf" as const,
@@ -48,37 +48,37 @@ export default async function PlansPage({
           name: readiness.config.products.premium_pdf.names[locale],
           amount: readiness.config.products.premium_pdf.amount,
           features: locale === "ko"
-            ? ["기본 성향·강점·주의점", "8개 영역 전부", "잘 맞는 일·역할 분석", "두 사람 궁합 이용", "결제 후 열람·다운로드"]
-            : ["Long-form custom report", "Actions and caution reminders", "Saved and downloadable"],
+            ? ["상세 리딩의 모든 분석 포함", "질문이 없어도 완결되는 전체 리포트", "숨은 동기·실패의 뿌리", "최선·현실·위험 시나리오 3가지", "확인·반박 신호와 재평가 시점", "6단계 실행과 6가지 중단 기준", "결제 후 열람·다운로드"]
+            : ["Everything in Detailed", "Complete with or without a question", "Hidden motivation and root causes", "Three scenarios and observable signals", "Six-step execution and six stop criteria", "Saved and downloadable"],
         },
       ]
     : [
         {
           code: "plus_30d" as const,
           tier: locale === "ko" ? "빠른 답변" : "Quick",
-          name: locale === "ko" ? "간단 타로 리딩" : "Quick tarot reading",
+          name: locale === "ko" ? "핵심 리딩" : "Core reading",
           amount: 19_000,
           features: locale === "ko"
-            ? ["기본 성향·강점·주의점", "궁금한 고민 1가지 심층", "실천 행동 2가지", "결제 후 열람·다운로드"]
-            : ["One focused concern", "Core flow and next action", "Saved and downloadable"],
+            ? ["핵심 숫자·성향·반복 약점", "한 가지 질문 분석 또는 일반 핵심 리포트", "2026년 방향", "구체적인 행동 정확히 3가지", "결제 후 열람·다운로드"]
+            : ["Complete core temperament", "One focused concern or general report", "2026 direction", "Exactly three actions", "Saved and downloadable"],
         },
         {
           code: "pro_30d" as const,
-          tier: locale === "ko" ? "종합 분석" : "Comprehensive",
-          name: locale === "ko" ? "타로·생년월일 종합 리딩" : "Tarot and birth-date reading",
+          tier: locale === "ko" ? "상세 분석" : "Detailed",
+          name: locale === "ko" ? "상세 리딩" : "Detailed reading",
           amount: 39_000,
           features: locale === "ko"
-            ? ["기본 성향·강점·주의점", "4개 영역 심층 분석", "실천 행동 4가지", "두 사람 궁합 이용", "결제 후 열람·다운로드"]
-            : ["Love, work, and money", "Detailed birth-date flow", "Saved and downloadable"],
+            ? ["5가지 핵심 숫자와 성향의 모순", "한 질문 분야 상세 분석 또는 일반 상세 리포트", "두 사람 궁합 이용", "상황별 대처 4~5가지", "우선 실행 계획 5단계", "중단·재검토 기준", "결제 후 열람·다운로드"]
+            : ["Five calculated facts and internal contradiction", "Detailed question or general report", "Two-person compatibility", "Situation guidance", "Five-step execution plan", "Stop criteria", "Saved and downloadable"],
         },
         {
           code: "premium_pdf" as const,
           tier: locale === "ko" ? "프리미엄" : "Premium",
-          name: locale === "ko" ? "프리미엄 맞춤 PDF" : "Premium custom PDF",
+          name: locale === "ko" ? "프리미엄 심층 리딩" : "Premium in-depth reading",
           amount: 79_000,
           features: locale === "ko"
-            ? ["기본 성향·강점·주의점", "8개 영역 전부", "잘 맞는 일·역할 분석", "두 사람 궁합 이용", "결제 후 열람·다운로드"]
-            : ["Long-form custom report", "Actions and caution reminders", "Saved and downloadable"],
+            ? ["상세 리딩의 모든 분석 포함", "질문이 없어도 완결되는 전체 리포트", "숨은 동기·실패의 뿌리", "최선·현실·위험 시나리오 3가지", "확인·반박 신호와 재평가 시점", "6단계 실행과 6가지 중단 기준", "결제 후 열람·다운로드"]
+            : ["Everything in Detailed", "Complete with or without a question", "Hidden motivation and root causes", "Three scenarios and observable signals", "Six-step execution and six stop criteria", "Saved and downloadable"],
         },
       ];
 

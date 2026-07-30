@@ -5,8 +5,8 @@ import { dictionaries } from "@/i18n/dictionaries";
 
 // The concern example is what tells a visitor "this service understands my question".
 // A relationship prompt shown to someone who picked 돈 reads as the opposite, so the
-// four selectable areas must each have their own example in each language.
-const FOCUS_IDS = ["work", "relationships", "growth", "money"] as const;
+// five selectable areas must each have their own example in each language.
+const FOCUS_IDS = ["work", "relationships", "health", "growth", "money"] as const;
 
 const source = await readFile("src/components/home-experience.tsx", "utf8");
 
@@ -38,8 +38,8 @@ describe("concern examples follow the selected area", () => {
 
   it("covers exactly the areas the form actually shows", () => {
     for (const locale of locales) {
-      // The form renders the first four dictionary interests.
-      const shown = dictionaries[locale].interests.slice(0, 4).map((option) => option.value);
+      // The paid form renders the first five dictionary interests.
+      const shown = dictionaries[locale].interests.slice(0, 5).map((option) => option.value);
       expect([...shown].sort()).toEqual([...FOCUS_IDS].sort());
     }
   });
@@ -49,6 +49,7 @@ describe("concern examples follow the selected area", () => {
     expect(ko.money).toMatch(/돈|목돈|지출|금전/);
     expect(ko.work).toMatch(/회사|직장|이직|진로|일/);
     expect(ko.relationships).toMatch(/사람|관계|연애/);
+    expect(ko.health).toMatch(/건강|생활|리듬|습관/);
     expect(ko.growth).toMatch(/제자리|바꿔|성장|변화/);
   });
 });

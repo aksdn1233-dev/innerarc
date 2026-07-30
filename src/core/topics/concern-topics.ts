@@ -689,6 +689,7 @@ const TOPIC_BY_ID = new Map(concernTopics.map((topic) => [topic.id, topic]));
 const FOCUS_FALLBACK: Record<ConcernFocusId, string> = {
   work: "direction",
   relationships: "conflict",
+  health: "health_habit",
   growth: "direction",
   money: "big_spend",
 };
@@ -713,4 +714,3 @@ export function resolveConcernTopic(
   if (!fallback) throw new Error(`No fallback topic for focus ${focusId}`);
   return { topic: fallback, matched: false };
 }
-

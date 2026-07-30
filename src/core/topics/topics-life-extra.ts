@@ -84,7 +84,7 @@ export const MONEY_EXTRA_TOPICS: readonly ConcernTopic[] = [
 export const LIFE_EXTRA_TOPICS: readonly ConcernTopic[] = [
   {
     id: "health_habit",
-    focus: "growth",
+    focus: "health",
     label: n("건강 습관", "Health habits"),
     verdict: n(
       "유지 가능합니다. 강도보다 시각이 결과를 정합니다. 목표를 절반으로 줄이고 정해진 시간에 붙이면 이어집니다.",
@@ -103,10 +103,13 @@ export const LIFE_EXTRA_TOPICS: readonly ConcernTopic[] = [
       "Halve the target and attach it to a fixed time. When beats how hard for staying with it. For example, if 30 minutes a day feels heavy, cut it to 15 and anchor it to a fixed point like right after waking, which rarely shifts.",
     ),
     caution: n(
-      "통증, 어지럼, 체중의 급격한 변화는 습관 문제가 아니라 진료가 필요한 신호입니다. 극단적인 식이 제한은 권하지 않습니다. 특히 2주 안에 체중이 5% 이상 변하거나 식사를 계속 거르게 된다면 습관 교정보다 진료가 우선입니다.",
-      "Pain, dizziness, or rapid weight change call for a clinician, not a habit change. Extreme restriction is not advised. In particular, if weight shifts more than 5% within two weeks or meals keep getting skipped, seeing a clinician should come before adjusting the habit.",
+      "통증·어지럼, 의도하지 않은 급격한 체중 변화, 식사를 계속 거르게 되는 상태나 일상 기능 저하가 있다면 습관 해석보다 의료진 확인이 우선입니다. 극단적인 식이 제한은 권하지 않습니다.",
+      "Pain, dizziness, unintentional rapid weight change, repeatedly missed meals, or difficulty functioning call for a clinician before habit interpretation. Extreme restriction is not advised.",
     ),
-    patterns: [/운동을?|다이어트|식습관|건강 관리|체력|살을? 빼/u, /exercise|diet habit|get fit/i],
+    patterns: [
+      /운동을?|다이어트|식습관|건강 관리|건강 습관|생활 리듬|체력|살을? 빼/u,
+      /exercise|diet habit|health habit|daily rhythm|get fit/i,
+    ],
   },
   {
     id: "sleep",

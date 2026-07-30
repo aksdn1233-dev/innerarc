@@ -39,7 +39,7 @@ export interface MeCopy {
 }
 
 const ko: MeCopy = {
-  brandTagline: "프리미엄 타로·신점 리딩",
+  brandTagline: "나·관계·올해의 흐름 리딩",
   eyebrow: "나 · 개인정보 관리",
   title: "내 설정과 기록을 내가 통제합니다",
   intro: "현재는 게스트 모드입니다. 이 브라우저에 명시적으로 저장한 설정·타로 기록·Reality Check만 여기서 확인하고 내보내거나 삭제할 수 있습니다.",

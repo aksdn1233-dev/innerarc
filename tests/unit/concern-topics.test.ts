@@ -11,13 +11,13 @@ const base = {
   createdAt: "2026-07-29T10:00:00.000Z",
 };
 
-function report(concern: string, focusId: "work" | "relationships" | "growth" | "money" = "work") {
+function report(concern: string, focusId: "work" | "relationships" | "health" | "growth" | "money" = "work") {
   return createPaidReport("iatopic1234567", { ...base, focusId, concern });
 }
 
-function topicSection(concern: string, focusId?: "work" | "relationships" | "growth" | "money") {
+function topicSection(concern: string, focusId?: "work" | "relationships" | "health" | "growth" | "money") {
   return report(concern, focusId).sections
-    .find((section) => section.title.includes("이 고민에서 확인할 것")
+    .find((section) => section.title.includes("질문 분야 상세 분석")
       || section.title.includes("먼저 확인해야 할 것"));
 }
 
@@ -69,8 +69,8 @@ describe("reading the sentence the buyer wrote", () => {
   it("falls back to the chosen area and says so, rather than guessing", () => {
     const section = topicSection("음 잘 모르겠어요 그냥 봐주세요", "money");
 
-    expect(section?.title).toContain("이 고민에서 확인할 것");
-    expect(section?.body).toContain("구체적인 상황을 특정하지 못해");
+    expect(section?.title).toContain("질문 분야 상세 분석");
+    expect(section?.body).toContain("질문의 구체적 상황이 짧아");
   });
 
   it("is stable: the same sentence always resolves the same way", () => {
@@ -92,8 +92,9 @@ describe("reading the sentence the buyer wrote", () => {
 
   it("puts the topic's own step at the top of what to do", () => {
     const debut = report("아이돌 연습생인데 데뷔할 수 있을까요?");
+    const detail = topicSection("아이돌 연습생인데 데뷔할 수 있을까요?");
     expect(debut.actions[0]).toContain("지원");
-    expect(debut.cautions[0]).toContain("합격 여부");
+    expect(detail?.body).toContain("합격 여부");
   });
 });
 
@@ -120,6 +121,7 @@ describe("the wider set of situations", () => {
       ["보험을 정리해야 할까요", "보험"],
       ["상속 문제로 다툼이 있습니다", "상속"],
       ["운동 습관을 만들고 싶어요", "건강 습관"],
+      ["내 건강 습관 어디부터 바꿀까요", "건강 습관"],
       ["불면증이 심합니다", "수면"],
       ["사람 만나기가 너무 힘듭니다", "사람 만나기"],
       ["요즘 너무 외롭습니다", "외로움"],

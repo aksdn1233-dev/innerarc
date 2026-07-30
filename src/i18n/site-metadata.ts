@@ -9,16 +9,16 @@ export interface LocalizedSiteMetadata {
 
 const SITE_METADATA: Readonly<Record<Locale, LocalizedSiteMetadata>> = {
   ko: {
-    title: "결 GYEOL | 프리미엄 타로·신점 상담",
+    title: "결 GYEOL | 나·관계·올해의 흐름 리딩",
     description:
-      "타로의 상징과 현재의 고민을 연결해 연애·관계·진로·재물의 흐름을 깊고 구체적으로 읽는 프리미엄 타로신점 서비스.",
+      "생년월일을 바탕으로 나의 성향과 학업·직업·연애, 가까운 사람과의 관계, 올해의 흐름을 알기 쉽게 정리하는 개인 리딩 서비스.",
     openGraphLocale: "ko_KR",
     alternateOpenGraphLocale: "en_US",
   },
   en: {
-    title: "GYEOL | Premium Tarot Reading",
+    title: "GYEOL | Self, Relationships & Yearly Flow",
     description:
-      "A premium self-understanding service for exploring recurring patterns across self, relationships, work, and money.",
+      "A personal reading that makes your traits, study, work, love, close relationships, and the year ahead easier to understand.",
     openGraphLocale: "en_US",
     alternateOpenGraphLocale: "ko_KR",
   },

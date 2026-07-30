@@ -20,8 +20,13 @@ describe("what the copy promises matches what the reader gets", () => {
   it("gives every tier the core pattern the product copy advertises", () => {
     for (const productCode of ["plus_30d", "pro_30d", "premium_pdf"] as const) {
       const report = createPaidReport("iaclaims123", { ...baseInput, productCode });
+      const expectedTitle = productCode === "plus_30d"
+        ? "핵심 성향"
+        : productCode === "pro_30d"
+          ? "핵심 성향과 기질"
+          : "핵심 성향과 기질";
       expect(
-        report.sections.some((section) => section.title === "당신은 어떤 사람인가"),
+        report.sections.some((section) => section.title === expectedTitle),
         `${productCode} promises a core pattern but does not include one`,
       ).toBe(true);
     }
@@ -32,8 +37,12 @@ describe("what the copy promises matches what the reader gets", () => {
       .map((productCode) => createPaidReport("iaclaims123", { ...baseInput, productCode }));
 
     expect(quick.sections.length).toBeLessThan(comprehensive.sections.length);
-    expect(comprehensive.sections.length).toBeLessThan(premium.sections.length);
+    expect(comprehensive.sections.length).toBeGreaterThanOrEqual(13);
+    expect(comprehensive.sections.some((section) =>
+      section.title.startsWith("질문 분야 상세 분석 ·"))).toBe(true);
     expect(premium.sections.some((section) => section.title.includes("일과 역할"))).toBe(true);
+    expect(premium.sections.filter((section) =>
+      /관계|재물|돈|건강|성장|일과 역할/u.test(section.title)).length).toBeGreaterThanOrEqual(4);
   });
 
   it("keeps paid compatibility depth out of the quick product while the Free summary stays open", async () => {

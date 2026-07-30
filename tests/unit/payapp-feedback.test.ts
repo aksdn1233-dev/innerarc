@@ -209,15 +209,18 @@ describe("PayApp feedback callback", () => {
     expect(finalizePaidReport).not.toHaveBeenCalled();
   });
 
-  it("withdraws a delivered guest report when the payment is cancelled", async () => {
-    const recorded = stubOrder(defaultOrder({ status: "DONE" }));
-    const response = await POST(feedbackRequest({ pay_state: "8" }));
+  it.each(["8", "9", "16", "31", "32", "64"] as const)(
+    "withdraws a delivered guest report for PayApp cancellation state %s",
+    async (payState) => {
+      const recorded = stubOrder(defaultOrder({ status: "DONE" }));
+      const response = await POST(feedbackRequest({ pay_state: payState }));
 
-    expect(response.status).toBe(200);
-    expect(recorded.updates[0]).toMatchObject({ status: "CANCELED" });
-    expect(revokeGuestPaidReport).toHaveBeenCalledTimes(1);
-    expect(finalizePaidReport).not.toHaveBeenCalled();
-  });
+      expect(response.status).toBe(200);
+      expect(recorded.updates[0]).toMatchObject({ status: "CANCELED" });
+      expect(revokeGuestPaidReport).toHaveBeenCalledTimes(1);
+      expect(finalizePaidReport).not.toHaveBeenCalled();
+    },
+  );
 
   it("routes a signed-in buyer through the atomic entitlement function", async () => {
     const recorded = stubOrder(defaultOrder({ owner_user_id: "11111111-2222-3333-4444-555555555555" }));

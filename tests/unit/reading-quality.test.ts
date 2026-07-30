@@ -17,7 +17,7 @@ const TIERS = ["plus_30d", "pro_30d", "premium_pdf"] as const;
 function reading(
   productCode: (typeof TIERS)[number],
   concern = "사업 준비 중인데 웹사업 잘될까 올해",
-  focusId: "work" | "relationships" | "growth" | "money" = "work",
+  focusId: "work" | "relationships" | "growth" | "money" | "health" = "work",
 ) {
   return createPaidReport("iaquality1234", { ...BASE, productCode, focusId, concern });
 }
@@ -26,7 +26,7 @@ describe("the reading answers the question first", () => {
   it("opens with the answer, not with what it cannot do", () => {
     for (const tier of TIERS) {
       const first = reading(tier).sections[0];
-      expect(first.title, tier).toBe("질문에 대한 답");
+      expect(first.title, tier).toBe("질문에 대한 직접 결론");
       expect(first.body.length, tier).toBeGreaterThan(30);
     }
   });
@@ -98,8 +98,10 @@ describe("no tarot claim without a tarot draw", () => {
   });
 
   it("puts the character label in the reading", () => {
-    const section = reading("pro_30d").sections.find((s) => s.title === "당신은 어떤 사람인가");
-    expect(section?.body).toContain("통역자");
+    const report = reading("pro_30d");
+    const section = report.sections.find((s) => s.title === "캐릭터 한 줄");
+    expect(report.characterLabel).toBe("판을 먼저 읽는 시스템 설계자");
+    expect(section?.body).toContain("시스템 설계자");
   });
 });
 
@@ -108,12 +110,18 @@ describe("the three products differ in what they explain", () => {
     const titles = TIERS.map((tier) => reading(tier).sections.map((s) => s.title));
     const [basic, detail, premium] = titles;
 
-    expect(new Set(basic).size).toBeLessThan(new Set(detail).size);
-    expect(new Set(detail).size).toBeLessThan(new Set(premium).size);
-    // Every lower-tier section is still present higher up: the answer does not change,
-    // the explanation deepens.
-    for (const title of basic) expect(detail, title).toContain(title);
-    for (const title of detail) expect(premium, title).toContain(title);
+    expect(new Set(basic).size).toBe(basic.length);
+    expect(new Set(detail).size).toBe(detail.length);
+    expect(new Set(premium).size).toBe(premium.length);
+    expect(detail.length).toBeGreaterThanOrEqual(13);
+    expect(detail.length).toBeLessThanOrEqual(18);
+    expect(basic).toContain("질문에 대한 직접 결론");
+    expect(basic).toContain("핵심 숫자");
+    expect(basic).toContain("핵심 성향");
+    expect(basic).toContain("반복되는 약점");
+    expect(basic.some((title) => title.startsWith("질문 분야 분석 ·"))).toBe(true);
+    expect(detail).toContain("질문에 대한 직접 결론");
+    expect(premium).toContain("네 숫자를 하나로 읽는 종합 해석");
   });
 
   it("reserves reasoning sections for the paid-up tiers", () => {
@@ -121,20 +129,30 @@ describe("the three products differ in what they explain", () => {
     const detail = reading("pro_30d").sections.map((s) => s.title);
     const premium = reading("premium_pdf").sections.map((s) => s.title);
 
-    expect(basic).not.toContain("왜 이런 흐름이 나오나");
-    expect(detail).toContain("왜 이런 흐름이 나오나");
-    expect(detail).toContain("잘될 조건과 어긋나는 조건");
+    expect(basic).not.toContain("숫자 조합 안의 모순");
+    expect(detail).toContain("숫자 조합 안의 모순");
+    expect(detail).toContain("생각하고 결정하는 방식");
+    expect(detail).toContain("보류·중단·재검토 기준");
 
-    expect(detail).not.toContain("계산 근거");
-    expect(detail).not.toContain("이렇게 갈 수 있습니다");
-    expect(premium).toContain("계산 근거");
-    expect(premium).toContain("이렇게 갈 수 있습니다");
+    expect(detail).not.toContain("네 숫자를 하나로 읽는 종합 해석");
+    expect(detail).not.toContain("최선·현실·위험 시나리오");
+    expect(premium).toContain("네 숫자를 하나로 읽는 종합 해석");
+    expect(premium).toContain("최선·현실·위험 시나리오");
   });
 
   it("keeps the calculated numbers identical across tiers", () => {
-    // Price must change the depth of explanation, never the underlying reading.
-    const answers = TIERS.map((tier) => reading(tier).sections[0].body);
-    expect(new Set(answers).size).toBe(1);
+    // Price changes composition and depth, never the deterministic calculation.
+    const reports = TIERS.map((tier) => reading(tier));
+    expect(reports[0].calculationBasis).toMatchObject({
+      lifePath: 11,
+      birthday: 4,
+      attitude: 6,
+      birthYear: 5,
+      personalYear: 7,
+    });
+    for (const report of reports.slice(1)) {
+      expect(report.sections[0]?.body).toMatch(/생명수 11.*개인년 7/u);
+    }
   });
 
   it("does not repeat a whole section body twice in one reading", () => {
@@ -151,8 +169,8 @@ describe("the three products differ in what they explain", () => {
     // (828 / 1,735 / 3,105 chars for the birth-1994-11-04 business regression case)
     // so ordinary content variance across other birth dates does not trip it.
     const floors: Record<(typeof TIERS)[number], number> = {
-      plus_30d: 700,
-      pro_30d: 1500,
+      plus_30d: 2500,
+      pro_30d: 4000,
       premium_pdf: 2700,
     };
     for (const tier of TIERS) {

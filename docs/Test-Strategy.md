@@ -13,6 +13,10 @@
 - `1994-11-04 → 29 → 11`
 - `1980-01-03 → 22`
 - `1990-09-05 → 33`
+- DETAIL_39000 general report: `1994-11-04 → Life Path 11/2, Birthday 4,
+  Attitude 6, Birth Year 5, 2026 Personal Year 7`; 18 sections, five sharp insights,
+  five actions, at least three stop criteria, 5,000–8,500 total customer-facing
+  characters, and no 2027/2028 or unsupported tarot claim.
 - Valid leap days 2000/2024; invalid 1900/2023.
 - José accent normalization, separators, Korean/Japanese unavailable behavior, mixed script, 201-character limit, Y consonant.
 - Tarot: 78 unique cards, 22/56 split, nine spreads, fixed-seed replay, 100 seeded no-duplicate draws, reversal boundaries, manual card validation, and non-predictive combination rules.
@@ -31,6 +35,14 @@
 - Share cards: typed builder allowlists for four card kinds, no exact dates/questions/contacts/third-party labels, overclaim screening, bounded copy, XML escaping, self-contained SVG, bilingual schema parity, valid 1080×1350 local PNG output, generic one-file native-share envelope without text/URL, unsupported-share download fallback, cancellation without download, duplicate-click lock, accessible status, and no unexpected request/storage side effect.
 - Accessibility/security/PWA: axe-core critical/serious audits on every localized application route, keyboard skip/focus flow, mobile 44px targets, reduced-motion behavior, production response-header assertions, manifest/icon response checks, and explicit absence of service-worker registration.
 - Analytics/entitlements/billing: strict event-property schemas, consent-off no-write, event idempotency, AI cost bounds, tier/quota matrices, paid-status grace rules, failed checkout non-mutation, duplicate webhook idempotency, stale-event ordering, pre-order plan switching with matched report input, field-specific no-request validation, fail-closed sales/readiness/rate-limit states, explicit production launch approval in addition to provider configuration, widget/provider failure separation, and hosted-payment continuation when local report-link storage refuses a write.
+- DETAIL_39000: deterministic exact-combination and fallback composition, one-domain
+  routing for business/career/promotion/money/love/reconciliation/compatibility/child/
+  education/health/housing/private-fact questions, direct-answer order, contradiction
+  and decision mechanisms, five distinct sharp insights, paragraph deduplication, 2026
+  only, 4–5 situations, five prioritized actions, three stop criteria, qualified safety
+  boundaries, bilingual no-language-mixing, internal provenance non-disclosure, legacy
+  saved-report compatibility, mobile typography/order, saved-download order, and
+  birth-date-only 39,000 KRW checkout.
 - Free-to-paid boundary: each paid-reading homepage links to a payment-independent localized core-result route; fixed Korean and English birth-date vectors produce the same number and archetype without an order request or checkout draft.
 - Free-route regression: question tarot, romantic reflection, compatibility summary, celebrity comparison, and Reality Check render without an entitlement; paid report routes still fail closed without a verified order.
 - AI provider runner: disabled/provider-error/timeout/schema/fact-mismatch/overclaim fallback paths, successful validated output, bounded metering metadata, and proof that audit callbacks receive no raw request or response text.

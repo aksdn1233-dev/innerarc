@@ -25,6 +25,7 @@ Version 0.17.1 provides a web-first, guest-first Korean/English application with
 - a guest privacy center for independent consent, language/time-zone preferences, validated device export, and complete local deletion;
 - optional Supabase email sign-in with explicit owner-scoped upload/restore, account export, and atomic server-record deletion;
 - a fail-closed PayApp hosted checkout with virtual-account deposit notifications plus PortOne/Toss fallbacks, server-owned 19,000/39,000/79,000 KRW products, guest or optional-account purchase, verified payment callbacks, post-payment reports, downloads, My Page storage, notification preferences, and an allowlisted admin console;
+- a deterministic 19,000 KRW core report with a complete general mode or one focused question mode, five calculation facts, 2026 direction, exactly three actions, legacy-report compatibility, and a mobile-first result layout;
 - bilingual pre-release privacy and terms pages that surface unresolved launch-review fields;
 - region-labelled official crisis resources without inferring location from the selected language;
 - consent-gated analytics, personalization, entitlement, billing, data-rights, and AI-provider contracts;

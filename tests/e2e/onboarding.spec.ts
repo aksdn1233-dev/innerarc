@@ -12,8 +12,77 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await page.goto("/ko");
   await expect(page.getByRole("heading", {
     level: 1,
-    name: "막막한 순간, 결이 답의 방향을 밝혀드립니다.",
+    name: "나를 이해하면, 올해의 선택이 조금 더 선명해집니다.",
   })).toBeVisible();
+  await expect(page.locator(".home-hero + .report-preview")).toBeVisible();
+  await expect(page.locator(".report-preview")).toContainText(
+    "아래는 실제 후기가 아니라 리포트 구성 예시입니다.",
+  );
+  await expect(page.locator(".preview-reading")).toHaveCount(3);
+  await expect(page.locator(".question-bubble")).toHaveCount(9);
+  await expect(page.locator(".purchase-fact-row")).toContainText("자동 결제 없음");
+  await expect(page.locator(".preview-cta")).toHaveCSS("display", "flex");
+  await expect(page.locator(".preview-cta")).toHaveCSS("align-items", "center");
+  await expect(page.locator(".preview-cta")).toHaveCSS("justify-content", "center");
+  await expect(page.locator(".preview-cta")).toHaveCSS("text-align", "center");
+
+  const traditionalSideMotifs = await page.locator(".report-preview").evaluate((element) => {
+    const before = getComputedStyle(element, "::before");
+    const after = getComputedStyle(element, "::after");
+    return {
+      before: {
+        content: before.content,
+        opacity: Number(before.opacity),
+        position: before.position,
+        width: Number.parseFloat(before.width),
+      },
+      after: {
+        content: after.content,
+        opacity: Number(after.opacity),
+        position: after.position,
+        width: Number.parseFloat(after.width),
+      },
+    };
+  });
+  expect(traditionalSideMotifs.before.content).not.toBe("none");
+  expect(traditionalSideMotifs.after.content).not.toBe("none");
+  expect(traditionalSideMotifs.before.position).toBe("absolute");
+  expect(traditionalSideMotifs.after.position).toBe("absolute");
+  expect(traditionalSideMotifs.before.opacity).toBeGreaterThan(0);
+  expect(traditionalSideMotifs.after.opacity).toBeGreaterThan(0);
+  expect(traditionalSideMotifs.before.width).toBeGreaterThanOrEqual(24);
+  expect(traditionalSideMotifs.after.width).toBeGreaterThanOrEqual(24);
+
+  const heroQuestions = await page.locator(".question-bubble").evaluateAll((elements) => {
+    const hero = document.querySelector(".home-hero")?.getBoundingClientRect();
+    if (!hero) return null;
+
+    const visible = elements
+      .filter((element) => getComputedStyle(element).display !== "none")
+      .map((element) => {
+        const bounds = element.getBoundingClientRect();
+        return {
+          top: bounds.top,
+          bottom: bounds.bottom,
+          text: element.textContent?.trim() ?? "",
+        };
+      });
+
+    return {
+      heroTop: hero.top,
+      upperBoundary: hero.top + Math.min(440, hero.height * 0.65),
+      visible,
+    };
+  });
+
+  expect(heroQuestions).not.toBeNull();
+  expect(heroQuestions!.visible.length).toBeGreaterThanOrEqual(6);
+  expect(heroQuestions!.visible.every((question) => (
+    question.top >= heroQuestions!.heroTop
+      && question.bottom <= heroQuestions!.upperBoundary
+      && question.text.length > 0
+  ))).toBe(true);
+
   await page.getByRole("link", { name: "무료 핵심 패턴 먼저 보기" }).click();
   await expect(page).toHaveURL(`${E2E_ORIGIN}/ko/profile`);
   await expect(page.getByRole("heading", { name: "내 흐름 확인하기" })).toBeAttached();
@@ -530,17 +599,24 @@ test("guest privacy center saves explicitly, exports, and deletes all device dat
   }))).toEqual({ preferences: null, tarot: null, reality: null });
 });
 
-test("pre-release privacy and terms disclose unresolved launch fields", async ({ page }) => {
+test("privacy, terms, and support publish contacts while disclosing unresolved launch fields", async ({ page }) => {
   await page.goto("/en/profile");
   await expect(page.getByRole("link", { name: "Read the privacy information" })).toHaveAttribute("href", "/en/privacy");
   await page.getByRole("link", { name: "Read the privacy information" }).click();
-  await expect(page.getByText("Pre-operation notice · contact, transfer details, and legal review pending")).toBeVisible();
+  await expect(page.getByText("Pre-operation notice · transfer details and legal review pending")).toBeVisible();
   await expect(page.getByText("Supabase handles the authentication email", { exact: false })).toBeVisible();
   await expect(page.getByText("For payment, InnerArc retains the order ID", { exact: false })).toBeVisible();
-  await expect(page.getByText("Final support and privacy contact details will be published", { exact: false })).toBeVisible();
+  await expect(page.getByText("Support and privacy email: qkrehgus5886@naver.com")).toBeVisible();
   await page.getByRole("link", { name: "Terms of use" }).click();
-  await expect(page.getByText("Pre-release draft · seller details and refund policy pending")).toBeVisible();
+  await expect(page.getByText("Pre-release terms · mail-order registration details pending")).toBeVisible();
   await expect(page.getByText("Each is a one-time, non-renewing purchase.", { exact: false })).toBeVisible();
+  await expect(page.getByText("within seven days after the email is received", { exact: false })).toBeVisible();
+  await page.goto("/en/support");
+  await expect(page.getByRole("link", { name: "010-8706-1938" })).toHaveAttribute("href", "tel:01087061938");
+  await expect(page.getByRole("link", { name: "qkrehgus5886@naver.com" })).toHaveAttribute(
+    "href",
+    "mailto:qkrehgus5886@naver.com",
+  );
   await page.goto("/en/plans");
   await expect(page.getByText("Payments remain closed until merchant review", { exact: false })).toBeVisible();
   await expect(page.getByRole("button", { name: "Load payment methods" }).first()).toBeDisabled();

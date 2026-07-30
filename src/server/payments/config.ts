@@ -101,21 +101,21 @@ function buildProducts(quickPrice: number, comprehensivePrice: number, premiumPd
       tier: "plus",
       durationDays: 30,
       amount: quickPrice,
-      names: { ko: "간단 타로 리딩", en: "Quick tarot reading" },
+      names: { ko: "핵심 리딩", en: "Core reading" },
     },
     pro_30d: {
       code: "pro_30d",
       tier: "pro",
       durationDays: 30,
       amount: comprehensivePrice,
-      names: { ko: "타로·생년월일 종합 리딩", en: "Tarot and birth-date reading" },
+      names: { ko: "상세 리딩", en: "Detailed reading" },
     },
     premium_pdf: {
       code: "premium_pdf",
       tier: "pro",
       durationDays: 30,
       amount: premiumPdfPrice,
-      names: { ko: "프리미엄 맞춤 PDF", en: "Premium custom PDF" },
+      names: { ko: "프리미엄 심층 리딩", en: "Premium in-depth reading" },
     },
   } as const satisfies Readonly<Record<PaymentProductCode, PaymentProduct>>;
 }

@@ -21,14 +21,18 @@ describe("case B — attracting students for a lesson business", () => {
   it("routes to the client-acquisition topic, not a generic fallback", () => {
     for (const tier of TIERS) {
       const report = createPaidReport("iacaseb1234567", { ...base, productCode: tier });
-      const topicSection = report.sections.find((s) => s.title.includes("이 고민에서 확인할 것"));
-      expect(topicSection?.title, tier).toContain("고객·수강생 확보");
+      const topicSection = tier === "plus_30d"
+        ? report.sections.find((s) => s.title === "질문 분야 분석 · 레슨·교육 사업")
+        : report.sections.find((s) => s.title.includes("질문 분야 상세 분석"));
+      expect(topicSection?.title, tier).toContain(
+        tier === "plus_30d" ? "레슨·교육 사업" : "고객·수강생 확보",
+      );
     }
   });
 
   it("answers directly and names the real lever — visibility, not just skill", () => {
     const report = createPaidReport("iacaseb1234567", { ...base, productCode: "pro_30d" });
-    expect(report.sections[0].title).toBe("질문에 대한 답");
+    expect(report.sections[0].title).toBe("질문에 대한 직접 결론");
     expect(report.sections[0].body).not.toMatch(/^알 수 없|^수비학으로.*알 수 없/);
     const whole = report.sections.map((s) => s.body).join(" ");
     expect(whole).toMatch(/증거|보여|눈에 보이/);
@@ -59,9 +63,9 @@ describe("case C — whether contact resumes after a move abroad", () => {
 
   it("routes to the reunion/contact topic and gives a direct opening", () => {
     const report = createPaidReport("iacasec1234567", { ...base, productCode: "pro_30d" });
-    const topicSection = report.sections.find((s) => s.title.includes("이 고민에서 확인할 것"));
+    const topicSection = report.sections.find((s) => s.title.includes("질문 분야 상세 분석"));
     expect(topicSection?.title).toContain("재회");
-    expect(report.sections[0].title).toBe("질문에 대한 답");
+    expect(report.sections[0].title).toBe("질문에 대한 직접 결론");
     expect(report.sections[0].body.length).toBeGreaterThan(30);
   });
 
@@ -88,7 +92,7 @@ describe("case D — a child's temperament and direction", () => {
 
   it("routes to the child-temperament topic, not the generic child-worry one", () => {
     const report = createPaidReport("iacased1234567", { ...base, productCode: "pro_30d" });
-    const topicSection = report.sections.find((s) => s.title.includes("이 고민에서 확인할 것"));
+    const topicSection = report.sections.find((s) => s.title.includes("질문 분야 상세 분석"));
     expect(topicSection?.title).toContain("자녀 성향·진로");
   });
 
@@ -101,7 +105,7 @@ describe("case D — a child's temperament and direction", () => {
 
   it("covers learning style and pressure response rather than a career prediction", () => {
     const report = createPaidReport("iacased1234567", { ...base, productCode: "pro_30d" });
-    const topicSection = report.sections.find((s) => s.title.includes("이 고민에서 확인할 것"));
+    const topicSection = report.sections.find((s) => s.title.includes("질문 분야 상세 분석"));
     expect(topicSection?.body).toMatch(/학습|몰입|배우는 방식/);
   });
 });
@@ -119,12 +123,14 @@ describe("premium is not detail with adjectives", () => {
     };
     const detail = createPaidReport("iacasee1234567", { ...base, productCode: "pro_30d" });
     const premium = createPaidReport("iacasee1234567", { ...base, productCode: "premium_pdf" });
-    const detailLen = detail.sections.reduce((sum, s) => sum + s.body.length, 0);
-    const premiumLen = premium.sections.reduce((sum, s) => sum + s.body.length, 0);
-    expect(premiumLen).toBeGreaterThan(detailLen * 1.3);
+    expect(detail.sections.filter((section) =>
+      section.title.startsWith("질문 분야 상세 분석 ·")).length).toBe(1);
+    expect(detail.sections.length).toBeGreaterThanOrEqual(13);
+    expect(detail.sections.length).toBeLessThanOrEqual(18);
 
     const detailTitles = new Set(detail.sections.map((s) => s.title));
     const premiumOnlyTitles = premium.sections.filter((s) => !detailTitles.has(s.title));
-    expect(premiumOnlyTitles.length).toBeGreaterThanOrEqual(2);
+    expect(premiumOnlyTitles.length).toBeGreaterThanOrEqual(5);
+    expect(premium.sections.some((section) => section.title.includes("일과 역할"))).toBe(true);
   });
 });

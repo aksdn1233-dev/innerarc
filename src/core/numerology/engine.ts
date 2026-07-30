@@ -99,6 +99,11 @@ export function calculateAttitudeNumber(birthDate: string): NumberCalculation {
   return calculation([month, day]);
 }
 
+export function calculateBirthYearNumber(birthDate: string): NumberCalculation {
+  const { year } = parseBirthDate(birthDate);
+  return calculation(String(year).padStart(4, "0").split("").map(Number));
+}
+
 export function calculatePersonalYear(birthDate: string, calendarYear: number): NumberCalculation {
   const { month, day } = parseBirthDate(birthDate);
   if (!Number.isInteger(calendarYear) || calendarYear < 1 || calendarYear > 9999) {

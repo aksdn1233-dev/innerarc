@@ -479,3 +479,70 @@
 - Impact: The homepage returns to the established transfer budget with no third-party request or layout change. The source PNG remains as a non-referenced master asset.
 - Revisit when: The hero direction is redesigned or an approved image CDN provides equivalent privacy, reliability, and cache evidence.
 - Status: Decided.
+
+## D-049 - Isolate the complete BASIC_19000 composition
+
+- Date: 2026-07-30
+- Decision: Keep `plus_30d` as the payment and persistence code, but route it after
+  shared input validation to a dedicated deterministic BASIC_19000 composer and an
+  explicitly marked renderer plan.
+- Alternatives: Expand the shared three-tier composer in place; rename payment products
+  to their display-tier names; generate the report at view time; alter 39,000/79,000
+  report composition at the same time.
+- Reason: A 19,000 KRW purchase needs a complete and memorable answer, while payment,
+  stored reports, and higher-tier delivery already have stable compatibility contracts.
+  An isolated composer makes the quality correction testable without changing those
+  contracts.
+- Impact: New BASIC_19000 reports have 8–10 sections, deterministic calculation basis,
+  one focused question domain or a complete general mode, exactly three actions, and a
+  strong final conclusion. Optional additive fields preserve legacy stored reports.
+- Revisit when: Higher-tier content receives its own separately scoped quality review,
+  or the service year changes from 2026 under a versioned calculation/content policy.
+- Status: Decided.
+
+## D-050 - Isolate DETAIL_39000 as a consultant-grade deterministic composition
+
+- Date: 2026-07-30
+- Decision: Keep `pro_30d` as the payment, entitlement, and persistence code, but route
+  new 39,000 KRW reports to a dedicated deterministic DETAIL_39000 composer and marked
+  renderer plan.
+- Alternatives: Continue extending the shared pro/premium composer; rename the
+  payment-critical product code; use a live language model; expand PREMIUM_79000 at the
+  same time.
+- Reason: The middle tier needs deeper decision support than BASIC_19000 while
+  remaining narrower than PREMIUM_79000's all-domain synthesis. Isolation makes
+  domain routing, content provenance, duplicate control, mobile order, and legacy
+  compatibility independently testable without changing checkout or stored-order
+  contracts.
+- Impact: Question mode has one primary domain and materially relevant support factors;
+  general mode covers the person's core work, money, collaboration, relationship, and
+  2026 patterns. New optional metadata records the composition plan, calculation basis,
+  and internal content references. Existing stored reports remain valid.
+- Revisit when: Approved exact-combination content expands beyond the standing
+  regression vector, the service year changes, or PREMIUM_79000 receives its own
+  separately scoped content-depth correction.
+- Status: Decided.
+
+## D-051 - Make PREMIUM_79000 a machine-audited strict superset
+
+- Date: 2026-07-31
+- Decision: Keep `premium_pdf` as the payment and persistence code, but route new
+  purchases to a dedicated PREMIUM_79000 composer that begins with the complete
+  DETAIL_39000 output, enriches every detailed category, and records a machine-readable
+  inheritance, enrichment, and comparison audit.
+- Alternatives: Continue the former shared premium composer; generate unrelated longer
+  prose; require a customer question; rename the payment product and migrate stored
+  rows; call a live model for every paid report.
+- Reason: A 79,000 KRW purchase must be demonstrably deeper without changing the
+  person's facts or losing content already included at 39,000 KRW. A deterministic
+  inheritance contract makes missing categories, duplicated bodies without enrichment,
+  contradictory labels, and calculation drift fail closed and regression-testable.
+- Impact: Premium keeps the same price authority, callbacks, access, entitlements and
+  stored-report compatibility while adding scenario, evidence, execution, stop,
+  long-term, and consultant-grade decision structure. A blank question remains
+  complete; a supplied question increases focus. New optional report metadata is
+  internal and does not expose content-source identifiers in web or download views.
+- Revisit when: The service year changes from 2026, a reviewed retrieval source replaces
+  the deterministic content tables, or historical stored reports require an explicit
+  upgrade path instead of continuing through the legacy renderer.
+- Status: Decided.

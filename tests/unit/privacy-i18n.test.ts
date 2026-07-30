@@ -45,7 +45,7 @@ describe("Korean and English content parity", () => {
     expect(Object.keys(dictionaries.ko).sort()).toEqual(Object.keys(dictionaries.en).sort());
     for (const dictionary of Object.values(dictionaries)) {
       expect(dictionary.nav).toHaveLength(5);
-      expect(dictionary.interests).toHaveLength(5);
+      expect(dictionary.interests).toHaveLength(6);
       expect(dictionary.depths).toHaveLength(3);
       expect(dictionary.disclaimer.length).toBeGreaterThan(40);
     }
@@ -62,6 +62,18 @@ describe("Korean and English content parity", () => {
     expect(privacyCopy.ko.status).toContain("법률 검토 필요");
     expect(privacyCopy.en.status).toContain("legal review pending");
     expect(termsCopy.ko.intro).toContain("유료 결제");
-    expect(termsCopy.en.intro).toContain("Paid checkout remains closed");
+    expect(termsCopy.en.intro).toContain("Refund requests");
+  });
+
+  it("publishes the approved support contacts and refund response window", () => {
+    const koreanLegalCopy = JSON.stringify([privacyCopy.ko, termsCopy.ko]);
+    const englishLegalCopy = JSON.stringify([privacyCopy.en, termsCopy.en]);
+
+    expect(koreanLegalCopy).toContain("010-8706-1938");
+    expect(koreanLegalCopy).toContain("qkrehgus5886@naver.com");
+    expect(koreanLegalCopy).toContain("이메일 접수일로부터 7일 이내");
+    expect(englishLegalCopy).toContain("010-8706-1938");
+    expect(englishLegalCopy).toContain("qkrehgus5886@naver.com");
+    expect(englishLegalCopy).toContain("within seven days");
   });
 });

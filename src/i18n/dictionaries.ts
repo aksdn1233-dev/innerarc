@@ -102,6 +102,7 @@ const ko: Dictionary = {
   interests: [
     { value: "work", label: "일·진로" },
     { value: "relationships", label: "관계" },
+    { value: "health", label: "건강·생활" },
     { value: "growth", label: "성장" },
     { value: "money", label: "돈" },
     { value: "leadership", label: "리더십" },
@@ -192,6 +193,7 @@ const en: Dictionary = {
   interests: [
     { value: "work", label: "Work & career" },
     { value: "relationships", label: "Relationships" },
+    { value: "health", label: "Health & daily rhythm" },
     { value: "growth", label: "Growth" },
     { value: "money", label: "Money" },
     { value: "leadership", label: "Leadership" },

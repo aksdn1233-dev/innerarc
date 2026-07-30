@@ -3,9 +3,9 @@ import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/",
-    name: "결 GYEOL — 프리미엄 타로·신점 상담",
+    name: "결 GYEOL — 나·관계·올해의 흐름 리딩",
     short_name: "결 GYEOL",
-    description: "Symbolic self-reflection connected to real-world outcome reviews.",
+    description: "나의 성향과 관계, 올해의 흐름을 알기 쉽게 정리하는 개인 리딩.",
     start_url: "/ko",
     scope: "/",
     display: "standalone",

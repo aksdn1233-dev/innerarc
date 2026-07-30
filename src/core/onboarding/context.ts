@@ -5,6 +5,7 @@ export const ONBOARDING_CONTEXT_RULE_VERSION = "onboarding-context-1.0.0";
 export const onboardingFocusIds = [
   "work",
   "relationships",
+  "health",
   "growth",
   "money",
   "leadership",
@@ -81,6 +82,24 @@ const FOCUS: Record<OnboardingFocusId, FocusDefinition> = {
     ),
     nextStepType: "relationship",
     nextStepLabel: n("관계 환경과 미래 파트너 성향 보기", "Explore relationship settings and partner qualities"),
+  },
+  health: {
+    label: n("건강·생활", "Health & daily rhythm"),
+    title: n("몸의 답을 맞히기보다 반복되는 생활 신호를 보세요", "Observe recurring daily signals instead of trying to predict health"),
+    contextualInference: n(
+      "생년월일로 질병이나 몸 상태를 판단하지 않습니다. 수면·식사·활동·회복이 어떤 조건에서 유지되는지 살펴보고, 실제 기록으로 생활 리듬을 점검하는 데만 사용합니다.",
+      "A birth date cannot diagnose illness or determine your physical condition. Use this only to review the conditions supporting sleep, meals, activity, and recovery, then compare them with real records.",
+    ),
+    practicalAction: n(
+      "지난 2주 동안 수면시간, 식사 누락, 활동량, 피로가 심했던 날을 한 줄씩 기록해 반복되는 조건 하나를 찾아보세요.",
+      "For the last two weeks, note sleep, skipped meals, activity, and high-fatigue days, then identify one condition that repeats.",
+    ),
+    realityCheck: n(
+      "통증·어지럼·급격한 체중 변화나 일상 기능 저하가 있다면 상징 해석보다 의료진 확인을 먼저 받으셨나요?",
+      "If there is pain, dizziness, rapid weight change, or difficulty functioning, have you put clinical care ahead of symbolic reflection?",
+    ),
+    nextStepType: "reality_check",
+    nextStepLabel: n("생활 리듬을 Reality Check에 기록하기", "Record the daily rhythm in Reality Check"),
   },
   growth: {
     label: n("성장", "Growth"),

@@ -9,6 +9,12 @@ const copy = {
     eyebrow: "고객 문의",
     title: "무엇을 도와드릴까요?",
     intro: "결제, 환불, 리포트에 대해 궁금한 점을 남겨주시면 확인 후 답변드립니다. 회원가입 없이 남기실 수 있어요.",
+    directTitle: "바로 연락하기",
+    phoneLabel: "대표 전화",
+    phone: "010-8706-1938",
+    emailLabel: "고객지원·환불 접수",
+    email: "qkrehgus5886@naver.com",
+    refundTiming: "환불은 이메일 접수일로부터 7일 이내에 확인·처리합니다.",
     category: "문의 종류",
     categories: {
       payment: "결제가 안 돼요",
@@ -30,12 +36,18 @@ const copy = {
     invalid: "연락처와 문의 내용을 5자 이상 적어주세요.",
     findOrder: "구매 내역 확인",
     home: "홈으로",
-    notice: "환불은 결제하신 수단으로 처리되며, 반영까지 며칠 걸릴 수 있습니다.",
+    notice: "환불은 이메일 접수일로부터 7일 이내에 확인·처리합니다. 승인된 금액은 결제하신 수단으로 반환되며 실제 반영 시점은 결제대행사와 카드사 일정에 따라 달라질 수 있습니다.",
   },
   en: {
     eyebrow: "Support",
     title: "How can we help?",
     intro: "Ask about a payment, a refund, or a report and we will reply. No account needed.",
+    directTitle: "Contact us directly",
+    phoneLabel: "Representative phone",
+    phone: "010-8706-1938",
+    emailLabel: "Support and refund requests",
+    email: "qkrehgus5886@naver.com",
+    refundTiming: "Refund requests are reviewed and processed within seven days after the email is received.",
     category: "Topic",
     categories: {
       payment: "Payment did not work",
@@ -57,7 +69,7 @@ const copy = {
     invalid: "Please enter a contact and at least a few words.",
     findOrder: "Find a purchase",
     home: "Home",
-    notice: "Refunds return to the original payment method and can take a few days.",
+    notice: "Refund requests are reviewed and processed within seven days after the email is received. Approved refunds return to the original payment method; the posting date may vary by payment provider or card issuer.",
   },
 } as const;
 
@@ -124,6 +136,21 @@ export function SupportExperience({
       <p className="eyebrow">{t.eyebrow}</p>
       <h1>{t.title}</h1>
       <p>{t.intro}</p>
+
+      <section className="support-direct-card" aria-labelledby="support-direct-title">
+        <h2 id="support-direct-title">{t.directTitle}</h2>
+        <dl>
+          <div>
+            <dt>{t.phoneLabel}</dt>
+            <dd><a href="tel:01087061938">{t.phone}</a></dd>
+          </div>
+          <div>
+            <dt>{t.emailLabel}</dt>
+            <dd><a href={`mailto:${t.email}`}>{t.email}</a></dd>
+          </div>
+        </dl>
+        <p>{t.refundTiming}</p>
+      </section>
 
       <form className="order-lookup-form" onSubmit={(event) => void submit(event)}>
         <div className="field">

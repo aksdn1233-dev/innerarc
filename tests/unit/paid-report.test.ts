@@ -23,9 +23,9 @@ describe("paid report delivery", () => {
       productCode: "premium_pdf",
     });
 
-    expect(quick.title).toBe("간단 타로 리딩");
+    expect(quick.title).toBe("나의 핵심 리딩");
     expect(quick.sections.length).toBeLessThan(premium.sections.length);
-    expect(premium.title).toBe("프리미엄 맞춤 리포트");
+    expect(premium.title).toBe("프리미엄 심층 리딩");
     expect(premium.actions.length).toBeGreaterThan(1);
     expect(premium.cautions.length).toBeGreaterThan(1);
   });
@@ -33,7 +33,12 @@ describe("paid report delivery", () => {
   it("tells even the cheapest buyer something about themselves", () => {
     for (const productCode of ["plus_30d", "pro_30d", "premium_pdf"] as const) {
       const report = createPaidReport(`ia${productCode}9999`, { ...baseInput, productCode });
-      const core = report.sections.find((section) => section.title === "당신은 어떤 사람인가");
+      const expectedTitle = productCode === "plus_30d"
+        ? "핵심 성향"
+        : productCode === "pro_30d"
+          ? "핵심 성향과 기질"
+          : "핵심 성향과 기질";
+      const core = report.sections.find((section) => section.title === expectedTitle);
 
       expect(core, `${productCode} is missing the core pattern section`).toBeDefined();
       // The raw numbers moved to the premium tier's calculation section; what every
@@ -54,7 +59,7 @@ describe("paid report delivery", () => {
         birthDate,
         productCode: "plus_30d",
       });
-      return report.sections.find((section) => section.title === "당신은 어떤 사람인가")?.body ?? "";
+      return report.sections.find((section) => section.title === "핵심 성향")?.body ?? "";
     });
 
     expect(bodies.every((body) => body.length > 0)).toBe(true);
@@ -77,7 +82,7 @@ describe("paid report delivery", () => {
         productCode: "plus_30d",
       });
       const core = report.sections.find((section) =>
-        section.title === (locale === "ko" ? "당신은 어떤 사람인가" : "Who you are"));
+        section.title === (locale === "ko" ? "핵심 성향" : "Core temperament"));
 
       expect(core?.body).toBeDefined();
       expect(core?.body).not.toMatch(/반드시|보장|틀림없|guaranteed|will definitely/i);
@@ -117,6 +122,79 @@ describe("paid report delivery", () => {
     expect(career?.body).toContain("잘 맞는 자리 —");
     expect(career?.body).toContain("피할 자리 —");
     expect(career?.body.split("\n").length).toBeGreaterThan(5);
+  });
+
+  it("answers every floating example from the entered birth date", () => {
+    const questions = [
+      ["이번 시험, 잘 볼 수 있을까?", "work"],
+      ["그 사람은 지금 잘 지낼까?", "relationships"],
+      ["우리 엄마는 왜 그럴까?", "relationships"],
+      ["우리 아이는 어떤 사람일까?", "growth"],
+      ["남편은 왜 저렇게 생각할까?", "relationships"],
+      ["올해 이직해도 괜찮을까?", "work"],
+      ["내 건강 습관, 어디부터 바꿀까?", "health"],
+      ["올해 돈 흐름은 어떨까?", "money"],
+      ["지금 시작해도 괜찮을까?", "growth"],
+    ] as const;
+
+    for (const [concern, focusId] of questions) {
+      const first = createPaidReport("iaquestiona123", {
+        ...baseInput,
+        birthDate: "1994-11-04",
+        productCode: "pro_30d",
+        concern,
+        focusId,
+      }).sections.find((section) => section.title === "질문에 대한 직접 결론")?.body;
+      const second = createPaidReport("iaquestionb123", {
+        ...baseInput,
+        birthDate: "1988-03-17",
+        productCode: "pro_30d",
+        concern,
+        focusId,
+      }).sections.find((section) => section.title === "질문에 대한 직접 결론")?.body;
+
+      expect(first, concern).toMatch(/생명수.*2026 개인년/u);
+      expect(second, concern).toMatch(/생명수.*2026 개인년/u);
+      expect(first, concern).not.toBe(second);
+    }
+  });
+
+  it("shows how the three prices deepen the same 941104 health answer", () => {
+    const reports = (["plus_30d", "pro_30d", "premium_pdf"] as const).map((productCode) =>
+      createPaidReport(`ia941104${productCode}`, {
+        ...baseInput,
+        birthDate: "1994-11-04",
+        productCode,
+        focusId: "health",
+        concern: "내 건강 습관, 어디부터 바꿀까?",
+      }));
+
+    const sectionCounts = reports.map((report) => report.sections.length);
+    const totalLengths = reports.map((report) =>
+      report.sections.reduce((total, section) => total + section.body.length, 0));
+
+    expect(reports[0].calculationBasis).toMatchObject({
+      lifePath: 11,
+      birthday: 4,
+      attitude: 6,
+      birthYear: 5,
+      personalYear: 7,
+    });
+    expect(reports.slice(1).every((report) =>
+      report.sections[0]?.body.match(/생명수 11.*개인년/u))).toBe(true);
+    expect(reports.every((report) =>
+      report.sections.some((section) =>
+        section.title.includes(report.productCode === "plus_30d" ? "건강·생활 리듬" : "건강 습관"),
+      ))).toBe(true);
+    expect(sectionCounts[0]).toBeLessThan(sectionCounts[1]);
+    expect(sectionCounts[1]).toBeGreaterThanOrEqual(13);
+    expect(totalLengths[0]).toBeGreaterThan(2_500);
+    expect(totalLengths[1]).toBeGreaterThan(4_000);
+    expect(totalLengths[2]).toBeGreaterThan(totalLengths[0]);
+    expect(reports[1].sections.filter((section) =>
+      section.title.startsWith("질문 분야 상세 분석 ·")).length).toBe(1);
+    expect(reports[2].sections.some((section) =>
+      section.title.includes("일과 역할"))).toBe(true);
   });
 
   it("uses an environment allowlist instead of a hard-coded admin password", () => {

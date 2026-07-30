@@ -4,6 +4,7 @@ import {
   NumerologyInputError,
   calculateAttitudeNumber,
   calculateBirthdayNumber,
+  calculateBirthYearNumber,
   calculateLifePath,
   calculateNameNumbers,
   calculateNumerologyProfile,
@@ -44,6 +45,7 @@ describe("birth-date calculations", () => {
     expect(lifePath.ruleVersion).toBe(NUMEROLOGY_RULE_VERSION);
     expect(calculateBirthdayNumber("1994-11-04").value).toBe(4);
     expect(calculateAttitudeNumber("1994-11-04").value).toBe(6);
+    expect(calculateBirthYearNumber("1994-11-04").value).toBe(5);
     expect(calculatePersonalYear("1994-11-04", 2026).value).toBe(7);
   });
 

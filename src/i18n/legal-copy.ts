@@ -19,7 +19,7 @@ export type LegalPageCopy = Readonly<{
 }>;
 
 const sharedKo = {
-  brandTagline: "프리미엄 타로·신점 리딩",
+  brandTagline: "나·관계·올해의 흐름 리딩",
   home: "홈으로",
   privacy: "개인정보 처리 안내",
   terms: "이용조건",
@@ -34,10 +34,10 @@ const sharedEn = {
 
 const privacyKo: LegalPageCopy = {
   ...sharedKo,
-  status: "운영 전 안내 · 연락처·국외이전 세부사항 및 법률 검토 필요",
+  status: "운영 전 안내 · 국외이전 세부사항 및 법률 검토 필요",
   title: "개인정보 처리 안내",
-  intro: "InnerArc 운영자와 현재 기능, 계정·결제 처리 범위를 설명합니다. 개인정보 권리행사 연락처와 위탁·국외이전 세부사항은 실제 계약 확인 후 최종 갱신합니다.",
-  lastUpdated: "2026-07-27",
+  intro: "InnerArc 운영자와 현재 기능, 계정·결제 처리 범위를 설명합니다. 개인정보 권리행사는 아래 고객지원 이메일로 접수할 수 있으며, 위탁·국외이전 세부사항은 실제 계약 확인 후 최종 갱신합니다.",
+  lastUpdated: "2026-07-30",
   sections: [
     {
       title: "개인정보처리자",
@@ -46,6 +46,8 @@ const privacyKo: LegalPageCopy = {
         "대표자: 박서준",
         "사업자등록번호: 482-12-03629",
         "사업장 소재지: 부산광역시 북구 (상세 공개 주소 확정 전)",
+        "대표 전화: 010-8706-1938",
+        "고객지원·개인정보 문의: qkrehgus5886@naver.com",
       ],
     },
     {
@@ -81,7 +83,7 @@ const privacyKo: LegalPageCopy = {
     {
       title: "정보주체의 권리와 안전조치",
       bullets: [
-        "이용자는 자신의 정보 열람, 정정, 삭제, 처리정지 및 동의 철회를 요청할 수 있습니다. 최종 고객지원·개인정보 보호 연락처는 사업자 정보 확정 후 게시합니다.",
+        "이용자는 자신의 정보 열람, 정정, 삭제, 처리정지 및 동의 철회를 qkrehgus5886@naver.com으로 요청할 수 있습니다.",
         "계정별 접근통제, 서버 전용 결제키, 최소권한 데이터베이스, 전송구간 암호화, 결제 웹훅 재조회 검증과 로그 마스킹을 적용합니다.",
         "타인의 정보를 입력할 때에는 적법한 권한과 동의를 확인해야 하며 공유 결과에는 상대방의 생년월일과 이름을 포함하지 않습니다.",
       ],
@@ -89,7 +91,7 @@ const privacyKo: LegalPageCopy = {
     {
       title: "출시를 막는 미확정 항목",
       paragraphs: [
-        "개인정보 보호 담당 연락처, 최소 이용연령, 정확한 처리 항목·법적 근거·보유기간, 위탁사와 국외이전, 쿠키·분석 도구, 권리행사 절차 및 침해구제 안내의 최종 확인이 남아 있습니다.",
+        "최소 이용연령, 정확한 처리 항목·법적 근거·보유기간, 위탁사와 국외이전, 쿠키·분석 도구, 권리행사 절차 및 침해구제 안내의 최종 확인이 남아 있습니다.",
       ],
     },
   ],
@@ -97,10 +99,10 @@ const privacyKo: LegalPageCopy = {
 
 const privacyEn: LegalPageCopy = {
   ...sharedEn,
-  status: "Pre-operation notice · contact, transfer details, and legal review pending",
+  status: "Pre-operation notice · transfer details and legal review pending",
   title: "Privacy information",
-  intro: "This notice identifies the InnerArc operator and describes current account and payment data flows. Contact, processor, and international-transfer details will be finalized against the operating contracts.",
-  lastUpdated: "2026-07-27",
+  intro: "This notice identifies the InnerArc operator and describes current account and payment data flows. Privacy requests may be submitted to the support email below. Processor and international-transfer details will be finalized against the operating contracts.",
+  lastUpdated: "2026-07-30",
   sections: [
     {
       title: "Controller",
@@ -109,6 +111,8 @@ const privacyEn: LegalPageCopy = {
         "Representative: 박서준",
         "Business registration number: 482-12-03629",
         "Business location: Buk-gu, Busan, Republic of Korea (public service address pending)",
+        "Representative phone: 010-8706-1938",
+        "Support and privacy email: qkrehgus5886@naver.com",
       ],
     },
     {
@@ -144,7 +148,7 @@ const privacyEn: LegalPageCopy = {
     {
       title: "Individual rights and safeguards",
       bullets: [
-        "Individuals may request access, correction, deletion, restriction, and consent withdrawal. Final support and privacy contact details will be published after operator details are approved.",
+        "Individuals may request access, correction, deletion, restriction, and consent withdrawal at qkrehgus5886@naver.com.",
         "Controls include account-scoped access, server-only payment keys, least-privilege database access, encrypted transport, provider re-query for webhook verification, and log redaction.",
         "Before entering another person's information, confirm lawful authority and consent. Shared outputs exclude the other person's name and birth date.",
       ],
@@ -152,7 +156,7 @@ const privacyEn: LegalPageCopy = {
     {
       title: "Fields blocking launch",
       paragraphs: [
-        "Controller name, address, representative, privacy contact, minimum age, exact fields, legal bases, retention, processors, international transfers, analytics and cookies, rights procedures, and complaint routes remain unresolved. Payments stay disabled until these fields are completed and reviewed.",
+        "The public service address, minimum age, exact fields, legal bases, retention, processors, international transfers, analytics and cookies, rights procedures, and complaint routes remain unresolved. Payments stay disabled until these fields are completed and reviewed.",
       ],
     },
   ],
@@ -160,10 +164,10 @@ const privacyEn: LegalPageCopy = {
 
 const termsKo: LegalPageCopy = {
   ...sharedKo,
-  status: "운영 전 이용조건 · 연락처와 통신판매 신고정보 최종 확인 필요",
+  status: "운영 전 이용조건 · 통신판매 신고정보 최종 확인 필요",
   title: "InnerArc 이용조건",
-  intro: "현재 제품 경계와 자동 갱신 없는 1회성 리딩 상품의 유료 결제·전달·환불 원칙을 설명합니다. 연락처와 통신판매 신고정보는 운영 개시 전에 최종 갱신합니다.",
-  lastUpdated: "2026-07-27",
+  intro: "현재 제품 경계와 자동 갱신 없는 1회성 리딩 상품의 유료 결제·전달·환불 원칙을 설명합니다. 환불은 고객지원 이메일로 접수하며, 통신판매 신고정보는 운영 개시 전에 최종 갱신합니다.",
+  lastUpdated: "2026-07-30",
   sections: [
     {
       title: "판매자 정보",
@@ -173,6 +177,8 @@ const termsKo: LegalPageCopy = {
         "사업자등록번호: 482-12-03629",
         "사업장 소재지: 부산광역시 북구 (상세 공개 주소 확정 전)",
         "업태·종목: 도매 및 소매업 · 전자상거래 소매업",
+        "대표 전화: 010-8706-1938",
+        "고객지원 이메일: qkrehgus5886@naver.com",
       ],
     },
     {
@@ -198,7 +204,7 @@ const termsKo: LegalPageCopy = {
     {
       title: "리딩 상품과 결제",
       bullets: [
-        "간단 타로 리딩은 19,000원, 타로·생년월일 종합 리딩은 39,000원, 프리미엄 맞춤 리포트는 79,000원입니다. 모두 자동 갱신 없는 1회성 상품이며 최종 결제금액과 제공 범위를 결제 직전에 다시 표시합니다.",
+        "핵심 리딩은 19,000원, 상세 리딩은 39,000원, 프리미엄 심층 리딩은 79,000원입니다. 모두 자동 갱신 없는 1회성 상품이며 최종 결제금액과 제공 범위를 결제 직전에 다시 표시합니다.",
         "결제 승인 뒤 리포트를 즉시 열고 내려받을 수 있습니다. 로그인하면 마이페이지에도 저장되며, 비회원은 안전한 전용 주소와 내려받은 파일을 직접 보관해야 합니다.",
         "카카오페이·토스페이·카드·휴대폰·계좌이체·가상계좌는 페이앱 판매자 설정과 각 결제수단 심사가 완료된 범위에서만 노출됩니다.",
         "가상계좌 리포트는 페이앱의 서명값·주문번호·결제금액을 검증한 입금완료 통보를 받은 시점부터 제공됩니다.",
@@ -207,13 +213,13 @@ const termsKo: LegalPageCopy = {
     {
       title: "청약철회, 취소와 환불",
       paragraphs: [
-        "구매자는 계약내용을 받은 날 또는 이용 가능일 중 늦은 날부터 7일 이내에 청약철회를 요청할 수 있습니다. 서비스가 표시·광고 또는 계약과 다르게 제공된 경우에는 공급일로부터 3개월 이내 또는 그 사실을 안 날부터 30일 이내의 법정 권리를 제한하지 않습니다. 중복결제, 결제 후 이용권 미반영, 사업자 귀책 장애는 확인 후 전액 환불합니다. 환불은 요청 확인 후 원 결제수단으로 처리합니다.",
+        "구매자는 계약내용을 받은 날 또는 이용 가능일 중 늦은 날부터 7일 이내에 청약철회를 요청할 수 있습니다. 환불은 qkrehgus5886@naver.com으로 주문번호와 결제자 연락처를 보내 접수하며, 이메일 접수일로부터 7일 이내에 확인·처리합니다. 서비스가 표시·광고 또는 계약과 다르게 제공된 경우에는 공급일로부터 3개월 이내 또는 그 사실을 안 날부터 30일 이내의 법정 권리를 제한하지 않습니다. 중복결제, 결제 후 이용권 미반영, 사업자 귀책 장애는 확인 후 전액 환불합니다. 승인된 환불은 원 결제수단으로 처리되며 실제 반영 시점은 결제대행사와 카드사 일정에 따라 달라질 수 있습니다.",
       ],
     },
     {
       title: "출시를 막는 미확정 항목",
       paragraphs: [
-        "대표 전화, 고객지원 이메일, 통신판매업 신고번호, 환불 접수 방법과 분쟁처리 연락처의 최종 입력이 남아 있습니다.",
+        "통신판매업 신고번호와 상세 공개 주소의 최종 입력이 남아 있습니다.",
       ],
     },
   ],
@@ -221,10 +227,10 @@ const termsKo: LegalPageCopy = {
 
 const termsEn: LegalPageCopy = {
   ...sharedEn,
-  status: "Pre-release draft · seller details and refund policy pending",
+  status: "Pre-release terms · mail-order registration details pending",
   title: "InnerArc terms of use",
-  intro: "This draft explains current product boundaries and the intended one-time readings. Paid checkout remains closed until seller identity, support, and the final refund policy are approved.",
-  lastUpdated: "2026-07-27",
+  intro: "These terms explain current product boundaries and the intended one-time readings. Refund requests are accepted by support email. Mail-order registration details will be finalized before operation.",
+  lastUpdated: "2026-07-30",
   sections: [
     {
       title: "Seller",
@@ -233,6 +239,8 @@ const termsEn: LegalPageCopy = {
         "Representative: 박서준",
         "Business registration number: 482-12-03629",
         "Business location: Buk-gu, Busan, Republic of Korea (public service address pending)",
+        "Representative phone: 010-8706-1938",
+        "Support email: qkrehgus5886@naver.com",
       ],
     },
     {
@@ -267,13 +275,13 @@ const termsEn: LegalPageCopy = {
     {
       title: "Withdrawal, cancellation, and refunds",
       paragraphs: [
-        "Before payment, InnerArc will clearly state statutory withdrawal periods and exceptions, any consent required before digital-content use begins, partial-use calculations, and handling for duplicate charges or outages. Statutory remedies for content supplied differently from its description or contract are not restricted. Checkout remains closed until the final refund rules are approved.",
+        "A customer may request withdrawal within seven days from the later of receiving the contract information or the date the service becomes available. Send the order number and payer contact to qkrehgus5886@naver.com. We review and process the request within seven days after the email is received. Statutory remedies for content supplied differently from its description or contract are not restricted. Approved refunds return to the original payment method; the posting date may vary by the payment provider or card issuer.",
       ],
     },
     {
       title: "Fields blocking launch",
       paragraphs: [
-        "Seller name, representative, address, business and mail-order registration numbers, contact details, item prices, taxes, supply time, support, refund request path, dispute handling, governing law, intellectual-property license, and liability terms remain unresolved.",
+        "The public service address, mail-order registration number, taxes, dispute handling, governing law, intellectual-property license, and liability terms remain unresolved.",
       ],
     },
   ],

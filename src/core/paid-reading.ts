@@ -1,7 +1,12 @@
 import { z } from "zod";
+import type {
+  EnrichmentAuditEntry,
+  ReportCoverageCategory,
+  TierComparisonAudit,
+} from "@/core/tier-inheritance";
 
 export const paidReadingProductCodes = ["plus_30d", "pro_30d", "premium_pdf"] as const;
-export const paidReadingFocusIds = ["work", "relationships", "growth", "money"] as const;
+export const paidReadingFocusIds = ["work", "relationships", "health", "growth", "money"] as const;
 
 export const PaidReadingInputSchema = z.object({
   version: z.literal(1),
@@ -10,7 +15,7 @@ export const PaidReadingInputSchema = z.object({
   birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   name: z.string().max(200),
   focusId: z.enum(paidReadingFocusIds),
-  concern: z.string().min(1).max(2_000),
+  concern: z.string().max(2_000),
   createdAt: z.string().datetime(),
 }).strict();
 
@@ -42,4 +47,25 @@ export type PaidReport = Readonly<{
   characterLabel?: string;
   sharpInsights?: readonly string[];
   contentVersion?: string;
+  /**
+   * New BASIC_19000 reports carry a compact calculation basis and an explicit
+   * layout marker. Both remain optional so reports bought before this composition
+   * update continue to render with their original structure.
+   */
+  sectionPlan?: "basic-19000-v2" | "detail-39000-v2" | "premium-79000-v2";
+  calculationBasis?: Readonly<{
+    birthDate: string;
+    serviceYear: number;
+    lifePath: number;
+    birthday: number;
+    attitude: number;
+    birthYear: number;
+    personalYear: number;
+  }>;
+  /** Internal provenance for audits. Renderers must not expose these identifiers. */
+  contentReferences?: readonly string[];
+  /** Machine-readable tier inheritance evidence used by regression audits. */
+  coverageCategories?: readonly ReportCoverageCategory[];
+  enrichmentAudit?: readonly EnrichmentAuditEntry[];
+  tierComparisonAudit?: TierComparisonAudit;
 }>;

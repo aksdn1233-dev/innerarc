@@ -24,6 +24,7 @@ describe("onboarding reflection context", () => {
     const expectedNextSteps = {
       work: "deep_profile",
       relationships: "relationship",
+      health: "reality_check",
       growth: "reality_check",
       money: "reality_check",
       leadership: "deep_profile",
@@ -106,7 +107,7 @@ describe("onboarding reflection context", () => {
   });
 
   it("fails closed on unsupported IDs, types, and extra fields", () => {
-    expect(() => create({ focusId: "health" })).toThrow(OnboardingContextInputError);
+    expect(() => create({ focusId: "astrology" })).toThrow(OnboardingContextInputError);
     expect(() => create({ depth: "unlimited" })).toThrow(OnboardingContextInputError);
     expect(() => create({ aiPersonalizationConsent: "yes" }))
       .toThrow(OnboardingContextInputError);
@@ -150,13 +151,18 @@ describe("onboarding reflection context", () => {
     expect(JSON.stringify(share)).not.toContain(uniqueConcern);
   });
 
-  it("keeps money and relationship copy non-predictive and non-prescriptive", () => {
+  it("keeps money, relationship, and health copy non-predictive and non-prescriptive", () => {
     const combined = [
       create({ focusId: "money" }),
       create({ focusId: "relationships" }),
+      create({ focusId: "health" }),
     ].map((item) => JSON.stringify(item).toLowerCase()).join(" ");
     expect(combined).not.toMatch(
       /guaranteed|will marry|soulmate|buy this|sell this|specific stock|lucky number|prediction accuracy/,
+    );
+    expect(combined).toMatch(/cannot diagnose illness/);
+    expect(combined).not.toMatch(
+      /diagnosis is|will cure|guaranteed cure|treatment will|treatment outcome is/,
     );
   });
 });

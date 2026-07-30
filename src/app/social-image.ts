@@ -3,7 +3,7 @@
 // handler: reading it through node:fs has no filesystem to read from on a Workers
 // runtime, which returned 500 for every link-preview crawl.
 export const socialImageAlt =
-  "GYEOL reflective tarot and numerology service with the number 11 and three abstract card backs";
+  "결 GYEOL, 나의 성향부터 올해의 흐름까지";
 export const socialImageSize = { width: 1200, height: 630 } as const;
 export const socialImageContentType = "image/png";
 export const socialImagePath = "/gyeol-og.png";

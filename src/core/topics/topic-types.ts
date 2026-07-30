@@ -1,6 +1,6 @@
 import type { Locale } from "@/i18n/config";
 
-export const concernFocusIds = ["work", "relationships", "growth", "money"] as const;
+export const concernFocusIds = ["work", "relationships", "health", "growth", "money"] as const;
 export type ConcernFocusId = (typeof concernFocusIds)[number];
 
 export type Bilingual = Readonly<{ ko: string; en: string }>;

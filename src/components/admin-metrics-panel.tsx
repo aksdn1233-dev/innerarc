@@ -1,9 +1,9 @@
 import type { AdminMetrics } from "@/server/admin-metrics";
 
 const PRODUCT_LABEL: Record<string, string> = {
-  plus_30d: "간단 타로 리딩 (19,000원)",
-  pro_30d: "종합 리딩 (39,000원)",
-  premium_pdf: "프리미엄 PDF (79,000원)",
+  plus_30d: "핵심 리딩 (19,000원)",
+  pro_30d: "상세 리딩 (39,000원)",
+  premium_pdf: "프리미엄 심층 리딩 (79,000원)",
 };
 
 function won(amount: number): string {
