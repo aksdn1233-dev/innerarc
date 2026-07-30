@@ -96,6 +96,58 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await expect(page.getByText("1 + 9 + 9 + 4 + 1 + 1 + 0 + 4 = 29 → 11")).toBeVisible();
 });
 
+test("mobile home uses undecorated floating questions and an inset reading grid", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/ko");
+
+  const floatingQuestions = await page.locator(".question-bubble").evaluateAll((elements) => {
+    const hero = document.querySelector(".home-hero")?.getBoundingClientRect();
+    if (!hero) throw new Error("Home hero not found");
+
+    return elements
+      .filter((element) => getComputedStyle(element).display !== "none")
+      .map((element) => {
+        const style = getComputedStyle(element);
+        const after = getComputedStyle(element, "::after");
+        const bounds = element.getBoundingClientRect();
+        return {
+          backgroundColor: style.backgroundColor,
+          borderTopWidth: style.borderTopWidth,
+          boxShadow: style.boxShadow,
+          afterContent: after.content,
+          leftInset: bounds.left - hero.left,
+          rightInset: hero.right - bounds.right,
+        };
+      });
+  });
+
+  expect(floatingQuestions).toHaveLength(6);
+  expect(floatingQuestions.every((question) => (
+    question.backgroundColor === "rgba(0, 0, 0, 0)"
+      && question.borderTopWidth === "0px"
+      && question.boxShadow === "none"
+      && (question.afterContent === "none" || question.afterContent === "normal")
+      && question.leftInset >= 0
+      && question.rightInset >= 0
+  ))).toBe(true);
+
+  const readingGrid = await page.locator(".pattern-fields").evaluate((panel) => {
+    const panelBounds = panel.getBoundingClientRect();
+    const firstCard = panel.querySelector(".pattern-field-grid article");
+    if (!firstCard) throw new Error("Reading field card not found");
+    const cardBounds = firstCard.getBoundingClientRect();
+    return {
+      leftInset: cardBounds.left - panelBounds.left,
+      rightInset: panelBounds.right - cardBounds.right,
+      pageOverflow: document.documentElement.scrollWidth - window.innerWidth,
+    };
+  });
+
+  expect(readingGrid.leftInset).toBeGreaterThanOrEqual(20);
+  expect(readingGrid.rightInset).toBeGreaterThanOrEqual(20);
+  expect(readingGrid.pageOverflow).toBeLessThanOrEqual(0);
+});
+
 test("English page keeps the same calculated core meaning", async ({ page }) => {
   await page.goto("/en");
   await page.getByRole("link", { name: "See my free core pattern first" }).click();

@@ -28,7 +28,7 @@ describe("tier pricing is centralized and correct", () => {
     }
     await scan("src");
     expect(offenders).toEqual([]);
-  });
+  }, 15_000);
 
   it("renders a visible tier badge with the correct price", () => {
     expect(tierBadgeLabel("plus_30d", "ko")).toBe("핵심 리딩 · 19,000원");

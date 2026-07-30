@@ -94,4 +94,8 @@ Normal/empty inputs, invalid date, leap years, time zones, locale date displays,
 
 Pull requests require lint, strict typecheck, unit/integration suite, and production build. Release additionally requires Chromium/mobile user flows, deletion/export proof, WCAG-oriented audit, performance budget, dependency/security review, and manual bilingual content review.
 
+Mobile home regression coverage also verifies that ambient hero prompts have no
+bubble fill, border, tail, or shadow; remain within the hero frame; and that
+reading-field copy retains at least a 20 px horizontal inset without page overflow.
+
 Every fixed defect adds a regression test and a Decision Log or Continuation State note when it changes behavior.

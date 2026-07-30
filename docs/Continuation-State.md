@@ -1,8 +1,24 @@
 # Continuation State
 
-Last updated: 2026-07-31 (PREMIUM_79000 strict-superset correction)<br>
+Last updated: 2026-07-31 (mobile home visual refinement)<br>
 Current version: 0.18.0
 Overall progress: 94% (web MVP code 99%; paid production launch 86%; native app not started)
+
+## 2026-07-31 — Mobile home visual refinement
+
+- The hero's contextual question prompts now render as quiet floating text without
+  speech-bubble borders, fills, tails, blur, or box shadows. Mobile positions use
+  positive insets so no prompt is clipped against the hero frame.
+- Mobile reading-field cards now keep a responsive 22–30 px horizontal content
+  gutter instead of placing headings and body copy against the panel edge.
+- A new 390x844 browser regression verifies the undecorated prompt treatment,
+  in-frame prompt bounds, reading-field insets, and absence of horizontal overflow
+  in both Chromium and mobile WebKit.
+- The source was based on the fetched `origin/main` revision `ff7c4af`; the separate
+  project worktree and its running services were not modified or stopped.
+- Verified: ESLint, strict TypeScript, 480 unit/integration tests, the 58-route Next.js
+  production build, deployable Sites build, focused Chromium and mobile WebKit flows,
+  and reviewed mobile screenshots.
 
 ## 2026-07-31 — PREMIUM_79000 strict-superset correction
 

@@ -546,3 +546,23 @@
   the deterministic content tables, or historical stored reports require an explicit
   upgrade path instead of continuing through the legacy renderer.
 - Status: Decided.
+
+## D-052 - Use quiet floating prompts and protected mobile content gutters
+
+- Date: 2026-07-31
+- Decision: Remove all speech-bubble decoration from the home hero's contextual
+  prompts while retaining them as low-contrast floating text, and give mobile
+  reading-field content a responsive 22–30 px horizontal gutter.
+- Alternatives: Remove the contextual prompts entirely; keep outlined bubbles with
+  smaller tails; retain edge-to-edge reading-field text; redesign the entire hero.
+- Reason: Mobile screenshots showed that bubble chrome competed with the primary
+  message and that negative prompt offsets and zero field padding caused clipped or
+  edge-bound text. The quieter treatment preserves atmosphere without looking like a
+  chat interface, while explicit insets improve hierarchy and readability.
+- Impact: Six prompts remain visible on the compact hero, all stay inside its frame,
+  and reading-field headings and body text no longer touch the navy panel edge.
+  Desktop structure, CTA behavior, pricing, checkout, and report composition are
+  unchanged. Browser geometry assertions prevent recurrence.
+- Revisit when: User research indicates the ambient prompts reduce comprehension, or
+  the hero receives a broader visual redesign.
+- Status: Decided.
