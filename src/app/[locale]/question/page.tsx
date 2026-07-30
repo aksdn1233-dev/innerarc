@@ -3,6 +3,8 @@ import { QuestionTarotExperience } from "@/components/question-tarot-experience"
 import { isLocale } from "@/i18n/config";
 import { questionCopy } from "@/i18n/question-copy";
 
+export const dynamic = "force-dynamic";
+
 export default async function QuestionPage({
   params,
 }: {

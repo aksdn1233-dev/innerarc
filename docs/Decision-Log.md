@@ -409,3 +409,73 @@
 - Impact: The browser creates no new record or remote request. The operating-system share surface opens only from a user gesture, receives one PNG with no `text` or `url`, and has a clearly disclosed external-app boundary. Unsupported browsers still receive a portable PNG without losing the editable SVG option.
 - Revisit when: Real share completion and trust evidence exists, a native app has an approved share-sheet implementation, or brand review changes the card format.
 - Status: Decided.
+
+## D-042 - Supabase provides optional owner-scoped account persistence
+
+- Date: 2026-07-27
+- Decision: Use the authorized Supabase project in Singapore for email magic-link authentication and PostgreSQL persistence. Keep guest/device storage authoritative until the user explicitly signs in and chooses sync. Apply authenticated-only grants, owner RLS, schema validation on both directions, versioned export, and one transactional deletion function with a retry-safe receipt.
+- Alternatives: Keep all data device-only; connect a service-role key to server routes; upload automatically at login; use broad anonymous table grants; perform multi-table deletion as separate network requests.
+- Reason: Cross-device continuity and real data rights need durable identity and storage, while automatic transfer or privileged browser/server keys would weaken the established guest-first privacy boundary. Database-side atomic deletion prevents partial completion and preserves auditable idempotency.
+- Impact: Supabase Auth/Postgres is now the only connected external application provider. External AI, analytics, monitoring, payments, custom email, reminders, and hosting remain disabled. Public launch still requires real two-account isolation, revocation, admin-audit, DPA/transfer, retention, backup/restore, production-domain callback, and deletion-residue evidence.
+- Revisit when: A production domain is approved, Supabase plan/recovery requirements change, or staging evidence reveals a portability, regional, privacy, reliability, or cost failure.
+- Status: Decided.
+
+## D-043 - Checkout errors describe the failed boundary
+
+- Date: 2026-07-30
+- Decision: Let buyers change reading depth before an order exists by updating the selected product and report input atomically. Replace the single checkout-error boolean with a bounded buyer-facing state that distinguishes local field validation, missing draft, temporarily unavailable sales, rate limiting, order creation, widget preparation, and provider payment failure.
+- Alternatives: Lock the plan page to the first homepage choice; keep every failure under “payment window could not be prepared”; expose raw API/provider error text.
+- Reason: A pre-order plan change is not a payment failure, and an invalid phone number is not a provider outage. Accurate, bounded feedback prevents false failure reports while avoiding sensitive implementation disclosure.
+- Impact: Server pricing remains authoritative, the request still requires matching product and reading-input codes, invalid local fields create no order, and hosted payment remains available even if optional local report-link persistence is refused.
+- Revisit when: Production support evidence shows additional safe error categories or a provider supplies a stable localized error taxonomy.
+- Status: Decided.
+
+## D-044 - Production checkout requires a separate launch-approval gate
+
+- Date: 2026-07-30
+- Decision: Require the server-only value `PAYMENTS_LAUNCH_APPROVED=true` in production in addition to valid provider credentials, prices, database access, and the runtime sales switch. Development and test-provider contract work may remain available without claiming production approval.
+- Alternatives: Treat valid payment credentials as launch approval; rely only on an editable database sales switch; leave the legal launch checklist as documentation with no code gate.
+- Reason: The live preview currently has PayApp credentials and prices while the same product still labels seller, refund, support, and legal fields as pre-release. Technical connectivity cannot stand in for owner and legal authorization.
+- Impact: A future production build fails closed when the explicit approval is absent, while no secret value is sent to the browser. Enabling the gate remains an external owner action after the documented checklist passes.
+- Revisit when: Launch approval is represented by a signed deployment record or a stronger audited configuration service.
+- Status: Decided.
+
+## D-045 - Preserve a payment-independent free core result beside the paid-reading homepage
+
+- Date: 2026-07-30
+- Decision: Keep the editorial paid-reading homepage, but restore deterministic numerology onboarding as a dedicated localized route and link it beside the paid CTA. The free flow never creates a checkout draft or payment request.
+- Alternatives: Require payment before every result; replace the paid homepage with the original calculator; keep the calculator technically present but undiscoverable.
+- Reason: The approved MVP requires a first result before payment. Removing the discoverable free flow breaks the core value demonstration, invalidates established regression coverage, and makes payment defects harder to separate from calculation defects.
+- Impact: Adds one localized route and CTA, retains the paid conversion surface, and restores fixed-vector browser coverage without weakening server-priced checkout.
+- Revisit when: A measured experiment with an equivalent no-payment value experience is approved and privacy, conversion, and retention evidence supports a different entry flow.
+- Status: Decided.
+
+## D-046 - Keep deterministic local reflection routes in the Free tier
+
+- Date: 2026-07-30
+- Decision: Remove whole-route entitlement redirects from question tarot, romantic reflection, Reality Check, celebrity comparison, and compatibility summary. Keep purchased report delivery and paid-depth entitlements fail-closed.
+- Alternatives: Lock every route before payment; duplicate shallow previews inside the paid homepage; require a synthetic production entitlement during browser testing.
+- Reason: These routes are local or deterministic, incur no paid AI cost, and are explicitly part of the approved Free tier. Whole-route redirects erased prior free access after failed payment, contradicted the current requirements, and made safety and Reality Check value inaccessible before purchase.
+- Impact: Guests can experience the core value and established privacy/safety behavior. Payment remains required for purchased long-form reports and server-granted paid depth.
+- Revisit when: Usage metering and a clearly specified free quota are implemented with equivalent guest value and safety access.
+- Status: Decided.
+
+## D-047 - Use a system typography stack instead of fragmented Korean webfonts
+
+- Date: 2026-07-30
+- Decision: Remove the Gowun `next/font` imports and use Korean-capable system sans/serif stacks while retaining the existing editorial scale, spacing, and hierarchy.
+- Alternatives: Raise the request budget above 120; keep both Gowun families; ship another multi-file Korean webfont; reduce route coverage in the performance test.
+- Reason: The production build preloaded more than one hundred sliced font resources on every route, tripling the established request budget before the user interacted. System stacks avoid the transfer and preserve readable native Korean rendering.
+- Impact: Typography varies slightly by operating system, but content, layout, contrast, and brand hierarchy remain stable while first-load request count falls sharply.
+- Revisit when: A measured, self-hosted Korean variable-font subset can stay within the same transfer, accessibility, and rendering budgets.
+- Status: Decided.
+
+## D-048 - Serve the atmospheric hero as a compressed WebP
+
+- Date: 2026-07-30
+- Decision: Keep the existing GYEOL hero artwork but serve a visually reviewed WebP derivative instead of the 1.78 MB PNG.
+- Alternatives: Remove the artwork; raise the transfer budget; keep PNG; use an on-demand image transformer for a CSS background.
+- Reason: After font requests were removed, the homepage still transferred about 2.06 MB because the CSS background alone was 1.78 MB. The 41.8 KB WebP preserves its 1672×941 composition and keeps deployment independent of an image-optimization service.
+- Impact: The homepage returns to the established transfer budget with no third-party request or layout change. The source PNG remains as a non-referenced master asset.
+- Revisit when: The hero direction is redesigned or an approved image CDN provides equivalent privacy, reliability, and cache evidence.
+- Status: Decided.

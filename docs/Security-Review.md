@@ -7,11 +7,13 @@ Scope: repository source, configuration, local production bundle, and automated 
 
 - Full production and development dependency audit: zero known vulnerabilities.
 - Recognized-secret scan: no API-key, cloud-access-key, private-key, Google API-key, or GitHub-token pattern found outside ignored build/dependency artifacts.
-- Environment files: only `.env.example`; provider and database values are empty placeholders.
+- Environment handling: `.env.local` is ignored and contains only local flags plus Supabase's public URL/publishable key. Database credentials and service-role secrets are absent from the repository and browser bundle.
 - Security headers: content-type sniffing, referrer, frame, permissions, cross-origin resource, and CSP controls are tested.
 - HTTPS-only behavior: HSTS and `upgrade-insecure-requests` activate only when `APP_HTTPS_ONLY=true`, preventing local HTTP bundles from breaking while keeping production intent explicit.
 - Privacy boundaries: no third-party browser requests in the tested guest flows; share cards render locally; analytics are no-op without separate consent and a configured sink.
 - Authorization/idempotency: owner mismatch fails closed, and reused request IDs with different payloads are rejected.
+- Supabase boundary: anonymous table access returns 401; account tables use owner RLS and authenticated-only grants; server deletion executes atomically and keeps only request metadata/counts.
+- The temporary database password used for migration setup was rotated after the remote migration/lint checks and is not stored by the project.
 - Device privacy center: corrupt local records are excluded from counts/exports, no read writes data implicitly, and one explicit action removes preference, tarot-history, and Reality Check keys.
 - AI boundary: user context is delimited as untrusted data; structured output, canonical facts, high-risk routing, prompt-injection normalization, and overclaim screening are tested.
 
@@ -26,9 +28,9 @@ Scope: repository source, configuration, local production bundle, and automated 
 
 ## Remaining production work
 
-- Provider DPA, region, retention, encryption, key rotation, least privilege, webhook verification, and administrative audit design.
-- Auth session/cookie and social-login threat review against the selected identity provider.
-- Database row-level security, migration, backup/restore, deletion, and disaster-recovery exercises.
+- Supabase DPA/transfer, retention, encryption, key rotation, administrative audit, and paid-plan recovery evidence.
+- Real email magic-link, cross-account owner-isolation, session-revocation, and cookie threat exercises in a non-production staging account.
+- Database backup/restore, deletion residue, and disaster-recovery exercises. RLS, authenticated grants, migrations, and atomic primary-store deletion are implemented.
 - Payment webhook, replay, refund, subscription-state, and tax/invoice verification.
 - Redacted monitoring and incident alerting, independent penetration testing, and abuse/rate-limit tuning under realistic load.
 - Current locale-aware crisis resources and qualified legal/privacy/age-policy review.

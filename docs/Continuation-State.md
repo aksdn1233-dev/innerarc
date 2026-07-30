@@ -1,16 +1,130 @@
 # Continuation State
 
-Last updated: 2026-07-27<br>
-Current version: 0.15.2
-Overall progress: 98%
+Last updated: 2026-07-30 (payment and release-quality audit)<br>
+Current version: 0.17.1
+Overall progress: 92% (web MVP code 97%; paid production launch 82%; native app not started)
+
+## 2026-07-30 — Payment and release-quality audit
+
+- Work was performed in the isolated `innerarc-payment-audit` worktree on branch
+  `agent/supabase-toss-payments`. The original workspace, its uncommitted Reality Check
+  work, and the unrelated service occupying port 3000 were not changed or stopped.
+- Checkout now updates the chosen product and paid-reading input atomically, validates
+  phone/depositor fields before creating an order, and distinguishes paused sales,
+  rate limiting, order, widget, and provider failures. A hosted payment remains usable
+  if optional local report-link persistence fails.
+- Production checkout now additionally requires the server-only
+  `PAYMENTS_LAUNCH_APPROVED=true` flag. This prevents valid merchant credentials from
+  silently opening sales while seller, legal, refund, support, domain, or live-path
+  approval remains incomplete.
+- Restored the payment-independent Korean/English free core profile at
+  `/{locale}/profile` and removed whole-route entitlement redirects from deterministic
+  Free-tier question, relationship, compatibility, celebrity, and Reality Check routes.
+  Purchased report delivery remains fail-closed.
+- Removed the more-than-100-file Korean webfont request fan-out, switched to bounded
+  system stacks, and replaced the 1.78 MB hero PNG in production CSS with a visually
+  reviewed 41.8 KB WebP. Replaced stale InnerArc social artwork with the 1200×630 GYEOL
+  asset and corrected metadata/icon browser assertions.
+- Verified locally: 425/425 unit/integration tests, ESLint, strict TypeScript, 58-route
+  Next.js production build, 66 focused Chromium scenarios, and 20 iPhone/WebKit
+  onboarding/payment scenarios. The mobile run exposed and fixed a hydration race in
+  checkout testing and a navigation-completion race; no real order or payment was made.
+- Full dependency audit reports zero known vulnerabilities. The validated CycloneDX 1.6
+  SBOM for version 0.17.1 contains 110 production components.
+- The final Vinext/Cloudflare Workers build completed for all application and API routes.
+  No deployment was performed.
+- Remaining launch blockers are external evidence, not hidden code completion:
+  real seller/legal/refund/support disclosures, approved permanent domain/callbacks,
+  live low-value approval/cancel/virtual-account tests, two-account staging isolation,
+  monitoring/transactional email, and explicit owner launch approval. The accessory
+  shop remains closed and native apps remain deferred until web evidence is accepted.
+
+## 2026-07-30 (round 3) — Tier centralization, sharp insights, character label surfaced
+
+- Confirmed no 17,000 KRW reference exists anywhere in source (grep + a permanent test
+  guard, `tests/unit/tiers.test.ts`). Prices were already centralized in
+  `src/server/payments/config.ts`'s `buildProducts()`, env-driven, correctly
+  19,000/39,000/79,000. Added `src/core/tiers.ts` as a *display* single source of truth
+  (canonical names BASIC_19000/DETAIL_39000/PREMIUM_79000, tier badge labels, sharp-
+  insight counts per tier) without renaming the payment-critical `plus_30d`/`pro_30d`/
+  `premium_pdf` codes — those are load-bearing across payment config, DB rows, order-pass
+  tokens, and ~15 test files, so renaming them was judged higher-risk than the benefit.
+- Added `src/core/profile/sharp-insights.ts`: 8 bilingual "behavioral contradiction"
+  sentences per life-path number (12 × 8 = 96), authored via a parallel Workflow grounded
+  strictly in the existing THEMES strength/shadow table so they stay consistent with the
+  rest of the profile system. Sliced 2/5/8 by tier, always as an ordered prefix (a lower
+  tier's insights are always the start of a higher tier's, never a different set).
+- `PaidReport` gained four additive, optional fields: `tierLabel`, `characterLabel`,
+  `sharpInsights`, `contentVersion`. Legacy stored reports lack them; the renderer
+  (`src/app/[locale]/reports/[orderId]/page.tsx`) guards every one with `??`/`&&` so old
+  records still render unchanged. The tier badge now shows in the header eyebrow
+  ("핵심 리딩 · 19,000원" etc.) and the character label as its own styled line.
+- Added two concern topics found missing while building the regression cases:
+  `child_temperament` (자녀 성향·진로 — distinct from the existing worry-framed
+  `children` topic; suppresses the premium tier's adult career-role section, since
+  naming job titles like 전략기획/영업 for a child's own numbers was a real bug found
+  this round) and `client_acquisition` (고객·수강생 확보, for freelancer/instructor
+  "will I get customers" questions — needed for the violin-lesson regression case).
+- Regression tests added for the three new cases from this round's instructions
+  (education/lesson business, relationship contact-timing, child temperament) plus a
+  "premium is not detail with adjectives" length/exclusivity guard. Note: the
+  relationship case as specified gives two birth dates, but `createPaidReport`'s schema
+  takes one birth date and free text — that is by design (the second-person case
+  belongs to the separate `src/core/compatibility` feature); tested here the way a real
+  buyer would actually use this product.
+- Depth for the standing regression case (birth 1994-11-04, web-business question) is
+  now 1,100 / 2,080 / 3,655 characters for basic/detail/premium — up again from last
+  round's 828/1,735/3,105, still short of the 1,800–3,000 / 4,000–7,000 / 8,000–14,000
+  character targets floated this round. See prior entry for why: the remaining gap is
+  bulk domain-specific content (business/career/money/love/child/health/housing detail
+  per number combination), which is a large authoring project, not a wiring one.
+- Verified: `tsc --noEmit` clean, `eslint .` clean, `vitest run` 417/417 passing (was
+  400). Built, deployed (Version ID `c2933cad-ba9b-42c1-9fa1-8b90db3566a3`), smoke-tested
+  live with no console errors.
+
+## 2026-07-30 — Reading-quality and content-depth pass
+
+- Removed a residual tarot-archetype leak: `getRuleBasedProfile`'s `overview.summary`
+  (an unquoted `"{archetype} 자리에서..."` sentence, e.g. "정의 자리에서...") was still
+  spliced into the paid pro/premium "왜 이런 흐름이 나오나" section even after the
+  visible tarot-card reference was replaced with a character label earlier. It is no
+  longer imported by `paid-report.ts`; a source-level regression test guards the import.
+  The free onboarding archetype/share-card feature (`share.test.ts`, `onboarding.spec.ts`)
+  is untouched — that is a separate, deliberately tested feature.
+- Added `src/core/profile/personal-year-theme.ts`: a deterministic personal-year
+  (1–9/11/22/33) theme table used to give the pro/premium tier sections real
+  "why this year" timing content instead of generic phrasing.
+- Added four concern topics with regex ordering checked against existing patterns:
+  `divorce`, `pregnancy_fertility` (relationship-extra), `business_partner` (work-extra),
+  `lawsuit` (urgent, escalate:true). Note: the existing `assessQuestionSafety` legal/medical
+  gate (`소송|법률|구속|계약서`, `임신|진단|질병`) intercepts several of the most common
+  phrasings before topic resolution — this is pre-existing, deliberate behavior, so these
+  topics are reached by their less-overlapping phrasings (고소장, 손해배상, 난임, 시험관, ...).
+- Expanded `framing`/`observe`/`action`/`caution` prose across all ~57 topics in the five
+  topic files (one added concrete sentence per field, ko+en) via a parallel Workflow, one
+  agent per file. Bumped `plus_30d`'s domain-section count from 1 to 2.
+- Net depth for the regression case (birth 1994-11-04, "사업 준비 중인데 웹사업 잘될까
+  올해"): plus_30d 679→828 chars, pro_30d 1,368→1,735 chars, premium_pdf →3,105 chars.
+  Still short of the ~1,500/3,000/6,000+ character targets floated for this pass — the
+  remaining gap is in the shared "당신은 어떤 사람인가" character section and the
+  8-domain content in `integrated-profile.ts`, neither of which was touched this round
+  (higher risk: shared THEMES tables feed multiple features, not isolated topic data).
+- Verified: `tsc --noEmit` clean, `eslint .` clean, `vitest run` 400/400 passing (was
+  399). Built, deployed to `https://gyeol.aksdn1233.workers.dev` (Version ID
+  `74aef45f-824b-44e3-a72c-465fe653b62e`), and smoke-tested live with no console errors.
+- Deferred, not done: a real content database/coverage-matrix/approval-workflow
+  architecture (would be a separate, larger, migration-backed project); a price change to
+  match an external spec's numbers (would touch live PayApp product mappings — needs
+  explicit approval, not silently changed).
 
 ## Active worktree status
 
 - `CODEX-WINDOWS-HANDOFF.md` is the exact Windows continuation guide for the current worktree.
-- Version 0.15.2 retains the complete 0.15.1 product and release-isolation scope.
-- Version 0.15.2 adds explicit local PNG generation, one-file native sharing, unsupported/technical-failure PNG fallback, cancellation without transfer, selected-app privacy disclosure, accessible busy/status handling, and retained editable SVG download for every allowlisted share-card kind.
-- Verified locally on the integrated current source: 263/263 unit/integration tests across 26 files, full ESLint, TypeScript, 27-output production build, 8/8 new Chromium/mobile share flows, 14/14 clean-process performance flows, 2/2 dynamic share accessibility flows, 36/36 onboarding/relationship/data-rights flows, full audit, and a 0.15.2 SBOM while another project retained port 3000.
-- Release evidence is labelled 0.15.2: CycloneDX 1.6 SBOM with 97 production components and fifteen regenerated synthetic-only 1242×2688 launch assets. The capture manifest reports app version 0.15.2, all files present, and the owned 3012 server released after capture.
+- Version 0.17.0 retains the complete 0.16.0 account-sync scope and adds the premium bilingual homepage plus a disabled-by-default Toss Payments V2 foundation.
+- The homepage preserves InnerArc, the existing analysis engine, routing, authentication, and payment boundaries while adding a report preview, four analysis fields, free-input CTA, 30-day pass summary, trust guidance, and responsive editorial layout.
+- Verified locally on the integrated current source: 275/275 unit/integration tests across 28 files, full ESLint, TypeScript, 40-output production build, Chromium 62/62, and mobile 61/62 with one intentional hardware-keyboard skip.
+- Supabase migrations `20260727000100` through `20260727000400` are applied to the Singapore project. The payment foundation adds owner-scoped orders, events, entitlements, and atomic verified grants while anonymous access fails closed.
+- Remote migration parity and schema lint passed with no errors; the temporary setup database password was then rotated and is not retained in the workspace.
 - Private GitHub repository `aksdn1233-dev/innerarc` is connected. Normal non-force `main` pushes and the full cloud CI gate are working; `local-bootstrap` preserves the two original local commits. Generated archives, dependencies, build output, environment files, and test artifacts remain excluded.
 - Windows WebKit can produce transient worker exits and navigation/click timeouts after a 20+ minute session without a repeated product assertion failure. Use one worker or the file-split clean-process commands in the Windows handoff.
 
@@ -41,6 +155,9 @@ Overall progress: 98%
 - Current competitor-pattern research covering Labyrinthos, Tarot.com, The Pattern, Co-Star, World Numerology, Forceteller, and Stoic, with first-party evidence/inference separation and an InnerArc adoption/adaptation/rejection synthesis.
 - Strict weighted feature audit with Keep/Improve/Hold/Remove decisions. Reality Check is the lead differentiator; lifestyle is an experiment; celebrity is held subordinate; shop remains closed; live AI and native apps remain on hold.
 - Guest privacy center, localized pre-release privacy/terms pages, region-labelled official Korea 109 and US/territories 988 resources, and complete local export/deletion controls.
+- Optional Supabase email account sync with explicit device upload, validated restore, versioned account export, and atomic owner-scoped server deletion.
+- Mobile-first bilingual homepage with the approved Korean headline, report preview, pattern explanation, four analysis fields, free calculation CTA, pass summary, trust guidance, and responsive 320px-to-desktop visual checks.
+- Toss Payments V2 one-time 30-day Plus/Pro foundation with server-owned amounts, server-only secret use, provider re-query webhooks, virtual-account secret verification, and atomic entitlement application.
 - Free/Plus/Pro policy, provider-neutral payment contracts, privacy-minimized analytics, feature flags, rate limits, account data-rights contracts, rollback runbook, SBOM, and release evidence.
 - Fifteen Korean/English synthetic mobile screenshots at 1242×2688, including context-aware onboarding, relationship outcome context, lifestyle, and closed-shop views, with first-party-origin and dimension checks plus visual inspection.
 - Exact-process E2E runner that refuses occupied port 3000, starts only this repository's production server, and terminates only the PID it owns.
@@ -52,21 +169,33 @@ Overall progress: 98%
 ## Current state
 
 - The provider-neutral web MVP, relationship action-to-outcome loop, lifestyle curation, closed shop-preview scope, and tarot reading-room UX are implemented and release-regression tested.
-- Production-backed identity, durable persistence, approved live AI, commerce, telemetry, reminders, monitoring, and deployment remain intentionally disconnected.
+- The site is restyled as the paid GYEOL tarot service with three server-priced products and a PayApp hosted checkout, with bank transfer, PortOne, and Toss adapters kept as alternates.
+- Supabase-backed identity and explicit durable record sync are connected. PayApp checkout and its database foundation are implemented; production checkout is deliberately closed unless provider readiness, database access, the sales switch, and the separate server-only launch-approval gate all pass.
+- A Cloudflare Workers build target exists and is deployed to a temporary preview URL, `https://innerarc.truth-bakery.workers.dev`, with payments unconfigured. This is not a permanent address.
 - The closed shop is product architecture only, not an operating store.
+
+## Payment defects found and fixed after the first deployment
+
+- Guest orders were never revoked. `apply_verified_payment` withdraws report access when a delivered order later leaves `DONE`, but that function only runs for owner-scoped orders. The PayApp feedback and PortOne webhook guest branches updated `payment_orders` alone, so a cancelled or refunded guest purchase kept serving its report. Both branches now withdraw access.
+- The post-payment hand-off lived in `sessionStorage`, which a virtual-account deposit hours later or a payment-app context switch does not preserve. A guest's report URL is their only proof of purchase, so losing it meant paying and receiving nothing. The link is now shown and copyable before payment, kept in expiring per-order local storage, and the return screen explains recovery with the order number instead of dead-ending.
+- `src/app/icon.tsx` rendered a constant icon through `next/og`, pulling the resvg rasterizer into the worker twice and pushing it past the size limit so the deployment failed outright. The icon ships as a static PNG.
+- `vinext` 0.0.50 emits `@font-face` sources as build-machine absolute paths, so every custom font 404s once deployed. `build:sites` now rewrites them to the uploaded asset URLs.
+- The social card was produced by a route handler reading `public/og.png` through `node:fs`, which has no filesystem on Workers and returned 500 to every link-preview crawl. Metadata points at the static asset instead.
 
 ## Next priorities
 
-1. Select and authorize production auth/database, AI, payment, telemetry, monitoring, email/reminder, and hosting services.
-2. Implement approved production adapters against the existing contracts and run staging migration, owner isolation, deletion, backup/restore, failure, load, latency, and cost tests.
-3. Complete qualified legal/privacy/age/terms, crisis-escalation, numerology/tarot editorial, Korean/English native-language, accessibility, brand/trademark, and security reviews.
-4. Validate Plus/Pro pricing and unit economics. Separately validate accessory/music usefulness and trust before deciding whether to open commerce.
-5. Before shop opening, approve suppliers, provenance, material/allergy/fit disclosures, accessibility, inventory, fulfillment, tax, shipping, return/refund, fraud, support, privacy, and consumer-law operations.
-6. Perform only an explicitly authorized staging/production deployment. Evaluate native apps after web cohort evidence.
+1. Configure the live PayApp link key/value and Supabase keys as deployment secrets, register the feedback URL, and run one real low-value approval, cancellation, and virtual-account deposit end to end.
+2. Connect transactional email so a guest receives their report address after purchase. Local storage is a convenience, not a durable receipt, and it is currently the only recovery path for a guest who clears their browser.
+3. Validate the connected Supabase foundation with two real staging accounts, session revocation, administrative audit, backup/restore, and retention/deletion-residue evidence.
+4. Resolve the seller disclosures that a public paid launch requires: the 통신판매업 registration number and a lawful published business address.
+5. Complete qualified legal/privacy/age/terms, crisis-escalation, numerology/tarot editorial, Korean/English native-language, accessibility, brand/trademark, and security reviews.
+6. Validate product pricing and unit economics. Separately validate accessory/music usefulness and trust before deciding whether to open commerce.
+7. Before shop opening, approve suppliers, provenance, material/allergy/fit disclosures, accessibility, inventory, fulfillment, tax, shipping, return/refund, fraud, support, privacy, and consumer-law operations.
+8. Move off the temporary preview deployment to an approved permanent domain. Evaluate native apps after web cohort evidence.
 
 ## On hold / external blockers
 
-- Email/social auth, PostgreSQL, transactional email, reminders, live paid AI, payment processing, analytics sink, error monitoring, and deployment require external accounts or user authorization.
+- Social auth, custom transactional email, reminders, live paid AI, payment processing, analytics sink, error monitoring, and deployment require external accounts or user authorization. Supabase's default email auth and PostgreSQL are connected.
 - Final privacy notice, terms, age policy, crisis escalation, trademark/domain/app-store work, editorial review, pricing, and launch approval require qualified human or business decisions.
 - Supplier contracts and every live-commerce operation are unresolved; the shop must remain closed.
 - The approved production domain remains unresolved; `NEXT_PUBLIC_APP_URL` must be set to its path-free HTTPS origin before external link-unfurl validation.
@@ -102,12 +231,19 @@ Overall progress: 98%
 - Fixed the alternate-port regression exposed by the full 3011 run: the metadata fallback now uses the runner's canonical loopback host, and all E2E same-origin, navigation, privacy-request, and performance checks derive their expected origin from `E2E_BASE_URL` instead of hardcoding port 3000. The 54 directly affected Chromium/mobile flows pass on 3011.
 - Added a local PNG/native-share path without weakening the existing share allowlist. The first implementation pushed the relationship route from below budget to 1,051,745 decoded JavaScript bytes. Deferring raster/file helpers reduced this to 1,050,057, removing a redundant branch reduced it to 1,050,003, and removing one duplicate result guard reached the still-failing exact ceiling of 1,050,000. The final fix defers deterministic numerology and relationship engines until form submission; the unchanged `<1,050,000` budget, relationship results, Reality Check handoff, outcome context, and share paths all pass.
 
-## Verified baseline
+## Prior release evidence
 
-- Unit/integration: 263/263 passed across 26 files.
+The current 0.17.1 audit evidence at the top of this document supersedes the historical
+counts below. The entries remain only as provenance for earlier releases and CI runs.
+
+- Unit/integration: 304/304 passed across 31 files, including PayApp callback route coverage for forged secrets, amount mismatch, wrong payment request, unknown order, unpaid virtual account, stale pre-payment events, cancellation revocation, owner-path entitlement, and retry idempotency.
 - ESLint: passed with zero warnings.
 - TypeScript strict check: passed.
-- Next.js 16.2.11 production build: passed without metadata warnings; 27 static route outputs generated.
+- Next.js 16.2.11 production build: passed without metadata warnings; 40 route outputs generated.
+- Complete local browser regression: 123/124 passed across Chromium and mobile, with one intentional hardware-keyboard skip.
+- Homepage visual QA: no horizontal overflow at 320×700, 768×1024, or 1440×900; primary CTA, heading order, responsive field layout, focus states, and 44px link/button targets verified.
+- Account browser boundary: Chromium 3/3 focused checks prove no implicit upload, unauthenticated API denial, and locale-aware magic-link callback forwarding.
+- Complete local browser regression: Chromium 62/62; mobile 61/62 with one intentional hardware-keyboard skip.
 - Canonical GitHub release gate `30239285659`: combined Chromium and iPhone 13/mobile run passed 117 tests with one intentional hardware-keyboard skip on source commit `8cce914`; 263 unit/integration tests, 27 route outputs, full dependency audit, and the version-0.15.2 97-component SBOM also passed with zero open Dependabot alerts, check annotations, or warning/deprecation markers.
 - Local Windows browser evidence remains available as desktop Chromium 52/52 plus split clean-process mobile checks. A later 20+ minute single-session run produced only browser navigation/click cancellations, so constrained-Windows reruns should remain file-split while GitHub-hosted CI is the canonical combined-browser result.
 - Outcome-informed flow proves zero history reads before explicit use, one read after use, relationship-category isolation, unchanged meeting-context ordering, bounded displayed learning, dynamic focus, and no horizontal mobile overflow.
@@ -117,11 +253,11 @@ Overall progress: 98%
 - Performance: HTML, resource count, JavaScript/CSS transfer and decoded-size, total payload, and no-third-party-request budgets passed, including `/en/shop`.
 - Full dependency audit: zero known vulnerabilities; PostCSS 8.5.19 and brace-expansion 5.0.8.
 - Link-preview browser regression: four Korean/English Chromium/mobile flows verify native copy, large-image tags, same-origin URLs, image responses, alt/type fields, and 1200×630 PNG headers.
-- CycloneDX 1.6 SBOM: validated with 97 production components for version 0.15.2.
+- CycloneDX 1.6 SBOM: validated with 107 production components for version 0.16.0.
 - Client static bundle: no OpenAI endpoint, key/config name, or test-secret marker found.
 - Workspace secret-pattern scan: no recognized API key, cloud credential, private key, or GitHub token pattern found; only `.env.example` exists.
 - Store assets: fifteen regenerated synthetic screenshots passed external-origin and 1242×2688 PNG checks; Korean/English home, Korean tarot card, relationship context, and closed-shop views passed visual inspection.
 
 ## User work required
 
-No user action is required to run or inspect the current local website or to synchronize the already-authorized private GitHub repository. The next production stage requires service selection and staging/deployment authorization. Legal, editorial, brand, pricing, commerce, and launch decisions also require human sign-off.
+No user action is required to run or inspect the current local website. A real magic-link/account-isolation exercise requires an email inbox, and the next production stage requires hosting/service authorization. Legal, editorial, brand, pricing, commerce, and launch decisions also require human sign-off.

@@ -1,10 +1,10 @@
-import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
-  createSocialImageResponse,
   socialImageAlt,
   socialImageContentType,
+  socialImagePath,
   socialImageSize,
 } from "@/app/social-image";
 import { getLocalizedSiteMetadata } from "@/i18n/site-metadata";
@@ -15,28 +15,26 @@ describe("site sharing metadata", () => {
     const en = getLocalizedSiteMetadata("en");
     const combined = [ko.title, ko.description, en.title, en.description].join(" ");
 
-    expect(ko.title).toContain("현실의 패턴");
-    expect(en.title).toContain("Lived Patterns");
+    expect(ko.title).toContain("타로·신점");
+    expect(en.title).toContain("Premium Tarot Reading");
     expect(ko.openGraphLocale).toBe("ko_KR");
     expect(en.openGraphLocale).toBe("en_US");
     expect(combined).not.toMatch(/정확도|정확히 예측|반드시|보장|accuracy|predicts? exactly|guaranteed/i);
   });
 
-  it("serves one bounded first-party PNG with explicit accessible metadata", async () => {
-    const response = await createSocialImageResponse();
-    const bytes = new Uint8Array(await response.arrayBuffer());
-    const file = await readFile("public/og.png");
+  it("ships one bounded first-party PNG with explicit accessible metadata", async () => {
+    // The card is served straight from the static asset host, so the shipped file
+    // itself is what link-preview crawlers receive. No route handler is involved.
+    expect(socialImagePath).toBe("/gyeol-og.png");
+    expect(socialImageContentType).toBe("image/png");
 
-    expect(response.headers.get("content-type")).toBe(socialImageContentType);
-    expect(response.headers.get("cache-control")).toContain("immutable");
-    expect(createHash("sha256").update(bytes).digest("hex")).toBe(
-      createHash("sha256").update(file).digest("hex"),
-    );
+    const bytes = new Uint8Array(await readFile(join("public", socialImagePath)));
+
     expect(bytes.byteLength).toBeLessThan(5 * 1024 * 1024);
     expect(bytes[0]).toBe(0x89);
     expect(String.fromCharCode(...bytes.slice(1, 4))).toBe("PNG");
     expect(new DataView(bytes.buffer).getUint32(16)).toBe(socialImageSize.width);
     expect(new DataView(bytes.buffer).getUint32(20)).toBe(socialImageSize.height);
-    expect(socialImageAlt).toContain("InnerArc");
+    expect(socialImageAlt).toContain("GYEOL");
   });
 });

@@ -2,7 +2,7 @@ import { expect, test, type Download, type Page } from "@playwright/test";
 import { E2E_ORIGIN } from "./test-origin";
 
 async function openCoreShare(page: Page, locale: "ko" | "en" = "en") {
-  await page.goto(`/${locale}`);
+  await page.goto(`/${locale}/profile`);
   await page.locator("#birthDate").fill("1994-11-04");
   await page.getByText(
     locale === "ko"

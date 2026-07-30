@@ -86,10 +86,14 @@ const payloadSchema = z.object({
   });
 });
 
+export function validateRealityCheckRecords(candidate: unknown): RealityCheckRecord[] {
+  return payloadSchema.parse({ version: 1, records: candidate }).records;
+}
+
 export function saveRealityChecks(storage: StorageLike, records: RealityCheckRecord[]): void {
   storage.setItem(
     REALITY_CHECK_STORAGE_KEY,
-    JSON.stringify(payloadSchema.parse({ version: 1, records })),
+    JSON.stringify({ version: 1, records: validateRealityCheckRecords(records) }),
   );
 }
 

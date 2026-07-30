@@ -82,17 +82,22 @@ export type Dictionary = {
 };
 
 const ko: Dictionary = {
-  brandTagline: "개인 패턴 인텔리전스",
+  brandTagline: "GYEOL",
   nav: ["홈", "나", "관계", "질문", "성장"],
-  eyebrow: "3분 자기이해",
-  headline: "지금의 나를 이해하는\n조용한 출발점",
-  intro: "숫자의 상징을 정답이 아닌 질문으로 바꾸고, 실제 경험으로 그 관련성을 확인합니다.",
-  start: "첫 패턴 보기",
+  // Side line above the headline: names the frame most visitors arrive with, without
+  // claiming to beat it.
+  eyebrow: "MBTI는 알려주지 않는, 지금 나의 결",
+  headline: "막막한 순간,\n결이 답의 방향을 밝혀드립니다.",
+  // States a difference in what each thing answers, not a claim to be more accurate:
+  // this is symbolic reflection, and a comparative accuracy claim would be both false
+  // and the kind of 비교표시광고 that 표시광고법 prohibits.
+  intro: "성격유형이 '나는 어떤 사람인가'를 알려준다면, 결은 '지금 내 상황에서 무엇을 확인해야 하는가'를 짚어드립니다. 생년월일과 가장 궁금한 것만 알려주세요. 연애·관계·진로·재물의 흐름과 조심할 점을 쉽고 또렷하게 정리해 드립니다.",
+  start: "내 흐름 확인하기",
   birthDate: "생년월일",
   birthHelp: "날짜는 계산에만 사용하며 게스트 입력은 서버로 전송하지 않습니다.",
   name: "이름 또는 로마자 표기 (선택)",
   namePlaceholder: "예: Minji Kim",
-  nameHelp: "피타고라스식 이름 수는 A–Z 기준입니다. 비라틴 이름은 임의 음역하지 않습니다.",
+  nameHelp: "이름은 선택 입력이며, 로마자 표기가 있는 경우에만 보조 해석에 사용합니다.",
   interest: "지금 가장 궁금한 영역",
   interests: [
     { value: "work", label: "일·진로" },
@@ -110,8 +115,8 @@ const ko: Dictionary = {
     { value: "deep", label: "깊이 있게" },
   ],
   privacyRequired: "개인정보 처리 안내를 확인했습니다. (필수)",
-  personalize: "이 입력을 AI 개인화에 사용하는 데 동의합니다. (선택)",
-  aiConsentHelp: "현재 승인된 외부 AI는 연결되어 있지 않으며, 선택 여부와 관계없이 기본 결과는 로컬에서 동일하게 제공됩니다.",
+  personalize: "이 입력을 개인화에 사용하는 데 동의합니다. (선택)",
+  aiConsentHelp: "선택 여부와 관계없이 기본 결과는 동일하게 제공됩니다.",
   calculate: "내 핵심 패턴 보기",
   invalidDate: "실제 생년월일을 선택해 주세요.",
   privacyNote: "현재 체험은 브라우저 메모리에서만 계산됩니다. 새로고침하면 입력이 사라집니다.",
@@ -165,8 +170,8 @@ const ko: Dictionary = {
   musicRealityCheck: "듣고 확인할 것",
   contextEyebrow: "내가 선택한 현재 초점",
   selectedQuestion: "내가 적은 질문",
-  questionBoundary: "현재 화면 메모리에만 있으며 계산·공유·저장·AI 전송에 사용되지 않습니다.",
-  aiBoundaryTitle: "AI 개인화 상태",
+  questionBoundary: "입력한 내용은 이 화면에서만 사용되며 새로고침하면 사라집니다.",
+  aiBoundaryTitle: "개인화 상태",
   smallAction: "작은 실행",
   invalidContext: "관심 분야, 고민 또는 분석 깊이를 다시 확인해 주세요.",
 };
@@ -175,9 +180,9 @@ const en: Dictionary = {
   brandTagline: "Personal pattern intelligence",
   nav: ["Home", "Me", "Relations", "Questions", "Growth"],
   eyebrow: "A 3-minute reflection",
-  headline: "A quiet starting point\nfor understanding yourself",
-  intro: "Turn number symbolism into questions—not answers—and check its relevance against lived experience.",
-  start: "See my first pattern",
+  headline: "Your life has patterns that repeat.",
+  intro: "Using your date of birth and current concerns, explore recurring patterns across self, relationships, work, and money.",
+  start: "Discover my life pattern",
   birthDate: "Date of birth",
   birthHelp: "Your date is used only for calculation; guest input is not sent to a server.",
   name: "Name or romanization (optional)",
@@ -200,8 +205,8 @@ const en: Dictionary = {
     { value: "deep", label: "Deep" },
   ],
   privacyRequired: "I have read the privacy notice. (Required)",
-  personalize: "I agree to use this input for AI personalization. (Optional)",
-  aiConsentHelp: "No approved external AI is connected. The same local core result remains available whether this is selected or not.",
+  personalize: "I agree to use this input for personalization. (Optional)",
+  aiConsentHelp: "The same core result remains available whether this is selected or not.",
   calculate: "Show my core pattern",
   invalidDate: "Choose a real date of birth.",
   privacyNote: "This preview calculates in browser memory only. Refreshing clears your input.",
@@ -255,8 +260,8 @@ const en: Dictionary = {
   musicRealityCheck: "Listening reality check",
   contextEyebrow: "Your selected focus",
   selectedQuestion: "Your own question",
-  questionBoundary: "Kept only in this page’s memory; it is not used in calculations, sharing, storage, or an AI request.",
-  aiBoundaryTitle: "AI personalization status",
+  questionBoundary: "Used only on this screen and cleared when the page refreshes.",
+  aiBoundaryTitle: "Personalization status",
   smallAction: "Small action",
   invalidContext: "Check the selected focus, question, and reflection depth.",
 };

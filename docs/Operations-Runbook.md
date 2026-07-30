@@ -1,6 +1,6 @@
 # Operations and Rollback Runbook
 
-Status: pre-provider release baseline. Production owners and external service coordinates remain unassigned.
+Status: Supabase account persistence connected; production deployment and remaining service owners are unassigned.
 
 ## Release gate
 
@@ -10,6 +10,8 @@ Status: pre-provider release baseline. Production owners and external service co
    Set `APP_HTTPS_ONLY=true` only when the public origin and every required asset are served over HTTPS; it enables HSTS and CSP request upgrading. Local HTTP production-bundle tests leave it false.
 3. Verify CSP/security headers, manifest, no unapproved third-party request, masked telemetry, deletion/export, subscription retry/cancel, and AI fallback in the production-like environment.
 4. Record build ID, rule/policy versions, database migration version, enabled feature flags, provider aliases, and rollback target.
+   - Current Supabase project: `innerarc` (`ytssrbmjyufphjyafjqa`), Singapore (`ap-southeast-1`).
+   - Current database migration: `20260727000300_atomic_account_deletion.sql`.
 5. Generate and archive the validated CycloneDX production SBOM. Review launch screenshots for synthetic-only content, expected dimensions, and absence of external requests.
 6. Confirm crisis contacts against the official sources and review date in [Crisis Response Protocol](Crisis-Response-Protocol.md).
 7. Actual production deployment requires explicit user authorization.
@@ -21,6 +23,7 @@ Status: pre-provider release baseline. Production owners and external service co
 - Payment incident: disable checkout creation, preserve current entitlement snapshots through the documented grace boundary, and keep Free access available.
 - Analytics/monitoring incident: disable the sink. Product functionality must continue without analytics consent or delivery.
 - Suspected privacy leak: disable the affected write/export/share/provider path, preserve masked audit metadata, and begin incident assessment. Do not copy raw user data into chat or tickets.
+- Supabase auth/persistence incident: remove both public Supabase variables from the application environment, preserve device-only functionality, and investigate owner isolation before re-enabling sync.
 
 ## Technical rollback
 

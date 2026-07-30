@@ -18,7 +18,7 @@ export type ShopCopy = Readonly<{
 }>;
 
 const ko: ShopCopy = {
-  brandTagline: "개인 패턴 인텔리전스",
+  brandTagline: "프리미엄 타로·신점 리딩",
   eyebrow: "상점 미리보기",
   headline: "상징보다 안전과 쓸모를\n먼저 확인하는 큐레이션",
   intro: "결과에 맞춘 액세서리 카테고리를 준비하고 있습니다. 아직 상품을 판매하거나 결제를 받지 않습니다.",

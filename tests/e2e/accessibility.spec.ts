@@ -10,6 +10,7 @@ type AxeViolation = {
 
 const routes = [
   "/ko",
+  "/ko/profile",
   "/ko/me",
   "/ko/privacy",
   "/ko/terms",
@@ -20,6 +21,7 @@ const routes = [
   "/ko/reality-check",
   "/ko/shop",
   "/en",
+  "/en/profile",
   "/en/me",
   "/en/privacy",
   "/en/terms",
@@ -93,7 +95,7 @@ test("relationship-to-Reality-Check prefill has no serious accessibility violati
 });
 
 test("generated onboarding context has no serious accessibility violation", async ({ page }) => {
-  await page.goto("/en");
+  await page.goto("/en/profile");
   await page.locator("#birthDate").fill("1994-11-04");
   await page.getByText("Relationships", { exact: true }).click();
   await page.locator("#concern").fill("How can I observe a recurring relationship pattern?");
@@ -117,7 +119,7 @@ test("generated onboarding context has no serious accessibility violation", asyn
 });
 
 test("generated share controls have no serious accessibility violation", async ({ page }) => {
-  await page.goto("/en");
+  await page.goto("/en/profile");
   await page.locator("#birthDate").fill("1994-11-04");
   await page.getByText("I have read the privacy notice.").click();
   await page.getByRole("button", { name: "Show my core pattern" }).click();
@@ -150,7 +152,7 @@ test("generated share controls have no serious accessibility violation", async (
 
 test("skip link and generated result move keyboard focus", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name === "mobile", "Mobile WebKit does not expose desktop hardware-Tab focus order.");
-  await page.goto("/en");
+  await page.goto("/en/profile");
   await page.keyboard.press("Tab");
   await expect(page.locator(".skip-link")).toBeFocused();
   await expect(page.locator(".skip-link")).toBeVisible();
@@ -183,7 +185,7 @@ test("mobile interactive targets meet the 44 pixel minimum", async ({ page }) =>
 
 test("reduced motion turns result scrolling into an immediate move", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/en");
+  await page.goto("/en/profile");
   await page.evaluate(() => {
     const state = window as typeof window & { observedScrollBehavior?: ScrollBehavior };
     HTMLElement.prototype.scrollIntoView = function scrollIntoView(options?: boolean | ScrollIntoViewOptions) {
@@ -211,7 +213,7 @@ test("production headers and install metadata do not add offline data storage", 
   expect(manifest.display).toBe("standalone");
   expect(manifest).not.toHaveProperty("share_target");
 
-  const iconResponse = await request.get("/icon");
+  const iconResponse = await request.get("/icon.png");
   expect(iconResponse.ok()).toBe(true);
   expect(iconResponse.headers()["content-type"]).toContain("image/png");
 

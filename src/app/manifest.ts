@@ -3,8 +3,8 @@ import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/",
-    name: "InnerArc — Personal Pattern Intelligence",
-    short_name: "InnerArc",
+    name: "결 GYEOL — 프리미엄 타로·신점 상담",
+    short_name: "결 GYEOL",
     description: "Symbolic self-reflection connected to real-world outcome reviews.",
     start_url: "/ko",
     scope: "/",
@@ -14,8 +14,10 @@ export default function manifest(): MetadataRoute.Manifest {
     lang: "ko",
     categories: ["lifestyle", "education"],
     icons: [
-      { src: "/icon", sizes: "512x512", type: "image/png", purpose: "any" },
-      { src: "/icon", sizes: "512x512", type: "image/png", purpose: "maskable" },
+      // Must stay in step with the static icon file. The dynamic /icon route was
+      // removed because it pulled a rasterizer into the worker bundle.
+      { src: "/icon.png", sizes: "512x512", type: "image/png", purpose: "any" },
+      { src: "/icon.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
     ],
   };
 }

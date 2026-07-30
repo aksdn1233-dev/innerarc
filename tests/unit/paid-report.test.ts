@@ -1,0 +1,127 @@
+import { describe, expect, it } from "vitest";
+import { isAdminEmail } from "@/server/admin-access";
+import { createPaidReport } from "@/server/reports/paid-report";
+
+const baseInput = {
+  version: 1 as const,
+  locale: "ko" as const,
+  birthDate: "1980-01-01",
+  name: "테스트",
+  focusId: "relationships" as const,
+  concern: "관계에서 지금 조심할 점이 궁금합니다.",
+  createdAt: "2026-07-27T10:00:00.000Z",
+};
+
+describe("paid report delivery", () => {
+  it("creates a concise quick report and a longer premium report", () => {
+    const quick = createPaidReport("iaquick123", {
+      ...baseInput,
+      productCode: "plus_30d",
+    });
+    const premium = createPaidReport("iapremium123", {
+      ...baseInput,
+      productCode: "premium_pdf",
+    });
+
+    expect(quick.title).toBe("간단 타로 리딩");
+    expect(quick.sections.length).toBeLessThan(premium.sections.length);
+    expect(premium.title).toBe("프리미엄 맞춤 리포트");
+    expect(premium.actions.length).toBeGreaterThan(1);
+    expect(premium.cautions.length).toBeGreaterThan(1);
+  });
+
+  it("tells even the cheapest buyer something about themselves", () => {
+    for (const productCode of ["plus_30d", "pro_30d", "premium_pdf"] as const) {
+      const report = createPaidReport(`ia${productCode}9999`, { ...baseInput, productCode });
+      const core = report.sections.find((section) => section.title === "당신은 어떤 사람인가");
+
+      expect(core, `${productCode} is missing the core pattern section`).toBeDefined();
+      // The raw numbers moved to the premium tier's calculation section; what every
+      // buyer gets here is the character label and the strengths behind it.
+      expect(core?.body.length).toBeGreaterThan(60);
+      expect(core?.body, productCode).toMatch(/자|사람|설계|관리|연결|통역/);
+    }
+  });
+
+  it("describes different birth dates differently, not just under a different label", () => {
+    // getRuleBasedProfile returns one hard-coded strength list for every life path, so
+    // a core-pattern section sourced from it would read identically for every buyer.
+    const bodies = [
+      "1980-01-01", "1985-06-11", "1990-03-15", "1993-11-27", "2001-08-08",
+    ].map((birthDate) => {
+      const report = createPaidReport("iavariety123", {
+        ...baseInput,
+        birthDate,
+        productCode: "plus_30d",
+      });
+      return report.sections.find((section) => section.title === "당신은 어떤 사람인가")?.body ?? "";
+    });
+
+    expect(bodies.every((body) => body.length > 0)).toBe(true);
+    expect(new Set(bodies).size).toBe(bodies.length);
+  });
+
+  it("returns the same reading for the same person every time", () => {
+    // Variety must come from the person's own numbers, never from randomness: a buyer
+    // who reopens their report has to see what they paid for.
+    const twice = [1, 2].map(() =>
+      createPaidReport("iastable123", { ...baseInput, productCode: "pro_30d" }).sections);
+    expect(JSON.stringify(twice[0])).toBe(JSON.stringify(twice[1]));
+  });
+
+  it("keeps the core pattern free of guarantees in both languages", () => {
+    for (const locale of ["ko", "en"] as const) {
+      const report = createPaidReport("iacore123", {
+        ...baseInput,
+        locale,
+        productCode: "plus_30d",
+      });
+      const core = report.sections.find((section) =>
+        section.title === (locale === "ko" ? "당신은 어떤 사람인가" : "Who you are"));
+
+      expect(core?.body).toBeDefined();
+      expect(core?.body).not.toMatch(/반드시|보장|틀림없|guaranteed|will definitely/i);
+      expect(core?.body).not.toContain("undefined");
+      // Korean 은/는 depends on the final consonant of the preceding word, and the
+      // risk phrase is data, so no sentence may attach a particle straight to it.
+      if (locale === "ko") expect(core?.body).not.toMatch(/[가-힣]기은\s|하기은\s/);
+    }
+  });
+
+  it("does not repeat the same opening across the long report's sections", () => {
+    // Five of eight domains once led with the life-path number and shared one sentence
+    // frame, so a 79,000 KRW report read as the same paragraph eight times.
+    const premium = createPaidReport("iarepeat123", {
+      ...baseInput,
+      birthDate: "1994-11-04",
+      productCode: "premium_pdf",
+    });
+    const domainBodies = premium.sections
+      .filter((section) => !["지금의 핵심 흐름", "당신은 어떤 사람인가"].includes(section.title))
+      .filter((section) => !section.title.includes("일과 역할"))
+      .map((section) => section.body);
+
+    expect(domainBodies.length).toBeGreaterThanOrEqual(8);
+    const openings = domainBodies.map((body) => body.slice(0, 24));
+    expect(new Set(openings).size).toBe(openings.length);
+  });
+
+  it("lays the career roles out one per line instead of running them together", () => {
+    const premium = createPaidReport("iacareer123", {
+      ...baseInput,
+      birthDate: "1994-11-04",
+      productCode: "premium_pdf",
+    });
+    const career = premium.sections.find((section) => section.title.includes("일과 역할"));
+
+    expect(career?.body).toContain("잘 맞는 자리 —");
+    expect(career?.body).toContain("피할 자리 —");
+    expect(career?.body.split("\n").length).toBeGreaterThan(5);
+  });
+
+  it("uses an environment allowlist instead of a hard-coded admin password", () => {
+    const environment = { ADMIN_EMAILS: "owner@example.com, second@example.com" };
+    expect(isAdminEmail("OWNER@example.com", environment)).toBe(true);
+    expect(isAdminEmail("visitor@example.com", environment)).toBe(false);
+  });
+});

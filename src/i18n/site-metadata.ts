@@ -9,16 +9,16 @@ export interface LocalizedSiteMetadata {
 
 const SITE_METADATA: Readonly<Record<Locale, LocalizedSiteMetadata>> = {
   ko: {
-    title: "InnerArc | 숫자와 카드에서 현실의 패턴으로",
+    title: "결 GYEOL | 프리미엄 타로·신점 상담",
     description:
-      "수비학과 타로의 상징을 자기성찰 질문으로 바꾸고, 선택과 실제 결과를 기록해 개인 관련성을 확인하는 자기이해 플랫폼.",
+      "타로의 상징과 현재의 고민을 연결해 연애·관계·진로·재물의 흐름을 깊고 구체적으로 읽는 프리미엄 타로신점 서비스.",
     openGraphLocale: "ko_KR",
     alternateOpenGraphLocale: "en_US",
   },
   en: {
-    title: "InnerArc | From Symbols to Lived Patterns",
+    title: "GYEOL | Premium Tarot Reading",
     description:
-      "A self-discovery platform that turns numerology and tarot symbolism into reflection questions, then reviews choices against lived outcomes.",
+      "A premium self-understanding service for exploring recurring patterns across self, relationships, work, and money.",
     openGraphLocale: "en_US",
     alternateOpenGraphLocale: "ko_KR",
   },
@@ -27,4 +27,3 @@ const SITE_METADATA: Readonly<Record<Locale, LocalizedSiteMetadata>> = {
 export function getLocalizedSiteMetadata(locale: Locale): LocalizedSiteMetadata {
   return SITE_METADATA[locale];
 }
-

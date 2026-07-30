@@ -101,10 +101,10 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
       <main className="shell" id="main-content" tabIndex={-1}>
         <header className="topbar">
           <Link className="brand" href={`/${locale}`}>
-            <strong>InnerArc</strong>
+            <strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong>
             <small>{d.brandTagline}</small>
           </Link>
-          <Link className="locale-switch" href={`/${otherLocale}`}>
+          <Link className="locale-switch" href={`/${otherLocale}/profile`}>
             {otherLocale === "ko" ? "한국어" : "English"}
           </Link>
         </header>

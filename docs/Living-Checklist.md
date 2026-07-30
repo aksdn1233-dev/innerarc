@@ -1,6 +1,6 @@
 # Living Checklist
 
-Last updated: 2026-07-27
+Last updated: 2026-07-30
 
 ## Phase 0 - Workspace and baseline
 
@@ -18,8 +18,8 @@ Last updated: 2026-07-27
 - [x] Guest privacy center with language/time-zone preferences, separately stored optional consents, validated local export, record counts, and complete device deletion.
 - [x] Bilingual pre-release privacy and terms routes with adjacent disclosure links and unresolved launch fields stated explicitly.
 - [x] Context-aware onboarding with stable focus/depth IDs, bounded page-memory-only concern text, explicit disabled-provider status, contextual next action, bilingual parity, and full regression evidence.
-- [ ] Connect email/social auth and PostgreSQL after external projects are authorized.
-- [ ] Verify real account/server export/deletion and administrative audit in staging.
+- [x] Connect Supabase email auth and PostgreSQL with cookie-backed SSR, authenticated grants, owner RLS, explicit validated sync/restore, account export, and atomic deletion.
+- [ ] Verify real two-account isolation, magic-link delivery, session revocation, backup/restore, deletion residue, and administrative audit in staging.
 
 ## Phase 2 - Numerology
 
@@ -64,7 +64,8 @@ Last updated: 2026-07-27
 - [x] Immutable original interpretation, decision/action plan, due date, outcome, five relevance ratings, and monthly grouping.
 - [x] Browser-local review months, newest-first prior-month navigation, disclosed UTC fallback for legacy records, and no-write month switching.
 - [x] Retry idempotency, export/delete, versioned safe browser adapter, and session-only default.
-- [ ] Authenticated reminders and durable server-backed reports.
+- [x] Explicitly synchronized Reality Check records can be restored from durable owner-scoped server storage.
+- [ ] Authenticated reminders and automatic server-backed report scheduling.
 
 ## Phase 7 - Release foundation
 
@@ -83,6 +84,10 @@ Last updated: 2026-07-27
 - [x] Native Korean/English Open Graph/X metadata, first-party 1200×630 brand image, validated production-origin policy, and desktop/mobile link-preview regression.
 - [x] Explicit validated alternative ports for E2E and launch capture, preserving fail-closed behavior without stopping or reusing another project's server.
 - [x] Emergency-kill-switch and explicit-owner-authorization boundaries for any future commerce launch.
-- [ ] Select external providers and implement production adapters.
+- [x] Supabase Singapore auth/database project, three applied migrations, public-key runtime configuration, anonymous fail-closed probe, and account-boundary browser regression.
+- [x] PayApp hosted-checkout adapter, verified callback/order/report/revocation foundation, field-specific checkout errors, atomic plan/input switching, and an independent production launch-approval gate.
+- [x] Payment-independent localized free core result and deterministic guest access to the approved Free-tier reflection routes.
+- [x] Bounded system typography, compressed first-party hero artwork, GYEOL social metadata, and current performance/metadata regression.
+- [ ] Approve PayApp production operation and run real low-value approval, cancellation, virtual-account, receipt/recovery, and refund-support exercises.
 - [ ] Verify staging auth, migrations, payments, monitoring, deletion, backup/restore, and incident response.
 - [ ] Complete legal, privacy, age, crisis-escalation, editorial, localization, accessibility, brand, pricing, tax/refund, store-asset, and deployment approvals.
