@@ -125,6 +125,12 @@ describe("the wider set of situations", () => {
       ["요즘 너무 외롭습니다", "외로움"],
       ["외모 때문에 자신감이 없어요", "외모"],
       ["귀농을 생각하고 있습니다", "지역 이동"],
+      // These four use phrasing that stays clear of the safety gate's own trigger
+      // words (소송, 법률, 계약서, bare 임신) so the topic itself is what's tested.
+      ["이혼하고 싶은데 어떻게 해야 할지 모르겠습니다", "이혼"],
+      ["난임이라 마음이 너무 힘듭니다", "임신"],
+      ["동업자랑 갈등이 심해서 고민입니다", "동업"],
+      ["손해배상을 청구당해서 어떻게 해야 할지 모르겠습니다", "소송"],
     ];
 
     for (const [concern, expected] of cases) {
@@ -157,6 +163,10 @@ describe("the wider set of situations", () => {
       ["가족한테 돈을 빌려줬는데", "가족 간 돈"],
       ["학교폭력 신고를 해야 할까요", "학교폭력"],
       ["상사와 갈등이 있습니다", "직장 인간관계"],
+      // "이혼" must not fall into marriage or the generic argument topic, and
+      // "동업" must not fall into the generic startup topic that also matches 사업.
+      ["이혼 절차가 궁금합니다", "이혼"],
+      ["동업 사업 파트너와 지분 문제로 다툽니다", "동업"],
     ];
     for (const [concern, expected] of pairs) {
       expect(topicSection(concern, "growth")?.title, concern).toContain(expected);

@@ -1,3 +1,4 @@
+import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 import { concernTopics } from "@/core/topics/concern-topics";
 import { buildCharacterLabel } from "@/core/profile/character-label";
@@ -80,6 +81,14 @@ describe("no tarot claim without a tarot draw", () => {
     }
   });
 
+  it("does not source the paid report from the archetype-named rule-based profile", async () => {
+    // getRuleBasedProfile's copy opens with "{archetype} 자리에서..." — unquoted, so
+    // the quoted-name check above cannot see it. It once leaked into "왜 이런 흐름이
+    // 나오나" this way; guard the import directly instead of guessing at wording.
+    const source = await readFile("src/server/reports/paid-report.ts", "utf8");
+    expect(source).not.toMatch(/getRuleBasedProfile/);
+  });
+
   it("names the person from the numbers that were calculated", () => {
     const label = buildCharacterLabel(11, 4, "ko");
     expect(label.label).toBe("절차를 세우는 통역자");
@@ -132,6 +141,23 @@ describe("the three products differ in what they explain", () => {
     for (const tier of TIERS) {
       const bodies = reading(tier).sections.map((s) => s.body.trim());
       expect(new Set(bodies).size, tier).toBe(bodies.length);
+    }
+  });
+
+  it("keeps each tier's total depth above its own floor", () => {
+    // A lightweight stand-in for a coverage matrix: no database, just a repeatable
+    // floor on total reading length per tier so a future edit cannot silently thin
+    // the content back out. Floors sit a little below what this round measured
+    // (828 / 1,735 / 3,105 chars for the birth-1994-11-04 business regression case)
+    // so ordinary content variance across other birth dates does not trip it.
+    const floors: Record<(typeof TIERS)[number], number> = {
+      plus_30d: 700,
+      pro_30d: 1500,
+      premium_pdf: 2700,
+    };
+    for (const tier of TIERS) {
+      const total = reading(tier).sections.reduce((sum, s) => sum + s.body.length, 0);
+      expect(total, tier).toBeGreaterThan(floors[tier]);
     }
   });
 

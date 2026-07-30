@@ -1,8 +1,43 @@
 # Continuation State
 
-Last updated: 2026-07-28<br>
+Last updated: 2026-07-30<br>
 Current version: 0.18.0
 Overall progress: 98%
+
+## 2026-07-30 — Reading-quality and content-depth pass
+
+- Removed a residual tarot-archetype leak: `getRuleBasedProfile`'s `overview.summary`
+  (an unquoted `"{archetype} 자리에서..."` sentence, e.g. "정의 자리에서...") was still
+  spliced into the paid pro/premium "왜 이런 흐름이 나오나" section even after the
+  visible tarot-card reference was replaced with a character label earlier. It is no
+  longer imported by `paid-report.ts`; a source-level regression test guards the import.
+  The free onboarding archetype/share-card feature (`share.test.ts`, `onboarding.spec.ts`)
+  is untouched — that is a separate, deliberately tested feature.
+- Added `src/core/profile/personal-year-theme.ts`: a deterministic personal-year
+  (1–9/11/22/33) theme table used to give the pro/premium tier sections real
+  "why this year" timing content instead of generic phrasing.
+- Added four concern topics with regex ordering checked against existing patterns:
+  `divorce`, `pregnancy_fertility` (relationship-extra), `business_partner` (work-extra),
+  `lawsuit` (urgent, escalate:true). Note: the existing `assessQuestionSafety` legal/medical
+  gate (`소송|법률|구속|계약서`, `임신|진단|질병`) intercepts several of the most common
+  phrasings before topic resolution — this is pre-existing, deliberate behavior, so these
+  topics are reached by their less-overlapping phrasings (고소장, 손해배상, 난임, 시험관, ...).
+- Expanded `framing`/`observe`/`action`/`caution` prose across all ~57 topics in the five
+  topic files (one added concrete sentence per field, ko+en) via a parallel Workflow, one
+  agent per file. Bumped `plus_30d`'s domain-section count from 1 to 2.
+- Net depth for the regression case (birth 1994-11-04, "사업 준비 중인데 웹사업 잘될까
+  올해"): plus_30d 679→828 chars, pro_30d 1,368→1,735 chars, premium_pdf →3,105 chars.
+  Still short of the ~1,500/3,000/6,000+ character targets floated for this pass — the
+  remaining gap is in the shared "당신은 어떤 사람인가" character section and the
+  8-domain content in `integrated-profile.ts`, neither of which was touched this round
+  (higher risk: shared THEMES tables feed multiple features, not isolated topic data).
+- Verified: `tsc --noEmit` clean, `eslint .` clean, `vitest run` 400/400 passing (was
+  399). Built, deployed to `https://gyeol.aksdn1233.workers.dev` (Version ID
+  `74aef45f-824b-44e3-a72c-465fe653b62e`), and smoke-tested live with no console errors.
+- Deferred, not done: a real content database/coverage-matrix/approval-workflow
+  architecture (would be a separate, larger, migration-backed project); a price change to
+  match an external spec's numbers (would touch live PayApp product mappings — needs
+  explicit approval, not silently changed).
 
 ## Active worktree status
 

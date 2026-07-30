@@ -3,8 +3,9 @@ import { calculateNumerologyProfile } from "@/core/numerology";
 import { createOnboardingReflectionContext } from "@/core/onboarding";
 import type { PaidReadingInput, PaidReport } from "@/core/paid-reading";
 import { PaidReadingInputSchema } from "@/core/paid-reading";
-import { createIntegratedProfile, getRuleBasedProfile } from "@/core/profile";
+import { createIntegratedProfile } from "@/core/profile";
 import { buildCharacterLabel } from "@/core/profile/character-label";
+import { describePersonalYear } from "@/core/profile/personal-year-theme";
 import { assessQuestionSafety } from "@/core/ai/safety";
 import { resolveConcernTopic, topicText } from "@/core/topics/concern-topics";
 
@@ -30,8 +31,8 @@ export function createPaidReport(orderId: string, rawInput: unknown): PaidReport
     name: input.name,
     personalYear: new Date().getFullYear(),
   });
-  const overview = getRuleBasedProfile(profile.lifePath.value, input.locale);
   const integrated = createIntegratedProfile(profile, input.locale);
+  const personalYear = describePersonalYear(profile.personalYear.value, input.locale);
   const context = createOnboardingReflectionContext({
     locale: input.locale,
     focusId: input.focusId,
@@ -69,7 +70,7 @@ export function createPaidReport(orderId: string, rawInput: unknown): PaidReport
         ].filter(Boolean).join(" "),
       };
   const domainOrder = input.productCode === "plus_30d"
-    ? integrated.domains.slice(0, 1)
+    ? integrated.domains.slice(0, 2)
     : input.productCode === "pro_30d"
       ? integrated.domains.slice(0, 4)
       : integrated.domains;
@@ -116,7 +117,11 @@ export function createPaidReport(orderId: string, rawInput: unknown): PaidReport
   if (input.productCode !== "plus_30d") {
     sections.push({
       title: ko ? "왜 이런 흐름이 나오나" : "Why this pattern",
-      body: `${context.contextualInference} ${overview.summary}`.trim(),
+      // Timed from the personal-year cycle rather than a card: no draw happened for
+      // this product, so nothing here may claim one.
+      body: ko
+        ? `${context.contextualInference} 이번 해는 개인년 ${profile.personalYear.value}년차 — ${personalYear.phase} 흐름입니다. ${personalYear.timing} ${topicText(topic.framing, input.locale)}`
+        : `${context.contextualInference} This year sits in personal-year cycle ${profile.personalYear.value} — ${personalYear.phase}. ${personalYear.timing} ${topicText(topic.framing, input.locale)}`,
     });
     sections.push({
       title: ko ? "잘될 조건과 어긋나는 조건" : "What makes it work, and what does not",
@@ -135,22 +140,22 @@ export function createPaidReport(orderId: string, rawInput: unknown): PaidReport
       body: ko
         // A digit takes its particle from how it is read aloud, which the template
         // cannot know, so the sentence ends on a fixed noun instead.
-        ? `생명수 ${profile.lifePath.value}, 태도수 ${profile.attitude.value}, 생일수 ${profile.birthday.value} — 이 세 값을 함께 놓고 본 결과입니다. ` +
-          `${character.qualifier} 성향과 ${character.noun}의 기질이 만나는 지점에서 위 해석이 나옵니다. ` +
-          `계산 자체는 생년월일에서 결정론적으로 나오며, 같은 생일이면 같은 값이 나옵니다.`
-        : `This reads life path ${profile.lifePath.value}, attitude ${profile.attitude.value}, and birthday ${profile.birthday.value} together. ` +
-          `The interpretation sits where a ${character.qualifier} approach meets the temperament of ${character.noun}. ` +
-          `The calculation is deterministic: the same birth date always yields the same values.`,
+        ? `생명수 ${profile.lifePath.value}, 태도수 ${profile.attitude.value}, 생일수 ${profile.birthday.value}, 개인년 ${profile.personalYear.value} — 이 네 값을 함께 놓고 본 결과입니다. ` +
+          `${character.qualifier} 성향과 ${character.noun}의 기질이 만나는 지점에서 위 해석이 나오고, 올해가 ${personalYear.phase}라는 사실이 시기를 정합니다. ` +
+          `계산 자체는 생년월일과 올해 연도에서 결정론적으로 나오며, 같은 생일이면 매년 같은 방식으로 값이 갱신됩니다.`
+        : `This reads life path ${profile.lifePath.value}, attitude ${profile.attitude.value}, birthday ${profile.birthday.value}, and personal year ${profile.personalYear.value} together. ` +
+          `The interpretation sits where a ${character.qualifier} approach meets the temperament of ${character.noun}, and this year being ${personalYear.phase} is what sets the timing. ` +
+          `The calculation is deterministic: the same birth date always yields the same values, updated the same way every year.`,
     });
     sections.push({
       title: ko ? "이렇게 갈 수 있습니다" : "How this can go",
       body: ko
-        ? `가장 잘 풀리는 경우는 ${topicText(topic.action, input.locale)} 이 방향이 자리를 잡을 때입니다. ` +
+        ? `가장 잘 풀리는 경우는 ${topicText(topic.action, input.locale)} 이 방향이 자리를 잡을 때이고, 올해가 ${personalYear.phase}라는 점이 이 방향에 힘을 보탭니다. ` +
           `가장 흔한 경우는 방향은 맞지만 속도가 붙지 않는 상태이고, 이때는 확인할 것을 하나로 줄이면 다시 움직입니다. ` +
-          `주의해야 할 경우는 ${topicText(topic.caution, input.locale)}`
-        : `The best case is where this takes hold: ${topicText(topic.action, input.locale)} ` +
+          `주의해야 할 경우는 ${topicText(topic.caution, input.locale)} 특히 ${personalYear.timing}`
+        : `The best case is where this takes hold: ${topicText(topic.action, input.locale)} This year being ${personalYear.phase} adds weight behind that direction. ` +
           `The likeliest case is the right direction without momentum, which moves again once you narrow what to check to one thing. ` +
-          `The case to watch: ${topicText(topic.caution, input.locale)}`,
+          `The case to watch: ${topicText(topic.caution, input.locale)} This year in particular: ${personalYear.timing}`,
     });
   }
   if (input.productCode === "premium_pdf") {
