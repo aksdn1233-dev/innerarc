@@ -661,7 +661,8 @@ test("privacy, terms, and support publish contacts while disclosing unresolved l
   await expect(page.getByText("Support and privacy email: qkrehgus5886@naver.com")).toBeVisible();
   await page.getByRole("link", { name: "Terms of use" }).click();
   await expect(page.getByText("Pre-release terms · mail-order registration details pending")).toBeVisible();
-  await expect(page.getByText("Each is a one-time, non-renewing purchase.", { exact: false })).toBeVisible();
+  await expect(page.getByText("Current products are the Detailed reading at KRW 9,600", { exact: false })).toBeVisible();
+  await expect(page.getByText("The former Core reading is temporarily unavailable.", { exact: false })).toBeVisible();
   await expect(page.getByText("within seven days after the email is received", { exact: false })).toBeVisible();
   await page.goto("/en/support");
   await expect(page.getByRole("link", { name: "010-8706-1938" })).toHaveAttribute("href", "tel:01087061938");
