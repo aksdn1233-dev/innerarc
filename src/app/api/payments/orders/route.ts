@@ -5,14 +5,19 @@ import { z } from "zod";
 import { resolvePublicAppUrl } from "@/core/site-url";
 import { isLocale } from "@/i18n/config";
 import { PaidReadingInputSchema } from "@/core/paid-reading";
-import { getSupabaseAdminClient } from "@/lib/supabase/admin";
+import { resolveSupabaseAdminClient } from "@/lib/supabase/admin";
 import { requireSupabaseUser } from "@/lib/supabase/auth";
 import {
   deriveTossCustomerKey,
   inspectPaymentReadiness,
   purchasablePaymentProductCodes,
 } from "@/server/payments/config";
-import { requestPayAppPayment } from "@/server/payments/payapp";
+import { PayAppApiError, requestPayAppPayment } from "@/server/payments/payapp";
+import {
+  launchApprovalFrom,
+  readOperationsGate,
+  recordPaymentSetupEvent,
+} from "@/server/payments/gate";
 import { hashCustomerPhone, issueOrderTicket } from "@/server/order-pass";
 import { checkCheckoutLimit, tooManyRequests } from "@/server/request-limit";
 
@@ -39,21 +44,24 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "INVALID_ORDER_REQUEST" }, { status: 400 });
   }
 
-  const readiness = inspectPaymentReadiness();
-  if (!readiness.enabled) {
-    return NextResponse.json({ error: "PAYMENTS_UNAVAILABLE" }, { status: 503 });
-  }
-
-  const admin = getSupabaseAdminClient();
+  const admin = resolveSupabaseAdminClient().client;
   if (!admin) {
     return NextResponse.json({ error: "PAYMENTS_UNAVAILABLE" }, { status: 503 });
   }
-  const { data: adminSettings } = await admin
-    .from("admin_settings")
-    .select("sales_enabled")
-    .eq("id", 1)
-    .maybeSingle();
-  if (adminSettings && !adminSettings.sales_enabled) {
+  // The owner's launch approval and sales switch live in the database so both can be
+  // changed without a rebuild. An unreadable settings row keeps sales on and the launch
+  // approval off, so a settings hiccup never opens a closed checkout or closes an open
+  // one against a deployment approved by environment.
+  const gate = await readOperationsGate(admin);
+  const readiness = inspectPaymentReadiness(
+    process.env,
+    undefined,
+    launchApprovalFrom(gate).ownerConsole,
+  );
+  if (!readiness.enabled) {
+    return NextResponse.json({ error: "PAYMENTS_UNAVAILABLE" }, { status: 503 });
+  }
+  if (!gate.salesEnabled) {
     return NextResponse.json({ error: "SALES_PAUSED" }, { status: 503 });
   }
 
@@ -120,7 +128,22 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "REPORT_DRAFT_CREATE_FAILED" }, { status: 500 });
   }
 
-  const baseUrl = resolvePublicAppUrl(process.env.NEXT_PUBLIC_APP_URL);
+  // A misconfigured public URL would otherwise throw here and reach the buyer as an
+  // unexplained 500 after their order row already exists.
+  let baseUrl: URL;
+  try {
+    baseUrl = resolvePublicAppUrl(process.env.NEXT_PUBLIC_APP_URL);
+  } catch {
+    await admin.from("purchased_reports").delete().eq("order_id", orderId);
+    await admin.from("payment_orders").delete().eq("order_id", orderId);
+    await recordPaymentSetupEvent(admin, {
+      provider: readiness.config.provider,
+      stage: "provider_request",
+      code: "APP_URL_INVALID",
+      message: "NEXT_PUBLIC_APP_URL 이 올바른 운영 주소가 아니라 콜백 주소를 만들 수 없습니다.",
+    });
+    return NextResponse.json({ error: "PAYMENTS_UNAVAILABLE" }, { status: 503 });
+  }
   const locale = parsed.data.locale;
   const successUrl = new URL(`/${locale}/payments/success`, baseUrl).toString();
   const failUrl = new URL(`/${locale}/payments/fail`, baseUrl).toString();
@@ -190,9 +213,20 @@ export async function POST(request: Request) {
       }, {
         headers: { "Cache-Control": "no-store" },
       });
-    } catch {
+    } catch (cause) {
       await admin.from("purchased_reports").delete().eq("order_id", orderId);
       await admin.from("payment_orders").delete().eq("order_id", orderId);
+      // The provider's own rejection wording is the only thing that distinguishes a
+      // merchant-side cause from a bug, so it is kept where the operator can read it.
+      await recordPaymentSetupEvent(admin, {
+        provider: "payapp",
+        stage: "provider_request",
+        code: cause instanceof PayAppApiError ? cause.code : "UNEXPECTED_ERROR",
+        message: cause instanceof PayAppApiError
+          ? cause.providerMessage
+          : "페이앱 결제요청 처리 중 예상치 못한 오류가 발생했습니다.",
+        orderId,
+      });
       return NextResponse.json({ error: "PAYAPP_REQUEST_FAILED" }, { status: 502 });
     }
   }

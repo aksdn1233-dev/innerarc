@@ -5,12 +5,18 @@ import { AdminDepositButton } from "@/components/admin-deposit-button";
 import { AdminInquiryList, type AdminInquiry } from "@/components/admin-inquiry-list";
 import { AdminMetricsPanel } from "@/components/admin-metrics-panel";
 import { AdminOperationsPanel } from "@/components/admin-operations-panel";
+import { AdminPaymentReadinessPanel } from "@/components/admin-payment-readiness-panel";
 import { summarizeOrders, type OrderRow } from "@/server/admin-metrics";
 import { isLocale } from "@/i18n/config";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import { requireSupabaseUser } from "@/lib/supabase/auth";
 import { isAdminEmail } from "@/server/admin-access";
-import { inspectPaymentReadiness } from "@/server/payments/config";
+import { describePaymentSetup } from "@/server/payments/diagnostics";
+import {
+  launchApprovalFrom,
+  readOperationsGate,
+  readRecentPaymentSetupEvents,
+} from "@/server/payments/gate";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +31,16 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
   const admin = getSupabaseAdminClient();
   if (!admin) notFound();
 
-  const [orders, reports, settings, inquiries, openInquiries, paidOrders] = await Promise.all([
+  const [
+    orders,
+    reports,
+    settings,
+    inquiries,
+    openInquiries,
+    paidOrders,
+    gate,
+    recentFailures,
+  ] = await Promise.all([
     admin
       .from("payment_orders")
       .select(
@@ -49,6 +64,8 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
       .from("payment_orders")
       .select("amount")
       .eq("status", "DONE"),
+    readOperationsGate(admin),
+    readRecentPaymentSetupEvents(admin, 10),
   ]);
   const revenue = (paidOrders.data ?? []).reduce((total, row) => total + (row.amount ?? 0), 0);
 
@@ -72,7 +89,11 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
     .eq("status", "failed")
     .order("created_at", { ascending: false })
     .limit(20);
-  const readiness = inspectPaymentReadiness();
+  const readiness = describePaymentSetup({
+    launchApproval: launchApprovalFrom(gate),
+    salesEnabled: gate.salesEnabled,
+    databaseReachable: gate.reachable,
+  });
 
   return (
     <main className="shell admin-shell" id="main-content">
@@ -93,13 +114,18 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
         </article>
         <article><strong>{reports.count ?? 0}</strong><span>전체 리포트</span></article>
         <article><strong>{openInquiries.count ?? 0}</strong><span>미처리 문의</span></article>
-        <article><strong>{readiness.enabled ? "정상" : "닫힘"}</strong><span>결제 설정</span></article>
+        <article><strong>{readiness.open ? "열림" : "닫힘"}</strong><span>결제 설정</span></article>
         <article>
           <strong>{settings.data?.sales_enabled === false ? "중지" : "접수중"}</strong>
           <span>신규 판매</span>
         </article>
       </section>
       <AdminMetricsPanel days={METRIC_DAYS} metrics={metrics} />
+      <AdminPaymentReadinessPanel
+        gate={gate}
+        recentFailures={recentFailures}
+        report={readiness}
+      />
       <AdminOperationsPanel
         initialSalesEnabled={settings.data?.sales_enabled ?? true}
         initialNotice={settings.data?.notice ?? ""}

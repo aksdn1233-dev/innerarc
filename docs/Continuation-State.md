@@ -1,8 +1,53 @@
 # Continuation State
 
-Last updated: 2026-07-31 (homepage free-core entry locked)<br>
-Current version: 0.18.0
-Overall progress: 94% (web MVP code 99%; paid production launch 86%; native app not started)
+Last updated: 2026-07-31 (payment gate made diagnosable and owner-operable)<br>
+Current version: 0.18.1
+Overall progress: 95% (web MVP code 99%; paid production launch 90%; native app not started)
+
+## 2026-07-31 — Checkout no longer fails closed silently
+
+The reported symptom was correct PayApp credentials and a checkout that still refused
+to open, with nothing anywhere saying why. Three separate causes were possible and
+none of them was visible from outside.
+
+- **Diagnosis.** `/ko/admin` now carries a 결제 열림 상태 panel that reports each of the
+  nine conditions gating checkout — provider, launch approval, provider credentials,
+  exposed payment methods, prices, database, production domain, administrator accounts,
+  sales switch — as 정상/필요/오류 with the environment variable *names* to fix and one
+  next action each. Values are never sent to the browser; a regression test asserts no
+  configured secret appears in the serialized report.
+- **Prices no longer require a deployment secret.** `INNERARC_COMPREHENSIVE_PRICE_KRW`
+  and `INNERARC_PREMIUM_PDF_PRICE_KRW` are now optional assertions about the code
+  catalog instead of its source. Absent means "use the catalog"; a value that disagrees
+  still fails closed. The 2026-07-31 price reset (39,000/79,000 → 9,600/39,000) would
+  otherwise have closed every deployment still holding the previous values, which is
+  indistinguishable from an outage.
+- **Launch approval is operable without a redeploy.** The owner can record the same
+  explicit approval from the signed-in console (typed confirmation, stored with who and
+  when) or keep using `PAYMENTS_LAUNCH_APPROVED=true`. Both count; neither is implied by
+  holding credentials, so the invariant the gate exists for is unchanged.
+- **Provider rejections are readable.** PayApp's own wording now survives the API
+  boundary into `payment_setup_events` and the console's 최근 결제사 오류 list, so a
+  merchant-side cause is distinguishable from a bug. The buyer still sees only the
+  generic checkout error.
+- **The plans page and the order API now read the same gate**, so the product page can
+  no longer advertise a checkout the server would refuse.
+
+## 2026-07-31 — Service continuity during page work
+
+- Added `src/app/[locale]/error.tsx`, `src/app/global-error.tsx`, and
+  `src/app/not-found.tsx`. The application previously had no error boundary at all, so
+  one failing route rendered a blank browser error for the whole segment.
+- `/api/health` reports `status`, `site`, `database`, `payments` with no secret,
+  revenue, or order count, always as HTTP 200, for a one-click check after any change.
+- Every settings read is bounded at 3 seconds and degrades to a defined default, so an
+  unresponsive Supabase cannot hang a page render. The sales switch fails open; the
+  launch approval fails closed.
+- The new migration is additive and the code tolerates its absence, so deploying ahead
+  of the migration keeps checkout working on the environment-flag path.
+- Verified: ESLint, strict TypeScript, 514 unit/integration tests (was 480), the
+  61-route Next.js production build, and the Chromium/mobile browser suites including
+  the isolated fake-provider checkout run. No real order or payment was created.
 
 ## 2026-07-31 — Homepage free-core entry locked
 

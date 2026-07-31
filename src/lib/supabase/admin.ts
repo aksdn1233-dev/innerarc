@@ -29,3 +29,24 @@ export function getSupabaseAdminClient(
     },
   });
 }
+
+export type AdminClientResolution =
+  | Readonly<{ client: SupabaseClient; reason: null }>
+  | Readonly<{ client: null; reason: "NOT_CONFIGURED" | "MISCONFIGURED" }>;
+
+/**
+ * The same client without the throw. A half-configured Supabase deployment is a real
+ * misconfiguration, but on a page a visitor is looking at, an exception is an outage
+ * rather than a message: the caller gets a reason it can render or fail closed on, and
+ * the administrator console names the offending variables.
+ */
+export function resolveSupabaseAdminClient(
+  environment: Readonly<Record<string, string | undefined>> = process.env,
+): AdminClientResolution {
+  try {
+    const client = getSupabaseAdminClient(environment);
+    return client ? { client, reason: null } : { client: null, reason: "NOT_CONFIGURED" };
+  } catch {
+    return { client: null, reason: "MISCONFIGURED" };
+  }
+}

@@ -71,6 +71,28 @@ export type PaymentReadiness =
   | Readonly<{ enabled: false; reason: "DISABLED" | "UNAPPROVED" | "INCOMPLETE" | "INVALID" }>
   | Readonly<{ enabled: true; config: PaymentConfig }>;
 
+/**
+ * The two ways the owner can state that this deployment is cleared to take money.
+ * Either counts on its own; neither is implied by holding merchant credentials, which
+ * is the property the launch gate exists to enforce.
+ */
+export type LaunchApproval = Readonly<{
+  /** `PAYMENTS_LAUNCH_APPROVED=true` in the deployment environment. */
+  environment: boolean;
+  /** An explicit, audited approval recorded by a signed-in administrator. */
+  ownerConsole: boolean;
+}>;
+
+export function isLaunchApproved(approval: LaunchApproval): boolean {
+  return approval.environment || approval.ownerConsole;
+}
+
+export function readEnvironmentLaunchApproval(
+  environment: Readonly<Record<string, string | undefined>> = process.env,
+): boolean {
+  return environment.PAYMENTS_LAUNCH_APPROVED?.trim() === "true";
+}
+
 const storeIdSchema = z.string().regex(/^store-[0-9a-f-]{36}$/i);
 const channelKeySchema = z.string().regex(/^channel-key-[0-9a-f-]{36}$/i);
 const apiSecretSchema = z.string().min(20).max(500);
@@ -81,7 +103,7 @@ const accountHolderSchema = z.string().min(2).max(80);
 const depositWindowSchema = z.coerce.number().int().min(1).max(168);
 const payAppUserIdSchema = z.string().regex(/^[A-Za-z0-9_.@-]{3,100}$/);
 const payAppSecretSchema = z.string().min(8).max(500);
-const payAppMethodSchema = z.enum([
+export const payAppMethodNames = [
   "card",
   "phone",
   "kakaopay",
@@ -93,7 +115,24 @@ const payAppMethodSchema = z.enum([
   "payco",
   "myaccount",
   "tosspay",
-]);
+] as const;
+const payAppMethodSchema = z.enum(payAppMethodNames);
+
+export const DEFAULT_PAYAPP_METHODS = "card,kakaopay,tosspay,vbank,phone,rbank";
+
+/** The configured methods, or the names that are not payment methods PayApp offers. */
+export function inspectPayAppMethods(
+  environment: Readonly<Record<string, string | undefined>> = process.env,
+): Readonly<{ ok: true; methods: string }> | Readonly<{ ok: false; unknown: readonly string[] }> {
+  const raw = environment.PAYAPP_OPEN_PAY_TYPES?.trim() || DEFAULT_PAYAPP_METHODS;
+  const requested = raw.split(",").map((method) => method.trim()).filter(Boolean);
+  const unknown = requested.filter(
+    (method) => !(payAppMethodNames as readonly string[]).includes(method),
+  );
+  if (requested.length === 0) return { ok: false, unknown: [] };
+  if (unknown.length > 0) return { ok: false, unknown };
+  return { ok: true, methods: requested.join(",") };
+}
 const bankAccountsSchema = z.array(z.object({
   bankName: bankNameSchema,
   accountNumber: bankAccountSchema,
@@ -126,6 +165,58 @@ function buildProducts(comprehensivePrice: number, premiumPdfPrice: number) {
   } as const satisfies Readonly<Record<PaymentProductCode, PaymentProduct>>;
 }
 
+export type CatalogPriceIssue = Readonly<{
+  variable: string;
+  expected: number;
+}>;
+
+export type CatalogPriceCheck =
+  | Readonly<{ ok: true; comprehensivePrice: number; premiumPdfPrice: number }>
+  | Readonly<{ ok: false; mismatched: readonly CatalogPriceIssue[] }>;
+
+/**
+ * Active prices belong to the code catalog in `core/product-prices`. A deployment
+ * price variable is an optional assertion *about* that catalog rather than a source
+ * for it: when it is absent the catalog price applies, and when it disagrees checkout
+ * stays closed so a stale secret can never charge an amount the product page does not
+ * show. Before this, a price change also silently closed every deployment still
+ * holding the previous value, which is indistinguishable from an outage.
+ */
+export function inspectCatalogPrices(
+  environment: Readonly<Record<string, string | undefined>> = process.env,
+): CatalogPriceCheck {
+  const comprehensiveVariable = environment.INNERARC_COMPREHENSIVE_PRICE_KRW?.trim()
+    ? "INNERARC_COMPREHENSIVE_PRICE_KRW"
+    : "INNERARC_PRO_30D_PRICE_KRW";
+  const declared = [
+    {
+      variable: comprehensiveVariable,
+      raw: environment[comprehensiveVariable]?.trim() ?? "",
+      expected: PRODUCT_PRICES_KRW.pro_30d,
+    },
+    {
+      variable: "INNERARC_PREMIUM_PDF_PRICE_KRW",
+      raw: environment.INNERARC_PREMIUM_PDF_PRICE_KRW?.trim() ?? "",
+      expected: PRODUCT_PRICES_KRW.premium_pdf,
+    },
+  ] as const;
+
+  const mismatched = declared
+    .filter((entry) => {
+      if (!entry.raw) return false;
+      const parsed = priceSchema.safeParse(entry.raw);
+      return !parsed.success || parsed.data !== entry.expected;
+    })
+    .map((entry) => ({ variable: entry.variable, expected: entry.expected }));
+
+  if (mismatched.length > 0) return { ok: false, mismatched };
+  return {
+    ok: true,
+    comprehensivePrice: PRODUCT_PRICES_KRW.pro_30d,
+    premiumPdfPrice: PRODUCT_PRICES_KRW.premium_pdf,
+  };
+}
+
 function isClientKey(value: string, runtimeMode: PaymentRuntimeMode): boolean {
   const isTest = value.startsWith("test_ck_");
   const isLive = value.startsWith("live_ck_");
@@ -145,12 +236,21 @@ export function inspectPaymentReadiness(
     : environment.NODE_ENV === "test"
       ? "test"
       : "development",
+  /**
+   * Owner approval recorded in the administrator console. Defaults to false so every
+   * caller that cannot read it — the build, the CSP calculation — keeps the original
+   * environment-only behaviour.
+   */
+  ownerConsoleApproved = false,
 ): PaymentReadiness {
   const provider = environment.PAYMENTS_PROVIDER?.trim() || "disabled";
   if (provider === "disabled") return { enabled: false, reason: "DISABLED" };
   if (
     runtimeMode === "production" &&
-    environment.PAYMENTS_LAUNCH_APPROVED?.trim() !== "true"
+    !isLaunchApproved({
+      environment: readEnvironmentLaunchApproval(environment),
+      ownerConsole: ownerConsoleApproved,
+    })
   ) {
     return { enabled: false, reason: "UNAPPROVED" };
   }
@@ -163,26 +263,8 @@ export function inspectPaymentReadiness(
     return { enabled: false, reason: "INVALID" };
   }
 
-  const comprehensivePrice = (
-    environment.INNERARC_COMPREHENSIVE_PRICE_KRW ??
-    environment.INNERARC_PRO_30D_PRICE_KRW
-  )?.trim();
-  const premiumPdfPrice = environment.INNERARC_PREMIUM_PDF_PRICE_KRW?.trim();
-  if (!comprehensivePrice || !premiumPdfPrice) {
-    return { enabled: false, reason: "INCOMPLETE" };
-  }
-
-  const prices = z.object({
-    comprehensivePrice: priceSchema,
-    premiumPdfPrice: priceSchema,
-  }).safeParse({ comprehensivePrice, premiumPdfPrice });
-  if (!prices.success) return { enabled: false, reason: "INVALID" };
-  if (
-    prices.data.comprehensivePrice !== PRODUCT_PRICES_KRW.pro_30d ||
-    prices.data.premiumPdfPrice !== PRODUCT_PRICES_KRW.premium_pdf
-  ) {
-    return { enabled: false, reason: "INVALID" };
-  }
+  const catalogPrices = inspectCatalogPrices(environment);
+  if (!catalogPrices.ok) return { enabled: false, reason: "INVALID" };
 
   if (provider === "payapp") {
     const rawMethods = environment.PAYAPP_OPEN_PAY_TYPES?.trim() ||
@@ -214,8 +296,8 @@ export function inspectPaymentReadiness(
         ...parsed.data,
         openPayTypes: parsedMethods.data.join(","),
         products: buildProducts(
-          prices.data.comprehensivePrice,
-          prices.data.premiumPdfPrice,
+          catalogPrices.comprehensivePrice,
+          catalogPrices.premiumPdfPrice,
         ),
       },
     };
@@ -262,8 +344,8 @@ export function inspectPaymentReadiness(
         bankAccounts,
         ...parsed.data,
         products: buildProducts(
-          prices.data.comprehensivePrice,
-          prices.data.premiumPdfPrice,
+          catalogPrices.comprehensivePrice,
+          catalogPrices.premiumPdfPrice,
         ),
       },
     };
@@ -296,8 +378,8 @@ export function inspectPaymentReadiness(
         provider: "portone",
         ...parsed.data,
         products: buildProducts(
-          prices.data.comprehensivePrice,
-          prices.data.premiumPdfPrice,
+          catalogPrices.comprehensivePrice,
+          catalogPrices.premiumPdfPrice,
         ),
       },
     };
@@ -337,8 +419,8 @@ export function inspectPaymentReadiness(
       methodVariantKey: parsed.data.methodVariantKey,
       agreementVariantKey: parsed.data.agreementVariantKey,
       products: buildProducts(
-        prices.data.comprehensivePrice,
-        prices.data.premiumPdfPrice,
+        catalogPrices.comprehensivePrice,
+        catalogPrices.premiumPdfPrice,
       ),
     },
   };
