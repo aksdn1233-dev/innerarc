@@ -18,7 +18,7 @@ export const dynamic = "force-dynamic";
  */
 export async function GET() {
   const startedAt = Date.now();
-  let database: "ok" | "unreachable" | "not_configured" = "not_configured";
+  let database: "ok" | "unreachable" | "misconfigured" | "not_configured" = "not_configured";
   let payments: "open" | "closed" = "closed";
   let site: "ok" | "misconfigured" = "ok";
 
@@ -39,7 +39,9 @@ export async function GET() {
     );
     payments = readiness.enabled && gate.salesEnabled ? "open" : "closed";
   } else if (resolution.reason === "MISCONFIGURED") {
-    database = "unreachable";
+    // A rejected key and a database that is down need different fixes, so they are
+    // never reported as the same thing.
+    database = "misconfigured";
   }
 
   const status = site === "ok" && database === "ok" && payments === "open"

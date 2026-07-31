@@ -8,11 +8,12 @@ import { AdminOperationsPanel } from "@/components/admin-operations-panel";
 import { AdminPaymentReadinessPanel } from "@/components/admin-payment-readiness-panel";
 import { summarizeOrders, type OrderRow } from "@/server/admin-metrics";
 import { isLocale } from "@/i18n/config";
-import { getSupabaseAdminClient } from "@/lib/supabase/admin";
+import { resolveSupabaseAdminClient } from "@/lib/supabase/admin";
 import { requireSupabaseUser } from "@/lib/supabase/auth";
 import { isAdminEmail } from "@/server/admin-access";
 import { describePaymentSetup } from "@/server/payments/diagnostics";
 import {
+  DEFAULT_OPERATIONS_GATE,
   launchApprovalFrom,
   readOperationsGate,
   readRecentPaymentSetupEvents,
@@ -28,8 +29,39 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
   // gets a 404, so the console never confirms its own existence to a stranger.
   if (!auth.user) redirect(`/${locale}/admin/login`);
   if (!isAdminEmail(auth.user.email)) notFound();
-  const admin = getSupabaseAdminClient();
-  if (!admin) notFound();
+  // The console is the one screen that has to survive a broken database connection,
+  // because that is exactly the failure it exists to explain. Previously a bad or
+  // missing service-role key threw here, so the operator lost the diagnosis at the
+  // moment they needed it and saw only a crash.
+  const admin = resolveSupabaseAdminClient().client;
+  if (!admin) {
+    const readiness = describePaymentSetup({
+      launchApproval: launchApprovalFrom(DEFAULT_OPERATIONS_GATE),
+      salesEnabled: DEFAULT_OPERATIONS_GATE.salesEnabled,
+      databaseReachable: false,
+    });
+    return (
+      <main className="shell admin-shell" id="main-content">
+        <header className="topbar">
+          <Link className="brand" href={`/${locale}`}><strong>결 GYEOL</strong><small>관리자</small></Link>
+        </header>
+        <section className="admin-hero">
+          <p className="eyebrow">OWNER CONSOLE</p>
+          <h1>데이터베이스에 연결하지 못했습니다</h1>
+          <p>로그인 계정: {auth.user.email}</p>
+          <p>
+            주문·리포트·문의는 데이터베이스가 연결된 뒤에 표시됩니다. 아래에서 어떤
+            값을 고쳐야 하는지 확인하세요.
+          </p>
+        </section>
+        <AdminPaymentReadinessPanel
+          gate={DEFAULT_OPERATIONS_GATE}
+          recentFailures={[]}
+          report={readiness}
+        />
+      </main>
+    );
+  }
 
   const [
     orders,

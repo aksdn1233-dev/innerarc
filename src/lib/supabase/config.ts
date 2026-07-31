@@ -38,6 +38,23 @@ export function isPublishableSupabaseKey(key: string): boolean {
   return readJwtRole(key) === "anon";
 }
 
+/**
+ * The server-only counterpart, accepting both `sb_secret_…` and the legacy
+ * service-role JWT for the same reason as above.
+ *
+ * A browser key is rejected here rather than quietly accepted: the admin client is
+ * used precisely because it bypasses row-level security, so an anon key in this slot
+ * would not fail loudly — it would read and write as an anonymous visitor and surface
+ * later as orders that mysteriously do not save.
+ */
+export function isSecretSupabaseKey(key: string): boolean {
+  if (key.length < 32) return false;
+  if (key.startsWith("sb_publishable_")) return false;
+  if (key.startsWith("sb_secret_")) return key.length <= 240;
+  if (key.length > 500 || !LEGACY_JWT_PATTERN.test(key)) return false;
+  return readJwtRole(key) === "service_role";
+}
+
 export type SupabasePublicConfig = Readonly<{
   url: string;
   publishableKey: string;
