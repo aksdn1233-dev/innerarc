@@ -27,6 +27,7 @@ export async function GET() {
     launchApproval: launchApprovalFrom(gate),
     salesEnabled: gate.salesEnabled,
     databaseReachable: Boolean(admin) && gate.reachable,
+    databaseError: gate.error,
   });
   const recentFailures = await readRecentPaymentSetupEvents(admin, 10);
 
