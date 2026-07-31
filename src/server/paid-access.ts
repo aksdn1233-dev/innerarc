@@ -4,9 +4,10 @@ import { requireSupabaseUser } from "@/lib/supabase/auth";
 
 export type EntitlementTier = "plus" | "pro";
 
-// 19,000 KRW grants plus; 39,000 and 79,000 grant pro. A feature that belongs to the
-// larger readings has to ask for "pro" explicitly, because checking only that some
-// unexpired entitlement exists opened two-person compatibility to the cheapest one.
+// Historical Core orders grant plus; currently purchasable Detailed and Premium
+// orders grant pro. A feature that belongs to the larger readings has to ask for
+// "pro" explicitly, because checking only that some unexpired entitlement exists
+// opened two-person compatibility to the former entry product.
 const TIER_RANK: Record<EntitlementTier, number> = { plus: 1, pro: 2 };
 
 function meetsTier(tier: string | null, minimumTier: EntitlementTier): boolean {

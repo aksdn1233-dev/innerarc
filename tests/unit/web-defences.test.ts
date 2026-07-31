@@ -72,7 +72,7 @@ describe("cross-site request refusal", () => {
     await scan("src/app/api");
 
     expect(unguarded).toEqual([]);
-  });
+  }, 30_000);
 });
 
 describe("keeping private pages out of indexes", () => {

@@ -1,8 +1,28 @@
 # Continuation State
 
-Last updated: 2026-07-31 (mobile home visual refinement)<br>
+Last updated: 2026-07-31 (two-product pricing reset)<br>
 Current version: 0.18.0
 Overall progress: 94% (web MVP code 99%; paid production launch 86%; native app not started)
+
+## 2026-07-31 — Two-product pricing reset
+
+- New Core (`plus_30d`) sales are temporarily retired. The product is absent from
+  home, onboarding, plans, and the new-order API allowlist, while historical orders,
+  stored reports, downloads, and the legacy composer remain compatible.
+- Detailed (`pro_30d`) is now 9,600 KRW and Premium (`premium_pdf`) is now 39,000
+  KRW across Korean/English product cards, mobile CTA, checkout, legal copy, admin
+  labels, environment examples, and server-side amount validation.
+- Stale 39,000/79,000 deployment price secrets fail closed instead of charging an
+  amount that disagrees with the product page. Only `pro_30d` and `premium_pdf` can
+  create new orders.
+- The two-card desktop grids now use two equal columns and retain the existing
+  single-column mobile layout.
+- Verified locally: changed-source ESLint, strict TypeScript, the complete 480-test
+  unit/integration suite, a post-catalog-extraction 38-test pricing/payment rerun,
+  and the deployable Sites build. The Windows Next.js build reached page generation
+  but was stopped after severe machine-wide I/O contention from a separate project;
+  the clean GitHub CI production build and Chromium/mobile checkout run remain the
+  merge gate.
 
 ## 2026-07-31 — Mobile home visual refinement
 

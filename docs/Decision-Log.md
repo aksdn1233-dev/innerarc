@@ -566,3 +566,24 @@
 - Revisit when: User research indicates the ambient prompts reduce comprehension, or
   the hero receives a broader visual redesign.
 - Status: Decided.
+
+## D-053 - Retire Core sales and reset active one-time prices
+
+- Date: 2026-07-31
+- Decision: Temporarily remove `plus_30d` from all new-sale surfaces and the
+  new-order API allowlist; price `pro_30d` at 9,600 KRW and `premium_pdf` at
+  39,000 KRW. Preserve all three legacy product codes, canonical composer IDs, and
+  report schemas for historical-order compatibility.
+- Alternatives: Delete the Core implementation and migrate old rows; keep a disabled
+  Core card; rename every internal ID to match the new prices; allow deployment
+  environments to override the catalog without constraint.
+- Reason: The requested commercial offer has two active products. Deleting the former
+  tier or renaming price-suffixed internal identifiers would risk breaking existing
+  purchases, while hiding it only in the UI would leave a direct API purchase path.
+  A strict two-code order allowlist and exact server-price check close both gaps.
+- Impact: New buyers see and can purchase only Detailed at 9,600 KRW or Premium at
+  39,000 KRW. Stale price secrets disable checkout safely. Existing Core buyers keep
+  report access, refund handling, downloads, and audit history.
+- Revisit when: Core sales are explicitly restored, historical data receives a
+  versioned migration, or a new product catalog requires different active codes.
+- Status: Decided.

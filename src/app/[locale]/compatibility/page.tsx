@@ -9,6 +9,6 @@ export default async function CompatibilityPage({ params }: { params: Promise<{ 
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   // Two-person compatibility needs the partner's birth date and produces a
-  // relationship-length reading, so it belongs to the 39,000 KRW tier and above.
+  // relationship-length reading, so it belongs to the Detailed tier and above.
   return <CompatibilityExperience locale={locale} copy={compatibilityCopy[locale]} />;
 }

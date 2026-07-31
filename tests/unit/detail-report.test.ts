@@ -37,7 +37,7 @@ describe("DETAIL_39000 exact 1994-11-04 regression", () => {
     const report = detail("");
     const whole = customerContent(report);
 
-    expect(report.tierLabel).toBe("상세 리딩 · 39,000원");
+    expect(report.tierLabel).toBe("상세 리딩 · 9,600원");
     expect(report.sectionPlan).toBe("detail-39000-v2");
     expect(report.calculationBasis).toEqual({
       birthDate: "1994-11-04",

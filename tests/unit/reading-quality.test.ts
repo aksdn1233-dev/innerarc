@@ -105,7 +105,7 @@ describe("no tarot claim without a tarot draw", () => {
   });
 });
 
-describe("the three products differ in what they explain", () => {
+describe("the three retained report composers differ in what they explain", () => {
   it("gives each tier a different set of section titles", () => {
     const titles = TIERS.map((tier) => reading(tier).sections.map((s) => s.title));
     const [basic, detail, premium] = titles;

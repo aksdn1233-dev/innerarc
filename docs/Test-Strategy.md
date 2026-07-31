@@ -42,7 +42,8 @@
   only, 4–5 situations, five prioritized actions, three stop criteria, qualified safety
   boundaries, bilingual no-language-mixing, internal provenance non-disclosure, legacy
   saved-report compatibility, mobile typography/order, saved-download order, and
-  birth-date-only 39,000 KRW checkout.
+  birth-date-only 9,600 KRW checkout, retired Core exclusion, two-card catalog, and
+  exact 9,600/39,000 KRW server-price enforcement.
 - Free-to-paid boundary: each paid-reading homepage links to a payment-independent localized core-result route; fixed Korean and English birth-date vectors produce the same number and archetype without an order request or checkout draft.
 - Free-route regression: question tarot, romantic reflection, compatibility summary, celebrity comparison, and Reality Check render without an entitlement; paid report routes still fail closed without a verified order.
 - AI provider runner: disabled/provider-error/timeout/schema/fact-mismatch/overclaim fallback paths, successful validated output, bounded metering metadata, and proof that audit callbacks receive no raw request or response text.

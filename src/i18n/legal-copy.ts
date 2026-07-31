@@ -204,7 +204,7 @@ const termsKo: LegalPageCopy = {
     {
       title: "리딩 상품과 결제",
       bullets: [
-        "핵심 리딩은 19,000원, 상세 리딩은 39,000원, 프리미엄 심층 리딩은 79,000원입니다. 모두 자동 갱신 없는 1회성 상품이며 최종 결제금액과 제공 범위를 결제 직전에 다시 표시합니다.",
+        "현재 판매 상품은 상세 리딩 9,600원과 프리미엄 심층 리딩 39,000원입니다. 핵심 리딩은 잠정 판매 중지되었습니다. 판매 상품은 모두 자동 갱신 없는 1회성 상품이며 최종 결제금액과 제공 범위를 결제 직전에 다시 표시합니다.",
         "결제 승인 뒤 리포트를 즉시 열고 내려받을 수 있습니다. 로그인하면 마이페이지에도 저장되며, 비회원은 안전한 전용 주소와 내려받은 파일을 직접 보관해야 합니다.",
         "카카오페이·토스페이·카드·휴대폰·계좌이체·가상계좌는 페이앱 판매자 설정과 각 결제수단 심사가 완료된 범위에서만 노출됩니다.",
         "가상계좌 리포트는 페이앱의 서명값·주문번호·결제금액을 검증한 입금완료 통보를 받은 시점부터 제공됩니다.",
@@ -266,7 +266,7 @@ const termsEn: LegalPageCopy = {
     {
       title: "Reading products and payment",
       bullets: [
-        "The quick reading is KRW 19,000, the comprehensive reading is KRW 39,000, and the premium custom report is KRW 79,000. Each is a one-time, non-renewing purchase.",
+        "Current products are the Detailed reading at KRW 9,600 and the Premium in-depth reading at KRW 39,000. The former Core reading is temporarily unavailable. Each available product is a one-time, non-renewing purchase.",
         "Reports open and download after verified payment. Signed-in purchases are also saved in My Page; guest customers must retain the private access link and downloaded file.",
         "KakaoPay, Toss Pay, cards, mobile, bank transfer, and virtual accounts appear only when enabled for the PayApp merchant account and approved for the applicable method.",
         "Virtual-account reports open only after the deposit is verified through the payment-provider API.",

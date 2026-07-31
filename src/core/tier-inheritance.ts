@@ -60,16 +60,16 @@ export type TierComparisonAudit = Readonly<{
 export const TIER_INHERITANCE_CONTRACT = {
   BASIC_19000: {
     inherits: [] as const,
-    customerLabel: "핵심 리딩 · 19,000원",
+    customerLabel: "핵심 리딩 · 판매 중지",
   },
   DETAIL_39000: {
     inherits: ["BASIC_19000"] as const,
-    customerLabel: "상세 리딩 · 39,000원",
+    customerLabel: "상세 리딩 · 9,600원",
     required: DETAIL_COVERAGE_CATEGORIES,
   },
   PREMIUM_79000: {
     inherits: ["BASIC_19000", "DETAIL_39000"] as const,
-    customerLabel: "프리미엄 심층 리딩 · 79,000원",
+    customerLabel: "프리미엄 심층 리딩 · 39,000원",
     required: [...DETAIL_COVERAGE_CATEGORIES, ...PREMIUM_ONLY_CATEGORIES] as const,
   },
 } as const;

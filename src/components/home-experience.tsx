@@ -6,7 +6,7 @@ import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 
 type Props = { locale: Locale; dictionary: Dictionary };
-type ReadingProductId = "quick" | "comprehensive" | "premium_pdf";
+type ReadingProductId = "comprehensive" | "premium_pdf";
 
 type FocusId = "work" | "relationships" | "health" | "growth" | "money";
 
@@ -29,8 +29,7 @@ const concernExamples: Record<Locale, Record<FocusId, string>> = {
   },
 };
 
-const productCodeByReading: Record<ReadingProductId, "plus_30d" | "pro_30d" | "premium_pdf"> = {
-  quick: "plus_30d",
+const productCodeByReading: Record<ReadingProductId, "pro_30d" | "premium_pdf"> = {
   comprehensive: "pro_30d",
   premium_pdf: "premium_pdf",
 };
@@ -38,16 +37,9 @@ const productCodeByReading: Record<ReadingProductId, "plus_30d" | "pro_30d" | "p
 const readingProducts = {
   ko: [
     {
-      id: "quick",
-      name: "핵심 리딩",
-      price: "19,000원",
-      description: "핵심 숫자와 성향, 반복되는 약점, 한 가지 질문 분석, 2026년 방향, 구체적인 행동 3가지를 완결된 리포트로 제공합니다.",
-      badge: "나부터 알고 싶다면",
-    },
-    {
       id: "comprehensive",
       name: "상세 리딩",
-      price: "39,000원",
+      price: "9,600원",
       description: "질문의 직접 결론부터 성향의 모순, 실패 원인, 상황별 대처, 우선 실행 계획과 중단 기준까지 상세히 제공합니다.",
       // Describes the product, not its sales: nothing has been sold yet, and inventing
       // popularity is exactly what 표시광고법 treats as false advertising.
@@ -56,30 +48,23 @@ const readingProducts = {
     {
       id: "premium_pdf",
       name: "프리미엄 심층 리딩",
-      price: "79,000원",
+      price: "39,000원",
       description: "상세 리딩 전체에 숨은 동기·실패의 뿌리, 최선·현실·위험 시나리오, 확인 신호, 6단계 실행과 중단 기준까지 더합니다. 질문이 없어도 완결됩니다.",
       badge: "결정까지 깊게 보고 싶다면",
     },
   ],
   en: [
     {
-      id: "quick",
-      name: "Core reading",
-      price: "KRW 19,000",
-      description: "A complete focused report: core numbers, temperament, repeated weakness, 2026 direction, and exactly three actions.",
-      badge: "Start here",
-    },
-    {
       id: "comprehensive",
       name: "Detailed reading",
-      price: "KRW 39,000",
+      price: "KRW 9,600",
       description: "A consultant-style answer with decision patterns, domain analysis, phased guidance, execution steps, and stop criteria.",
       badge: "Best balance",
     },
     {
       id: "premium_pdf",
       name: "Premium in-depth reading",
-      price: "KRW 79,000",
+      price: "KRW 39,000",
       description: "Everything in Detailed, plus root causes, three evidence-based scenarios, signals, a six-step manual, and stop criteria. Complete even without a question.",
       badge: "For a decision-ready view",
     },
@@ -96,7 +81,7 @@ const copy = {
     ],
     primary: "내 리딩 선택하기",
     secondary: "무엇을 알 수 있나요",
-    heroNote: "종합 리딩 39,000원 · 한 번만 결제 · 추가 결제 없음",
+    heroNote: "상세 리딩 9,600원 · 한 번만 결제 · 추가 결제 없음",
     sampleEyebrow: "이런 내용을 알려드려요",
     sampleTitle: "지금 궁금한 삶의 영역을 구체적으로 살펴봅니다.",
     sampleBody: "아래는 실제 후기가 아니라 리포트 구성 예시입니다. 막연한 결과를 말하기보다 나의 성향과 올해의 흐름을 함께 보고, 현실에서 참고할 방향을 쉽게 설명합니다.",
@@ -120,7 +105,7 @@ const copy = {
     submit: "입력 완료하고 결제하러 가기",
     privacy: "입력 정보는 결제 완료 후 구매한 리포트를 만들고 저장하는 데 사용됩니다.",
     productsTitle: "궁금한 만큼, 필요한 깊이로",
-    productsBody: "나에 대한 짧은 리딩부터 학업·직업·연애와 올해의 흐름을 함께 보는 깊은 리포트까지 고를 수 있습니다. 매달 결제되는 상품은 없습니다.",
+    productsBody: "상세 리딩과 프리미엄 심층 리딩 중 필요한 깊이를 고를 수 있습니다. 핵심 리딩은 잠정 판매 중지되었으며 매달 결제되는 상품은 없습니다.",
     trust: [
       ["회원가입 없음", "이름과 비밀번호를 만들 필요가 없습니다. 생년월일과 궁금한 것, 연락받을 번호만 받습니다."],
       ["결제 확인 후 제공", "결제가 실제로 승인된 주문에만 리포트를 엽니다. 취소하시면 열람도 함께 닫힙니다."],
@@ -166,8 +151,8 @@ const copy = {
     formBody: "Only the information needed for that product is requested. The full report is created after verified payment and saved to your account.",
     submit: "Continue to payment",
     privacy: "Your input is used to create and store the purchased report after payment.",
-    productsTitle: "Three clear products",
-    productsBody: "Choose only the depth you need, from one quick answer to a long custom report.",
+    productsTitle: "Two clear products",
+    productsBody: "Choose Detailed or Premium based on the depth you need. The former Core reading is temporarily unavailable.",
     trust: [
       ["No account needed", "No username or password. Only your birth date, your question, and a contact number."],
       ["Opens after payment", "Reports open only on verified payments, and close again if a payment is cancelled."],
@@ -185,7 +170,7 @@ const copy = {
 } as const;
 
 export function HomeExperience({ locale, dictionary: d }: Props) {
-  const [selectedProduct, setSelectedProduct] = useState<ReadingProductId>("quick");
+  const [selectedProduct, setSelectedProduct] = useState<ReadingProductId>("comprehensive");
   const [focusId, setFocusId] = useState<FocusId>("relationships");
   const [error, setError] = useState("");
   const t = copy[locale];
@@ -445,12 +430,10 @@ export function HomeExperience({ locale, dictionary: d }: Props) {
                 </div>
               </fieldset>
 
-              {selectedProduct !== "quick" && (
-                <div className="field field-premium">
-                  <label htmlFor="name">{locale === "ko" ? "이름 또는 부를 이름" : "Name"}</label>
-                  <input id="name" name="name" type="text" maxLength={200} autoComplete="name" placeholder={locale === "ko" ? "리포트에 표시할 이름" : "Name shown on the report"} />
-                </div>
-              )}
+              <div className="field field-premium">
+                <label htmlFor="name">{locale === "ko" ? "이름 또는 부를 이름" : "Name"}</label>
+                <input id="name" name="name" type="text" maxLength={200} autoComplete="name" placeholder={locale === "ko" ? "리포트에 표시할 이름" : "Name shown on the report"} />
+              </div>
 
               <div className="field field-premium">
                 <label htmlFor="concern">
@@ -467,7 +450,7 @@ export function HomeExperience({ locale, dictionary: d }: Props) {
                 <small>
                   {locale === "ko"
                     ? selectedProduct !== "premium_pdf"
-                      ? "비워두면 생년월일만으로 핵심 성향·직업·돈·관계·2026년 방향을 구성합니다."
+                      ? "비워두면 생년월일만으로 상세 성향·직업·돈·관계·2026년 방향을 구성합니다."
                       : "비워도 전체 분석이 완결됩니다. 적으면 그 질문의 시나리오·신호·실행 기준을 더 집중해서 분석합니다."
                     : selectedProduct !== "premium_pdf"
                       ? "Leave blank for a general report covering work, money, relationships, and 2026."
@@ -525,7 +508,7 @@ export function HomeExperience({ locale, dictionary: d }: Props) {
         </footer>
       </main>
       <a className="mobile-purchase-bar" href="#products">
-        <span>{locale === "ko" ? "종합 리딩" : "Full reading"} <strong>{locale === "ko" ? "39,000원" : "KRW 39,000"}</strong></span>
+        <span>{locale === "ko" ? "상세 리딩" : "Detailed reading"} <strong>{locale === "ko" ? "9,600원" : "KRW 9,600"}</strong></span>
         <b>{locale === "ko" ? "선택하기" : "Choose"}</b>
       </a>
     </>

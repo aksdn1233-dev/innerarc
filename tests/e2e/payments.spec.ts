@@ -5,7 +5,7 @@ const checkoutEnabled = process.env.E2E_PAYMENT_CHECKOUT === "1";
 const draft = {
   version: 1,
   locale: "en",
-  productCode: "plus_30d",
+  productCode: "pro_30d",
   birthDate: "1994-11-04",
   name: "Minji Kim",
   focusId: "relationships",
@@ -31,7 +31,7 @@ test("checkout validates locally and switches product and report input together"
         provider: "payapp",
         orderId: "e2e_order_01",
         orderName: "Premium in-depth reading",
-        amount: 79_000,
+        amount: 39_000,
         currency: "KRW",
         payUrl: "https://pay.example.invalid/e2e_order_01",
         reportUrl: `${new URL(route.request().url()).origin}/en/reports/e2e_order_01`,
@@ -39,7 +39,8 @@ test("checkout validates locally and switches product and report input together"
     });
   });
 
-  await page.goto("/en/plans?product=plus_30d");
+  await page.goto("/en/plans?product=pro_30d");
+  await expect(page.locator('[data-product="plus_30d"]')).toHaveCount(0);
   await expect(page.locator("#customer-phone")).toBeVisible();
   const premium = page.locator('[data-product="premium_pdf"]');
   await expect(premium.getByRole("button", { name: "Load payment methods" })).toBeEnabled();
@@ -77,17 +78,17 @@ test("temporarily unavailable checkout is not reported as a payment-window failu
     body: JSON.stringify({ error: "SALES_PAUSED" }),
   }));
 
-  await page.goto("/en/plans?product=plus_30d");
+  await page.goto("/en/plans?product=pro_30d");
   await expect(page.locator("#customer-phone")).toBeVisible();
-  const quickCheckout = page.locator('[data-product="plus_30d"]')
+  const detailCheckout = page.locator('[data-product="pro_30d"]')
     .getByRole("button", { name: "Load payment methods" });
   // The input is present in server HTML before React has restored the checkout
   // draft. Waiting for the enabled button prevents hydration from clearing a
   // phone number entered too early on slower WebKit devices.
-  await expect(quickCheckout).toBeEnabled();
+  await expect(detailCheckout).toBeEnabled();
   await page.locator("#customer-phone").fill("01012345678");
   await expect(page.locator("#customer-phone")).toHaveValue("01012345678");
-  await quickCheckout.click();
+  await detailCheckout.click();
   await expect(page.locator("p.error[role='alert']")).toHaveText(
     "Checkout is temporarily paused. Your reading details are still here; please try again shortly.",
   );
@@ -108,8 +109,8 @@ test("a rapid double click creates only one payment order", async ({ page }) => 
       body: JSON.stringify({
         provider: "payapp",
         orderId: "e2e_order_once",
-        orderName: "Core reading",
-        amount: 19_000,
+        orderName: "Detailed reading",
+        amount: 9_600,
         currency: "KRW",
         payUrl: "https://pay.example.invalid/e2e_order_once",
         reportUrl: `${new URL(route.request().url()).origin}/en/reports/e2e_order_once`,
@@ -117,8 +118,8 @@ test("a rapid double click creates only one payment order", async ({ page }) => 
     });
   });
 
-  await page.goto("/en/plans?product=plus_30d");
-  const checkout = page.locator('[data-product="plus_30d"]')
+  await page.goto("/en/plans?product=pro_30d");
+  const checkout = page.locator('[data-product="pro_30d"]')
     .getByRole("button", { name: "Load payment methods" });
   await expect(checkout).toBeEnabled();
   await page.locator("#customer-phone").fill("01012345678");
@@ -130,7 +131,7 @@ test("a rapid double click creates only one payment order", async ({ page }) => 
   expect(requestCount).toBe(1);
 });
 
-test("the 39,000 KRW detailed report can be purchased with birth date only", async ({ page }) => {
+test("the 9,600 KRW detailed report can be purchased with birth date only", async ({ page }) => {
   const requests: unknown[] = [];
   await page.addInitScript((value) => {
     window.sessionStorage.setItem("innerarc.checkoutDraft.v1", JSON.stringify(value));
@@ -148,7 +149,7 @@ test("the 39,000 KRW detailed report can be purchased with birth date only", asy
         provider: "payapp",
         orderId: "e2e_order_detail",
         orderName: "Detailed reading",
-        amount: 39_000,
+        amount: 9_600,
         currency: "KRW",
         payUrl: "https://pay.example.invalid/e2e_order_detail",
         reportUrl: `${new URL(route.request().url()).origin}/en/reports/e2e_order_detail`,

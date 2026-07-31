@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   deriveTossCustomerKey,
   inspectPaymentReadiness,
+  purchasablePaymentProductCodes,
 } from "@/server/payments/config";
 import {
   confirmTossPayment,
@@ -24,9 +25,8 @@ const validEnvironment = {
   TOSS_CUSTOMER_KEY_SALT: "c".repeat(32),
   TOSS_PAYMENT_METHOD_VARIANT_KEY: "DEFAULT",
   TOSS_AGREEMENT_VARIANT_KEY: "AGREEMENT",
-  INNERARC_PLUS_30D_PRICE_KRW: "5900",
-  INNERARC_PRO_30D_PRICE_KRW: "12900",
-  INNERARC_PREMIUM_PDF_PRICE_KRW: "79000",
+  INNERARC_PRO_30D_PRICE_KRW: "9600",
+  INNERARC_PREMIUM_PDF_PRICE_KRW: "39000",
 };
 
 const validPortOneEnvironment = {
@@ -36,9 +36,8 @@ const validPortOneEnvironment = {
   PORTONE_KPN_CHANNEL_KEY: "channel-key-9987cb87-6458-4888-b94e-68d9a2da896d",
   PORTONE_API_SECRET: `portone-api-${"a".repeat(32)}`,
   PORTONE_WEBHOOK_SECRET: `portone-webhook-${"b".repeat(32)}`,
-  INNERARC_PLUS_30D_PRICE_KRW: "19000",
-  INNERARC_PRO_30D_PRICE_KRW: "39000",
-  INNERARC_PREMIUM_PDF_PRICE_KRW: "79000",
+  INNERARC_PRO_30D_PRICE_KRW: "9600",
+  INNERARC_PREMIUM_PDF_PRICE_KRW: "39000",
 };
 
 const validManualTransferEnvironment = {
@@ -57,9 +56,8 @@ const validManualTransferEnvironment = {
     },
   ]),
   MANUAL_DEPOSIT_WINDOW_HOURS: "24",
-  INNERARC_PLUS_30D_PRICE_KRW: "19000",
-  INNERARC_PRO_30D_PRICE_KRW: "39000",
-  INNERARC_PREMIUM_PDF_PRICE_KRW: "79000",
+  INNERARC_PRO_30D_PRICE_KRW: "9600",
+  INNERARC_PREMIUM_PDF_PRICE_KRW: "39000",
 };
 
 const validPayAppEnvironment = {
@@ -69,9 +67,8 @@ const validPayAppEnvironment = {
   PAYAPP_LINK_KEY: "link-key-secret",
   PAYAPP_LINK_VALUE: "link-value-secret",
   PAYAPP_OPEN_PAY_TYPES: "card,kakaopay,tosspay,vbank,phone,rbank",
-  INNERARC_PLUS_30D_PRICE_KRW: "19000",
-  INNERARC_PRO_30D_PRICE_KRW: "39000",
-  INNERARC_PREMIUM_PDF_PRICE_KRW: "79000",
+  INNERARC_PRO_30D_PRICE_KRW: "9600",
+  INNERARC_PREMIUM_PDF_PRICE_KRW: "39000",
 };
 
 describe("payment readiness", () => {
@@ -103,14 +100,20 @@ describe("payment readiness", () => {
     });
   });
 
-  it("validates server-owned products and requires live keys in production", () => {
+  it("validates the exact active catalog and requires live keys in production", () => {
     const development = inspectPaymentReadiness(validEnvironment, "development");
     expect(development.enabled).toBe(true);
     if (development.enabled) {
-      expect(development.config.products.plus_30d.amount).toBe(5900);
-      expect(development.config.products.pro_30d.amount).toBe(12900);
-      expect(development.config.products.premium_pdf.amount).toBe(79000);
+      expect(development.config.products.plus_30d.amount).toBe(19000);
+      expect(development.config.products.pro_30d.amount).toBe(9600);
+      expect(development.config.products.premium_pdf.amount).toBe(39000);
     }
+    expect(purchasablePaymentProductCodes).toEqual(["pro_30d", "premium_pdf"]);
+    expect(inspectPaymentReadiness({
+      ...validEnvironment,
+      INNERARC_PRO_30D_PRICE_KRW: "39000",
+      INNERARC_PREMIUM_PDF_PRICE_KRW: "79000",
+    }, "development")).toEqual({ enabled: false, reason: "INVALID" });
 
     expect(inspectPaymentReadiness(validEnvironment, "production")).toEqual({
       enabled: false,
@@ -137,7 +140,7 @@ describe("payment readiness", () => {
     if (readiness.enabled) {
       expect(readiness.config.provider).toBe("portone");
       expect(readiness.config.products.plus_30d.amount).toBe(19000);
-      expect(readiness.config.products.premium_pdf.amount).toBe(79000);
+      expect(readiness.config.products.premium_pdf.amount).toBe(39000);
     }
     expect(inspectPaymentReadiness({
       ...validPortOneEnvironment,
@@ -169,6 +172,7 @@ describe("payment readiness", () => {
       expect(readiness.config.userId).toBe("test-seller");
       expect(readiness.config.openPayTypes).toContain("vbank");
       expect(readiness.config.products.plus_30d.amount).toBe(19000);
+      expect(readiness.config.products.pro_30d.amount).toBe(9600);
     }
     expect(inspectPaymentReadiness({
       ...validPayAppEnvironment,
@@ -200,9 +204,9 @@ describe("PayApp API boundary", () => {
     const checkout = await requestPayAppPayment({
       userId: "test-seller",
       orderId: "iaorder123456",
-      productCode: "plus_30d",
-      orderName: "핵심 리딩",
-      amount: 19000,
+      productCode: "pro_30d",
+      orderName: "상세 리딩",
+      amount: 9600,
       customerPhone: "01012345678",
       openPayTypes: "card,kakaopay,tosspay,vbank,phone,rbank",
       feedbackUrl: "https://example.com/api/payments/payapp/feedback",
@@ -214,7 +218,7 @@ describe("PayApp API boundary", () => {
     const [, options] = fetchMock.mock.calls[0] as [string, RequestInit];
     const sent = new URLSearchParams(String(options.body));
     expect(sent.get("var1")).toBe("iaorder123456");
-    expect(sent.get("price")).toBe("19000");
+    expect(sent.get("price")).toBe("9600");
     expect(sent.get("checkretry")).toBe("y");
     expect(sent.get("reqaddr")).toBe("0");
   });
@@ -228,9 +232,9 @@ describe("PayApp API boundary", () => {
     await expect(requestPayAppPayment({
       userId: "test-seller",
       orderId: "iaorder123456",
-      productCode: "plus_30d",
-      orderName: "핵심 리딩",
-      amount: 19000,
+      productCode: "pro_30d",
+      orderName: "상세 리딩",
+      amount: 9600,
       customerPhone: "01012345678",
       openPayTypes: "card",
       feedbackUrl: "https://example.com/api/payments/payapp/feedback",
