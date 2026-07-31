@@ -1,5 +1,5 @@
 import { resolvePublicAppUrl } from "@/core/site-url";
-import { getSupabasePublicConfig } from "@/lib/supabase/config";
+import { getSupabasePublicConfig, isPublishableSupabaseKey } from "@/lib/supabase/config";
 import {
   DEFAULT_PAYAPP_METHODS,
   inspectCatalogPrices,
@@ -227,7 +227,16 @@ export function describePaymentSetup(input: Readonly<{
     input.launchApproval.ownerConsole,
   );
   const appUrl = resolveAppUrl(environment);
-  const supabasePublic = getSupabasePublicConfig(environment);
+  // Reading this is itself allowed to fail: a malformed browser key must be reportable
+  // rather than something that throws out of the report the operator opened to find it.
+  let supabasePublic: ReturnType<typeof getSupabasePublicConfig> = null;
+  let supabasePublicError = false;
+  try {
+    supabasePublic = getSupabasePublicConfig(environment);
+  } catch {
+    supabasePublicError = true;
+  }
+  const publishableKey = environment.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim();
   const prices = inspectCatalogPrices(environment);
   const checks: PaymentSetupCheck[] = [];
 
@@ -302,6 +311,32 @@ export function describePaymentSetup(input: Readonly<{
       : "배포 환경의 과거 가격 값을 지우거나 현재 상품 가격과 같게 맞추세요. 값을 지우면 상품 카탈로그 가격이 그대로 적용됩니다.",
   });
 
+  // Split out because a malformed browser key is a build-time failure with a very
+  // different remedy from an unreachable database, and the two used to be one row.
+  const keyMalformed = Boolean(publishableKey) && !isPublishableSupabaseKey(publishableKey!);
+  checks.push({
+    id: "supabase_public",
+    title: "Supabase 공개 설정",
+    status: !publishableKey && !environment.NEXT_PUBLIC_SUPABASE_URL?.trim()
+      ? "missing"
+      : keyMalformed || supabasePublicError
+        ? "invalid"
+        : "ok",
+    detail: !publishableKey && !environment.NEXT_PUBLIC_SUPABASE_URL?.trim()
+      ? "Supabase 주소와 공개 키가 비어 있어 로그인과 계정 동기화가 꺼져 있습니다."
+      : keyMalformed
+        ? publishableKey!.startsWith("sb_secret_")
+          ? "공개 키 자리에 서비스 역할 키가 들어가 있습니다. 이 값은 브라우저로 전달되므로 즉시 교체해야 합니다."
+          : "공개 키 형식이 올바르지 않습니다. sb_publishable_ 로 시작하는 키 또는 기존 anon 키만 사용할 수 있습니다."
+        : supabasePublicError
+          ? "Supabase 주소와 공개 키 중 하나가 비어 있거나 형식이 올바르지 않습니다."
+          : "Supabase 주소와 공개 키가 정상입니다.",
+    variables: ["NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"],
+    remedy: keyMalformed || supabasePublicError
+      ? "Supabase 대시보드 > Project Settings > API Keys 의 publishable(또는 anon) 키를 그대로 붙여넣으세요. service_role 키는 절대 NEXT_PUBLIC_ 변수에 넣지 마세요."
+      : null,
+  });
+
   checks.push({
     id: "database",
     title: "주문 데이터베이스",
@@ -309,11 +344,7 @@ export function describePaymentSetup(input: Readonly<{
     detail: input.databaseReachable
       ? "주문과 리포트를 저장할 수 있습니다."
       : "Supabase 서비스 역할 키 또는 공개 설정이 없어 주문을 저장할 수 없습니다.",
-    variables: [
-      "NEXT_PUBLIC_SUPABASE_URL",
-      "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
-      "SUPABASE_SERVICE_ROLE_KEY",
-    ],
+    variables: ["SUPABASE_SERVICE_ROLE_KEY"],
     remedy: input.databaseReachable
       ? null
       : "Supabase URL, publishable key, service-role key를 모두 배포 환경에 입력하세요.",

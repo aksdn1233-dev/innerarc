@@ -33,6 +33,27 @@ none of them was visible from outside.
 - **The plans page and the order API now read the same gate**, so the product page can
   no longer advertise a checkout the server would refuse.
 
+## 2026-07-31 — Every Vercel deployment was failing, including main
+
+Found while following this branch's CI: the Vercel project had not produced a single
+successful build in weeks. `main` and every branch failed identically.
+
+- **Cause.** `getSupabasePublicConfig` accepted only the current `sb_publishable_…`
+  key shape and rejected the legacy anon JWT that most existing Supabase projects
+  still hold. Because `next.config.ts` reads it at module scope, the rejection threw
+  during config evaluation and aborted the entire build before any page rendered.
+- **Fix.** Legacy anon keys are accepted, and the security property the check exists
+  for is now stronger rather than weaker: a legacy token is admitted only after its
+  own `role` claim reads `anon`, so a service-role JWT is refused for what it is
+  instead of for its format. `sb_secret_…` is refused by name.
+- **Blast radius.** Config reads that only widen the CSP no longer abort the build.
+  A rejected value logs `[config] … is unusable, continuing without it` and the site
+  deploys; the feature depending on it was broken either way, and the administrator
+  console now names the variable. This also defused a second latent build-killer in
+  the AI provider readiness check.
+- Reproduced the exact Vercel error locally on the pre-fix commit, then confirmed both
+  a legacy anon key and a genuinely malformed value now build to completion.
+
 ## 2026-07-31 — Service continuity during page work
 
 - Added `src/app/[locale]/error.tsx`, `src/app/global-error.tsx`, and
@@ -45,7 +66,7 @@ none of them was visible from outside.
   launch approval fails closed.
 - The new migration is additive and the code tolerates its absence, so deploying ahead
   of the migration keeps checkout working on the environment-flag path.
-- Verified: ESLint, strict TypeScript, 514 unit/integration tests (was 480), the
+- Verified: ESLint, strict TypeScript, 519 unit/integration tests (was 480), the
   61-route Next.js production build, and the Chromium/mobile browser suites including
   the isolated fake-provider checkout run. No real order or payment was created.
 
