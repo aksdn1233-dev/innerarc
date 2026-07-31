@@ -587,3 +587,21 @@
 - Revisit when: Core sales are explicitly restored, historical data receives a
   versioned migration, or a new product catalog requires different active codes.
 - Status: Decided.
+
+## D-054 - Lock the homepage free-core entry without deleting the engine
+
+- Date: 2026-07-31
+- Decision: Replace the Korean and English home-hero links to the free core-pattern
+  flow with visibly muted, disabled controls that expose an explicit locked state to
+  assistive technology. Retain the deterministic profile route and calculation code.
+- Alternatives: Delete the profile route and engine; redirect all direct profile URLs;
+  leave the free link active; hide the control entirely.
+- Reason: The requested commercial presentation removes the discoverable free entry,
+  while retaining the already-tested deterministic engine avoids destructive feature
+  loss and keeps a low-risk path for future reactivation.
+- Impact: Home visitors cannot click into the free core-pattern flow in either locale.
+  Existing paid product selection, checkout, prices, stored reports, and calculation
+  rules are unchanged. This is a presentation lock, not an account entitlement gate.
+- Revisit when: Free acquisition is restored, an authenticated entitlement gate is
+  specified, or the profile route is explicitly retired.
+- Status: Decided.

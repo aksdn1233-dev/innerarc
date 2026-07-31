@@ -1,8 +1,20 @@
 # Continuation State
 
-Last updated: 2026-07-31 (two-product pricing reset)<br>
+Last updated: 2026-07-31 (homepage free-core entry locked)<br>
 Current version: 0.18.0
 Overall progress: 94% (web MVP code 99%; paid production launch 86%; native app not started)
+
+## 2026-07-31 — Homepage free-core entry locked
+
+- The Korean and English home hero no longer link visitors into the free core-pattern
+  flow. The former secondary link is now a visibly muted, disabled button with an
+  explicit locked accessible name.
+- The deterministic profile route and calculation engine remain intact for existing
+  regression coverage and a possible later commercial decision; this change is a
+  discoverable-entry lock rather than deletion of the underlying engine.
+- Verified: ESLint, strict TypeScript, all 480 unit/integration tests, the 58-route
+  Next.js production build, and all 19 focused Chromium onboarding/mobile/privacy
+  flows.
 
 ## 2026-07-31 — Two-product pricing reset
 
