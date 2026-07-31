@@ -125,6 +125,7 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
     launchApproval: launchApprovalFrom(gate),
     salesEnabled: gate.salesEnabled,
     databaseReachable: gate.reachable,
+    databaseError: gate.error,
   });
 
   return (

@@ -17,6 +17,12 @@ export type OperationsGate = Readonly<{
   approvedAt: string | null;
   /** The settings row could be read at all. */
   reachable: boolean;
+  /**
+   * The database's own words when the read failed. Surfaced because "unreachable"
+   * covers causes with completely different fixes — a rejected key, a disabled key,
+   * a missing table — and collapsing them cost a full debugging round.
+   */
+  error: string | null;
   /** The launch-approval columns exist, so console approval can be stored. */
   migrated: boolean;
 }>;
@@ -26,6 +32,7 @@ export const DEFAULT_OPERATIONS_GATE: OperationsGate = {
   launchApprovedByOwner: false,
   approvedAt: null,
   reachable: false,
+  error: null,
   migrated: false,
 };
 
@@ -56,22 +63,43 @@ async function withTimeout<T>(work: Promise<T>, fallback: T): Promise<T> {
   }
 }
 
-type SettingsRead = SettingsRow | null | "error" | "timeout";
+type SettingsFailure = Readonly<{ failed: true; message: string; timedOut: boolean }>;
+type SettingsRead = SettingsRow | null | SettingsFailure;
+
+function isFailure(read: SettingsRead): read is SettingsFailure {
+  return read !== null && "failed" in read;
+}
+
+const TIMED_OUT: SettingsFailure = {
+  failed: true,
+  message: "데이터베이스 응답이 3초를 넘겨 중단했습니다.",
+  timedOut: true,
+};
 
 async function selectSettings(
   admin: SupabaseClient,
   columns: string,
 ): Promise<SettingsRead> {
-  const query = (async () => {
+  const query = (async (): Promise<SettingsRead> => {
     const { data, error } = await admin
       .from("admin_settings")
       .select(columns)
       .eq("id", 1)
       .maybeSingle();
-    if (error) return "error" as const;
+    if (error) {
+      return {
+        failed: true,
+        message: [error.code, error.message].filter(Boolean).join(": ").slice(0, 300),
+        timedOut: false,
+      };
+    }
     return (data ?? null) as SettingsRow | null;
-  })().catch(() => "error" as const);
-  return withTimeout<SettingsRead>(query, "timeout");
+  })().catch((cause: unknown) => ({
+    failed: true,
+    message: (cause instanceof Error ? cause.message : String(cause)).slice(0, 300),
+    timedOut: false,
+  }) as SettingsFailure);
+  return withTimeout<SettingsRead>(query, TIMED_OUT);
 }
 
 /**
@@ -90,28 +118,34 @@ export async function readOperationsGate(
   );
   // A timeout is not evidence that the column is missing, so it never pays for a
   // second wait; only a query error falls through to the pre-migration shape.
-  if (full === "timeout") return DEFAULT_OPERATIONS_GATE;
-  if (full !== "error") {
+  if (isFailure(full) && full.timedOut) {
+    return { ...DEFAULT_OPERATIONS_GATE, error: full.message };
+  }
+  if (!isFailure(full)) {
     return {
       salesEnabled: full?.sales_enabled ?? true,
       launchApprovedByOwner: full?.payments_launch_approved === true,
       approvedAt: full?.payments_launch_approved_at ?? null,
       reachable: true,
+      error: null,
       migrated: true,
     };
   }
 
   const legacy = await selectSettings(admin, "sales_enabled");
-  if (legacy !== "error" && legacy !== "timeout") {
+  if (!isFailure(legacy)) {
     return {
       salesEnabled: legacy?.sales_enabled ?? true,
       launchApprovedByOwner: false,
       approvedAt: null,
       reachable: true,
+      error: null,
       migrated: false,
     };
   }
-  return DEFAULT_OPERATIONS_GATE;
+  // Both reads failed the same way, so the second message is the honest one: it is not
+  // about a column this deployment may not have yet.
+  return { ...DEFAULT_OPERATIONS_GATE, error: legacy.message };
 }
 
 export function launchApprovalFrom(

@@ -214,6 +214,8 @@ export function describePaymentSetup(input: Readonly<{
   launchApproval: LaunchApproval;
   salesEnabled: boolean;
   databaseReachable: boolean;
+  /** The database's own words when the read failed, shown verbatim to the operator. */
+  databaseError?: string | null;
 }>): PaymentSetupReport {
   const environment = input.environment ?? process.env;
   const runtimeMode = input.runtimeMode ?? (
@@ -356,11 +358,13 @@ export function describePaymentSetup(input: Readonly<{
           : "서비스 역할 키 형식이 올바르지 않습니다. sb_secret_ 로 시작하는 키 또는 기존 service_role 키만 사용할 수 있습니다."
         : !serviceRoleKey
           ? "SUPABASE_SERVICE_ROLE_KEY 값이 비어 있어 주문을 저장할 수 없습니다."
-          : "데이터베이스에 연결하지 못했습니다.",
+          : input.databaseError
+            ? `Supabase 응답: ${input.databaseError}`
+            : "데이터베이스에 연결하지 못했습니다.",
     variables: ["SUPABASE_SERVICE_ROLE_KEY"],
     remedy: input.databaseReachable
       ? null
-      : "Supabase 대시보드 > Project Settings > API Keys 의 secret(또는 service_role) 키를 SUPABASE_SERVICE_ROLE_KEY 에 그대로 붙여넣고 다시 배포하세요.",
+      : "Supabase 대시보드 > Project Settings > API Keys 에서 현재 사용 중(disabled 아님)인 secret 키를 복사해 SUPABASE_SERVICE_ROLE_KEY 에 넣고 다시 배포하세요. 예전 service_role 키를 비활성화했다면 그 키로는 401이 납니다.",
   });
 
   checks.push({

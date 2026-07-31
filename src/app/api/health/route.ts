@@ -18,7 +18,8 @@ export const dynamic = "force-dynamic";
  */
 export async function GET() {
   const startedAt = Date.now();
-  let database: "ok" | "unreachable" | "misconfigured" | "not_configured" = "not_configured";
+  let database: "ok" | "rejected" | "unreachable" | "misconfigured" | "not_configured" =
+    "not_configured";
   let payments: "open" | "closed" = "closed";
   let site: "ok" | "misconfigured" = "ok";
 
@@ -31,7 +32,10 @@ export async function GET() {
   const resolution = resolveSupabaseAdminClient();
   if (resolution.client) {
     const gate = await readOperationsGate(resolution.client);
-    database = gate.reachable ? "ok" : "unreachable";
+    // A key the database refuses is the one cause an operator can act on immediately,
+    // so it does not hide inside the generic "unreachable".
+    const refused = /\b(401|403|JWT|PGRST301|api key|apikey|unauthor)/i.test(gate.error ?? "");
+    database = gate.reachable ? "ok" : refused ? "rejected" : "unreachable";
     const readiness = inspectPaymentReadiness(
       process.env,
       undefined,

@@ -58,6 +58,7 @@ describe("operations gate", () => {
       launchApprovedByOwner: true,
       approvedAt: "2026-07-31T00:00:00.000Z",
       reachable: true,
+      error: null,
       migrated: true,
     });
   });
@@ -86,11 +87,29 @@ describe("operations gate", () => {
 
   it("falls back to the safe default when the settings table cannot be read", async () => {
     const gate = await readOperationsGate(createAdmin({}));
-    expect(gate).toEqual(DEFAULT_OPERATIONS_GATE);
+    expect(gate).toEqual({ ...DEFAULT_OPERATIONS_GATE, error: "42P01" });
     // Sales open, approval closed: a database hiccup must not stop a paying customer,
     // and must not open a checkout the owner never approved.
     expect(gate.salesEnabled).toBe(true);
     expect(gate.launchApprovedByOwner).toBe(false);
+  });
+
+  // The failure that cost a full debugging round: the key was well-formed and the
+  // table existed, but Supabase refused the key outright. "unreachable" alone said
+  // nothing an operator could act on, so the database's own words are carried out.
+  it("carries the database's own refusal message out to the caller", async () => {
+    const gate = await readOperationsGate(createAdmin({
+      [FULL_COLUMNS]: {
+        data: null,
+        error: { code: "PGRST301", message: "Invalid authentication credentials" },
+      },
+      sales_enabled: {
+        data: null,
+        error: { code: "PGRST301", message: "Invalid authentication credentials" },
+      },
+    }));
+    expect(gate.reachable).toBe(false);
+    expect(gate.error).toBe("PGRST301: Invalid authentication credentials");
   });
 
   it("returns the safe default without a database client at all", async () => {
@@ -113,7 +132,10 @@ describe("operations gate", () => {
 
       const pending = readOperationsGate(hanging);
       await vi.advanceTimersByTimeAsync(3_100);
-      await expect(pending).resolves.toEqual(DEFAULT_OPERATIONS_GATE);
+      const gate = await pending;
+      expect(gate.reachable).toBe(false);
+      expect(gate.salesEnabled).toBe(true);
+      expect(gate.error).toContain("3초");
     } finally {
       vi.useRealTimers();
     }
