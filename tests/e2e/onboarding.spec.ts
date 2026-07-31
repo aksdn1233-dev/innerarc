@@ -83,7 +83,8 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
       && question.text.length > 0
   ))).toBe(true);
 
-  await page.getByRole("link", { name: "무료 핵심 패턴 먼저 보기" }).click();
+  await expect(page.getByRole("button", { name: "무료 핵심 패턴 보기 잠금" })).toBeDisabled();
+  await page.goto("/ko/profile");
   await expect(page).toHaveURL(`${E2E_ORIGIN}/ko/profile`);
   await expect(page.getByRole("heading", { name: "내 흐름 확인하기" })).toBeAttached();
   await page.locator("#birthDate").fill("1994-11-04");
@@ -150,7 +151,8 @@ test("mobile home uses undecorated floating questions and an inset reading grid"
 
 test("English page keeps the same calculated core meaning", async ({ page }) => {
   await page.goto("/en");
-  await page.getByRole("link", { name: "See my free core pattern first" }).click();
+  await expect(page.getByRole("button", { name: "Free core pattern is locked" })).toBeDisabled();
+  await page.goto("/en/profile");
   await expect(page).toHaveURL(`${E2E_ORIGIN}/en/profile`);
   await page.locator("#birthDate").fill("1994-11-04");
   await page.getByText("I have read the privacy notice.").click();

@@ -283,9 +283,14 @@ export function HomeExperience({ locale, dictionary: d }: Props) {
             </p>
             <div className="hero-actions">
               <a className="primary-button" href="#products">{t.primary}</a>
-              <Link className="secondary-button" href={`/${locale}/profile`}>
-                {locale === "ko" ? "무료 핵심 패턴 먼저 보기" : "See my free core pattern first"}
-              </Link>
+              <button
+                aria-label={locale === "ko" ? "무료 핵심 패턴 보기 잠금" : "Free core pattern is locked"}
+                className="secondary-button is-locked"
+                disabled
+                type="button"
+              >
+                {locale === "ko" ? "무료 핵심 패턴 보기 · 잠금" : "Free core pattern · Locked"}
+              </button>
               <a className="secondary-link" href="#preview">{t.secondary}</a>
             </div>
             <p className="hero-note">{t.heroNote}</p>

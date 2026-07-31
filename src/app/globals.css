@@ -5633,6 +5633,16 @@ summary {
   color: var(--ivory-v4);
 }
 
+.home-hero .secondary-button.is-locked,
+.home-hero .secondary-button.is-locked:hover {
+  border-color: rgba(247, 241, 231, 0.2);
+  background: rgba(247, 241, 231, 0.06);
+  color: rgba(247, 241, 231, 0.48);
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
 .home-hero .hero-note {
   color: rgba(247, 241, 231, 0.72);
   font-weight: 700;
