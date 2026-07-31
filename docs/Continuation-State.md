@@ -21,8 +21,9 @@ Overall progress: 94% (web MVP code 99%; paid production launch 86%; native app 
   unit/integration suite, a post-catalog-extraction 38-test pricing/payment rerun,
   and the deployable Sites build. The Windows Next.js build reached page generation
   but was stopped after severe machine-wide I/O contention from a separate project;
-  the clean GitHub CI production build and Chromium/mobile checkout run remain the
-  merge gate.
+  clean GitHub CI then passed full ESLint, TypeScript, 480 tests, production build,
+  dependency audit, SBOM, 140 Chromium/mobile checks (9 intentional skips), and the
+  isolated fake-provider checkout verification.
 
 ## 2026-07-31 — Mobile home visual refinement
 
