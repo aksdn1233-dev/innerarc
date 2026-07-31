@@ -10,14 +10,14 @@ import { requireSupabaseUser } from "@/lib/supabase/auth";
 import {
   deriveTossCustomerKey,
   inspectPaymentReadiness,
-  paymentProductCodes,
+  purchasablePaymentProductCodes,
 } from "@/server/payments/config";
 import { requestPayAppPayment } from "@/server/payments/payapp";
 import { hashCustomerPhone, issueOrderTicket } from "@/server/order-pass";
 import { checkCheckoutLimit, tooManyRequests } from "@/server/request-limit";
 
 const bodySchema = z.object({
-  productCode: z.enum(paymentProductCodes),
+  productCode: z.enum(purchasablePaymentProductCodes),
   locale: z.string().refine(isLocale),
   readingInput: PaidReadingInputSchema,
   depositorName: z.string().trim().min(2).max(80).optional(),

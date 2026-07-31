@@ -129,7 +129,7 @@
 
 .plan-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
   max-width: none;
 }
@@ -5681,30 +5681,20 @@ summary {
 
 .question-bubble {
   position: absolute;
-  padding: 11px 16px;
-  border: 1px solid rgba(226, 182, 111, 0.34);
-  border-radius: 18px 18px 18px 5px;
-  background: rgba(247, 241, 231, 0.08);
-  color: rgba(247, 241, 231, 0.48);
-  box-shadow: 0 12px 32px rgba(2, 9, 18, 0.12);
-  backdrop-filter: blur(3px);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgba(247, 241, 231, 0.36);
+  text-shadow: 0 8px 24px rgba(2, 9, 18, 0.34);
   font-size: clamp(0.72rem, 1vw, 0.9rem);
   font-weight: 650;
+  letter-spacing: -0.015em;
   white-space: nowrap;
   animation: question-float 8s ease-in-out infinite;
 }
 
 .question-bubble::after {
-  position: absolute;
-  bottom: -6px;
-  left: 13px;
-  width: 10px;
-  height: 10px;
-  border-right: 1px solid rgba(226, 182, 111, 0.28);
-  border-bottom: 1px solid rgba(226, 182, 111, 0.28);
-  background: rgba(247, 241, 231, 0.05);
-  content: "";
-  transform: rotate(45deg);
+  content: none;
 }
 
 .question-bubble-1 { top: 112px; left: 5%; animation-delay: -1s; }
@@ -5811,7 +5801,7 @@ summary {
 
 .editorial-product-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
 
@@ -5971,22 +5961,24 @@ summary {
   }
 
   .question-bubble {
-    padding: 8px 11px;
-    background: rgba(247, 241, 231, 0.07);
-    color: rgba(247, 241, 231, 0.38);
-    font-size: 0.68rem;
+    color: rgba(247, 241, 231, 0.3);
+    font-size: 0.7rem;
   }
 
-  .question-bubble-1 { top: 88px; left: -5%; right: auto; }
-  .question-bubble-2 { top: 132px; right: -9%; left: auto; }
-  .question-bubble-3 { top: 190px; left: -8%; right: auto; }
-  .question-bubble-7 { top: 246px; right: -8%; left: auto; }
-  .question-bubble-8 { top: 306px; left: -9%; right: auto; }
-  .question-bubble-9 { top: 364px; right: -8%; left: auto; }
+  .question-bubble-1 { top: 92px; left: 6%; right: auto; }
+  .question-bubble-2 { top: 138px; right: 5%; left: auto; }
+  .question-bubble-3 { top: 194px; left: 7%; right: auto; }
+  .question-bubble-7 { top: 250px; right: 6%; left: auto; }
+  .question-bubble-8 { top: 308px; left: 5%; right: auto; }
+  .question-bubble-9 { top: 366px; right: 5%; left: auto; }
   .question-bubble-4,
   .question-bubble-5,
   .question-bubble-6 {
     display: none;
+  }
+
+  .pattern-fields {
+    padding: 76px clamp(22px, 6vw, 30px);
   }
 
   .editorial-product-grid {

@@ -56,5 +56,5 @@ describe("korean particles", () => {
     await scan("src");
 
     expect(offenders).toEqual([]);
-  });
+  }, 30_000);
 });

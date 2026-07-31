@@ -95,7 +95,7 @@ describe("paid report delivery", () => {
 
   it("does not repeat the same opening across the long report's sections", () => {
     // Five of eight domains once led with the life-path number and shared one sentence
-    // frame, so a 79,000 KRW report read as the same paragraph eight times.
+    // frame, so the Premium report read as the same paragraph eight times.
     const premium = createPaidReport("iarepeat123", {
       ...baseInput,
       birthDate: "1994-11-04",

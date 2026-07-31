@@ -48,14 +48,14 @@ beforeEach(() => {
 afterEach(() => vi.clearAllMocks());
 
 describe("paid feature access", () => {
-  it("keeps the 19,000 KRW reading out of pro-tier features", async () => {
+  it("keeps a historical Core reading out of pro-tier features", async () => {
     getSupabaseAdminClient.mockReturnValue(adminReturning({ tier: "plus", valid_until: FUTURE }));
 
     expect(await hasPaidFeatureAccess("plus")).toBe(true);
     expect(await hasPaidFeatureAccess("pro")).toBe(false);
   });
 
-  it("lets the 39,000 and 79,000 KRW readings reach every tier", async () => {
+  it("lets current Detailed and Premium readings reach every tier", async () => {
     getSupabaseAdminClient.mockReturnValue(adminReturning({ tier: "pro", valid_until: FUTURE }));
 
     expect(await hasPaidFeatureAccess("plus")).toBe(true);

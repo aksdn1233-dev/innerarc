@@ -122,9 +122,8 @@ beforeEach(() => {
   vi.stubEnv("PAYAPP_USER_ID", USER_ID);
   vi.stubEnv("PAYAPP_LINK_KEY", LINK_KEY);
   vi.stubEnv("PAYAPP_LINK_VALUE", LINK_VALUE);
-  vi.stubEnv("INNERARC_QUICK_TAROT_PRICE_KRW", "19000");
-  vi.stubEnv("INNERARC_COMPREHENSIVE_PRICE_KRW", "39000");
-  vi.stubEnv("INNERARC_PREMIUM_PDF_PRICE_KRW", "79000");
+  vi.stubEnv("INNERARC_COMPREHENSIVE_PRICE_KRW", "9600");
+  vi.stubEnv("INNERARC_PREMIUM_PDF_PRICE_KRW", "39000");
   finalizePaidReport.mockResolvedValue(undefined);
   revokeGuestPaidReport.mockResolvedValue(undefined);
   stubOrder(defaultOrder());
@@ -165,7 +164,7 @@ describe("PayApp feedback callback", () => {
   });
 
   it("rejects a callback whose amount does not match the server-owned order", async () => {
-    const recorded = stubOrder(defaultOrder({ amount: 79_000 }));
+    const recorded = stubOrder(defaultOrder({ amount: 9_600 }));
     const response = await POST(feedbackRequest({ price: "39000" }));
 
     expect(response.status).toBe(400);

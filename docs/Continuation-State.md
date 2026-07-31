@@ -1,8 +1,45 @@
 # Continuation State
 
-Last updated: 2026-07-31 (PREMIUM_79000 strict-superset correction)<br>
+Last updated: 2026-07-31 (two-product pricing reset)<br>
 Current version: 0.18.0
 Overall progress: 94% (web MVP code 99%; paid production launch 86%; native app not started)
+
+## 2026-07-31 — Two-product pricing reset
+
+- New Core (`plus_30d`) sales are temporarily retired. The product is absent from
+  home, onboarding, plans, and the new-order API allowlist, while historical orders,
+  stored reports, downloads, and the legacy composer remain compatible.
+- Detailed (`pro_30d`) is now 9,600 KRW and Premium (`premium_pdf`) is now 39,000
+  KRW across Korean/English product cards, mobile CTA, checkout, legal copy, admin
+  labels, environment examples, and server-side amount validation.
+- Stale 39,000/79,000 deployment price secrets fail closed instead of charging an
+  amount that disagrees with the product page. Only `pro_30d` and `premium_pdf` can
+  create new orders.
+- The two-card desktop grids now use two equal columns and retain the existing
+  single-column mobile layout.
+- Verified locally: changed-source ESLint, strict TypeScript, the complete 480-test
+  unit/integration suite, a post-catalog-extraction 38-test pricing/payment rerun,
+  and the deployable Sites build. The Windows Next.js build reached page generation
+  but was stopped after severe machine-wide I/O contention from a separate project;
+  clean GitHub CI then passed full ESLint, TypeScript, 480 tests, production build,
+  dependency audit, SBOM, 140 Chromium/mobile checks (9 intentional skips), and the
+  isolated fake-provider checkout verification.
+
+## 2026-07-31 — Mobile home visual refinement
+
+- The hero's contextual question prompts now render as quiet floating text without
+  speech-bubble borders, fills, tails, blur, or box shadows. Mobile positions use
+  positive insets so no prompt is clipped against the hero frame.
+- Mobile reading-field cards now keep a responsive 22–30 px horizontal content
+  gutter instead of placing headings and body copy against the panel edge.
+- A new 390x844 browser regression verifies the undecorated prompt treatment,
+  in-frame prompt bounds, reading-field insets, and absence of horizontal overflow
+  in both Chromium and mobile WebKit.
+- The source was based on the fetched `origin/main` revision `ff7c4af`; the separate
+  project worktree and its running services were not modified or stopped.
+- Verified: ESLint, strict TypeScript, 480 unit/integration tests, the 58-route Next.js
+  production build, deployable Sites build, focused Chromium and mobile WebKit flows,
+  and reviewed mobile screenshots.
 
 ## 2026-07-31 — PREMIUM_79000 strict-superset correction
 

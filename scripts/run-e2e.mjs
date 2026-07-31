@@ -25,9 +25,8 @@ const paymentCheckoutTestEnvironment = process.env.E2E_PAYMENT_CHECKOUT === "1"
       PAYAPP_USER_ID: "e2e-seller",
       PAYAPP_LINK_KEY: "e2e-link-key",
       PAYAPP_LINK_VALUE: "e2e-link-value",
-      INNERARC_QUICK_TAROT_PRICE_KRW: "19000",
-      INNERARC_COMPREHENSIVE_PRICE_KRW: "39000",
-      INNERARC_PREMIUM_PDF_PRICE_KRW: "79000",
+      INNERARC_COMPREHENSIVE_PRICE_KRW: "9600",
+      INNERARC_PREMIUM_PDF_PRICE_KRW: "39000",
       SUPABASE_SERVICE_ROLE_KEY: "e2e-service-role-not-a-secret",
     }
   : {};

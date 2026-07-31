@@ -546,3 +546,44 @@
   the deterministic content tables, or historical stored reports require an explicit
   upgrade path instead of continuing through the legacy renderer.
 - Status: Decided.
+
+## D-052 - Use quiet floating prompts and protected mobile content gutters
+
+- Date: 2026-07-31
+- Decision: Remove all speech-bubble decoration from the home hero's contextual
+  prompts while retaining them as low-contrast floating text, and give mobile
+  reading-field content a responsive 22–30 px horizontal gutter.
+- Alternatives: Remove the contextual prompts entirely; keep outlined bubbles with
+  smaller tails; retain edge-to-edge reading-field text; redesign the entire hero.
+- Reason: Mobile screenshots showed that bubble chrome competed with the primary
+  message and that negative prompt offsets and zero field padding caused clipped or
+  edge-bound text. The quieter treatment preserves atmosphere without looking like a
+  chat interface, while explicit insets improve hierarchy and readability.
+- Impact: Six prompts remain visible on the compact hero, all stay inside its frame,
+  and reading-field headings and body text no longer touch the navy panel edge.
+  Desktop structure, CTA behavior, pricing, checkout, and report composition are
+  unchanged. Browser geometry assertions prevent recurrence.
+- Revisit when: User research indicates the ambient prompts reduce comprehension, or
+  the hero receives a broader visual redesign.
+- Status: Decided.
+
+## D-053 - Retire Core sales and reset active one-time prices
+
+- Date: 2026-07-31
+- Decision: Temporarily remove `plus_30d` from all new-sale surfaces and the
+  new-order API allowlist; price `pro_30d` at 9,600 KRW and `premium_pdf` at
+  39,000 KRW. Preserve all three legacy product codes, canonical composer IDs, and
+  report schemas for historical-order compatibility.
+- Alternatives: Delete the Core implementation and migrate old rows; keep a disabled
+  Core card; rename every internal ID to match the new prices; allow deployment
+  environments to override the catalog without constraint.
+- Reason: The requested commercial offer has two active products. Deleting the former
+  tier or renaming price-suffixed internal identifiers would risk breaking existing
+  purchases, while hiding it only in the UI would leave a direct API purchase path.
+  A strict two-code order allowlist and exact server-price check close both gaps.
+- Impact: New buyers see and can purchase only Detailed at 9,600 KRW or Premium at
+  39,000 KRW. Stale price secrets disable checkout safely. Existing Core buyers keep
+  report access, refund handling, downloads, and audit history.
+- Revisit when: Core sales are explicitly restored, historical data receives a
+  versioned migration, or a new product catalog requires different active codes.
+- Status: Decided.

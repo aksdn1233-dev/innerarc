@@ -1,8 +1,14 @@
 import { createHmac } from "node:crypto";
 import { z } from "zod";
+import {
+  PRODUCT_PRICES_KRW,
+  PURCHASABLE_PRODUCT_CODES,
+} from "../../core/product-prices";
 
 export const paymentProductCodes = ["plus_30d", "pro_30d", "premium_pdf"] as const;
 export type PaymentProductCode = (typeof paymentProductCodes)[number];
+export const purchasablePaymentProductCodes = PURCHASABLE_PRODUCT_CODES;
+export type PurchasablePaymentProductCode = (typeof purchasablePaymentProductCodes)[number];
 export type PaymentRuntimeMode = "development" | "test" | "production";
 
 const priceSchema = z.coerce.number().int().min(100).max(10_000_000);
@@ -94,13 +100,13 @@ const bankAccountsSchema = z.array(z.object({
   accountHolder: accountHolderSchema,
 }).strict()).min(1).max(5);
 
-function buildProducts(quickPrice: number, comprehensivePrice: number, premiumPdfPrice: number) {
+function buildProducts(comprehensivePrice: number, premiumPdfPrice: number) {
   return {
     plus_30d: {
       code: "plus_30d",
       tier: "plus",
       durationDays: 30,
-      amount: quickPrice,
+      amount: PRODUCT_PRICES_KRW.plus_30d,
       names: { ko: "핵심 리딩", en: "Core reading" },
     },
     pro_30d: {
@@ -157,25 +163,26 @@ export function inspectPaymentReadiness(
     return { enabled: false, reason: "INVALID" };
   }
 
-  const quickPrice = (
-    environment.INNERARC_QUICK_TAROT_PRICE_KRW ??
-    environment.INNERARC_PLUS_30D_PRICE_KRW
-  )?.trim();
   const comprehensivePrice = (
     environment.INNERARC_COMPREHENSIVE_PRICE_KRW ??
     environment.INNERARC_PRO_30D_PRICE_KRW
   )?.trim();
   const premiumPdfPrice = environment.INNERARC_PREMIUM_PDF_PRICE_KRW?.trim();
-  if (!quickPrice || !comprehensivePrice || !premiumPdfPrice) {
+  if (!comprehensivePrice || !premiumPdfPrice) {
     return { enabled: false, reason: "INCOMPLETE" };
   }
 
   const prices = z.object({
-    quickPrice: priceSchema,
     comprehensivePrice: priceSchema,
     premiumPdfPrice: priceSchema,
-  }).safeParse({ quickPrice, comprehensivePrice, premiumPdfPrice });
+  }).safeParse({ comprehensivePrice, premiumPdfPrice });
   if (!prices.success) return { enabled: false, reason: "INVALID" };
+  if (
+    prices.data.comprehensivePrice !== PRODUCT_PRICES_KRW.pro_30d ||
+    prices.data.premiumPdfPrice !== PRODUCT_PRICES_KRW.premium_pdf
+  ) {
+    return { enabled: false, reason: "INVALID" };
+  }
 
   if (provider === "payapp") {
     const rawMethods = environment.PAYAPP_OPEN_PAY_TYPES?.trim() ||
@@ -207,7 +214,6 @@ export function inspectPaymentReadiness(
         ...parsed.data,
         openPayTypes: parsedMethods.data.join(","),
         products: buildProducts(
-          prices.data.quickPrice,
           prices.data.comprehensivePrice,
           prices.data.premiumPdfPrice,
         ),
@@ -256,7 +262,6 @@ export function inspectPaymentReadiness(
         bankAccounts,
         ...parsed.data,
         products: buildProducts(
-          prices.data.quickPrice,
           prices.data.comprehensivePrice,
           prices.data.premiumPdfPrice,
         ),
@@ -291,7 +296,6 @@ export function inspectPaymentReadiness(
         provider: "portone",
         ...parsed.data,
         products: buildProducts(
-          prices.data.quickPrice,
           prices.data.comprehensivePrice,
           prices.data.premiumPdfPrice,
         ),
@@ -333,7 +337,6 @@ export function inspectPaymentReadiness(
       methodVariantKey: parsed.data.methodVariantKey,
       agreementVariantKey: parsed.data.agreementVariantKey,
       products: buildProducts(
-        prices.data.quickPrice,
         prices.data.comprehensivePrice,
         prices.data.premiumPdfPrice,
       ),
