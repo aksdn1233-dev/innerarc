@@ -1,7 +1,5 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import { getSupabasePublicConfig } from "./config";
-
-const SERVICE_ROLE_PREFIX = "sb_secret_";
+import { getSupabasePublicConfig, isSecretSupabaseKey } from "./config";
 
 export function getSupabaseAdminClient(
   environment: Readonly<Record<string, string | undefined>> = process.env,
@@ -11,14 +9,17 @@ export function getSupabaseAdminClient(
 
   if (!publicConfig && !serviceRoleKey) return null;
   if (!publicConfig || !serviceRoleKey) {
-    throw new Error("Supabase public config and service-role key must be configured together.");
+    throw new Error(
+      "Supabase public config and service-role key must be configured together: " +
+        "NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, and " +
+        "SUPABASE_SERVICE_ROLE_KEY are all required.",
+    );
   }
-  if (
-    !serviceRoleKey.startsWith(SERVICE_ROLE_PREFIX) ||
-    serviceRoleKey.length < 32 ||
-    serviceRoleKey.length > 240
-  ) {
-    throw new Error("Supabase service-role key is malformed.");
+  if (!isSecretSupabaseKey(serviceRoleKey)) {
+    throw new Error(
+      "SUPABASE_SERVICE_ROLE_KEY must be a Supabase secret key (sb_secret_…) or a " +
+        "legacy service_role key. A publishable or anon key cannot be used here.",
+    );
   }
 
   return createClient(publicConfig.url, serviceRoleKey, {

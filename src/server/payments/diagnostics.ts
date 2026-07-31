@@ -1,5 +1,9 @@
 import { resolvePublicAppUrl } from "@/core/site-url";
-import { getSupabasePublicConfig, isPublishableSupabaseKey } from "@/lib/supabase/config";
+import {
+  getSupabasePublicConfig,
+  isPublishableSupabaseKey,
+  isSecretSupabaseKey,
+} from "@/lib/supabase/config";
 import {
   DEFAULT_PAYAPP_METHODS,
   inspectCatalogPrices,
@@ -337,17 +341,26 @@ export function describePaymentSetup(input: Readonly<{
       : null,
   });
 
+  const serviceRoleKey = environment.SUPABASE_SERVICE_ROLE_KEY?.trim();
+  const serviceRoleMalformed = Boolean(serviceRoleKey) && !isSecretSupabaseKey(serviceRoleKey!);
   checks.push({
     id: "database",
     title: "주문 데이터베이스",
-    status: input.databaseReachable ? "ok" : "missing",
+    status: input.databaseReachable ? "ok" : serviceRoleMalformed ? "invalid" : "missing",
     detail: input.databaseReachable
       ? "주문과 리포트를 저장할 수 있습니다."
-      : "Supabase 서비스 역할 키 또는 공개 설정이 없어 주문을 저장할 수 없습니다.",
+      : serviceRoleMalformed
+        ? serviceRoleKey!.startsWith("sb_publishable_") ||
+          isPublishableSupabaseKey(serviceRoleKey!)
+          ? "서비스 역할 키 자리에 공개 키가 들어가 있습니다. 이 키로는 주문을 저장할 수 없습니다."
+          : "서비스 역할 키 형식이 올바르지 않습니다. sb_secret_ 로 시작하는 키 또는 기존 service_role 키만 사용할 수 있습니다."
+        : !serviceRoleKey
+          ? "SUPABASE_SERVICE_ROLE_KEY 값이 비어 있어 주문을 저장할 수 없습니다."
+          : "데이터베이스에 연결하지 못했습니다.",
     variables: ["SUPABASE_SERVICE_ROLE_KEY"],
     remedy: input.databaseReachable
       ? null
-      : "Supabase URL, publishable key, service-role key를 모두 배포 환경에 입력하세요.",
+      : "Supabase 대시보드 > Project Settings > API Keys 의 secret(또는 service_role) 키를 SUPABASE_SERVICE_ROLE_KEY 에 그대로 붙여넣고 다시 배포하세요.",
   });
 
   checks.push({

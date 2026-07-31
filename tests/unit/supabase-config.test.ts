@@ -2,8 +2,10 @@ import { describe, expect, it } from "vitest";
 import {
   getSupabasePublicConfig,
   isPublishableSupabaseKey,
+  isSecretSupabaseKey,
   isSupabaseConfigured,
 } from "@/lib/supabase/config";
+import { getSupabaseAdminClient, resolveSupabaseAdminClient } from "@/lib/supabase/admin";
 
 /** A legacy Supabase browser key: an unsigned-in-practice JWT carrying a role claim. */
 function legacyKey(role: string): string {
@@ -84,5 +86,50 @@ describe("Supabase public configuration", () => {
     expect(isPublishableSupabaseKey(`${"a".repeat(20)}.not-base64-json.${"c".repeat(20)}`))
       .toBe(false);
     expect(isPublishableSupabaseKey(`sb_publishable_${"a".repeat(400)}`)).toBe(false);
+  });
+});
+
+// The service-role key carried the identical too-narrow format check, so a project
+// holding legacy keys could not reach its database at all — every order write, the
+// order-pass signature, and the administrator console depend on this client.
+describe("Supabase service-role key", () => {
+  const publicEnvironment = {
+    NEXT_PUBLIC_SUPABASE_URL: "https://example-ref.supabase.co",
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: legacyKey("anon"),
+  };
+
+  it("accepts both the current secret key and the legacy service_role key", () => {
+    expect(isSecretSupabaseKey(`sb_secret_${"a".repeat(32)}`)).toBe(true);
+    expect(isSecretSupabaseKey(legacyKey("service_role"))).toBe(true);
+    expect(getSupabaseAdminClient({
+      ...publicEnvironment,
+      SUPABASE_SERVICE_ROLE_KEY: legacyKey("service_role"),
+    })).not.toBeNull();
+  });
+
+  it("refuses a browser key in the service-role slot", () => {
+    // Silently accepting one would not fail loudly — the client would read and write
+    // as an anonymous visitor and surface later as orders that never save.
+    expect(isSecretSupabaseKey(legacyKey("anon"))).toBe(false);
+    expect(isSecretSupabaseKey(`sb_publishable_${"a".repeat(32)}`)).toBe(false);
+    expect(resolveSupabaseAdminClient({
+      ...publicEnvironment,
+      SUPABASE_SERVICE_ROLE_KEY: legacyKey("anon"),
+    })).toEqual({ client: null, reason: "MISCONFIGURED" });
+  });
+
+  it("stays off entirely when nothing is configured", () => {
+    expect(getSupabaseAdminClient({})).toBeNull();
+    expect(resolveSupabaseAdminClient({})).toEqual({
+      client: null,
+      reason: "NOT_CONFIGURED",
+    });
+  });
+
+  it("reports a missing service-role key as a reason rather than throwing", () => {
+    expect(resolveSupabaseAdminClient(publicEnvironment)).toEqual({
+      client: null,
+      reason: "MISCONFIGURED",
+    });
   });
 });
