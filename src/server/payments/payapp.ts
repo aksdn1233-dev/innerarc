@@ -40,8 +40,20 @@ export const payAppFeedbackSchema = z.object({
 export type PayAppFeedback = z.infer<typeof payAppFeedbackSchema>;
 
 export class PayAppApiError extends Error {
-  constructor(readonly code: "REQUEST_FAILED" | "INVALID_RESPONSE") {
+  /**
+   * PayApp's own rejection wording, when it sent one. A merchant-side cause — seller
+   * review still pending, a callback address it will not accept — is only visible
+   * here, so it is carried out of this boundary for the operator's console rather
+   * than discarded. It is never shown to a buyer.
+   */
+  readonly providerMessage: string;
+
+  constructor(
+    readonly code: "REQUEST_FAILED" | "INVALID_RESPONSE",
+    providerMessage = "",
+  ) {
     super("PayApp payment request failed.");
+    this.providerMessage = providerMessage.slice(0, 500);
   }
 }
 
@@ -86,21 +98,26 @@ export async function requestPayAppPayment(input: {
       signal: AbortSignal.timeout(10_000),
     });
   } catch {
-    throw new PayAppApiError("REQUEST_FAILED");
+    throw new PayAppApiError("REQUEST_FAILED", "페이앱 서버에 연결하지 못했습니다.");
   }
-  if (!response.ok) throw new PayAppApiError("REQUEST_FAILED");
+  if (!response.ok) {
+    throw new PayAppApiError("REQUEST_FAILED", `페이앱 응답 오류 (HTTP ${response.status})`);
+  }
 
   const raw = await response.text();
-  const parsed = payAppResponseSchema.safeParse(
-    Object.fromEntries(new URLSearchParams(raw)),
-  );
+  const fields = Object.fromEntries(new URLSearchParams(raw));
+  const parsed = payAppResponseSchema.safeParse(fields);
   if (
     !parsed.success ||
     parsed.data.state !== "1" ||
     !parsed.data.mul_no ||
     !parsed.data.payurl
   ) {
-    throw new PayAppApiError("INVALID_RESPONSE");
+    const reported = typeof fields.errorMessage === "string" ? fields.errorMessage : "";
+    throw new PayAppApiError(
+      "INVALID_RESPONSE",
+      reported || "페이앱이 결제요청을 거부했습니다.",
+    );
   }
   const payUrl = new URL(parsed.data.payurl);
   const isPayAppHost =
@@ -110,7 +127,7 @@ export async function requestPayAppPayment(input: {
     (payUrl.protocol === "http:" && payUrl.port === "80") ||
     (payUrl.protocol === "https:" && payUrl.port === "443");
   if (!isPayAppHost || !isDefaultPort || payUrl.username || payUrl.password) {
-    throw new PayAppApiError("INVALID_RESPONSE");
+    throw new PayAppApiError("INVALID_RESPONSE", "페이앱이 아닌 결제 주소가 반환되었습니다.");
   }
   // Some PayApp REST responses still use the legacy http scheme even though the
   // same hosted checkout is available over HTTPS. Upgrade only verified PayApp
@@ -119,7 +136,9 @@ export async function requestPayAppPayment(input: {
     payUrl.protocol = "https:";
     payUrl.port = "";
   }
-  if (payUrl.protocol !== "https:") throw new PayAppApiError("INVALID_RESPONSE");
+  if (payUrl.protocol !== "https:") {
+    throw new PayAppApiError("INVALID_RESPONSE", "페이앱 결제 주소가 HTTPS가 아닙니다.");
+  }
   return {
     requestNumber: parsed.data.mul_no,
     payUrl: payUrl.toString(),

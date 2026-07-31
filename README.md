@@ -4,7 +4,7 @@ InnerArc is an AI self-discovery and personal pattern intelligence platform. It 
 
 ## Current scope
 
-Version 0.17.1 provides a web-first, guest-first Korean/English application with:
+Version 0.18.1 provides a web-first, guest-first Korean/English application with:
 
 - a mobile-first premium homepage that introduces the InnerArc pattern model, previews a result, explains four analysis fields, and leads clearly into the existing free calculation flow;
 - deterministic Pythagorean numerology and calculation evidence;
@@ -25,13 +25,15 @@ Version 0.17.1 provides a web-first, guest-first Korean/English application with
 - a guest privacy center for independent consent, language/time-zone preferences, validated device export, and complete local deletion;
 - optional Supabase email sign-in with explicit owner-scoped upload/restore, account export, and atomic server-record deletion;
 - a fail-closed PayApp hosted checkout with virtual-account deposit notifications plus PortOne/Toss fallbacks, server-owned 9,600/39,000 KRW active products, guest or optional-account purchase, verified payment callbacks, post-payment reports, downloads, My Page storage, notification preferences, and an allowlisted admin console;
+- a per-condition payment readiness report in that console that names the variable closing checkout without ever showing its value, records the payment company's own rejection wording, and lets the owner grant the launch approval without a redeploy;
+- route-level and root error boundaries, a bounded settings read, and a secret-free `/api/health` endpoint so page changes cannot silently take the storefront down;
 - a temporarily retired Core product retained only for historical-order and stored-report compatibility;
 - bilingual pre-release privacy and terms pages that surface unresolved launch-review fields;
 - region-labelled official crisis resources without inferring location from the selected language;
 - consent-gated analytics, personalization, entitlement, billing, data-rights, and AI-provider contracts;
 - accessibility, mobile WebKit, security-header, PWA manifest, performance, release regression, CycloneDX SBOM, and deterministic store-asset coverage.
 
-The responsive website/PWA is the canonical first product. Native apps follow only after web activation, Reality Check return behavior, accessibility, safety, deletion, and unit economics are proven. Supabase Auth/Postgres is connected for optional account sync. The PayApp checkout adapter and payment database foundation are implemented, but production checkout fails closed unless the server-only `PAYMENTS_LAUNCH_APPROVED=true` gate is explicitly set after domain, merchant-method, seller-disclosure, refund/support, and live approval/cancel/virtual-account checks are approved. Live paid AI, monitoring, and physical commerce remain outside the current launch boundary.
+The responsive website/PWA is the canonical first product. Native apps follow only after web activation, Reality Check return behavior, accessibility, safety, deletion, and unit economics are proven. Supabase Auth/Postgres is connected for optional account sync. The PayApp checkout adapter and payment database foundation are implemented, but production checkout fails closed until the owner records an explicit launch approval — either `PAYMENTS_LAUNCH_APPROVED=true` in the deployment environment or a typed confirmation in the signed-in admin console — after domain, merchant-method, seller-disclosure, refund/support, and live approval/cancel/virtual-account checks are approved. Merchant credentials alone never open sales. Live paid AI, monitoring, and physical commerce remain outside the current launch boundary.
 
 ## Local setup
 
@@ -44,7 +46,7 @@ pnpm dev
 
 Open `http://127.0.0.1:3000/ko` or `/en` so the local Supabase magic-link callback stays on the same host as its PKCE cookie. Privacy controls are available at `/ko/me`, payment readiness at `/ko/plans`, relationship reflection at `/ko/relationship`, two-person comparison at `/ko/compatibility`, sourced celebrity comparison at `/ko/celebrity`, Reality Check at `/ko/reality-check`, and the closed physical shop preview at `/ko/shop` (replace `ko` with `en` for English).
 
-Copy `.env.example` to `.env.local` and fill the two public Supabase values to enable email sign-in and account sync. Keep database credentials, payment secrets, and service-role keys out of browser-prefixed variables. Payment launch requirements are in [the Korean payment, legal, and domain checklist](docs/PAYMENTS-LEGAL-DOMAIN-LAUNCH-KO.md).
+Copy `.env.example` to `.env.local` and fill the two public Supabase values to enable email sign-in and account sync. Keep database credentials, payment secrets, and service-role keys out of browser-prefixed variables. Payment launch requirements are in [the Korean payment, legal, and domain checklist](docs/PAYMENTS-LEGAL-DOMAIN-LAUNCH-KO.md); when checkout is closed, `/{locale}/admin` names the specific condition responsible.
 
 Verification:
 

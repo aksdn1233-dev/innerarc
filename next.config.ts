@@ -10,7 +10,34 @@ const runtimeMode: RuntimeMode = process.env.NODE_ENV === "production"
     ? "test"
     : "development";
 const enforceHttps = process.env.APP_HTTPS_ONLY === "true";
-const supabaseConfig = getSupabasePublicConfig(process.env);
+
+/**
+ * Everything read here exists only to widen the Content-Security-Policy. A rejected
+ * value used to throw straight through `next.config.ts` evaluation, which aborts the
+ * whole build before a single page renders — so one mistyped browser-public variable
+ * took down the deployment of every unrelated page, including the guest reading flow
+ * that needs none of it. The narrower failure is to leave the origin out of the policy
+ * and say so: the feature that depends on it is broken either way, and the
+ * administrator console names the offending variable.
+ */
+function withoutCrashingTheBuild<T>(label: string, read: () => T, fallback: T): T {
+  try {
+    return read();
+  } catch (cause) {
+    console.warn(
+      `[config] ${label} is unusable, continuing without it: ${
+        cause instanceof Error ? cause.message : String(cause)
+      }`,
+    );
+    return fallback;
+  }
+}
+
+const supabaseConfig = withoutCrashingTheBuild(
+  "Supabase public configuration",
+  () => getSupabasePublicConfig(process.env),
+  null,
+);
 const paymentReadiness = inspectPaymentReadiness(process.env, runtimeMode);
 const browserConnectOrigins = [
   ...(supabaseConfig ? [supabaseConfig.url] : []),
@@ -40,7 +67,11 @@ const browserFrameOrigins = paymentReadiness.enabled && paymentReadiness.config.
       "https://connect.tosspayments.com",
     ]
   : [];
-inspectAIProviderReadiness(process.env, runtimeMode);
+withoutCrashingTheBuild(
+  "AI provider configuration",
+  () => inspectAIProviderReadiness(process.env, runtimeMode),
+  null,
+);
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
