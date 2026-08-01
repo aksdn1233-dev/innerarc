@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
-import { inspectPaymentReadiness } from "@/server/payments/config";
+import { inspectPaymentReadiness, isPaymentForceOpen } from "@/server/payments/config";
 import {
   getTossPaymentByOrderId,
   matchesTossWebhookSecret,
@@ -30,9 +30,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "INVALID_WEBHOOK_HEADERS" }, { status: 400 });
   }
 
-  const readiness = inspectPaymentReadiness();
+  const forceOpen = isPaymentForceOpen(process.env);
+  const readiness = inspectPaymentReadiness(
+    process.env,
+    undefined,
+    forceOpen,
+  );
   const admin = getSupabaseAdminClient();
-  if (!readiness.enabled || readiness.config.provider !== "toss" || !admin) {
+  if (!readiness.enabled || !admin) {
+    return NextResponse.json({ error: "PAYMENTS_UNAVAILABLE" }, { status: 503 });
+  }
+  if (readiness.config.provider !== "toss") {
     return NextResponse.json({ error: "PAYMENTS_UNAVAILABLE" }, { status: 503 });
   }
 

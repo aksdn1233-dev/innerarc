@@ -87,6 +87,12 @@ export function isLaunchApproved(approval: LaunchApproval): boolean {
   return approval.environment || approval.ownerConsole;
 }
 
+export function isPaymentForceOpen(
+  environment: Readonly<Record<string, string | undefined>> = process.env,
+): boolean {
+  return parseLooseBool(environment.PAYMENTS_FORCE_OPEN) === true;
+}
+
 function parseLooseBool(value: string | undefined): boolean | null {
   if (!value) return null;
   const normalized = value.trim().toLowerCase();
@@ -267,8 +273,10 @@ export function inspectPaymentReadiness(
 ): PaymentReadiness {
   const provider = environment.PAYMENTS_PROVIDER?.trim() || "disabled";
   if (provider === "disabled") return { enabled: false, reason: "DISABLED" };
+  const forceOpen = isPaymentForceOpen(environment);
   if (
     runtimeMode === "production" &&
+    !forceOpen &&
     !isLaunchApproved({
       environment: readEnvironmentLaunchApproval(environment),
       ownerConsole: ownerConsoleApproved,

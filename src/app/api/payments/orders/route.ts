@@ -11,6 +11,7 @@ import {
   deriveTossCustomerKey,
   inspectPaymentReadiness,
   purchasablePaymentProductCodes,
+  isPaymentForceOpen,
 } from "@/server/payments/config";
 import { PayAppApiError, requestPayAppPayment } from "@/server/payments/payapp";
 import {
@@ -48,6 +49,7 @@ export async function POST(request: Request) {
   if (!admin) {
     return NextResponse.json({ error: "PAYMENTS_UNAVAILABLE" }, { status: 503 });
   }
+  const forceOpen = isPaymentForceOpen(process.env);
   // The owner's launch approval and sales switch live in the database so both can be
   // changed without a rebuild. An unreadable settings row keeps sales on and the launch
   // approval off, so a settings hiccup never opens a closed checkout or closes an open
@@ -56,12 +58,12 @@ export async function POST(request: Request) {
   const readiness = inspectPaymentReadiness(
     process.env,
     undefined,
-    launchApprovalFrom(gate).ownerConsole,
+    launchApprovalFrom(gate).ownerConsole || forceOpen,
   );
   if (!readiness.enabled) {
     return NextResponse.json({ error: "PAYMENTS_UNAVAILABLE" }, { status: 503 });
   }
-  if (!gate.salesEnabled) {
+  if (!gate.salesEnabled && !forceOpen) {
     return NextResponse.json({ error: "SALES_PAUSED" }, { status: 503 });
   }
 

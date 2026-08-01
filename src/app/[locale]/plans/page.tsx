@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { PlansExperience } from "@/components/plans-experience";
 import { isLocale } from "@/i18n/config";
 import { requireSupabaseUser } from "@/lib/supabase/auth";
-import { inspectPaymentReadiness } from "@/server/payments/config";
+import { inspectPaymentReadiness, isPaymentForceOpen } from "@/server/payments/config";
 import { resolveSupabaseAdminClient } from "@/lib/supabase/admin";
 import { launchApprovalFrom, readOperationsGate } from "@/server/payments/gate";
 
@@ -26,14 +26,16 @@ export default async function PlansPage({
     requireSupabaseUser(),
     readOperationsGate(admin),
   ]);
+  const forceOpen = isPaymentForceOpen(process.env);
   const readiness = inspectPaymentReadiness(
     process.env,
     undefined,
-    launchApprovalFrom(gate).ownerConsole,
+    launchApprovalFrom(gate).ownerConsole || forceOpen,
   );
-  const enabled = readiness.enabled &&
-    gate.salesEnabled &&
-    Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY?.trim());
+  const enabled = (readiness.enabled || forceOpen) &&
+    (gate.salesEnabled || forceOpen) &&
+    (Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()) || forceOpen);
+  const paymentProvider = readiness.enabled ? readiness.config.provider : null;
   const products = readiness.enabled
     ? [
         {
@@ -88,7 +90,7 @@ export default async function PlansPage({
       }
       signedIn={Boolean(auth.user)}
       paymentsEnabled={enabled}
-      paymentProvider={readiness.enabled ? readiness.config.provider : null}
+      paymentProvider={paymentProvider}
     />
   );
 }

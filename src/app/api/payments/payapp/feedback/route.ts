@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { z } from "zod";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
-import { inspectPaymentReadiness } from "@/server/payments/config";
+import { inspectPaymentReadiness, isPaymentForceOpen } from "@/server/payments/config";
 import {
   payAppFeedbackSchema,
   payAppMethodName,
@@ -25,9 +25,17 @@ function successResponse() {
 }
 
 export async function POST(request: Request) {
-  const readiness = inspectPaymentReadiness();
+  const forceOpen = isPaymentForceOpen(process.env);
+  const readiness = inspectPaymentReadiness(
+    process.env,
+    undefined,
+    forceOpen,
+  );
   const admin = getSupabaseAdminClient();
-  if (!readiness.enabled || readiness.config.provider !== "payapp" || !admin) {
+  if (!readiness.enabled || !admin) {
+    return new Response("FAIL", { status: 503 });
+  }
+  if (readiness.config.provider !== "payapp") {
     return new Response("FAIL", { status: 503 });
   }
 
