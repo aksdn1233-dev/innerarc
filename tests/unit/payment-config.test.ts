@@ -106,6 +106,18 @@ describe("payment readiness", () => {
     });
   });
 
+  it("defaults to open in production when strict launch checks are not explicitly enabled", () => {
+    expect(
+      inspectPaymentReadiness({
+        ...validPayAppEnvironment,
+        ...strictLaunchApproval,
+        NODE_ENV: "production",
+        PAYMENTS_REQUIRE_LAUNCH_APPROVAL: "false",
+        PAYMENTS_LAUNCH_APPROVED: undefined,
+      }, "production").enabled,
+    ).toBe(true);
+  });
+
   it("validates the exact active catalog and requires live keys in production", () => {
     const development = inspectPaymentReadiness(validEnvironment, "development");
     expect(development.enabled).toBe(true);
