@@ -17,7 +17,10 @@ import {
   toInternalPayAppStatus,
 } from "@/server/payments/payapp";
 
+const strictLaunchApproval = { PAYMENTS_REQUIRE_LAUNCH_APPROVAL: "true" } as const;
+
 const validEnvironment = {
+  ...strictLaunchApproval,
   PAYMENTS_PROVIDER: "toss",
   PAYMENTS_LAUNCH_APPROVED: "true",
   TOSS_CLIENT_KEY: `test_ck_${"a".repeat(32)}`,
@@ -30,6 +33,7 @@ const validEnvironment = {
 };
 
 const validPortOneEnvironment = {
+  ...strictLaunchApproval,
   PAYMENTS_PROVIDER: "portone",
   PAYMENTS_LAUNCH_APPROVED: "true",
   PORTONE_STORE_ID: "store-4ff4af41-85e3-4559-8eb8-0d08a2c6ceec",
@@ -41,6 +45,7 @@ const validPortOneEnvironment = {
 };
 
 const validManualTransferEnvironment = {
+  ...strictLaunchApproval,
   PAYMENTS_PROVIDER: "manual_transfer",
   PAYMENTS_LAUNCH_APPROVED: "true",
   MANUAL_BANK_ACCOUNTS_JSON: JSON.stringify([
@@ -61,6 +66,7 @@ const validManualTransferEnvironment = {
 };
 
 const validPayAppEnvironment = {
+  ...strictLaunchApproval,
   PAYMENTS_PROVIDER: "payapp",
   PAYMENTS_LAUNCH_APPROVED: "true",
   PAYAPP_USER_ID: "test-seller",

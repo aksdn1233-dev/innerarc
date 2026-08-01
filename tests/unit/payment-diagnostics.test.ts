@@ -10,6 +10,7 @@ import { describePaymentSetup } from "@/server/payments/diagnostics";
 import { DEFAULT_OPERATIONS_GATE, launchApprovalFrom } from "@/server/payments/gate";
 
 const payAppEnvironment = {
+  PAYMENTS_REQUIRE_LAUNCH_APPROVAL: "true",
   PAYMENTS_PROVIDER: "payapp",
   PAYAPP_USER_ID: "gyeol-seller",
   PAYAPP_LINK_KEY: "link-key-secret",

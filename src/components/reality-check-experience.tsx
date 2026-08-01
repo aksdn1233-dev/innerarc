@@ -14,9 +14,9 @@ import {
   clearRealityChecks,
   createMonthlyPatternReport,
   createRealityCheckRecord,
+  createRealityCheckQueue,
   exportRealityChecks,
   fitRatings,
-  getRealityCheckStatus,
   InMemoryRealityCheckRepository,
   listMonthlyReportMonths,
   loadRealityChecks,
@@ -25,7 +25,9 @@ import {
   REALITY_CHECK_HANDOFF_STORAGE_KEY,
   RealityCheckHandoffSchema,
   RealityCheckInputError,
+  realityCheckQueueFilters,
   reflectionCategories,
+  type RealityCheckQueueFilter,
   saveRealityChecks,
   type RealityCheckRecord,
   type ReflectionCategory,
@@ -125,6 +127,7 @@ export function RealityCheckExperience({ locale, copy }: Props) {
   const [records, setRecords] = useState<RealityCheckRecord[]>([]);
   const [devicePersistence, setDevicePersistence] = useState(false);
   const [reviewingId, setReviewingId] = useState<string | null>(null);
+  const [queueFilter, setQueueFilter] = useState<RealityCheckQueueFilter>("all");
   const [selectedReportMonth, setSelectedReportMonth] = useState<string | null>(null);
   const [error, setError] = useState("");
   const today = useSyncExternalStore(
@@ -159,6 +162,10 @@ export function RealityCheckExperience({ locale, copy }: Props) {
     ? selectedReportMonth
     : currentMonth;
   const report = reportMonth ? createMonthlyPatternReport(records, reportMonth) : null;
+  const queue = useMemo(
+    () => today ? createRealityCheckQueue(records, today, queueFilter) : null,
+    [queueFilter, records, today],
+  );
 
   useEffect(() => {
     if (handoffRaw === null) return;
@@ -445,10 +452,73 @@ export function RealityCheckExperience({ locale, copy }: Props) {
         </section>
 
         <section className="reality-records" id="reality-records" tabIndex={-1} aria-live="polite">
+          {queue && queue.totalCount > 0 && (
+            <section className="review-queue" aria-labelledby="review-queue-title">
+              <div className="review-queue-heading">
+                <div>
+                  <p className="eyebrow">{copy.queueEyebrow}</p>
+                  <h2 id="review-queue-title">{copy.queueTitle}</h2>
+                </div>
+                {queue.nextDueId && (
+                  <button
+                    className="primary-button"
+                    type="button"
+                    onClick={() => startReview(queue.nextDueId!)}
+                  >
+                    {copy.queueNext}
+                  </button>
+                )}
+              </div>
+              <p className="review-queue-intro">
+                {queue.dueCount > 0 ? copy.queueDueIntro : copy.queueClearIntro}
+              </p>
+              <dl className="review-queue-counts">
+                <div>
+                  <dt>{copy.status.due}</dt>
+                  <dd>{queue.dueCount}</dd>
+                </div>
+                <div>
+                  <dt>{copy.status.planned}</dt>
+                  <dd>{queue.plannedCount}</dd>
+                </div>
+                <div>
+                  <dt>{copy.status.reviewed}</dt>
+                  <dd>{queue.reviewedCount}</dd>
+                </div>
+              </dl>
+              <fieldset className="review-queue-filters">
+                <legend>{copy.queueFilterLabel}</legend>
+                <div>
+                  {realityCheckQueueFilters.map((filter) => {
+                    const count = filter === "all"
+                      ? queue.totalCount
+                      : filter === "due"
+                        ? queue.dueCount
+                        : filter === "planned"
+                          ? queue.plannedCount
+                          : queue.reviewedCount;
+                    return (
+                      <button
+                        type="button"
+                        key={filter}
+                        aria-pressed={queueFilter === filter}
+                        onClick={() => setQueueFilter(filter)}
+                      >
+                        <span>{copy.queueFilters[filter]}</span>
+                        <strong>{count}</strong>
+                      </button>
+                    );
+                  })}
+                </div>
+              </fieldset>
+            </section>
+          )}
           <h2>{copy.recordsTitle}</h2>
           {!records.length && <p className="empty-state">{copy.empty}</p>}
-          {records.map((record) => {
-            const status = getRealityCheckStatus(record, today ?? record.createdAt.slice(0, 10));
+          {records.length > 0 && queue?.items.length === 0 && (
+            <p className="empty-state">{copy.queueNoMatches}</p>
+          )}
+          {queue?.items.map(({ record, status }) => {
             return (
               <article className="reality-record" key={record.id}>
                 <header>

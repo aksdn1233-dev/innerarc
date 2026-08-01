@@ -160,9 +160,12 @@ Date: 2026-07-18
 - Each new outcome review records both an absolute UTC `reviewedAt` audit timestamp and the browser-local `reviewedMonth` (`YYYY-MM`) observed at the review action. The local month is used only for calendar grouping; it is not a location or time-zone inference.
 - The monthly report defaults to the current browser-local month and lets the user revisit every month represented by reviewed records. Months sort newest first, the current month remains available when empty, and changing the month performs no storage or network write.
 - Existing version-1 records without `reviewedMonth` remain readable and use the UTC month from `reviewedAt` as a disclosed compatibility fallback. They are not silently rewritten.
+- A derived review queue groups records as ready, planned, or reviewed, places the earliest ready review first, and exposes one “review next ready outcome” action. Planned items sort by the earliest review date; reviewed items sort by the newest review time.
+- Queue filters and counts are in-memory views only. Opening the page never reads device storage automatically; device-saved records enter the queue only after the existing explicit load action. Queue navigation creates no storage, network, analytics, notification, or URL side effect.
+- The queue supports at most the same 500 validated records as the local adapter, preserves source records without mutation, treats the local review date as ready on that date, and keeps early review available as a deliberate user action.
 - Monthly report rules have their own version, separate from the immutable original Reality Check rule.
 - Acceptance: monthly report separates repeatedly relevant, uncertain, and not-relevant patterns.
-- Acceptance: local/UTC month boundaries, legacy fallback counts, invalid months, newest-first month options, past-month selection, empty current month, no-write navigation, empty or future-invalid review dates, overlong text, duplicate request IDs, deletion, export, corrupt browser data, and Korean/English labels are tested.
+- Acceptance: local/UTC month boundaries, legacy fallback counts, invalid months, newest-first month options, past-month selection, empty current month, no-write navigation, queue ordering/counts/filters, same-day readiness, no source mutation, explicit device loading, empty filtered states, next-ready focus, empty or future-invalid review dates, overlong text, duplicate request IDs, deletion, export, corrupt browser data, and Korean/English labels are tested.
 
 ### Outcome-informed next analysis
 

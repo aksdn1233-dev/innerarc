@@ -1,4 +1,9 @@
-import type { FitRating, ReflectionCategory, RealityCheckStatus } from "@/core/reality-check";
+import type {
+  FitRating,
+  ReflectionCategory,
+  RealityCheckQueueFilter,
+  RealityCheckStatus,
+} from "@/core/reality-check";
 import type { Locale } from "./config";
 
 export interface RealityCheckCopy {
@@ -25,6 +30,14 @@ export interface RealityCheckCopy {
   loadDevice: string;
   clearDevice: string;
   exportData: string;
+  queueEyebrow: string;
+  queueTitle: string;
+  queueDueIntro: string;
+  queueClearIntro: string;
+  queueNext: string;
+  queueFilterLabel: string;
+  queueFilters: Record<RealityCheckQueueFilter, string>;
+  queueNoMatches: string;
   recordsTitle: string;
   empty: string;
   status: Record<RealityCheckStatus, string>;
@@ -75,6 +88,14 @@ const ko: RealityCheckCopy = {
   loadDevice: "이 기기의 기록 불러오기",
   clearDevice: "기기 기록 모두 지우기",
   exportData: "JSON 내보내기",
+  queueEyebrow: "돌아볼 차례",
+  queueTitle: "다음 결과부터 차분히 확인하세요",
+  queueDueIntro: "확인일이 지난 기록을 먼저 모았습니다. 가장 이른 결과 하나부터 회고할 수 있습니다.",
+  queueClearIntro: "지금 바로 확인할 결과는 없습니다. 예정된 선택은 날짜가 되면 이 목록의 앞으로 이동합니다.",
+  queueNext: "다음 결과 회고하기",
+  queueFilterLabel: "회고 기록 필터",
+  queueFilters: { all: "전체", due: "확인 가능", planned: "예정", reviewed: "회고 완료" },
+  queueNoMatches: "이 상태에 해당하는 기록이 없습니다.",
   recordsTitle: "저장한 선택",
   empty: "아직 저장한 현실 확인이 없습니다.",
   status: { planned: "확인 예정", due: "결과 확인 가능", reviewed: "결과 회고 완료" },
@@ -125,6 +146,14 @@ const en: RealityCheckCopy = {
   loadDevice: "Load records from this device",
   clearDevice: "Clear all device records",
   exportData: "Export JSON",
+  queueEyebrow: "Time to return",
+  queueTitle: "Review the next real outcome",
+  queueDueIntro: "Ready outcomes are placed first. Start with the earliest result and review one at a time.",
+  queueClearIntro: "Nothing is ready today. Planned choices will move forward when their review date arrives.",
+  queueNext: "Review next ready outcome",
+  queueFilterLabel: "Filter review records",
+  queueFilters: { all: "All", due: "Ready", planned: "Planned", reviewed: "Reviewed" },
+  queueNoMatches: "No records match this status.",
   recordsTitle: "Saved choices",
   empty: "No Reality Checks have been saved yet.",
   status: { planned: "Planned", due: "Ready to review", reviewed: "Outcome reviewed" },

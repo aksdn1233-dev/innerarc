@@ -20,8 +20,8 @@ Next.js UI
        ├─ consent-gated analytics + AI cost meter
        ├─ versioned entitlement evaluator
        ├─ payment provider boundary
-       └─ authenticated persistence
-            └─ Supabase Auth + PostgreSQL/RLS (Singapore)
+       └─ persistence adapter
+            └─ PostgreSQL/Supabase (external)
 ```
 
 ## Current modules
@@ -38,14 +38,12 @@ Next.js UI
 - `src/core/compatibility`: versioned two-profile relationship reflection for seven relationship types, eight required operating domains, pair evidence, symmetric observations, and explicit power-role cautions.
 - `src/core/celebrity`: source-bound public birth-date records, date-only structural comparison, field filters, uncertainty, and non-identity match labels.
 - `src/core/share`: purpose-specific allowlisted payload builders, sensitive-pattern/overclaim validation, XML escaping, and self-contained local SVG rendering without remote assets. The client share adapter converts only that validated SVG to an in-memory 1080×1350 PNG, uses explicit native file sharing when supported, and otherwise downloads locally.
-- `src/core/reality-check`: versioned reflection records, five-level relevance reviews, idempotent repository contracts, UTC audit time plus bounded browser-local review month, newest-first read-only prior-month navigation with disclosed legacy fallback, evidence-preserving monthly pattern summaries, and a pure category-scoped next-analysis derivation. The derived outcome layer cannot mutate calculation, card, or symbolic outputs and does not read storage itself.
+- `src/core/reality-check`: versioned reflection records, five-level relevance reviews, idempotent repository contracts, a pure action-first review-queue derivation, UTC audit time plus bounded browser-local review month, newest-first read-only prior-month navigation with disclosed legacy fallback, evidence-preserving monthly pattern summaries, and a pure category-scoped next-analysis derivation. Derived queue and outcome layers cannot mutate calculation, card, or symbolic outputs and do not read storage themselves.
 - `src/core/privacy`: consent schema, log masking, IANA time-zone preference validation, fail-closed device inspection, aggregate export, and complete local deletion.
 - `src/core/analytics`: strict allowlisted product/AI cost events, consent gating, idempotent sink contract, and no free-text payloads.
 - `src/core/billing`: versioned Free/Plus/Pro capability policies, quota evaluation, provider-neutral checkout/cancel contracts, and idempotent/stale-safe subscription state.
 - `src/core/operations`: typed feature-flag evaluation with deterministic anonymous rollout plus retry-safe named rate-limit policies. Production adapters must use atomic shared storage.
 - `src/core/account`: owner-scoped JSON export, all-data/third-party deletion scopes, cross-owner fail-closed validation, and request-id conflict protection. Auth identity removal remains an external adapter step.
-- `src/lib/supabase`, `src/app/api/account`, and `src/app/auth/callback`: public-key SSR/browser clients, cookie refresh, email magic-link completion, validated explicit sync, account export, and atomic owner-scoped deletion.
-- `supabase/migrations`: versioned profiles, consent receipts, tarot readings, Reality Checks, data-rights receipts, least-privilege grants, RLS policies, and a transactional deletion function.
 - `src/i18n`: locale routing, native Korean/English product copy, and non-predictive localized discovery metadata.
 - `src/i18n/legal-copy.ts` and localized `/privacy` and `/terms` routes: pre-release disclosures that keep unresolved controller, contact, jurisdiction, age, retention, and vendor fields visible until qualified review.
 - `src/components`: onboarding, tarot, relationship, compatibility, celebrity, lifestyle/shop preview, Reality Check, and share interactions only; no authoritative calculation, card-selection, ranking, curation, or share-safety logic.
@@ -53,16 +51,7 @@ Next.js UI
 - `scripts/generate-sbom.mjs`, `scripts/run-launch-capture.mjs`, and `scripts/capture-launch-assets.mjs`: deterministic release-evidence generation for a validated CycloneDX SBOM and fifteen synthetic-only, first-party mobile screenshots. The capture runner refuses an occupied port, supports a validated explicit alternative, starts only this repository's production server with AI disabled, and terminates only that exact child process.
 - `scripts/serve-production.mjs` and `scripts/run-e2e.mjs`: an exact-process, fail-closed production-server lifecycle for cross-platform browser regression. The runner refuses an occupied port instead of attaching to an unknown project and supports a validated explicit alternative through `E2E_PORT`.
 
-## Implemented account-sync data model
-
-- `profiles` with locale and time zone
-- `consent_receipts` with independent versioned choices
-- `tarot_readings` and `reality_checks` with client request IDs, subject scope, snapshots/records, and deletion state
-- `data_rights_requests` with non-content operation metadata and deletion counts
-
-Every implemented table is protected by authenticated-owner RLS. The browser receives only the Supabase publishable key. Sync payloads are validated against the same device record schemas before writes and after reads.
-
-## Planned extended data model
+## Planned data model
 
 - `users`, `profiles`, `identities`, `consents`
 - `numerology_snapshots` with rule version and evidence JSON
@@ -75,7 +64,7 @@ Every implemented table is protected by authenticated-owner RLS. The browser rec
 - `commerce_disclosures`, `carts`, `orders`, `refunds` only after the shop launch gate
 - `audit_events`, `idempotency_keys`, `feature_flags`
 
-Every future user-owned row must carry `owner_user_id`, timestamps, deletion state, and environment. Third-party identity data is scoped to the collector and is never made searchable.
+Every user-owned row carries `owner_user_id`, timestamps, deletion state, and environment. Third-party identity data is scoped to the collector and is never made searchable.
 
 ## Trust boundaries
 
@@ -94,7 +83,6 @@ Every future user-owned row must carry `owner_user_id`, timestamps, deletion sta
 13. Relationship-to-Reality-Check handoff is a separate, purpose-limited session boundary. A context-card click creates a strict 30-minute payload in the current tab; the destination validates, consumes, and clears it once. URL state carries no handoff or personal data, and prefill never equals record creation.
 14. Onboarding context is separate from numerology evidence. Stable focus/depth IDs may change copy, disclosure, and the next suggested action, but raw concern text remains labelled user input and cannot enter calculations, sharing, persistence, logging, analytics, or provider calls in the guest website.
 15. Public link-preview metadata is a static first-party boundary. It contains only native product copy and an abstract brand image; the production origin must be an explicitly configured path-free HTTPS URL and no user field can enter the tags or asset.
-16. Supabase account sync is opt-in at two layers: authentication does not upload records, and only an explicit sync action sends validated device records. Reads, writes, exports, and deletion run with the user's cookie-backed session and owner RLS.
 
 ## Reliability
 
@@ -102,15 +90,16 @@ Every future user-owned row must carry `owner_user_id`, timestamps, deletion sta
 - AI, network, and payment adapters expose typed failures and safe retries.
 - Product analytics defaults to no-op unless separate consent and an approved sink are both present. Billing failures preserve Free access and never rewrite entitlement state optimistically.
 - Generated content stores policy/model/rule versions for audit and regression.
-- Guest Reality Check records are session-only by default; an explicit device-storage choice uses the versioned local adapter, and a separately explicit account sync may copy validated records to owner-scoped persistence.
-- Account deletion is one database transaction with a retry-safe request ID and a minimal receipt. Export and deletion remain independently auditable.
+- Guest Reality Check records are session-only by default; an explicit device-storage choice may use a versioned local adapter until authenticated persistence is connected.
+- Review-queue status, counts, filtering, and stable ordering derive only from records already held in component memory. The queue owns no persistence, reminder, network, analytics, notification, or URL state and cannot trigger a device-history read.
+- Export/deletion jobs are resumable and independently auditable.
 - Release evidence is reproducible from the frozen lockfile: CI archives the validated production SBOM, while screenshot capture rejects external origins and unexpected pixel dimensions.
 
 ## Delivery order
 
 1. Finish and validate the responsive Next.js website and installable PWA as the canonical product.
-2. Extend the connected identity/persistence foundation only after its staging evidence; connect separately approved AI, telemetry, and commerce adapters to the same contracts.
+2. Connect approved server identity, persistence, AI, telemetry, and commerce adapters to the same contracts.
 3. Prove web activation, Reality Check return rate, accessibility, safety, deletion, and unit economics in production.
 4. Only then package native mobile clients through a shared TypeScript/domain layer or a thin web-backed shell. Native work must not fork calculation rules, safety policy, or data-rights behavior.
 
-The initial deployment remains PWA-first Next.js plus Supabase Auth/PostgreSQL in Singapore. PayApp is the implemented hosted-checkout path, with manual transfer, PortOne, and Toss kept behind the same provider boundary. Server-owned prices, verified callbacks, idempotent order state, report access, and cancellation/refund revocation are implemented. Production rendering additionally requires the server-only `PAYMENTS_LAUNCH_APPROVED=true` gate; credentials alone never count as legal or operational launch approval. Final retention, backup recovery, analytics, AI provider, monitoring, catalog, fulfillment, and live payment evidence still require privacy/DPA, legal, safety, supplier, and cost review.
+The initial deployment remains PWA-first Next.js plus managed PostgreSQL/Auth. Regions, retention, analytics, AI provider, monitoring, catalog, fulfillment, and payment services are chosen only after privacy/DPA, legal, safety, supplier, and cost review.
