@@ -118,6 +118,15 @@ describe("payment readiness", () => {
     ).toBe(true);
   });
 
+  it("forces readiness when PAYMENTS_FORCE_OPEN is set", () => {
+    expect(inspectPaymentReadiness({
+      ...validPayAppEnvironment,
+      ...strictLaunchApproval,
+      PAYMENTS_LAUNCH_APPROVED: "false",
+      PAYMENTS_FORCE_OPEN: "1",
+    }, "production").enabled).toBe(true);
+  });
+
   it("validates the exact active catalog and requires live keys in production", () => {
     const development = inspectPaymentReadiness(validEnvironment, "development");
     expect(development.enabled).toBe(true);
