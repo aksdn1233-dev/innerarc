@@ -29,7 +29,12 @@ async function returnToReport(request: Request) {
     return NextResponse.json({ error: "INVALID_RETURN" }, { status: 400 });
   }
   const { locale, orderId } = parsed.data;
-  const baseUrl = resolvePublicAppUrl(process.env.NEXT_PUBLIC_APP_URL);
+  let baseUrl: URL;
+  try {
+    baseUrl = resolvePublicAppUrl(process.env.NEXT_PUBLIC_APP_URL);
+  } catch {
+    baseUrl = new URL(requestUrl.origin + "/");
+  }
   const now = new Date();
   const ticketOrderId = readOrderTicket(parsed.data.rt, now);
 

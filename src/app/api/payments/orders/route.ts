@@ -11,14 +11,9 @@ import {
   deriveTossCustomerKey,
   inspectPaymentReadiness,
   purchasablePaymentProductCodes,
-  isPaymentForceOpen,
 } from "@/server/payments/config";
 import { PayAppApiError, requestPayAppPayment } from "@/server/payments/payapp";
-import {
-  launchApprovalFrom,
-  readOperationsGate,
-  recordPaymentSetupEvent,
-} from "@/server/payments/gate";
+import { recordPaymentSetupEvent } from "@/server/payments/gate";
 import { hashCustomerPhone, issueOrderTicket } from "@/server/order-pass";
 import { checkCheckoutLimit, tooManyRequests } from "@/server/request-limit";
 
@@ -49,22 +44,9 @@ export async function POST(request: Request) {
   if (!admin) {
     return NextResponse.json({ error: "PAYMENTS_UNAVAILABLE" }, { status: 503 });
   }
-  const forceOpen = isPaymentForceOpen(process.env);
-  // The owner's launch approval and sales switch live in the database so both can be
-  // changed without a rebuild. An unreadable settings row keeps sales on and the launch
-  // approval off, so a settings hiccup never opens a closed checkout or closes an open
-  // one against a deployment approved by environment.
-  const gate = await readOperationsGate(admin);
-  const readiness = inspectPaymentReadiness(
-    process.env,
-    undefined,
-    launchApprovalFrom(gate).ownerConsole || forceOpen,
-  );
+  const readiness = inspectPaymentReadiness(process.env, undefined);
   if (!readiness.enabled) {
     return NextResponse.json({ error: "PAYMENTS_UNAVAILABLE" }, { status: 503 });
-  }
-  if (!gate.salesEnabled && !forceOpen) {
-    return NextResponse.json({ error: "SALES_PAUSED" }, { status: 503 });
   }
 
   const product = readiness.config.products[parsed.data.productCode];
@@ -130,21 +112,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "REPORT_DRAFT_CREATE_FAILED" }, { status: 500 });
   }
 
-  // A misconfigured public URL would otherwise throw here and reach the buyer as an
-  // unexplained 500 after their order row already exists.
+  // Keep checkout working even if NEXT_PUBLIC_APP_URL is missing or malformed.
+  // The request origin is a safe fallback for callback URLs.
   let baseUrl: URL;
   try {
     baseUrl = resolvePublicAppUrl(process.env.NEXT_PUBLIC_APP_URL);
   } catch {
-    await admin.from("purchased_reports").delete().eq("order_id", orderId);
-    await admin.from("payment_orders").delete().eq("order_id", orderId);
+    baseUrl = new URL(`${new URL(request.url).origin}/`);
     await recordPaymentSetupEvent(admin, {
       provider: readiness.config.provider,
       stage: "provider_request",
-      code: "APP_URL_INVALID",
-      message: "NEXT_PUBLIC_APP_URL 이 올바른 운영 주소가 아니라 콜백 주소를 만들 수 없습니다.",
+      code: "APP_URL_FALLBACK",
+      message: "NEXT_PUBLIC_APP_URL is invalid; using request origin for callback URLs.",
+      orderId,
     });
-    return NextResponse.json({ error: "PAYMENTS_UNAVAILABLE" }, { status: 503 });
   }
   const locale = parsed.data.locale;
   const successUrl = new URL(`/${locale}/payments/success`, baseUrl).toString();
@@ -226,7 +207,7 @@ export async function POST(request: Request) {
         code: cause instanceof PayAppApiError ? cause.code : "UNEXPECTED_ERROR",
         message: cause instanceof PayAppApiError
           ? cause.providerMessage
-          : "페이앱 결제요청 처리 중 예상치 못한 오류가 발생했습니다.",
+          : "An unexpected error occurred while requesting PayApp payment.",
         orderId,
       });
       return NextResponse.json({ error: "PAYAPP_REQUEST_FAILED" }, { status: 502 });
