@@ -8,7 +8,12 @@ let browserClient: SupabaseClient | null | undefined;
 
 export function getBrowserSupabaseClient(): SupabaseClient | null {
   if (browserClient !== undefined) return browserClient;
-  const config = getSupabasePublicConfig();
+  let config: ReturnType<typeof getSupabasePublicConfig>;
+  try {
+    config = getSupabasePublicConfig();
+  } catch {
+    config = null;
+  }
   browserClient = config
     ? createBrowserClient(config.url, config.publishableKey)
     : null;

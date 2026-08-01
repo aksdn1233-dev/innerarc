@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   getSupabasePublicConfig,
   isPublishableSupabaseKey,
@@ -131,5 +131,35 @@ describe("Supabase service-role key", () => {
       client: null,
       reason: "MISCONFIGURED",
     });
+  });
+});
+
+// A service-role key pasted into the browser-public variable is a real, correctable
+// mistake — but getSupabasePublicConfig() throwing for it was reachable from
+// middleware (every request) and getServerSupabaseClient() (nearly every page/route),
+// so the mistake 500'd the entire site instead of only breaking login. Each caller now
+// catches the throw itself; this pins the exact scenario that took production down.
+describe("callers survive a malformed public key instead of crashing", () => {
+  const secretInPublicSlot = {
+    NEXT_PUBLIC_SUPABASE_URL: "https://example-ref.supabase.co",
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: `sb_secret_${"a".repeat(32)}`,
+  };
+
+  it("still throws at the source, so the mistake is not silently accepted", () => {
+    expect(() => getSupabasePublicConfig(secretInPublicSlot)).toThrow(/service-role/);
+  });
+
+  it("getServerSupabaseClient degrades to null instead of throwing", async () => {
+    vi.stubEnv("NEXT_PUBLIC_SUPABASE_URL", secretInPublicSlot.NEXT_PUBLIC_SUPABASE_URL);
+    vi.stubEnv(
+      "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+      secretInPublicSlot.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    );
+    try {
+      const { getServerSupabaseClient } = await import("@/lib/supabase/server");
+      await expect(getServerSupabaseClient()).resolves.toBeNull();
+    } finally {
+      vi.unstubAllEnvs();
+    }
   });
 });

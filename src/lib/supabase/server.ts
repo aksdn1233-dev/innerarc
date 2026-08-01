@@ -4,7 +4,15 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { getSupabasePublicConfig } from "./config";
 
 export async function getServerSupabaseClient(): Promise<SupabaseClient | null> {
-  const config = getSupabasePublicConfig();
+  // Called from nearly every page and API route via requireSupabaseUser(). A rejected
+  // public config must read the same as Supabase being unconfigured — null, handled by
+  // every existing SUPABASE_DISABLED path — rather than throwing and 500ing the page.
+  let config: ReturnType<typeof getSupabasePublicConfig>;
+  try {
+    config = getSupabasePublicConfig();
+  } catch {
+    return null;
+  }
   if (!config) return null;
   const cookieStore = await cookies();
 
