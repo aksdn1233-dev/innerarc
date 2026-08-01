@@ -87,38 +87,10 @@ export function isLaunchApproved(approval: LaunchApproval): boolean {
   return approval.environment || approval.ownerConsole;
 }
 
-export function isPaymentForceOpen(
-  environment: Readonly<Record<string, string | undefined>> = process.env,
-): boolean {
-  return parseLooseBool(environment.PAYMENTS_FORCE_OPEN) === true;
-}
-
-function parseLooseBool(value: string | undefined): boolean | null {
-  if (!value) return null;
-  const normalized = value.trim().toLowerCase();
-  if (["1", "true", "yes", "on"].includes(normalized)) return true;
-  if (["0", "false", "no", "off"].includes(normalized)) return false;
-  return null;
-}
-
-function isLaunchApprovalRequired(
-  environment: Readonly<Record<string, string | undefined>> = process.env,
-): boolean {
-  return parseLooseBool(environment.PAYMENTS_REQUIRE_LAUNCH_APPROVAL) === true;
-}
-
 export function readEnvironmentLaunchApproval(
   environment: Readonly<Record<string, string | undefined>> = process.env,
 ): boolean {
-  const explicit = parseLooseBool(environment.PAYMENTS_LAUNCH_APPROVED);
-  if (explicit !== null) return explicit;
-  if (
-    environment.NODE_ENV === "production" &&
-    !isLaunchApprovalRequired(environment)
-  ) {
-    return true;
-  }
-  return false;
+  return environment.PAYMENTS_LAUNCH_APPROVED?.trim() === "true";
 }
 
 const storeIdSchema = z.string().regex(/^store-[0-9a-f-]{36}$/i);
@@ -273,10 +245,8 @@ export function inspectPaymentReadiness(
 ): PaymentReadiness {
   const provider = environment.PAYMENTS_PROVIDER?.trim() || "disabled";
   if (provider === "disabled") return { enabled: false, reason: "DISABLED" };
-  const forceOpen = isPaymentForceOpen(environment);
   if (
     runtimeMode === "production" &&
-    !forceOpen &&
     !isLaunchApproved({
       environment: readEnvironmentLaunchApproval(environment),
       ownerConsole: ownerConsoleApproved,

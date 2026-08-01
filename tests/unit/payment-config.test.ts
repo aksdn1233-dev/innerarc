@@ -17,10 +17,7 @@ import {
   toInternalPayAppStatus,
 } from "@/server/payments/payapp";
 
-const strictLaunchApproval = { PAYMENTS_REQUIRE_LAUNCH_APPROVAL: "true" } as const;
-
 const validEnvironment = {
-  ...strictLaunchApproval,
   PAYMENTS_PROVIDER: "toss",
   PAYMENTS_LAUNCH_APPROVED: "true",
   TOSS_CLIENT_KEY: `test_ck_${"a".repeat(32)}`,
@@ -33,7 +30,6 @@ const validEnvironment = {
 };
 
 const validPortOneEnvironment = {
-  ...strictLaunchApproval,
   PAYMENTS_PROVIDER: "portone",
   PAYMENTS_LAUNCH_APPROVED: "true",
   PORTONE_STORE_ID: "store-4ff4af41-85e3-4559-8eb8-0d08a2c6ceec",
@@ -45,7 +41,6 @@ const validPortOneEnvironment = {
 };
 
 const validManualTransferEnvironment = {
-  ...strictLaunchApproval,
   PAYMENTS_PROVIDER: "manual_transfer",
   PAYMENTS_LAUNCH_APPROVED: "true",
   MANUAL_BANK_ACCOUNTS_JSON: JSON.stringify([
@@ -66,7 +61,6 @@ const validManualTransferEnvironment = {
 };
 
 const validPayAppEnvironment = {
-  ...strictLaunchApproval,
   PAYMENTS_PROVIDER: "payapp",
   PAYMENTS_LAUNCH_APPROVED: "true",
   PAYAPP_USER_ID: "test-seller",
@@ -106,25 +100,30 @@ describe("payment readiness", () => {
     });
   });
 
-  it("defaults to open in production when strict launch checks are not explicitly enabled", () => {
-    expect(
-      inspectPaymentReadiness({
-        ...validPayAppEnvironment,
-        ...strictLaunchApproval,
-        NODE_ENV: "production",
-        PAYMENTS_REQUIRE_LAUNCH_APPROVAL: "false",
-        PAYMENTS_LAUNCH_APPROVED: undefined,
-      }, "production").enabled,
-    ).toBe(true);
-  });
-
-  it("forces readiness when PAYMENTS_FORCE_OPEN is set", () => {
+  // Regression guard: a prior change made production default to approved whenever no
+  // explicit opt-out variable was set, and added a PAYMENTS_FORCE_OPEN escape hatch
+  // that also bypassed the admin sales-pause switch. Both were reverted because they
+  // let valid provider credentials alone open real checkout — exactly what this gate
+  // exists to prevent. No environment variable may substitute for an explicit
+  // approval; NODE_ENV=production and unset/unknown variables are never enough.
+  it("never opens production checkout from environment variables alone", () => {
     expect(inspectPaymentReadiness({
       ...validPayAppEnvironment,
-      ...strictLaunchApproval,
-      PAYMENTS_LAUNCH_APPROVED: "false",
+      PAYMENTS_LAUNCH_APPROVED: undefined,
       PAYMENTS_FORCE_OPEN: "1",
-    }, "production").enabled).toBe(true);
+      PAYMENTS_REQUIRE_LAUNCH_APPROVAL: "false",
+      NODE_ENV: "production",
+    }, "production")).toEqual({
+      enabled: false,
+      reason: "UNAPPROVED",
+    });
+    expect(inspectPaymentReadiness({
+      ...validPayAppEnvironment,
+      PAYMENTS_LAUNCH_APPROVED: "yes",
+    }, "production")).toEqual({
+      enabled: false,
+      reason: "UNAPPROVED",
+    });
   });
 
   it("validates the exact active catalog and requires live keys in production", () => {

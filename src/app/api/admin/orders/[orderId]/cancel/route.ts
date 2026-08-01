@@ -4,7 +4,7 @@ import { z } from "zod";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import { requireSupabaseUser } from "@/lib/supabase/auth";
 import { isAdminEmail } from "@/server/admin-access";
-import { inspectPaymentReadiness, isPaymentForceOpen } from "@/server/payments/config";
+import { inspectPaymentReadiness } from "@/server/payments/config";
 import { cancelPayAppPayment } from "@/server/payments/payapp";
 
 // Cancelling moves real money, so this asks the provider to do it and then reports
@@ -33,12 +33,7 @@ export async function POST(
     return NextResponse.json({ error: "INVALID_CONFIRMATION" }, { status: 400 });
   }
 
-  const forceOpen = isPaymentForceOpen(process.env);
-  const readiness = inspectPaymentReadiness(
-    process.env,
-    undefined,
-    forceOpen,
-  );
+  const readiness = inspectPaymentReadiness();
   const admin = getSupabaseAdminClient();
   if (!readiness.enabled || !admin) {
     return NextResponse.json({ error: "PROVIDER_UNAVAILABLE" }, { status: 503 });
