@@ -28,9 +28,10 @@ Overall progress: 97% (web MVP code 100%; production deployment and payment path
   tied to the active product row, the current build was regenerated, and all ten flows
   passed together on the clean rerun.
 - Post-deployment 390×844 visual QA found the new notice sitting beneath the absolute
-  home header. Its normal-flow offset was corrected so the full event message begins
-  below the header on mobile and desktop; this visual issue did not affect pricing or
-  checkout amounts.
+  home header. A first margin correction still collapsed through the shell and moved
+  both elements together; the final conditional shell padding keeps the full event
+  message below the header on mobile and desktop without leaving a gap after the event.
+  This visual issue did not affect pricing or checkout amounts.
 
 ## 2026-08-01 — One-tap PayApp checkout and simpler page hierarchy
 

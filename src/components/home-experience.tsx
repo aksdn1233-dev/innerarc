@@ -212,7 +212,11 @@ export function HomeExperience({ locale, dictionary: d, pricing }: Props) {
 
   return (
     <>
-      <main className="shell home-shell" id="main-content" tabIndex={-1}>
+      <main
+        className={pricing.campaignActive ? "shell home-shell has-campaign" : "shell home-shell"}
+        id="main-content"
+        tabIndex={-1}
+      >
         <header className="topbar home-topbar">
           <Link className="brand" href={`/${locale}`}>
             <strong>{locale === "ko" ? "결" : "GYEOL"}</strong>
