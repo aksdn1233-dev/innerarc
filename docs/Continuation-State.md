@@ -12,9 +12,11 @@ Overall progress: 97% (web MVP code 100%; production deployment and payment path
 - Every user-facing birth-date input now says `양력` in Korean and `Gregorian calendar`
   in English. The paid report intake also explains that the subject person's solar-calendar
   date must be entered; no lunar-date conversion or ambiguous calendar inference is performed.
-- Validation passed: ESLint, strict TypeScript, 55 unit-test files with 530 tests, and
-  the complete Sites production build. GitHub synchronization and public deployment
-  verification follow this entry and must remain green before this version is marked deployed.
+- Validation and release passed: ESLint, strict TypeScript, 55 unit-test files with
+  530 tests, the complete Sites production build, GitHub synchronization, and public
+  deployment. `mygyeol.kr` returned 200 for home, plans, health, and administrator login;
+  the corrected Korean names and solar-calendar copy are present, three consecutive
+  health checks reported database `ok` and payments `open`, and recent worker errors were zero.
 
 ## 2026-08-01 — Production recovery and direct PayApp checkout
 
