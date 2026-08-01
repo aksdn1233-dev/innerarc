@@ -1,8 +1,10 @@
 ﻿import { createHmac } from "node:crypto";
 import { z } from "zod";
 import {
-  PRODUCT_PRICES_KRW,
+  knownScheduledPrices,
   PURCHASABLE_PRODUCT_CODES,
+  resolveProductPricing,
+  STANDARD_PRODUCT_PRICES_KRW,
 } from "../../core/product-prices";
 
 export const paymentProductCodes = ["plus_30d", "pro_30d", "premium_pdf"] as const;
@@ -123,7 +125,7 @@ function buildProducts(comprehensivePrice: number, premiumPdfPrice: number) {
       code: "plus_30d",
       tier: "plus",
       durationDays: 30,
-      amount: PRODUCT_PRICES_KRW.plus_30d,
+      amount: STANDARD_PRODUCT_PRICES_KRW.plus_30d,
       names: { ko: "핵심 리딩", en: "Core reading" },
     },
     pro_30d: {
@@ -154,15 +156,16 @@ export type CatalogPriceCheck =
 
 /**
  * Active prices belong to the code catalog in `core/product-prices`. A deployment
- * price variable is an optional assertion *about* that catalog rather than a source
- * for it: when it is absent the catalog price applies, and when it disagrees checkout
- * stays closed so a stale secret can never charge an amount the product page does not
- * show. Before this, a price change also silently closed every deployment still
- * holding the previous value, which is indistinguishable from an outage.
+ * price variable is an optional assertion *about* the scheduled catalog rather than
+ * a source for it. Known event and standard values are accepted so the clock can end
+ * a campaign without an environment edit; any unknown amount still closes checkout.
+ * The amount shown, ordered, and charged always comes from the active code schedule.
  */
 export function inspectCatalogPrices(
   environment: Readonly<Record<string, string | undefined>> = process.env,
+  now: Date = new Date(),
 ): CatalogPriceCheck {
+  const pricing = resolveProductPricing(now);
   const comprehensiveVariable = environment.INNERARC_COMPREHENSIVE_PRICE_KRW?.trim()
     ? "INNERARC_COMPREHENSIVE_PRICE_KRW"
     : "INNERARC_PRO_30D_PRICE_KRW";
@@ -170,12 +173,14 @@ export function inspectCatalogPrices(
     {
       variable: comprehensiveVariable,
       raw: environment[comprehensiveVariable]?.trim() ?? "",
-      expected: PRODUCT_PRICES_KRW.pro_30d,
+      expected: pricing.prices.pro_30d,
+      accepted: knownScheduledPrices("pro_30d"),
     },
     {
       variable: "INNERARC_PREMIUM_PDF_PRICE_KRW",
       raw: environment.INNERARC_PREMIUM_PDF_PRICE_KRW?.trim() ?? "",
-      expected: PRODUCT_PRICES_KRW.premium_pdf,
+      expected: pricing.prices.premium_pdf,
+      accepted: knownScheduledPrices("premium_pdf"),
     },
   ] as const;
 
@@ -183,15 +188,15 @@ export function inspectCatalogPrices(
     .filter((entry) => {
       if (!entry.raw) return false;
       const parsed = priceSchema.safeParse(entry.raw);
-      return !parsed.success || parsed.data !== entry.expected;
+      return !parsed.success || !entry.accepted.includes(parsed.data);
     })
     .map((entry) => ({ variable: entry.variable, expected: entry.expected }));
 
   if (mismatched.length > 0) return { ok: false, mismatched };
   return {
     ok: true,
-    comprehensivePrice: PRODUCT_PRICES_KRW.pro_30d,
-    premiumPdfPrice: PRODUCT_PRICES_KRW.premium_pdf,
+    comprehensivePrice: pricing.prices.pro_30d,
+    premiumPdfPrice: pricing.prices.premium_pdf,
   };
 }
 
@@ -214,6 +219,7 @@ export function inspectPaymentReadiness(
     : environment.NODE_ENV === "test"
       ? "test"
       : "development",
+  now: Date = new Date(),
 ): PaymentReadiness {
   const provider = environment.PAYMENTS_PROVIDER?.trim() || "disabled";
   if (provider === "disabled") return { enabled: false, reason: "DISABLED" };
@@ -226,7 +232,7 @@ export function inspectPaymentReadiness(
     return { enabled: false, reason: "INVALID" };
   }
 
-  const catalogPrices = inspectCatalogPrices(environment);
+  const catalogPrices = inspectCatalogPrices(environment, now);
   if (!catalogPrices.ok) return { enabled: false, reason: "INVALID" };
 
   if (provider === "payapp") {

@@ -9,9 +9,9 @@ describe("tier pricing is centralized and correct", () => {
   it("retires Core and exposes only the two approved active prices", () => {
     expect(TIER_META.plus_30d.defaultPriceKrw).toBe(19_000);
     expect(TIER_META.plus_30d.availability).toBe("temporarily_retired");
-    expect(TIER_META.pro_30d.defaultPriceKrw).toBe(9_600);
+    expect(TIER_META.pro_30d.defaultPriceKrw).toBe(39_000);
     expect(TIER_META.pro_30d.availability).toBe("available");
-    expect(TIER_META.premium_pdf.defaultPriceKrw).toBe(39_000);
+    expect(TIER_META.premium_pdf.defaultPriceKrw).toBe(79_000);
     expect(TIER_META.premium_pdf.availability).toBe("available");
   });
 
@@ -35,8 +35,8 @@ describe("tier pricing is centralized and correct", () => {
 
   it("renders a visible tier badge with the correct price", () => {
     expect(tierBadgeLabel("plus_30d", "ko")).toBe("핵심 리딩 · 19,000원");
-    expect(tierBadgeLabel("pro_30d", "ko")).toBe("상세 리딩 · 9,600원");
-    expect(tierBadgeLabel("premium_pdf", "ko")).toBe("프리미엄 심층 리딩 · 39,000원");
+    expect(tierBadgeLabel("pro_30d", "ko")).toBe("상세 리딩 · 39,000원");
+    expect(tierBadgeLabel("premium_pdf", "ko")).toBe("프리미엄 심층 리딩 · 79,000원");
   });
 
   it("attaches the tier badge and character label to every generated report", () => {

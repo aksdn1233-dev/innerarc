@@ -1,8 +1,32 @@
 # Continuation State
 
-Last updated: 2026-08-01 (one-tap PayApp checkout and simplified purchase journey)<br>
-Current version: 0.19.0
+Last updated: 2026-08-01 (scheduled summer pricing and inactive referral foundation)<br>
+Current version: 0.20.0
 Overall progress: 97% (web MVP code 100%; production deployment and payment path 98%; native app not started)
+
+## 2026-08-01 — Scheduled summer pricing and inactive referral foundation
+
+- Current detailed/premium prices are explicitly labelled as a summer event. The
+  compact banner and crossed-out normal prices remain visible through 2026-08-03
+  23:59:59 Korea time. At 2026-08-04 00:00 the same server-owned clock restores
+  39,000/79,000 KRW, removes all event UI, and charges the restored amounts.
+- Checkout sends the amount the buyer saw. If a tab crosses the deadline before the
+  click, the server returns `PRICE_CHANGED` instead of silently charging a different
+  amount. Known sale/normal deployment assertions no longer turn the deadline into an
+  outage; unknown values still fail closed.
+- A friend-referral foundation is code-complete but deliberately inactive and absent
+  from the public UI/API. Draft policy is 25% per verified new paying friend, capped at
+  two friends/50%; raw phone numbers are normalized then HMAC-hashed, self/duplicate
+  claims are database-constrained, and the draft migration has not been applied.
+- Remaining launch decision: approve the referral cap, campaign stacking rule, refund
+  qualification window, and customer-facing alias/code design before applying the
+  migration or setting `REFERRAL_DISCOUNT_ENABLED=true`.
+- Validation passed: ESLint, strict TypeScript, the complete 58-file/541-test unit
+  regression, Next production build, Sites production build, and ten checkout/browser
+  flows across desktop Chromium and mobile WebKit. The first browser pass exposed a
+  stale hard-coded event-price assertion and one mobile timing retry; the assertion was
+  tied to the active product row, the current build was regenerated, and all ten flows
+  passed together on the clean rerun.
 
 ## 2026-08-01 — One-tap PayApp checkout and simpler page hierarchy
 

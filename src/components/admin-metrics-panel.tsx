@@ -2,8 +2,8 @@ import type { AdminMetrics } from "@/server/admin-metrics";
 
 const PRODUCT_LABEL: Record<string, string> = {
   plus_30d: "핵심 리딩 (판매 중지·기존 주문)",
-  pro_30d: "상세 리딩 (9,600원)",
-  premium_pdf: "프리미엄 심층 리딩 (39,000원)",
+  pro_30d: "상세 리딩",
+  premium_pdf: "프리미엄 심층 리딩",
 };
 
 function won(amount: number): string {

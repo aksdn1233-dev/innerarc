@@ -79,6 +79,8 @@ Last updated: 2026-08-01
 - [x] Remove the separate payment launch-approval gate; keep provider/database/catalog validation and the incident sales-pause control.
 - [x] One-action PayApp checkout: `바로 결제하기` validates input, creates one server order, stores the guest recovery link, and enters the provider screen without a second local button.
 - [x] Simple-is-best purchase journey: reduce decorative geometry, floating prompts, repeated copy, shadows, nested surfaces, and always-open legal text while preserving core promises and disclosures.
+- [x] Summer event schedule: event banner and 9,600/39,000 KRW pricing through Aug 3 Korea time, automatic 39,000/79,000 KRW restoration, and stale-tab price mismatch protection.
+- [x] Inactive referral foundation: 25%-per-verified-friend draft math, 50% abuse cap, keyed phone hashing, duplicate/self-referral database constraints, tests, and activation checklist; no public UI/API or production migration.
 - [x] CI action runtimes upgraded to Node 24; pnpm is activated through Corepack at the exact package version so no advisory-affected bootstrap action is used.
 - [x] Region-labelled official 109/988 crisis-resource registry, source links, no language-based location inference, and refresh protocol.
 - [x] CycloneDX 1.6 production SBOM generation, validation, and CI artifact archival.

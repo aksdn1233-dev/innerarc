@@ -31,6 +31,7 @@ describe("checkout UI boundary", () => {
 
   it.each([
     [429, { error: "RATE_LIMITED" }, "rate_limited"],
+    [409, { error: "PRICE_CHANGED" }, "price_changed"],
     [503, { error: "SALES_PAUSED" }, "temporarily_unavailable"],
     [400, { error: "PAYMENTS_UNAVAILABLE" }, "temporarily_unavailable"],
     [400, { error: "SUPABASE_DISABLED" }, "temporarily_unavailable"],

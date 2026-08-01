@@ -64,12 +64,12 @@ export const TIER_INHERITANCE_CONTRACT = {
   },
   DETAIL_39000: {
     inherits: ["BASIC_19000"] as const,
-    customerLabel: "상세 리딩 · 9,600원",
+    customerLabel: "상세 리딩 · 39,000원",
     required: DETAIL_COVERAGE_CATEGORIES,
   },
   PREMIUM_79000: {
     inherits: ["BASIC_19000", "DETAIL_39000"] as const,
-    customerLabel: "프리미엄 심층 리딩 · 39,000원",
+    customerLabel: "프리미엄 심층 리딩 · 79,000원",
     required: [...DETAIL_COVERAGE_CATEGORIES, ...PREMIUM_ONLY_CATEGORIES] as const,
   },
 } as const;

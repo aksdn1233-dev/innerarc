@@ -22,6 +22,7 @@ import { checkCheckoutLimit, tooManyRequests } from "@/server/request-limit";
 
 const bodySchema = z.object({
   productCode: z.enum(purchasablePaymentProductCodes),
+  expectedAmount: z.number().int().min(100).max(10_000_000),
   locale: z.string().refine(isLocale),
   readingInput: PaidReadingInputSchema,
   depositorName: z.string().trim().min(2).max(80).optional(),
@@ -59,6 +60,9 @@ export async function POST(request: Request) {
   }
 
   const product = readiness.config.products[parsed.data.productCode];
+  if (parsed.data.expectedAmount !== product.amount) {
+    return NextResponse.json({ error: "PRICE_CHANGED" }, { status: 409 });
+  }
   if (
     parsed.data.readingInput.productCode !== parsed.data.productCode ||
     parsed.data.readingInput.locale !== parsed.data.locale

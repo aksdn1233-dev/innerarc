@@ -164,6 +164,51 @@
   font: 700 2rem/1.2 var(--display-font);
 }
 
+.campaign-notice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 14px auto 0;
+  padding: 11px 18px;
+  border: 1px solid rgba(177, 123, 47, 0.32);
+  border-radius: 14px;
+  background: #fff7e7;
+  color: #493619;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.campaign-notice strong {
+  flex: 0 0 auto;
+  color: #875d1f;
+}
+
+.campaign-notice span {
+  font-size: 0.92rem;
+}
+
+.plan-price-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+.plan-price-stack del,
+.campaign-price-row del,
+.product-choice del {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.plan-price-stack span,
+.campaign-price-row span {
+  color: #8a6232;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
 .plan-card > small {
   margin-top: 0.35rem;
   color: var(--muted);
@@ -6009,9 +6054,30 @@ summary {
   font-size: clamp(1.3rem, 2vw, 1.65rem);
 }
 
-.editorial-product > strong {
+.editorial-product > strong,
+.campaign-price-row > strong {
   font-size: clamp(2rem, 3vw, 2.8rem);
   letter-spacing: -0.04em;
+}
+
+.campaign-price-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 10px;
+}
+
+.editorial-product.is-featured .campaign-price-row del {
+  color: rgba(247, 241, 231, 0.56);
+}
+
+.editorial-product.is-featured .campaign-price-row span {
+  color: var(--gold-v4);
+}
+
+.product-choice del {
+  display: block;
+  margin-top: 5px;
 }
 
 .editorial-product p {
@@ -6239,6 +6305,13 @@ summary {
     font-size: 0.76rem;
   }
 
+  .mobile-purchase-bar span small {
+    display: block;
+    color: var(--gold-v4);
+    font-size: 0.68rem;
+    font-weight: 800;
+  }
+
   .mobile-purchase-bar strong {
     color: var(--ivory-v4);
     font-size: 1rem;
@@ -6250,6 +6323,17 @@ summary {
     background: var(--gold-v4);
     color: var(--ink-v4);
     font-size: 0.86rem;
+  }
+}
+
+@media (max-width: 620px) {
+  .campaign-notice {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
+    margin-inline: 0;
+    padding: 10px 14px;
+    text-align: left;
   }
 }
 

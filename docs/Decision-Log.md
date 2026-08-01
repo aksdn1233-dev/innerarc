@@ -1,5 +1,25 @@
 # Decision Log
 
+## D-047 — Clock-owned summer event pricing
+
+- Date: 2026-08-01
+- Decision: Label 9,600/39,000 KRW as the summer event through 2026-08-03 23:59:59 Asia/Seoul, then restore 39,000/79,000 KRW automatically from one server-owned schedule.
+- Alternatives: Manual environment edit; permanent reduction; client-only countdown.
+- Reason: A deterministic deadline avoids a missed manual rollback and keeps display, order, and provider charge aligned. A non-blocking banner communicates the event without obstructing the product.
+- Impact: Dynamic home/plans pricing, crossed-out normal prices during the event, and a 409 price-refresh response when a stale browser tab crosses the boundary.
+- Revisit when: A future campaign requires a database-managed calendar or multiple regions.
+- Status: Decided.
+
+## D-048 — Referral foundation remains inactive
+
+- Date: 2026-08-01
+- Decision: Prepare 25%-per-verified-friend logic, a draft 50% cap, keyed phone hashing, and restricted database schema, but expose no UI/API and apply no production migration.
+- Alternatives: Immediate launch; unlimited 25% stacking; store raw referrer contact; generated public aliases only.
+- Reason: “One friend = 25%” is easy to explain, but payment qualification, refund abuse, privacy, and stacking rules must be settled before money is affected. A generated alias is safer than publishing a phone number.
+- Impact: The feature can be activated later without redesigning checkout; current customers and prices are unchanged.
+- Revisit when: The owner approves the cap, refund qualification window, campaign stacking, and public code format.
+- Status: Decided for foundation; launch held.
+
 ## D-001 — New Next.js foundation
 
 - Date: 2026-07-18

@@ -1,5 +1,5 @@
 import type { PaymentProductCode } from "@/server/payments/config";
-import { PRODUCT_PRICES_KRW } from "@/core/product-prices";
+import { STANDARD_PRODUCT_PRICES_KRW } from "@/core/product-prices";
 
 // Single source of truth for current product availability, identity, and price.
 // Legacy canonical IDs retain their original price suffixes so historical orders and
@@ -22,7 +22,7 @@ export const TIER_META: Readonly<Record<PaymentProductCode, TierMeta>> = {
   plus_30d: {
     canonicalId: "BASIC_19000",
     displayName: { ko: "핵심 리딩", en: "Core reading" },
-    defaultPriceKrw: PRODUCT_PRICES_KRW.plus_30d,
+    defaultPriceKrw: STANDARD_PRODUCT_PRICES_KRW.plus_30d,
     availability: "temporarily_retired",
     contentDepth: "basic",
     sharpInsightCount: 2,
@@ -30,7 +30,7 @@ export const TIER_META: Readonly<Record<PaymentProductCode, TierMeta>> = {
   pro_30d: {
     canonicalId: "DETAIL_39000",
     displayName: { ko: "상세 리딩", en: "Detailed reading" },
-    defaultPriceKrw: PRODUCT_PRICES_KRW.pro_30d,
+    defaultPriceKrw: STANDARD_PRODUCT_PRICES_KRW.pro_30d,
     availability: "available",
     contentDepth: "detail",
     sharpInsightCount: 5,
@@ -38,7 +38,7 @@ export const TIER_META: Readonly<Record<PaymentProductCode, TierMeta>> = {
   premium_pdf: {
     canonicalId: "PREMIUM_79000",
     displayName: { ko: "프리미엄 심층 리딩", en: "Premium in-depth reading" },
-    defaultPriceKrw: PRODUCT_PRICES_KRW.premium_pdf,
+    defaultPriceKrw: STANDARD_PRODUCT_PRICES_KRW.premium_pdf,
     availability: "available",
     contentDepth: "premium",
     sharpInsightCount: 8,

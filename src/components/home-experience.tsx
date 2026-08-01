@@ -2,10 +2,16 @@
 
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
+import { CampaignNotice } from "@/components/campaign-notice";
+import type { ProductPricingSnapshot } from "@/core/product-prices";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 
-type Props = { locale: Locale; dictionary: Dictionary };
+type Props = {
+  locale: Locale;
+  dictionary: Dictionary;
+  pricing: ProductPricingSnapshot;
+};
 type ReadingProductId = "comprehensive" | "premium_pdf";
 
 type FocusId = "work" | "relationships" | "health" | "growth" | "money";
@@ -39,7 +45,6 @@ const readingProducts = {
     {
       id: "comprehensive",
       name: "상세 리딩",
-      price: "9,600원",
       description: "직접 결론, 반복 패턴, 상황별 대처와 우선 실행 계획을 정리합니다.",
       // Describes the product, not its sales: nothing has been sold yet, and inventing
       // popularity is exactly what 표시광고법 treats as false advertising.
@@ -48,7 +53,6 @@ const readingProducts = {
     {
       id: "premium_pdf",
       name: "프리미엄 심층 리딩",
-      price: "39,000원",
       description: "상세 리딩에 숨은 동기, 세 가지 시나리오, 확인 신호와 6단계 실행 기준을 더합니다.",
       badge: "결정까지 깊게 보고 싶다면",
     },
@@ -57,14 +61,12 @@ const readingProducts = {
     {
       id: "comprehensive",
       name: "Detailed reading",
-      price: "KRW 9,600",
       description: "A consultant-style answer with decision patterns, domain analysis, phased guidance, execution steps, and stop criteria.",
       badge: "Best balance",
     },
     {
       id: "premium_pdf",
       name: "Premium in-depth reading",
-      price: "KRW 39,000",
       description: "Everything in Detailed, plus root causes, three evidence-based scenarios, signals, a six-step manual, and stop criteria. Complete even without a question.",
       badge: "For a decision-ready view",
     },
@@ -81,7 +83,7 @@ const copy = {
     ],
     primary: "내 리딩 선택하기",
     secondary: "무엇을 알 수 있나요",
-    heroNote: "상세 리딩 9,600원 · 한 번만 결제 · 추가 결제 없음",
+    heroNote: "한 번만 결제 · 추가 결제 없음 · 자동 갱신 없음",
     sampleEyebrow: "이런 내용을 알려드려요",
     sampleTitle: "결제 전에, 어떤 답을 받는지 확인하세요.",
     sampleBody: "아래는 실제 후기가 아니라 리포트 구성 예시입니다. 막연한 단정보다 내 성향과 현실에서 확인할 방향을 쉽게 설명합니다.",
@@ -146,12 +148,31 @@ const copy = {
   },
 } as const;
 
-export function HomeExperience({ locale, dictionary: d }: Props) {
+function formatWon(amount: number, locale: Locale) {
+  if (locale === "ko") return `${amount.toLocaleString("ko-KR")}원`;
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "KRW",
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
+export function HomeExperience({ locale, dictionary: d, pricing }: Props) {
   const [selectedProduct, setSelectedProduct] = useState<ReadingProductId>("comprehensive");
   const [focusId, setFocusId] = useState<FocusId>("relationships");
   const [error, setError] = useState("");
   const t = copy[locale];
   const otherLocale = locale === "ko" ? "en" : "ko";
+  const products = readingProducts[locale].map((product) => {
+    const productCode = productCodeByReading[product.id];
+    return {
+      ...product,
+      price: formatWon(pricing.prices[productCode], locale),
+      regularPrice: formatWon(pricing.regularPrices[productCode], locale),
+      discounted: pricing.campaignActive &&
+        pricing.prices[productCode] < pricing.regularPrices[productCode],
+    };
+  });
 
   function chooseProduct(id: ReadingProductId) {
     setSelectedProduct(id);
@@ -209,6 +230,8 @@ export function HomeExperience({ locale, dictionary: d }: Props) {
             </Link>
           </div>
         </header>
+
+        <CampaignNotice locale={locale} pricing={pricing} />
 
         <section className="hero home-hero" aria-labelledby="hero-title">
           <div className="question-cloud" aria-hidden="true">
@@ -282,11 +305,17 @@ export function HomeExperience({ locale, dictionary: d }: Props) {
             <p>{t.productsBody}</p>
           </div>
           <div className="editorial-product-grid">
-            {readingProducts[locale].map((product) => (
+            {products.map((product) => (
               <article className={product.id === "comprehensive" ? "editorial-product is-featured" : "editorial-product"} key={product.id}>
                 <small>{product.badge}</small>
                 <h3>{product.name}</h3>
-                <strong>{product.price}</strong>
+                <div className="campaign-price-row">
+                  {product.discounted && <del>{product.regularPrice}</del>}
+                  <strong>{product.price}</strong>
+                  {product.discounted && (
+                    <span>{locale === "ko" ? "여름 이벤트가" : "Summer event"}</span>
+                  )}
+                </div>
                 <p>{product.description}</p>
                 <button type="button" onClick={() => chooseProduct(product.id)}>
                   {locale === "ko" ? `${product.price} 선택` : `Choose ${product.price}`}
@@ -316,7 +345,7 @@ export function HomeExperience({ locale, dictionary: d }: Props) {
             <fieldset className="product-picker field">
               <legend>{locale === "ko" ? "1. 상품 선택" : "1. Product"}</legend>
               <div className="product-picker-grid">
-                {readingProducts[locale].map((product) => (
+                {products.map((product) => (
                   <label className="product-choice" key={product.id}>
                     <input
                       checked={selectedProduct === product.id}
@@ -327,6 +356,7 @@ export function HomeExperience({ locale, dictionary: d }: Props) {
                     />
                     <span>
                       <small>{product.badge}</small><strong>{product.name}</strong>
+                      {product.discounted && <del>{product.regularPrice}</del>}
                       <b>{product.price}</b><em>{product.description}</em>
                     </span>
                   </label>
@@ -454,7 +484,13 @@ export function HomeExperience({ locale, dictionary: d }: Props) {
         </footer>
       </main>
       <a className="mobile-purchase-bar" href="#products">
-        <span>{locale === "ko" ? "상세 리딩" : "Detailed reading"} <strong>{locale === "ko" ? "9,600원" : "KRW 9,600"}</strong></span>
+        <span>
+          {pricing.campaignActive && (
+            <small>{locale === "ko" ? "여름 이벤트" : "Summer event"}</small>
+          )}
+          {locale === "ko" ? "상세 리딩" : "Detailed reading"}{" "}
+          <strong>{formatWon(pricing.prices.pro_30d, locale)}</strong>
+        </span>
         <b>{locale === "ko" ? "선택하기" : "Choose"}</b>
       </a>
     </>

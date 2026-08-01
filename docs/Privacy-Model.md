@@ -34,6 +34,11 @@ Birth date, names, relationship details, journals, finances, and consultation qu
 - Tarot questions and saved readings follow the same session-only default. On-device tarot history uses a separate versioned key so clearing it does not silently delete unrelated product data.
 - Accessory and music directions are calculated locally from canonical number values. They do not require shopping history, listening history, streaming accounts, location, health, biometrics, or new persistence. Recommendation output omits raw birth date and name.
 - The closed shop route receives only public category anchors. Result facts are not placed in query parameters, URLs, affiliate identifiers, or supplier requests; there are no products or transactions in the current version.
+- The referral program is not active and has no public form or endpoint. Its draft
+  design accepts a Korean mobile number only transiently, normalizes it server-side,
+  and stores a keyed HMAC hash under a referral-specific secret. Raw numbers are not
+  stored, logged, placed in URLs, analytics, or returned to clients. Self-referral and
+  duplicate pairs are rejected at the database boundary.
 
 ## Connected account controls
 

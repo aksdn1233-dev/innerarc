@@ -31,7 +31,7 @@ describe("PREMIUM_79000 strict tier inheritance", () => {
     const report = premium();
 
     expect(report.title).toBe("프리미엄 심층 리딩");
-    expect(report.tierLabel).toBe("프리미엄 심층 리딩 · 39,000원");
+    expect(report.tierLabel).toBe("프리미엄 심층 리딩 · 79,000원");
     expect(report.sectionPlan).toBe("premium-79000-v2");
     expect(report.coverageCategories).toEqual([
       ...DETAIL_COVERAGE_CATEGORIES,

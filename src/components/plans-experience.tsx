@@ -6,7 +6,9 @@ import {
 } from "@tosspayments/tosspayments-sdk";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { CampaignNotice } from "@/components/campaign-notice";
 import { PaidReadingInputSchema, type PaidReadingInput } from "@/core/paid-reading";
+import type { ProductPricingSnapshot } from "@/core/product-prices";
 import {
   checkoutErrorFromResponse,
   selectCheckoutReadingInput,
@@ -20,6 +22,7 @@ type PublicProduct = Readonly<{
   code: PaymentProductCode;
   name: string;
   amount: number | null;
+  regularAmount: number | null;
   tier: string;
   features: readonly string[];
 }>;
@@ -114,6 +117,7 @@ const copy = {
       order_failed: "주문을 만들지 못했습니다. 입력 내용을 유지했으니 잠시 후 다시 시도해 주세요.",
       widget_failed: "결제수단 화면을 불러오지 못했습니다. 네트워크 상태를 확인한 뒤 다시 시도해 주세요.",
       payment_failed: "결제 요청을 완료하지 못했습니다. 승인 여부를 확인한 뒤 다시 시도해 주세요.",
+      price_changed: "행사 시간이 끝나 가격이 변경되었습니다. 새 가격을 확인한 뒤 다시 결제해 주세요.",
     },
     notice: "결제수단 노출 여부와 한도는 페이앱 판매자 설정 및 각 결제수단 심사 결과에 따라 달라집니다.",
     terms: "환불은 고객지원 이메일로 접수하며 접수일로부터 7일 이내 처리합니다. 결제 전에 이용조건·환불정책·개인정보 처리 안내를 확인해 주세요.",
@@ -162,6 +166,7 @@ const copy = {
       order_failed: "The order could not be created. Your input is still here; please try again shortly.",
       widget_failed: "Payment methods could not be loaded. Check your connection and try again.",
       payment_failed: "The payment request did not finish. Check whether it was approved before trying again.",
+      price_changed: "The event price has ended. Review the updated price and try checkout again.",
     },
     notice: "Available methods and limits depend on PayApp merchant settings and payment-method review.",
     terms: "Refund requests are accepted by support email and processed within seven days after receipt. Review the terms, refund policy, and privacy notice before payment.",
@@ -202,6 +207,7 @@ export function PlansExperience({
   paymentsEnabled,
   paymentProvider,
   initialProduct,
+  pricing,
 }: {
   locale: Locale;
   products: readonly PublicProduct[];
@@ -209,6 +215,7 @@ export function PlansExperience({
   paymentsEnabled: boolean;
   paymentProvider: "toss" | "portone" | "manual_transfer" | "payapp" | null;
   initialProduct: PaymentProductCode | null;
+  pricing: ProductPricingSnapshot;
 }) {
   const t = copy[locale];
   const otherLocale = locale === "ko" ? "en" : "ko";
@@ -290,6 +297,11 @@ export function PlansExperience({
       setError("missing_draft");
       return;
     }
+    const selectedProduct = products.find((product) => product.code === productCode);
+    if (selectedProduct?.amount === null || selectedProduct?.amount === undefined) {
+      setError("temporarily_unavailable");
+      return;
+    }
     if (paymentProvider === "manual_transfer" && depositorName.trim().length < 2) {
       setError("invalid_depositor");
       return;
@@ -322,6 +334,7 @@ export function PlansExperience({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           productCode,
+          expectedAmount: selectedProduct.amount,
           locale,
           readingInput: selectedReadingInput,
           depositorName: paymentProvider === "manual_transfer"
@@ -461,6 +474,8 @@ export function PlansExperience({
         </Link>
       </header>
 
+      <CampaignNotice locale={locale} pricing={pricing} />
+
       <section className="plans-intro">
         <p className="eyebrow">{t.eyebrow}</p>
         <h1>{t.title}</h1>
@@ -518,7 +533,15 @@ export function PlansExperience({
           >
             <p className="eyebrow">{product.tier}</p>
             <h2>{product.name}</h2>
-            <strong className="plan-price">{formatWon(product.amount, locale)}</strong>
+            <div className="plan-price-stack">
+              {pricing.campaignActive && product.regularAmount !== product.amount && (
+                <del>{formatWon(product.regularAmount, locale)}</del>
+              )}
+              <strong className="plan-price">{formatWon(product.amount, locale)}</strong>
+              {pricing.campaignActive && product.regularAmount !== product.amount && (
+                <span>{locale === "ko" ? "여름 이벤트가" : "Summer event price"}</span>
+              )}
+            </div>
             <small>{t.duration}</small>
             <ul>{product.features.map((feature) => <li key={feature}>{feature}</li>)}</ul>
             <button

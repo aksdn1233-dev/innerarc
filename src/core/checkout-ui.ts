@@ -11,6 +11,7 @@ export type CheckoutErrorCode =
   | "temporarily_unavailable"
   | "rate_limited"
   | "order_failed"
+  | "price_changed"
   | "widget_failed"
   | "payment_failed";
 
@@ -29,6 +30,7 @@ export function checkoutErrorFromResponse(status: number, body: unknown): Checko
     ? String((body as { error?: unknown }).error ?? "")
     : "";
   if (status === 429) return "rate_limited";
+  if (status === 409 || code === "PRICE_CHANGED") return "price_changed";
   if (
     status === 503 ||
     code === "PAYMENTS_UNAVAILABLE" ||

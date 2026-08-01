@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { PRODUCT_PRICES_KRW } from "@/core/product-prices";
-import { inspectCatalogPrices, inspectPaymentReadiness } from "@/server/payments/config";
+import { SUMMER_EVENT_PRODUCT_PRICES_KRW } from "@/core/product-prices";
+import {
+  inspectCatalogPrices as inspectCatalogPricesAtRuntime,
+  inspectPaymentReadiness as inspectPaymentReadinessAtRuntime,
+} from "@/server/payments/config";
 import { describePaymentSetup } from "@/server/payments/diagnostics";
 
 const payAppEnvironment = {
@@ -16,6 +19,19 @@ const payAppEnvironment = {
   ADMIN_EMAILS: "owner@example.com",
 } as const;
 
+const SUMMER_NOW = new Date("2026-08-01T00:00:00.000Z");
+
+function inspectCatalogPrices(environment: Readonly<Record<string, string | undefined>>) {
+  return inspectCatalogPricesAtRuntime(environment, SUMMER_NOW);
+}
+
+function inspectPaymentReadiness(
+  environment: Readonly<Record<string, string | undefined>>,
+  runtimeMode: "development" | "test" | "production",
+) {
+  return inspectPaymentReadinessAtRuntime(environment, runtimeMode, SUMMER_NOW);
+}
+
 function describeWith(
   environment: Readonly<Record<string, string | undefined>>,
   overrides: Partial<Parameters<typeof describePaymentSetup>[0]> = {},
@@ -25,6 +41,7 @@ function describeWith(
     runtimeMode: "production",
     salesEnabled: true,
     databaseReachable: true,
+    now: SUMMER_NOW,
     ...overrides,
   });
 }
@@ -43,8 +60,8 @@ describe("catalog prices", () => {
     const prices = inspectCatalogPrices({});
     expect(prices).toEqual({
       ok: true,
-      comprehensivePrice: PRODUCT_PRICES_KRW.pro_30d,
-      premiumPdfPrice: PRODUCT_PRICES_KRW.premium_pdf,
+      comprehensivePrice: SUMMER_EVENT_PRODUCT_PRICES_KRW.pro_30d,
+      premiumPdfPrice: SUMMER_EVENT_PRODUCT_PRICES_KRW.premium_pdf,
     });
   });
 
@@ -52,37 +69,32 @@ describe("catalog prices", () => {
     const readiness = inspectPaymentReadiness(payAppEnvironment, "production");
     expect(readiness.enabled).toBe(true);
     if (readiness.enabled) {
-      expect(readiness.config.products.pro_30d.amount).toBe(PRODUCT_PRICES_KRW.pro_30d);
-      expect(readiness.config.products.premium_pdf.amount).toBe(PRODUCT_PRICES_KRW.premium_pdf);
+      expect(readiness.config.products.pro_30d.amount).toBe(SUMMER_EVENT_PRODUCT_PRICES_KRW.pro_30d);
+      expect(readiness.config.products.premium_pdf.amount).toBe(SUMMER_EVENT_PRODUCT_PRICES_KRW.premium_pdf);
     }
   });
 
-  it("still fails closed on a stale price that disagrees with the catalog", () => {
+  it("accepts both known event and standard assertions during a scheduled transition", () => {
     const stale = {
       ...payAppEnvironment,
       INNERARC_COMPREHENSIVE_PRICE_KRW: "39000",
       INNERARC_PREMIUM_PDF_PRICE_KRW: "79000",
     };
-    expect(inspectPaymentReadiness(stale, "production")).toEqual({
-      enabled: false,
-      reason: "INVALID",
-    });
+    expect(inspectPaymentReadiness(stale, "production").enabled).toBe(true);
     const prices = inspectCatalogPrices(stale);
-    expect(prices.ok).toBe(false);
-    if (!prices.ok) {
-      expect(prices.mismatched.map((issue) => issue.variable)).toEqual([
-        "INNERARC_COMPREHENSIVE_PRICE_KRW",
-        "INNERARC_PREMIUM_PDF_PRICE_KRW",
-      ]);
+    expect(prices.ok).toBe(true);
+    if (prices.ok) {
+      expect(prices.comprehensivePrice).toBe(9_600);
+      expect(prices.premiumPdfPrice).toBe(39_000);
     }
   });
 
   it("names the legacy price variable when only that one is set", () => {
-    const prices = inspectCatalogPrices({ INNERARC_PRO_30D_PRICE_KRW: "39000" });
+    const prices = inspectCatalogPrices({ INNERARC_PRO_30D_PRICE_KRW: "12345" });
     expect(prices.ok).toBe(false);
     if (!prices.ok) {
       expect(prices.mismatched[0]?.variable).toBe("INNERARC_PRO_30D_PRICE_KRW");
-      expect(prices.mismatched[0]?.expected).toBe(PRODUCT_PRICES_KRW.pro_30d);
+      expect(prices.mismatched[0]?.expected).toBe(SUMMER_EVENT_PRODUCT_PRICES_KRW.pro_30d);
     }
   });
 
@@ -119,7 +131,7 @@ describe("payment setup diagnostics", () => {
   it("points at a stale price variable by name", () => {
     const report = describeWith({
       ...payAppEnvironment,
-      INNERARC_PREMIUM_PDF_PRICE_KRW: "79000",
+      INNERARC_PREMIUM_PDF_PRICE_KRW: "12345",
     });
     const prices = checkFor(report, "prices");
     expect(prices.status).toBe("invalid");
@@ -142,7 +154,7 @@ describe("payment setup diagnostics", () => {
   it("keeps one bad value from marking unrelated rows as broken", () => {
     const stalePrice = describeWith({
       ...payAppEnvironment,
-      INNERARC_PREMIUM_PDF_PRICE_KRW: "79000",
+      INNERARC_PREMIUM_PDF_PRICE_KRW: "12345",
     });
     expect(checkFor(stalePrice, "prices").status).toBe("invalid");
     expect(checkFor(stalePrice, "credentials").status).toBe("ok");

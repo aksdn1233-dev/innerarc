@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   deriveTossCustomerKey,
-  inspectPaymentReadiness,
+  inspectPaymentReadiness as inspectPaymentReadinessAtRuntime,
   purchasablePaymentProductCodes,
 } from "@/server/payments/config";
 import {
@@ -16,6 +16,15 @@ import {
   securePayAppValueMatches,
   toInternalPayAppStatus,
 } from "@/server/payments/payapp";
+
+const SUMMER_NOW = new Date("2026-08-01T00:00:00.000Z");
+
+function inspectPaymentReadiness(
+  environment: Readonly<Record<string, string | undefined>>,
+  runtimeMode?: "development" | "test" | "production",
+) {
+  return inspectPaymentReadinessAtRuntime(environment, runtimeMode, SUMMER_NOW);
+}
 
 const validEnvironment = {
   PAYMENTS_PROVIDER: "toss",
@@ -99,6 +108,11 @@ describe("payment readiness", () => {
       ...validEnvironment,
       INNERARC_PRO_30D_PRICE_KRW: "39000",
       INNERARC_PREMIUM_PDF_PRICE_KRW: "79000",
+    }, "development").enabled).toBe(true);
+
+    expect(inspectPaymentReadiness({
+      ...validEnvironment,
+      INNERARC_PRO_30D_PRICE_KRW: "12345",
     }, "development")).toEqual({ enabled: false, reason: "INVALID" });
 
     expect(inspectPaymentReadiness(validEnvironment, "production")).toEqual({

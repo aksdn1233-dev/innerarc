@@ -212,6 +212,7 @@ export function describePaymentSetup(input: Readonly<{
   runtimeMode?: PaymentRuntimeMode;
   salesEnabled: boolean;
   databaseReachable: boolean;
+  now?: Date;
   /** The database's own words when the read failed, shown verbatim to the operator. */
   databaseError?: string | null;
 }>): PaymentSetupReport {
@@ -224,7 +225,8 @@ export function describePaymentSetup(input: Readonly<{
         : "development"
   );
   const provider = environment.PAYMENTS_PROVIDER?.trim() || "disabled";
-  const readiness = inspectPaymentReadiness(environment, runtimeMode);
+  const now = input.now ?? new Date();
+  const readiness = inspectPaymentReadiness(environment, runtimeMode, now);
   const appUrl = resolveAppUrl(environment);
   // Reading this is itself allowed to fail: a malformed browser key must be reportable
   // rather than something that throws out of the report the operator opened to find it.
@@ -236,7 +238,7 @@ export function describePaymentSetup(input: Readonly<{
     supabasePublicError = true;
   }
   const publishableKey = environment.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim();
-  const prices = inspectCatalogPrices(environment);
+  const prices = inspectCatalogPrices(environment, now);
   const checks: PaymentSetupCheck[] = [];
 
   checks.push({

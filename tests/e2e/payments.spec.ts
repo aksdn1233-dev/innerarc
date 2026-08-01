@@ -62,6 +62,7 @@ test("checkout validates locally and switches product and report input together"
   expect(requests).toHaveLength(1);
   expect(requests[0]).toMatchObject({
     productCode: "premium_pdf",
+    expectedAmount: expect.any(Number),
     customerPhone: "010-1234-5678",
     readingInput: {
       productCode: "premium_pdf",
@@ -168,6 +169,7 @@ test("the 9,600 KRW detailed report can be purchased with birth date only", asyn
   expect(requests).toHaveLength(1);
   expect(requests[0]).toMatchObject({
     productCode: "pro_30d",
+    expectedAmount: expect.any(Number),
     readingInput: {
       productCode: "pro_30d",
       birthDate: "1994-11-04",
