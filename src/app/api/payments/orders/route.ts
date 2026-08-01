@@ -13,7 +13,11 @@ import {
   purchasablePaymentProductCodes,
 } from "@/server/payments/config";
 import { PayAppApiError, requestPayAppPayment } from "@/server/payments/payapp";
-import { recordPaymentSetupEvent } from "@/server/payments/gate";
+import {
+  launchApprovalFrom,
+  readOperationsGate,
+  recordPaymentSetupEvent,
+} from "@/server/payments/gate";
 import { hashCustomerPhone, issueOrderTicket } from "@/server/order-pass";
 import { checkCheckoutLimit, tooManyRequests } from "@/server/request-limit";
 
@@ -44,9 +48,21 @@ export async function POST(request: Request) {
   if (!admin) {
     return NextResponse.json({ error: "PAYMENTS_UNAVAILABLE" }, { status: 503 });
   }
-  const readiness = inspectPaymentReadiness(process.env, undefined);
+  // The owner's launch approval and sales switch live in the database so both can be
+  // changed without a rebuild. An unreadable settings row keeps sales on and the launch
+  // approval off, so a settings hiccup never opens a closed checkout or closes an open
+  // one against a deployment approved by environment.
+  const gate = await readOperationsGate(admin);
+  const readiness = inspectPaymentReadiness(
+    process.env,
+    undefined,
+    launchApprovalFrom(gate).ownerConsole,
+  );
   if (!readiness.enabled) {
     return NextResponse.json({ error: "PAYMENTS_UNAVAILABLE" }, { status: 503 });
+  }
+  if (!gate.salesEnabled) {
+    return NextResponse.json({ error: "SALES_PAUSED" }, { status: 503 });
   }
 
   const product = readiness.config.products[parsed.data.productCode];

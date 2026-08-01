@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import { requireSupabaseUser } from "@/lib/supabase/auth";
-import { inspectPaymentReadiness, isPaymentForceOpen } from "@/server/payments/config";
+import { inspectPaymentReadiness } from "@/server/payments/config";
 import {
   assertPortOnePaymentMatches,
   getPortOnePayment,
@@ -54,12 +54,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "INVALID_CONFIRM_REQUEST" }, { status: 400 });
   }
 
-  const forceOpen = isPaymentForceOpen(process.env);
-  const readiness = inspectPaymentReadiness(
-    process.env,
-    undefined,
-    forceOpen,
-  );
+  const readiness = inspectPaymentReadiness();
   const admin = getSupabaseAdminClient();
   if (!readiness.enabled || !admin) {
     return NextResponse.json({ error: "PAYMENTS_UNAVAILABLE" }, { status: 503 });
