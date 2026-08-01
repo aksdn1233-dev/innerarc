@@ -188,6 +188,12 @@
   font-size: 0.92rem;
 }
 
+/* The home header floats over the hero. Keep the campaign message in normal flow,
+   but start it below that header so neither element hides the other on phones. */
+.home-shell > .campaign-notice {
+  margin-top: 108px;
+}
+
 .plan-price-stack {
   display: flex;
   flex-direction: column;
