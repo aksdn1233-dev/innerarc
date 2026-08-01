@@ -31,7 +31,9 @@ export default async function PlansPage({
     undefined,
     launchApprovalFrom(gate).ownerConsole,
   );
-  const enabled = readiness.enabled && gate.salesEnabled && Boolean(admin);
+  const enabled = readiness.enabled &&
+    gate.salesEnabled &&
+    Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY?.trim());
   const paymentProvider = readiness.enabled ? readiness.config.provider : null;
   const products = readiness.enabled
     ? [
