@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { resolvePublicAppUrl } from "@/core/site-url";
 import { resolveSupabaseAdminClient } from "@/lib/supabase/admin";
 import { inspectPaymentReadiness } from "@/server/payments/config";
-import { launchApprovalFrom, readOperationsGate } from "@/server/payments/gate";
+import { readOperationsGate } from "@/server/payments/gate";
 
 export const dynamic = "force-dynamic";
 
@@ -36,11 +36,7 @@ export async function GET() {
     // so it does not hide inside the generic "unreachable".
     const refused = /\b(401|403|JWT|PGRST301|api key|apikey|unauthor)/i.test(gate.error ?? "");
     database = gate.reachable ? "ok" : refused ? "rejected" : "unreachable";
-    const readiness = inspectPaymentReadiness(
-      process.env,
-      undefined,
-      launchApprovalFrom(gate).ownerConsole,
-    );
+    const readiness = inspectPaymentReadiness(process.env, undefined);
     payments = readiness.enabled && gate.salesEnabled ? "open" : "closed";
   } else if (resolution.reason === "MISCONFIGURED") {
     // A rejected key and a database that is down need different fixes, so they are

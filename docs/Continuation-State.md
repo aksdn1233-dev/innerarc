@@ -1,8 +1,30 @@
 # Continuation State
 
-Last updated: 2026-07-31 (payment gate made diagnosable and owner-operable)<br>
-Current version: 0.18.1
-Overall progress: 95% (web MVP code 99%; paid production launch 90%; native app not started)
+Last updated: 2026-08-01 (production server, PayApp checkout, administrator, and custom domain recovery)<br>
+Current version: 0.18.2
+Overall progress: 97% (web MVP code 100%; production deployment and payment path 98%; native app not started)
+
+## 2026-08-01 — Production recovery and direct PayApp checkout
+
+- The custom domain `mygyeol.kr` is active with an active TLS certificate. The public
+  deployment now includes the dynamic worker routes required by `/api/health`, PayApp
+  order/feedback/return processing, Supabase auth callbacks, and the administrator
+  console; the previous live artifact returned 404 for every server route.
+- Removed the separate administrator launch-approval feature and its endpoint. A valid
+  PayApp/database/domain/catalog configuration opens checkout directly. The independent
+  incident sales-pause switch remains, but it does not interfere with payment callbacks.
+- Removed stale deployment price assertions left at 39,000/79,000 KRW. The code-owned
+  catalog is authoritative: the retired 19,000 KRW offer is not purchasable, and the
+  live products are 9,600 KRW and 39,000 KRW.
+- Restored an allowlisted Supabase administrator page at `/ko/admin` with order,
+  revenue, payment readiness, provider error, failed-report, inquiry, pause, mark-paid,
+  and refund/cancel operations. Login remains magic-link based and restricted by
+  `ADMIN_EMAILS`.
+- Replaced unsupported file-based metadata routes with explicit worker routes for
+  `/manifest.webmanifest`, `/robots.txt`, and `/sitemap.xml`; the brand icon is copied
+  into the production client artifact during the Sites build.
+- Verified strict TypeScript, targeted payment/security/metadata tests, the complete
+  worker build, public health/routes, checkout creation, and PayApp-hosted checkout URL.
 
 ## 2026-07-31 — Checkout no longer fails closed silently
 
@@ -22,10 +44,9 @@ none of them was visible from outside.
   still fails closed. The 2026-07-31 price reset (39,000/79,000 → 9,600/39,000) would
   otherwise have closed every deployment still holding the previous values, which is
   indistinguishable from an outage.
-- **Launch approval is operable without a redeploy.** The owner can record the same
-  explicit approval from the signed-in console (typed confirmation, stored with who and
-  when) or keep using `PAYMENTS_LAUNCH_APPROVED=true`. Both count; neither is implied by
-  holding credentials, so the invariant the gate exists for is unchanged.
+- **Superseded on 2026-08-01:** the launch-approval control described in this historical
+  entry was removed. Current checkout readiness uses provider, credentials, database,
+  HTTPS domain/callbacks, and the code-owned catalog directly.
 - **Provider rejections are readable.** PayApp's own wording now survives the API
   boundary into `payment_setup_events` and the console's 최근 결제사 오류 list, so a
   merchant-side cause is distinguishable from a bug. The buyer still sees only the
@@ -249,10 +270,9 @@ successful build in weeks. `main` and every branch failed identically.
   phone/depositor fields before creating an order, and distinguishes paused sales,
   rate limiting, order, widget, and provider failures. A hosted payment remains usable
   if optional local report-link persistence fails.
-- Production checkout now additionally requires the server-only
-  `PAYMENTS_LAUNCH_APPROVED=true` flag. This prevents valid merchant credentials from
-  silently opening sales while seller, legal, refund, support, domain, or live-path
-  approval remains incomplete.
+- Historical note: this release briefly required a server-only launch flag. Version
+  0.18.2 removed that extra gate so a correctly configured PayApp checkout opens
+  directly; the operational sales-pause switch remains available.
 - Restored the payment-independent Korean/English free core profile at
   `/{locale}/profile` and removed whole-route entitlement redirects from deterministic
   Free-tier question, relationship, compatibility, celebrity, and Reality Check routes.

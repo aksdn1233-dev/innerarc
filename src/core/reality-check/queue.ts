@@ -1,63 +1,97 @@
 import { getRealityCheckStatus } from "./engine";
-import type { RealityCheckRecord, RealityCheckStatus } from "./types";
-
-// Surfaces what to look at next instead of leaving every saved reflection in one flat
-// list: due outcomes first (earliest review date first, since that one has waited
-// longest), then planned, then already-reviewed, so opening the page always puts the
-// next real decision at the top.
+import {
+  RealityCheckInputError,
+  type RealityCheckRecord,
+  type RealityCheckStatus,
+} from "./types";
 
 export const realityCheckQueueFilters = ["all", "due", "planned", "reviewed"] as const;
 export type RealityCheckQueueFilter = (typeof realityCheckQueueFilters)[number];
 
-export type RealityCheckQueueItem = Readonly<{
+export interface RealityCheckQueueItem {
   record: RealityCheckRecord;
   status: RealityCheckStatus;
-}>;
+}
 
-export type RealityCheckQueue = Readonly<{
-  items: readonly RealityCheckQueueItem[];
+export interface RealityCheckQueue {
+  filter: RealityCheckQueueFilter;
   totalCount: number;
   dueCount: number;
   plannedCount: number;
   reviewedCount: number;
-  /** The earliest-due record's ID, or null when nothing is ready to review. */
   nextDueId: string | null;
-}>;
+  items: readonly RealityCheckQueueItem[];
+}
 
-const STATUS_ORDER: Readonly<Record<RealityCheckStatus, number>> = {
-  due: 0,
-  planned: 1,
-  reviewed: 2,
-};
+function assertDate(value: string): string {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    throw new RealityCheckInputError("today", "today must use YYYY-MM-DD.");
+  }
+  const date = new Date(`${value}T00:00:00.000Z`);
+  if (Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== value) {
+    throw new RealityCheckInputError("today", "today must be a real date.");
+  }
+  return value;
+}
+
+function assertFilter(value: RealityCheckQueueFilter): RealityCheckQueueFilter {
+  if (!realityCheckQueueFilters.includes(value)) {
+    throw new RealityCheckInputError("filter", "Unsupported Reality Check queue filter.");
+  }
+  return value;
+}
+
+function compareQueueItems(left: RealityCheckQueueItem, right: RealityCheckQueueItem): number {
+  const priority: Record<RealityCheckStatus, number> = {
+    due: 0,
+    planned: 1,
+    reviewed: 2,
+  };
+  const priorityDifference = priority[left.status] - priority[right.status];
+  if (priorityDifference) return priorityDifference;
+
+  if (left.status === "reviewed" && right.status === "reviewed") {
+    const leftReviewedAt = left.record.review?.reviewedAt ?? left.record.updatedAt;
+    const rightReviewedAt = right.record.review?.reviewedAt ?? right.record.updatedAt;
+    return rightReviewedAt.localeCompare(leftReviewedAt)
+      || right.record.createdAt.localeCompare(left.record.createdAt)
+      || left.record.id.localeCompare(right.record.id);
+  }
+
+  return left.record.reviewDate.localeCompare(right.record.reviewDate)
+    || left.record.createdAt.localeCompare(right.record.createdAt)
+    || left.record.id.localeCompare(right.record.id);
+}
 
 export function createRealityCheckQueue(
   records: readonly RealityCheckRecord[],
   today: string,
-  filter: RealityCheckQueueFilter,
+  filter: RealityCheckQueueFilter = "all",
 ): RealityCheckQueue {
-  const withStatus = records
-    .map((record) => ({ record, status: getRealityCheckStatus(record, today) }))
-    .sort((a, b) => {
-      const byStatus = STATUS_ORDER[a.status] - STATUS_ORDER[b.status];
-      if (byStatus !== 0) return byStatus;
-      return a.record.reviewDate.localeCompare(b.record.reviewDate);
-    });
+  if (!Array.isArray(records) || records.length > 500) {
+    throw new RealityCheckInputError("records", "At most 500 Reality Check records are supported.");
+  }
+  const checkedToday = assertDate(today);
+  const checkedFilter = assertFilter(filter);
+  const ordered = records
+    .map((record) => ({
+      record,
+      status: getRealityCheckStatus(record, checkedToday),
+    }))
+    .sort(compareQueueItems);
 
-  const dueCount = withStatus.filter((entry) => entry.status === "due").length;
-  const plannedCount = withStatus.filter((entry) => entry.status === "planned").length;
-  const reviewedCount = withStatus.filter((entry) => entry.status === "reviewed").length;
-  const nextDueId = withStatus.find((entry) => entry.status === "due")?.record.id ?? null;
-
-  const items = filter === "all"
-    ? withStatus
-    : withStatus.filter((entry) => entry.status === filter);
+  const due = ordered.filter(({ status }) => status === "due");
+  const items = checkedFilter === "all"
+    ? ordered
+    : ordered.filter(({ status }) => status === checkedFilter);
 
   return {
+    filter: checkedFilter,
+    totalCount: ordered.length,
+    dueCount: due.length,
+    plannedCount: ordered.filter(({ status }) => status === "planned").length,
+    reviewedCount: ordered.filter(({ status }) => status === "reviewed").length,
+    nextDueId: due[0]?.record.id ?? null,
     items,
-    totalCount: withStatus.length,
-    dueCount,
-    plannedCount,
-    reviewedCount,
-    nextDueId,
   };
 }

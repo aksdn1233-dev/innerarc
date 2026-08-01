@@ -4,7 +4,6 @@ import { requireSupabaseUser } from "@/lib/supabase/auth";
 import { isAdminEmail } from "@/server/admin-access";
 import { describePaymentSetup } from "@/server/payments/diagnostics";
 import {
-  launchApprovalFrom,
   readOperationsGate,
   readRecentPaymentSetupEvents,
 } from "@/server/payments/gate";
@@ -24,7 +23,6 @@ export async function GET() {
   const admin = resolveSupabaseAdminClient().client;
   const gate = await readOperationsGate(admin);
   const report = describePaymentSetup({
-    launchApproval: launchApprovalFrom(gate),
     salesEnabled: gate.salesEnabled,
     databaseReachable: Boolean(admin) && gate.reachable,
     databaseError: gate.error,

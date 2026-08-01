@@ -1,6 +1,6 @@
 # Living Checklist
 
-Last updated: 2026-07-30
+Last updated: 2026-08-01
 
 ## Phase 0 - Workspace and baseline
 
@@ -75,6 +75,8 @@ Last updated: 2026-07-30
 - [x] Feature flags, kill switch, deterministic rollout, rate-limit policies, data export/deletion services, and rollback runbook.
 - [x] Desktop/mobile browser, accessibility, performance, security-header, secret-scan, dependency-audit, and recovery regression coverage.
 - [x] CI configured for Chromium and mobile WebKit.
+- [x] Public Cloudflare/Sites deployment includes dynamic server routes, PayApp callbacks, health check, administrator login/console, manifest, robots, sitemap, and production icon.
+- [x] Remove the separate payment launch-approval gate; keep provider/database/catalog validation and the incident sales-pause control.
 - [x] CI action runtimes upgraded to Node 24; pnpm is activated through Corepack at the exact package version so no advisory-affected bootstrap action is used.
 - [x] Region-labelled official 109/988 crisis-resource registry, source links, no language-based location inference, and refresh protocol.
 - [x] CycloneDX 1.6 production SBOM generation, validation, and CI artifact archival.

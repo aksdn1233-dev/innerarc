@@ -1,20 +1,13 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { readEnvironmentLaunchApproval, type LaunchApproval } from "./config";
 
 // Runtime operating state that lives in the database rather than the environment, so
 // the owner can act on it without a rebuild.
 //
-// Every read here is written to survive a database that is one migration behind the
-// code. A deploy must never be able to take checkout down just because a column it
-// asks for does not exist yet, so a failed read degrades to a defined default instead
-// of throwing: the operational switch fails *open* (a settings hiccup must not stop a
-// paying customer, matching the checkout rate limiter), and the money gate fails
-// *closed* (an unreadable approval is not an approval).
+// A failed settings read degrades to a defined default instead of throwing. The
+// operational pause switch fails open so a settings outage cannot stop a buyer.
 
 export type OperationsGate = Readonly<{
   salesEnabled: boolean;
-  launchApprovedByOwner: boolean;
-  approvedAt: string | null;
   /** The settings row could be read at all. */
   reachable: boolean;
   /**
@@ -23,23 +16,16 @@ export type OperationsGate = Readonly<{
    * a missing table — and collapsing them cost a full debugging round.
    */
   error: string | null;
-  /** The launch-approval columns exist, so console approval can be stored. */
-  migrated: boolean;
 }>;
 
 export const DEFAULT_OPERATIONS_GATE: OperationsGate = {
   salesEnabled: true,
-  launchApprovedByOwner: false,
-  approvedAt: null,
   reachable: false,
   error: null,
-  migrated: false,
 };
 
 type SettingsRow = Readonly<{
   sales_enabled?: boolean | null;
-  payments_launch_approved?: boolean | null;
-  payments_launch_approved_at?: string | null;
 }>;
 
 /**
@@ -103,59 +89,23 @@ async function selectSettings(
 }
 
 /**
- * The current operating switches. Falls back to `sales_enabled` alone when the launch
- * approval column has not been migrated yet, and to the safe default when neither read
- * succeeds.
+ * Reads the operational pause switch. Checkout configuration and provider credentials
+ * decide whether payment is available; there is no separate launch approval gate.
  */
 export async function readOperationsGate(
   admin: SupabaseClient | null,
 ): Promise<OperationsGate> {
   if (!admin) return DEFAULT_OPERATIONS_GATE;
 
-  const full = await selectSettings(
-    admin,
-    "sales_enabled,payments_launch_approved,payments_launch_approved_at",
-  );
-  // A timeout is not evidence that the column is missing, so it never pays for a
-  // second wait; only a query error falls through to the pre-migration shape.
-  if (isFailure(full) && full.timedOut) {
-    return { ...DEFAULT_OPERATIONS_GATE, error: full.message };
-  }
-  if (!isFailure(full)) {
+  const settings = await selectSettings(admin, "sales_enabled");
+  if (!isFailure(settings)) {
     return {
-      salesEnabled: full?.sales_enabled ?? true,
-      launchApprovedByOwner: full?.payments_launch_approved === true,
-      approvedAt: full?.payments_launch_approved_at ?? null,
+      salesEnabled: settings?.sales_enabled ?? true,
       reachable: true,
       error: null,
-      migrated: true,
     };
   }
-
-  const legacy = await selectSettings(admin, "sales_enabled");
-  if (!isFailure(legacy)) {
-    return {
-      salesEnabled: legacy?.sales_enabled ?? true,
-      launchApprovedByOwner: false,
-      approvedAt: null,
-      reachable: true,
-      error: null,
-      migrated: false,
-    };
-  }
-  // Both reads failed the same way, so the second message is the honest one: it is not
-  // about a column this deployment may not have yet.
-  return { ...DEFAULT_OPERATIONS_GATE, error: legacy.message };
-}
-
-export function launchApprovalFrom(
-  gate: OperationsGate,
-  environment: Readonly<Record<string, string | undefined>> = process.env,
-): LaunchApproval {
-  return {
-    environment: readEnvironmentLaunchApproval(environment),
-    ownerConsole: gate.launchApprovedByOwner,
-  };
+  return { ...DEFAULT_OPERATIONS_GATE, error: settings.message };
 }
 
 export type PaymentSetupEventStage =

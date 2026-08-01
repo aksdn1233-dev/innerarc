@@ -14,7 +14,6 @@ import { isAdminEmail } from "@/server/admin-access";
 import { describePaymentSetup } from "@/server/payments/diagnostics";
 import {
   DEFAULT_OPERATIONS_GATE,
-  launchApprovalFrom,
   readOperationsGate,
   readRecentPaymentSetupEvents,
 } from "@/server/payments/gate";
@@ -36,7 +35,6 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
   const admin = resolveSupabaseAdminClient().client;
   if (!admin) {
     const readiness = describePaymentSetup({
-      launchApproval: launchApprovalFrom(DEFAULT_OPERATIONS_GATE),
       salesEnabled: DEFAULT_OPERATIONS_GATE.salesEnabled,
       databaseReachable: false,
     });
@@ -55,7 +53,6 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
           </p>
         </section>
         <AdminPaymentReadinessPanel
-          gate={DEFAULT_OPERATIONS_GATE}
           recentFailures={[]}
           report={readiness}
         />
@@ -122,7 +119,6 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
     .order("created_at", { ascending: false })
     .limit(20);
   const readiness = describePaymentSetup({
-    launchApproval: launchApprovalFrom(gate),
     salesEnabled: gate.salesEnabled,
     databaseReachable: gate.reachable,
     databaseError: gate.error,
@@ -155,7 +151,6 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
       </section>
       <AdminMetricsPanel days={METRIC_DAYS} metrics={metrics} />
       <AdminPaymentReadinessPanel
-        gate={gate}
         recentFailures={recentFailures}
         report={readiness}
       />

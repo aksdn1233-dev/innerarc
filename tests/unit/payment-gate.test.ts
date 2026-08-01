@@ -8,16 +8,7 @@ import {
 } from "@/server/payments/gate";
 import { PayAppApiError, requestPayAppPayment } from "@/server/payments/payapp";
 
-const MISSING_COLUMN = {
-  code: "42703",
-  message: 'column admin_settings.payments_launch_approved does not exist',
-};
-
-/**
- * A double that answers each `select(columns)` from a script keyed by the exact column
- * list, which is what lets these tests describe a database that is one migration behind
- * the deployed code.
- */
+/** A double that answers each `select(columns)` from a keyed script. */
 function createAdmin(
   responses: Record<string, { data: unknown; error: unknown }>,
   seen: string[] = [],
@@ -39,47 +30,20 @@ function createAdmin(
   } as unknown as SupabaseClient;
 }
 
-const FULL_COLUMNS = "sales_enabled,payments_launch_approved,payments_launch_approved_at";
-
 describe("operations gate", () => {
-  it("reads the sales switch and owner approval when both columns exist", async () => {
+  it("reads the sales pause switch without a separate approval gate", async () => {
     const gate = await readOperationsGate(createAdmin({
-      [FULL_COLUMNS]: {
-        data: {
-          sales_enabled: true,
-          payments_launch_approved: true,
-          payments_launch_approved_at: "2026-07-31T00:00:00.000Z",
-        },
-        error: null,
-      },
+      sales_enabled: { data: { sales_enabled: true }, error: null },
     }));
     expect(gate).toEqual({
       salesEnabled: true,
-      launchApprovedByOwner: true,
-      approvedAt: "2026-07-31T00:00:00.000Z",
       reachable: true,
       error: null,
-      migrated: true,
     });
   });
 
-  it("keeps serving orders when the approval column has not been migrated yet", async () => {
-    const seen: string[] = [];
+  it("honours a paused sales switch", async () => {
     const gate = await readOperationsGate(createAdmin({
-      [FULL_COLUMNS]: { data: null, error: MISSING_COLUMN },
-      sales_enabled: { data: { sales_enabled: true }, error: null },
-    }, seen));
-    expect(seen).toEqual([FULL_COLUMNS, "sales_enabled"]);
-    expect(gate.salesEnabled).toBe(true);
-    expect(gate.reachable).toBe(true);
-    expect(gate.migrated).toBe(false);
-    // An unreadable approval is never an approval.
-    expect(gate.launchApprovedByOwner).toBe(false);
-  });
-
-  it("still honours a paused sales switch on the pre-migration path", async () => {
-    const gate = await readOperationsGate(createAdmin({
-      [FULL_COLUMNS]: { data: null, error: MISSING_COLUMN },
       sales_enabled: { data: { sales_enabled: false }, error: null },
     }));
     expect(gate.salesEnabled).toBe(false);
@@ -88,10 +52,8 @@ describe("operations gate", () => {
   it("falls back to the safe default when the settings table cannot be read", async () => {
     const gate = await readOperationsGate(createAdmin({}));
     expect(gate).toEqual({ ...DEFAULT_OPERATIONS_GATE, error: "42P01" });
-    // Sales open, approval closed: a database hiccup must not stop a paying customer,
-    // and must not open a checkout the owner never approved.
+    // A settings hiccup must not stop a paying customer.
     expect(gate.salesEnabled).toBe(true);
-    expect(gate.launchApprovedByOwner).toBe(false);
   });
 
   // The failure that cost a full debugging round: the key was well-formed and the
@@ -99,10 +61,6 @@ describe("operations gate", () => {
   // nothing an operator could act on, so the database's own words are carried out.
   it("carries the database's own refusal message out to the caller", async () => {
     const gate = await readOperationsGate(createAdmin({
-      [FULL_COLUMNS]: {
-        data: null,
-        error: { code: "PGRST301", message: "Invalid authentication credentials" },
-      },
       sales_enabled: {
         data: null,
         error: { code: "PGRST301", message: "Invalid authentication credentials" },

@@ -9,9 +9,7 @@ import {
   inspectCatalogPrices,
   inspectPayAppMethods,
   inspectPaymentReadiness,
-  isLaunchApproved,
   payAppMethodNames,
-  type LaunchApproval,
   type PaymentRuntimeMode,
 } from "./config";
 
@@ -41,7 +39,6 @@ export type PaymentSetupCheck = Readonly<{
 export type PaymentSetupReason =
   | "OPEN"
   | "DISABLED"
-  | "UNAPPROVED"
   | "INCOMPLETE"
   | "INVALID"
   | "SALES_PAUSED"
@@ -65,14 +62,13 @@ export type PaymentSetupReport = Readonly<{
 
 const SUPPORTED_PROVIDERS = ["toss", "portone", "manual_transfer", "payapp"] as const;
 
-const REASON_SUMMARY: Readonly<Record<PaymentSetupReason, string>> = {
-  OPEN: "결제를 받을 수 있는 상태입니다.",
-  DISABLED: "PAYMENTS_PROVIDER가 비어 있어 결제 경로 자체가 꺼져 있습니다.",
-  UNAPPROVED: "결제 설정은 갖춰졌지만 판매 개시 승인이 없어 닫혀 있습니다.",
-  INCOMPLETE: "결제사 연동에 필요한 값이 아직 비어 있습니다.",
-  INVALID: "입력된 결제 설정 값의 형식이나 금액이 카탈로그와 맞지 않습니다.",
-  SALES_PAUSED: "설정은 정상이지만 관리자 화면에서 신규 결제 접수를 꺼 두었습니다.",
-  DATABASE_UNAVAILABLE: "주문을 저장할 데이터베이스에 연결하지 못했습니다.",
+const REASON_SUMMARY: Readonly<Record<string, string>> = {
+  OPEN: "寃곗젣瑜?諛쏆쓣 ???덈뒗 ?곹깭?낅땲??",
+  DISABLED: "PAYMENTS_PROVIDER媛 鍮꾩뼱 ?덉뼱 寃곗젣 寃쎈줈 ?먯껜媛 爰쇱졇 ?덉뒿?덈떎.",
+  INCOMPLETE: "寃곗젣???곕룞???꾩슂??媛믪씠 ?꾩쭅 鍮꾩뼱 ?덉뒿?덈떎.",
+  INVALID: "?낅젰??寃곗젣 ?ㅼ젙 媛믪쓽 ?뺤떇?대굹 湲덉븸??移댄깉濡쒓렇? 留욎? ?딆뒿?덈떎.",
+  SALES_PAUSED: "?ㅼ젙? ?뺤긽?댁?留?愿由ъ옄 ?붾㈃?먯꽌 ?좉퇋 寃곗젣 ?묒닔瑜?爰??먯뿀?듬땲??",
+  DATABASE_UNAVAILABLE: "二쇰Ц????ν븷 ?곗씠?곕쿋?댁뒪???곌껐?섏? 紐삵뻽?듬땲??",
 };
 
 function presence(value: string | undefined): "set" | "empty" {
@@ -98,11 +94,11 @@ function providerCredentialCheck(
     if (empty.length > 0) {
       return {
         id: "credentials",
-        title: "페이앱 연동 값",
+        title: "PayApp credentials",
         status: "missing",
-        detail: `${empty.join(", ")} 값이 비어 있습니다.`,
+        detail: `${empty.join(", ")} is required for PayApp.`,
         variables,
-        remedy: "페이앱 관리자 > 연동 정보의 판매자 아이디, 연동 KEY, 연동 VALUE를 배포 환경에 입력하세요.",
+        remedy: "Set provider credentials in environment variables: PAYAPP_USER_ID, PAYAPP_LINK_KEY, PAYAPP_LINK_VALUE.",
       };
     }
     // Judged by the same schema the runtime uses, so this never reports ready for a
@@ -112,7 +108,6 @@ function providerCredentialCheck(
     const shaped = inspectPaymentReadiness(
       {
         ...environment,
-        PAYMENTS_LAUNCH_APPROVED: "true",
         PAYAPP_OPEN_PAY_TYPES: DEFAULT_PAYAPP_METHODS,
         INNERARC_COMPREHENSIVE_PRICE_KRW: "",
         INNERARC_PRO_30D_PRICE_KRW: "",
@@ -123,18 +118,18 @@ function providerCredentialCheck(
     if (!shaped.enabled && shaped.reason === "INVALID") {
       return {
         id: "credentials",
-        title: "페이앱 연동 값",
+        title: "PayApp credentials",
         status: "invalid",
-        detail: "값은 입력되어 있으나 형식이 올바르지 않습니다.",
+        detail: "At least one PayApp value is malformed.",
         variables,
-        remedy: "판매자 아이디는 3자 이상, 연동 KEY와 VALUE는 8자 이상이어야 합니다. 앞뒤 공백과 줄바꿈을 지우고 다시 입력하세요.",
+        remedy: "Use three consistent PayApp values and re-check LINK KEY and LINK VALUE.",
       };
     }
     return {
       id: "credentials",
-      title: "페이앱 연동 값",
+      title: "PayApp credentials",
       status: "ok",
-      detail: "판매자 아이디, 연동 KEY, 연동 VALUE가 모두 등록되어 있습니다.",
+      detail: "PayApp LINK KEY and LINK VALUE are present.",
       variables,
       remedy: null,
     };
@@ -150,11 +145,15 @@ function providerCredentialCheck(
     const empty = variables.filter((name) => presence(environment[name]) === "empty");
     return {
       id: "credentials",
-      title: "포트원 연동 값",
+      title: "PortOne credentials",
       status: empty.length > 0 ? "missing" : "ok",
-      detail: empty.length > 0 ? `${empty.join(", ")} 값이 비어 있습니다.` : "포트원 상점·채널·시크릿이 등록되어 있습니다.",
+      detail: empty.length > 0
+        ? `${empty.join(", ")} is required for PortOne.`
+        : "PortOne is connected with the required credentials.",
       variables,
-      remedy: empty.length > 0 ? "포트원 콘솔의 상점 ID, KPN 채널 키, API 시크릿, 웹훅 시크릿을 입력하세요." : null,
+      remedy: empty.length > 0
+        ? "Set PORTONE_STORE_ID, PORTONE_KPN_CHANNEL_KEY, PORTONE_API_SECRET and PORTONE_WEBHOOK_SECRET."
+        : null,
     };
   }
 
@@ -170,11 +169,11 @@ function providerCredentialCheck(
       .every((name) => presence(environment[name]) === "set");
     return {
       id: "credentials",
-      title: "입금 계좌 정보",
+      title: "?낃툑 怨꾩쥖 ?뺣낫",
       status: hasJson || hasLegacy ? "ok" : "missing",
-      detail: hasJson || hasLegacy ? "입금 받을 계좌가 등록되어 있습니다." : "입금 계좌 정보가 비어 있습니다.",
+      detail: hasJson || hasLegacy ? "?낃툑 諛쏆쓣 怨꾩쥖媛 ?깅줉?섏뼱 ?덉뒿?덈떎." : "?낃툑 怨꾩쥖 ?뺣낫媛 鍮꾩뼱 ?덉뒿?덈떎.",
       variables,
-      remedy: hasJson || hasLegacy ? null : "은행명, 계좌번호, 예금주를 입력하세요.",
+      remedy: hasJson || hasLegacy ? null : "??됰챸, 怨꾩쥖踰덊샇, ?덇툑二쇰? ?낅젰?섏꽭??",
     };
   }
 
@@ -187,31 +186,30 @@ function providerCredentialCheck(
   );
   return {
     id: "credentials",
-    title: "토스페이먼츠 연동 값",
+    title: "Toss credentials",
     status: empty.length > 0 ? "missing" : wrongMode ? "invalid" : "ok",
     detail: empty.length > 0
-      ? `${empty.join(", ")} 값이 비어 있습니다.`
+      ? `${empty.join(", ")} is required.`
       : wrongMode
-        ? "운영 환경에는 test_ 키를 사용할 수 없습니다."
-        : "클라이언트 키, 시크릿 키, 고객키 솔트가 등록되어 있습니다.",
+        ? "Production keys must use live_ck_ and live_sk_ prefixes."
+        : "Toss client credentials are set and ready.",
     variables,
     remedy: empty.length > 0
-      ? "토스페이먼츠 키와 32자 이상의 고객키 솔트를 입력하세요."
+      ? "Set TOSS_CLIENT_KEY and TOSS_SECRET_KEY values, each at least 32 characters."
       : wrongMode
-        ? "운영 배포에는 live_ck_ / live_sk_ 키를 입력하세요."
+        ? "Replace both keys with test or live credentials as expected for your environment."
         : null,
   };
 }
 
 /**
  * A secret-free description of every condition production checkout depends on.
- * `launchApproval`, `salesEnabled`, and `databaseReachable` come from the caller
+ * `salesEnabled` and `databaseReachable` come from the caller
  * because they are runtime state rather than configuration.
  */
 export function describePaymentSetup(input: Readonly<{
   environment?: Readonly<Record<string, string | undefined>>;
   runtimeMode?: PaymentRuntimeMode;
-  launchApproval: LaunchApproval;
   salesEnabled: boolean;
   databaseReachable: boolean;
   /** The database's own words when the read failed, shown verbatim to the operator. */
@@ -226,12 +224,7 @@ export function describePaymentSetup(input: Readonly<{
         : "development"
   );
   const provider = environment.PAYMENTS_PROVIDER?.trim() || "disabled";
-  const approved = isLaunchApproved(input.launchApproval);
-  const readiness = inspectPaymentReadiness(
-    environment,
-    runtimeMode,
-    input.launchApproval.ownerConsole,
-  );
+  const readiness = inspectPaymentReadiness(environment, runtimeMode);
   const appUrl = resolveAppUrl(environment);
   // Reading this is itself allowed to fail: a malformed browser key must be reportable
   // rather than something that throws out of the report the operator opened to find it.
@@ -248,38 +241,21 @@ export function describePaymentSetup(input: Readonly<{
 
   checks.push({
     id: "provider",
-    title: "결제 경로 선택",
+    title: "寃곗젣 寃쎈줈 ?좏깮",
     status: provider === "disabled"
       ? "missing"
       : (SUPPORTED_PROVIDERS as readonly string[]).includes(provider)
         ? "ok"
         : "invalid",
     detail: provider === "disabled"
-      ? "PAYMENTS_PROVIDER가 비어 있어 결제가 꺼져 있습니다."
+      ? "PAYMENTS_PROVIDER媛 鍮꾩뼱 ?덉뼱 寃곗젣媛 爰쇱졇 ?덉뒿?덈떎."
       : (SUPPORTED_PROVIDERS as readonly string[]).includes(provider)
-        ? `현재 결제 경로는 ${provider} 입니다.`
-        : `${provider} 는 지원하지 않는 값입니다.`,
+        ? `?꾩옱 寃곗젣 寃쎈줈??${provider} ?낅땲??`
+        : `${provider} ??吏?먰븯吏 ?딅뒗 媛믪엯?덈떎.`,
     variables: ["PAYMENTS_PROVIDER"],
     remedy: (SUPPORTED_PROVIDERS as readonly string[]).includes(provider)
       ? null
-      : "PAYMENTS_PROVIDER 를 payapp, portone, manual_transfer, toss 중 하나로 설정하세요.",
-  });
-
-  checks.push({
-    id: "launch_approval",
-    title: "판매 개시 승인",
-    status: runtimeMode !== "production" || approved ? "ok" : "missing",
-    detail: runtimeMode !== "production"
-      ? "개발·테스트 환경에서는 승인 없이도 결제 경로를 확인할 수 있습니다."
-      : input.launchApproval.environment
-        ? "PAYMENTS_LAUNCH_APPROVED=true 로 승인되어 있습니다."
-        : input.launchApproval.ownerConsole
-          ? "관리자 화면에서 판매 개시를 승인해 두었습니다."
-          : "판매 개시 승인이 없어 결제가 닫혀 있습니다.",
-    variables: ["PAYMENTS_LAUNCH_APPROVED"],
-    remedy: runtimeMode !== "production" || approved
-      ? null
-      : "아래 ‘판매 개시 승인’을 켜거나, 배포 환경에 PAYMENTS_LAUNCH_APPROVED=true 를 설정하세요.",
+      : "PAYMENTS_PROVIDER 瑜?payapp, portone, manual_transfer, toss 以??섎굹濡??ㅼ젙?섏꽭??",
   });
 
   checks.push(providerCredentialCheck(provider, environment, runtimeMode));
@@ -288,58 +264,57 @@ export function describePaymentSetup(input: Readonly<{
     const methods = inspectPayAppMethods(environment);
     checks.push({
       id: "methods",
-      title: "노출 결제수단",
+      title: "?몄텧 寃곗젣?섎떒",
       status: methods.ok ? "ok" : "invalid",
       detail: methods.ok
         ? environment.PAYAPP_OPEN_PAY_TYPES?.trim()
-          ? `노출 설정: ${methods.methods}`
-          : `기본값(${DEFAULT_PAYAPP_METHODS})을 사용합니다.`
+          ? `?몄텧 ?ㅼ젙: ${methods.methods}`
+          : `湲곕낯媛?${DEFAULT_PAYAPP_METHODS})???ъ슜?⑸땲??`
         : methods.unknown.length > 0
-          ? `${methods.unknown.join(", ")} 는 페이앱 결제수단이 아닙니다.`
-          : "노출할 결제수단이 하나도 없습니다.",
+          ? `${methods.unknown.join(", ")} ???섏씠??寃곗젣?섎떒???꾨떃?덈떎.`
+          : "?몄텧??寃곗젣?섎떒???섎굹???놁뒿?덈떎.",
       variables: ["PAYAPP_OPEN_PAY_TYPES"],
       remedy: methods.ok
         ? null
-        : `${payAppMethodNames.join(", ")} 중에서 쉼표로 구분해 입력하세요.`,
+        : `${payAppMethodNames.join(", ")} 以묒뿉???쇳몴濡?援щ텇???낅젰?섏꽭??`,
     });
   }
 
   checks.push({
     id: "prices",
-    title: "판매 금액",
+    title: "Product prices",
     status: prices.ok ? "ok" : "invalid",
     detail: prices.ok
-      ? `상세 리딩 ${prices.comprehensivePrice.toLocaleString("ko-KR")}원, 프리미엄 ${prices.premiumPdfPrice.toLocaleString("ko-KR")}원으로 판매합니다.`
-      : `${prices.mismatched.map((issue) => `${issue.variable}(현재 상품 가격 ${issue.expected.toLocaleString("ko-KR")}원)`).join(", ")} 값이 상품 카탈로그와 다릅니다.`,
+      ? `Current catalog prices are ${prices.comprehensivePrice.toLocaleString("en-US")} and ${prices.premiumPdfPrice.toLocaleString("en-US")}.`
+      : `Mismatch for ${prices.mismatched.map((issue) => `${issue.variable}(expected ${issue.expected.toLocaleString("en-US")})`).join(", ")}.`,
     variables: ["INNERARC_COMPREHENSIVE_PRICE_KRW", "INNERARC_PREMIUM_PDF_PRICE_KRW"],
     remedy: prices.ok
       ? null
-      : "배포 환경의 과거 가격 값을 지우거나 현재 상품 가격과 같게 맞추세요. 값을 지우면 상품 카탈로그 가격이 그대로 적용됩니다.",
+      : `Set the price variables to catalog values: ${prices.mismatched.map((issue) => issue.variable).join(", ")}.`,
   });
-
   // Split out because a malformed browser key is a build-time failure with a very
   // different remedy from an unreachable database, and the two used to be one row.
   const keyMalformed = Boolean(publishableKey) && !isPublishableSupabaseKey(publishableKey!);
   checks.push({
     id: "supabase_public",
-    title: "Supabase 공개 설정",
+    title: "Supabase 怨듦컻 ?ㅼ젙",
     status: !publishableKey && !environment.NEXT_PUBLIC_SUPABASE_URL?.trim()
       ? "missing"
       : keyMalformed || supabasePublicError
         ? "invalid"
         : "ok",
     detail: !publishableKey && !environment.NEXT_PUBLIC_SUPABASE_URL?.trim()
-      ? "Supabase 주소와 공개 키가 비어 있어 로그인과 계정 동기화가 꺼져 있습니다."
+      ? "Supabase 二쇱냼? 怨듦컻 ?ㅺ? 鍮꾩뼱 ?덉뼱 濡쒓렇?멸낵 怨꾩젙 ?숆린?붽? 爰쇱졇 ?덉뒿?덈떎."
       : keyMalformed
         ? publishableKey!.startsWith("sb_secret_")
-          ? "공개 키 자리에 서비스 역할 키가 들어가 있습니다. 이 값은 브라우저로 전달되므로 즉시 교체해야 합니다."
-          : "공개 키 형식이 올바르지 않습니다. sb_publishable_ 로 시작하는 키 또는 기존 anon 키만 사용할 수 있습니다."
+          ? "怨듦컻 ???먮━???쒕퉬????븷 ?ㅺ? ?ㅼ뼱媛 ?덉뒿?덈떎. ??媛믪? 釉뚮씪?곗?濡??꾨떖?섎?濡?利됱떆 援먯껜?댁빞 ?⑸땲??"
+          : "怨듦컻 ???뺤떇???щ컮瑜댁? ?딆뒿?덈떎. sb_publishable_ 濡??쒖옉?섎뒗 ???먮뒗 湲곗〈 anon ?ㅻ쭔 ?ъ슜?????덉뒿?덈떎."
         : supabasePublicError
-          ? "Supabase 주소와 공개 키 중 하나가 비어 있거나 형식이 올바르지 않습니다."
-          : "Supabase 주소와 공개 키가 정상입니다.",
+          ? "Supabase 二쇱냼? 怨듦컻 ??以??섎굹媛 鍮꾩뼱 ?덇굅???뺤떇???щ컮瑜댁? ?딆뒿?덈떎."
+          : "Supabase 二쇱냼? 怨듦컻 ?ㅺ? ?뺤긽?낅땲??",
     variables: ["NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"],
     remedy: keyMalformed || supabasePublicError
-      ? "Supabase 대시보드 > Project Settings > API Keys 의 publishable(또는 anon) 키를 그대로 붙여넣으세요. service_role 키는 절대 NEXT_PUBLIC_ 변수에 넣지 마세요."
+      ? "Supabase ??쒕낫??> Project Settings > API Keys ??publishable(?먮뒗 anon) ?ㅻ? 洹몃?濡?遺숈뿬?ｌ쑝?몄슂. service_role ?ㅻ뒗 ?덈? NEXT_PUBLIC_ 蹂?섏뿉 ?ｌ? 留덉꽭??"
       : null,
   });
 
@@ -347,71 +322,71 @@ export function describePaymentSetup(input: Readonly<{
   const serviceRoleMalformed = Boolean(serviceRoleKey) && !isSecretSupabaseKey(serviceRoleKey!);
   checks.push({
     id: "database",
-    title: "주문 데이터베이스",
+    title: "二쇰Ц ?곗씠?곕쿋?댁뒪",
     status: input.databaseReachable ? "ok" : serviceRoleMalformed ? "invalid" : "missing",
     detail: input.databaseReachable
-      ? "주문과 리포트를 저장할 수 있습니다."
+      ? "二쇰Ц怨?由ы룷?몃? ??ν븷 ???덉뒿?덈떎."
       : serviceRoleMalformed
         ? serviceRoleKey!.startsWith("sb_publishable_") ||
           isPublishableSupabaseKey(serviceRoleKey!)
-          ? "서비스 역할 키 자리에 공개 키가 들어가 있습니다. 이 키로는 주문을 저장할 수 없습니다."
-          : "서비스 역할 키 형식이 올바르지 않습니다. sb_secret_ 로 시작하는 키 또는 기존 service_role 키만 사용할 수 있습니다."
+          ? "?쒕퉬????븷 ???먮━??怨듦컻 ?ㅺ? ?ㅼ뼱媛 ?덉뒿?덈떎. ???ㅻ줈??二쇰Ц????ν븷 ???놁뒿?덈떎."
+          : "?쒕퉬????븷 ???뺤떇???щ컮瑜댁? ?딆뒿?덈떎. sb_secret_ 濡??쒖옉?섎뒗 ???먮뒗 湲곗〈 service_role ?ㅻ쭔 ?ъ슜?????덉뒿?덈떎."
         : !serviceRoleKey
-          ? "SUPABASE_SERVICE_ROLE_KEY 값이 비어 있어 주문을 저장할 수 없습니다."
+          ? "SUPABASE_SERVICE_ROLE_KEY 媛믪씠 鍮꾩뼱 ?덉뼱 二쇰Ц????ν븷 ???놁뒿?덈떎."
           : input.databaseError
-            ? `Supabase 응답: ${input.databaseError}`
-            : "데이터베이스에 연결하지 못했습니다.",
+            ? `Supabase ?묐떟: ${input.databaseError}`
+            : "?곗씠?곕쿋?댁뒪???곌껐?섏? 紐삵뻽?듬땲??",
     variables: ["SUPABASE_SERVICE_ROLE_KEY"],
     remedy: input.databaseReachable
       ? null
-      : "Supabase 대시보드 > Project Settings > API Keys 에서 현재 사용 중(disabled 아님)인 secret 키를 복사해 SUPABASE_SERVICE_ROLE_KEY 에 넣고 다시 배포하세요. 예전 service_role 키를 비활성화했다면 그 키로는 401이 납니다.",
+      : "Supabase ??쒕낫??> Project Settings > API Keys ?먯꽌 ?꾩옱 ?ъ슜 以?disabled ?꾨떂)??secret ?ㅻ? 蹂듭궗??SUPABASE_SERVICE_ROLE_KEY ???ｊ퀬 ?ㅼ떆 諛고룷?섏꽭?? ?덉쟾 service_role ?ㅻ? 鍮꾪솢?깊솕?덈떎硫?洹??ㅻ줈??401???⑸땲??",
   });
 
   checks.push({
     id: "app_url",
-    title: "운영 도메인",
+    title: "Application URL",
     status: appUrl
       ? (runtimeMode === "production" && appUrl.protocol !== "https:" ? "invalid" : "ok")
       : "invalid",
     detail: appUrl
-      ? `콜백 기준 주소: ${appUrl.origin}`
-      : "NEXT_PUBLIC_APP_URL 값이 올바른 주소가 아닙니다.",
+      ? `肄쒕갚 湲곗? 二쇱냼: ${appUrl.origin}`
+      : "NEXT_PUBLIC_APP_URL 媛믪씠 ?щ컮瑜?二쇱냼媛 ?꾨떃?덈떎.",
     variables: ["NEXT_PUBLIC_APP_URL", "APP_HTTPS_ONLY"],
     remedy: appUrl && !(runtimeMode === "production" && appUrl.protocol !== "https:")
       ? null
-      : "NEXT_PUBLIC_APP_URL 을 https://운영도메인 형식으로 설정한 뒤 다시 빌드·배포하세요.",
+      : "NEXT_PUBLIC_APP_URL ??https://?댁쁺?꾨찓???뺤떇?쇰줈 ?ㅼ젙?????ㅼ떆 鍮뚮뱶쨌諛고룷?섏꽭??",
   });
 
   checks.push({
     id: "admin_emails",
-    title: "관리자 계정",
+    title: "愿由ъ옄 怨꾩젙",
     status: presence(environment.ADMIN_EMAILS) === "set" ? "ok" : "missing",
     detail: presence(environment.ADMIN_EMAILS) === "set"
-      ? "관리자 로그인 이메일이 등록되어 있습니다."
-      : "ADMIN_EMAILS 가 비어 있으면 이 화면에 다시 들어올 수 없습니다.",
+      ? "愿由ъ옄 濡쒓렇???대찓?쇱씠 ?깅줉?섏뼱 ?덉뒿?덈떎."
+      : "ADMIN_EMAILS 媛 鍮꾩뼱 ?덉쑝硫????붾㈃???ㅼ떆 ?ㅼ뼱?????놁뒿?덈떎.",
     variables: ["ADMIN_EMAILS"],
     remedy: presence(environment.ADMIN_EMAILS) === "set"
       ? null
-      : "관리자 이메일을 쉼표로 구분해 ADMIN_EMAILS 에 입력하세요.",
+      : "愿由ъ옄 ?대찓?쇱쓣 ?쇳몴濡?援щ텇??ADMIN_EMAILS ???낅젰?섏꽭??",
   });
 
   checks.push({
     id: "sales_switch",
-    title: "신규 결제 접수",
+    title: "?좉퇋 寃곗젣 ?묒닔",
     status: input.salesEnabled ? "ok" : "missing",
     detail: input.salesEnabled
-      ? "신규 주문을 접수하고 있습니다."
-      : "관리자 화면에서 신규 결제 접수를 꺼 두었습니다.",
+      ? "?좉퇋 二쇰Ц???묒닔?섍퀬 ?덉뒿?덈떎."
+      : "愿由ъ옄 ?붾㈃?먯꽌 ?좉퇋 寃곗젣 ?묒닔瑜?爰??먯뿀?듬땲??",
     variables: [],
-    remedy: input.salesEnabled ? null : "위 ‘기본 운영 설정’에서 신규 결제 접수를 켜세요.",
+    remedy: input.salesEnabled ? null : "???섍린蹂??댁쁺 ?ㅼ젙?숈뿉???좉퇋 寃곗젣 ?묒닔瑜?耳쒖꽭??",
   });
 
   if (appUrl && provider === "payapp") {
     checks.push({
       id: "callbacks",
-      title: "페이앱에 등록할 주소",
+      title: "?섏씠?깆뿉 ?깅줉??二쇱냼",
       status: "info",
-      detail: `피드백 URL은 결제 승인이 서버에 반영되는 유일한 경로입니다. 공개망에서 열려 있어야 합니다.`,
+      detail: `?쇰뱶諛?URL? 寃곗젣 ?뱀씤???쒕쾭??諛섏쁺?섎뒗 ?좎씪??寃쎈줈?낅땲?? 怨듦컻留앹뿉???대젮 ?덉뼱???⑸땲??`,
       variables: [],
       remedy: null,
     });

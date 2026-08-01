@@ -33,7 +33,7 @@ export async function POST(
     return NextResponse.json({ error: "INVALID_CONFIRMATION" }, { status: 400 });
   }
 
-  const readiness = inspectPaymentReadiness();
+  const readiness = inspectPaymentReadiness(process.env, undefined);
   const admin = getSupabaseAdminClient();
   if (!readiness.enabled || !admin) {
     return NextResponse.json({ error: "PROVIDER_UNAVAILABLE" }, { status: 503 });

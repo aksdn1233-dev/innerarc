@@ -1,14 +1,14 @@
 import { access } from "node:fs/promises";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import manifest from "@/app/manifest";
+import { createManifestDocument } from "@/core/site-documents";
 
 // The manifest kept pointing at /icon after that dynamic route was replaced by a
 // static file, so every install prompt and store listing would have shown a broken
 // icon. Each icon it advertises must exist in the build.
 describe("web app manifest", () => {
   it("advertises icons that are actually shipped", async () => {
-    const icons = manifest().icons ?? [];
+    const icons = createManifestDocument().icons ?? [];
     expect(icons.length).toBeGreaterThan(0);
 
     for (const icon of icons) {
@@ -30,7 +30,7 @@ describe("web app manifest", () => {
   });
 
   it("declares a maskable icon so Android does not letterbox it", () => {
-    const icons = manifest().icons ?? [];
+    const icons = createManifestDocument().icons ?? [];
     expect(icons.some((icon) => icon.purpose === "maskable")).toBe(true);
   });
 });

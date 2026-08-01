@@ -1,4 +1,4 @@
-import { createHmac } from "node:crypto";
+﻿import { createHmac } from "node:crypto";
 import { z } from "zod";
 import {
   PRODUCT_PRICES_KRW,
@@ -68,30 +68,8 @@ export type PaymentConfig =
   | PayAppPaymentConfig;
 
 export type PaymentReadiness =
-  | Readonly<{ enabled: false; reason: "DISABLED" | "UNAPPROVED" | "INCOMPLETE" | "INVALID" }>
+  | Readonly<{ enabled: false; reason: "DISABLED" | "INCOMPLETE" | "INVALID" }>
   | Readonly<{ enabled: true; config: PaymentConfig }>;
-
-/**
- * The two ways the owner can state that this deployment is cleared to take money.
- * Either counts on its own; neither is implied by holding merchant credentials, which
- * is the property the launch gate exists to enforce.
- */
-export type LaunchApproval = Readonly<{
-  /** `PAYMENTS_LAUNCH_APPROVED=true` in the deployment environment. */
-  environment: boolean;
-  /** An explicit, audited approval recorded by a signed-in administrator. */
-  ownerConsole: boolean;
-}>;
-
-export function isLaunchApproved(approval: LaunchApproval): boolean {
-  return approval.environment || approval.ownerConsole;
-}
-
-export function readEnvironmentLaunchApproval(
-  environment: Readonly<Record<string, string | undefined>> = process.env,
-): boolean {
-  return environment.PAYMENTS_LAUNCH_APPROVED?.trim() === "true";
-}
 
 const storeIdSchema = z.string().regex(/^store-[0-9a-f-]{36}$/i);
 const channelKeySchema = z.string().regex(/^channel-key-[0-9a-f-]{36}$/i);
@@ -146,21 +124,21 @@ function buildProducts(comprehensivePrice: number, premiumPdfPrice: number) {
       tier: "plus",
       durationDays: 30,
       amount: PRODUCT_PRICES_KRW.plus_30d,
-      names: { ko: "핵심 리딩", en: "Core reading" },
+      names: { ko: "?듭떖 由щ뵫", en: "Core reading" },
     },
     pro_30d: {
       code: "pro_30d",
       tier: "pro",
       durationDays: 30,
       amount: comprehensivePrice,
-      names: { ko: "상세 리딩", en: "Detailed reading" },
+      names: { ko: "?곸꽭 由щ뵫", en: "Detailed reading" },
     },
     premium_pdf: {
       code: "premium_pdf",
       tier: "pro",
       durationDays: 30,
       amount: premiumPdfPrice,
-      names: { ko: "프리미엄 심층 리딩", en: "Premium in-depth reading" },
+      names: { ko: "?꾨━誘몄뾼 ?ъ링 由щ뵫", en: "Premium in-depth reading" },
     },
   } as const satisfies Readonly<Record<PaymentProductCode, PaymentProduct>>;
 }
@@ -236,24 +214,9 @@ export function inspectPaymentReadiness(
     : environment.NODE_ENV === "test"
       ? "test"
       : "development",
-  /**
-   * Owner approval recorded in the administrator console. Defaults to false so every
-   * caller that cannot read it — the build, the CSP calculation — keeps the original
-   * environment-only behaviour.
-   */
-  ownerConsoleApproved = false,
 ): PaymentReadiness {
   const provider = environment.PAYMENTS_PROVIDER?.trim() || "disabled";
   if (provider === "disabled") return { enabled: false, reason: "DISABLED" };
-  if (
-    runtimeMode === "production" &&
-    !isLaunchApproved({
-      environment: readEnvironmentLaunchApproval(environment),
-      ownerConsole: ownerConsoleApproved,
-    })
-  ) {
-    return { enabled: false, reason: "UNAPPROVED" };
-  }
   if (
     provider !== "toss" &&
     provider !== "portone" &&

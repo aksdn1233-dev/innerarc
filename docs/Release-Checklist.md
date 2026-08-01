@@ -48,7 +48,7 @@
 - [x] Future product contracts require complete disclosures, reject prohibited symbolic-outcome claims and tracking-bearing links, isolate sponsorship, and remain closed behind twelve evidence-backed gates plus explicit owner authorization.
 - [ ] Approve suppliers, provenance/material/allergy disclosures, catalog moderation, accessibility, inventory, fulfillment, returns/refunds, support, privacy, and consumer-law controls before opening the shop.
 - [ ] Validate localized prices, taxes, trial/renewal disclosure, purchase, restore, cancellation, refund-support, and AI unit economics with a real provider.
-- [ ] Record real PayApp low-value approval, cancellation, virtual-account deposit, guest receipt/recovery, and refund-support evidence before setting `PAYMENTS_LAUNCH_APPROVED=true`.
+- [ ] Record real PayApp low-value approval, cancellation, virtual-account deposit, guest receipt/recovery, and refund-support evidence before broad promotion.
 
 ## Operations
 

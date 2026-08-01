@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { isPrivatePath, robotsTagFor } from "@/core/security/headers";
 import { crossOriginRefused, isSameOriginRequest } from "@/server/same-origin";
-import robots from "@/app/robots";
+import { createRobotsDocument } from "@/core/site-documents";
 
 function post(headers: Record<string, string>): Request {
   return new Request("https://gyeol.example/api/admin/settings", {
@@ -102,7 +102,10 @@ describe("keeping private pages out of indexes", () => {
 });
 
 describe("robots.txt", () => {
-  const rules = robots().rules as { userAgent?: string; disallow?: string | string[] }[];
+  const rules = createRobotsDocument().rules as {
+    userAgent?: string;
+    disallow?: string | string[];
+  }[];
 
   it("refuses the crawlers that collect pages for models", () => {
     const refused = new Set(

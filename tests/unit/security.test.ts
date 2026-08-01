@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import manifest from "@/app/manifest";
+import { createManifestDocument } from "@/core/site-documents";
 import { buildContentSecurityPolicy, buildSecurityHeaders } from "@/core/security";
 
 describe("security and install metadata", () => {
@@ -70,7 +70,7 @@ describe("security and install metadata", () => {
   });
 
   it("declares install metadata without offline background capabilities", () => {
-    const value = manifest();
+    const value = createManifestDocument();
     expect(value.start_url).toBe("/ko");
     expect(value.display).toBe("standalone");
     expect(value.icons).toHaveLength(2);

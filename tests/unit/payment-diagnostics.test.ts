@@ -1,16 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { PRODUCT_PRICES_KRW } from "@/core/product-prices";
-import {
-  inspectCatalogPrices,
-  inspectPaymentReadiness,
-  isLaunchApproved,
-  readEnvironmentLaunchApproval,
-} from "@/server/payments/config";
+import { inspectCatalogPrices, inspectPaymentReadiness } from "@/server/payments/config";
 import { describePaymentSetup } from "@/server/payments/diagnostics";
-import { DEFAULT_OPERATIONS_GATE, launchApprovalFrom } from "@/server/payments/gate";
 
 const payAppEnvironment = {
-  PAYMENTS_REQUIRE_LAUNCH_APPROVAL: "true",
   PAYMENTS_PROVIDER: "payapp",
   PAYAPP_USER_ID: "gyeol-seller",
   PAYAPP_LINK_KEY: "link-key-secret",
@@ -23,8 +16,6 @@ const payAppEnvironment = {
   ADMIN_EMAILS: "owner@example.com",
 } as const;
 
-const approvedByEnvironment = { ...payAppEnvironment, PAYMENTS_LAUNCH_APPROVED: "true" };
-
 function describeWith(
   environment: Readonly<Record<string, string | undefined>>,
   overrides: Partial<Parameters<typeof describePaymentSetup>[0]> = {},
@@ -32,10 +23,6 @@ function describeWith(
   return describePaymentSetup({
     environment,
     runtimeMode: "production",
-    launchApproval: {
-      environment: readEnvironmentLaunchApproval(environment),
-      ownerConsole: false,
-    },
     salesEnabled: true,
     databaseReachable: true,
     ...overrides,
@@ -62,19 +49,17 @@ describe("catalog prices", () => {
   });
 
   it("opens checkout for a provider that declares no price variables at all", () => {
-    const readiness = inspectPaymentReadiness(approvedByEnvironment, "production");
+    const readiness = inspectPaymentReadiness(payAppEnvironment, "production");
     expect(readiness.enabled).toBe(true);
     if (readiness.enabled) {
       expect(readiness.config.products.pro_30d.amount).toBe(PRODUCT_PRICES_KRW.pro_30d);
-      expect(readiness.config.products.premium_pdf.amount).toBe(
-        PRODUCT_PRICES_KRW.premium_pdf,
-      );
+      expect(readiness.config.products.premium_pdf.amount).toBe(PRODUCT_PRICES_KRW.premium_pdf);
     }
   });
 
   it("still fails closed on a stale price that disagrees with the catalog", () => {
     const stale = {
-      ...approvedByEnvironment,
+      ...payAppEnvironment,
       INNERARC_COMPREHENSIVE_PRICE_KRW: "39000",
       INNERARC_PREMIUM_PDF_PRICE_KRW: "79000",
     };
@@ -102,63 +87,29 @@ describe("catalog prices", () => {
   });
 
   it("rejects an unparseable price rather than falling back to the catalog", () => {
-    expect(inspectCatalogPrices({ INNERARC_PREMIUM_PDF_PRICE_KRW: "무료" }).ok).toBe(false);
-  });
-});
-
-describe("launch approval", () => {
-  it("treats an administrator console approval as equal to the environment flag", () => {
-    expect(inspectPaymentReadiness(payAppEnvironment, "production")).toEqual({
-      enabled: false,
-      reason: "UNAPPROVED",
-    });
-    expect(inspectPaymentReadiness(payAppEnvironment, "production", true).enabled).toBe(true);
-    expect(inspectPaymentReadiness(approvedByEnvironment, "production", false).enabled)
-      .toBe(true);
-  });
-
-  it("never lets credentials alone stand in for approval", () => {
-    expect(isLaunchApproved({ environment: false, ownerConsole: false })).toBe(false);
-    expect(inspectPaymentReadiness(payAppEnvironment, "production", false).enabled).toBe(false);
-  });
-
-  it("fails closed on an unreadable settings row", () => {
-    expect(launchApprovalFrom(DEFAULT_OPERATIONS_GATE, payAppEnvironment)).toEqual({
-      environment: false,
-      ownerConsole: false,
-    });
-    expect(DEFAULT_OPERATIONS_GATE.salesEnabled).toBe(true);
+    expect(inspectCatalogPrices({ INNERARC_PREMIUM_PDF_PRICE_KRW: "臾대즺" }).ok).toBe(false);
   });
 });
 
 describe("payment setup diagnostics", () => {
-  it("names the launch approval as the only blocker of an otherwise complete setup", () => {
+  it("reports an open checkout when setup is complete and sales is enabled", () => {
     const report = describeWith(payAppEnvironment);
-    expect(report.open).toBe(false);
-    expect(report.reason).toBe("UNAPPROVED");
-    expect(report.blocking).toEqual(["launch_approval"]);
+    expect(report.open).toBe(true);
+    expect(report.reason).toBe("OPEN");
+    expect(report.blocking).toEqual([]);
     expect(checkFor(report, "credentials").status).toBe("ok");
     expect(checkFor(report, "prices").status).toBe("ok");
   });
 
-  it("reports an open checkout once approval is recorded", () => {
-    const report = describeWith(payAppEnvironment, {
-      launchApproval: { environment: false, ownerConsole: true },
-    });
-    expect(report.open).toBe(true);
-    expect(report.reason).toBe("OPEN");
-    expect(report.blocking).toEqual([]);
-  });
-
   it("separates a paused sales switch from a broken configuration", () => {
-    const report = describeWith(approvedByEnvironment, { salesEnabled: false });
+    const report = describeWith(payAppEnvironment, { salesEnabled: false });
     expect(report.open).toBe(false);
     expect(report.reason).toBe("SALES_PAUSED");
     expect(checkFor(report, "sales_switch").status).toBe("missing");
   });
 
   it("points at the empty PayApp variable by name", () => {
-    const report = describeWith({ ...approvedByEnvironment, PAYAPP_LINK_VALUE: "" });
+    const report = describeWith({ ...payAppEnvironment, PAYAPP_LINK_VALUE: "" });
     const credentials = checkFor(report, "credentials");
     expect(credentials.status).toBe("missing");
     expect(credentials.detail).toContain("PAYAPP_LINK_VALUE");
@@ -167,18 +118,18 @@ describe("payment setup diagnostics", () => {
 
   it("points at a stale price variable by name", () => {
     const report = describeWith({
-      ...approvedByEnvironment,
+      ...payAppEnvironment,
       INNERARC_PREMIUM_PDF_PRICE_KRW: "79000",
     });
     const prices = checkFor(report, "prices");
     expect(prices.status).toBe("invalid");
     expect(prices.detail).toContain("INNERARC_PREMIUM_PDF_PRICE_KRW");
-    expect(prices.remedy).toContain("지우");
+    expect(prices.remedy).toContain("INNERARC_PREMIUM_PDF_PRICE_KRW");
   });
 
   it("flags an unsupported payment method without claiming a credential problem", () => {
     const report = describeWith({
-      ...approvedByEnvironment,
+      ...payAppEnvironment,
       PAYAPP_OPEN_PAY_TYPES: "card,not-a-method",
     });
     const methods = checkFor(report, "methods");
@@ -188,12 +139,9 @@ describe("payment setup diagnostics", () => {
     expect(report.reason).toBe("INVALID");
   });
 
-  // Each row has to stand for exactly one condition, or the owner fixes the wrong
-  // thing: the underlying readiness call collapses every shape problem into one
-  // INVALID, so a row that consults it must neutralise the inputs it does not own.
   it("keeps one bad value from marking unrelated rows as broken", () => {
     const stalePrice = describeWith({
-      ...approvedByEnvironment,
+      ...payAppEnvironment,
       INNERARC_PREMIUM_PDF_PRICE_KRW: "79000",
     });
     expect(checkFor(stalePrice, "prices").status).toBe("invalid");
@@ -201,13 +149,13 @@ describe("payment setup diagnostics", () => {
     expect(checkFor(stalePrice, "methods").status).toBe("ok");
 
     const badMethods = describeWith({
-      ...approvedByEnvironment,
+      ...payAppEnvironment,
       PAYAPP_OPEN_PAY_TYPES: "not-a-method",
     });
     expect(checkFor(badMethods, "prices").status).toBe("ok");
     expect(checkFor(badMethods, "credentials").status).toBe("ok");
 
-    const shortSecret = describeWith({ ...approvedByEnvironment, PAYAPP_LINK_KEY: "short" });
+    const shortSecret = describeWith({ ...payAppEnvironment, PAYAPP_LINK_KEY: "short" });
     expect(checkFor(shortSecret, "credentials").status).toBe("invalid");
     expect(checkFor(shortSecret, "prices").status).toBe("ok");
     expect(checkFor(shortSecret, "methods").status).toBe("ok");
@@ -215,12 +163,12 @@ describe("payment setup diagnostics", () => {
 
   it("reports a disabled provider distinctly from a misconfigured one", () => {
     expect(describeWith({}).reason).toBe("DISABLED");
-    expect(describeWith({ ...approvedByEnvironment, PAYMENTS_PROVIDER: "kakao" }).reason)
+    expect(describeWith({ ...payAppEnvironment, PAYMENTS_PROVIDER: "kakao" }).reason)
       .toBe("INVALID");
   });
 
   it("surfaces the exact callback addresses to register at the provider", () => {
-    const report = describeWith(approvedByEnvironment);
+    const report = describeWith(payAppEnvironment);
     expect(report.callbackUrls.payAppFeedback)
       .toBe("https://gyeol.example/api/payments/payapp/feedback");
     expect(report.callbackUrls.payAppReturn)
@@ -229,13 +177,13 @@ describe("payment setup diagnostics", () => {
   });
 
   it("does not fall over on an unusable public app URL", () => {
-    const report = describeWith({ ...approvedByEnvironment, NEXT_PUBLIC_APP_URL: "not a url" });
+    const report = describeWith({ ...payAppEnvironment, NEXT_PUBLIC_APP_URL: "not a url" });
     expect(checkFor(report, "app_url").status).toBe("invalid");
     expect(report.callbackUrls.payAppFeedback).toBeNull();
   });
 
   it("never repeats a configured secret back to the console", () => {
-    const report = describeWith(approvedByEnvironment);
+    const report = describeWith(payAppEnvironment);
     const serialized = JSON.stringify(report);
     for (const secret of [
       payAppEnvironment.PAYAPP_LINK_KEY,
@@ -249,7 +197,7 @@ describe("payment setup diagnostics", () => {
   });
 
   it("treats an unreachable database as its own reason", () => {
-    const report = describeWith(approvedByEnvironment, { databaseReachable: false });
+    const report = describeWith(payAppEnvironment, { databaseReachable: false });
     expect(report.reason).toBe("DATABASE_UNAVAILABLE");
     expect(checkFor(report, "database").status).toBe("missing");
   });

@@ -25,7 +25,7 @@ function successResponse() {
 }
 
 export async function POST(request: Request) {
-  const readiness = inspectPaymentReadiness();
+  const readiness = inspectPaymentReadiness(process.env, undefined);
   const admin = getSupabaseAdminClient();
   if (!readiness.enabled || !admin) {
     return new Response("FAIL", { status: 503 });

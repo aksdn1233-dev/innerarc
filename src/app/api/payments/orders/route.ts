@@ -14,7 +14,6 @@ import {
 } from "@/server/payments/config";
 import { PayAppApiError, requestPayAppPayment } from "@/server/payments/payapp";
 import {
-  launchApprovalFrom,
   readOperationsGate,
   recordPaymentSetupEvent,
 } from "@/server/payments/gate";
@@ -48,16 +47,10 @@ export async function POST(request: Request) {
   if (!admin) {
     return NextResponse.json({ error: "PAYMENTS_UNAVAILABLE" }, { status: 503 });
   }
-  // The owner's launch approval and sales switch live in the database so both can be
-  // changed without a rebuild. An unreadable settings row keeps sales on and the launch
-  // approval off, so a settings hiccup never opens a closed checkout or closes an open
-  // one against a deployment approved by environment.
+  // The incident pause switch can be changed without a rebuild. Payment readiness is
+  // otherwise determined directly by provider, credentials, database, and catalog.
   const gate = await readOperationsGate(admin);
-  const readiness = inspectPaymentReadiness(
-    process.env,
-    undefined,
-    launchApprovalFrom(gate).ownerConsole,
-  );
+  const readiness = inspectPaymentReadiness(process.env, undefined);
   if (!readiness.enabled) {
     return NextResponse.json({ error: "PAYMENTS_UNAVAILABLE" }, { status: 503 });
   }

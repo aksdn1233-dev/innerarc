@@ -4,7 +4,7 @@ import { isLocale } from "@/i18n/config";
 import { requireSupabaseUser } from "@/lib/supabase/auth";
 import { inspectPaymentReadiness } from "@/server/payments/config";
 import { resolveSupabaseAdminClient } from "@/lib/supabase/admin";
-import { launchApprovalFrom, readOperationsGate } from "@/server/payments/gate";
+import { readOperationsGate } from "@/server/payments/gate";
 
 export const dynamic = "force-dynamic";
 
@@ -19,18 +19,14 @@ export default async function PlansPage({
   const query = await searchParams;
   if (!isLocale(locale)) notFound();
 
-  // Reads the same launch approval and sales switch the order API enforces, so the
-  // product page can never advertise a checkout the server would refuse.
+  // Reads the same incident pause switch the order API enforces, so the product page
+  // never advertises a checkout the server would refuse.
   const admin = resolveSupabaseAdminClient().client;
   const [auth, gate] = await Promise.all([
     requireSupabaseUser(),
     readOperationsGate(admin),
   ]);
-  const readiness = inspectPaymentReadiness(
-    process.env,
-    undefined,
-    launchApprovalFrom(gate).ownerConsole,
-  );
+  const readiness = inspectPaymentReadiness(process.env, undefined);
   const enabled = readiness.enabled &&
     gate.salesEnabled &&
     Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY?.trim());

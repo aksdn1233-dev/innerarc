@@ -419,3 +419,13 @@
 - Impact: Queue state and filters are memory-only, source records remain unchanged, and the existing session/device-opt-in retention boundary remains authoritative. Authenticated cross-device reminders are still blocked on approved identity, retention, delivery, and consent infrastructure.
 - Revisit when: Production return-rate evidence supports reminders and the account/privacy/notification gates have passed.
 - Status: Decided.
+
+## D-043 - Valid PayApp configuration opens checkout without a second approval gate
+
+- Date: 2026-08-01
+- Decision: Remove the environment/database launch-approval toggle and its administrator endpoint. Treat valid provider credentials, reachable persistence, valid HTTPS callbacks, and the code-owned product catalog as payment readiness. Retain the independent incident sales-pause control and always accept provider callbacks for payments already in progress.
+- Alternatives: Keep the typed administrator approval; keep an environment flag; force-open checkout with an emergency override; fall back to manual bank transfer.
+- Reason: The redundant approval state repeatedly left a correctly configured live merchant unable to take payment and made recovery depend on a hidden setting. The user explicitly requires immediate normal PayApp checkout. Configuration validation, server-owned amounts, callback signature checks, idempotency, rate limits, administrator allowlisting, and refunds remain intact.
+- Impact: The retired 19,000 KRW offer remains unavailable; new orders use 9,600 KRW and 39,000 KRW. Checkout does not depend on a deployment toggle, while malformed credentials, stale declared prices, an unavailable database, invalid requests, and provider rejection still fail safely.
+- Revisit when: The payment provider, legal entity, or checkout risk model materially changes and a separate auditable release control has a demonstrated operational owner.
+- Status: Decided.

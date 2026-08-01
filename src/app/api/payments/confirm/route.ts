@@ -54,7 +54,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "INVALID_CONFIRM_REQUEST" }, { status: 400 });
   }
 
-  const readiness = inspectPaymentReadiness();
+  const readiness = inspectPaymentReadiness(process.env, undefined);
   const admin = getSupabaseAdminClient();
   if (!readiness.enabled || !admin) {
     return NextResponse.json({ error: "PAYMENTS_UNAVAILABLE" }, { status: 503 });

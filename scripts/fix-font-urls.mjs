@@ -5,7 +5,7 @@
 //
 // The emitted directory and file names already match dist/client/assets/_vinext_fonts,
 // so rewriting the local prefix to the public prefix is enough. Run after `vinext build`.
-import { readdir, readFile, stat, writeFile } from "node:fs/promises";
+import { copyFile, readdir, readFile, stat, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 
 const PUBLIC_PREFIX = "/assets/_vinext_fonts/";
@@ -28,6 +28,14 @@ try {
 } catch {
   throw new Error("dist/server not found. Run `vinext build` first.");
 }
+
+// Vinext does not currently copy Next.js file-based icon metadata into its client
+// output. Keep the established 512px brand icon available at the URL declared by
+// the web manifest without maintaining a second binary source file.
+await copyFile(
+  resolve(process.cwd(), "src", "app", "icon.png"),
+  resolve(process.cwd(), "dist", "client", "icon.png"),
+);
 
 let rewrittenFiles = 0;
 let rewrittenUrls = 0;
