@@ -15,6 +15,11 @@ const draft = {
 
 test.beforeEach(async ({ page }) => {
   test.skip(!checkoutEnabled, "Run with the explicit test-provider payment environment.");
+  await page.route("https://pay.example.invalid/**", (route) => route.fulfill({
+    contentType: "text/html",
+    status: 200,
+    body: "<title>Mock PayApp checkout</title>",
+  }));
   await page.addInitScript((value) => {
     window.sessionStorage.setItem("innerarc.checkoutDraft.v1", JSON.stringify(value));
   }, draft);
@@ -43,17 +48,16 @@ test("checkout validates locally and switches product and report input together"
   await expect(page.locator('[data-product="plus_30d"]')).toHaveCount(0);
   await expect(page.locator("#customer-phone")).toBeVisible();
   const premium = page.locator('[data-product="premium_pdf"]');
-  await expect(premium.getByRole("button", { name: "Load payment methods" })).toBeEnabled();
-  await premium.getByRole("button", { name: "Load payment methods" }).click();
+  await expect(premium.getByRole("button", { name: "Pay now" })).toBeEnabled();
+  await premium.getByRole("button", { name: "Pay now" }).click();
   await expect(page.locator("p.error[role='alert']")).toHaveText(
     "Check the Korean mobile number used for payment instructions.",
   );
   expect(requests).toEqual([]);
 
   await page.locator("#customer-phone").fill("010-1234-5678");
-  await premium.getByRole("button", { name: "Load payment methods" }).click();
-  await expect(page.locator(".payment-widget-shell")).toBeVisible();
-  await expect(page.getByText("Save this address first")).toBeVisible();
+  await premium.getByRole("button", { name: "Pay now" }).click();
+  await expect(page).toHaveURL("https://pay.example.invalid/e2e_order_01");
 
   expect(requests).toHaveLength(1);
   expect(requests[0]).toMatchObject({
@@ -65,10 +69,6 @@ test("checkout validates locally and switches product and report input together"
       concern: draft.concern,
     },
   });
-  await expect.poll(() => page.evaluate(() => {
-    const raw = window.sessionStorage.getItem("innerarc.checkoutDraft.v1");
-    return raw ? JSON.parse(raw).productCode : null;
-  })).toBe("premium_pdf");
 });
 
 test("temporarily unavailable checkout is not reported as a payment-window failure", async ({ page }) => {
@@ -81,7 +81,7 @@ test("temporarily unavailable checkout is not reported as a payment-window failu
   await page.goto("/en/plans?product=pro_30d");
   await expect(page.locator("#customer-phone")).toBeVisible();
   const detailCheckout = page.locator('[data-product="pro_30d"]')
-    .getByRole("button", { name: "Load payment methods" });
+    .getByRole("button", { name: "Pay now" });
   // The input is present in server HTML before React has restored the checkout
   // draft. Waiting for the enabled button prevents hydration from clearing a
   // phone number entered too early on slower WebKit devices.
@@ -120,14 +120,14 @@ test("a rapid double click creates only one payment order", async ({ page }) => 
 
   await page.goto("/en/plans?product=pro_30d");
   const checkout = page.locator('[data-product="pro_30d"]')
-    .getByRole("button", { name: "Load payment methods" });
+    .getByRole("button", { name: "Pay now" });
   await expect(checkout).toBeEnabled();
   await page.locator("#customer-phone").fill("01012345678");
   await checkout.evaluate((button) => {
     (button as HTMLButtonElement).click();
     (button as HTMLButtonElement).click();
   });
-  await expect(page.locator(".payment-widget-shell")).toBeVisible();
+  await expect(page).toHaveURL("https://pay.example.invalid/e2e_order_once");
   expect(requestCount).toBe(1);
 });
 
@@ -159,11 +159,11 @@ test("the 9,600 KRW detailed report can be purchased with birth date only", asyn
 
   await page.goto("/en/plans?product=pro_30d");
   const detailCheckout = page.locator('[data-product="pro_30d"]')
-    .getByRole("button", { name: "Load payment methods" });
+    .getByRole("button", { name: "Pay now" });
   await expect(detailCheckout).toBeEnabled();
   await page.locator("#customer-phone").fill("01012345678");
   await detailCheckout.click();
-  await expect(page.locator(".payment-widget-shell")).toBeVisible();
+  await expect(page).toHaveURL("https://pay.example.invalid/e2e_order_detail");
 
   expect(requests).toHaveLength(1);
   expect(requests[0]).toMatchObject({

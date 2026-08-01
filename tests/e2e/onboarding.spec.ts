@@ -674,5 +674,5 @@ test("privacy, terms, and support publish contacts while disclosing unresolved l
   );
   await page.goto("/en/plans");
   await expect(page.getByText("Payments remain closed until merchant review", { exact: false })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Load payment methods" }).first()).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Pay now" }).first()).toBeDisabled();
 });

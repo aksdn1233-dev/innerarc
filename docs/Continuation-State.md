@@ -1,8 +1,30 @@
 # Continuation State
 
-Last updated: 2026-08-01 (Korean product-name recovery and solar-calendar input clarification)<br>
-Current version: 0.18.3
+Last updated: 2026-08-01 (one-tap PayApp checkout and simplified purchase journey)<br>
+Current version: 0.19.0
 Overall progress: 97% (web MVP code 100%; production deployment and payment path 98%; native app not started)
+
+## 2026-08-01 — One-tap PayApp checkout and simpler page hierarchy
+
+- Replaced `결제수단 불러오기` with `바로 결제하기`. After local validation and
+  server-side order creation, an active PayApp order now saves its guest recovery link
+  and moves directly to the provider checkout in the same tab. The intermediate local
+  payment-method panel and second payment button no longer appear for PayApp.
+- Preserved phone validation, server-owned prices, duplicate-click protection, rate
+  limits, sales pause, signed callbacks, payment-status recovery, and the instruction
+  not to retry before checking approval. The direct action changes only navigation,
+  not the payment security boundary.
+- Simplified the main journey without removing its core promises: three quiet reflection
+  prompts replace nine floating prompts and a decorative geometry layer; report examples,
+  product descriptions, form copy, shadows, radii, cards, and disclosure placement are
+  shorter and calmer. The locked free pattern remains visibly locked, and legal/refund
+  content remains available under one disclosure.
+- Validation passed: ESLint, strict TypeScript, production Next build, 56 unit-test
+  files with 533 tests, ten direct-checkout browser flows across desktop and mobile, and 390×844 visual
+  inspection of the complete home and plans pages. One full-regression failure correctly
+  caught removal of the explicit non-testimonial disclosure; the disclosure was restored
+  and its focused regression now passes. The complete regression and Sites production build
+  are green; GitHub and the public release use this exact validated state.
 
 ## 2026-08-01 — Product-name encoding and solar-calendar input correction
 

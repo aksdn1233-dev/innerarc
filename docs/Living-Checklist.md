@@ -77,6 +77,8 @@ Last updated: 2026-08-01
 - [x] CI configured for Chromium and mobile WebKit.
 - [x] Public Cloudflare/Sites deployment includes dynamic server routes, PayApp callbacks, health check, administrator login/console, manifest, robots, sitemap, and production icon.
 - [x] Remove the separate payment launch-approval gate; keep provider/database/catalog validation and the incident sales-pause control.
+- [x] One-action PayApp checkout: `바로 결제하기` validates input, creates one server order, stores the guest recovery link, and enters the provider screen without a second local button.
+- [x] Simple-is-best purchase journey: reduce decorative geometry, floating prompts, repeated copy, shadows, nested surfaces, and always-open legal text while preserving core promises and disclosures.
 - [x] CI action runtimes upgraded to Node 24; pnpm is activated through Corepack at the exact package version so no advisory-affected bootstrap action is used.
 - [x] Region-labelled official 109/988 crisis-resource registry, source links, no language-based location inference, and refresh protocol.
 - [x] CycloneDX 1.6 production SBOM generation, validation, and CI artifact archival.
@@ -87,7 +89,7 @@ Last updated: 2026-08-01
 - [x] Explicit validated alternative ports for E2E and launch capture, preserving fail-closed behavior without stopping or reusing another project's server.
 - [x] Emergency-kill-switch and explicit-owner-authorization boundaries for any future commerce launch.
 - [x] Supabase Singapore auth/database project, three applied migrations, public-key runtime configuration, anonymous fail-closed probe, and account-boundary browser regression.
-- [x] PayApp hosted-checkout adapter, verified callback/order/report/revocation foundation, field-specific checkout errors, atomic plan/input switching, and an independent production launch-approval gate.
+- [x] PayApp hosted-checkout adapter, verified callback/order/report/revocation foundation, field-specific checkout errors, atomic plan/input switching, and direct readiness without a redundant launch-approval gate.
 - [x] Payment-independent localized free core result and deterministic guest access to the approved Free-tier reflection routes.
 - [x] Bounded system typography, compressed first-party hero artwork, GYEOL social metadata, and current performance/metadata regression.
 - [ ] Approve PayApp production operation and run real low-value approval, cancellation, virtual-account, receipt/recovery, and refund-support exercises.

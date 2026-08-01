@@ -80,24 +80,24 @@ type PayAppCheckoutSession = Readonly<{
   reportUrl: string;
 }>;
 
-type CheckoutSession =
+type InteractiveCheckoutSession =
   | TossCheckoutSession
   | PortOneCheckoutSession
-  | ManualTransferCheckoutSession
-  | PayAppCheckoutSession;
+  | ManualTransferCheckoutSession;
+type CheckoutResponse = InteractiveCheckoutSession | PayAppCheckoutSession;
 type PortOneMethod = "kakaopay" | "tosspay" | "card" | "virtual_account";
 
 const copy = {
   ko: {
     brand: "나·관계·올해의 흐름 리딩",
     eyebrow: "대표 리딩 상품",
-    title: "원하는 깊이에 맞춰 먼저 선택하세요",
-    intro: "모든 상품은 1회 결제이며 자동 갱신되지 않습니다. 회원가입 없이 바로 구매하고, 결제 확인 뒤 PC와 휴대폰에서 열거나 내려받을 수 있습니다.",
+    title: "필요한 깊이만 선택하세요",
+    intro: "회원가입 없이 한 번만 결제합니다. 결제 후 PC와 휴대폰에서 같은 리포트를 볼 수 있습니다.",
     unavailable: "아직 결제를 받을 준비가 끝나지 않았습니다. 가맹점 계약, 가격, 운영 도메인, 법정 고지를 모두 확정한 뒤 열립니다.",
     signin: "이미 구매하셨나요? 주문번호와 결제하신 휴대폰 번호로 리포트를 다시 여실 수 있어요.",
     signinAction: "구매 내역 확인",
-    choose: "결제수단 불러오기",
-    loading: "안전한 결제창을 불러오는 중…",
+    choose: "바로 결제하기",
+    loading: "결제 화면으로 이동 중…",
     pay: "결제하기",
     methods: {
       kakaopay: "카카오페이",
@@ -130,7 +130,6 @@ const copy = {
     customerPhone: "휴대폰 번호",
     customerPhonePlaceholder: "010-1234-5678",
     customerPhoneHelp: "결제 안내와 가상계좌 발급에 사용됩니다. 주소는 받지 않습니다.",
-    payAppNotice: "다음 화면에서 카카오페이·토스페이·카드·가상계좌·휴대폰 결제 중 하나를 선택할 수 있습니다.",
     keepLinkTitle: "이 주소를 먼저 저장해 주세요",
     keepLinkBody: "결제가 끝나면 이 주소에서 리포트를 보실 수 있습니다. 이 브라우저에도 자동으로 저장되지만, 가상계좌로 나중에 입금하시거나 다른 기기에서 여실 계획이라면 직접 복사해 두시는 편이 안전합니다.",
     keepLinkCopy: "주소 복사",
@@ -140,13 +139,13 @@ const copy = {
   en: {
     brand: "Personal pattern intelligence",
     eyebrow: "30-day access",
-    title: "Broad payment choice, strict server-side approval",
-    intro: "A one-time purchase with no automatic renewal. Approved KakaoPay, Toss Pay, card, mobile, bank-transfer, and virtual-account methods are supported.",
+    title: "Choose only the depth you need",
+    intro: "Pay once without creating an account. Open the same report on mobile or desktop after payment.",
     unavailable: "Payments remain closed until merchant review, prices, the production domain, and legal notices are finalized.",
     signin: "Already purchased? Reopen your report with your order number and the phone number used at checkout.",
     signinAction: "Find a purchase",
-    choose: "Load payment methods",
-    loading: "Loading the secure payment window…",
+    choose: "Pay now",
+    loading: "Opening secure checkout…",
     pay: "Pay now",
     methods: {
       kakaopay: "KakaoPay",
@@ -179,7 +178,6 @@ const copy = {
     customerPhone: "Mobile phone",
     customerPhonePlaceholder: "010-1234-5678",
     customerPhoneHelp: "Used only for payment instructions and virtual-account issuance.",
-    payAppNotice: "Choose KakaoPay, Toss Pay, card, virtual account, mobile, or bank transfer on the next screen.",
     keepLinkTitle: "Save this address first",
     keepLinkBody: "Your report opens at this address once payment completes. It is also saved in this browser, but copy it yourself if you plan to deposit to a virtual account later or open the report on another device.",
     keepLinkCopy: "Copy address",
@@ -214,7 +212,7 @@ export function PlansExperience({
 }) {
   const t = copy[locale];
   const otherLocale = locale === "ko" ? "en" : "ko";
-  const [session, setSession] = useState<CheckoutSession | null>(null);
+  const [session, setSession] = useState<InteractiveCheckoutSession | null>(null);
   const [loadingCode, setLoadingCode] = useState<PaymentProductCode | null>(null);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<CheckoutErrorCode | null>(null);
@@ -340,13 +338,20 @@ export function PlansExperience({
         setLoadingCode(null);
         return;
       }
-      const checkout = body as CheckoutSession;
+      const checkout = body as CheckoutResponse;
+      if (checkout.provider === "payapp") {
+        saveGuestReportLink(window.localStorage, {
+          orderId: checkout.orderId,
+          url: checkout.reportUrl,
+          origin: window.location.origin,
+          now: new Date(),
+        });
+        setLoadingCode(null);
+        window.location.assign(checkout.payUrl);
+        return;
+      }
       setSession(checkout);
-      if (
-        checkout.provider === "portone" ||
-        checkout.provider === "manual_transfer" ||
-        checkout.provider === "payapp"
-      ) {
+      if (checkout.provider === "portone" || checkout.provider === "manual_transfer") {
         setReady(true);
         setLoadingCode(null);
       }
@@ -379,19 +384,6 @@ export function PlansExperience({
         now: new Date(),
       });
       window.location.assign(session.reportUrl);
-      return;
-    }
-    if (session.provider === "payapp") {
-      // Durable, because the provider can return through a different browsing context
-      // (app hand-off) or hours later (virtual-account deposit). The link is also shown
-      // on screen above, so a failed write here does not strand a paying guest.
-      saveGuestReportLink(window.localStorage, {
-        orderId: session.orderId,
-        url: session.reportUrl,
-        origin: window.location.origin,
-        now: new Date(),
-      });
-      window.location.assign(session.payUrl);
       return;
     }
     setError(null);
@@ -547,7 +539,7 @@ export function PlansExperience({
 
       {session && (
         <section className="payment-widget-shell" aria-live="polite">
-          {(session.provider === "payapp" || session.provider === "manual_transfer") && (
+          {session.provider === "manual_transfer" && (
             <div className="report-link-card">
               <p className="eyebrow">{t.keepLinkTitle}</p>
               <p>{t.keepLinkBody}</p>
@@ -595,12 +587,6 @@ export function PlansExperience({
                 </button>
               ))}
             </div>
-          ) : session.provider === "payapp" ? (
-            <div className="payapp-payment-card">
-              <p className="eyebrow">{locale === "ko" ? "안전한 결제" : "Secure checkout"}</p>
-              <strong>{formatWon(session.amount, locale)}</strong>
-              <p>{t.payAppNotice}</p>
-            </div>
           ) : (
             <div className="manual-transfer-card">
               <p className="eyebrow">{t.manualTitle}</p>
@@ -647,7 +633,6 @@ export function PlansExperience({
           </Link>
         </p>
       )}
-      <p className="plans-notice">{t.notice}</p>
       <p className="plans-notice payment-retry-notice">
         {locale === "ko"
           ? "결제창이 닫히거나 응답이 늦어져도 승인 여부를 확인하기 전 같은 주문을 다시 결제하지 마세요. 주문번호와 결제 휴대폰 번호로 구매 내역을 먼저 확인할 수 있습니다."
@@ -656,12 +641,16 @@ export function PlansExperience({
           {locale === "ko" ? "결제 상태 확인" : "Check payment status"}
         </Link>
       </p>
-      <p className="plans-notice">
-        {t.terms}{" "}
-        <Link href={`/${locale}/terms`}>{locale === "ko" ? "이용조건" : "Terms"}</Link>
-        {" · "}
-        <Link href={`/${locale}/privacy`}>{locale === "ko" ? "개인정보" : "Privacy"}</Link>
-      </p>
+      <details className="plans-details">
+        <summary>{locale === "ko" ? "결제·환불 안내" : "Payment and refund details"}</summary>
+        <p className="plans-notice">{t.notice}</p>
+        <p className="plans-notice">
+          {t.terms}{" "}
+          <Link href={`/${locale}/terms`}>{locale === "ko" ? "이용조건" : "Terms"}</Link>
+          {" · "}
+          <Link href={`/${locale}/privacy`}>{locale === "ko" ? "개인정보" : "Privacy"}</Link>
+        </p>
+      </details>
     </main>
   );
 }

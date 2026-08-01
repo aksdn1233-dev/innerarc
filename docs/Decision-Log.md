@@ -439,3 +439,23 @@
 - Impact: Onboarding, relationship, compatibility, celebrity comparison, and paid-report intake now identify the required calendar system. Existing ISO-date calculation behavior is unchanged.
 - Revisit when: A versioned, tested lunar-calendar conversion module and corresponding privacy-safe UX are approved.
 - Status: Decided.
+
+## D-045 - PayApp checkout uses one explicit payment action
+
+- Date: 2026-08-01
+- Decision: Present `바로 결제하기` as the product action. After the existing client validation and server-side order creation succeed, save the guest report recovery link and navigate directly to the PayApp-hosted checkout in the same tab. Do not render a second local PayApp confirmation panel.
+- Alternatives: Keep `결제수단 불러오기` followed by a second `결제하기` button; open PayApp in a popup; expose payment-method buttons locally; create an order only after a second confirmation.
+- Reason: The two local actions described one checkout and made users think payment was unavailable or unfinished. PayApp already owns payment-method choice and final authorization, so a second local confirmation adds friction without adding protection.
+- Impact: Phone validation, order idempotency, server-owned price, throttling, sales pause, callback verification, cancellation, and recovery remain unchanged. A successful click enters PayApp directly; failed validation or order creation stays on the page with the existing error message.
+- Revisit when: The active production provider changes to one that must render an embedded agreement or payment-method widget before its payment request.
+- Status: Decided.
+
+## D-046 - Simplicity means one visual priority per purchase step
+
+- Date: 2026-08-01
+- Decision: Preserve the core self-understanding headline, report examples, product differences, required inputs, privacy, payment recovery, and legal disclosures while reducing decorative geometry, repeated prompts, nested dark surfaces, heavy shadows, and simultaneously competing buttons. Keep secondary legal detail collapsed until requested.
+- Alternatives: Redesign every feature route; remove explanatory content; keep the existing decorative layers; replace the visual identity entirely.
+- Reason: The primary journey was complete but visually dense, especially on a phone. Removing core explanation would reduce trust, while reducing decoration and repeated hierarchy improves comprehension without changing product meaning.
+- Impact: The home and plans journey has a calmer hierarchy, three floating prompts instead of nine, one primary hero action, lighter form surfaces, simpler product cards, and a direct checkout action. Functional analysis and report routes retain their information-rich structures.
+- Revisit when: Production analytics or user testing shows that a retained section does not help product comprehension, checkout completion, or safe use.
+- Status: Decided.

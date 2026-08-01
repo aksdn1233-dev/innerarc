@@ -1,6 +1,6 @@
 {
   "name": "innerarc",
-  "version": "0.18.3",
+  "version": "0.19.0",
   "private": true,
   "packageManager": "pnpm@11.9.0",
   "description": "AI self-discovery and personal pattern intelligence platform",
