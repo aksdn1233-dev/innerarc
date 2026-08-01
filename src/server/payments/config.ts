@@ -124,21 +124,21 @@ function buildProducts(comprehensivePrice: number, premiumPdfPrice: number) {
       tier: "plus",
       durationDays: 30,
       amount: PRODUCT_PRICES_KRW.plus_30d,
-      names: { ko: "?듭떖 由щ뵫", en: "Core reading" },
+      names: { ko: "핵심 리딩", en: "Core reading" },
     },
     pro_30d: {
       code: "pro_30d",
       tier: "pro",
       durationDays: 30,
       amount: comprehensivePrice,
-      names: { ko: "?곸꽭 由щ뵫", en: "Detailed reading" },
+      names: { ko: "상세 리딩", en: "Detailed reading" },
     },
     premium_pdf: {
       code: "premium_pdf",
       tier: "pro",
       durationDays: 30,
       amount: premiumPdfPrice,
-      names: { ko: "?꾨━誘몄뾼 ?ъ링 由щ뵫", en: "Premium in-depth reading" },
+      names: { ko: "프리미엄 심층 리딩", en: "Premium in-depth reading" },
     },
   } as const satisfies Readonly<Record<PaymentProductCode, PaymentProduct>>;
 }

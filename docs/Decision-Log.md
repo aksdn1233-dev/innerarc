@@ -429,3 +429,13 @@
 - Impact: The retired 19,000 KRW offer remains unavailable; new orders use 9,600 KRW and 39,000 KRW. Checkout does not depend on a deployment toggle, while malformed credentials, stale declared prices, an unavailable database, invalid requests, and provider rejection still fail safely.
 - Revisit when: The payment provider, legal entity, or checkout risk model materially changes and a separate auditable release control has a demonstrated operational owner.
 - Status: Decided.
+
+## D-044 - Birth dates are entered in the solar/Gregorian calendar
+
+- Date: 2026-08-01
+- Decision: Label every birth-date input as solar calendar in Korean and Gregorian calendar in English. Accept the browser's ISO Gregorian date directly and do not infer or convert lunar-calendar dates.
+- Alternatives: Leave the calendar system implicit; offer a lunar/solar switch; automatically infer the calendar; add lunar conversion in the current release.
+- Reason: The deterministic numerology engine requires one unambiguous civil date, and the user explicitly requires solar-calendar input. Automatic inference can silently calculate from the wrong date, while a lunar converter needs a separately specified and verified rule set.
+- Impact: Onboarding, relationship, compatibility, celebrity comparison, and paid-report intake now identify the required calendar system. Existing ISO-date calculation behavior is unchanged.
+- Revisit when: A versioned, tested lunar-calendar conversion module and corresponding privacy-safe UX are approved.
+- Status: Decided.

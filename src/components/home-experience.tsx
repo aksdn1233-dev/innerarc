@@ -408,12 +408,12 @@ export function HomeExperience({ locale, dictionary: d }: Props) {
               </header>
 
               <div className="field field-premium">
-                <label htmlFor="birthDate">{locale === "ko" ? "2. 리딩할 사람의 생년월일" : "2. Birth date of the person to read"}</label>
+                <label htmlFor="birthDate">{locale === "ko" ? "2. 리딩할 사람의 생년월일 (양력)" : "2. Birth date (Gregorian calendar)"}</label>
                 <input id="birthDate" name="birthDate" type="date" required />
                 <small>
                   {locale === "ko"
-                    ? "내 질문이면 내 생년월일을, 엄마·아이·배우자에 대한 질문이면 그 사람의 생년월일을 입력하세요."
-                    : "Enter your birth date for your question, or the other person's birth date when asking about them."}
+                    ? "양력 기준으로 입력하세요. 내 질문이면 내 생년월일을, 엄마·아이·배우자에 대한 질문이면 그 사람의 양력 생년월일을 입력하세요."
+                    : "Enter the Gregorian-calendar birth date for you, or for the other person when asking about them."}
                 </small>
               </div>
 
