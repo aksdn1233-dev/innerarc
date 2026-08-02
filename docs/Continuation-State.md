@@ -13,9 +13,9 @@ Overall progress: 97% (web MVP code 100%; production deployment and payment path
 - Added first-party daily aggregate counts for page views, CTA, sample/product views,
   form steps, and payment outcomes. No raw reading input, IP, account, or session ID is
   stored, and the dashboard does not mislabel totals as unique visitors.
-- Production activation is waiting only for the owner to sign in to the existing
-  Supabase dashboard so the additive migration can be applied; no existing row is
-  changed or deleted by that migration.
+- Administrator copy and aggregate event counters use a dedicated private Supabase
+  Storage bucket created by the server on first write. This avoids a database migration
+  and leaves every existing order, payment, report, and customer row unchanged.
 
 ## 2026-08-02 — Safe first-screen differentiation
 

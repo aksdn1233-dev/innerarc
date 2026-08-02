@@ -4,6 +4,7 @@ import {
   summarizeOperationalMetrics,
   type OperationalMetricRow,
 } from "@/server/operational-metrics";
+import { parseOperationalMetricFile } from "@/server/admin-storage";
 
 const dates = ["2026-08-01", "2026-08-02"];
 
@@ -47,5 +48,22 @@ describe("privacy-minimized operational metrics", () => {
     const empty = summarizeOperationalMetrics([], dates);
     expect(empty.formCompletionRate).toBe(0);
     expect(empty.checkoutCompletionRate).toBe(0);
+  });
+
+  it("accepts only generated allowlisted marker names", () => {
+    expect(parseOperationalMetricFile(
+      "2026-08-02",
+      "ko--landing_view--all--11111111-1111-4111-8111-111111111111.evt",
+    )).toMatchObject({
+      metric_date: "2026-08-02",
+      locale: "ko",
+      event_name: "landing_view",
+      dimension: "all",
+      count: 1,
+    });
+    expect(parseOperationalMetricFile(
+      "2026-08-02",
+      "ko--private_question--all--11111111-1111-4111-8111-111111111111.evt",
+    )).toBeNull();
   });
 });

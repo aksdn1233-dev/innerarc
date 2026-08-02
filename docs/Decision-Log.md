@@ -534,7 +534,8 @@
 - Date: 2026-08-02
 - Decision: Let the allowlisted owner edit the Korean and English hero kicker,
   headline, explanation, and primary CTA, while keeping pricing, checkout, safety,
-  and legal copy code-controlled. Store landing-to-payment measurement only as daily
+  and legal copy code-controlled. Store landing-to-payment measurement as anonymous
+  event markers in a dedicated private Supabase Storage bucket, then expose only daily
   counts by language, event, and one allowlisted category.
 - Alternatives: Give the administrator arbitrary HTML/CSS access; connect a third-party
   tracker; store raw events and persistent visitor IDs; expose no editing or metrics.

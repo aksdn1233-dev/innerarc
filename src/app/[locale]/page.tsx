@@ -4,7 +4,8 @@ import { resolveProductPricing } from "@/core/product-prices";
 import { dictionaries } from "@/i18n/dictionaries";
 import { isLocale } from "@/i18n/config";
 import { resolveSupabaseAdminClient } from "@/lib/supabase/admin";
-import { DEFAULT_ADMIN_PAGE_CONTENT, resolveAdminPageContent } from "@/server/admin-content";
+import { DEFAULT_ADMIN_PAGE_CONTENT } from "@/server/admin-content";
+import { readStoredPageContent } from "@/server/admin-storage";
 
 export default async function LocaleHome({
   params,
@@ -16,12 +17,7 @@ export default async function LocaleHome({
   const admin = resolveSupabaseAdminClient().client;
   let pageContent = DEFAULT_ADMIN_PAGE_CONTENT;
   if (admin) {
-    const settings = await admin
-      .from("admin_settings")
-      .select("page_content")
-      .eq("id", 1)
-      .maybeSingle();
-    pageContent = resolveAdminPageContent(settings.data?.page_content);
+    pageContent = await readStoredPageContent(admin);
   }
   return (
     <HomeExperience

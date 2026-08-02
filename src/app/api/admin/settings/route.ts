@@ -5,6 +5,7 @@ import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import { requireSupabaseUser } from "@/lib/supabase/auth";
 import { isAdminEmail } from "@/server/admin-access";
 import { AdminPageContentSchema } from "@/server/admin-content";
+import { writeStoredPageContent } from "@/server/admin-storage";
 
 const bodySchema = z.object({
   salesEnabled: z.boolean(),
@@ -24,11 +25,15 @@ export async function PUT(request: Request) {
   }
   const admin = getSupabaseAdminClient();
   if (!admin) return NextResponse.json({ error: "UNAVAILABLE" }, { status: 503 });
+  try {
+    await writeStoredPageContent(admin, parsed.data.pageContent);
+  } catch {
+    return NextResponse.json({ error: "ADMIN_CONTENT_FAILED" }, { status: 500 });
+  }
   const { error } = await admin.from("admin_settings").upsert({
     id: 1,
     sales_enabled: parsed.data.salesEnabled,
     notice: parsed.data.notice,
-    page_content: parsed.data.pageContent,
     updated_by: auth.user.id,
     updated_at: new Date().toISOString(),
   });

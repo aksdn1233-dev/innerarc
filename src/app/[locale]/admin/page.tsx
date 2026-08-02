@@ -16,8 +16,8 @@ import { describePaymentSetup } from "@/server/payments/diagnostics";
 import { resolveAdminPageContent } from "@/server/admin-content";
 import {
   summarizeOperationalMetrics,
-  type OperationalMetricRow,
 } from "@/server/operational-metrics";
+import { listOperationalMetrics, readStoredPageContent } from "@/server/admin-storage";
 import {
   DEFAULT_OPERATIONS_GATE,
   readOperationsGate,
@@ -85,7 +85,7 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
       .order("created_at", { ascending: false })
       .limit(20),
     admin.from("purchased_reports").select("status", { count: "exact" }),
-    admin.from("admin_settings").select("sales_enabled,notice,page_content").eq("id", 1).maybeSingle(),
+    admin.from("admin_settings").select("sales_enabled,notice").eq("id", 1).maybeSingle(),
     admin
       .from("support_inquiries")
       .select("id,order_id,category,contact,message,status,admin_note,created_at")
@@ -124,13 +124,12 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
       day: "2-digit",
     }).format(day);
   });
-  const operationalRows = await admin
-    .from("operational_metrics_daily")
-    .select("metric_date,locale,event_name,dimension,count")
-    .gte("metric_date", metricDates[0])
-    .order("metric_date", { ascending: true });
+  const [operationalRows, storedPageContent] = await Promise.all([
+    listOperationalMetrics(admin, metricDates),
+    readStoredPageContent(admin),
+  ]);
   const operationalMetrics = summarizeOperationalMetrics(
-    (operationalRows.data ?? []) as OperationalMetricRow[],
+    operationalRows.rows,
     metricDates,
   );
 
@@ -175,7 +174,7 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
       </section>
       <AdminMetricsPanel days={METRIC_DAYS} metrics={metrics} />
       <AdminTrafficPanel
-        available={!operationalRows.error}
+        available={operationalRows.available}
         days={METRIC_DAYS}
         metrics={operationalMetrics}
       />
@@ -186,7 +185,7 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
       <AdminOperationsPanel
         initialSalesEnabled={settings.data?.sales_enabled ?? true}
         initialNotice={settings.data?.notice ?? ""}
-        initialPageContent={resolveAdminPageContent(settings.data?.page_content)}
+        initialPageContent={resolveAdminPageContent(storedPageContent)}
       />
       <section className="admin-orders">
         <h2>최근 주문</h2>

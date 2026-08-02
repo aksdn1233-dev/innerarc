@@ -4,6 +4,7 @@ import { ANALYTICS_SCHEMA_VERSION, SafeAnalyticsEventSchema } from "@/core/analy
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import { crossOriginRefused, isSameOriginRequest } from "@/server/same-origin";
 import { metricDimension, OPERATIONAL_EVENT_NAMES } from "@/server/operational-metrics";
+import { recordOperationalMetric } from "@/server/admin-storage";
 
 const bodySchema = z.object({
   occurredAt: z.string().datetime({ offset: true }),
@@ -41,14 +42,18 @@ export async function POST(request: Request) {
     month: "2-digit",
     day: "2-digit",
   }).format(new Date(occurredAt));
-  const { error } = await admin.rpc("increment_operational_metric", {
-    p_metric_date: metricDate,
-    p_locale: parsed.data.locale,
-    p_event_name: parsed.data.name,
-    p_dimension: metricDimension(parsed.data.properties),
-  });
+  try {
+    await recordOperationalMetric(admin, {
+      metricDate,
+      locale: parsed.data.locale,
+      eventName: parsed.data.name,
+      dimension: metricDimension(parsed.data.properties),
+    });
+  } catch {
+    return new NextResponse(null, { status: 202 });
+  }
 
   // Analytics must never interrupt a reading or payment flow. The administrator
   // console exposes an unavailable state if the migration or database is missing.
-  return new NextResponse(null, { status: error ? 202 : 204 });
+  return new NextResponse(null, { status: 204 });
 }
