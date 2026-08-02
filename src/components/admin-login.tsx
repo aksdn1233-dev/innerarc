@@ -5,6 +5,8 @@ import { useState, type FormEvent } from "react";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
 import type { Locale } from "@/i18n/config";
 
+const OWNER_EMAIL = "aksdn1233@gmail.com";
+
 // The owner console is the only account surface left, so it needs its own way in.
 // The result never says whether an address is an administrator: any well-formed
 // address gets the same reply, and only ADMIN_EMAILS can actually open the console.
@@ -13,8 +15,8 @@ export function AdminLogin({ locale }: { locale: Locale }) {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const email = String(new FormData(event.currentTarget).get("email") ?? "").trim();
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    const email = String(new FormData(event.currentTarget).get("email") ?? "").trim().toLowerCase();
+    if (email !== OWNER_EMAIL) {
       setStatus("failed");
       return;
     }
@@ -28,8 +30,10 @@ export function AdminLogin({ locale }: { locale: Locale }) {
     const { error } = await client.auth.signInWithOtp({
       email,
       options: {
-        // No sign-up: a stray address cannot create an account from this form.
-        shouldCreateUser: false,
+        // The only accepted address is the server-authorized owner address. Allowing
+        // its first request to create the Supabase identity avoids a manual account
+        // provisioning step while the email link still proves mailbox ownership.
+        shouldCreateUser: true,
         emailRedirectTo: `${window.location.origin}/auth/callback?next=${next}`,
       },
     });
@@ -66,6 +70,7 @@ export function AdminLogin({ locale }: { locale: Locale }) {
           <label htmlFor="admin-email">이메일</label>
           <input
             autoComplete="email"
+            defaultValue={OWNER_EMAIL}
             id="admin-email"
             name="email"
             required

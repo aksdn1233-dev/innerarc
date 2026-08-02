@@ -6,12 +6,18 @@ import { AdminInquiryList, type AdminInquiry } from "@/components/admin-inquiry-
 import { AdminMetricsPanel } from "@/components/admin-metrics-panel";
 import { AdminOperationsPanel } from "@/components/admin-operations-panel";
 import { AdminPaymentReadinessPanel } from "@/components/admin-payment-readiness-panel";
+import { AdminTrafficPanel } from "@/components/admin-traffic-panel";
 import { summarizeOrders, type OrderRow } from "@/server/admin-metrics";
 import { isLocale } from "@/i18n/config";
 import { resolveSupabaseAdminClient } from "@/lib/supabase/admin";
 import { requireSupabaseUser } from "@/lib/supabase/auth";
 import { isAdminEmail } from "@/server/admin-access";
 import { describePaymentSetup } from "@/server/payments/diagnostics";
+import { resolveAdminPageContent } from "@/server/admin-content";
+import {
+  summarizeOperationalMetrics,
+  type OperationalMetricRow,
+} from "@/server/operational-metrics";
 import {
   DEFAULT_OPERATIONS_GATE,
   readOperationsGate,
@@ -79,7 +85,7 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
       .order("created_at", { ascending: false })
       .limit(20),
     admin.from("purchased_reports").select("status", { count: "exact" }),
-    admin.from("admin_settings").select("sales_enabled,notice").eq("id", 1).maybeSingle(),
+    admin.from("admin_settings").select("sales_enabled,notice,page_content").eq("id", 1).maybeSingle(),
     admin
       .from("support_inquiries")
       .select("id,order_id,category,contact,message,status,admin_note,created_at")
@@ -109,6 +115,24 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
     now,
     days: METRIC_DAYS,
   });
+  const metricDates = Array.from({ length: METRIC_DAYS }, (_, index) => {
+    const day = new Date(now.getTime() - (METRIC_DAYS - 1 - index) * 86_400_000);
+    return new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Asia/Seoul",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(day);
+  });
+  const operationalRows = await admin
+    .from("operational_metrics_daily")
+    .select("metric_date,locale,event_name,dimension,count")
+    .gte("metric_date", metricDates[0])
+    .order("metric_date", { ascending: true });
+  const operationalMetrics = summarizeOperationalMetrics(
+    (operationalRows.data ?? []) as OperationalMetricRow[],
+    metricDates,
+  );
 
   // A buyer whose report failed to build has paid and is looking at an error screen.
   // Nothing surfaced that anywhere, so it could sit unnoticed indefinitely.
@@ -150,6 +174,11 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
         </article>
       </section>
       <AdminMetricsPanel days={METRIC_DAYS} metrics={metrics} />
+      <AdminTrafficPanel
+        available={!operationalRows.error}
+        days={METRIC_DAYS}
+        metrics={operationalMetrics}
+      />
       <AdminPaymentReadinessPanel
         recentFailures={recentFailures}
         report={readiness}
@@ -157,6 +186,7 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
       <AdminOperationsPanel
         initialSalesEnabled={settings.data?.sales_enabled ?? true}
         initialNotice={settings.data?.notice ?? ""}
+        initialPageContent={resolveAdminPageContent(settings.data?.page_content)}
       />
       <section className="admin-orders">
         <h2>최근 주문</h2>

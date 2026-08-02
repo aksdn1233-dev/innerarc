@@ -496,7 +496,8 @@
   or transmitting anything.
 - Revisit when: A processor, retention period, consent implementation, and production
   data-processing terms are approved.
-- Status: Decided.
+- Status: Superseded by D-059 for aggregate operational counts; user-level analytics
+  remains disabled and consent-gated.
 
 ## D-057 - The mobile purchase bar yields to intake instead of overlaying it
 
@@ -526,4 +527,23 @@
   scientifically verified superiority or denigrating another symbolic system.
 - Revisit when: A legally reviewed, reproducible comparative study supports a narrower
   substantiated claim.
+- Status: Decided.
+
+## D-059 - Limit administrator editing and store only aggregate operations metrics
+
+- Date: 2026-08-02
+- Decision: Let the allowlisted owner edit the Korean and English hero kicker,
+  headline, explanation, and primary CTA, while keeping pricing, checkout, safety,
+  and legal copy code-controlled. Store landing-to-payment measurement only as daily
+  counts by language, event, and one allowlisted category.
+- Alternatives: Give the administrator arbitrary HTML/CSS access; connect a third-party
+  tracker; store raw events and persistent visitor IDs; expose no editing or metrics.
+- Reason: The owner needs routine control and operating visibility, but unrestricted
+  layout or raw-event access can break checkout, introduce unsafe claims, or collect
+  sensitive reading data.
+- Impact: Routine first-screen copy changes no longer require deployment. The console
+  shows page views and conversion steps without storing personal inputs, IP addresses,
+  accounts, or session identifiers. Unique visitors are intentionally unavailable.
+- Revisit when: A reviewed CMS role model or consented user-level analytics processor
+  is approved with retention and deletion rules.
 - Status: Decided.

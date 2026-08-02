@@ -37,7 +37,7 @@ const privacyKo: LegalPageCopy = {
   status: "운영 전 안내 · 국외이전 세부사항 및 법률 검토 필요",
   title: "개인정보 처리 안내",
   intro: "InnerArc 운영자와 현재 기능, 계정·결제 처리 범위를 설명합니다. 개인정보 권리행사는 아래 고객지원 이메일로 접수할 수 있으며, 위탁·국외이전 세부사항은 실제 계약 확인 후 최종 갱신합니다.",
-  lastUpdated: "2026-07-30",
+  lastUpdated: "2026-08-02",
   sections: [
     {
       title: "개인정보처리자",
@@ -56,6 +56,7 @@ const privacyKo: LegalPageCopy = {
         "게스트의 생년월일, 선택 입력 이름, 관심사와 고민은 현재 분석을 위해 브라우저 메모리에서 사용되며 사용자가 저장을 선택하지 않으면 새로고침 시 사라집니다.",
         "이메일 로그인을 선택하면 Supabase가 인증 이메일, 계정 식별자와 세션 정보를 처리합니다. 사용자가 명시적으로 동기화한 환경설정·타로 기록·Reality Check 기록만 계정에 저장됩니다.",
         "결제 시 주문번호, 상품코드, 결제금액, 통화, 결제수단, 결제상태와 이용권 만료일을 보관합니다. 결제 안내에 필요한 휴대폰 번호와 카드번호·계좌 비밀번호·휴대폰 인증정보는 InnerArc 서버에 저장하지 않고 결제대행사 페이앱이 처리합니다.",
+        "서비스 운영을 위해 날짜·언어·화면 동작 종류별 조회·버튼·입력·결제 합계만 저장합니다. 이 집계에는 이름, 생년월일, 질문, 휴대폰 번호, IP 주소, 계정·세션 식별자를 넣지 않으며 개인별 이용기록이나 고유 방문자 수를 만들지 않습니다.",
       ],
     },
     {
@@ -102,7 +103,7 @@ const privacyEn: LegalPageCopy = {
   status: "Pre-operation notice · transfer details and legal review pending",
   title: "Privacy information",
   intro: "This notice identifies the InnerArc operator and describes current account and payment data flows. Privacy requests may be submitted to the support email below. Processor and international-transfer details will be finalized against the operating contracts.",
-  lastUpdated: "2026-07-30",
+  lastUpdated: "2026-08-02",
   sections: [
     {
       title: "Controller",
@@ -121,6 +122,7 @@ const privacyEn: LegalPageCopy = {
         "A guest's birth date, optional name, interests, and concern are used in browser memory for the current analysis and disappear on refresh unless the person explicitly saves them.",
         "If email sign-in is selected, Supabase handles the authentication email, account identifier, and session. Only preferences, tarot records, and Reality Check records explicitly synchronized by the person are stored with the account.",
         "For payment, InnerArc retains the order ID, product code, amount, currency, method, status, and access expiry. PayApp handles the mobile number needed for payment instructions as well as card, bank, and mobile-authentication data; InnerArc does not store those values.",
+        "For service operations, InnerArc stores only daily totals by language and interaction type for page views, buttons, form steps, and payments. These totals exclude names, birth dates, questions, phone numbers, IP addresses, account IDs, and session IDs and do not create individual histories or unique-visitor counts.",
       ],
     },
     {

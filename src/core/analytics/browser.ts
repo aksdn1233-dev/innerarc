@@ -51,9 +51,9 @@ function getSessionId() {
 /**
  * Privacy-minimized, provider-neutral conversion event interface.
  *
- * No network request is made here. An approved analytics adapter may subscribe to
- * `gyeol:analytics` later and must still enforce the user's analytics consent.
  * The strict schema rejects names, birth dates, questions, and any extra free text.
+ * The server stores only a daily aggregate; event/session identifiers are deliberately
+ * omitted from the request and no visitor profile is created.
  */
 export function captureConversionEvent<Name extends ConversionEventName>(
   name: Name,
@@ -73,5 +73,16 @@ export function captureConversionEvent<Name extends ConversionEventName>(
   const parsed = SafeAnalyticsEventSchema.safeParse(candidate);
   if (!parsed.success) return false;
   window.dispatchEvent(new CustomEvent("gyeol:analytics", { detail: parsed.data }));
+  void fetch("/api/analytics/events", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    keepalive: true,
+    body: JSON.stringify({
+      occurredAt: parsed.data.occurredAt,
+      locale: parsed.data.locale,
+      name: parsed.data.name,
+      properties: parsed.data.properties,
+    }),
+  }).catch(() => undefined);
   return true;
 }

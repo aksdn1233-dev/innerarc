@@ -7,11 +7,13 @@ import { captureConversionEvent } from "@/core/analytics";
 import type { ProductPricingSnapshot } from "@/core/product-prices";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
+import type { AdminPageContent } from "@/server/admin-content";
 
 type Props = {
   locale: Locale;
   dictionary: Dictionary;
   pricing: ProductPricingSnapshot;
+  pageContent: AdminPageContent;
 };
 
 type ReadingProductId = "comprehensive" | "premium_pdf";
@@ -169,7 +171,7 @@ function isValidGregorianDate(value: string) {
     && date.getUTCDate() === day;
 }
 
-export function HomeExperience({ locale, dictionary: d, pricing }: Props) {
+export function HomeExperience({ locale, dictionary: d, pricing, pageContent }: Props) {
   const [selectedProduct, setSelectedProduct] = useState<ReadingProductId>("comprehensive");
   const [focusId, setFocusId] = useState<FocusId>("relationships");
   const [error, setError] = useState<IntakeError | null>(null);
@@ -178,7 +180,14 @@ export function HomeExperience({ locale, dictionary: d, pricing }: Props) {
   const sampleRef = useRef<HTMLElement>(null);
   const productsRef = useRef<HTMLElement>(null);
   const formRef = useRef<HTMLElement>(null);
-  const t = copy[locale];
+  const content = pageContent[locale];
+  const t = {
+    ...copy[locale],
+    heroKicker: content.heroKicker,
+    heroTitle: content.heroTitle,
+    heroBody: content.heroBody,
+    primary: content.primaryCta,
+  };
   const otherLocale = locale === "ko" ? "en" : "ko";
   const products = readingProducts[locale].map((product) => {
     const productCode = productCodeByReading[product.id];

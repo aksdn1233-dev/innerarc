@@ -5864,6 +5864,54 @@ summary {
   margin: 0.5rem 0 0;
 }
 
+.admin-warning {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border: 1px solid #d9b7a8;
+  border-radius: 12px;
+  background: #fff9f4;
+}
+
+.admin-content-editor {
+  display: grid;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.admin-content-editor h3,
+.admin-content-editor p {
+  margin: 0;
+}
+
+.admin-content-language {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--paper);
+}
+
+.admin-content-language legend {
+  padding: 0 0.35rem;
+  font-weight: 800;
+}
+
+.admin-content-language label {
+  display: grid;
+  gap: 0.35rem;
+  font-weight: 700;
+}
+
+.admin-content-language input,
+.admin-content-language textarea {
+  width: 100%;
+  font-weight: 400;
+}
+
 .admin-funnel {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));

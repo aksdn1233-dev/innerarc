@@ -4,6 +4,19 @@ Last updated: 2026-08-02 (mobile trust and checkout-conversion refinement)<br>
 Current version: 0.20.1
 Overall progress: 97% (web MVP code 100%; production deployment and payment path 98%; native app not started)
 
+## 2026-08-02 — Owner-controlled home copy and aggregate operations data
+
+- Restricted the owner console to the allowlisted email and one-time Supabase email
+  link authentication.
+- Added bounded Korean/English first-screen copy editing with safe defaults; pricing,
+  checkout, safety, and legal content remain protected from dashboard edits.
+- Added first-party daily aggregate counts for page views, CTA, sample/product views,
+  form steps, and payment outcomes. No raw reading input, IP, account, or session ID is
+  stored, and the dashboard does not mislabel totals as unique visitors.
+- Production activation is waiting only for the owner to sign in to the existing
+  Supabase dashboard so the additive migration can be applied; no existing row is
+  changed or deleted by that migration.
+
 ## 2026-08-02 — Safe first-screen differentiation
 
 - Added a compact gold line above the main home headline: `사주명리와는 다른,

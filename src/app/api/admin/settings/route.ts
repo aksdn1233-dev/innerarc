@@ -4,10 +4,12 @@ import { z } from "zod";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import { requireSupabaseUser } from "@/lib/supabase/auth";
 import { isAdminEmail } from "@/server/admin-access";
+import { AdminPageContentSchema } from "@/server/admin-content";
 
 const bodySchema = z.object({
   salesEnabled: z.boolean(),
   notice: z.string().max(500),
+  pageContent: AdminPageContentSchema,
 }).strict();
 
 export async function PUT(request: Request) {
@@ -26,6 +28,7 @@ export async function PUT(request: Request) {
     id: 1,
     sales_enabled: parsed.data.salesEnabled,
     notice: parsed.data.notice,
+    page_content: parsed.data.pageContent,
     updated_by: auth.user.id,
     updated_at: new Date().toISOString(),
   });
