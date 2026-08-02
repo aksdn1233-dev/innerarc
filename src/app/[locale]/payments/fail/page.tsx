@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/i18n/config";
+import { PaymentFailBeacon } from "@/components/payment-fail-beacon";
 
 const visibleCodes = new Set([
   "PAY_PROCESS_CANCELED",
@@ -25,6 +26,7 @@ export default async function PaymentFailPage({
 
   return (
     <main className="shell payment-result-shell" id="main-content">
+      <PaymentFailBeacon locale={locale} />
       <section className="payment-result-card">
         <h1>{locale === "ko" ? "결제가 완료되지 않았습니다." : "Payment was not completed."}</h1>
         <p>{locale === "ko" ? "오류 코드" : "Error code"}: <code>{code}</code></p>

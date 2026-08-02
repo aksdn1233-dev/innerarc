@@ -20,9 +20,9 @@ describe("birth-date calendar copy", () => {
   });
 
   it("labels the paid report intake as solar/Gregorian in both languages", () => {
-    expect(paidIntake).toContain("생년월일 (양력)");
-    expect(paidIntake).toContain("양력 기준으로 입력하세요");
-    expect(paidIntake).toContain("Birth date (Gregorian calendar)");
-    expect(paidIntake).toContain("Gregorian-calendar birth date");
+    expect(paidIntake).toContain("생년월일 (필수 · 양력)");
+    expect(paidIntake).toContain("달력에서 선택해 주세요");
+    expect(paidIntake).toContain("Birth date (Required · Gregorian)");
+    expect(paidIntake).toContain("Choose from the calendar");
   });
 });

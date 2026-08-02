@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useSyncExternalStore } from "react";
 import { readGuestReportLink } from "@/core/report-handoff";
+import { captureConversionEvent } from "@/core/analytics";
 
 const copy = {
   ko: {
@@ -79,8 +80,11 @@ export function PayAppReturnClient({
   const resolved = reportUrl !== undefined;
 
   useEffect(() => {
-    if (reportUrl) window.location.replace(reportUrl);
-  }, [reportUrl]);
+    if (reportUrl) {
+      captureConversionEvent("payment_success", locale, { provider: "payapp" });
+      window.location.replace(reportUrl);
+    }
+  }, [locale, reportUrl]);
 
   // Never dead-end a buyer who has paid: without a stored link the page explains how
   // to recover instead of silently bouncing to a page that shows nothing.

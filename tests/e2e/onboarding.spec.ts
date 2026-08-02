@@ -12,78 +12,19 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await page.goto("/ko");
   await expect(page.getByRole("heading", {
     level: 1,
-    name: "나를 이해하면, 올해의 선택이 조금 더 선명해집니다.",
+    name: "왜 나는 같은 선택을 반복할까요?",
   })).toBeVisible();
-  await expect(page.locator(".home-hero + .report-preview")).toBeVisible();
+  await expect(page.getByRole("link", { name: "내 패턴 확인하기" })).toBeVisible();
   await expect(page.locator(".report-preview")).toContainText(
-    "아래는 실제 후기가 아니라 리포트 구성 예시입니다.",
+    "실제 후기가 아닌 리포트 구성 예시입니다.",
   );
   await expect(page.locator(".preview-reading")).toHaveCount(3);
-  await expect(page.locator(".question-bubble")).toHaveCount(9);
-  await expect(page.locator(".purchase-fact-row")).toContainText("자동 결제 없음");
-  await expect(page.locator(".preview-cta")).toHaveCSS("display", "flex");
-  await expect(page.locator(".preview-cta")).toHaveCSS("align-items", "center");
-  await expect(page.locator(".preview-cta")).toHaveCSS("justify-content", "center");
-  await expect(page.locator(".preview-cta")).toHaveCSS("text-align", "center");
+  await expect(page.locator(".question-bubble")).toHaveCount(0);
+  await expect(page.locator(".reading-method-points span")).toHaveCount(3);
+  await expect(page.getByRole("button", { name: /상세 리딩 받기/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /심층 리딩 받기/ })).toBeVisible();
+  await expect(page.locator(".payment-reassurance")).toContainText("1회 결제 · 자동 결제 없음 · 비회원 열람 가능");
 
-  const traditionalSideMotifs = await page.locator(".report-preview").evaluate((element) => {
-    const before = getComputedStyle(element, "::before");
-    const after = getComputedStyle(element, "::after");
-    return {
-      before: {
-        content: before.content,
-        opacity: Number(before.opacity),
-        position: before.position,
-        width: Number.parseFloat(before.width),
-      },
-      after: {
-        content: after.content,
-        opacity: Number(after.opacity),
-        position: after.position,
-        width: Number.parseFloat(after.width),
-      },
-    };
-  });
-  expect(traditionalSideMotifs.before.content).not.toBe("none");
-  expect(traditionalSideMotifs.after.content).not.toBe("none");
-  expect(traditionalSideMotifs.before.position).toBe("absolute");
-  expect(traditionalSideMotifs.after.position).toBe("absolute");
-  expect(traditionalSideMotifs.before.opacity).toBeGreaterThan(0);
-  expect(traditionalSideMotifs.after.opacity).toBeGreaterThan(0);
-  expect(traditionalSideMotifs.before.width).toBeGreaterThanOrEqual(24);
-  expect(traditionalSideMotifs.after.width).toBeGreaterThanOrEqual(24);
-
-  const heroQuestions = await page.locator(".question-bubble").evaluateAll((elements) => {
-    const hero = document.querySelector(".home-hero")?.getBoundingClientRect();
-    if (!hero) return null;
-
-    const visible = elements
-      .filter((element) => getComputedStyle(element).display !== "none")
-      .map((element) => {
-        const bounds = element.getBoundingClientRect();
-        return {
-          top: bounds.top,
-          bottom: bounds.bottom,
-          text: element.textContent?.trim() ?? "",
-        };
-      });
-
-    return {
-      heroTop: hero.top,
-      upperBoundary: hero.top + Math.min(440, hero.height * 0.65),
-      visible,
-    };
-  });
-
-  expect(heroQuestions).not.toBeNull();
-  expect(heroQuestions!.visible.length).toBeGreaterThanOrEqual(6);
-  expect(heroQuestions!.visible.every((question) => (
-    question.top >= heroQuestions!.heroTop
-      && question.bottom <= heroQuestions!.upperBoundary
-      && question.text.length > 0
-  ))).toBe(true);
-
-  await expect(page.getByRole("button", { name: "무료 핵심 패턴 보기 잠금" })).toBeDisabled();
   await page.goto("/ko/profile");
   await expect(page).toHaveURL(`${E2E_ORIGIN}/ko/profile`);
   await expect(page.getByRole("heading", { name: "내 흐름 확인하기" })).toBeAttached();
@@ -97,61 +38,23 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await expect(page.getByText("1 + 9 + 9 + 4 + 1 + 1 + 0 + 4 = 29 → 11")).toBeVisible();
 });
 
-test("mobile home uses undecorated floating questions and an inset reading grid", async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/ko");
-
-  const floatingQuestions = await page.locator(".question-bubble").evaluateAll((elements) => {
-    const hero = document.querySelector(".home-hero")?.getBoundingClientRect();
-    if (!hero) throw new Error("Home hero not found");
-
-    return elements
-      .filter((element) => getComputedStyle(element).display !== "none")
-      .map((element) => {
-        const style = getComputedStyle(element);
-        const after = getComputedStyle(element, "::after");
-        const bounds = element.getBoundingClientRect();
-        return {
-          backgroundColor: style.backgroundColor,
-          borderTopWidth: style.borderTopWidth,
-          boxShadow: style.boxShadow,
-          afterContent: after.content,
-          leftInset: bounds.left - hero.left,
-          rightInset: hero.right - bounds.right,
-        };
-      });
-  });
-
-  expect(floatingQuestions).toHaveLength(6);
-  expect(floatingQuestions.every((question) => (
-    question.backgroundColor === "rgba(0, 0, 0, 0)"
-      && question.borderTopWidth === "0px"
-      && question.boxShadow === "none"
-      && (question.afterContent === "none" || question.afterContent === "normal")
-      && question.leftInset >= 0
-      && question.rightInset >= 0
-  ))).toBe(true);
-
-  const readingGrid = await page.locator(".pattern-fields").evaluate((panel) => {
-    const panelBounds = panel.getBoundingClientRect();
-    const firstCard = panel.querySelector(".pattern-field-grid article");
-    if (!firstCard) throw new Error("Reading field card not found");
-    const cardBounds = firstCard.getBoundingClientRect();
-    return {
-      leftInset: cardBounds.left - panelBounds.left,
-      rightInset: panelBounds.right - cardBounds.right,
-      pageOverflow: document.documentElement.scrollWidth - window.innerWidth,
-    };
-  });
-
-  expect(readingGrid.leftInset).toBeGreaterThanOrEqual(20);
-  expect(readingGrid.rightInset).toBeGreaterThanOrEqual(20);
-  expect(readingGrid.pageOverflow).toBeLessThanOrEqual(0);
+test("mobile home has no overflow and the sticky payment bar yields to the form", async ({ page }) => {
+  for (const width of [320, 375, 390, 430]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto("/ko");
+    await expect(page.getByRole("heading", { level: 1, name: "왜 나는 같은 선택을 반복할까요?" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "내 패턴 확인하기" })).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
+    await expect(page.locator(".mobile-purchase-bar")).toBeVisible();
+    await page.locator("#onboarding").scrollIntoViewIfNeeded();
+    await expect(page.locator(".mobile-purchase-bar")).toHaveCount(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
+  }
 });
 
 test("English page keeps the same calculated core meaning", async ({ page }) => {
   await page.goto("/en");
-  await expect(page.getByRole("button", { name: "Free core pattern is locked" })).toBeDisabled();
+  await expect(page.getByRole("heading", { level: 1, name: "Why do I keep making the same choices?" })).toBeVisible();
   await page.goto("/en/profile");
   await expect(page).toHaveURL(`${E2E_ORIGIN}/en/profile`);
   await page.locator("#birthDate").fill("1994-11-04");
@@ -663,7 +566,7 @@ test("privacy, terms, and support publish contacts while disclosing unresolved l
   await expect(page.getByText("Support and privacy email: qkrehgus5886@naver.com")).toBeVisible();
   await page.getByRole("link", { name: "Terms of use" }).click();
   await expect(page.getByText("Pre-release terms · mail-order registration details pending")).toBeVisible();
-  await expect(page.getByText("Current products are the Detailed reading at KRW 9,600", { exact: false })).toBeVisible();
+  await expect(page.getByText("Current products are the Detailed reading and Premium in-depth reading", { exact: false })).toBeVisible();
   await expect(page.getByText("The former Core reading is temporarily unavailable.", { exact: false })).toBeVisible();
   await expect(page.getByText("within seven days after the email is received", { exact: false })).toBeVisible();
   await page.goto("/en/support");

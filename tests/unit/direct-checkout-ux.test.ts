@@ -25,10 +25,11 @@ describe("direct checkout UX", () => {
 });
 
 describe("simple landing-page hierarchy", () => {
-  it("keeps one primary action and only three quiet reflection prompts", () => {
-    expect(home.match(/question-bubble question-bubble-/g)).toHaveLength(3);
+  it("keeps one primary hero action without decorative prompts", () => {
+    expect(home).toContain('primary: "내 패턴 확인하기"');
+    expect(home.match(/question-bubble question-bubble-/g)).toBeNull();
     expect(home).not.toContain("pythagoras-backdrop");
     expect(home).not.toContain("✦");
-    expect(home).toContain("무료 핵심 패턴 · 잠금");
+    expect(home).not.toContain("무료 핵심 패턴 · 잠금");
   });
 });

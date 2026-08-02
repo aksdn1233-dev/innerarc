@@ -479,3 +479,35 @@
 - Impact: The home and plans journey has a calmer hierarchy, three floating prompts instead of nine, one primary hero action, lighter form surfaces, simpler product cards, and a direct checkout action. Functional analysis and report routes retain their information-rich structures.
 - Revisit when: Production analytics or user testing shows that a retained section does not help product comprehension, checkout completion, or safe use.
 - Status: Decided.
+## D-056 - Conversion analytics is a strict provider-neutral browser event boundary
+
+- Date: 2026-08-02
+- Decision: Expose the ten requested landing-to-payment events as schema-validated
+  `gyeol:analytics` browser events without attaching a network sink. Product and
+  provider codes are allowlisted; birth dates, names, raw questions, and extra text are
+  rejected.
+- Alternatives: Add a third-party analytics SDK immediately; store raw funnel events
+  in Supabase; omit conversion instrumentation.
+- Reason: The current product has no approved analytics processor, while conversion
+  measurement needs a stable integration boundary that cannot accidentally collect the
+  sensitive reading input.
+- Impact: Product code can instrument the complete funnel now. A future approved
+  adapter can subscribe later, but must honor product-analytics consent before storing
+  or transmitting anything.
+- Revisit when: A processor, retention period, consent implementation, and production
+  data-processing terms are approved.
+- Status: Decided.
+
+## D-057 - The mobile purchase bar yields to intake instead of overlaying it
+
+- Date: 2026-08-02
+- Decision: Keep one compact, opaque Detailed-reading bar only outside the intake
+  viewport and remove it as soon as the form intersects the screen.
+- Alternatives: Keep the bar permanently; reserve a large blank footer behind it;
+  remove the bar everywhere.
+- Reason: The bar helps a scrolling visitor retain price/action context, but covering
+  labels, errors, or input controls directly harms completion and accessibility.
+- Impact: The first screen retains a clear mobile checkout route, while form controls
+  and inline errors remain unobstructed at 320–430 px and safe-area insets.
+- Revisit when: Measured mobile completion shows that the sticky action adds no value.
+- Status: Decided.

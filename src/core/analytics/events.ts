@@ -18,6 +18,27 @@ const event = <Name extends string, Shape extends z.ZodRawShape>(name: Name, sha
   }).strict();
 
 export const SafeAnalyticsEventSchema = z.discriminatedUnion("name", [
+  event("landing_view", {}),
+  event("primary_cta_click", { location: z.enum(["hero", "sticky"]) }),
+  event("sample_section_view", {}),
+  event("product_view", { productCode: z.enum(["plus_30d", "pro_30d", "premium_pdf"]) }),
+  event("product_select", {
+    productCode: z.enum(["plus_30d", "pro_30d", "premium_pdf"]),
+    location: z.enum(["product_card", "form"]),
+  }),
+  event("form_start", {}),
+  event("form_complete", { productCode: z.enum(["plus_30d", "pro_30d", "premium_pdf"]) }),
+  event("payment_start", {
+    productCode: z.enum(["plus_30d", "pro_30d", "premium_pdf"]),
+    provider: z.enum(["payapp", "toss", "portone", "manual_transfer", "unknown"]),
+  }),
+  event("payment_success", {
+    provider: z.enum(["payapp", "toss", "portone", "manual_transfer", "unknown"]),
+  }),
+  event("payment_fail", {
+    provider: z.enum(["payapp", "toss", "portone", "manual_transfer", "unknown"]),
+    stage: z.enum(["order", "checkout", "confirmation", "redirect"]),
+  }),
   event("onboarding_completed", { depth: z.enum(["light", "balanced", "deep"]) }),
   event("tarot_reading_created", { cardCount: z.union([z.literal(1), z.literal(3)]), source: z.enum(["engine", "manual"]) }),
   event("relationship_result_viewed", { mode: z.enum(["personal", "comparison"]) }),

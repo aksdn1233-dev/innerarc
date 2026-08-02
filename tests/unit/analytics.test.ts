@@ -58,6 +58,35 @@ describe("privacy-minimized analytics", () => {
     })).toThrow();
   });
 
+  it("allowlists the conversion funnel without accepting personal reading input", () => {
+    const events = [
+      { name: "landing_view", properties: {} },
+      { name: "primary_cta_click", properties: { location: "hero" } },
+      { name: "sample_section_view", properties: {} },
+      { name: "product_view", properties: { productCode: "pro_30d" } },
+      { name: "product_select", properties: { productCode: "premium_pdf", location: "product_card" } },
+      { name: "form_start", properties: {} },
+      { name: "form_complete", properties: { productCode: "pro_30d" } },
+      { name: "payment_start", properties: { productCode: "pro_30d", provider: "payapp" } },
+      { name: "payment_success", properties: { provider: "payapp" } },
+      { name: "payment_fail", properties: { provider: "payapp", stage: "checkout" } },
+    ] as const;
+
+    for (const conversionEvent of events) {
+      expect(SafeAnalyticsEventSchema.parse({ ...base, ...conversionEvent }).name).toBe(conversionEvent.name);
+    }
+    expect(() => SafeAnalyticsEventSchema.parse({
+      ...base,
+      name: "form_complete",
+      properties: {
+        productCode: "pro_30d",
+        birthDate: "1994-11-04",
+        name: "private name",
+        question: "private question",
+      },
+    })).toThrow();
+  });
+
   it("bounds AI cost telemetry and excludes prompt content", () => {
     expect(SafeAnalyticsEventSchema.parse({
       ...base,

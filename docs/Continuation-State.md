@@ -1,8 +1,33 @@
 # Continuation State
 
-Last updated: 2026-08-01 (scheduled summer pricing and inactive referral foundation)<br>
-Current version: 0.20.0
+Last updated: 2026-08-02 (mobile trust and checkout-conversion refinement)<br>
+Current version: 0.20.1
 Overall progress: 97% (web MVP code 100%; production deployment and payment path 98%; native app not started)
+
+## 2026-08-02 — Mobile trust and checkout-conversion refinement
+
+- Reframed the home hero around the visitor's recurring-choice problem, leaving one
+  primary action and a factual birth-date/one-time-payment note. Removed floating
+  prompt decoration and the locked free-result teaser from the first screen.
+- Replaced abstract result descriptions with three explicitly labelled report-format
+  examples, and replaced the four-area panel with one concise explanation of the
+  calculation, contextual interpretation, and non-predictive product boundary.
+- Rewrote both product cards so Detailed means one focused area and Premium means a
+  connected multi-area analysis. Both cards now use reading-oriented actions and show
+  the one-time/no-renewal/no-account facts plus the real order-recovery and support path.
+- Reduced the mobile fixed checkout bar, made it opaque and safe-area aware, and hide
+  it automatically whenever the intake section enters the viewport. The intake now
+  separates required/optional fields, gives a Gregorian-date example, explains data
+  use, and renders date/privacy errors directly below the relevant control.
+- Added a strict provider-neutral conversion-event interface for the requested ten
+  funnel events. It emits no network traffic and rejects free-text or personal fields;
+  any future sink must independently enforce analytics consent.
+- Validation passed: ESLint, strict TypeScript through the production build, all 542
+  unit/integration tests, 18 core Chromium flows plus the corrected legal-copy rerun,
+  four isolated PayApp checkout flows, and explicit 320/375/390/430 px overflow and
+  fixed-bar/form-overlap assertions. The first browser pass found one stale hard-coded
+  campaign-price legal assertion; it was replaced with the date-safe product statement
+  already used by the terms page, then passed.
 
 ## 2026-08-01 — Scheduled summer pricing and inactive referral foundation
 

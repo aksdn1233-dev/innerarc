@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { captureConversionEvent } from "@/core/analytics";
 import type { Locale } from "@/i18n/config";
 
 type State = "confirming" | "done" | "waiting" | "failed";
@@ -40,19 +41,32 @@ export function PaymentSuccessClient({
         const body = await response.json() as { payment?: { status?: string } };
         if (!active) return;
         if (!response.ok) {
+          captureConversionEvent("payment_fail", locale, {
+            provider: confirmation.provider,
+            stage: "confirmation",
+          });
           setState("failed");
         } else if (body.payment?.status === "WAITING_FOR_DEPOSIT") {
           setState("waiting");
         } else {
+          captureConversionEvent("payment_success", locale, {
+            provider: confirmation.provider,
+          });
           setState("done");
         }
       } catch {
-        if (active) setState("failed");
+        if (active) {
+          captureConversionEvent("payment_fail", locale, {
+            provider: confirmation.provider,
+            stage: "confirmation",
+          });
+          setState("failed");
+        }
       }
     }
     void confirm();
     return () => { active = false; };
-  }, [confirmation]);
+  }, [confirmation, locale]);
 
   const messages = locale === "ko"
     ? {

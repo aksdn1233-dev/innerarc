@@ -7,6 +7,7 @@ import {
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { CampaignNotice } from "@/components/campaign-notice";
+import { captureConversionEvent } from "@/core/analytics";
 import { PaidReadingInputSchema, type PaidReadingInput } from "@/core/paid-reading";
 import type { ProductPricingSnapshot } from "@/core/product-prices";
 import {
@@ -328,6 +329,10 @@ export function PlansExperience({
     setReady(false);
     setSession(null);
     setLoadingCode(productCode);
+    captureConversionEvent("payment_start", locale, {
+      productCode,
+      provider: paymentProvider ?? "unknown",
+    });
     try {
       const response = await fetch("/api/payments/orders", {
         method: "POST",
@@ -347,6 +352,10 @@ export function PlansExperience({
       });
       const body: unknown = await response.json();
       if (!response.ok) {
+        captureConversionEvent("payment_fail", locale, {
+          provider: paymentProvider ?? "unknown",
+          stage: "order",
+        });
         setError(checkoutErrorFromResponse(response.status, body));
         setLoadingCode(null);
         return;
@@ -369,6 +378,10 @@ export function PlansExperience({
         setLoadingCode(null);
       }
     } catch {
+      captureConversionEvent("payment_fail", locale, {
+        provider: paymentProvider ?? "unknown",
+        stage: "order",
+      });
       setError("order_failed");
       setLoadingCode(null);
     } finally {
@@ -436,6 +449,10 @@ export function PlansExperience({
         });
         if (!response) return;
         if (response.code) {
+          captureConversionEvent("payment_fail", locale, {
+            provider: "portone",
+            stage: "checkout",
+          });
           const failUrl = new URL(session.failUrl);
           failUrl.searchParams.set("code", response.code);
           window.location.assign(failUrl.toString());
@@ -456,6 +473,10 @@ export function PlansExperience({
         customerEmail: session.customerEmail,
       });
     } catch {
+      captureConversionEvent("payment_fail", locale, {
+        provider: session.provider,
+        stage: "checkout",
+      });
       setError("payment_failed");
     } finally {
       paymentInFlightRef.current = false;

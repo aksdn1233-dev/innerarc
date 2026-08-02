@@ -54,6 +54,6 @@ describe("DETAIL_39000 renderer", () => {
   it("allows every tier to produce a complete birth-date-only report", () => {
     expect(intake).not.toContain('selectedProduct === "premium_pdf" && !concern');
     expect(intake).not.toContain('required={selectedProduct === "premium_pdf"}');
-    expect(intake).toContain("비워도 전체 분석이 완결됩니다");
+    expect(intake).toContain("비워두면 선택한 영역과 생년월일을 중심으로 구성합니다");
   });
 });

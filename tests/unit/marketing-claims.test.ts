@@ -73,7 +73,7 @@ describe("advertising claims stay defensible", () => {
 
   it("presents no invented customer testimonial", () => {
     // The situations block is labelled as situations, not quotes from buyers.
-    expect(homepage).toMatch(/실제 후기가 아니라/);
+    expect(homepage).toMatch(/실제 후기가 아닌 리포트 구성 예시/);
     expect(homepage).not.toMatch(/후기\s*[:：]/);
     expect(homepage).not.toMatch(/(님|씨)\s*·\s*\d/);
   });

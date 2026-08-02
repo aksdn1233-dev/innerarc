@@ -97,3 +97,7 @@ Last updated: 2026-08-01
 - [ ] Approve PayApp production operation and run real low-value approval, cancellation, virtual-account, receipt/recovery, and refund-support exercises.
 - [ ] Verify staging auth, migrations, payments, monitoring, deletion, backup/restore, and incident response.
 - [ ] Complete legal, privacy, age, crisis-escalation, editorial, localization, accessibility, brand, pricing, tax/refund, store-asset, and deployment approvals.
+- [x] 2026-08-02 mobile conversion pass: one-message hero, three disclosed report
+  examples, concise method explanation, distinct two-product copy, inline intake
+  errors, safe-area checkout bar hidden over the form, and privacy-safe ten-event
+  funnel interface verified at 320/375/390/430 px.
