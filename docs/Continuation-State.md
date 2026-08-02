@@ -28,6 +28,10 @@ Overall progress: 97% (web MVP code 100%; production deployment and payment path
   fixed-bar/form-overlap assertions. The first browser pass found one stale hard-coded
   campaign-price legal assertion; it was replaced with the date-safe product statement
   already used by the terms page, then passed.
+- GitHub's complete 148-case browser matrix then found one additional assertion that
+  still named the previous optional-question label. The product behavior was correct;
+  the stale assertion was aligned with the new required/optional copy and rerun in
+  desktop Chromium and mobile WebKit before the release commit was advanced.
 
 ## 2026-08-01 — Scheduled summer pricing and inactive referral foundation
 

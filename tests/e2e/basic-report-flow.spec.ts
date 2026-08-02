@@ -4,7 +4,7 @@ test.use({ viewport: { width: 390, height: 844 } });
 
 test("the retired Core product is absent and Detailed becomes the default", async ({ page }) => {
   await page.goto("/ko#onboarding");
-  await expect(page.getByText("4. 한 가지 궁금한 점 (선택)")).toBeVisible();
+  await expect(page.getByText("가장 궁금한 한 가지 (선택)")).toBeVisible();
   await expect(page.locator("#concern")).not.toHaveAttribute("required", "");
   await expect(page.locator('[data-product="plus_30d"]')).toHaveCount(0);
   await expect(page.locator(".editorial-product")).toHaveCount(2);
