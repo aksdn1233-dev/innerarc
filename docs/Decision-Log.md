@@ -511,3 +511,19 @@
   and inline errors remain unobstructed at 320–430 px and safe-area insets.
 - Revisit when: Measured mobile completion shows that the sticky action adds no value.
 - Status: Decided.
+
+## D-058 - Differentiate from 사주명리 without an accuracy claim
+
+- Date: 2026-08-02
+- Decision: Place `사주명리와는 다른, 현실 선택 중심의 리딩` above the home
+  headline instead of `사주명리보다 정확한`.
+- Alternatives: Publish the requested comparative-accuracy claim; omit the comparison;
+  describe only the calculation method.
+- Reason: No controlled evidence supports a claim of greater accuracy, and the product's
+  own policy prohibits unsupported accuracy language. The chosen line preserves the
+  intended contrast by naming the real product difference: practical choice criteria.
+- Impact: The first viewport gains the requested positioning cue without implying
+  scientifically verified superiority or denigrating another symbolic system.
+- Revisit when: A legally reviewed, reproducible comparative study supports a narrower
+  substantiated claim.
+- Status: Decided.

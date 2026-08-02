@@ -4,6 +4,13 @@ Last updated: 2026-08-02 (mobile trust and checkout-conversion refinement)<br>
 Current version: 0.20.1
 Overall progress: 97% (web MVP code 100%; production deployment and payment path 98%; native app not started)
 
+## 2026-08-02 — Safe first-screen differentiation
+
+- Added a compact gold line above the main home headline: `사주명리와는 다른,
+  현실 선택 중심의 리딩`, with native English copy.
+- Deliberately rejected an unsupported `more accurate than 사주명리` claim and added
+  a regression guard so comparative-accuracy wording cannot be reintroduced silently.
+
 ## 2026-08-02 — Mobile trust and checkout-conversion refinement
 
 - Reframed the home hero around the visitor's recurring-choice problem, leaving one

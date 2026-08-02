@@ -14,6 +14,7 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
     level: 1,
     name: "왜 나는 같은 선택을 반복할까요?",
   })).toBeVisible();
+  await expect(page.getByText("사주명리와는 다른, 현실 선택 중심의 리딩")).toBeVisible();
   await expect(page.getByRole("link", { name: "내 패턴 확인하기" })).toBeVisible();
   await expect(page.locator(".report-preview")).toContainText(
     "실제 후기가 아닌 리포트 구성 예시입니다.",
@@ -54,6 +55,7 @@ test("mobile home has no overflow and the sticky payment bar yields to the form"
 
 test("English page keeps the same calculated core meaning", async ({ page }) => {
   await page.goto("/en");
+  await expect(page.getByText("A different kind of reading, centered on real-life choices")).toBeVisible();
   await expect(page.getByRole("heading", { level: 1, name: "Why do I keep making the same choices?" })).toBeVisible();
   await page.goto("/en/profile");
   await expect(page).toHaveURL(`${E2E_ORIGIN}/en/profile`);

@@ -88,6 +88,11 @@ describe("advertising claims stay defensible", () => {
     }
   });
 
+  it("positions against fortune systems without an unsupported accuracy comparison", () => {
+    expect(homepage).toContain("사주명리와는 다른, 현실 선택 중심의 리딩");
+    expect(homepage).not.toMatch(/사주명리보다\s*정확/);
+  });
+
   it("promises no outcome it cannot control", () => {
     for (const source of [homepage, plansPage, dictionaries]) {
       expect(source).not.toMatch(/반드시\s*(이루|성공|좋아)/);

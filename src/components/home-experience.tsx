@@ -79,6 +79,7 @@ const copy = {
   ko: {
     navLabel: "홈페이지 탐색",
     nav: [["#preview", "리포트 예시"], ["#method", "리딩 방식"], ["#products", "상품 안내"]],
+    heroKicker: "사주명리와는 다른, 현실 선택 중심의 리딩",
     heroTitle: "왜 나는 같은 선택을 반복할까요?",
     heroBody: "타고난 성향과 반복되는 관계·일·돈의 패턴을 살펴보고, 올해 어떤 선택에 힘을 주어야 할지 정리해드립니다.",
     primary: "내 패턴 확인하기",
@@ -113,6 +114,7 @@ const copy = {
   en: {
     navLabel: "Home navigation",
     nav: [["#preview", "Report examples"], ["#method", "Method"], ["#products", "Readings"]],
+    heroKicker: "A different kind of reading, centered on real-life choices",
     heroTitle: "Why do I keep making the same choices?",
     heroBody: "Explore your natural tendencies and recurring patterns in relationships, work, and money—then clarify where to place your energy this year.",
     primary: "See my patterns",
@@ -301,6 +303,7 @@ export function HomeExperience({ locale, dictionary: d, pricing }: Props) {
 
         <section className="hero home-hero" aria-labelledby="hero-title">
           <div className="home-hero-copy">
+            <p className="hero-kicker">{t.heroKicker}</p>
             <h1 id="hero-title">{t.heroTitle}</h1>
             <p className="hero-copy">{t.heroBody}</p>
             <div className="hero-actions">
