@@ -59,6 +59,16 @@ pnpm generate:sbom
 
 On a new machine, Playwright may first need `pnpm exec playwright install --with-deps chromium webkit`.
 
+## Deployment
+
+`mygyeol.kr` is served by a Cloudflare Worker, built with `pnpm build:sites` and shipped
+with `wrangler` using Cloudflare credentials that no CI job holds. `pnpm build` and the
+Vercel project attached to this repository both build the same source but are not what
+the domain serves, so a green Vercel deployment does not mean a change reached users.
+To check what is actually live, request the site and look for something the build
+introduced rather than reading a deployment dashboard. The reasoning is in
+[Route and feature inventory](docs/Route-Feature-Inventory.md).
+
 ## Architectural invariants
 
 - Code, not AI, calculates numerology.
