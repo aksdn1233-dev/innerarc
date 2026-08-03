@@ -6824,3 +6824,487 @@ summary {
   color: var(--muted);
   font-size: 0.78rem;
 }
+
+/* ── Original in-repository artwork ──────────────────────────────────────────
+   Meteor trails, the numeric path, the woven grain, and the scene divider are
+   drawn as SVG in src/components/brand-visuals.tsx. They inherit `color`, so a
+   section sets the tone and the artwork follows it; nothing here loads a file,
+   so there is no frame to break and no asset to license. */
+
+.brand-visual {
+  display: block;
+  pointer-events: none;
+}
+
+.home-hero-meteors {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  color: #e2b66f;
+  opacity: 0.5;
+}
+
+.brand-meteor {
+  animation: gyeol-meteor 7s ease-in infinite;
+  opacity: 0;
+}
+
+@keyframes gyeol-meteor {
+  0% { opacity: 0; transform: translate3d(-24px, -24px, 0); }
+  12% { opacity: 1; }
+  48% { opacity: 0.85; }
+  70%, 100% { opacity: 0; transform: translate3d(58px, 58px, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-meteor {
+    animation: none;
+    opacity: 0.55;
+    transform: none;
+  }
+}
+
+.method-divider,
+.evidence-divider {
+  width: 100%;
+  height: 24px;
+  margin-bottom: clamp(28px, 5vw, 52px);
+  color: var(--sage-dark);
+}
+
+/* ── Reviews and pre-purchase evidence ─────────────────────────────────────── */
+
+.evidence-section {
+  scroll-margin-top: 24px;
+  padding: clamp(64px, 9vw, 120px) 0;
+}
+
+.evidence-intro {
+  max-width: 44rem;
+  margin: 20px 0 0;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.evidence-outcome {
+  margin: 28px 0 0;
+  font-weight: 800;
+}
+
+.evidence-review-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 14px;
+  margin-top: 32px;
+}
+
+.evidence-review {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: clamp(20px, 3vw, 28px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--white);
+}
+
+.evidence-review header {
+  display: grid;
+  gap: 6px;
+}
+
+.evidence-review header small {
+  color: var(--muted);
+}
+
+.evidence-review-type {
+  justify-self: start;
+  padding: 5px 10px;
+  border: 1px solid rgba(99, 117, 99, 0.35);
+  border-radius: 999px;
+  color: var(--sage-dark);
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.evidence-review-question {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.evidence-review-body {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.evidence-review-hard {
+  margin: 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.evidence-review-changed {
+  margin: 0;
+  color: var(--sage-dark);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.evidence-panel {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: clamp(24px, 5vw, 56px);
+  margin-top: 32px;
+  padding: clamp(24px, 4vw, 44px);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: #fbf6ed;
+  isolation: isolate;
+}
+
+.evidence-weave {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  border-radius: 22px;
+  color: var(--sage);
+  opacity: 0.5;
+}
+
+.evidence-panel h3 {
+  margin: 0 0 14px;
+  font-size: 1.05rem;
+}
+
+.evidence-list,
+.evidence-limits,
+.evidence-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.evidence-list li {
+  display: grid;
+  gap: 4px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+
+.evidence-list li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.evidence-list strong {
+  font-size: 0.95rem;
+}
+
+.evidence-list span,
+.evidence-steps span {
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.evidence-number-path {
+  width: 100%;
+  max-width: 332px;
+  height: auto;
+  margin-bottom: 14px;
+  color: var(--sage-dark);
+}
+
+.evidence-steps li {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  gap: 10px;
+  padding: 8px 0;
+}
+
+.evidence-steps b {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--sage-dark);
+  color: var(--white);
+  font-size: 0.8rem;
+  place-items: center;
+}
+
+.evidence-limit-title {
+  margin-top: 22px;
+}
+
+.evidence-limits li {
+  padding: 6px 0 6px 18px;
+  position: relative;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.evidence-limits li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--clay);
+}
+
+.evidence-faq {
+  margin-top: clamp(32px, 5vw, 56px);
+}
+
+.evidence-faq h3 {
+  margin: 0 0 14px;
+  font-size: 1.05rem;
+}
+
+.evidence-faq details {
+  border-bottom: 1px solid var(--line);
+}
+
+.evidence-faq summary {
+  padding: 16px 0;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.evidence-faq p {
+  margin: 0 0 18px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+/* ── Review request panel on a completed reading ───────────────────────────── */
+
+.review-panel {
+  display: grid;
+  gap: 12px;
+  margin: 28px 0 0;
+  padding: clamp(20px, 4vw, 32px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--white);
+}
+
+.review-panel h2 {
+  margin: 0;
+  font-size: clamp(1.2rem, 2.6vw, 1.6rem);
+}
+
+.review-panel > p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.review-panel .secondary-button,
+.review-panel .primary-button {
+  justify-self: start;
+}
+
+.review-form {
+  display: grid;
+  gap: 18px;
+  margin-top: 6px;
+}
+
+.review-form .field {
+  display: grid;
+  gap: 6px;
+}
+
+.review-form label,
+.review-form legend {
+  font-weight: 800;
+}
+
+.review-form textarea,
+.review-form input[type="text"] {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+}
+
+.review-form small {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.review-consent {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: clamp(14px, 3vw, 20px);
+  border: 1px solid rgba(99, 117, 99, 0.4);
+  border-radius: 14px;
+  background: rgba(99, 117, 99, 0.06);
+}
+
+.review-consent legend {
+  padding: 0 6px;
+}
+
+.review-consent-details {
+  display: grid;
+  gap: 10px;
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.review-name-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.review-name-presets button {
+  padding: 6px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--sage-dark);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.review-privacy-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.7;
+}
+
+.review-status-line {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.review-status {
+  justify-self: start;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: #e6e0d4;
+  color: var(--ink);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.review-status.is-approved {
+  background: #dfe6da;
+}
+
+.review-status.is-withdrawn,
+.review-status.is-rejected {
+  background: #f2e2da;
+}
+
+.review-consent-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ── Review moderation in the owner console ───────────────────────────────── */
+
+.admin-review-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-review {
+  display: grid;
+  gap: 0.6rem;
+  padding: clamp(0.9rem, 3vw, 1.4rem);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fffaf1;
+}
+
+.admin-review header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.admin-review header small {
+  color: var(--muted);
+}
+
+.admin-badge.is-pending {
+  background: #f6ecd0;
+}
+
+.admin-badge.is-approved {
+  background: #dfe6da;
+}
+
+.admin-badge.is-rejected,
+.admin-badge.is-withdrawn {
+  background: #f2e2da;
+}
+
+.admin-review-meta {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.admin-review-answers {
+  margin: 0;
+  padding: 0.7rem 0.9rem;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.admin-review-answers dt {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.admin-review-answers dd {
+  margin: 0 0 0.7rem;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.admin-review-answers dd:last-child {
+  margin-bottom: 0;
+}
+
+.admin-review-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}

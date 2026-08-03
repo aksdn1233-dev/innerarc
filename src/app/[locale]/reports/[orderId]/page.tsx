@@ -4,10 +4,13 @@ import { notFound } from "next/navigation";
 import { ORDER_PASS_COOKIE, readOrderPass, readOrderTicket } from "@/server/order-pass";
 import { PaymentStatusWaiting } from "@/components/payment-status-waiting";
 import { ReportActions } from "@/components/report-actions";
+import { ReviewRequestPanel } from "@/components/review-request-panel";
+import { toOwnReviewState } from "@/core/reviews";
 import { isLocale } from "@/i18n/config";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import { requireSupabaseUser } from "@/lib/supabase/auth";
 import { getAuthorizedStoredReport } from "@/server/reports/access";
+import { findReviewByOrderId } from "@/server/reviews";
 
 export const dynamic = "force-dynamic";
 
@@ -97,6 +100,10 @@ export default async function PurchasedReportPage({
   }
 
   const report = stored.report;
+  // The reader has a completed reading open, which is the only moment asking for
+  // feedback is fair. A missing review table (migration not yet applied) simply hides
+  // the panel rather than failing the page the buyer paid for.
+  const existingReview = await findReviewByOrderId(admin, orderId);
   const downloadParams = new URLSearchParams();
   if (query.access) downloadParams.set("access", query.access);
   if (query.proof) downloadParams.set("proof", query.proof);
@@ -347,6 +354,16 @@ export default async function PurchasedReportPage({
         locale={locale}
         downloadUrl={`/api/reports/${orderId}/download${accessQuery}`}
       />
+      {existingReview.available && (
+        <ReviewRequestPanel
+          access={query.access}
+          existing={existingReview.data ? toOwnReviewState(existingReview.data) : null}
+          locale={locale}
+          orderId={orderId}
+          proof={query.proof}
+          ticket={query.t}
+        />
+      )}
       {proTier && (
         <section className="report-link-card">
           <p className="eyebrow">{locale === "ko" ? "함께 볼 수 있어요" : "Also included"}</p>
