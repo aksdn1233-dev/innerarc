@@ -117,3 +117,87 @@ describe("privacy-minimized analytics", () => {
     })).toThrow();
   });
 });
+
+/**
+ * The browser beacon. A `keepalive` fetch never reports completion back to the page in
+ * Chromium, so the page's network never goes quiet and every measurement that waits for
+ * it hangs — that is what made the /en payload-budget test time out on every run. These
+ * tests pin the transport that fixes it, and the payload that must not change with it.
+ */
+describe("the conversion beacon leaves the page's network quiet", () => {
+  type BeaconCall = Readonly<{ url: string; type: string; body: string }>;
+
+  async function captureWithStubbedBrowser(sendBeaconResult: boolean | null) {
+    const beacons: BeaconCall[] = [];
+    const fetches: string[] = [];
+    const dispatched: string[] = [];
+    const store = new Map<string, string>();
+
+    // `navigator` is getter-only on globalThis in Node, so each stub goes in through a
+    // property descriptor and the original descriptor is put back afterwards.
+    const originals = new Map<string, PropertyDescriptor | undefined>();
+    const stub = (key: string, value: unknown) => {
+      originals.set(key, Object.getOwnPropertyDescriptor(globalThis, key));
+      Object.defineProperty(globalThis, key, {
+        value,
+        configurable: true,
+        writable: true,
+      });
+    };
+
+    stub("window", {
+      sessionStorage: {
+        getItem: (key: string) => store.get(key) ?? null,
+        setItem: (key: string, value: string) => void store.set(key, value),
+      },
+      dispatchEvent: (event: { type: string }) => void dispatched.push(event.type),
+    });
+    stub("navigator", sendBeaconResult === null ? {} : {
+      sendBeacon: (url: string, blob: Blob) => {
+        beacons.push({ url, type: blob.type, body: "" });
+        return sendBeaconResult;
+      },
+    });
+    stub("fetch", async (url: string) => {
+      fetches.push(String(url));
+      return new Response(null, { status: 204 });
+    });
+
+    try {
+      const { captureConversionEvent } = await import("@/core/analytics");
+      const accepted = captureConversionEvent("form_complete", "ko", {
+        productCode: "pro_30d",
+      });
+      return { accepted, beacons, fetches, dispatched };
+    } finally {
+      for (const [key, descriptor] of originals) {
+        if (descriptor) Object.defineProperty(globalThis, key, descriptor);
+        else delete (globalThis as Record<string, unknown>)[key];
+      }
+    }
+  }
+
+  it("hands the event to sendBeacon as JSON and makes no page-held request", async () => {
+    const result = await captureWithStubbedBrowser(true);
+    expect(result.accepted).toBe(true);
+    expect(result.beacons).toEqual([
+      { url: "/api/analytics/events", type: "application/json", body: "" },
+    ]);
+    // No fetch at all: nothing stays open in the page's own network accounting.
+    expect(result.fetches).toEqual([]);
+    expect(result.dispatched).toEqual(["gyeol:analytics"]);
+  });
+
+  it("still delivers the event when the browser has no beacon support", async () => {
+    const result = await captureWithStubbedBrowser(null);
+    expect(result.accepted).toBe(true);
+    expect(result.beacons).toEqual([]);
+    expect(result.fetches).toEqual(["/api/analytics/events"]);
+  });
+
+  it("falls back to fetch when the browser refuses to queue the beacon", async () => {
+    const result = await captureWithStubbedBrowser(false);
+    expect(result.beacons).toHaveLength(1);
+    expect(result.fetches).toEqual(["/api/analytics/events"]);
+  });
+});

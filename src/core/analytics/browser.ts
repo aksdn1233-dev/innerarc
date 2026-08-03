@@ -73,16 +73,42 @@ export function captureConversionEvent<Name extends ConversionEventName>(
   const parsed = SafeAnalyticsEventSchema.safeParse(candidate);
   if (!parsed.success) return false;
   window.dispatchEvent(new CustomEvent("gyeol:analytics", { detail: parsed.data }));
-  void fetch("/api/analytics/events", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    keepalive: true,
-    body: JSON.stringify({
-      occurredAt: parsed.data.occurredAt,
-      locale: parsed.data.locale,
-      name: parsed.data.name,
-      properties: parsed.data.properties,
-    }),
-  }).catch(() => undefined);
+  const body = JSON.stringify({
+    occurredAt: parsed.data.occurredAt,
+    locale: parsed.data.locale,
+    name: parsed.data.name,
+    properties: parsed.data.properties,
+  });
+
+  /**
+   * `navigator.sendBeacon` hands the request to the browser's own background queue, so
+   * it survives the navigation these events usually precede — a visitor clicks the
+   * purchase button milliseconds after the click is recorded — and it leaves the page's
+   * network activity finished.
+   *
+   * A `keepalive` fetch does the surviving part but not the second: in Chromium the
+   * keepalive loader never reports completion back to the page, so the request sits
+   * open in the page's accounting forever. Anything waiting for the network to go quiet
+   * therefore waits forever, which is why the /en payload-budget test timed out on
+   * every run and every retry rather than flaking.
+   *
+   * The Blob's type keeps the request `application/json`, so the endpoint parses it
+   * exactly as before. The fetch stays as the fallback for a browser without beacon
+   * support, and analytics must never interrupt a reading or a payment either way.
+   */
+  const queued = typeof navigator !== "undefined" &&
+    typeof navigator.sendBeacon === "function" &&
+    navigator.sendBeacon(
+      "/api/analytics/events",
+      new Blob([body], { type: "application/json" }),
+    );
+  if (!queued) {
+    void fetch("/api/analytics/events", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      keepalive: true,
+      body,
+    }).catch(() => undefined);
+  }
   return true;
 }
