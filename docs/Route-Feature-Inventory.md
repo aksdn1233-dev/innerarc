@@ -66,12 +66,37 @@ change. Every route below was requested against a local production build
 
 Nothing was moved and nothing was removed, so there is no replacement route to document.
 
-## Known pre-existing items
+## Resolved while doing this work
 
-- `tests/e2e/performance.spec.ts` → `/en` times out on `waitUntil: "networkidle"` in
-  this container because the keep-alive `POST /api/analytics/events` beacon stays open.
-  Reproduced on unmodified `origin/main` in the same container before the change, so it
-  is environmental or pre-existing, not a regression. Every other e2e test passes.
-- The WebKit (`mobile`) Playwright project cannot run in this container — no WebKit
+- `tests/e2e/performance.spec.ts` → `/en` used to time out on `waitUntil: "networkidle"`,
+  on this change and on every commit before it. The keep-alive `POST
+  /api/analytics/events` beacon never reported completion back to the page, so the
+  page's network never went quiet. Fixed by sending conversion events with
+  `navigator.sendBeacon`; the suite is now 139 passed / 0 failed.
+
+## Known environment limits
+
+- The WebKit (`mobile`) Playwright project cannot run in the agent container — no WebKit
   build is installed. The mobile viewport was exercised on Chromium instead; CI runs
   the repository's own configuration with both browsers.
+
+## Where production actually runs
+
+Worth writing down, because it is not obvious from the repository and it is easy to
+verify the wrong thing:
+
+- **`mygyeol.kr` is a Cloudflare Worker.** It is built by `pnpm build:sites`
+  (`vinext build` + `scripts/fix-font-urls.mjs`, bundled through
+  `@cloudflare/vite-plugin` with `worker/index.ts` as the entry) and deployed with
+  `wrangler`. The live responses carry `server: cloudflare` and `vary: … X-Vinext-*`,
+  and carry no `x-vercel-id`.
+- **The Vercel project `innerarc-gyeol` also builds every push to `main`** and reports
+  its production deployments as READY with `mygyeol.kr` in their alias list, but that
+  is not what the domain serves. A green Vercel deployment is therefore *not* evidence
+  that a change reached users.
+- There is no GitHub Actions workflow that deploys. `.github/workflows/ci.yml` only
+  verifies. Shipping to production is a `wrangler` deploy that needs Cloudflare
+  credentials, which no CI job and no agent container currently holds.
+
+To check what is actually live, request the site and look for a route or string the
+build introduced — e.g. `POST /api/reviews` answering anything other than 404.
