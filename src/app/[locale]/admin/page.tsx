@@ -6,6 +6,7 @@ import { AdminInquiryList, type AdminInquiry } from "@/components/admin-inquiry-
 import { AdminMetricsPanel } from "@/components/admin-metrics-panel";
 import { AdminOperationsPanel } from "@/components/admin-operations-panel";
 import { AdminPaymentReadinessPanel } from "@/components/admin-payment-readiness-panel";
+import { AdminReviewList } from "@/components/admin-review-list";
 import { AdminTrafficPanel } from "@/components/admin-traffic-panel";
 import { summarizeOrders, type OrderRow } from "@/server/admin-metrics";
 import { isLocale } from "@/i18n/config";
@@ -18,6 +19,7 @@ import {
   summarizeOperationalMetrics,
 } from "@/server/operational-metrics";
 import { listOperationalMetrics, readStoredPageContent } from "@/server/admin-storage";
+import { listReviewsForModeration } from "@/server/reviews";
 import {
   DEFAULT_OPERATIONS_GATE,
   readOperationsGate,
@@ -124,10 +126,14 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
       day: "2-digit",
     }).format(day);
   });
-  const [operationalRows, storedPageContent] = await Promise.all([
+  const [operationalRows, storedPageContent, moderationQueue] = await Promise.all([
     listOperationalMetrics(admin, metricDates),
     readStoredPageContent(admin),
+    listReviewsForModeration(admin, 30),
   ]);
+  const awaitingReviewApproval = moderationQueue.data.filter(
+    (review) => review.status === "pending" && review.public_consent,
+  ).length;
   const operationalMetrics = summarizeOperationalMetrics(
     operationalRows.rows,
     metricDates,
@@ -166,6 +172,7 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
         </article>
         <article><strong>{reports.count ?? 0}</strong><span>전체 리포트</span></article>
         <article><strong>{openInquiries.count ?? 0}</strong><span>미처리 문의</span></article>
+        <article><strong>{awaitingReviewApproval}</strong><span>공개 대기 후기</span></article>
         <article><strong>{readiness.open ? "열림" : "닫힘"}</strong><span>결제 설정</span></article>
         <article>
           <strong>{settings.data?.sales_enabled === false ? "중지" : "접수중"}</strong>
@@ -234,6 +241,17 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
       <section className="admin-orders">
         <h2>고객 문의</h2>
         <AdminInquiryList inquiries={(inquiries.data ?? []) as AdminInquiry[]} />
+      </section>
+      <section className="admin-orders">
+        <h2>리딩 후기 검토</h2>
+        <p className="plans-notice">
+          후기는 접수만으로는 절대 공개되지 않습니다. 작성자가 공개에 동의했고 이 화면에서
+          승인한 후기만 홈페이지에 표시되며, 작성자가 공개를 철회하면 즉시 내려갑니다.
+        </p>
+        <AdminReviewList
+          available={moderationQueue.available}
+          reviews={moderationQueue.data}
+        />
       </section>
     </main>
   );

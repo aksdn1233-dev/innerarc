@@ -2,9 +2,12 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { MeteorTrails, SceneDivider } from "@/components/brand-visuals";
 import { CampaignNotice } from "@/components/campaign-notice";
+import { ReviewEvidenceSection } from "@/components/review-evidence-section";
 import { captureConversionEvent } from "@/core/analytics";
 import type { ProductPricingSnapshot } from "@/core/product-prices";
+import type { PublicReview } from "@/core/reviews";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 import type { AdminPageContent } from "@/server/admin-content";
@@ -14,6 +17,8 @@ type Props = {
   dictionary: Dictionary;
   pricing: ProductPricingSnapshot;
   pageContent: AdminPageContent;
+  /** Approved, still-consented reviews only. Empty is the normal, honest case. */
+  reviews: readonly PublicReview[];
 };
 
 type ReadingProductId = "comprehensive" | "premium_pdf";
@@ -80,7 +85,7 @@ const readingProducts = {
 const copy = {
   ko: {
     navLabel: "홈페이지 탐색",
-    nav: [["#preview", "리포트 예시"], ["#method", "리딩 방식"], ["#products", "상품 안내"]],
+    nav: [["#preview", "리포트 예시"], ["#method", "리딩 방식"], ["#products", "상품 안내"], ["#evidence", "후기·자주 묻는 질문"]],
     heroKicker: "사주명리와는 다른, 현실 선택 중심의 리딩",
     heroTitle: "왜 나는 같은 선택을 반복할까요?",
     heroBody: "타고난 성향과 반복되는 관계·일·돈의 패턴을 살펴보고, 올해 어떤 선택에 힘을 주어야 할지 정리해드립니다.",
@@ -115,7 +120,7 @@ const copy = {
   },
   en: {
     navLabel: "Home navigation",
-    nav: [["#preview", "Report examples"], ["#method", "Method"], ["#products", "Readings"]],
+    nav: [["#preview", "Report examples"], ["#method", "Method"], ["#products", "Readings"], ["#evidence", "Reviews and FAQ"]],
     heroKicker: "A different kind of reading, centered on real-life choices",
     heroTitle: "Why do I keep making the same choices?",
     heroBody: "Explore your natural tendencies and recurring patterns in relationships, work, and money—then clarify where to place your energy this year.",
@@ -171,7 +176,7 @@ function isValidGregorianDate(value: string) {
     && date.getUTCDate() === day;
 }
 
-export function HomeExperience({ locale, dictionary: d, pricing, pageContent }: Props) {
+export function HomeExperience({ locale, dictionary: d, pricing, pageContent, reviews }: Props) {
   const [selectedProduct, setSelectedProduct] = useState<ReadingProductId>("comprehensive");
   const [focusId, setFocusId] = useState<FocusId>("relationships");
   const [error, setError] = useState<IntakeError | null>(null);
@@ -311,6 +316,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent }: 
         <CampaignNotice locale={locale} pricing={pricing} />
 
         <section className="hero home-hero" aria-labelledby="hero-title">
+          <MeteorTrails className="home-hero-meteors" />
           <div className="home-hero-copy">
             <p className="hero-kicker">{t.heroKicker}</p>
             <h1 id="hero-title">{t.heroTitle}</h1>
@@ -336,6 +342,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent }: 
         </section>
 
         <section className="pattern-fields reading-method" id="method" aria-labelledby="method-title">
+          <SceneDivider className="method-divider" />
           <div className="section-heading">
             <p className="eyebrow">{locale === "ko" ? "계산과 해석" : "Calculation and interpretation"}</p>
             <h2 id="method-title">{t.methodTitle}</h2>
@@ -369,6 +376,8 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent }: 
           </div>
           <p className="payment-reassurance"><strong>{t.paymentFacts}</strong><br />{t.paymentAccess} <Link href={`/${locale}/support`}>{t.support}</Link></p>
         </section>
+
+        <ReviewEvidenceSection locale={locale} reviews={reviews} />
 
         <section className="form-section home-form-section" id="onboarding" aria-labelledby="onboarding-title" ref={formRef}>
           <header className="form-section-heading">
