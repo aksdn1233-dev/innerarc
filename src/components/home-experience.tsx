@@ -221,6 +221,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   const [heroVisible, setHeroVisible] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
   const trackedRef = useRef(new Set<string>());
   const sampleRef = useRef<HTMLElement>(null);
   const productsRef = useRef<HTMLElement>(null);
@@ -293,6 +294,35 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
 
     return () => observers.forEach((observer) => observer.disconnect());
   }, [locale]);
+
+  // The hero clip is fetched after first paint, so it never competes with the page for
+  // the first bytes and never counts against the initial payload. If no clip is published
+  // the load simply fails and the poster stays — which is the intended state until one is.
+  useEffect(() => {
+    const video = heroVideoRef.current;
+    if (!video) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let cancelled = false;
+    const start = () => {
+      if (cancelled) return;
+      video.load();
+      // Autoplay is allowed for a muted, inline video; a rejection is not an error worth
+      // surfacing, it just leaves the poster showing.
+      void video.play().catch(() => {});
+    };
+
+    // Safari has no requestIdleCallback, so a timeout stands in for it there.
+    const canIdle = typeof window.requestIdleCallback === "function";
+    const handle = canIdle
+      ? window.requestIdleCallback(start, { timeout: 2_500 })
+      : window.setTimeout(start, 1_200);
+    return () => {
+      cancelled = true;
+      if (canIdle) window.cancelIdleCallback(handle);
+      else window.clearTimeout(handle);
+    };
+  }, []);
 
   function trackFormStart() {
     if (trackedRef.current.has("form-start")) return;
@@ -409,9 +439,31 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             thumb. Everything explanatory has moved below the fold, where it belongs. */}
         <section className="cinema-hero" aria-labelledby="hero-title" ref={heroRef}>
           <NightHorizon className="cinema-hero-scene" />
-          {/* 태율(太律), the numerology guide from the supplied character sheet. Decorative:
-              the title beside it carries the meaning, so it is not announced again. */}
-          <div className="cinema-hero-portrait" aria-hidden="true" />
+          {/* 태율(太律), the numerology guide from the supplied character sheet.
+              Decorative: the title beside it carries the meaning, so it is not announced
+              again.
+
+              This plays a looping clip of him when one exists at the paths below, and
+              shows the still portrait as its poster until then — so dropping the file in
+              is the whole installation, with no code change and no broken frame while it
+              is missing. `preload="none"` keeps the clip out of the initial payload; the
+              effect below starts it once the page is idle, and never when the visitor has
+              asked for reduced motion. */}
+          <video
+            aria-hidden="true"
+            className="cinema-hero-portrait"
+            disablePictureInPicture
+            loop
+            muted
+            playsInline
+            poster="/images/taeyul-hero.jpg"
+            preload="none"
+            ref={heroVideoRef}
+            tabIndex={-1}
+          >
+            <source src="/videos/taeyul-hero.webm" type="video/webm" />
+            <source src="/videos/taeyul-hero.mp4" type="video/mp4" />
+          </video>
           <MeteorTrails className="cinema-hero-meteors" />
           <div className="cinema-hero-veil" aria-hidden="true" />
 

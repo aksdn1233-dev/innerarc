@@ -7808,3 +7808,66 @@ summary {
   }
   .cinema-hero-portrait::before { transform: scale(1.06); }
 }
+
+/* ---- The portrait is a <video> now -------------------------------------------------
+   A replaced element cannot carry ::before/::after, so the drift and the sheen move onto
+   the hero itself. The poster fills the frame exactly as the still did, which is what
+   makes "no clip yet" indistinguishable from "clip is loading". */
+
+.cinema-hero-portrait {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: cover;
+  object-position: 62% 12%;
+  pointer-events: none;
+  /* The still needs the slow push to feel alive; a real clip carries its own motion, so
+     the drift is gentle enough to sit under either without fighting it. */
+  animation: taeyul-drift 19s ease-in-out infinite;
+  mask-image: linear-gradient(to bottom, #000 0%, #000 52%, transparent 88%);
+  will-change: transform;
+}
+
+.cinema-hero-portrait::before,
+.cinema-hero-portrait::after { content: none; }
+
+/* Gold light crossing the robe, now drawn by the hero rather than by the portrait. */
+.cinema-hero::after {
+  position: absolute;
+  z-index: -1;
+  top: -20%;
+  bottom: -20%;
+  left: 0;
+  width: 42%;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(220, 207, 161, 0.16) 42%,
+    rgba(247, 238, 210, 0.4) 50%,
+    rgba(220, 207, 161, 0.16) 58%,
+    transparent 100%
+  );
+  animation: taeyul-sheen 11s ease-in-out infinite;
+  content: "";
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+@media (min-width: 900px) {
+  .cinema-hero-portrait {
+    left: auto;
+    width: min(52%, 720px);
+    object-position: center 10%;
+    mask-image: linear-gradient(to right, transparent 0%, #000 34%, #000 100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cinema-hero-portrait,
+  .cinema-hero::after {
+    animation: none;
+  }
+}

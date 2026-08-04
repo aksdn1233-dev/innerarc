@@ -39,7 +39,10 @@ export function buildContentSecurityPolicy(
     "img-src 'self' blob: data:",
     "font-src 'self' data:",
     `connect-src ${connectSources}`,
-    "media-src 'none'",
+    // The opening screen plays a looping hero clip served from this origin. Kept to
+    // 'self' rather than opened up: no third-party media host is used, and a remote one
+    // would be a request to somewhere else on every visit to the home page.
+    "media-src 'self'",
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",
