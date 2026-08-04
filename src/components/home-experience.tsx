@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { MeteorTrails, SceneDivider } from "@/components/brand-visuals";
+import { MeteorTrails, NightHorizon, SceneDivider } from "@/components/brand-visuals";
 import { CampaignNotice } from "@/components/campaign-notice";
 import { ReviewEvidenceSection } from "@/components/review-evidence-section";
 import { captureConversionEvent } from "@/core/analytics";
@@ -217,6 +217,11 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   const [focusId, setFocusId] = useState<FocusId>("relationships");
   const [error, setError] = useState<IntakeError | null>(null);
   const [intakeVisible, setIntakeVisible] = useState(false);
+  // The opening screen already carries the same action at thumb height. Showing the
+  // sticky bar there would cover it, so the bar waits until the hero has scrolled away.
+  const [heroVisible, setHeroVisible] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const heroRef = useRef<HTMLElement>(null);
   const trackedRef = useRef(new Set<string>());
   const sampleRef = useRef<HTMLElement>(null);
   const productsRef = useRef<HTMLElement>(null);
@@ -277,6 +282,15 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
         setIntakeVisible(Boolean(entry?.isIntersecting));
       }, { threshold: 0.05, rootMargin: "0px 0px -8% 0px" });
       observer.observe(form);
+      observers.push(observer);
+    }
+
+    const hero = heroRef.current;
+    if (hero) {
+      const observer = new IntersectionObserver(([entry]) => {
+        setHeroVisible(Boolean(entry?.isIntersecting));
+      }, { threshold: 0.12 });
+      observer.observe(hero);
       observers.push(observer);
     }
 
@@ -351,31 +365,85 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   return (
     <>
       <main className={pricing.campaignActive ? "shell home-shell has-campaign" : "shell home-shell"} id="main-content" tabIndex={-1}>
-        <header className="topbar home-topbar">
+        {/* Over the opening screen the header is chrome, not content: it goes transparent
+            and hands its links to a panel, so nothing competes with the title. */}
+        <header className="topbar home-topbar is-over-cinema">
           <Link className="brand" href={`/${locale}`}><strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong><small>{d.brandTagline}</small></Link>
           <nav className="home-nav" aria-label={t.navLabel}>{t.nav.map(([href, label]) => <a href={href} key={href}>{label}</a>)}</nav>
           <div className="home-header-actions">
             <a className="header-start-link" href="#onboarding">{locale === "ko" ? "리딩 시작하기" : "Start reading"}</a>
             <Link className="locale-switch" href={`/${otherLocale}`}>{otherLocale === "ko" ? "한국어" : "English"}</Link>
           </div>
+          <button
+            aria-controls="home-menu"
+            aria-expanded={menuOpen}
+            aria-label={menuOpen ? (locale === "ko" ? "메뉴 닫기" : "Close menu") : (locale === "ko" ? "메뉴 열기" : "Open menu")}
+            className="cinema-menu-button"
+            onClick={() => setMenuOpen((open) => !open)}
+            type="button"
+          >
+            <span aria-hidden="true" />
+            <span aria-hidden="true" />
+            <span aria-hidden="true" />
+          </button>
         </header>
+
+        <div className={menuOpen ? "cinema-menu is-open" : "cinema-menu"} id="home-menu" hidden={!menuOpen}>
+          <button
+            className="cinema-menu-close"
+            onClick={() => setMenuOpen(false)}
+            type="button"
+          >
+            {locale === "ko" ? "닫기" : "Close"}
+          </button>
+          <nav aria-label={t.navLabel}>
+            {t.nav.map(([href, label]) => (
+              <a href={href} key={href} onClick={() => setMenuOpen(false)}>{label}</a>
+            ))}
+            <Link href={`/${locale}/profile`} onClick={() => setMenuOpen(false)}>{t.freeCardButton}</Link>
+            <Link href={`/${locale}/orders`} onClick={() => setMenuOpen(false)}>{locale === "ko" ? "구매 내역" : "Find a purchase"}</Link>
+            <Link href={`/${locale}/support`} onClick={() => setMenuOpen(false)}>{locale === "ko" ? "고객 문의" : "Support"}</Link>
+            <Link href={`/${otherLocale}`} onClick={() => setMenuOpen(false)}>{otherLocale === "ko" ? "한국어" : "English"}</Link>
+          </nav>
+        </div>
 
         <CampaignNotice locale={locale} pricing={pricing} />
 
-        <section className="hero home-hero" aria-labelledby="hero-title">
-          <MeteorTrails className="home-hero-meteors" />
-          <div className="home-hero-copy">
-            <p className="hero-kicker">{t.heroKicker}</p>
-            <h1 id="hero-title">{t.heroTitle}</h1>
-            <p className="hero-copy">{t.heroBody}</p>
-            <div className="hero-actions">
-              <a className="primary-button" href="#onboarding" onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "hero" })}>{t.primary}</a>
-              {/* The free calculation at /profile existed but nothing on this page linked to
-                  it, so a visitor who was not ready to pay had no next step but to leave. */}
-              <Link className="ghost-button" href={`/${locale}/profile`} onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "hero_free" })}>{t.freeCta}</Link>
-            </div>
-            <p className="hero-note">{t.freeNote}</p>
-            <p className="hero-note">{t.heroNote}</p>
+        {/* A full-height opening screen rather than a band of text above more text: the
+            art fills the viewport, the title carries it, and one action sits under the
+            thumb. Everything explanatory has moved below the fold, where it belongs. */}
+        <section className="cinema-hero" aria-labelledby="hero-title" ref={heroRef}>
+          <NightHorizon className="cinema-hero-scene" />
+          {/* 태율(太律), the numerology guide from the supplied character sheet. Decorative:
+              the title beside it carries the meaning, so it is not announced again. */}
+          <div className="cinema-hero-portrait" aria-hidden="true" />
+          <MeteorTrails className="cinema-hero-meteors" />
+          <div className="cinema-hero-veil" aria-hidden="true" />
+
+          <div className="cinema-hero-copy">
+            <p className="cinema-kicker">{t.heroKicker}</p>
+            <h1 className="cinema-title" id="hero-title">{t.heroTitle}</h1>
+            <p className="cinema-quote">{t.heroBody}</p>
+          </div>
+
+          <div className="cinema-hero-actions">
+            <a
+              className="cinema-cta"
+              href="#onboarding"
+              onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "hero" })}
+            >
+              {t.primary}
+            </a>
+            {/* The free calculation at /profile existed but nothing on this page linked to
+                it, so a visitor who was not ready to pay had no next step but to leave. */}
+            <Link
+              className="cinema-cta-secondary"
+              href={`/${locale}/profile`}
+              onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "hero_free" })}
+            >
+              {t.freeCta}
+            </Link>
+            <p className="cinema-note">{t.heroNote}</p>
           </div>
         </section>
 
@@ -540,7 +608,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
           <small>{locale === "ko" ? "별루프 · 대표 박서준 · 사업자등록번호 482-12-03629 · 부산광역시 북구" : "Byeolloof · Busan, Republic of Korea"}</small>
         </footer>
       </main>
-      {!intakeVisible && (
+      {!intakeVisible && !heroVisible && (
         <a className="mobile-purchase-bar" href="#onboarding" onClick={() => {
           captureConversionEvent("primary_cta_click", locale, { location: "sticky" });
           captureConversionEvent("product_select", locale, { productCode: "pro_30d", location: "product_card" });

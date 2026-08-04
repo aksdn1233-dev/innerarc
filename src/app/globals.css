@@ -7436,3 +7436,285 @@ summary {
   font-weight: 700;
   opacity: 0.78;
 }
+
+/* ---- Cinematic opening screen ------------------------------------------------------
+   A full-viewport dark hero: art edge to edge, the title carrying the screen, and one
+   action within thumb reach at the bottom. The page below stays light — the contrast
+   between the two is what makes the opening read as a threshold rather than a banner. */
+
+.cinema-hero {
+  position: relative;
+  display: flex;
+  min-height: 100svh;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0;
+  margin: 0;
+  background: #0a1020;
+  color: #f7f1e7;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.cinema-hero-scene,
+.cinema-hero-meteors {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.cinema-hero-meteors {
+  z-index: -1;
+  opacity: 0.5;
+}
+
+/* The art has to stay art and the words have to stay readable. A gradient veil weighted
+   to the bottom buys contrast for the copy without flattening the sky above it. */
+.cinema-hero-veil {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(6, 11, 24, 0.62) 0%,
+    rgba(6, 11, 24, 0.22) 32%,
+    rgba(6, 11, 24, 0.58) 66%,
+    rgba(6, 11, 24, 0.92) 100%
+  );
+}
+
+.cinema-hero-copy {
+  padding: 0 clamp(24px, 7vw, 56px);
+  margin-top: auto;
+  text-align: center;
+}
+
+.cinema-kicker {
+  margin: 0 0 14px;
+  color: #d8c191;
+  font-size: clamp(0.82rem, 2.6vw, 0.95rem);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.cinema-title {
+  margin: 0;
+  color: #fffaf0;
+  font-size: clamp(2.9rem, 12vw, 5.4rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+  text-shadow: 0 2px 26px rgba(4, 9, 20, 0.72), 0 0 62px rgba(200, 168, 106, 0.22);
+  text-wrap: balance;
+}
+
+.cinema-quote {
+  max-width: 34ch;
+  margin: 20px auto 0;
+  color: rgba(247, 241, 231, 0.84);
+  font-size: clamp(0.98rem, 3.4vw, 1.12rem);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.cinema-quote::before { content: "“ "; }
+.cinema-quote::after { content: " ”"; }
+
+.cinema-hero-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  padding: clamp(30px, 8vw, 52px) clamp(24px, 7vw, 56px) calc(clamp(26px, 6vw, 44px) + env(safe-area-inset-bottom));
+  margin-top: auto;
+}
+
+.cinema-cta,
+.cinema-cta-secondary {
+  display: flex;
+  min-height: 60px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  font-size: 1.06rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.cinema-cta {
+  border: 1px solid #cfe0ff;
+  background: linear-gradient(180deg, #e8f0ff 0%, #cddcfa 100%);
+  color: #13224a;
+  box-shadow: 0 14px 36px rgba(6, 12, 28, 0.5);
+}
+
+.cinema-cta-secondary {
+  border: 1px solid rgba(247, 241, 231, 0.42);
+  background: rgba(247, 241, 231, 0.07);
+  color: #f7f1e7;
+}
+
+.cinema-cta:hover,
+.cinema-cta:focus-visible { filter: brightness(1.06); }
+.cinema-cta-secondary:hover,
+.cinema-cta-secondary:focus-visible { background: rgba(247, 241, 231, 0.16); }
+
+.cinema-note {
+  margin: 4px 0 0;
+  color: rgba(247, 241, 231, 0.74);
+  font-size: 0.86rem;
+  text-align: center;
+}
+
+/* The bar sits over the opening screen and duplicates its action, so it stays hidden
+   until the hero is behind the visitor. */
+.cinema-hero ~ .mobile-purchase-bar { display: flex; }
+
+@media (min-width: 900px) {
+  .cinema-hero-copy { margin-top: 0; padding-top: clamp(96px, 14vh, 190px); }
+  .cinema-hero-actions {
+    max-width: 460px;
+    flex-direction: row;
+    align-self: center;
+    gap: 14px;
+  }
+  .cinema-hero-actions .cinema-cta,
+  .cinema-hero-actions .cinema-cta-secondary { flex: 1; }
+  .cinema-note { flex-basis: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cinema-hero-meteors { display: none; }
+}
+
+/* ---- 태율 portrait and the character sheet's palette --------------------------------
+   Colours come from the supplied sheet (PANTONE 2025 × 한국 전통색): Eclipse #1F1D2B,
+   Deep Purple #4B2E63, Toffee #7A5A2E, Almond Milk #DCCFA1, Aqua Foam #79A8A1. */
+
+.cinema-hero {
+  background: #1f1d2b;
+}
+
+.cinema-hero-portrait {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: url("/images/taeyul-hero.jpg");
+  background-position: 62% 12%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* The art is a portrait crop; on wide screens it holds the right half and dissolves
+     into the sky rather than being stretched across the whole band. */
+  mask-image: linear-gradient(to bottom, #000 0%, #000 52%, transparent 88%);
+}
+
+.cinema-kicker { color: #dccfa1; }
+
+.cinema-title {
+  text-shadow: 0 2px 26px rgba(15, 13, 25, 0.85), 0 0 62px rgba(75, 46, 99, 0.5);
+}
+
+.cinema-hero-veil {
+  background: linear-gradient(
+    to bottom,
+    rgba(31, 29, 43, 0.58) 0%,
+    rgba(31, 29, 43, 0.14) 26%,
+    rgba(31, 29, 43, 0.62) 62%,
+    rgba(31, 29, 43, 0.95) 100%
+  );
+}
+
+.cinema-cta {
+  border-color: #dccfa1;
+  background: linear-gradient(180deg, #e6dcbd 0%, #cbb98c 100%);
+  color: #241d16;
+}
+
+.cinema-cta-secondary {
+  border-color: rgba(220, 207, 161, 0.5);
+  color: #dccfa1;
+}
+
+.cinema-menu { background: #1f1d2b; }
+.cinema-menu nav a { color: #f3ecdd; }
+.cinema-menu-close { border-color: rgba(220, 207, 161, 0.45); color: #dccfa1; }
+
+@media (min-width: 900px) {
+  .cinema-hero-portrait {
+    left: auto;
+    width: min(52%, 720px);
+    background-position: center 10%;
+    mask-image: linear-gradient(to right, transparent 0%, #000 34%, #000 100%);
+  }
+  .cinema-hero-copy { text-align: left; max-width: 640px; }
+  .cinema-quote { margin-left: 0; }
+  .cinema-hero-actions { align-self: flex-start; margin-left: clamp(24px, 7vw, 56px); }
+}
+
+/* ---- Corrections after looking at the rendered opening screen ----------------------- */
+
+/* `.shell` is a centred column with a 16px gutter, so the hero was inset and the page
+   background showed as two cream strips down the sides. The opening screen has to leave
+   that column and take the whole viewport. */
+.cinema-hero {
+  width: 100vw;
+  margin-right: calc(50% - 50vw);
+  margin-left: calc(50% - 50vw);
+}
+
+/* The base `.home-topbar` paints a solid `#07111f` bar. Over the hero the header is
+   chrome, so it is beaten on specificity rather than left to sit as a box on the art. */
+.home-shell .home-topbar.is-over-cinema {
+  border-color: transparent;
+  background: transparent;
+}
+
+.home-shell .home-topbar.is-over-cinema .cinema-menu-button {
+  border-color: rgba(220, 207, 161, 0.42);
+  background: rgba(31, 29, 43, 0.55);
+}
+
+/* Copy and actions were both pushed by `margin-top: auto`, which split them to opposite
+   ends and left a dead band between. They belong together, low on the screen. */
+.cinema-hero-copy { margin-top: auto; padding-bottom: 6px; }
+.cinema-hero-actions { margin-top: 0; }
+
+/* The title crosses the portrait's face. A pool of shadow behind the copy buys the
+   contrast back without dimming the whole picture. */
+.cinema-hero-copy::before {
+  position: absolute;
+  z-index: -1;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 74%;
+  background: radial-gradient(120% 62% at 50% 74%, rgba(20, 18, 30, 0.86) 0%, rgba(20, 18, 30, 0.5) 55%, transparent 100%);
+  content: "";
+}
+
+@media (min-width: 900px) {
+  .cinema-hero-copy { padding-top: 0; }
+  .cinema-hero-copy::before {
+    background: radial-gradient(80% 70% at 26% 62%, rgba(20, 18, 30, 0.88) 0%, rgba(20, 18, 30, 0.42) 58%, transparent 100%);
+  }
+}
+
+@media (max-width: 899px) {
+  /* The inline nav and the locale link are duplicated inside the panel, and on a phone
+     they crowd the brand. Raised specificity because the base header sets these to flex
+     in its own phone query. */
+  .home-shell .home-topbar.is-over-cinema .home-nav,
+  .home-shell .home-topbar.is-over-cinema .home-header-actions {
+    display: none;
+  }
+
+  .home-shell .home-topbar.is-over-cinema .cinema-menu-button {
+    display: flex;
+    flex: 0 0 auto;
+  }
+}
