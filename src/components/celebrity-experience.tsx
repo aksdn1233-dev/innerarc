@@ -18,6 +18,7 @@ import type { CelebrityCopy } from "@/i18n/celebrity-copy";
 import { buildCelebrityMatchShare } from "@/core/share";
 import { ShareCardPanel } from "@/components/share-card-panel";
 import { focusAndScroll, scrollToElement } from "@/components/accessibility";
+import { WebtoonReveal } from "@/components/webtoon-reveal";
 
 type Props = { locale: Locale; copy: CelebrityCopy };
 
@@ -93,7 +94,8 @@ export function CelebrityExperience({ locale, copy }: Props) {
         </form>
 
         {profile && comparison && (
-          <section className="celebrity-result" id="celebrity-result" aria-live="polite" tabIndex={-1}>
+          <section className="celebrity-result webtoon-flow webtoon-adapt" id="celebrity-result" aria-live="polite" tabIndex={-1}>
+            <WebtoonReveal />
             <header>
               <p className="eyebrow">{copy.result}</p>
               <h2>{comparison.scopeLabel}</h2>
@@ -126,12 +128,14 @@ export function CelebrityExperience({ locale, copy }: Props) {
               ))}
             </div>
 
-            <p className="disclaimer">{comparison.uncertainty}</p>
-            {comparison.matches[0] && (
-              <ShareCardPanel payload={buildCelebrityMatchShare({ locale, match: comparison.matches[0] })} />
-            )}
-            <code className="rule-version">{copy.ruleVersion}: {comparison.ruleVersion}</code>
-            <button className="text-button" type="button" onClick={reset}>{copy.reset}</button>
+            <section className="webtoon-outro">
+              <p className="disclaimer">{comparison.uncertainty}</p>
+              {comparison.matches[0] && (
+                <ShareCardPanel payload={buildCelebrityMatchShare({ locale, match: comparison.matches[0] })} />
+              )}
+              <code className="rule-version">{copy.ruleVersion}: {comparison.ruleVersion}</code>
+              <button className="text-button" type="button" onClick={reset}>{copy.reset}</button>
+            </section>
           </section>
         )}
       </main>

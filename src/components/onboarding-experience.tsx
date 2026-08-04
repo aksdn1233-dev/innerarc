@@ -18,6 +18,7 @@ import {
 import { buildCoreProfileShare } from "@/core/share";
 import { ShareCardPanel } from "@/components/share-card-panel";
 import { focusAndScroll, scrollToElement } from "@/components/accessibility";
+import { WebtoonReveal } from "@/components/webtoon-reveal";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 
@@ -220,8 +221,9 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
         </section>
 
         {result && profile && integratedProfile && lifestyle && context && (
-          <section className="result-section" id="result" aria-live="polite" tabIndex={-1}>
-            <article className="result-card">
+          <section className="result-section webtoon-flow" id="result" aria-live="polite" tabIndex={-1}>
+            <WebtoonReveal />
+            <article className="result-card webtoon-adapt">
               <header className="result-header">
                 <p className="eyebrow">{d.resultEyebrow}</p>
                 <p className="archetype">{d.archetype} · {profile.archetype}</p>
@@ -458,18 +460,20 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
                 <p>{d.masterReason}</p>
               </details>
 
-              <ShareCardPanel payload={buildCoreProfileShare({
-                locale,
-                lifePath: result.lifePath.value,
-                archetype: profile.archetype,
-                summary: profile.summary,
-                strengths: profile.strengths,
-              })} />
+              <section className="webtoon-outro">
+                <ShareCardPanel payload={buildCoreProfileShare({
+                  locale,
+                  lifePath: result.lifePath.value,
+                  archetype: profile.archetype,
+                  summary: profile.summary,
+                  strengths: profile.strengths,
+                })} />
 
-              <p className="disclaimer">{d.disclaimer}</p>
-              <button className="text-button" type="button" onClick={restart}>
-                {d.restart}
-              </button>
+                <p className="disclaimer">{d.disclaimer}</p>
+                <button className="text-button" type="button" onClick={restart}>
+                  {d.restart}
+                </button>
+              </section>
             </article>
           </section>
         )}

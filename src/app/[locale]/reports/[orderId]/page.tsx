@@ -2,9 +2,12 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ORDER_PASS_COOKIE, readOrderPass, readOrderTicket } from "@/server/order-pass";
+import { MeteorTrails, NightHorizon } from "@/components/brand-visuals";
 import { PaymentStatusWaiting } from "@/components/payment-status-waiting";
 import { ReportActions } from "@/components/report-actions";
 import { ReviewRequestPanel } from "@/components/review-request-panel";
+import { WebtoonCta, WebtoonCue, WebtoonOrbs, WebtoonPanel } from "@/components/webtoon";
+import { WebtoonReveal } from "@/components/webtoon-reveal";
 import { toOwnReviewState } from "@/core/reviews";
 import { isLocale } from "@/i18n/config";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -121,7 +124,6 @@ export default async function PurchasedReportPage({
   const detailV2 = report.sectionPlan === "detail-39000-v2" && report.calculationBasis;
   const premiumV2 = report.sectionPlan === "premium-79000-v2" && report.calculationBasis;
   const structuredV2 = basicV2 || detailV2 || premiumV2;
-  const deepBasis = report.calculationBasis!;
   const directSection = structuredV2
     ? report.sections.find((section) => section.title === (
         report.concern
@@ -194,199 +196,286 @@ export default async function PurchasedReportPage({
     .split(/\n{2,}/)
     .filter((paragraph) => paragraph.trim() && paragraph.trim() !== report.characterLabel)
     .at(0);
+  // Every structured tier reads its numbers off the same calculation basis, so the strip
+  // that used to be written out three times is built once here.
+  const orbItems = structuredV2
+    ? [
+        { label: locale === "ko" ? "생명수" : "Life path", value: numberValue(structuredV2.lifePath) },
+        { label: locale === "ko" ? "생일수" : "Birthday", value: numberValue(structuredV2.birthday) },
+        { label: locale === "ko" ? "태도수" : "Attitude", value: numberValue(structuredV2.attitude) },
+        { label: locale === "ko" ? "연도수" : "Birth year", value: numberValue(structuredV2.birthYear) },
+        {
+          label: locale === "ko" ? "개인년" : "Personal year",
+          note: String(structuredV2.serviceYear),
+          value: numberValue(structuredV2.personalYear),
+        },
+      ]
+    : [];
+  const chapterBadge = (index: number) =>
+    locale === "ko" ? `제 ${index + 1} 장` : `Chapter ${String(index + 1).padStart(2, "0")}`;
   return (
-    <main
-      className={`shell paid-report-shell${basicV2 ? " basic-report-shell" : ""}${detailV2 ? " detail-report-shell" : ""}${premiumV2 ? " premium-report-shell" : ""}`}
-      id="main-content"
-    >
-      <header className="paid-report-header">
-        <Link className="brand" href={`/${locale}`}><strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong></Link>
-        <p className="eyebrow">
-          {report.tierLabel ?? (locale === "ko" ? "구매 리포트" : "Purchased report")}
-        </p>
-        <h1>{report.title}</h1>
-        {report.customerName && <p>{report.customerName}</p>}
-        <small>{new Intl.DateTimeFormat(locale === "ko" ? "ko-KR" : "en-US").format(new Date(report.createdAt))}</small>
-      </header>
-      {basicV2 ? (
-        <section className="paid-report-summary basic-report-summary">
-          <p className="basic-report-basis">
-            {locale === "ko"
-              ? `생년월일 ${birthDateLabel} · 적용 연도 ${basicV2.serviceYear}`
-              : `Birth date ${birthDateLabel} · Applied year ${basicV2.serviceYear}`}
-          </p>
-          <h2>
-            {report.concern
-              ? (locale === "ko" ? "고객 질문" : "Your question")
-              : (locale === "ko" ? `${birthDateLabel}생 핵심 리포트` : `${birthDateLabel} core report`)}
-          </h2>
-          {report.concern && <blockquote>{report.concern}</blockquote>}
-          {directSection && (
-            <div className="basic-direct-answer">
-              <h2>{directSection.title}</h2>
-              <p>{directSection.body}</p>
-            </div>
-          )}
-          <div
-            className="basic-number-strip"
-            aria-label={locale === "ko" ? "계산된 핵심 숫자" : "Calculated core numbers"}
-          >
-            <span>{locale === "ko" ? "생명수" : "Life"} <strong>{numberValue(basicV2.lifePath)}</strong></span>
-            <span>{locale === "ko" ? "생일수" : "Birthday"} <strong>{numberValue(basicV2.birthday)}</strong></span>
-            <span>{locale === "ko" ? "태도수" : "Attitude"} <strong>{numberValue(basicV2.attitude)}</strong></span>
-            <span>{locale === "ko" ? "연도수" : "Birth year"} <strong>{numberValue(basicV2.birthYear)}</strong></span>
-            <span>{basicV2.serviceYear} {locale === "ko" ? "개인년" : "Personal year"} <strong>{numberValue(basicV2.personalYear)}</strong></span>
+    <>
+      <main
+        className={`shell paid-report-shell webtoon-shell${basicV2 ? " basic-report-shell" : ""}${detailV2 ? " detail-report-shell" : ""}${premiumV2 ? " premium-report-shell" : ""}`}
+        id="main-content"
+      >
+        <WebtoonReveal />
+
+        {/* The cover is a full screen of art with the title over it, opening the way the
+            home page opens rather than as a header band. The reader arrives from a payment
+            screen, and this is the moment the thing they bought is handed to them. The art
+            is decorative — the title beside it carries the meaning. */}
+        <section className="webtoon-cover" data-webtoon-panel="">
+          <NightHorizon className="cinema-hero-scene" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img alt="" aria-hidden="true" className="webtoon-cover-art" src="/images/taeyul-hero.jpg" />
+          <MeteorTrails className="cinema-hero-meteors" />
+          <div className="cinema-hero-veil" aria-hidden="true" />
+
+          <div className="cinema-hero-copy webtoon-cover-copy">
+            <Link className="brand webtoon-cover-brand" href={`/${locale}`}>
+              <strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong>
+            </Link>
+            <p className="cinema-kicker">
+              {report.tierLabel ?? (locale === "ko" ? "구매 리포트" : "Purchased report")}
+            </p>
+            <h1 className="cinema-title">{report.title}</h1>
+            {report.customerName && <p className="cinema-quote">{report.customerName}</p>}
+            <small className="webtoon-cover-date">
+              {new Intl.DateTimeFormat(locale === "ko" ? "ko-KR" : "en-US").format(new Date(report.createdAt))}
+            </small>
           </div>
-          {report.characterLabel && (
-            <p className="paid-report-character-label">{report.characterLabel}</p>
-          )}
-          {characterLead && <p className="basic-character-lead">{characterLead}</p>}
+          <WebtoonCue />
         </section>
-      ) : detailV2 || premiumV2 ? (
-        <section className={`paid-report-summary detail-report-summary${premiumV2 ? " premium-report-summary" : ""}`}>
-          <p className="detail-report-basis">
-            {locale === "ko"
-              ? `생년월일 ${birthDateLabel} · 적용 연도 ${deepBasis.serviceYear}`
-              : `Birth date ${birthDateLabel} · Applied year ${deepBasis.serviceYear}`}
-          </p>
-          <h2>
-            {report.concern
+
+        {structuredV2 ? (
+          <WebtoonPanel
+            badge={locale === "ko" ? "계산 기준" : "Basis"}
+            lead={locale === "ko"
+              ? `생년월일 ${birthDateLabel} · 적용 연도 ${structuredV2.serviceYear}`
+              : `Birth date ${birthDateLabel} · Applied year ${structuredV2.serviceYear}`}
+            title={report.concern
               ? (locale === "ko" ? "고객 질문" : "Your question")
               : (locale === "ko"
-                  ? `${birthDateLabel}생 ${premiumV2 ? "프리미엄 심층 리포트" : "상세 리포트"}`
-                  : `${birthDateLabel} ${premiumV2 ? "premium in-depth report" : "detailed report"}`)}
-          </h2>
-          {report.concern && <blockquote>{report.concern}</blockquote>}
-          {directSection && (
-            <div className="detail-direct-answer">
-              <h2>{directSection.title}</h2>
-              <p>{directSection.body}</p>
-            </div>
-          )}
-          {report.characterLabel && (
-            <p className="paid-report-character-label">{report.characterLabel}</p>
-          )}
-          {characterLead && <p className="detail-character-lead">{characterLead}</p>}
-          <details className="detail-number-details">
-            <summary>{locale === "ko" ? "핵심 숫자와 계산 기준 보기" : "View core numbers and basis"}</summary>
-            <div
-              className="detail-number-strip"
-              aria-label={locale === "ko" ? "계산된 핵심 숫자" : "Calculated core numbers"}
-            >
-              <span>{locale === "ko" ? "생명수" : "Life"} <strong>{numberValue(deepBasis.lifePath)}</strong></span>
-              <span>{locale === "ko" ? "생일수" : "Birthday"} <strong>{numberValue(deepBasis.birthday)}</strong></span>
-              <span>{locale === "ko" ? "태도수" : "Attitude"} <strong>{numberValue(deepBasis.attitude)}</strong></span>
-              <span>{locale === "ko" ? "연도수" : "Birth year"} <strong>{numberValue(deepBasis.birthYear)}</strong></span>
-              <span>{deepBasis.serviceYear} {locale === "ko" ? "개인년" : "Personal year"} <strong>{numberValue(deepBasis.personalYear)}</strong></span>
-            </div>
-            {numberSection && <p>{numberSection.body}</p>}
-          </details>
-        </section>
-      ) : (
-        <section className="paid-report-summary">
-          <h2>{report.summary}</h2>
-          <blockquote>{report.concern}</blockquote>
-          {report.characterLabel && (
-            <p className="paid-report-character-label">{report.characterLabel}</p>
-          )}
-        </section>
-      )}
-      {foundationSections.map((section) => (
-        <section className="paid-report-section" key={section.title}>
-          <h2>{section.title}</h2><p>{section.body}</p>
-        </section>
-      ))}
-      <section className={`paid-report-section${basicV2 ? " basic-report-actions" : ""}${detailV2 || premiumV2 ? " detail-report-actions" : ""}${premiumV2 ? " premium-report-actions" : ""}`}>
-        <h2>
-          {detailV2 || premiumV2
+                  ? `${birthDateLabel}생 ${premiumV2 ? "프리미엄 심층 리포트" : detailV2 ? "상세 리포트" : "핵심 리포트"}`
+                  : `${birthDateLabel} ${premiumV2 ? "premium in-depth report" : detailV2 ? "detailed report" : "core report"}`)}
+            tone="paper"
+          >
+            {report.concern && <blockquote>{report.concern}</blockquote>}
+          </WebtoonPanel>
+        ) : (
+          <WebtoonPanel
+            badge={locale === "ko" ? "요약" : "Summary"}
+            title={report.summary}
+            tone="paper"
+          >
+            <blockquote>{report.concern}</blockquote>
+          </WebtoonPanel>
+        )}
+
+        {/* The direct answer is the thing that was bought, so it gets a panel of its own
+            instead of a subheading inside the summary card. */}
+        {directSection && (
+          <WebtoonPanel
+            badge={locale === "ko" ? "결론" : "The answer"}
+            title={directSection.title}
+            tone="gold"
+          >
+            <p className="webtoon-body">{directSection.body}</p>
+            <WebtoonCue />
+          </WebtoonPanel>
+        )}
+
+        {report.characterLabel && (
+          <WebtoonPanel
+            badge={locale === "ko" ? "캐릭터" : "Character"}
+            title={report.characterLabel}
+            tone="paper"
+          >
+            {characterLead && <p className="webtoon-body">{characterLead}</p>}
+          </WebtoonPanel>
+        )}
+
+        {/* The calculation comes after the reading, not before it: someone who just opened
+            a report they paid for wants the answer, and the arithmetic behind it only once
+            they have a reason to care. That order predates the webtoon layout and survives it. */}
+        {structuredV2 && (
+          <WebtoonPanel
+            badge={locale === "ko" ? "숫자" : "Numbers"}
+            title={locale === "ko" ? "핵심 숫자" : "Core numbers"}
+            tone="night"
+          >
+            <WebtoonOrbs
+              items={orbItems}
+              label={locale === "ko" ? "계산된 핵심 숫자" : "Calculated core numbers"}
+            />
+            {numberSection && (
+              <details>
+                <summary>{locale === "ko" ? "계산 기준 보기" : "View the basis"}</summary>
+                <p className="webtoon-body">{numberSection.body}</p>
+              </details>
+            )}
+          </WebtoonPanel>
+        )}
+
+        {foundationSections.map((section, index) => (
+          <WebtoonPanel
+            badge={chapterBadge(index)}
+            key={section.title}
+            title={section.title}
+            tone={index % 2 === 0 ? "night" : "paper"}
+          >
+            <p className="webtoon-body">{section.body}</p>
+          </WebtoonPanel>
+        ))}
+
+        <WebtoonPanel
+          badge={locale === "ko" ? "실행" : "Action"}
+          title={detailV2 || premiumV2
             ? (locale === "ko" ? "우선 실행 계획" : "Prioritized execution plan")
             : (locale === "ko" ? "지금 해볼 일" : "Next actions")}
-        </h2>
-        <ul>{report.actions.map((item) => <li key={item}>{item}</li>)}</ul>
-        {premiumManualSection && (
-          <div className="premium-manual">
-            <h3>{premiumManualSection.title}</h3>
-            <p>{premiumManualSection.body}</p>
-          </div>
+          tone="gold"
+        >
+          <ol className="webtoon-steps">{report.actions.map((item) => <li key={item}>{item}</li>)}</ol>
+          {premiumManualSection && (
+            <div className="premium-manual">
+              <h3>{premiumManualSection.title}</h3>
+              <p className="webtoon-body">{premiumManualSection.body}</p>
+            </div>
+          )}
+        </WebtoonPanel>
+
+        {stopSection && (
+          <WebtoonPanel
+            badge={locale === "ko" ? "멈춤 신호" : "Stop signal"}
+            title={stopSection.title}
+            tone="warn"
+          >
+            <p className="webtoon-body">{stopSection.body}</p>
+          </WebtoonPanel>
         )}
-      </section>
-      {stopSection && (
-        <section className="paid-report-section detail-report-stop">
-          <h2>{stopSection.title}</h2><p>{stopSection.body}</p>
+
+        {premiumStopSection && (
+          <WebtoonPanel
+            badge={locale === "ko" ? "멈춤 신호" : "Stop signal"}
+            title={premiumStopSection.title}
+            tone="warn"
+          >
+            <p className="webtoon-body">{premiumStopSection.body}</p>
+          </WebtoonPanel>
+        )}
+
+        {premiumExtensionSections.map((section, index) => {
+          const progressive = /시나리오 확인 신호|위험 방지 체크리스트|Signals that confirm|Risk-prevention checklist/.test(section.title);
+          // A checklist is something the reader opens when they are ready to work through
+          // it, so it stays folded away inside its panel rather than unrolling mid-scroll.
+          return progressive ? (
+            <section className="webtoon-panel webtoon-paper" data-webtoon-panel="" key={section.title}>
+              <div className="webtoon-inner">
+                <details className="premium-progressive">
+                  <summary>{section.title}</summary>
+                  <p className="webtoon-body">{section.body}</p>
+                </details>
+              </div>
+            </section>
+          ) : (
+            <WebtoonPanel
+              badge={locale === "ko" ? "심층" : "In depth"}
+              key={section.title}
+              title={section.title}
+              tone={index % 2 === 0 ? "night" : "paper"}
+            >
+              <p className="webtoon-body">{section.body}</p>
+            </WebtoonPanel>
+          );
+        })}
+
+        {finalSection && (
+          <WebtoonPanel
+            badge={locale === "ko" ? "마무리" : "Closing"}
+            title={finalSection.title}
+            tone="night"
+          >
+            <p className="webtoon-body">{finalSection.body}</p>
+          </WebtoonPanel>
+        )}
+
+        {!structuredV2 && (
+          <WebtoonPanel
+            badge={locale === "ko" ? "주의" : "Caution"}
+            title={locale === "ko" ? "이럴 때는 조심하세요" : "Situations to watch"}
+            tone="warn"
+          >
+            <ul>{report.cautions.map((item) => <li key={item}>{item}</li>)}</ul>
+          </WebtoonPanel>
+        )}
+
+        {(detailV2 || premiumV2) && report.cautions.length > 0 && (
+          <WebtoonPanel
+            badge={locale === "ko" ? "안전" : "Safety"}
+            title={locale === "ko" ? "먼저 확인할 안전 기준" : "Safety check"}
+            tone="warn"
+          >
+            <ul>{report.cautions.map((item) => <li key={item}>{item}</li>)}</ul>
+          </WebtoonPanel>
+        )}
+
+        {proTier && (
+          <WebtoonPanel
+            badge={locale === "ko" ? "함께 볼 수 있어요" : "Also included"}
+            title={locale === "ko" ? "두 사람 궁합" : "Two-person compatibility"}
+            tone="gold"
+          >
+            <p>
+              {locale === "ko"
+                ? "이 상품에는 두 사람 궁합 보기가 포함되어 있어요. 상대방 생년월일만 있으면 바로 볼 수 있습니다."
+                : "This purchase includes two-person compatibility. You only need the other person's birth date."}
+            </p>
+            <p className="payment-result-links">
+              <a className="primary-button" href={compatibilityUrl}>
+                {locale === "ko" ? "궁합 보러 가기" : "Open compatibility"}
+              </a>
+            </p>
+          </WebtoonPanel>
+        )}
+
+        {/* Everything that is housekeeping rather than reading lands together in one quiet
+            panel, so the closing beat above is the last thing the reading itself says. */}
+        <section className="webtoon-panel webtoon-paper webtoon-outro" data-webtoon-panel="">
+          <div className="webtoon-inner">
+            <p className="disclaimer">{report.disclaimer}</p>
+            <ReportActions
+              locale={locale}
+              downloadUrl={`/api/reports/${orderId}/download${accessQuery}`}
+            />
+            {existingReview.available && (
+              <ReviewRequestPanel
+                access={query.access}
+                existing={existingReview.data ? toOwnReviewState(existingReview.data) : null}
+                locale={locale}
+                orderId={orderId}
+                proof={query.proof}
+                ticket={query.t}
+              />
+            )}
+            <p className="paid-report-account-note">
+              {locale === "ko"
+                ? "이 페이지 주소와 내려받은 파일을 보관해 주세요. 주소를 잃어버려도 주문번호와 결제하신 휴대폰 번호로 다시 찾을 수 있어요."
+                : "Keep this page address and the downloaded file. If you lose the address, you can find it again with your order number and the phone number used at checkout."}
+            </p>
+            <p className="payment-result-links">
+              <Link className="link-button" href={`/${locale}/orders`}>
+                {locale === "ko" ? "구매 내역 확인" : "Find a purchase"}
+              </Link>
+            </p>
+          </div>
         </section>
-      )}
-      {premiumStopSection && (
-        <section className="paid-report-section detail-report-stop premium-report-stop">
-          <h2>{premiumStopSection.title}</h2><p>{premiumStopSection.body}</p>
-        </section>
-      )}
-      {premiumExtensionSections.map((section) => {
-        const progressive = /시나리오 확인 신호|위험 방지 체크리스트|Signals that confirm|Risk-prevention checklist/.test(section.title);
-        return progressive ? (
-          <details className="paid-report-section premium-progressive" key={section.title}>
-            <summary>{section.title}</summary><p>{section.body}</p>
-          </details>
-        ) : (
-          <section className="paid-report-section premium-report-extension" key={section.title}>
-            <h2>{section.title}</h2><p>{section.body}</p>
-          </section>
-        );
-      })}
-      {finalSection && (
-        <section className={`paid-report-section${detailV2 || premiumV2 ? " detail-report-final" : " basic-report-final"}${premiumV2 ? " premium-report-final" : ""}`}>
-          <h2>{finalSection.title}</h2><p>{finalSection.body}</p>
-        </section>
-      )}
-      {!structuredV2 && (
-        <section className="paid-report-section caution">
-          <h2>{locale === "ko" ? "이럴 때는 조심하세요" : "Situations to watch"}</h2>
-          <ul>{report.cautions.map((item) => <li key={item}>{item}</li>)}</ul>
-        </section>
-      )}
-      {(detailV2 || premiumV2) && report.cautions.length > 0 && (
-        <section className="paid-report-section caution detail-report-caution">
-          <h2>{locale === "ko" ? "먼저 확인할 안전 기준" : "Safety check"}</h2>
-          <ul>{report.cautions.map((item) => <li key={item}>{item}</li>)}</ul>
-        </section>
-      )}
-      <p className="disclaimer">{report.disclaimer}</p>
-      <ReportActions
-        locale={locale}
-        downloadUrl={`/api/reports/${orderId}/download${accessQuery}`}
+      </main>
+      <WebtoonCta
+        href={`/api/reports/${orderId}/download${accessQuery}`}
+        label={locale === "ko" ? "리포트 파일 내려받기" : "Download the report"}
+        note={locale === "ko" ? `주문번호 ${orderId}` : `Order ${orderId}`}
       />
-      {existingReview.available && (
-        <ReviewRequestPanel
-          access={query.access}
-          existing={existingReview.data ? toOwnReviewState(existingReview.data) : null}
-          locale={locale}
-          orderId={orderId}
-          proof={query.proof}
-          ticket={query.t}
-        />
-      )}
-      {proTier && (
-        <section className="report-link-card">
-          <p className="eyebrow">{locale === "ko" ? "함께 볼 수 있어요" : "Also included"}</p>
-          <p>
-            {locale === "ko"
-              ? "이 상품에는 두 사람 궁합 보기가 포함되어 있어요. 상대방 생년월일만 있으면 바로 볼 수 있습니다."
-              : "This purchase includes two-person compatibility. You only need the other person's birth date."}
-          </p>
-          <a className="primary-button" href={compatibilityUrl}>
-            {locale === "ko" ? "궁합 보러 가기" : "Open compatibility"}
-          </a>
-        </section>
-      )}
-      <p className="paid-report-account-note">
-        {locale === "ko"
-          ? "이 페이지 주소와 내려받은 파일을 보관해 주세요. 주소를 잃어버려도 주문번호와 결제하신 휴대폰 번호로 다시 찾을 수 있어요."
-          : "Keep this page address and the downloaded file. If you lose the address, you can find it again with your order number and the phone number used at checkout."}
-      </p>
-      <p className="payment-result-links">
-        <Link className="link-button" href={`/${locale}/orders`}>
-          {locale === "ko" ? "구매 내역 확인" : "Find a purchase"}
-        </Link>
-      </p>
-    </main>
+    </>
   );
 }
