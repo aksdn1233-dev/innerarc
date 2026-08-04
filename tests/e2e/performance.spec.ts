@@ -1,17 +1,31 @@
 import { expect, test } from "@playwright/test";
 import { E2E_ORIGIN } from "./test-origin";
 
-const routes = [
-  "/en",
-  "/en/question",
-  "/en/relationship",
-  "/en/compatibility",
-  "/en/celebrity",
-  "/en/reality-check",
-  "/en/shop",
-] as const;
+const DEFAULT_TRANSFER_BUDGET = 450_000;
+const DEFAULT_DECODED_BUDGET = 1_200_000;
 
-for (const route of routes) {
+/**
+ * The home page carries the 태율 hero clip, roughly 533 KB of MP4 that no other route
+ * downloads. It is deliberately excluded from render-blocking — `preload="none"`, fetched
+ * on idle — but it is still bytes a visitor pays for, so it is written into the budget
+ * rather than hidden from it by delaying the fetch past when the test stops measuring.
+ * Every other route keeps the original, tighter allowance.
+ */
+const routes = [
+  { path: "/en", transfer: 1_050_000, decoded: 1_800_000 },
+  { path: "/en/question" },
+  { path: "/en/relationship" },
+  { path: "/en/compatibility" },
+  { path: "/en/celebrity" },
+  { path: "/en/reality-check" },
+  { path: "/en/shop" },
+] as const satisfies readonly { path: string; transfer?: number; decoded?: number }[];
+
+for (const entry of routes) {
+  const route = entry.path;
+  const transferBudget = "transfer" in entry ? entry.transfer : DEFAULT_TRANSFER_BUDGET;
+  const decodedBudget = "decoded" in entry ? entry.decoded : DEFAULT_DECODED_BUDGET;
+
   test(`${route} stays first-party and within the initial payload budget`, async ({ page, request }) => {
     const response = await request.get(route);
     expect(response.ok()).toBe(true);
@@ -41,7 +55,7 @@ for (const route of routes) {
     expect(metrics.jsTransferBytes).toBeLessThan(350_000);
     expect(metrics.jsDecodedBytes).toBeLessThan(1_050_000);
     expect(metrics.cssDecodedBytes).toBeLessThan(120_000);
-    expect(metrics.totalTransferBytes).toBeLessThan(450_000);
-    expect(metrics.totalDecodedBytes).toBeLessThan(1_200_000);
+    expect(metrics.totalTransferBytes).toBeLessThan(transferBudget);
+    expect(metrics.totalDecodedBytes).toBeLessThan(decodedBudget);
   });
 }
