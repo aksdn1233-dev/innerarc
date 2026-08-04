@@ -71,6 +71,21 @@ then asks the live site whether its database and home page still answer, failing
 if they do not. It needs two repository secrets, `CLOUDFLARE_API_TOKEN` and
 `CLOUDFLARE_ACCOUNT_ID`.
 
+**The Worker is called `gyeol`, and `vite.config.ts` has to say so.** The name is
+otherwise derived from the package and comes out `innerarc` — a different, empty Worker in
+the same account that holds only a `mygyeol.kr/.innerarc-discard/*` route. Deploying there
+succeeds, changes nothing a visitor can see, and still passes a health check, because the
+old build answering the domain is perfectly healthy. That is why the workflow's last step
+requires the live HTML to reference the stylesheet the build just produced: it is the only
+check that separates *deployed* from *serving*.
+
+**A deploy cannot reach visitors until `mygyeol.kr` is delegated to Cloudflare.** The zone
+exists in the account with the `mygyeol.kr/*` → `gyeol` route already configured, but its
+status is `pending`: the domain's nameservers still point at `hosting.co.kr`, so that route
+is inert and the domain is answered by an older deployment elsewhere. Pointing the
+registrar's nameservers at the two Cloudflare assigns for the zone activates the route, and
+the build already sitting on `gyeol` becomes the live site.
+
 Two things make a hand-run deploy dangerous, and both are handled in that workflow:
 
 - **`wrangler deploy` deletes every Worker variable** unless `--keep-vars` is passed. The

@@ -77,3 +77,23 @@ jobs:
           echo "home=${home_status} image=${image_status}"
           [ "${home_status}" = "200" ] || { echo "::error::the Korean home page did not return 200"; exit 1; }
           [ "${image_status}" = "200" ] || { echo "::error::image optimization is broken — the IMAGES binding may be missing"; exit 1; }
+
+      # Everything above passes just as happily when the deploy landed somewhere the
+      # domain does not point at: a healthy *old* build answers all of it. This is the
+      # only step that distinguishes "deployed" from "serving", by requiring the live
+      # HTML to reference the stylesheet this very build produced.
+      - name: Confirm the domain is serving this build
+        run: |
+          set -euo pipefail
+          asset="$(basename "$(ls dist/client/assets/index-*.css | head -n 1)")"
+          echo "expecting the live site to reference ${asset}"
+          for attempt in 1 2 3 4 5 6; do
+            if curl -fsS --max-time 20 https://mygyeol.kr/ko | grep -qF "${asset}"; then
+              echo "mygyeol.kr is serving this build"
+              exit 0
+            fi
+            echo "attempt ${attempt}: not yet"
+            sleep 10
+          done
+          echo "::error::mygyeol.kr answers, but not with this build — the deploy reached a Worker the domain does not route to. Check that mygyeol.kr is delegated to Cloudflare (zone status must be active, not pending) and that its route points at the Worker named in vite.config.ts."
+          exit 1
