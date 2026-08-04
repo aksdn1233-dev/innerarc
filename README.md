@@ -61,10 +61,26 @@ On a new machine, Playwright may first need `pnpm exec playwright install --with
 
 ## Deployment
 
-`mygyeol.kr` is served by a Cloudflare Worker, built with `pnpm build:sites` and shipped
-with `wrangler` using Cloudflare credentials that no CI job holds. `pnpm build` and the
-Vercel project attached to this repository both build the same source but are not what
-the domain serves, so a green Vercel deployment does not mean a change reached users.
+**`https://mygyeol.kr` is the live site and the only address in use.** It is a Cloudflare
+Worker built by `pnpm build:sites`. Earlier `*.workers.dev` preview URLs are retired, and
+the Vercel project attached to this repository builds the same source but is not what the
+domain serves — a green Vercel deployment is not evidence that a change reached visitors.
+
+`.github/workflows/deploy.yml` ships it: after CI passes on `main` it builds, deploys, and
+then asks the live site whether its database and home page still answer, failing the run
+if they do not. It needs two repository secrets, `CLOUDFLARE_API_TOKEN` and
+`CLOUDFLARE_ACCOUNT_ID`.
+
+Two things make a hand-run deploy dangerous, and both are handled in that workflow:
+
+- **`wrangler deploy` deletes every Worker variable** unless `--keep-vars` is passed. The
+  Supabase keys, PayApp credentials, and `ADMIN_EMAILS` live in the Cloudflare dashboard,
+  not in this repository, so a deploy without that flag takes payments and the database
+  down on a working site.
+- **A deploy replaces the Worker's bindings** with whatever the generated config declares.
+  `worker/index.ts` uses `env.IMAGES`, so `vite.config.ts` declares that binding; without
+  it every optimized image on the live site breaks.
+
 To check what is actually live, request the site and look for something the build
 introduced rather than reading a deployment dashboard. The reasoning is in
 [Route and feature inventory](docs/Route-Feature-Inventory.md).
