@@ -7,13 +7,11 @@ with no code change.
 
 ## What to drop in
 
-| Path | Format | Required |
-| --- | --- | --- |
-| `public/videos/taeyul-hero.webm` | VP9 or AV1 | preferred, tried first |
-| `public/videos/taeyul-hero.mp4` | H.264 (`yuv420p`, `+faststart`) | fallback for Safari |
+`public/videos/taeyul-hero.mp4` — H.264, `yuv420p`, `+faststart`.
 
-Publish both if you can. Safari does not play VP9 in every version, and the `.mp4` is what
-it falls back to.
+Only the MP4 is published. A VP9 WebM was encoded alongside it and came out *larger* than
+the H.264 at matching quality, so it was dropped: H.264 plays in every browser in use, and
+a second file that is never the smaller one is weight for nothing.
 
 ## What the clip has to be
 
@@ -37,16 +35,36 @@ it falls back to.
 
 With `ffmpeg`, from a source clip:
 
-```sh
-# WebM (VP9)
-ffmpeg -i source.mov -an -c:v libvpx-vp9 -b:v 700k -crf 34 -vf scale=1080:-2 taeyul-hero.webm
+The clip in place was produced from a 1920×1080 source with three steps, which is the
+recipe to repeat for a replacement:
 
-# MP4 (H.264) — yuv420p and faststart are what make it play everywhere and start quickly
-ffmpeg -i source.mov -an -c:v libx264 -profile:v main -pix_fmt yuv420p \
-  -b:v 900k -movflags +faststart -vf scale=1080:-2 taeyul-hero.mp4
+```sh
+ffmpeg -i source.mp4 -filter_complex "
+[0:v]delogo=x=1595:y=995:w=305:h=62,crop=608:1080:760:0,fps=24,format=yuv420p[v];
+[v]split=3[s0][s1][s2];
+[s0]trim=0:5.44,setpts=PTS-STARTPTS[body];
+[s1]trim=5.44:6.24,setpts=PTS-STARTPTS[tail];
+[s2]trim=0:0.8,setpts=PTS-STARTPTS[head];
+[tail][head]blend=all_expr='A*(1-(T/0.8))+B*(T/0.8)'[mix];
+[body][mix]concat=n=2:v=1:a=0[out]" -map "[out]" -an \
+  -c:v libx264 -profile:v main -pix_fmt yuv420p -crf 30 -preset slow \
+  -movflags +faststart taeyul-hero.mp4
 ```
 
-`-an` drops the audio track, which is what keeps autoplay allowed.
+- **`delogo`** paints out the generator's watermark by reconstructing the box from the
+  pixels around it. The box must not touch a frame edge or it has nothing to sample.
+- **`crop=608:1080`** takes a 9:16 column centred on him, which is a phone's own shape, so
+  the opening screen crops almost nothing.
+- **The `blend` and `concat`** cross-fade the last 0.8s back into the first frame. Without
+  it the clip cuts from its closing shot to its opening one every seven seconds.
+- **`-an`** drops the audio track, which is what keeps autoplay allowed.
+
+Then take the poster from the clip's own first frame, so the still and the moving picture
+are the same image and nothing jumps when playback starts:
+
+```sh
+ffmpeg -ss 0.04 -i taeyul-hero.mp4 -q:v 8 -frames:v 1 ../images/taeyul-hero.jpg
+```
 
 ## If the clip changes shape
 

@@ -7871,3 +7871,34 @@ summary {
     animation: none;
   }
 }
+
+/* The clip is already cropped to 3:4 around him, so the framing that suited a wider
+   still no longer applies: centre it and let `cover` take the overflow. */
+.cinema-hero-portrait {
+  object-position: center 18%;
+  /* A real clip carries its own camera move. Drifting it as well would fight that, so
+     the push-in is dropped here and kept only for the reduced-motion still. */
+  animation: none;
+}
+
+@media (min-width: 900px) {
+  .cinema-hero-portrait { object-position: center 12%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* No clip plays, so the poster gets the slow push instead of sitting dead still —
+     except that reduced motion is exactly a request for it to sit still. */
+  .cinema-hero-portrait { animation: none; transform: scale(1.02); }
+}
+
+/* The clip is 9:16, which is a phone's own shape, so it fills the opening screen with
+   almost nothing cropped. Centring it is enough. */
+.cinema-hero-portrait { object-position: center center; }
+
+@media (min-width: 900px) {
+  .cinema-hero-portrait { object-position: center 20%; }
+}
+
+/* Anchor the clip to the top: the crop begins at his crown, so any other origin cuts it
+   off and pushes his eyes down into the kicker line. */
+.cinema-hero-portrait { object-position: center top; }

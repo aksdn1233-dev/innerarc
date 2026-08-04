@@ -443,10 +443,10 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
               Decorative: the title beside it carries the meaning, so it is not announced
               again.
 
-              This plays a looping clip of him when one exists at the paths below, and
-              shows the still portrait as its poster until then — so dropping the file in
-              is the whole installation, with no code change and no broken frame while it
-              is missing. `preload="none"` keeps the clip out of the initial payload; the
+              A seven-second loop of him, watermark removed and cross-faded at the seam so
+              it repeats without a cut. The poster is the clip's own first frame, so the
+              still and the moving picture are the same image and nothing jumps when
+              playback starts. `preload="none"` keeps it out of the initial payload; the
               effect below starts it once the page is idle, and never when the visitor has
               asked for reduced motion. */}
           <video
@@ -461,7 +461,6 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             ref={heroVideoRef}
             tabIndex={-1}
           >
-            <source src="/videos/taeyul-hero.webm" type="video/webm" />
             <source src="/videos/taeyul-hero.mp4" type="video/mp4" />
           </video>
           <MeteorTrails className="cinema-hero-meteors" />
