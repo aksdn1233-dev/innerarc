@@ -19,6 +19,8 @@ type Props = {
   pageContent: AdminPageContent;
   /** Approved, still-consented reviews only. Empty is the normal, honest case. */
   reviews: readonly PublicReview[];
+  /** Every published review, not just the shown few. Null when the table is unreachable. */
+  reviewCount: number | null;
 };
 
 type ReadingProductId = "comprehensive" | "premium_pdf";
@@ -85,12 +87,29 @@ const readingProducts = {
 const copy = {
   ko: {
     navLabel: "홈페이지 탐색",
-    nav: [["#preview", "리포트 예시"], ["#method", "리딩 방식"], ["#products", "상품 안내"], ["#evidence", "후기·자주 묻는 질문"]],
+    nav: [["#questions", "질문 고르기"], ["#preview", "리포트 예시"], ["#products", "가격"], ["#evidence", "후기"], ["#method", "리딩 방식"]],
     heroKicker: "사주명리와는 다른, 현실 선택 중심의 리딩",
     heroTitle: "왜 나는 같은 선택을 반복할까요?",
     heroBody: "타고난 성향과 반복되는 관계·일·돈의 패턴을 살펴보고, 올해 어떤 선택에 힘을 주어야 할지 정리해드립니다.",
     primary: "내 패턴 확인하기",
     heroNote: "생년월일 기반 · 1회 결제 · 자동 갱신 없음",
+    freeCta: "먼저 무료로 확인",
+    freeNote: "결제 없이 생년월일만으로 기본 리딩을 볼 수 있어요",
+    entryEyebrow: "어떤 게 제일 걸리세요?",
+    entryTitle: "요즘 마음에 걸리는 질문을 골라보세요",
+    entryBody: "고른 질문이 리딩의 중심이 됩니다. 지금 정하지 않아도 나중에 바꿀 수 있어요.",
+    entryQuestions: [
+      ["relationships", "왜 늘 비슷한 사람에게 마음이 갈까요?", "관계"],
+      ["work", "지금 이 일, 계속 가는 게 맞을까요?", "일·진로"],
+      ["money", "돈 앞에서 나는 어떤 결정을 반복하나요?", "돈"],
+      ["growth", "무엇이 나를 자꾸 멈춰 세우나요?", "성장"],
+      ["health", "내 하루는 어디에서 무너지나요?", "건강·생활"],
+    ],
+    freeCardBadge: "무료",
+    freeCardName: "기본 리딩",
+    freeCardPrice: "0원",
+    freeCardBody: "생년월일만으로 타고난 성향과 기본 수를 계산해 바로 보여드립니다. 결제도, 계정도 필요하지 않아요.",
+    freeCardButton: "무료로 시작하기",
     sampleEyebrow: "리포트 구성 예시",
     sampleTitle: "내 일상에 연결되는 방식으로 정리합니다",
     sampleBody: "아래 문장은 실제 후기가 아닌 리포트 구성 예시입니다.",
@@ -120,12 +139,29 @@ const copy = {
   },
   en: {
     navLabel: "Home navigation",
-    nav: [["#preview", "Report examples"], ["#method", "Method"], ["#products", "Readings"], ["#evidence", "Reviews and FAQ"]],
+    nav: [["#questions", "Pick a question"], ["#preview", "Report examples"], ["#products", "Pricing"], ["#evidence", "Reviews"], ["#method", "Method"]],
     heroKicker: "A different kind of reading, centered on real-life choices",
     heroTitle: "Why do I keep making the same choices?",
     heroBody: "Explore your natural tendencies and recurring patterns in relationships, work, and money—then clarify where to place your energy this year.",
     primary: "See my patterns",
     heroNote: "Birth-date based · One-time payment · No auto-renewal",
+    freeCta: "Try it free first",
+    freeNote: "See a basic reading from your birth date alone — no payment",
+    entryEyebrow: "What is on your mind?",
+    entryTitle: "Pick the question that keeps coming back",
+    entryBody: "Your choice becomes the centre of the reading. You can change it later.",
+    entryQuestions: [
+      ["relationships", "Why am I drawn to the same kind of person?", "Relationships"],
+      ["work", "Is staying in this work still the right call?", "Work"],
+      ["money", "What decision do I keep repeating about money?", "Money"],
+      ["growth", "What keeps stopping me short?", "Growth"],
+      ["health", "Where does my day fall apart?", "Daily life"],
+    ],
+    freeCardBadge: "Free",
+    freeCardName: "Basic reading",
+    freeCardPrice: "₩0",
+    freeCardBody: "Your birth date alone calculates your core numbers and natural tendencies, shown immediately. No payment, no account.",
+    freeCardButton: "Start free",
     sampleEyebrow: "Report format examples",
     sampleTitle: "Patterns connected to real, everyday choices",
     sampleBody: "These are report format examples, not customer testimonials.",
@@ -176,7 +212,7 @@ function isValidGregorianDate(value: string) {
     && date.getUTCDate() === day;
 }
 
-export function HomeExperience({ locale, dictionary: d, pricing, pageContent, reviews }: Props) {
+export function HomeExperience({ locale, dictionary: d, pricing, pageContent, reviews, reviewCount }: Props) {
   const [selectedProduct, setSelectedProduct] = useState<ReadingProductId>("comprehensive");
   const [focusId, setFocusId] = useState<FocusId>("relationships");
   const [error, setError] = useState<IntakeError | null>(null);
@@ -266,6 +302,17 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
     }
   }
 
+  // A visitor who has not decided anything yet will not fill in a birth date, but they
+  // will answer "which of these is bothering me". Answering that is the cheapest possible
+  // first commitment, and it carries straight into the form as the reading's focus.
+  function chooseQuestion(focus: FocusId) {
+    setFocusId(focus);
+    captureConversionEvent("form_start", locale, {});
+    window.requestAnimationFrame(() => {
+      document.getElementById("onboarding")?.scrollIntoView({ behavior: "smooth" });
+    });
+  }
+
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
@@ -323,9 +370,36 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             <p className="hero-copy">{t.heroBody}</p>
             <div className="hero-actions">
               <a className="primary-button" href="#onboarding" onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "hero" })}>{t.primary}</a>
+              {/* The free calculation at /profile existed but nothing on this page linked to
+                  it, so a visitor who was not ready to pay had no next step but to leave. */}
+              <Link className="ghost-button" href={`/${locale}/profile`} onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "hero_free" })}>{t.freeCta}</Link>
             </div>
+            <p className="hero-note">{t.freeNote}</p>
             <p className="hero-note">{t.heroNote}</p>
           </div>
+        </section>
+
+        <section className="entry-questions" id="questions" aria-labelledby="questions-title">
+          <div className="section-heading">
+            <p className="eyebrow">{t.entryEyebrow}</p>
+            <h2 id="questions-title">{t.entryTitle}</h2>
+            <p>{t.entryBody}</p>
+          </div>
+          <ul className="entry-question-grid">
+            {t.entryQuestions.map(([focus, question, label]) => (
+              <li key={focus}>
+                <button
+                  type="button"
+                  className={focusId === focus ? "entry-question is-chosen" : "entry-question"}
+                  aria-pressed={focusId === focus}
+                  onClick={() => chooseQuestion(focus as FocusId)}
+                >
+                  <small>{label}</small>
+                  <strong>{question}</strong>
+                </button>
+              </li>
+            ))}
+          </ul>
         </section>
 
         <section className="report-preview" id="preview" aria-labelledby="preview-title" ref={sampleRef}>
@@ -341,25 +415,23 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
           </div>
         </section>
 
-        <section className="pattern-fields reading-method" id="method" aria-labelledby="method-title">
-          <SceneDivider className="method-divider" />
-          <div className="section-heading">
-            <p className="eyebrow">{locale === "ko" ? "계산과 해석" : "Calculation and interpretation"}</p>
-            <h2 id="method-title">{t.methodTitle}</h2>
-            <p className="reading-method-body">{t.methodBody}</p>
-          </div>
-          <div className="reading-method-points" aria-label={locale === "ko" ? "리딩 방식 요약" : "Reading method summary"}>
-            {t.methodPoints.map((point) => <span key={point}>{point}</span>)}
-          </div>
-        </section>
-
         <section className="pass-summary" id="products" aria-labelledby="products-title" ref={productsRef}>
           <div className="product-section-heading">
             <p className="eyebrow">{locale === "ko" ? "두 가지 리딩" : "Two reading depths"}</p>
             <h2 id="products-title">{t.productsTitle}</h2>
             <p>{t.productsBody}</p>
           </div>
-          <div className="editorial-product-grid">
+          <div className="editorial-product-grid has-free-tier">
+            {/* Naming the free reading as a tier, beside the paid ones and with its price
+                written as a price, is what makes the paid tiers legible as a step up
+                rather than as the only thing on offer. */}
+            <article className="editorial-product is-free">
+              <small>{t.freeCardBadge}</small>
+              <h3>{t.freeCardName}</h3>
+              <div className="campaign-price-row"><strong>{t.freeCardPrice}</strong></div>
+              <p>{t.freeCardBody}</p>
+              <Link href={`/${locale}/profile`} onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "product_free" })}>{t.freeCardButton}</Link>
+            </article>
             {products.map((product) => (
               <article className={product.id === "comprehensive" ? "editorial-product is-featured" : "editorial-product"} key={product.id}>
                 <small>{product.badge}</small>
@@ -377,7 +449,22 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
           <p className="payment-reassurance"><strong>{t.paymentFacts}</strong><br />{t.paymentAccess} <Link href={`/${locale}/support`}>{t.support}</Link></p>
         </section>
 
-        <ReviewEvidenceSection locale={locale} reviews={reviews} />
+        <ReviewEvidenceSection locale={locale} reviews={reviews} reviewCount={reviewCount} />
+
+        {/* How the numbers are derived is reassurance, not a hook: it answers a doubt the
+            visitor only has once they are already interested, so it sits after the offer
+            and the reviews rather than in front of them. */}
+        <section className="pattern-fields reading-method" id="method" aria-labelledby="method-title">
+          <SceneDivider className="method-divider" />
+          <div className="section-heading">
+            <p className="eyebrow">{locale === "ko" ? "계산과 해석" : "Calculation and interpretation"}</p>
+            <h2 id="method-title">{t.methodTitle}</h2>
+            <p className="reading-method-body">{t.methodBody}</p>
+          </div>
+          <div className="reading-method-points" aria-label={locale === "ko" ? "리딩 방식 요약" : "Reading method summary"}>
+            {t.methodPoints.map((point) => <span key={point}>{point}</span>)}
+          </div>
+        </section>
 
         <section className="form-section home-form-section" id="onboarding" aria-labelledby="onboarding-title" ref={formRef}>
           <header className="form-section-heading">

@@ -7,7 +7,7 @@ import { resolveSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { PublicReview } from "@/core/reviews";
 import { DEFAULT_ADMIN_PAGE_CONTENT } from "@/server/admin-content";
 import { readStoredPageContent } from "@/server/admin-storage";
-import { listPublicReviews } from "@/server/reviews";
+import { countPublicReviews, listPublicReviews } from "@/server/reviews";
 
 export default async function LocaleHome({
   params,
@@ -22,13 +22,16 @@ export default async function LocaleHome({
   // render evidence rather than empty cards, so an unreachable review table costs the
   // home page nothing.
   let reviews: readonly PublicReview[] = [];
+  let reviewCount: number | null = null;
   if (admin) {
-    const [storedContent, publicReviews] = await Promise.all([
+    const [storedContent, publicReviews, publishedCount] = await Promise.all([
       readStoredPageContent(admin),
       listPublicReviews(admin, locale, 6),
+      countPublicReviews(admin, locale),
     ]);
     pageContent = storedContent;
     reviews = publicReviews.data;
+    reviewCount = publishedCount;
   }
   return (
     <HomeExperience
@@ -37,6 +40,7 @@ export default async function LocaleHome({
       pageContent={pageContent}
       pricing={resolveProductPricing(new Date())}
       reviews={reviews}
+      reviewCount={reviewCount}
     />
   );
 }

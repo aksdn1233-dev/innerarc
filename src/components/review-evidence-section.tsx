@@ -24,13 +24,19 @@ const PRODUCT_LABEL: Record<Locale, Record<string, string>> = {
 export function ReviewEvidenceSection({
   locale,
   reviews,
+  reviewCount = null,
 }: {
   locale: Locale;
   reviews: readonly PublicReview[];
+  /** Total published, which exceeds the shown few. Null when it could not be read. */
+  reviewCount?: number | null;
 }) {
   const t = evidenceCopy[locale];
   const summary = summarizeReviewOutcomes(reviews);
   const hasReviews = reviews.length > 0;
+  // A count only carries weight once there is a body of them. Below that it says less
+  // than saying nothing, and inflating it is not an option, so it is simply left out.
+  const showCount = reviewCount !== null && reviewCount > reviews.length && reviewCount >= 5;
 
   return (
     <section className="evidence-section" id="evidence" aria-labelledby="evidence-title">
@@ -39,6 +45,13 @@ export function ReviewEvidenceSection({
         <p className="eyebrow">{t.eyebrow}</p>
         <h2 id="evidence-title">{hasReviews ? t.reviewsTitle : t.emptyTitle}</h2>
         <p className="evidence-intro">{hasReviews ? t.reviewsIntro : t.emptyIntro}</p>
+        {showCount && (
+          <p className="evidence-count">
+            {locale === "ko"
+              ? `지금까지 공개된 후기 ${reviewCount!.toLocaleString("ko-KR")}개 중 최근 ${reviews.length}개입니다.`
+              : `The most recent ${reviews.length} of ${reviewCount!.toLocaleString("en-US")} published reviews.`}
+          </p>
+        )}
       </div>
 
       {hasReviews ? (

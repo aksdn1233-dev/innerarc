@@ -7308,3 +7308,131 @@ summary {
   align-items: center;
   gap: 0.5rem;
 }
+
+/* ---- Curiosity-first entry: question cards, free tier, secondary hero action ---- */
+
+/* The paid path keeps the filled button; the free path sits beside it as an outline so
+   it reads as a real alternative rather than a demoted afterthought. */
+.ghost-button {
+  display: inline-flex;
+  min-height: 54px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+  border: 1px solid var(--ink-v4);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--ink-v4);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.ghost-button:hover,
+.ghost-button:focus-visible {
+  background: var(--ink-v4);
+  color: var(--ivory-v4);
+}
+
+.entry-questions {
+  padding: 72px clamp(22px, 6vw, 44px);
+}
+
+.entry-question-grid {
+  display: grid;
+  margin: 30px 0 0;
+  padding: 0;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 14px;
+  list-style: none;
+}
+
+.entry-question {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 22px 24px;
+  border: 1px solid #ded3c3;
+  border-radius: 18px;
+  background: #fffdf9;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.entry-question:hover,
+.entry-question:focus-visible {
+  border-color: var(--gold-v4);
+}
+
+.entry-question.is-chosen {
+  border-color: var(--ink-v4);
+  background: var(--ink-v4);
+  color: var(--ivory-v4);
+}
+
+.entry-question small {
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: #eee4d5;
+  color: var(--berry-v4);
+  font-weight: 800;
+}
+
+.entry-question.is-chosen small {
+  background: var(--gold-v4);
+  color: var(--ink-v4);
+}
+
+.entry-question strong {
+  font-size: clamp(1.02rem, 1.5vw, 1.16rem);
+  line-height: 1.45;
+}
+
+.editorial-product-grid.has-free-tier {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.editorial-product.is-free {
+  border-style: dashed;
+  background: #fbf7ef;
+}
+
+/* The free tier's action is a link, not a button, so it needs the button treatment
+   applied by hand or it would read as body text next to two real buttons. */
+.editorial-product.is-free > a {
+  display: inline-flex;
+  min-height: 54px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--ink-v4);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--ink-v4);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.editorial-product.is-free > a:hover,
+.editorial-product.is-free > a:focus-visible {
+  background: var(--ink-v4);
+  color: var(--ivory-v4);
+}
+
+@media (max-width: 900px) {
+  .editorial-product-grid.has-free-tier {
+    grid-template-columns: 1fr;
+  }
+
+  .entry-questions {
+    padding: 56px clamp(22px, 6vw, 30px);
+  }
+}
+
+.evidence-count {
+  margin: 10px 0 0;
+  font-weight: 700;
+  opacity: 0.78;
+}
