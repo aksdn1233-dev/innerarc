@@ -7718,3 +7718,93 @@ summary {
     flex: 0 0 auto;
   }
 }
+
+/* ---- 태율 in motion -----------------------------------------------------------------
+   One still image, so the movement has to come from how it is shown. Three slow cycles
+   at different periods, which never line up and so never look like a loop:
+     drift  — a long push in and across, the camera easing toward him
+     breath — a small vertical rise and fall on top of the drift
+     sheen  — gold light travelling over the robe every so often
+   All of it stops for prefers-reduced-motion. */
+
+@keyframes taeyul-drift {
+  0%   { transform: scale(1.06) translate3d(0, 0, 0); }
+  50%  { transform: scale(1.13) translate3d(-1.6%, -1.1%, 0); }
+  100% { transform: scale(1.06) translate3d(0, 0, 0); }
+}
+
+@keyframes taeyul-breath {
+  0%   { transform: translate3d(0, 0, 0); }
+  50%  { transform: translate3d(0, -0.9%, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes taeyul-sheen {
+  0%   { opacity: 0; transform: translate3d(-120%, 0, 0) rotate(8deg); }
+  8%   { opacity: 0.5; }
+  34%  { opacity: 0; transform: translate3d(120%, 0, 0) rotate(8deg); }
+  100% { opacity: 0; transform: translate3d(120%, 0, 0) rotate(8deg); }
+}
+
+@keyframes taeyul-glow {
+  0%, 100% { opacity: 0.24; }
+  50%      { opacity: 0.5; }
+}
+
+/* The breathing rides on a wrapper so it composes with the drift instead of replacing
+   it — two transforms on one element would overwrite each other. */
+.cinema-hero-portrait {
+  animation: taeyul-breath 7.3s ease-in-out infinite;
+  will-change: transform;
+}
+
+.cinema-hero-portrait::before {
+  position: absolute;
+  inset: 0;
+  background-image: inherit;
+  background-position: inherit;
+  background-repeat: no-repeat;
+  background-size: inherit;
+  animation: taeyul-drift 19s ease-in-out infinite;
+  content: "";
+}
+
+/* The element's own background is hidden so only the drifting copy shows; keeping both
+   would double the image and fight at the edges. */
+.cinema-hero-portrait { background-image: none; }
+.cinema-hero-portrait::before { background-image: url("/images/taeyul-hero.jpg"); }
+
+/* Light crossing the gold thread. Clipped to the portrait so it reads as the robe
+   catching the light, not as a band drawn over the screen. */
+.cinema-hero-portrait::after {
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: 0;
+  width: 42%;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(220, 207, 161, 0.16) 42%,
+    rgba(247, 238, 210, 0.4) 50%,
+    rgba(220, 207, 161, 0.16) 58%,
+    transparent 100%
+  );
+  animation: taeyul-sheen 11s ease-in-out infinite;
+  content: "";
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+/* The moon behind him pulses very slightly, so the sky is not frozen either. */
+.cinema-hero-meteors { animation: taeyul-glow 9.7s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cinema-hero-portrait,
+  .cinema-hero-portrait::before,
+  .cinema-hero-portrait::after,
+  .cinema-hero-meteors {
+    animation: none;
+  }
+  .cinema-hero-portrait::before { transform: scale(1.06); }
+}

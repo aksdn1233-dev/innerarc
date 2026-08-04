@@ -238,7 +238,7 @@ export function describePaymentSetup(input: Readonly<{
     supabasePublicError = true;
   }
   const publishableKey = environment.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim();
-  const prices = inspectCatalogPrices(environment, now);
+  const prices = inspectCatalogPrices(environment);
   const checks: PaymentSetupCheck[] = [];
 
   checks.push({

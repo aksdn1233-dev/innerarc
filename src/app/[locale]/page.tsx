@@ -38,7 +38,7 @@ export default async function LocaleHome({
       locale={locale}
       dictionary={dictionaries[locale]}
       pageContent={pageContent}
-      pricing={resolveProductPricing(new Date())}
+      pricing={resolveProductPricing()}
       reviews={reviews}
       reviewCount={reviewCount}
     />

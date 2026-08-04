@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { MeteorTrails, NightHorizon, SceneDivider } from "@/components/brand-visuals";
-import { CampaignNotice } from "@/components/campaign-notice";
 import { ReviewEvidenceSection } from "@/components/review-evidence-section";
 import { captureConversionEvent } from "@/core/analytics";
 import type { ProductPricingSnapshot } from "@/core/product-prices";
@@ -240,8 +239,6 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
     return {
       ...product,
       price: formatWon(pricing.prices[productCode], locale),
-      regularPrice: formatWon(pricing.regularPrices[productCode], locale),
-      discounted: pricing.campaignActive && pricing.prices[productCode] < pricing.regularPrices[productCode],
     };
   });
 
@@ -364,7 +361,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
 
   return (
     <>
-      <main className={pricing.campaignActive ? "shell home-shell has-campaign" : "shell home-shell"} id="main-content" tabIndex={-1}>
+      <main className="shell home-shell" id="main-content" tabIndex={-1}>
         {/* Over the opening screen the header is chrome, not content: it goes transparent
             and hands its links to a panel, so nothing competes with the title. */}
         <header className="topbar home-topbar is-over-cinema">
@@ -406,8 +403,6 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             <Link href={`/${otherLocale}`} onClick={() => setMenuOpen(false)}>{otherLocale === "ko" ? "한국어" : "English"}</Link>
           </nav>
         </div>
-
-        <CampaignNotice locale={locale} pricing={pricing} />
 
         {/* A full-height opening screen rather than a band of text above more text: the
             art fills the viewport, the title carries it, and one action sits under the
@@ -505,9 +500,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                 <small>{product.badge}</small>
                 <h3>{product.name}</h3>
                 <div className="campaign-price-row">
-                  {product.discounted && <del>{product.regularPrice}</del>}
                   <strong>{product.price}</strong>
-                  {product.discounted && <span>{locale === "ko" ? "여름 이벤트가" : "Summer event"}</span>}
                 </div>
                 <p>{product.description}</p>
                 <button type="button" onClick={() => chooseProduct(product.id, "product_card")}>{product.button} · {product.price}</button>
@@ -550,7 +543,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                 {products.map((product) => (
                   <label className="product-choice" key={product.id}>
                     <input checked={selectedProduct === product.id} name="readingProduct" onChange={() => chooseProduct(product.id, "form")} type="radio" value={product.id} />
-                    <span><small>{product.badge}</small><strong>{product.name}</strong>{product.discounted && <del>{product.regularPrice}</del>}<b>{product.price}</b><em>{product.description}</em></span>
+                    <span><small>{product.badge}</small><strong>{product.name}</strong><b>{product.price}</b><em>{product.description}</em></span>
                   </label>
                 ))}
               </div>

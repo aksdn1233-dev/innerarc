@@ -6,7 +6,6 @@ import {
 } from "@tosspayments/tosspayments-sdk";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { CampaignNotice } from "@/components/campaign-notice";
 import { captureConversionEvent } from "@/core/analytics";
 import { PaidReadingInputSchema, type PaidReadingInput } from "@/core/paid-reading";
 import type { ProductPricingSnapshot } from "@/core/product-prices";
@@ -208,7 +207,6 @@ export function PlansExperience({
   paymentsEnabled,
   paymentProvider,
   initialProduct,
-  pricing,
 }: {
   locale: Locale;
   products: readonly PublicProduct[];
@@ -495,7 +493,6 @@ export function PlansExperience({
         </Link>
       </header>
 
-      <CampaignNotice locale={locale} pricing={pricing} />
 
       <section className="plans-intro">
         <p className="eyebrow">{t.eyebrow}</p>
@@ -555,11 +552,11 @@ export function PlansExperience({
             <p className="eyebrow">{product.tier}</p>
             <h2>{product.name}</h2>
             <div className="plan-price-stack">
-              {pricing.campaignActive && product.regularAmount !== product.amount && (
+              {false && (
                 <del>{formatWon(product.regularAmount, locale)}</del>
               )}
               <strong className="plan-price">{formatWon(product.amount, locale)}</strong>
-              {pricing.campaignActive && product.regularAmount !== product.amount && (
+              {false && (
                 <span>{locale === "ko" ? "여름 이벤트가" : "Summer event price"}</span>
               )}
             </div>
