@@ -480,8 +480,8 @@ successful build in weeks. `main` and every branch failed identically.
   8-domain content in `integrated-profile.ts`, neither of which was touched this round
   (higher risk: shared THEMES tables feed multiple features, not isolated topic data).
 - Verified: `tsc --noEmit` clean, `eslint .` clean, `vitest run` 400/400 passing (was
-  399). Built, deployed to `https://gyeol.aksdn1233.workers.dev` (Version ID
-  `74aef45f-824b-44e3-a72c-465fe653b62e`), and smoke-tested live with no console errors.
+  399). Built, deployed, and smoke-tested live with no console errors. (That build went to a
+  since-retired workers.dev preview address; the live site is `https://mygyeol.kr`.)
 - Deferred, not done: a real content database/coverage-matrix/approval-workflow
   architecture (would be a separate, larger, migration-backed project); a price change to
   match an external spec's numbers (would touch live PayApp product mappings — needs
@@ -541,7 +541,7 @@ successful build in weeks. `main` and every branch failed identically.
 - The provider-neutral web MVP, relationship action-to-outcome loop, lifestyle curation, closed shop-preview scope, and tarot reading-room UX are implemented and release-regression tested.
 - The site is restyled as the paid GYEOL tarot service with three server-priced products and a PayApp hosted checkout, with bank transfer, PortOne, and Toss adapters kept as alternates.
 - Supabase-backed identity and explicit durable record sync are connected. PayApp checkout and its database foundation are implemented; production checkout is deliberately closed unless provider readiness, database access, the sales switch, and the separate server-only launch-approval gate all pass.
-- A Cloudflare Workers build target exists and is deployed to a temporary preview URL, `https://innerarc.truth-bakery.workers.dev`, with payments unconfigured. This is not a permanent address.
+- The live site is the Cloudflare Worker at **`https://mygyeol.kr`**, and that is the only address in use. Earlier `*.workers.dev` preview URLs and the Vercel project's deployment URLs are retired: they are not the site, and a green deployment on either is not evidence that a change reached visitors. `pnpm build:sites` produces the deployable Worker and `.github/workflows/deploy.yml` ships it after CI passes on `main`.
 - The closed shop is product architecture only, not an operating store.
 
 ## Payment defects found and fixed after the first deployment
