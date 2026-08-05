@@ -8104,8 +8104,8 @@ summary {
   z-index: -2;
   inset: -8%;
   background: url("/images/taeyul-hero.jpg") center 18% / cover no-repeat;
-  filter: blur(30px) saturate(0.85);
-  opacity: 0.55;
+  filter: blur(24px) saturate(0.9);
+  opacity: 0.78;
 }
 
 .cinema-intake::after {
@@ -8113,7 +8113,9 @@ summary {
   z-index: -1;
   inset: 0;
   content: "";
-  background: linear-gradient(180deg, rgba(6, 11, 24, 0.78), rgba(6, 11, 24, 0.93));
+  /* Dark enough that the fields clear AA against it, light enough that the art is still
+     visibly there. The source is already a night scene, so most of the work is done. */
+  background: linear-gradient(180deg, rgba(6, 11, 24, 0.6), rgba(6, 11, 24, 0.86));
 }
 
 .cinema-intake .form-card {
@@ -8234,3 +8236,4 @@ summary {
 .cinema-intake .form-actions {
   margin-top: clamp(28px, 7vw, 40px);
 }
+
