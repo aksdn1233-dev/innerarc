@@ -7797,19 +7797,20 @@ summary {
    sets. A reader whose script was blocked or is still loading sees the whole reading; the
    stylesheet is never the thing holding it back. */
 
+/* The rise is a transform and nothing else — deliberately no fade.
+   Text part-way through an opacity transition is text at reduced contrast: a block caught
+   at 0.91 measured 3.73:1 against its own background, under AA, and on a slow device that
+   is not a stray frame but the reading someone is trying to start. Moving it costs nothing
+   in contrast, and a panel sliding into place reads as a webtoon panel just as well. */
 .webtoon-js [data-webtoon-panel],
 .webtoon-js .webtoon-adapt > :is(header, section, div, details) {
-  opacity: 0;
-  transform: translate3d(0, 28px, 0);
+  transform: translate3d(0, 24px, 0);
 }
 
 .webtoon-js [data-webtoon-panel].is-revealed,
 .webtoon-js .webtoon-adapt > .is-revealed {
-  opacity: 1;
   transform: none;
-  transition:
-    opacity 0.74s cubic-bezier(0.22, 0.61, 0.36, 1),
-    transform 0.74s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: transform 0.68s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 /* ---- Persistent call to action ----
@@ -8030,10 +8031,10 @@ summary {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* WebtoonReveal already declines to run, so nothing is hidden; this covers the case
-     where the preference is turned on after the class is on <html>. */
-  .webtoon-js [data-webtoon-panel] {
-    opacity: 1;
+  /* WebtoonReveal already declines to run, so nothing is offset; this covers the case where
+     the preference is turned on after the class is already on <html>. */
+  .webtoon-js [data-webtoon-panel],
+  .webtoon-js .webtoon-adapt > :is(header, section, div, details) {
     transform: none;
   }
 
@@ -8064,4 +8065,172 @@ summary {
   .webtoon-night .webtoon-orb span {
     color: #000;
   }
+}
+
+/* ---- Cinematic intake -------------------------------------------------------------
+   The opening screen is a full screen of night and then the form was a white card on
+   paper — the reader was walked out of the world the page had just built in order to type
+   their birth date. The reference never leaves it: the art stays, pushed back out of focus
+   behind the fields, and the inputs are rules drawn on glass instead of boxes.
+
+   Only the surface changes here. Same fields, same validation, same consent copy, same
+   ids the rest of the app and the tests reach for. */
+
+.profile-shell {
+  /* The bleed below reaches past the reading gutter, and this stops that becoming a
+     horizontal scrollbar. clip rather than hidden, so it does not turn into a scroll
+     container and strand anything fixed inside it. .home-shell already sets this. */
+  overflow-x: clip;
+}
+
+.cinema-intake {
+  position: relative;
+  max-width: none;
+  margin-inline: calc(50% - 50vw);
+  padding: clamp(54px, 13vw, 104px) 0;
+  background: #0a1020;
+  color: #f7f1e7;
+  /* Date and time inputs draw their own chrome from this. Without it the picker opens as a
+     white slab in the middle of the night. */
+  color-scheme: dark;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+/* Inset past the edges so the blur has material to sample and does not fade to nothing at
+   the sides. */
+.cinema-intake-art {
+  position: absolute;
+  z-index: -2;
+  inset: -8%;
+  background: url("/images/taeyul-hero.jpg") center 18% / cover no-repeat;
+  filter: blur(30px) saturate(0.85);
+  opacity: 0.55;
+}
+
+.cinema-intake::after {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  content: "";
+  background: linear-gradient(180deg, rgba(6, 11, 24, 0.78), rgba(6, 11, 24, 0.93));
+}
+
+.cinema-intake .form-card {
+  width: min(100% - 44px, 34rem);
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+
+/* The home intake keeps its heading outside the card, so it needs the measure too or it
+   runs the full width of the bleed while the fields below it sit in a column. */
+.cinema-intake .form-section-heading {
+  width: min(100% - 44px, 34rem);
+  margin: 0 auto clamp(20px, 5vw, 30px);
+}
+
+.cinema-intake .eyebrow {
+  color: #d8c191;
+}
+
+.cinema-intake h2 {
+  margin: 6px 0 clamp(26px, 7vw, 40px);
+  color: #fffaf0;
+  font: 800 clamp(1.8rem, 7vw, 2.5rem)/1.2 var(--display-font);
+  letter-spacing: -0.03em;
+}
+
+.cinema-intake .field {
+  margin-block: clamp(26px, 6vw, 38px);
+}
+
+.cinema-intake label,
+.cinema-intake legend,
+.cinema-intake .field-label {
+  color: #fffaf0;
+  font-weight: 800;
+}
+
+.cinema-intake input[type="date"],
+.cinema-intake input[type="text"],
+.cinema-intake input[type="time"],
+.cinema-intake input[type="tel"],
+.cinema-intake input[type="email"],
+.cinema-intake textarea,
+.cinema-intake select {
+  width: 100%;
+  padding: 10px 0;
+  border: 0;
+  border-bottom: 1px solid rgba(247, 241, 231, 0.34);
+  border-radius: 0;
+  background: transparent;
+  color: #fffaf0;
+}
+
+.cinema-intake input:focus-visible,
+.cinema-intake textarea:focus-visible,
+.cinema-intake select:focus-visible {
+  border-bottom-color: #edc57f;
+  outline: 3px solid rgba(237, 197, 127, 0.45);
+  outline-offset: 6px;
+}
+
+.cinema-intake ::placeholder {
+  color: rgba(247, 241, 231, 0.56);
+}
+
+.cinema-intake small,
+.cinema-intake .privacy-note,
+.cinema-intake .legal-note {
+  color: rgba(247, 241, 231, 0.68);
+}
+
+/* The pill pair from the reference: an outline that fills in once chosen, rather than a dot
+   beside a word. .choice already hides its own radio, so only the span is redrawn — and it
+   gets a real 48px target while we are here. */
+.cinema-intake .choice span {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  border-color: rgba(247, 241, 231, 0.4);
+  border-radius: 10px;
+  background: transparent;
+  color: #f7f1e7;
+}
+
+.cinema-intake .choice input:checked + span {
+  border-color: #cfe0ff;
+  background: rgba(207, 224, 255, 0.16);
+  color: #fffaf0;
+}
+
+.cinema-intake .check span {
+  color: rgba(247, 241, 231, 0.88);
+}
+
+.cinema-intake a {
+  color: #edc57f;
+}
+
+.cinema-intake .error {
+  color: #ffb4a2;
+}
+
+/* The same button the opening screen puts under the thumb. */
+.cinema-intake .primary-button {
+  width: 100%;
+  min-height: 58px;
+  border: 1px solid #cfe0ff;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #e8f0ff 0%, #cddcfa 100%);
+  box-shadow: 0 14px 36px rgba(6, 12, 28, 0.5);
+  color: #13224a;
+}
+
+.cinema-intake .form-actions {
+  margin-top: clamp(28px, 7vw, 40px);
 }

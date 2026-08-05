@@ -32,6 +32,16 @@ describe("BASIC_19000 renderer", () => {
     expect(css).toMatch(/\.webtoon-panel p,[\s\S]*?line-height: 1\.95;/u);
   });
 
+  it("reveals panels by moving them, never by fading the text", () => {
+    // Text part-way through an opacity transition is text at reduced contrast. A block
+    // caught at 0.91 measured 3.73:1 against its own background and failed the axe AA
+    // gate, so the reveal moves panels and leaves their opacity alone.
+    const reveal = css.slice(css.indexOf(".webtoon-js [data-webtoon-panel]"));
+    const revealRules = reveal.slice(0, reveal.indexOf("/* ---- Persistent"));
+    expect(revealRules).toContain("transform: translate3d");
+    expect(revealRules).not.toContain("opacity");
+  });
+
   it("never hides a paid reading behind a script that may not run", () => {
     // The reveal animation starts from opacity 0, and that starting state is gated on a
     // class only the reveal component sets. If the stylesheet ever hides panels on its

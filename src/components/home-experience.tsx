@@ -578,7 +578,8 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
           </div>
         </section>
 
-        <section className="form-section home-form-section" id="onboarding" aria-labelledby="onboarding-title" ref={formRef}>
+        <section className="form-section home-form-section cinema-intake" id="onboarding" aria-labelledby="onboarding-title" ref={formRef}>
+          <div className="cinema-intake-art" aria-hidden="true" />
           <header className="form-section-heading">
             <p className="eyebrow">{locale === "ko" ? "개인 리딩 입력" : "Personal reading details"}</p>
             <h2 id="onboarding-title">{t.formTitle}</h2>

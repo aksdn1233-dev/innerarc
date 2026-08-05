@@ -99,7 +99,7 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
 
   return (
     <>
-      <main className="shell" id="main-content" tabIndex={-1}>
+      <main className="shell profile-shell" id="main-content" tabIndex={-1}>
         <header className="topbar">
           <Link className="brand" href={`/${locale}`}>
             <strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong>
@@ -133,7 +133,8 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
           </div>
         </section>
 
-        <section className="form-section" id="onboarding" aria-labelledby="onboarding-title">
+        <section className="form-section cinema-intake" id="onboarding" aria-labelledby="onboarding-title">
+          <div className="cinema-intake-art" aria-hidden="true" />
           <form className="form-card" onSubmit={submit} noValidate>
             <p className="eyebrow">01 — {d.eyebrow}</p>
             <h2 id="onboarding-title">{d.start}</h2>
