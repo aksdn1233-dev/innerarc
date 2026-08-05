@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { SUMMER_EVENT_PRODUCT_PRICES_KRW } from "@/core/product-prices";
+import { STANDARD_PRODUCT_PRICES_KRW } from "@/core/product-prices";
 import {
   inspectCatalogPrices as inspectCatalogPricesAtRuntime,
   inspectPaymentReadiness as inspectPaymentReadinessAtRuntime,
@@ -19,17 +19,19 @@ const payAppEnvironment = {
   ADMIN_EMAILS: "owner@example.com",
 } as const;
 
-const SUMMER_NOW = new Date("2026-08-01T00:00:00.000Z");
+// A fixed clock so the readiness checks that still depend on time stay deterministic.
+// Pricing no longer reads it — there is one price list and no schedule.
+const FIXED_NOW = new Date("2026-08-01T00:00:00.000Z");
 
 function inspectCatalogPrices(environment: Readonly<Record<string, string | undefined>>) {
-  return inspectCatalogPricesAtRuntime(environment, SUMMER_NOW);
+  return inspectCatalogPricesAtRuntime(environment);
 }
 
 function inspectPaymentReadiness(
   environment: Readonly<Record<string, string | undefined>>,
   runtimeMode: "development" | "test" | "production",
 ) {
-  return inspectPaymentReadinessAtRuntime(environment, runtimeMode, SUMMER_NOW);
+  return inspectPaymentReadinessAtRuntime(environment, runtimeMode, FIXED_NOW);
 }
 
 function describeWith(
@@ -41,7 +43,7 @@ function describeWith(
     runtimeMode: "production",
     salesEnabled: true,
     databaseReachable: true,
-    now: SUMMER_NOW,
+    now: FIXED_NOW,
     ...overrides,
   });
 }
@@ -60,8 +62,8 @@ describe("catalog prices", () => {
     const prices = inspectCatalogPrices({});
     expect(prices).toEqual({
       ok: true,
-      comprehensivePrice: SUMMER_EVENT_PRODUCT_PRICES_KRW.pro_30d,
-      premiumPdfPrice: SUMMER_EVENT_PRODUCT_PRICES_KRW.premium_pdf,
+      comprehensivePrice: STANDARD_PRODUCT_PRICES_KRW.pro_30d,
+      premiumPdfPrice: STANDARD_PRODUCT_PRICES_KRW.premium_pdf,
     });
   });
 
@@ -69,12 +71,12 @@ describe("catalog prices", () => {
     const readiness = inspectPaymentReadiness(payAppEnvironment, "production");
     expect(readiness.enabled).toBe(true);
     if (readiness.enabled) {
-      expect(readiness.config.products.pro_30d.amount).toBe(SUMMER_EVENT_PRODUCT_PRICES_KRW.pro_30d);
-      expect(readiness.config.products.premium_pdf.amount).toBe(SUMMER_EVENT_PRODUCT_PRICES_KRW.premium_pdf);
+      expect(readiness.config.products.pro_30d.amount).toBe(STANDARD_PRODUCT_PRICES_KRW.pro_30d);
+      expect(readiness.config.products.premium_pdf.amount).toBe(STANDARD_PRODUCT_PRICES_KRW.premium_pdf);
     }
   });
 
-  it("accepts both known event and standard assertions during a scheduled transition", () => {
+  it("accepts the current price and still recognises the retired event amount", () => {
     const stale = {
       ...payAppEnvironment,
       INNERARC_COMPREHENSIVE_PRICE_KRW: "39000",
@@ -84,8 +86,8 @@ describe("catalog prices", () => {
     const prices = inspectCatalogPrices(stale);
     expect(prices.ok).toBe(true);
     if (prices.ok) {
-      expect(prices.comprehensivePrice).toBe(9_600);
-      expect(prices.premiumPdfPrice).toBe(39_000);
+      expect(prices.comprehensivePrice).toBe(39_000);
+      expect(prices.premiumPdfPrice).toBe(79_000);
     }
   });
 
@@ -94,7 +96,7 @@ describe("catalog prices", () => {
     expect(prices.ok).toBe(false);
     if (!prices.ok) {
       expect(prices.mismatched[0]?.variable).toBe("INNERARC_PRO_30D_PRICE_KRW");
-      expect(prices.mismatched[0]?.expected).toBe(SUMMER_EVENT_PRODUCT_PRICES_KRW.pro_30d);
+      expect(prices.mismatched[0]?.expected).toBe(STANDARD_PRODUCT_PRICES_KRW.pro_30d);
     }
   });
 

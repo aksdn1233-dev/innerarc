@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { MeteorTrails, SceneDivider } from "@/components/brand-visuals";
-import { CampaignNotice } from "@/components/campaign-notice";
+import { MeteorTrails, NightHorizon, SceneDivider } from "@/components/brand-visuals";
 import { ReviewEvidenceSection } from "@/components/review-evidence-section";
 import { captureConversionEvent } from "@/core/analytics";
 import type { ProductPricingSnapshot } from "@/core/product-prices";
@@ -19,6 +18,8 @@ type Props = {
   pageContent: AdminPageContent;
   /** Approved, still-consented reviews only. Empty is the normal, honest case. */
   reviews: readonly PublicReview[];
+  /** Every published review, not just the shown few. Null when the table is unreachable. */
+  reviewCount: number | null;
 };
 
 type ReadingProductId = "comprehensive" | "premium_pdf";
@@ -85,12 +86,29 @@ const readingProducts = {
 const copy = {
   ko: {
     navLabel: "홈페이지 탐색",
-    nav: [["#preview", "리포트 예시"], ["#method", "리딩 방식"], ["#products", "상품 안내"], ["#evidence", "후기·자주 묻는 질문"]],
+    nav: [["#questions", "질문 고르기"], ["#preview", "리포트 예시"], ["#products", "가격"], ["#evidence", "후기"], ["#method", "리딩 방식"]],
     heroKicker: "사주명리와는 다른, 현실 선택 중심의 리딩",
     heroTitle: "왜 나는 같은 선택을 반복할까요?",
     heroBody: "타고난 성향과 반복되는 관계·일·돈의 패턴을 살펴보고, 올해 어떤 선택에 힘을 주어야 할지 정리해드립니다.",
     primary: "내 패턴 확인하기",
     heroNote: "생년월일 기반 · 1회 결제 · 자동 갱신 없음",
+    freeCta: "먼저 무료로 확인",
+    freeNote: "결제 없이 생년월일만으로 기본 리딩을 볼 수 있어요",
+    entryEyebrow: "어떤 게 제일 걸리세요?",
+    entryTitle: "요즘 마음에 걸리는 질문을 골라보세요",
+    entryBody: "고른 질문이 리딩의 중심이 됩니다. 지금 정하지 않아도 나중에 바꿀 수 있어요.",
+    entryQuestions: [
+      ["relationships", "왜 늘 비슷한 사람에게 마음이 갈까요?", "관계"],
+      ["work", "지금 이 일, 계속 가는 게 맞을까요?", "일·진로"],
+      ["money", "돈 앞에서 나는 어떤 결정을 반복하나요?", "돈"],
+      ["growth", "무엇이 나를 자꾸 멈춰 세우나요?", "성장"],
+      ["health", "내 하루는 어디에서 무너지나요?", "건강·생활"],
+    ],
+    freeCardBadge: "무료",
+    freeCardName: "기본 리딩",
+    freeCardPrice: "0원",
+    freeCardBody: "생년월일만으로 타고난 성향과 기본 수를 계산해 바로 보여드립니다. 결제도, 계정도 필요하지 않아요.",
+    freeCardButton: "무료로 시작하기",
     sampleEyebrow: "리포트 구성 예시",
     sampleTitle: "내 일상에 연결되는 방식으로 정리합니다",
     sampleBody: "아래 문장은 실제 후기가 아닌 리포트 구성 예시입니다.",
@@ -120,12 +138,29 @@ const copy = {
   },
   en: {
     navLabel: "Home navigation",
-    nav: [["#preview", "Report examples"], ["#method", "Method"], ["#products", "Readings"], ["#evidence", "Reviews and FAQ"]],
+    nav: [["#questions", "Pick a question"], ["#preview", "Report examples"], ["#products", "Pricing"], ["#evidence", "Reviews"], ["#method", "Method"]],
     heroKicker: "A different kind of reading, centered on real-life choices",
     heroTitle: "Why do I keep making the same choices?",
     heroBody: "Explore your natural tendencies and recurring patterns in relationships, work, and money—then clarify where to place your energy this year.",
     primary: "See my patterns",
     heroNote: "Birth-date based · One-time payment · No auto-renewal",
+    freeCta: "Try it free first",
+    freeNote: "See a basic reading from your birth date alone — no payment",
+    entryEyebrow: "What is on your mind?",
+    entryTitle: "Pick the question that keeps coming back",
+    entryBody: "Your choice becomes the centre of the reading. You can change it later.",
+    entryQuestions: [
+      ["relationships", "Why am I drawn to the same kind of person?", "Relationships"],
+      ["work", "Is staying in this work still the right call?", "Work"],
+      ["money", "What decision do I keep repeating about money?", "Money"],
+      ["growth", "What keeps stopping me short?", "Growth"],
+      ["health", "Where does my day fall apart?", "Daily life"],
+    ],
+    freeCardBadge: "Free",
+    freeCardName: "Basic reading",
+    freeCardPrice: "₩0",
+    freeCardBody: "Your birth date alone calculates your core numbers and natural tendencies, shown immediately. No payment, no account.",
+    freeCardButton: "Start free",
     sampleEyebrow: "Report format examples",
     sampleTitle: "Patterns connected to real, everyday choices",
     sampleBody: "These are report format examples, not customer testimonials.",
@@ -176,11 +211,17 @@ function isValidGregorianDate(value: string) {
     && date.getUTCDate() === day;
 }
 
-export function HomeExperience({ locale, dictionary: d, pricing, pageContent, reviews }: Props) {
+export function HomeExperience({ locale, dictionary: d, pricing, pageContent, reviews, reviewCount }: Props) {
   const [selectedProduct, setSelectedProduct] = useState<ReadingProductId>("comprehensive");
   const [focusId, setFocusId] = useState<FocusId>("relationships");
   const [error, setError] = useState<IntakeError | null>(null);
   const [intakeVisible, setIntakeVisible] = useState(false);
+  // The opening screen already carries the same action at thumb height. Showing the
+  // sticky bar there would cover it, so the bar waits until the hero has scrolled away.
+  const [heroVisible, setHeroVisible] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const heroRef = useRef<HTMLElement>(null);
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
   const trackedRef = useRef(new Set<string>());
   const sampleRef = useRef<HTMLElement>(null);
   const productsRef = useRef<HTMLElement>(null);
@@ -199,8 +240,6 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
     return {
       ...product,
       price: formatWon(pricing.prices[productCode], locale),
-      regularPrice: formatWon(pricing.regularPrices[productCode], locale),
-      discounted: pricing.campaignActive && pricing.prices[productCode] < pricing.regularPrices[productCode],
     };
   });
 
@@ -244,8 +283,46 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
       observers.push(observer);
     }
 
+    const hero = heroRef.current;
+    if (hero) {
+      const observer = new IntersectionObserver(([entry]) => {
+        setHeroVisible(Boolean(entry?.isIntersecting));
+      }, { threshold: 0.12 });
+      observer.observe(hero);
+      observers.push(observer);
+    }
+
     return () => observers.forEach((observer) => observer.disconnect());
   }, [locale]);
+
+  // The hero clip is fetched after first paint, so it never competes with the page for
+  // the first bytes and never counts against the initial payload. If no clip is published
+  // the load simply fails and the poster stays — which is the intended state until one is.
+  useEffect(() => {
+    const video = heroVideoRef.current;
+    if (!video) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let cancelled = false;
+    const start = () => {
+      if (cancelled) return;
+      video.load();
+      // Autoplay is allowed for a muted, inline video; a rejection is not an error worth
+      // surfacing, it just leaves the poster showing.
+      void video.play().catch(() => {});
+    };
+
+    // Safari has no requestIdleCallback, so a timeout stands in for it there.
+    const canIdle = typeof window.requestIdleCallback === "function";
+    const handle = canIdle
+      ? window.requestIdleCallback(start, { timeout: 2_500 })
+      : window.setTimeout(start, 1_200);
+    return () => {
+      cancelled = true;
+      if (canIdle) window.cancelIdleCallback(handle);
+      else window.clearTimeout(handle);
+    };
+  }, []);
 
   function trackFormStart() {
     if (trackedRef.current.has("form-start")) return;
@@ -264,6 +341,17 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
         document.getElementById("onboarding")?.scrollIntoView({ behavior: "smooth" });
       });
     }
+  }
+
+  // A visitor who has not decided anything yet will not fill in a birth date, but they
+  // will answer "which of these is bothering me". Answering that is the cheapest possible
+  // first commitment, and it carries straight into the form as the reading's focus.
+  function chooseQuestion(focus: FocusId) {
+    setFocusId(focus);
+    captureConversionEvent("form_start", locale, {});
+    window.requestAnimationFrame(() => {
+      document.getElementById("onboarding")?.scrollIntoView({ behavior: "smooth" });
+    });
   }
 
   function submit(event: FormEvent<HTMLFormElement>) {
@@ -303,29 +391,129 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
 
   return (
     <>
-      <main className={pricing.campaignActive ? "shell home-shell has-campaign" : "shell home-shell"} id="main-content" tabIndex={-1}>
-        <header className="topbar home-topbar">
+      <main className="shell home-shell" id="main-content" tabIndex={-1}>
+        {/* Over the opening screen the header is chrome, not content: it goes transparent
+            and hands its links to a panel, so nothing competes with the title. */}
+        <header className="topbar home-topbar is-over-cinema">
           <Link className="brand" href={`/${locale}`}><strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong><small>{d.brandTagline}</small></Link>
           <nav className="home-nav" aria-label={t.navLabel}>{t.nav.map(([href, label]) => <a href={href} key={href}>{label}</a>)}</nav>
           <div className="home-header-actions">
             <a className="header-start-link" href="#onboarding">{locale === "ko" ? "리딩 시작하기" : "Start reading"}</a>
             <Link className="locale-switch" href={`/${otherLocale}`}>{otherLocale === "ko" ? "한국어" : "English"}</Link>
           </div>
+          <button
+            aria-controls="home-menu"
+            aria-expanded={menuOpen}
+            aria-label={menuOpen ? (locale === "ko" ? "메뉴 닫기" : "Close menu") : (locale === "ko" ? "메뉴 열기" : "Open menu")}
+            className="cinema-menu-button"
+            onClick={() => setMenuOpen((open) => !open)}
+            type="button"
+          >
+            <span aria-hidden="true" />
+            <span aria-hidden="true" />
+            <span aria-hidden="true" />
+          </button>
         </header>
 
-        <CampaignNotice locale={locale} pricing={pricing} />
+        <div className={menuOpen ? "cinema-menu is-open" : "cinema-menu"} id="home-menu" hidden={!menuOpen}>
+          <button
+            className="cinema-menu-close"
+            onClick={() => setMenuOpen(false)}
+            type="button"
+          >
+            {locale === "ko" ? "닫기" : "Close"}
+          </button>
+          <nav aria-label={t.navLabel}>
+            {t.nav.map(([href, label]) => (
+              <a href={href} key={href} onClick={() => setMenuOpen(false)}>{label}</a>
+            ))}
+            <Link href={`/${locale}/profile`} onClick={() => setMenuOpen(false)}>{t.freeCardButton}</Link>
+            <Link href={`/${locale}/orders`} onClick={() => setMenuOpen(false)}>{locale === "ko" ? "구매 내역" : "Find a purchase"}</Link>
+            <Link href={`/${locale}/support`} onClick={() => setMenuOpen(false)}>{locale === "ko" ? "고객 문의" : "Support"}</Link>
+            <Link href={`/${otherLocale}`} onClick={() => setMenuOpen(false)}>{otherLocale === "ko" ? "한국어" : "English"}</Link>
+          </nav>
+        </div>
 
-        <section className="hero home-hero" aria-labelledby="hero-title">
-          <MeteorTrails className="home-hero-meteors" />
-          <div className="home-hero-copy">
-            <p className="hero-kicker">{t.heroKicker}</p>
-            <h1 id="hero-title">{t.heroTitle}</h1>
-            <p className="hero-copy">{t.heroBody}</p>
-            <div className="hero-actions">
-              <a className="primary-button" href="#onboarding" onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "hero" })}>{t.primary}</a>
-            </div>
-            <p className="hero-note">{t.heroNote}</p>
+        {/* A full-height opening screen rather than a band of text above more text: the
+            art fills the viewport, the title carries it, and one action sits under the
+            thumb. Everything explanatory has moved below the fold, where it belongs. */}
+        <section className="cinema-hero" aria-labelledby="hero-title" ref={heroRef}>
+          <NightHorizon className="cinema-hero-scene" />
+          {/* 태율(太律), the numerology guide from the supplied character sheet.
+              Decorative: the title beside it carries the meaning, so it is not announced
+              again.
+
+              A seven-second loop of him, watermark removed and cross-faded at the seam so
+              it repeats without a cut. The poster is the clip's own first frame, so the
+              still and the moving picture are the same image and nothing jumps when
+              playback starts. `preload="none"` keeps it out of the initial payload; the
+              effect below starts it once the page is idle, and never when the visitor has
+              asked for reduced motion. */}
+          <video
+            aria-hidden="true"
+            className="cinema-hero-portrait"
+            disablePictureInPicture
+            loop
+            muted
+            playsInline
+            poster="/images/taeyul-hero.jpg"
+            preload="none"
+            ref={heroVideoRef}
+            tabIndex={-1}
+          >
+            <source src="/videos/taeyul-hero.mp4" type="video/mp4" />
+          </video>
+          <MeteorTrails className="cinema-hero-meteors" />
+          <div className="cinema-hero-veil" aria-hidden="true" />
+
+          <div className="cinema-hero-copy">
+            <p className="cinema-kicker">{t.heroKicker}</p>
+            <h1 className="cinema-title" id="hero-title">{t.heroTitle}</h1>
+            <p className="cinema-quote">{t.heroBody}</p>
           </div>
+
+          <div className="cinema-hero-actions">
+            <a
+              className="cinema-cta"
+              href="#onboarding"
+              onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "hero" })}
+            >
+              {t.primary}
+            </a>
+            {/* The free calculation at /profile existed but nothing on this page linked to
+                it, so a visitor who was not ready to pay had no next step but to leave. */}
+            <Link
+              className="cinema-cta-secondary"
+              href={`/${locale}/profile`}
+              onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "hero_free" })}
+            >
+              {t.freeCta}
+            </Link>
+            <p className="cinema-note">{t.heroNote}</p>
+          </div>
+        </section>
+
+        <section className="entry-questions" id="questions" aria-labelledby="questions-title">
+          <div className="section-heading">
+            <p className="eyebrow">{t.entryEyebrow}</p>
+            <h2 id="questions-title">{t.entryTitle}</h2>
+            <p>{t.entryBody}</p>
+          </div>
+          <ul className="entry-question-grid">
+            {t.entryQuestions.map(([focus, question, label]) => (
+              <li key={focus}>
+                <button
+                  type="button"
+                  className={focusId === focus ? "entry-question is-chosen" : "entry-question"}
+                  aria-pressed={focusId === focus}
+                  onClick={() => chooseQuestion(focus as FocusId)}
+                >
+                  <small>{label}</small>
+                  <strong>{question}</strong>
+                </button>
+              </li>
+            ))}
+          </ul>
         </section>
 
         <section className="report-preview" id="preview" aria-labelledby="preview-title" ref={sampleRef}>
@@ -341,6 +529,43 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
           </div>
         </section>
 
+        <section className="pass-summary" id="products" aria-labelledby="products-title" ref={productsRef}>
+          <div className="product-section-heading">
+            <p className="eyebrow">{locale === "ko" ? "두 가지 리딩" : "Two reading depths"}</p>
+            <h2 id="products-title">{t.productsTitle}</h2>
+            <p>{t.productsBody}</p>
+          </div>
+          <div className="editorial-product-grid has-free-tier">
+            {/* Naming the free reading as a tier, beside the paid ones and with its price
+                written as a price, is what makes the paid tiers legible as a step up
+                rather than as the only thing on offer. */}
+            <article className="editorial-product is-free">
+              <small>{t.freeCardBadge}</small>
+              <h3>{t.freeCardName}</h3>
+              <div className="campaign-price-row"><strong>{t.freeCardPrice}</strong></div>
+              <p>{t.freeCardBody}</p>
+              <Link href={`/${locale}/profile`} onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "product_free" })}>{t.freeCardButton}</Link>
+            </article>
+            {products.map((product) => (
+              <article className={product.id === "comprehensive" ? "editorial-product is-featured" : "editorial-product"} key={product.id}>
+                <small>{product.badge}</small>
+                <h3>{product.name}</h3>
+                <div className="campaign-price-row">
+                  <strong>{product.price}</strong>
+                </div>
+                <p>{product.description}</p>
+                <button type="button" onClick={() => chooseProduct(product.id, "product_card")}>{product.button} · {product.price}</button>
+              </article>
+            ))}
+          </div>
+          <p className="payment-reassurance"><strong>{t.paymentFacts}</strong><br />{t.paymentAccess} <Link href={`/${locale}/support`}>{t.support}</Link></p>
+        </section>
+
+        <ReviewEvidenceSection locale={locale} reviews={reviews} reviewCount={reviewCount} />
+
+        {/* How the numbers are derived is reassurance, not a hook: it answers a doubt the
+            visitor only has once they are already interested, so it sits after the offer
+            and the reviews rather than in front of them. */}
         <section className="pattern-fields reading-method" id="method" aria-labelledby="method-title">
           <SceneDivider className="method-divider" />
           <div className="section-heading">
@@ -352,32 +577,6 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             {t.methodPoints.map((point) => <span key={point}>{point}</span>)}
           </div>
         </section>
-
-        <section className="pass-summary" id="products" aria-labelledby="products-title" ref={productsRef}>
-          <div className="product-section-heading">
-            <p className="eyebrow">{locale === "ko" ? "두 가지 리딩" : "Two reading depths"}</p>
-            <h2 id="products-title">{t.productsTitle}</h2>
-            <p>{t.productsBody}</p>
-          </div>
-          <div className="editorial-product-grid">
-            {products.map((product) => (
-              <article className={product.id === "comprehensive" ? "editorial-product is-featured" : "editorial-product"} key={product.id}>
-                <small>{product.badge}</small>
-                <h3>{product.name}</h3>
-                <div className="campaign-price-row">
-                  {product.discounted && <del>{product.regularPrice}</del>}
-                  <strong>{product.price}</strong>
-                  {product.discounted && <span>{locale === "ko" ? "여름 이벤트가" : "Summer event"}</span>}
-                </div>
-                <p>{product.description}</p>
-                <button type="button" onClick={() => chooseProduct(product.id, "product_card")}>{product.button} · {product.price}</button>
-              </article>
-            ))}
-          </div>
-          <p className="payment-reassurance"><strong>{t.paymentFacts}</strong><br />{t.paymentAccess} <Link href={`/${locale}/support`}>{t.support}</Link></p>
-        </section>
-
-        <ReviewEvidenceSection locale={locale} reviews={reviews} />
 
         <section className="form-section home-form-section" id="onboarding" aria-labelledby="onboarding-title" ref={formRef}>
           <header className="form-section-heading">
@@ -395,7 +594,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                 {products.map((product) => (
                   <label className="product-choice" key={product.id}>
                     <input checked={selectedProduct === product.id} name="readingProduct" onChange={() => chooseProduct(product.id, "form")} type="radio" value={product.id} />
-                    <span><small>{product.badge}</small><strong>{product.name}</strong>{product.discounted && <del>{product.regularPrice}</del>}<b>{product.price}</b><em>{product.description}</em></span>
+                    <span><small>{product.badge}</small><strong>{product.name}</strong><b>{product.price}</b><em>{product.description}</em></span>
                   </label>
                 ))}
               </div>
@@ -453,7 +652,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
           <small>{locale === "ko" ? "별루프 · 대표 박서준 · 사업자등록번호 482-12-03629 · 부산광역시 북구" : "Byeolloof · Busan, Republic of Korea"}</small>
         </footer>
       </main>
-      {!intakeVisible && (
+      {!intakeVisible && !heroVisible && (
         <a className="mobile-purchase-bar" href="#onboarding" onClick={() => {
           captureConversionEvent("primary_cta_click", locale, { location: "sticky" });
           captureConversionEvent("product_select", locale, { productCode: "pro_30d", location: "product_card" });

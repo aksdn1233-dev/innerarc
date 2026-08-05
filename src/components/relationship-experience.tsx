@@ -7,6 +7,7 @@ import type { NumerologyProfile } from "@/core/numerology";
 import type { MeetingContextId, RelationshipInsight } from "@/core/relationship";
 import type { NextAnalysisContext } from "@/core/reality-check";
 import { focusAndScroll, scrollToElement } from "@/components/accessibility";
+import { WebtoonReveal } from "@/components/webtoon-reveal";
 import type { Locale } from "@/i18n/config";
 import type { RelationshipCopy } from "@/i18n/relationship-copy";
 
@@ -162,7 +163,8 @@ export function RelationshipExperience({ locale, copy }: Props) {
         </form>
 
         {insight && (
-          <section className="relationship-result" id="relationship-result" aria-live="polite" tabIndex={-1}>
+          <section className="relationship-result webtoon-flow webtoon-adapt" id="relationship-result" aria-live="polite" tabIndex={-1}>
+            <WebtoonReveal />
             <header className="relationship-summary">
               <p className="eyebrow">{copy.summary}</p>
               <h2>{insight.summary}</h2>
@@ -292,20 +294,22 @@ export function RelationshipExperience({ locale, copy }: Props) {
               </section>
             )}
 
-            <details>
-              <summary>{copy.evidence}</summary>
-              <div className="evidence-chips">
-                {insight.evidenceRefs.map((ref) => <span key={ref.id}>{ref.label}</span>)}
-              </div>
-              <p className="rule-version">{insight.ruleVersion}</p>
-            </details>
+            <section className="webtoon-outro">
+              <details>
+                <summary>{copy.evidence}</summary>
+                <div className="evidence-chips">
+                  {insight.evidenceRefs.map((ref) => <span key={ref.id}>{ref.label}</span>)}
+                </div>
+                <p className="rule-version">{insight.ruleVersion}</p>
+              </details>
 
-            <Suspense fallback={null}>
-              <RelationshipSharePanel locale={locale} insight={insight} />
-            </Suspense>
+              <Suspense fallback={null}>
+                <RelationshipSharePanel locale={locale} insight={insight} />
+              </Suspense>
 
-            <p className="disclaimer">{insight.uncertainty} {copy.disclaimer}</p>
-            <button className="text-button" type="button" onClick={reset}>{copy.reset}</button>
+              <p className="disclaimer">{insight.uncertainty} {copy.disclaimer}</p>
+              <button className="text-button" type="button" onClick={reset}>{copy.reset}</button>
+            </section>
           </section>
         )}
       </main>

@@ -163,9 +163,8 @@ export type CatalogPriceCheck =
  */
 export function inspectCatalogPrices(
   environment: Readonly<Record<string, string | undefined>> = process.env,
-  now: Date = new Date(),
 ): CatalogPriceCheck {
-  const pricing = resolveProductPricing(now);
+  const pricing = resolveProductPricing();
   const comprehensiveVariable = environment.INNERARC_COMPREHENSIVE_PRICE_KRW?.trim()
     ? "INNERARC_COMPREHENSIVE_PRICE_KRW"
     : "INNERARC_PRO_30D_PRICE_KRW";
@@ -232,7 +231,7 @@ export function inspectPaymentReadiness(
     return { enabled: false, reason: "INVALID" };
   }
 
-  const catalogPrices = inspectCatalogPrices(environment, now);
+  const catalogPrices = inspectCatalogPrices(environment);
   if (!catalogPrices.ok) return { enabled: false, reason: "INVALID" };
 
   if (provider === "payapp") {

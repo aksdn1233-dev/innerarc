@@ -8,38 +8,41 @@ const intake = await readFile("src/components/home-experience.tsx", "utf8");
 
 describe("DETAIL_39000 renderer", () => {
   it("puts the paid tier, question, answer, and character before calculation disclosure", () => {
-    const detailBranch = page.slice(
-      page.indexOf('<section className={`paid-report-summary detail-report-summary'),
-      page.indexOf(") : (", page.indexOf('<section className={`paid-report-summary detail-report-summary')),
-    );
+    const tier = page.indexOf("report.tierLabel");
+    const question = page.indexOf("{report.concern && <blockquote>{report.concern}</blockquote>}");
+    const answer = page.indexOf("{directSection && (");
+    const character = page.indexOf("{report.characterLabel && (");
+    const numbers = page.indexOf('title={locale === "ko" ? "핵심 숫자" : "Core numbers"}');
 
-    expect(page.indexOf("report.tierLabel")).toBeLessThan(page.indexOf("detail-report-summary"));
-    expect(detailBranch.indexOf("report.concern && <blockquote")).toBeLessThan(
-      detailBranch.indexOf("detail-direct-answer"),
-    );
-    expect(detailBranch.indexOf("detail-direct-answer")).toBeLessThan(
-      detailBranch.indexOf("paid-report-character-label"),
-    );
-    expect(detailBranch.indexOf("paid-report-character-label")).toBeLessThan(
-      detailBranch.indexOf("detail-number-details"),
-    );
+    expect(tier).toBeGreaterThan(-1);
+    expect(numbers).toBeGreaterThan(-1);
+    expect(tier).toBeLessThan(question);
+    expect(question).toBeLessThan(answer);
+    expect(answer).toBeLessThan(character);
+    // Someone who just opened a report they paid for wants the reading. The arithmetic
+    // behind it comes afterwards, and stays folded away until they ask for it.
+    expect(character).toBeLessThan(numbers);
+    expect(page.slice(numbers)).toContain("<details>");
     expect(page).toContain('section.title === "캐릭터 한 문장" || section.title === "캐릭터 한 줄"');
-    expect(detailBranch).toContain("<details");
   });
 
-  it("uses mobile-readable typography and compact cards", () => {
-    const mobile = css.slice(
-      css.indexOf("@media (max-width: 640px)"),
-      css.indexOf("@media", css.indexOf("@media (max-width: 640px)") + 1),
-    );
+  it("alternates panel grounds and keeps mobile-readable typography", () => {
+    expect(css).toMatch(/\.webtoon-panel p,[\s\S]*?font-size: clamp\(1\.02rem/u);
+    expect(css).toMatch(/\.webtoon-title \{[\s\S]*?clamp\(1\.85rem/u);
+    // Four grounds in rotation: without them every beat looks the same and the column
+    // stops reading as a sequence.
+    expect(css).toContain(".webtoon-night");
+    expect(css).toContain(".webtoon-paper");
+    expect(css).toContain(".webtoon-gold");
+    expect(css).toContain(".webtoon-warn");
+  });
 
-    expect(mobile).toContain(".detail-report-shell");
-    expect(mobile).toMatch(/padding:\s*20px/u);
-    expect(mobile).toMatch(/font-size:\s*1rem/u);
-    expect(mobile).toMatch(/line-height:\s*1\.72/u);
-    expect(css).toContain(".detail-report-actions");
-    expect(css).toContain(".detail-report-stop");
-    expect(css).toContain(".detail-report-final");
+  it("keeps the persistent call to action clear of transformed panels", () => {
+    // A revealed panel carries a transform, and a fixed child of a transformed element
+    // positions against that element rather than the viewport. The bar therefore lives
+    // outside <main>, as a sibling.
+    const cta = page.indexOf("<WebtoonCta");
+    expect(cta).toBeGreaterThan(page.indexOf("</main>"));
   });
 
   it("keeps action, stop, conclusion, and safety order in saved downloads", () => {

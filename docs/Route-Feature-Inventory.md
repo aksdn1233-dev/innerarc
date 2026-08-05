@@ -94,9 +94,22 @@ verify the wrong thing:
   its production deployments as READY with `mygyeol.kr` in their alias list, but that
   is not what the domain serves. A green Vercel deployment is therefore *not* evidence
   that a change reached users.
-- There is no GitHub Actions workflow that deploys. `.github/workflows/ci.yml` only
-  verifies. Shipping to production is a `wrangler` deploy that needs Cloudflare
-  credentials, which no CI job and no agent container currently holds.
+- **The Worker is named `gyeol`, not `innerarc`.** The account holds four Workers —
+  `gyeol`, `innerarc`, `mygyeol`, `innerarc-fix`. Only `gyeol` carries the fifteen
+  `secret_text` bindings the app needs (`SUPABASE_SERVICE_ROLE_KEY`, the `PAYAPP_*`
+  credentials, `ADMIN_EMAILS`, the price overrides); the other three have no bindings at
+  all. The zone's routes are `mygyeol.kr/*` → `gyeol` and
+  `mygyeol.kr/.innerarc-discard/*` → `innerarc`.
+- **`mygyeol.kr` is not yet delegated to Cloudflare.** The zone is `status: pending`;
+  the domain's authoritative nameservers are still `ns1..ns4.hosting.co.kr`, against
+  Cloudflare's assigned `alice.ns.cloudflare.com` / `phil.ns.cloudflare.com`. The
+  `mygyeol.kr/*` → `gyeol` route therefore does not fire, and the domain is served by an
+  older deployment outside this account. Until the nameservers move, deploying to
+  `gyeol` changes what `gyeol` runs but not what visitors get.
 
-To check what is actually live, request the site and look for a route or string the
-build introduced — e.g. `POST /api/reviews` answering anything other than 404.
+To check what is actually live, request the site and compare against the build — the
+reliable marker is the hashed stylesheet, `dist/client/assets/index-*.css`, which changes
+whenever the application changes. If `https://mygyeol.kr/ko` does not reference the hash
+the build just produced, the deploy did not reach the domain, however green the run was.
+Feature probes such as `POST /api/reviews` answering anything other than 404 work too, but
+only until the feature is old news.

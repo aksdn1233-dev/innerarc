@@ -18,6 +18,7 @@ import {
 import { buildCoreProfileShare } from "@/core/share";
 import { ShareCardPanel } from "@/components/share-card-panel";
 import { focusAndScroll, scrollToElement } from "@/components/accessibility";
+import { WebtoonReveal } from "@/components/webtoon-reveal";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 
@@ -98,7 +99,7 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
 
   return (
     <>
-      <main className="shell" id="main-content" tabIndex={-1}>
+      <main className="shell profile-shell" id="main-content" tabIndex={-1}>
         <header className="topbar">
           <Link className="brand" href={`/${locale}`}>
             <strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong>
@@ -132,7 +133,8 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
           </div>
         </section>
 
-        <section className="form-section" id="onboarding" aria-labelledby="onboarding-title">
+        <section className="form-section cinema-intake" id="onboarding" aria-labelledby="onboarding-title">
+          <div className="cinema-intake-art" aria-hidden="true" />
           <form className="form-card" onSubmit={submit} noValidate>
             <p className="eyebrow">01 — {d.eyebrow}</p>
             <h2 id="onboarding-title">{d.start}</h2>
@@ -220,8 +222,9 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
         </section>
 
         {result && profile && integratedProfile && lifestyle && context && (
-          <section className="result-section" id="result" aria-live="polite" tabIndex={-1}>
-            <article className="result-card">
+          <section className="result-section webtoon-flow" id="result" aria-live="polite" tabIndex={-1}>
+            <WebtoonReveal />
+            <article className="result-card webtoon-adapt">
               <header className="result-header">
                 <p className="eyebrow">{d.resultEyebrow}</p>
                 <p className="archetype">{d.archetype} · {profile.archetype}</p>
@@ -458,18 +461,20 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
                 <p>{d.masterReason}</p>
               </details>
 
-              <ShareCardPanel payload={buildCoreProfileShare({
-                locale,
-                lifePath: result.lifePath.value,
-                archetype: profile.archetype,
-                summary: profile.summary,
-                strengths: profile.strengths,
-              })} />
+              <section className="webtoon-outro">
+                <ShareCardPanel payload={buildCoreProfileShare({
+                  locale,
+                  lifePath: result.lifePath.value,
+                  archetype: profile.archetype,
+                  summary: profile.summary,
+                  strengths: profile.strengths,
+                })} />
 
-              <p className="disclaimer">{d.disclaimer}</p>
-              <button className="text-button" type="button" onClick={restart}>
-                {d.restart}
-              </button>
+                <p className="disclaimer">{d.disclaimer}</p>
+                <button className="text-button" type="button" onClick={restart}>
+                  {d.restart}
+                </button>
+              </section>
             </article>
           </section>
         )}

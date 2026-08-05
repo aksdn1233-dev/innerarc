@@ -18,6 +18,8 @@ import type { CompatibilityCopy } from "@/i18n/compatibility-copy";
 import { buildCompatibilityShare } from "@/core/share";
 import { ShareCardPanel } from "@/components/share-card-panel";
 import { focusAndScroll, scrollToElement } from "@/components/accessibility";
+import { WebtoonCue, WebtoonPanel } from "@/components/webtoon";
+import { WebtoonReveal } from "@/components/webtoon-reveal";
 
 type Props = { locale: Locale; copy: CompatibilityCopy };
 
@@ -129,43 +131,57 @@ export function CompatibilityExperience({ locale, copy }: Props) {
         </form>
 
         {profiles && insight && (
-          <section className="compatibility-result" id="compatibility-result" aria-live="polite" tabIndex={-1}>
-            <header>
-              <p className="eyebrow">{copy.summary} · {insight.relationshipLabel}</p>
-              <h2>{insight.summary}</h2>
-              {insight.roleOrderNote && <p className="role-order-note">{insight.roleOrderNote}</p>}
+          <section className="compatibility-result webtoon-flow" id="compatibility-result" aria-live="polite" tabIndex={-1}>
+            <WebtoonReveal />
+
+            <WebtoonPanel
+              badge={`${copy.summary} · ${insight.relationshipLabel}`}
+              title={insight.summary}
+              tone="night"
+            >
+              {insight.roleOrderNote && <p className="webtoon-lead role-order-note">{insight.roleOrderNote}</p>}
               <div className="compatibility-facts" aria-label={copy.facts}>
                 <span>A · Life Path {profiles.a.lifePath.value} · Attitude {profiles.a.attitude.value}</span>
                 <span>B · Life Path {profiles.b.lifePath.value} · Attitude {profiles.b.attitude.value}</span>
               </div>
-            </header>
+              <WebtoonCue />
+            </WebtoonPanel>
 
-            <div className="compatibility-grid">
-              {insight.sections.map((section) => (
-                <article className={`compatibility-card compatibility-${section.id}`} key={section.id}>
-                  <h3>{section.title}</h3>
-                  <p>{section.observation}</p>
-                  <div>
-                    <strong>{copy.practicalConditions}</strong>
-                    <ul>{section.practicalConditions.map((item) => <li key={item}>{item}</li>)}</ul>
-                  </div>
-                  <div className="compatibility-check">
-                    <strong>{copy.realityCheck}</strong>
-                    <p>{section.realityCheck}</p>
-                  </div>
-                  <details>
-                    <summary>{copy.evidence}</summary>
-                    <div className="evidence-chips">{section.evidenceRefs.map((ref) => <span key={ref}>{ref}</span>)}</div>
-                  </details>
-                </article>
-              ))}
-            </div>
+            {/* One area per panel. The card grid put eight of these side by side and left the
+                reader deciding which to open; in a column they simply arrive in order. */}
+            {insight.sections.map((section, index) => (
+              <WebtoonPanel
+                badge={String(index + 1).padStart(2, "0")}
+                className={`compatibility-card compatibility-${section.id}`}
+                key={section.id}
+                title={section.title}
+                tone={index % 2 === 0 ? "paper" : "night"}
+              >
+                <p className="webtoon-body">{section.observation}</p>
+                <div className="compatibility-conditions">
+                  <strong>{copy.practicalConditions}</strong>
+                  <ul>{section.practicalConditions.map((item) => <li key={item}>{item}</li>)}</ul>
+                </div>
+                <div className="compatibility-check">
+                  <strong>{copy.realityCheck}</strong>
+                  <p>{section.realityCheck}</p>
+                </div>
+                <details>
+                  <summary>{copy.evidence}</summary>
+                  <div className="evidence-chips">{section.evidenceRefs.map((ref) => <span key={ref}>{ref}</span>)}</div>
+                </details>
+              </WebtoonPanel>
+            ))}
 
-            <p className="disclaimer">{insight.uncertainty}</p>
-            <p className="privacy-note">{insight.privacyNote}</p>
-            <ShareCardPanel payload={buildCompatibilityShare({ locale, insight })} />
-            <code className="rule-version">{copy.ruleVersion}: {insight.ruleVersion}</code>
-            <button className="text-button" type="button" onClick={reset}>{copy.reset}</button>
+            <section className="webtoon-panel webtoon-paper webtoon-outro" data-webtoon-panel="">
+              <div className="webtoon-inner">
+                <p className="disclaimer">{insight.uncertainty}</p>
+                <p className="privacy-note">{insight.privacyNote}</p>
+                <ShareCardPanel payload={buildCompatibilityShare({ locale, insight })} />
+                <code className="rule-version">{copy.ruleVersion}: {insight.ruleVersion}</code>
+                <button className="text-button" type="button" onClick={reset}>{copy.reset}</button>
+              </div>
+            </section>
           </section>
         )}
       </main>

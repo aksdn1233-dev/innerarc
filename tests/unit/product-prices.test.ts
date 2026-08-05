@@ -1,36 +1,30 @@
 import { describe, expect, it } from "vitest";
 import {
+  RETIRED_EVENT_PRODUCT_PRICES_KRW,
   STANDARD_PRODUCT_PRICES_KRW,
-  SUMMER_EVENT_PRODUCT_PRICES_KRW,
   knownScheduledPrices,
   resolveProductPricing,
 } from "@/core/product-prices";
 
-describe("scheduled product pricing", () => {
-  it("uses standard pricing before the event begins", () => {
-    expect(resolveProductPricing(new Date("2026-07-31T14:59:59.999Z"))).toMatchObject({
-      campaignActive: false,
+describe("product pricing", () => {
+  it("shows one price list, with no date able to change it", () => {
+    expect(resolveProductPricing()).toEqual({
       prices: STANDARD_PRODUCT_PRICES_KRW,
+      regularPrices: STANDARD_PRODUCT_PRICES_KRW,
     });
   });
 
-  it("includes all of August 3 in Korea and ends exactly at midnight", () => {
-    expect(resolveProductPricing(new Date("2026-08-03T14:59:59.999Z"))).toMatchObject({
-      campaignActive: true,
-      prices: SUMMER_EVENT_PRODUCT_PRICES_KRW,
-    });
-    expect(resolveProductPricing(new Date("2026-08-03T15:00:00.000Z"))).toMatchObject({
-      campaignActive: false,
-      prices: STANDARD_PRODUCT_PRICES_KRW,
-    });
+  it("does not charge the retired event price", () => {
+    const { prices } = resolveProductPricing();
+    expect(prices.pro_30d).toBe(39_000);
+    expect(prices.pro_30d).not.toBe(RETIRED_EVENT_PRODUCT_PRICES_KRW.pro_30d);
   });
 
-  it("accepts only known scheduled assertions", () => {
+  // An order authorised during the event carries the amount charged then. Verification
+  // checks a charge against this list, so dropping the retired amounts would make those
+  // historical orders fail to verify.
+  it("still recognises amounts charged during the retired event", () => {
     expect(knownScheduledPrices("pro_30d")).toEqual([39_000, 9_600]);
     expect(knownScheduledPrices("premium_pdf")).toEqual([79_000, 39_000]);
-  });
-
-  it("rejects an invalid clock", () => {
-    expect(() => resolveProductPricing(new Date("invalid"))).toThrow("INVALID_PRICING_DATE");
   });
 });

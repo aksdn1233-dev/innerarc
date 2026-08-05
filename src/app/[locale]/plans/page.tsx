@@ -20,7 +20,7 @@ export default async function PlansPage({
   const query = await searchParams;
   if (!isLocale(locale)) notFound();
   const now = new Date();
-  const pricing = resolveProductPricing(now);
+  const pricing = resolveProductPricing();
 
   // Reads the same incident pause switch the order API enforces, so the product page
   // never advertises a checkout the server would refuse.

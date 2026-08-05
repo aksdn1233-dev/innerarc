@@ -30,6 +30,8 @@ import { CRISIS_RESOURCES, getCrisisResourceCopy } from "@/core/ai/crisis-resour
 import type { Locale } from "@/i18n/config";
 import type { QuestionCopy } from "@/i18n/question-copy";
 import { focusAndScroll, scrollToElement } from "@/components/accessibility";
+import { WebtoonCue, WebtoonPanel } from "@/components/webtoon";
+import { WebtoonReveal } from "@/components/webtoon-reveal";
 
 type Props = { locale: Locale; copy: QuestionCopy };
 
@@ -403,63 +405,81 @@ export function QuestionTarotExperience({ locale, copy }: Props) {
         )}
 
         {reading && (
-          <section className="tarot-result" id="tarot-result" aria-live="polite" tabIndex={-1}>
-            <header className="tarot-result-heading">
-              <p className="eyebrow">{copy.roomLabel}</p>
-              <h2>{copy.resultTitle}</h2>
-              <p>{copy.resultIntro}</p>
-            </header>
-            <div className="tarot-grid">
-              {reading.cards.map((drawn) => (
-                <article className="tarot-card" key={drawn.position.en} data-orientation={drawn.orientation}>
-                  <TarotCardPortrait drawn={drawn} />
-                  <div className="tarot-card-copy">
-                    <span className="tarot-position">{drawn.position[locale]}</span>
-                    <h3>{drawn.card.name[locale]}</h3>
-                    <p className="orientation">
-                      {drawn.orientation === "upright" ? copy.upright : copy.reversed}
-                    </p>
-                    <p>
-                      {drawn.orientation === "upright"
-                        ? drawn.card.uprightKeywords[locale]
-                        : drawn.card.reversedKeywords[locale]}
-                    </p>
-                  </div>
-                </article>
-              ))}
-            </div>
+          <section className="tarot-result webtoon-flow" id="tarot-result" aria-live="polite" tabIndex={-1}>
+            <WebtoonReveal />
+
+            <WebtoonPanel
+              badge={copy.roomLabel}
+              className="tarot-result-heading"
+              lead={copy.resultIntro}
+              title={copy.resultTitle}
+              tone="night"
+            >
+              <WebtoonCue />
+            </WebtoonPanel>
+
+            {/* One card to a panel. A spread laid out as a grid asks to be taken in all at
+                once, which is the opposite of how a card is meant to land; drawn down the
+                page each one arrives on its own, and the card markup is untouched. */}
+            {reading.cards.map((drawn, index) => (
+              <section
+                className={`webtoon-panel ${index % 2 === 0 ? "webtoon-paper" : "webtoon-night"}`}
+                data-webtoon-panel=""
+                key={drawn.position.en}
+              >
+                <div className="webtoon-inner">
+                  <article className="tarot-card" data-orientation={drawn.orientation}>
+                    <TarotCardPortrait drawn={drawn} />
+                    <div className="tarot-card-copy">
+                      <span className="tarot-position">{drawn.position[locale]}</span>
+                      <h3>{drawn.card.name[locale]}</h3>
+                      <p className="orientation">
+                        {drawn.orientation === "upright" ? copy.upright : copy.reversed}
+                      </p>
+                      <p>
+                        {drawn.orientation === "upright"
+                          ? drawn.card.uprightKeywords[locale]
+                          : drawn.card.reversedKeywords[locale]}
+                      </p>
+                    </div>
+                  </article>
+                </div>
+              </section>
+            ))}
 
             {combination && combination.messages.length > 0 && (
-              <section className="reflection-block">
-                <h2>{copy.combination}</h2>
+              <WebtoonPanel className="reflection-block" title={copy.combination} tone="gold">
                 <ul>{combination.messages.map((message) => <li key={message}>{message}</li>)}</ul>
-              </section>
+              </WebtoonPanel>
             )}
 
-            <section className="reflection-block">
-              <h2>{copy.realityChecks}</h2>
-              <ol>{copy.realityItems.map((item) => <li key={item}>{item}</li>)}</ol>
+            <WebtoonPanel className="reflection-block" title={copy.realityChecks} tone="paper">
+              <ol className="webtoon-steps">{copy.realityItems.map((item) => <li key={item}>{item}</li>)}</ol>
+            </WebtoonPanel>
+
+            <section className="webtoon-panel webtoon-paper webtoon-outro" data-webtoon-panel="">
+              <div className="webtoon-inner">
+                <details className="tarot-audit">
+                  <summary>{copy.audit}</summary>
+                  <p>{copy.auditHelp}</p>
+                  <dl className="audit-list">
+                    <div><dt>{copy.source}</dt><dd>{reading.audit.source === "engine" ? copy.engineSource : copy.manualSource}</dd></div>
+                    <div><dt>Event</dt><dd>{reading.audit.eventId}</dd></div>
+                    <div><dt>Deck</dt><dd>{reading.audit.deckVersion}</dd></div>
+                    <div><dt>Algorithm</dt><dd>{reading.audit.algorithmVersion}</dd></div>
+                    <div><dt>Seed</dt><dd>{reading.audit.seed ?? "—"}</dd></div>
+                  </dl>
+                </details>
+
+                <p className="disclaimer">{copy.disclaimer}</p>
+                <button className="primary-button save-reading" type="button" onClick={saveCurrentReading} disabled={Boolean(currentSavedId)}>
+                  {currentSavedId ? copy.savedReading : copy.saveReading}
+                </button>
+                <button className="text-button" type="button" onClick={reset}>
+                  {copy.newQuestion}
+                </button>
+              </div>
             </section>
-
-            <details className="tarot-audit">
-              <summary>{copy.audit}</summary>
-              <p>{copy.auditHelp}</p>
-              <dl className="audit-list">
-                <div><dt>{copy.source}</dt><dd>{reading.audit.source === "engine" ? copy.engineSource : copy.manualSource}</dd></div>
-                <div><dt>Event</dt><dd>{reading.audit.eventId}</dd></div>
-                <div><dt>Deck</dt><dd>{reading.audit.deckVersion}</dd></div>
-                <div><dt>Algorithm</dt><dd>{reading.audit.algorithmVersion}</dd></div>
-                <div><dt>Seed</dt><dd>{reading.audit.seed ?? "—"}</dd></div>
-              </dl>
-            </details>
-
-            <p className="disclaimer">{copy.disclaimer}</p>
-            <button className="primary-button save-reading" type="button" onClick={saveCurrentReading} disabled={Boolean(currentSavedId)}>
-              {currentSavedId ? copy.savedReading : copy.saveReading}
-            </button>
-            <button className="text-button" type="button" onClick={reset}>
-              {copy.newQuestion}
-            </button>
           </section>
         )}
 

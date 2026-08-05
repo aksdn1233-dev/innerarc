@@ -2450,13 +2450,6 @@ summary {
   font-weight: 700;
 }
 
-.compatibility-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-  margin-top: 34px;
-}
-
 .compatibility-card {
   padding: 24px;
   border: 1px solid var(--line);
@@ -2895,13 +2888,6 @@ summary {
 .reflection-block h2 {
   margin: 0 0 12px;
   font: 500 1.45rem/1.25 Georgia, "Noto Serif KR", serif;
-}
-
-.tarot-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(22px, 4vw, 36px);
-  margin-top: 32px;
 }
 
 .tarot-card {
@@ -4484,25 +4470,25 @@ summary {
   box-shadow: 0 0 0 3px rgba(155, 118, 81, 0.12), var(--shadow);
 }
 
-.paid-report-shell,
+/* ---- Admin shell ----
+   These rules were shared with the paid report back when the report was a stack of cards.
+   The report is a webtoon column now and styles itself, so what is left here is the admin
+   surface that still wants a card. */
+
 .admin-shell {
   max-width: 920px;
   padding-bottom: 90px;
 }
 
-.paid-report-header,
 .admin-hero {
   padding: clamp(42px, 8vw, 90px) 0 32px;
 }
 
-.paid-report-header h1,
 .admin-hero h1 {
   margin: 8px 0 12px;
   font: 700 clamp(2.2rem, 7vw, 4.8rem)/1.08 var(--display-font);
 }
 
-.paid-report-summary,
-.paid-report-section,
 .admin-settings-card,
 .admin-orders {
   margin-top: 22px;
@@ -4513,300 +4499,18 @@ summary {
   box-shadow: var(--shadow);
 }
 
-.paid-report-summary blockquote {
-  margin: 20px 0 0;
-  padding: 18px 20px;
-  border-left: 4px solid #9b7651;
-  background: var(--paper);
-  line-height: 1.75;
-}
-
-.paid-report-character-label {
-  margin: 18px 0 0;
-  font: 700 clamp(1.15rem, 3vw, 1.55rem)/1.4 var(--display-font);
-  color: #9b7651;
-}
-
-.paid-report-section h2,
 .admin-settings-card h2,
 .admin-orders h2 {
   font: 700 clamp(1.35rem, 3vw, 2rem)/1.3 var(--display-font);
 }
 
-.paid-report-section p,
-.paid-report-section li {
-  line-height: 1.85;
-}
-
-/* Report bodies are plain text and some sections lay out one item per line. */
-.paid-report-section p {
-  white-space: pre-wrap;
-}
-
-.paid-report-section.caution {
-  border-color: #d9b7a8;
-  background: #fff9f4;
-}
-
-.basic-report-shell .paid-report-header {
-  padding-bottom: 18px;
-}
-
-.basic-report-summary {
-  padding: clamp(20px, 4vw, 32px);
-  background:
-    linear-gradient(145deg, rgba(155, 118, 81, 0.08), transparent 46%),
-    var(--white);
-}
-
-.basic-report-basis {
-  margin: 0 0 10px;
-  color: var(--muted);
-  font-size: 0.9rem;
-  letter-spacing: 0.02em;
-}
-
-.basic-direct-answer {
-  margin-top: 18px;
-  padding-top: 18px;
-  border-top: 1px solid var(--line);
-}
-
-.basic-direct-answer h2 {
-  margin-bottom: 8px;
-  font: 700 clamp(1.25rem, 3vw, 1.75rem)/1.3 var(--display-font);
-}
-
-.basic-direct-answer p,
-.basic-character-lead {
-  margin: 0;
-  white-space: pre-wrap;
-  font-size: clamp(1rem, 2.1vw, 1.08rem);
-  line-height: 1.72;
-}
-
-.basic-number-strip {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 18px;
-}
-
-.basic-number-strip span {
-  display: flex;
-  min-height: 56px;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 6px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--paper);
-  color: var(--muted);
-  font-size: 0.78rem;
-  text-align: center;
-}
-
-.basic-number-strip strong {
-  color: var(--ink);
-  font: 700 1.15rem/1.2 var(--display-font);
-}
-
-.basic-report-summary .paid-report-character-label {
-  margin-top: 18px;
-}
-
-.basic-character-lead {
-  margin-top: 8px;
-}
-
-.basic-report-actions {
-  counter-reset: basic-actions;
-  background: #f7f1e7;
-  border-color: #c8ad8b;
-}
-
-.basic-report-actions li {
-  counter-increment: basic-actions;
-  margin-block: 10px;
-}
-
-.basic-report-final {
-  border-color: #9b7651;
-  background:
-    linear-gradient(135deg, rgba(155, 118, 81, 0.12), transparent 52%),
-    var(--white);
-}
-
-.basic-report-final h2 {
-  color: #765638;
-}
-
-.detail-report-shell .paid-report-header {
-  padding-bottom: 14px;
-}
-
-.detail-report-summary {
-  padding: clamp(22px, 4vw, 36px);
-  border-color: #c7aa7d;
-  background:
-    linear-gradient(145deg, rgba(200, 155, 85, 0.12), transparent 48%),
-    var(--white);
-}
-
-.detail-report-basis {
-  margin: 0 0 10px;
-  color: var(--muted);
-  font-size: 0.9rem;
-  letter-spacing: 0.02em;
-}
-
-.detail-direct-answer {
-  margin-top: 18px;
-  padding-top: 18px;
-  border-top: 1px solid var(--line);
-}
-
-.detail-direct-answer h2 {
-  margin-bottom: 8px;
-  font: 700 clamp(1.28rem, 3vw, 1.8rem)/1.3 var(--display-font);
-}
-
-.detail-direct-answer p,
-.detail-character-lead {
-  margin: 0;
-  white-space: pre-wrap;
-  font-size: clamp(1rem, 2vw, 1.08rem);
-  line-height: 1.72;
-}
-
-.detail-report-summary .paid-report-character-label {
-  margin: 20px 0 8px;
-  color: #765638;
-}
-
-.detail-character-lead {
-  margin-top: 8px;
-}
-
-.detail-number-details {
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid var(--line);
-}
-
-.detail-number-details summary {
-  min-height: 44px;
-  cursor: pointer;
-  color: var(--sage-dark);
-  font-weight: 800;
-}
-
-.detail-number-details > p {
-  margin: 16px 0 0;
-  color: var(--muted);
-  line-height: 1.72;
-  white-space: pre-wrap;
-}
-
-.detail-number-strip {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.detail-number-strip span {
-  display: flex;
-  min-height: 58px;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 6px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: var(--paper);
-  color: var(--muted);
-  font-size: 0.78rem;
-  text-align: center;
-}
-
-.detail-number-strip strong {
-  color: var(--ink);
-  font: 700 1.15rem/1.2 var(--display-font);
-}
-
-.detail-report-shell .paid-report-section {
-  max-width: 50rem;
-}
-
-.detail-report-shell .paid-report-section p,
-.detail-report-shell .paid-report-section li {
-  font-size: clamp(1rem, 1.9vw, 1.08rem);
-  line-height: 1.75;
-}
-
-.detail-report-actions {
-  counter-reset: detail-actions;
-  border-color: #b79463;
-  background: #f6efe3;
-}
-
-.detail-report-actions li {
-  counter-increment: detail-actions;
-  margin-block: 12px;
-}
-
-.detail-report-stop {
-  border-color: #c98979;
-  background: #fff7f2;
-}
-
-.detail-report-final {
-  border-color: #8f7045;
-  background:
-    linear-gradient(135deg, rgba(143, 112, 69, 0.14), transparent 54%),
-    var(--white);
-}
-
-.detail-report-final h2 {
-  color: #765638;
-}
+/* ---- What the paid report still brings of its own ----
+   The premium tier keeps its ink and gold because the execution manual and the folded
+   checklists are still drawn with them, now inside webtoon panels rather than cards. */
 
 .premium-report-shell {
   --premium-ink: #3f3025;
   --premium-gold: #a77a3e;
-}
-
-.premium-report-summary {
-  border-color: rgba(167, 122, 62, 0.56);
-  background:
-    radial-gradient(circle at 92% 8%, rgba(167, 122, 62, 0.18), transparent 30%),
-    linear-gradient(145deg, #fffdf8, #f7efe2);
-  box-shadow: 0 18px 52px rgba(74, 55, 34, 0.08);
-}
-
-.premium-report-summary .detail-direct-answer {
-  padding: 20px;
-  border: 1px solid rgba(167, 122, 62, 0.35);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.72);
-}
-
-.premium-report-extension {
-  border-color: rgba(167, 122, 62, 0.34);
-}
-
-.premium-report-extension h2,
-.premium-manual h3 {
-  color: var(--premium-ink);
-}
-
-.premium-report-actions {
-  border-color: var(--premium-gold);
-  background:
-    linear-gradient(145deg, rgba(167, 122, 62, 0.14), transparent 52%),
-    #f8f3e9;
 }
 
 .premium-manual {
@@ -4817,23 +4521,13 @@ summary {
 
 .premium-manual h3 {
   margin: 0 0 12px;
+  color: var(--premium-ink);
   font: 700 1.25rem/1.35 var(--display-font);
 }
 
 .premium-manual p {
   margin: 0;
   white-space: pre-wrap;
-}
-
-.premium-report-stop {
-  border-color: #b56f5d;
-  box-shadow: inset 4px 0 #b56f5d;
-}
-
-.premium-progressive {
-  display: block;
-  border-color: rgba(167, 122, 62, 0.34);
-  background: #fffdf8;
 }
 
 .premium-progressive summary {
@@ -4846,13 +4540,6 @@ summary {
 .premium-progressive p {
   margin: 18px 0 0;
   white-space: pre-wrap;
-}
-
-.premium-report-final {
-  border-color: var(--premium-gold);
-  background:
-    radial-gradient(circle at 90% 12%, rgba(167, 122, 62, 0.2), transparent 34%),
-    #f7efe2;
 }
 
 .report-actions {
@@ -4873,109 +4560,6 @@ summary {
 }
 
 @media (max-width: 640px) {
-  .basic-report-shell {
-    padding-inline: 14px;
-  }
-
-  .basic-report-shell .paid-report-header {
-    padding: 24px 2px 10px;
-  }
-
-  .basic-report-shell .paid-report-header h1 {
-    font-size: clamp(2rem, 11vw, 2.75rem);
-  }
-
-  .basic-report-shell .paid-report-summary,
-  .basic-report-shell .paid-report-section {
-    margin-top: 14px;
-    padding: 20px;
-  }
-
-  .basic-report-shell .paid-report-section h2 {
-    font-size: 1.35rem;
-  }
-
-  .basic-report-shell .paid-report-section p,
-  .basic-report-shell .paid-report-section li {
-    font-size: 1rem;
-    line-height: 1.72;
-  }
-
-  .basic-report-summary blockquote {
-    margin-top: 12px;
-    padding: 12px 14px;
-    line-height: 1.62;
-  }
-
-  .basic-number-strip {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 6px;
-    margin-top: 14px;
-  }
-
-  .basic-number-strip span {
-    min-height: 50px;
-    padding: 6px 4px;
-    font-size: 0.72rem;
-  }
-
-  .basic-number-strip span:last-child {
-    grid-column: span 2;
-  }
-
-  .detail-report-shell {
-    padding-inline: 14px;
-  }
-
-  .detail-report-shell .paid-report-header {
-    padding: 22px 2px 8px;
-  }
-
-  .detail-report-shell .paid-report-header h1 {
-    font-size: clamp(2rem, 11vw, 2.75rem);
-  }
-
-  .detail-report-shell .paid-report-summary,
-  .detail-report-shell .paid-report-section {
-    margin-top: 14px;
-    padding: 20px;
-  }
-
-  .detail-report-shell .paid-report-section h2 {
-    font-size: 1.35rem;
-  }
-
-  .detail-report-shell .paid-report-section p,
-  .detail-report-shell .paid-report-section li {
-    font-size: 1rem;
-    line-height: 1.72;
-  }
-
-  .detail-report-summary blockquote {
-    margin-top: 12px;
-    padding: 12px 14px;
-    line-height: 1.62;
-  }
-
-  .detail-number-strip {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 6px;
-  }
-
-  .detail-number-strip span {
-    min-height: 50px;
-    padding: 6px 4px;
-    font-size: 0.72rem;
-  }
-
-  .detail-number-strip span:last-child {
-    grid-column: span 2;
-  }
-
-  .premium-report-summary .detail-direct-answer {
-    padding: 16px;
-  }
-
   .premium-progressive summary {
     font-size: 1.2rem;
   }
@@ -5130,11 +4714,6 @@ summary {
     padding: 0;
   }
 
-  .paid-report-summary,
-  .paid-report-section {
-    break-inside: avoid;
-    box-shadow: none;
-  }
 }
 
 .home-form-section input[type="date"],
@@ -5442,8 +5021,7 @@ summary {
   }
 
   .question-intro,
-  .question-options,
-  .tarot-grid {
+  .question-options {
     grid-template-columns: 1fr;
   }
 
@@ -5465,7 +5043,6 @@ summary {
   .quality-grid,
   .relationship-two-column,
   .person-grid,
-  .compatibility-grid,
   .shop-category-grid,
   .shop-gates {
     grid-template-columns: 1fr;
@@ -6600,7 +6177,6 @@ summary {
   .payapp-payment-card,
   .manual-transfer-card,
   .admin-inquiry,
-  .paid-report-section,
   .pass-summary,
   .form-card,
   .preview-reading,
@@ -7308,3 +6884,1356 @@ summary {
   align-items: center;
   gap: 0.5rem;
 }
+
+/* ---- Curiosity-first entry: question cards, free tier, secondary hero action ---- */
+
+/* The paid path keeps the filled button; the free path sits beside it as an outline so
+   it reads as a real alternative rather than a demoted afterthought. */
+.ghost-button {
+  display: inline-flex;
+  min-height: 54px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+  border: 1px solid var(--ink-v4);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--ink-v4);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.ghost-button:hover,
+.ghost-button:focus-visible {
+  background: var(--ink-v4);
+  color: var(--ivory-v4);
+}
+
+.entry-questions {
+  padding: 72px clamp(22px, 6vw, 44px);
+}
+
+.entry-question-grid {
+  display: grid;
+  margin: 30px 0 0;
+  padding: 0;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 14px;
+  list-style: none;
+}
+
+.entry-question {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 22px 24px;
+  border: 1px solid #ded3c3;
+  border-radius: 18px;
+  background: #fffdf9;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.entry-question:hover,
+.entry-question:focus-visible {
+  border-color: var(--gold-v4);
+}
+
+.entry-question.is-chosen {
+  border-color: var(--ink-v4);
+  background: var(--ink-v4);
+  color: var(--ivory-v4);
+}
+
+.entry-question small {
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: #eee4d5;
+  color: var(--berry-v4);
+  font-weight: 800;
+}
+
+.entry-question.is-chosen small {
+  background: var(--gold-v4);
+  color: var(--ink-v4);
+}
+
+.entry-question strong {
+  font-size: clamp(1.02rem, 1.5vw, 1.16rem);
+  line-height: 1.45;
+}
+
+.editorial-product-grid.has-free-tier {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.editorial-product.is-free {
+  border-style: dashed;
+  background: #fbf7ef;
+}
+
+/* The free tier's action is a link, not a button, so it needs the button treatment
+   applied by hand or it would read as body text next to two real buttons. */
+.editorial-product.is-free > a {
+  display: inline-flex;
+  min-height: 54px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--ink-v4);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--ink-v4);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.editorial-product.is-free > a:hover,
+.editorial-product.is-free > a:focus-visible {
+  background: var(--ink-v4);
+  color: var(--ivory-v4);
+}
+
+@media (max-width: 900px) {
+  .editorial-product-grid.has-free-tier {
+    grid-template-columns: 1fr;
+  }
+
+  .entry-questions {
+    padding: 56px clamp(22px, 6vw, 30px);
+  }
+}
+
+.evidence-count {
+  margin: 10px 0 0;
+  font-weight: 700;
+  opacity: 0.78;
+}
+
+/* ---- Cinematic opening screen ------------------------------------------------------
+   A full-viewport dark hero: art edge to edge, the title carrying the screen, and one
+   action within thumb reach at the bottom. The page below stays light — the contrast
+   between the two is what makes the opening read as a threshold rather than a banner. */
+
+.cinema-hero {
+  position: relative;
+  display: flex;
+  min-height: 100svh;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0;
+  margin: 0;
+  background: #0a1020;
+  color: #f7f1e7;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.cinema-hero-scene,
+.cinema-hero-meteors {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.cinema-hero-meteors {
+  z-index: -1;
+  opacity: 0.5;
+}
+
+/* The art has to stay art and the words have to stay readable. A gradient veil weighted
+   to the bottom buys contrast for the copy without flattening the sky above it. */
+.cinema-hero-veil {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(6, 11, 24, 0.62) 0%,
+    rgba(6, 11, 24, 0.22) 32%,
+    rgba(6, 11, 24, 0.58) 66%,
+    rgba(6, 11, 24, 0.92) 100%
+  );
+}
+
+.cinema-hero-copy {
+  padding: 0 clamp(24px, 7vw, 56px);
+  margin-top: auto;
+  text-align: center;
+}
+
+.cinema-kicker {
+  margin: 0 0 14px;
+  color: #d8c191;
+  font-size: clamp(0.82rem, 2.6vw, 0.95rem);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.cinema-title {
+  margin: 0;
+  color: #fffaf0;
+  font-size: clamp(2.9rem, 12vw, 5.4rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+  text-shadow: 0 2px 26px rgba(4, 9, 20, 0.72), 0 0 62px rgba(200, 168, 106, 0.22);
+  text-wrap: balance;
+}
+
+.cinema-quote {
+  max-width: 34ch;
+  margin: 20px auto 0;
+  color: rgba(247, 241, 231, 0.84);
+  font-size: clamp(0.98rem, 3.4vw, 1.12rem);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.cinema-quote::before { content: "“ "; }
+.cinema-quote::after { content: " ”"; }
+
+.cinema-hero-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  padding: clamp(30px, 8vw, 52px) clamp(24px, 7vw, 56px) calc(clamp(26px, 6vw, 44px) + env(safe-area-inset-bottom));
+  margin-top: auto;
+}
+
+.cinema-cta,
+.cinema-cta-secondary {
+  display: flex;
+  min-height: 60px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  font-size: 1.06rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.cinema-cta {
+  border: 1px solid #cfe0ff;
+  background: linear-gradient(180deg, #e8f0ff 0%, #cddcfa 100%);
+  color: #13224a;
+  box-shadow: 0 14px 36px rgba(6, 12, 28, 0.5);
+}
+
+.cinema-cta-secondary {
+  border: 1px solid rgba(247, 241, 231, 0.42);
+  background: rgba(247, 241, 231, 0.07);
+  color: #f7f1e7;
+}
+
+.cinema-cta:hover,
+.cinema-cta:focus-visible { filter: brightness(1.06); }
+.cinema-cta-secondary:hover,
+.cinema-cta-secondary:focus-visible { background: rgba(247, 241, 231, 0.16); }
+
+.cinema-note {
+  margin: 4px 0 0;
+  color: rgba(247, 241, 231, 0.74);
+  font-size: 0.86rem;
+  text-align: center;
+}
+
+/* The bar sits over the opening screen and duplicates its action, so it stays hidden
+   until the hero is behind the visitor. */
+.cinema-hero ~ .mobile-purchase-bar { display: flex; }
+
+@media (min-width: 900px) {
+  .cinema-hero-copy { margin-top: 0; padding-top: clamp(96px, 14vh, 190px); }
+  .cinema-hero-actions {
+    max-width: 460px;
+    flex-direction: row;
+    align-self: center;
+    gap: 14px;
+  }
+  .cinema-hero-actions .cinema-cta,
+  .cinema-hero-actions .cinema-cta-secondary { flex: 1; }
+  .cinema-note { flex-basis: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cinema-hero-meteors { display: none; }
+}
+
+/* ---- 태율 portrait and the character sheet's palette --------------------------------
+   Colours come from the supplied sheet (PANTONE 2025 × 한국 전통색): Eclipse #1F1D2B,
+   Deep Purple #4B2E63, Toffee #7A5A2E, Almond Milk #DCCFA1, Aqua Foam #79A8A1. */
+
+.cinema-hero {
+  background: #1f1d2b;
+}
+
+.cinema-hero-portrait {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: url("/images/taeyul-hero.jpg");
+  background-position: 62% 12%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* The art is a portrait crop; on wide screens it holds the right half and dissolves
+     into the sky rather than being stretched across the whole band. */
+  mask-image: linear-gradient(to bottom, #000 0%, #000 52%, transparent 88%);
+}
+
+.cinema-kicker { color: #dccfa1; }
+
+.cinema-title {
+  text-shadow: 0 2px 26px rgba(15, 13, 25, 0.85), 0 0 62px rgba(75, 46, 99, 0.5);
+}
+
+.cinema-hero-veil {
+  background: linear-gradient(
+    to bottom,
+    rgba(31, 29, 43, 0.58) 0%,
+    rgba(31, 29, 43, 0.14) 26%,
+    rgba(31, 29, 43, 0.62) 62%,
+    rgba(31, 29, 43, 0.95) 100%
+  );
+}
+
+.cinema-cta {
+  border-color: #dccfa1;
+  background: linear-gradient(180deg, #e6dcbd 0%, #cbb98c 100%);
+  color: #241d16;
+}
+
+.cinema-cta-secondary {
+  border-color: rgba(220, 207, 161, 0.5);
+  color: #dccfa1;
+}
+
+.cinema-menu { background: #1f1d2b; }
+.cinema-menu nav a { color: #f3ecdd; }
+.cinema-menu-close { border-color: rgba(220, 207, 161, 0.45); color: #dccfa1; }
+
+@media (min-width: 900px) {
+  .cinema-hero-portrait {
+    left: auto;
+    width: min(52%, 720px);
+    background-position: center 10%;
+    mask-image: linear-gradient(to right, transparent 0%, #000 34%, #000 100%);
+  }
+  .cinema-hero-copy { text-align: left; max-width: 640px; }
+  .cinema-quote { margin-left: 0; }
+  .cinema-hero-actions { align-self: flex-start; margin-left: clamp(24px, 7vw, 56px); }
+}
+
+/* ---- Corrections after looking at the rendered opening screen ----------------------- */
+
+/* `.shell` is a centred column with a 16px gutter, so the hero was inset and the page
+   background showed as two cream strips down the sides. The opening screen has to leave
+   that column and take the whole viewport. */
+.cinema-hero {
+  width: 100vw;
+  margin-right: calc(50% - 50vw);
+  margin-left: calc(50% - 50vw);
+}
+
+/* The base `.home-topbar` paints a solid `#07111f` bar. Over the hero the header is
+   chrome, so it is beaten on specificity rather than left to sit as a box on the art. */
+.home-shell .home-topbar.is-over-cinema {
+  border-color: transparent;
+  background: transparent;
+}
+
+.home-shell .home-topbar.is-over-cinema .cinema-menu-button {
+  border-color: rgba(220, 207, 161, 0.42);
+  background: rgba(31, 29, 43, 0.55);
+}
+
+/* Copy and actions were both pushed by `margin-top: auto`, which split them to opposite
+   ends and left a dead band between. They belong together, low on the screen. */
+.cinema-hero-copy { margin-top: auto; padding-bottom: 6px; }
+.cinema-hero-actions { margin-top: 0; }
+
+/* The title crosses the portrait's face. A pool of shadow behind the copy buys the
+   contrast back without dimming the whole picture. */
+.cinema-hero-copy::before {
+  position: absolute;
+  z-index: -1;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 74%;
+  background: radial-gradient(120% 62% at 50% 74%, rgba(20, 18, 30, 0.86) 0%, rgba(20, 18, 30, 0.5) 55%, transparent 100%);
+  content: "";
+}
+
+@media (min-width: 900px) {
+  .cinema-hero-copy { padding-top: 0; }
+  .cinema-hero-copy::before {
+    background: radial-gradient(80% 70% at 26% 62%, rgba(20, 18, 30, 0.88) 0%, rgba(20, 18, 30, 0.42) 58%, transparent 100%);
+  }
+}
+
+@media (max-width: 899px) {
+  /* The inline nav and the locale link are duplicated inside the panel, and on a phone
+     they crowd the brand. Raised specificity because the base header sets these to flex
+     in its own phone query. */
+  .home-shell .home-topbar.is-over-cinema .home-nav,
+  .home-shell .home-topbar.is-over-cinema .home-header-actions {
+    display: none;
+  }
+
+  .home-shell .home-topbar.is-over-cinema .cinema-menu-button {
+    display: flex;
+    flex: 0 0 auto;
+  }
+}
+
+/* ---- 태율 in motion -----------------------------------------------------------------
+   One still image, so the movement has to come from how it is shown. Three slow cycles
+   at different periods, which never line up and so never look like a loop:
+     drift  — a long push in and across, the camera easing toward him
+     breath — a small vertical rise and fall on top of the drift
+     sheen  — gold light travelling over the robe every so often
+   All of it stops for prefers-reduced-motion. */
+
+@keyframes taeyul-drift {
+  0%   { transform: scale(1.06) translate3d(0, 0, 0); }
+  50%  { transform: scale(1.13) translate3d(-1.6%, -1.1%, 0); }
+  100% { transform: scale(1.06) translate3d(0, 0, 0); }
+}
+
+@keyframes taeyul-breath {
+  0%   { transform: translate3d(0, 0, 0); }
+  50%  { transform: translate3d(0, -0.9%, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes taeyul-sheen {
+  0%   { opacity: 0; transform: translate3d(-120%, 0, 0) rotate(8deg); }
+  8%   { opacity: 0.5; }
+  34%  { opacity: 0; transform: translate3d(120%, 0, 0) rotate(8deg); }
+  100% { opacity: 0; transform: translate3d(120%, 0, 0) rotate(8deg); }
+}
+
+@keyframes taeyul-glow {
+  0%, 100% { opacity: 0.24; }
+  50%      { opacity: 0.5; }
+}
+
+/* The breathing rides on a wrapper so it composes with the drift instead of replacing
+   it — two transforms on one element would overwrite each other. */
+.cinema-hero-portrait {
+  animation: taeyul-breath 7.3s ease-in-out infinite;
+  will-change: transform;
+}
+
+.cinema-hero-portrait::before {
+  position: absolute;
+  inset: 0;
+  background-image: inherit;
+  background-position: inherit;
+  background-repeat: no-repeat;
+  background-size: inherit;
+  animation: taeyul-drift 19s ease-in-out infinite;
+  content: "";
+}
+
+/* The element's own background is hidden so only the drifting copy shows; keeping both
+   would double the image and fight at the edges. */
+.cinema-hero-portrait { background-image: none; }
+.cinema-hero-portrait::before { background-image: url("/images/taeyul-hero.jpg"); }
+
+/* Light crossing the gold thread. Clipped to the portrait so it reads as the robe
+   catching the light, not as a band drawn over the screen. */
+.cinema-hero-portrait::after {
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: 0;
+  width: 42%;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(220, 207, 161, 0.16) 42%,
+    rgba(247, 238, 210, 0.4) 50%,
+    rgba(220, 207, 161, 0.16) 58%,
+    transparent 100%
+  );
+  animation: taeyul-sheen 11s ease-in-out infinite;
+  content: "";
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+/* The moon behind him pulses very slightly, so the sky is not frozen either. */
+.cinema-hero-meteors { animation: taeyul-glow 9.7s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cinema-hero-portrait,
+  .cinema-hero-portrait::before,
+  .cinema-hero-portrait::after,
+  .cinema-hero-meteors {
+    animation: none;
+  }
+  .cinema-hero-portrait::before { transform: scale(1.06); }
+}
+
+/* ---- The portrait is a <video> now -------------------------------------------------
+   A replaced element cannot carry ::before/::after, so the drift and the sheen move onto
+   the hero itself. The poster fills the frame exactly as the still did, which is what
+   makes "no clip yet" indistinguishable from "clip is loading". */
+
+.cinema-hero-portrait {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: cover;
+  object-position: 62% 12%;
+  pointer-events: none;
+  /* The still needs the slow push to feel alive; a real clip carries its own motion, so
+     the drift is gentle enough to sit under either without fighting it. */
+  animation: taeyul-drift 19s ease-in-out infinite;
+  mask-image: linear-gradient(to bottom, #000 0%, #000 52%, transparent 88%);
+  will-change: transform;
+}
+
+.cinema-hero-portrait::before,
+.cinema-hero-portrait::after { content: none; }
+
+/* Gold light crossing the robe, now drawn by the hero rather than by the portrait. */
+.cinema-hero::after {
+  position: absolute;
+  z-index: -1;
+  top: -20%;
+  bottom: -20%;
+  left: 0;
+  width: 42%;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(220, 207, 161, 0.16) 42%,
+    rgba(247, 238, 210, 0.4) 50%,
+    rgba(220, 207, 161, 0.16) 58%,
+    transparent 100%
+  );
+  animation: taeyul-sheen 11s ease-in-out infinite;
+  content: "";
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+@media (min-width: 900px) {
+  .cinema-hero-portrait {
+    left: auto;
+    width: min(52%, 720px);
+    object-position: center 10%;
+    mask-image: linear-gradient(to right, transparent 0%, #000 34%, #000 100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cinema-hero-portrait,
+  .cinema-hero::after {
+    animation: none;
+  }
+}
+
+/* The clip is already cropped to 3:4 around him, so the framing that suited a wider
+   still no longer applies: centre it and let `cover` take the overflow. */
+.cinema-hero-portrait {
+  object-position: center 18%;
+  /* A real clip carries its own camera move. Drifting it as well would fight that, so
+     the push-in is dropped here and kept only for the reduced-motion still. */
+  animation: none;
+}
+
+@media (min-width: 900px) {
+  .cinema-hero-portrait { object-position: center 12%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* No clip plays, so the poster gets the slow push instead of sitting dead still —
+     except that reduced motion is exactly a request for it to sit still. */
+  .cinema-hero-portrait { animation: none; transform: scale(1.02); }
+}
+
+/* The clip is 9:16, which is a phone's own shape, so it fills the opening screen with
+   almost nothing cropped. Centring it is enough. */
+.cinema-hero-portrait { object-position: center center; }
+
+@media (min-width: 900px) {
+  .cinema-hero-portrait { object-position: center 20%; }
+}
+
+/* Anchor the clip to the top: the crop begins at his crown, so any other origin cuts it
+   off and pushes his eyes down into the kicker line. */
+.cinema-hero-portrait { object-position: center top; }
+
+/* ---- Vertical webtoon result ------------------------------------------------------
+   A finished reading used to arrive as a column of bordered cards, each one a box the
+   reader had to decide to enter. Read on a phone that is a wall of text with rules drawn
+   through it. The same material laid out as a webtoon episode reads instead as a sequence:
+   one thought per screen, edge to edge, night panel against paper panel so the eye is
+   handed a change of ground rather than another border, and a scroll cue wherever the next
+   panel is the answer to this one.
+
+   Everything below is presentation. The document order, the headings and the live regions
+   are unchanged, so what a screen reader walks through is the same reading it was before. */
+
+.webtoon-shell {
+  /* Beats the .shell reading gutter and the 920px .paid-report-shell cap: a panel has to
+     reach the edge of the screen, and the measure is restored per panel by .webtoon-inner.
+     overflow-x: clip absorbs the viewport-width bleed below without turning this into a
+     scroll container, which would strand the fixed bar at the bottom. */
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 0 clamp(116px, 24vw, 156px);
+  overflow-x: clip;
+}
+
+/* Results that live inside an existing .shell column reach the edge only on phones. On a
+   wide screen a full-bleed band would drag the line length well past comfortable reading,
+   so there the panel keeps the column and only changes colour. */
+@media (max-width: 760px) {
+  .webtoon-bleed {
+    margin-inline: calc(50% - 50vw);
+  }
+}
+
+/* A reading that renders inside a page it does not own — the free experiences, where the
+   result appears under a form that stays on screen. The beats are shorter than a paid
+   report's, and the last one leaves room for the five-item navigation fixed over the
+   bottom of those pages. */
+.webtoon-flow {
+  margin-top: clamp(26px, 7vw, 44px);
+  overflow-x: clip;
+}
+
+.webtoon-flow .webtoon-panel {
+  padding-block: clamp(44px, 11vw, 88px);
+}
+
+.webtoon-flow > .webtoon-outro {
+  padding-bottom: clamp(96px, 22vw, 128px);
+}
+
+@media (max-width: 760px) {
+  .webtoon-flow > .webtoon-panel {
+    margin-inline: calc(50% - 50vw);
+  }
+}
+
+/* ---- The cover ----
+   A full screen of art with the title over it, built from the same layers as the opening
+   screen on the home page — night horizon, portrait, meteors, veil — so a reader who came
+   in through the front door recognises where they have landed. Deliberately not a
+   .webtoon-panel: the panel rule would put its own vertical padding inside a box that is
+   already exactly one screen tall. */
+.webtoon-cover {
+  position: relative;
+  display: flex;
+  min-height: 100svh;
+  flex-direction: column;
+  justify-content: flex-end;
+  /* The cover is exactly one screen and the download bar is fixed over the bottom of it,
+     so the last line of the copy has to end above the bar rather than behind it. */
+  padding: 0 0 clamp(104px, 22vw, 132px);
+  background: #0a1020;
+  color: #f7f1e7;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.webtoon-cover-art {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.webtoon-cover-copy {
+  margin-top: auto;
+}
+
+.webtoon-cover-brand {
+  justify-content: center;
+  margin-bottom: clamp(18px, 5vw, 28px);
+  color: rgba(247, 241, 231, 0.78);
+}
+
+.webtoon-cover-date {
+  display: block;
+  margin-top: 16px;
+  color: rgba(247, 241, 231, 0.6);
+  font-size: 0.84rem;
+  letter-spacing: 0.04em;
+}
+
+.webtoon-cover .webtoon-cue {
+  margin-top: clamp(26px, 7vw, 40px);
+  color: rgba(247, 241, 231, 0.8);
+}
+
+.webtoon-panel {
+  position: relative;
+  margin: 0;
+  padding: clamp(58px, 14vw, 130px) 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--paper);
+  box-shadow: none;
+}
+
+.webtoon-inner {
+  width: min(100% - 44px, 40rem);
+  margin: 0 auto;
+}
+
+.webtoon-panel > .webtoon-inner > :first-child {
+  margin-top: 0;
+}
+
+.webtoon-panel p,
+.webtoon-panel li {
+  font-size: clamp(1.02rem, 2.4vw, 1.1rem);
+  line-height: 1.95;
+}
+
+/* Report bodies arrive as plain text where the line breaks carry meaning. */
+.webtoon-body {
+  margin: 20px 0 0;
+  white-space: pre-wrap;
+}
+
+/* ---- Tones ----
+   Four grounds, used in rotation. Night is the same navy and gold the topbar already
+   wears, so the reading does not introduce a palette the rest of the product never uses. */
+
+.webtoon-night {
+  background:
+    radial-gradient(circle at 84% 8%, rgba(221, 185, 120, 0.17), transparent 44%),
+    linear-gradient(162deg, #041022, #0a1d32 58%, #071527);
+  color: #fffaf0;
+}
+
+.webtoon-paper {
+  background:
+    linear-gradient(168deg, rgba(155, 118, 81, 0.06), transparent 42%),
+    var(--white);
+}
+
+.webtoon-gold {
+  background:
+    radial-gradient(circle at 88% 12%, rgba(167, 122, 62, 0.18), transparent 36%),
+    linear-gradient(150deg, #fffdf8, #f5ecdc);
+}
+
+.webtoon-warn {
+  background: linear-gradient(160deg, #fff8f3, #fdefe6);
+}
+
+/* ---- Type ---- */
+
+.webtoon-badge {
+  display: inline-block;
+  margin: 0 0 clamp(16px, 4vw, 22px);
+  padding: 7px 17px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  opacity: 0.66;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.webtoon-title {
+  margin: 0;
+  font: 800 clamp(1.85rem, 7.2vw, 2.9rem)/1.25 var(--display-font);
+  letter-spacing: -0.032em;
+  text-wrap: balance;
+}
+
+.webtoon-lead {
+  margin: clamp(14px, 3.5vw, 20px) 0 0;
+  color: var(--muted);
+  font-size: clamp(1rem, 2.3vw, 1.08rem);
+  line-height: 1.85;
+}
+
+.webtoon-night .webtoon-lead {
+  color: rgba(255, 250, 240, 0.74);
+}
+
+.webtoon-night .webtoon-badge {
+  color: #edc57f;
+  opacity: 1;
+}
+
+.webtoon-gold .webtoon-badge,
+.webtoon-gold .webtoon-title {
+  color: #6d4f28;
+}
+
+.webtoon-warn .webtoon-badge,
+.webtoon-warn .webtoon-title {
+  color: #8d4b38;
+}
+
+/* The one phrase per panel worth leaving with, drawn as if run over with a marker rather
+   than shouted in a heavier weight. */
+.webtoon-mark {
+  padding: 0 0.16em;
+  background: linear-gradient(transparent 58%, rgba(221, 185, 120, 0.5) 58%);
+  color: inherit;
+}
+
+.webtoon-night .webtoon-mark {
+  background: linear-gradient(transparent 58%, rgba(221, 185, 120, 0.34) 58%);
+  color: #ffe9c2;
+}
+
+/* ---- Calculated numbers ----
+   The one place the reader is hunting for a figure and not a sentence, so the figures stop
+   being table cells and become objects on the page. */
+
+.webtoon-orbs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(88px, 1fr));
+  gap: clamp(10px, 3vw, 18px);
+  margin-top: clamp(26px, 6vw, 40px);
+}
+
+.webtoon-orb {
+  display: grid;
+  align-content: center;
+  aspect-ratio: 1;
+  padding: 8px;
+  border: 1px solid rgba(155, 118, 81, 0.4);
+  border-radius: 50%;
+  text-align: center;
+}
+
+.webtoon-orb strong {
+  display: block;
+  font: 800 clamp(1.35rem, 5vw, 1.95rem)/1.05 var(--display-font);
+}
+
+.webtoon-orb span {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+.webtoon-orb small {
+  display: block;
+  margin-top: 2px;
+  opacity: 0.7;
+  font-size: 0.66rem;
+}
+
+.webtoon-night .webtoon-orb {
+  border-color: rgba(221, 185, 120, 0.45);
+  background: radial-gradient(circle at 50% 42%, rgba(221, 185, 120, 0.12), transparent 68%);
+}
+
+.webtoon-night .webtoon-orb strong {
+  color: #f0ca8c;
+}
+
+.webtoon-night .webtoon-orb span {
+  color: rgba(255, 250, 240, 0.68);
+}
+
+/* ---- Scroll cue ----
+   Two chevrons falling toward the next panel. Decorative: the panel below is already the
+   next thing in document order. */
+
+.webtoon-cue {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  margin-top: clamp(30px, 7vw, 46px);
+}
+
+.webtoon-cue span {
+  width: 14px;
+  height: 14px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  opacity: 0.3;
+  animation: webtoon-cue-fall 1.9s ease-in-out infinite;
+}
+
+.webtoon-cue span:last-child {
+  animation-delay: 0.19s;
+}
+
+@keyframes webtoon-cue-fall {
+  0%,
+  100% { opacity: 0.18; transform: rotate(45deg) translate3d(-2px, -2px, 0); }
+  50%  { opacity: 0.62; transform: rotate(45deg) translate3d(2px, 2px, 0); }
+}
+
+/* ---- Reveal ----
+   The hidden starting state is gated on .webtoon-js, which only <WebtoonReveal /> ever
+   sets. A reader whose script was blocked or is still loading sees the whole reading; the
+   stylesheet is never the thing holding it back. */
+
+/* The rise is a transform and nothing else — deliberately no fade.
+   Text part-way through an opacity transition is text at reduced contrast: a block caught
+   at 0.91 measured 3.73:1 against its own background, under AA, and on a slow device that
+   is not a stray frame but the reading someone is trying to start. Moving it costs nothing
+   in contrast, and a panel sliding into place reads as a webtoon panel just as well. */
+.webtoon-js [data-webtoon-panel],
+.webtoon-js .webtoon-adapt > :is(header, section, div, details) {
+  transform: translate3d(0, 24px, 0);
+}
+
+.webtoon-js [data-webtoon-panel].is-revealed,
+.webtoon-js .webtoon-adapt > .is-revealed {
+  transform: none;
+  transition: transform 0.68s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ---- Persistent call to action ----
+   Kept outside every panel on purpose: a revealed panel carries a transform, and a fixed
+   child of a transformed element positions against that element instead of the viewport,
+   which would park this bar in the middle of the page. Pages that already carry the
+   five-item bottom navigation do not render it — the two would sit on top of each other. */
+
+.webtoon-cta {
+  position: fixed;
+  z-index: 20;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 10px 0 max(10px, env(safe-area-inset-bottom));
+  border-top: 1px solid rgba(221, 185, 120, 0.3);
+  background: rgba(4, 16, 34, 0.95);
+  backdrop-filter: blur(12px);
+}
+
+.webtoon-cta-inner {
+  width: min(100% - 28px, 40rem);
+  margin: 0 auto;
+}
+
+.webtoon-cta-note {
+  margin: 0 0 7px;
+  color: #ddb978;
+  font-size: 0.74rem;
+  text-align: center;
+}
+
+/* The same button the home page puts under the thumb, so the one persistent action on a
+   reading looks like the one persistent action everywhere else. */
+.webtoon-cta-button {
+  display: grid;
+  min-height: 56px;
+  place-items: center;
+  border: 1px solid #cfe0ff;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #e8f0ff 0%, #cddcfa 100%);
+  box-shadow: 0 14px 36px rgba(6, 12, 28, 0.5);
+  color: #13224a;
+  font-size: 1.02rem;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+}
+
+/* ---- Panel furniture ----
+   Lists, quotes and disclosures keep working inside a panel without dragging their old
+   card borders along with them. */
+
+.webtoon-panel blockquote {
+  margin: clamp(18px, 4vw, 26px) 0 0;
+  padding: 16px 20px;
+  border-left: 3px solid rgba(155, 118, 81, 0.6);
+  background: rgba(155, 118, 81, 0.07);
+  line-height: 1.8;
+}
+
+.webtoon-night blockquote {
+  border-left-color: rgba(221, 185, 120, 0.7);
+  background: rgba(221, 185, 120, 0.08);
+}
+
+.webtoon-steps {
+  margin: clamp(22px, 5vw, 32px) 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: webtoon-step;
+}
+
+.webtoon-steps li {
+  position: relative;
+  margin-block: 16px;
+  padding-left: 44px;
+  counter-increment: webtoon-step;
+}
+
+.webtoon-steps li::before {
+  position: absolute;
+  top: 0.15em;
+  left: 0;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid rgba(155, 118, 81, 0.5);
+  border-radius: 50%;
+  content: counter(webtoon-step, decimal-leading-zero);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.webtoon-night .webtoon-steps li::before {
+  border-color: rgba(221, 185, 120, 0.5);
+  color: #f0ca8c;
+}
+
+.webtoon-panel details {
+  margin: clamp(20px, 4vw, 28px) 0 0;
+  padding: 16px 18px;
+  border: 1px solid rgba(155, 118, 81, 0.28);
+  border-radius: 14px;
+}
+
+.webtoon-night details {
+  border-color: rgba(221, 185, 120, 0.3);
+}
+
+/* Deliberately not display: flex. A <summary> whose display is changed away from
+   list-item stops toggling in WebKit, which silently turns every disclosure in a panel
+   into dead text on iPhone — the browser most of these readers are on. Padding buys the
+   44px touch target instead. */
+.webtoon-panel summary {
+  min-height: 44px;
+  padding-block: 10px;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+/* A fixed bar sits over the bottom of these pages — the five-item navigation on the free
+   routes, the download bar on a paid report. Anything scrolled to has to stop above it
+   rather than under it, or the control the reader was sent to is unreachable. */
+.webtoon-panel :is(a, button, summary),
+.webtoon-adapt :is(a, button, summary) {
+  scroll-margin-bottom: 108px;
+}
+
+/* The closing furniture — disclaimer, download, review, account note — is one quiet panel
+   rather than four more beats competing with the reading that just ended. */
+.webtoon-outro .disclaimer,
+.webtoon-outro .paid-report-account-note {
+  color: var(--muted);
+  font-size: 0.94rem;
+  line-height: 1.8;
+}
+
+.webtoon-outro > .webtoon-inner > * + *,
+.webtoon-adapt > .webtoon-outro > * + * {
+  margin-top: 20px;
+}
+
+/* ---- Adapting a result that is already sectioned ----
+   The celebrity and relationship readings are ranked grids and paired comparisons: content
+   that is genuinely two-dimensional, and that a one-idea-per-screen rewrite would flatten
+   for nothing. They keep their markup and take the panel rhythm from here instead — each
+   direct child becomes a band, and the reading measure is rebuilt out of padding so the
+   column matches a hand-built panel without wrapping every section in a new element. */
+
+/* Adapt mode gives a result the panel rhythm — full width, one beat per block, the reading
+   measure rebuilt with padding — and nothing else. It deliberately does not paint the
+   children.
+
+   An earlier version alternated a paper and a white ground down the column the way the
+   built panels do. That reads well on plain prose and is wrong here: these blocks include
+   ones that carry their own colour as meaning, like the relationship outcome context,
+   which is sage, clay or gold depending on what the saved outcomes actually said. Painting
+   over them threw that signal away, and the ground it substituted did not clear AA against
+   the muted text sitting on it. Whatever a block already says about itself, it keeps. */
+.webtoon-adapt > :is(header, section, div, details) {
+  margin: 0;
+  padding-block: clamp(44px, 11vw, 88px);
+  padding-inline: max(22px, calc(50% - 20rem));
+  box-shadow: none;
+}
+
+/* The opening block is the summary, and it carries the same night ground a built panel
+   would give it. */
+.webtoon-adapt > header:first-of-type {
+  background:
+    radial-gradient(circle at 84% 8%, rgba(221, 185, 120, 0.17), transparent 44%),
+    linear-gradient(162deg, #041022, #0a1d32 58%, #071527);
+  color: #fffaf0;
+}
+
+.webtoon-adapt > header:first-of-type .eyebrow,
+.webtoon-adapt > header:first-of-type .profile-facts {
+  color: #edc57f;
+}
+
+.webtoon-adapt > header h2,
+.webtoon-adapt > section > h2 {
+  margin-top: 0;
+  font: 800 clamp(1.55rem, 5.4vw, 2.25rem)/1.28 var(--display-font);
+  letter-spacing: -0.028em;
+  text-wrap: balance;
+}
+
+.webtoon-adapt > .webtoon-outro {
+  padding-bottom: clamp(96px, 22vw, 128px);
+}
+
+/* Where the adapted result was itself wrapped in a card, the card is flattened: the bands
+   inside it are the only structure the reading needs, and a border around all of them is
+   the exact thing this layout is getting rid of. */
+.webtoon-flow > .webtoon-adapt {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+/* Loose children that are not bands — a single promoted link, say — keep the reading
+   measure instead of running to the edge of the flattened card. */
+.webtoon-adapt > :not(header, section, div, details) {
+  width: min(100% - 44px, 40rem);
+  margin-inline: auto;
+}
+
+@media (max-width: 760px) {
+  .webtoon-adapt > * {
+    margin-inline: calc(50% - 50vw);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* WebtoonReveal already declines to run, so nothing is offset; this covers the case where
+     the preference is turned on after the class is already on <html>. */
+  .webtoon-js [data-webtoon-panel],
+  .webtoon-js .webtoon-adapt > :is(header, section, div, details) {
+    transform: none;
+  }
+
+  .webtoon-cue span {
+    animation: none;
+  }
+}
+
+@media print {
+  /* The reading is also a document people keep. Printed, the panels are pages, not scenery. */
+  .webtoon-cta,
+  .webtoon-cue {
+    display: none;
+  }
+
+  .webtoon-panel {
+    padding-block: 16px;
+    background: none;
+    color: #000;
+    break-inside: avoid;
+  }
+
+  .webtoon-night,
+  .webtoon-night .webtoon-title,
+  .webtoon-night .webtoon-lead,
+  .webtoon-night .webtoon-badge,
+  .webtoon-night .webtoon-orb strong,
+  .webtoon-night .webtoon-orb span {
+    color: #000;
+  }
+}
+
+/* ---- Cinematic intake -------------------------------------------------------------
+   The opening screen is a full screen of night and then the form was a white card on
+   paper — the reader was walked out of the world the page had just built in order to type
+   their birth date. The reference never leaves it: the art stays, pushed back out of focus
+   behind the fields, and the inputs are rules drawn on glass instead of boxes.
+
+   Only the surface changes here. Same fields, same validation, same consent copy, same
+   ids the rest of the app and the tests reach for. */
+
+.profile-shell {
+  /* The bleed below reaches past the reading gutter, and this stops that becoming a
+     horizontal scrollbar. clip rather than hidden, so it does not turn into a scroll
+     container and strand anything fixed inside it. .home-shell already sets this. */
+  overflow-x: clip;
+}
+
+.cinema-intake {
+  position: relative;
+  max-width: none;
+  margin-inline: calc(50% - 50vw);
+  padding: clamp(54px, 13vw, 104px) 0;
+  background: #0a1020;
+  color: #f7f1e7;
+  /* Date and time inputs draw their own chrome from this. Without it the picker opens as a
+     white slab in the middle of the night. */
+  color-scheme: dark;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+/* Inset past the edges so the blur has material to sample and does not fade to nothing at
+   the sides. */
+.cinema-intake-art {
+  position: absolute;
+  z-index: -2;
+  inset: -8%;
+  background: url("/images/taeyul-hero.jpg") center 18% / cover no-repeat;
+  filter: blur(24px) saturate(0.9);
+  opacity: 0.78;
+}
+
+.cinema-intake::after {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  content: "";
+  /* Dark enough that the fields clear AA against it, light enough that the art is still
+     visibly there. The source is already a night scene, so most of the work is done. */
+  background: linear-gradient(180deg, rgba(6, 11, 24, 0.6), rgba(6, 11, 24, 0.86));
+}
+
+.cinema-intake .form-card {
+  width: min(100% - 44px, 34rem);
+  margin: 0 auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+
+/* The home intake keeps its heading outside the card, so it needs the measure too or it
+   runs the full width of the bleed while the fields below it sit in a column. */
+.cinema-intake .form-section-heading {
+  width: min(100% - 44px, 34rem);
+  margin: 0 auto clamp(20px, 5vw, 30px);
+}
+
+.cinema-intake .eyebrow {
+  color: #d8c191;
+}
+
+.cinema-intake h2 {
+  margin: 6px 0 clamp(26px, 7vw, 40px);
+  color: #fffaf0;
+  font: 800 clamp(1.8rem, 7vw, 2.5rem)/1.2 var(--display-font);
+  letter-spacing: -0.03em;
+}
+
+.cinema-intake .field {
+  margin-block: clamp(26px, 6vw, 38px);
+}
+
+.cinema-intake label,
+.cinema-intake legend,
+.cinema-intake .field-label {
+  color: #fffaf0;
+  font-weight: 800;
+}
+
+.cinema-intake input[type="date"],
+.cinema-intake input[type="text"],
+.cinema-intake input[type="time"],
+.cinema-intake input[type="tel"],
+.cinema-intake input[type="email"],
+.cinema-intake textarea,
+.cinema-intake select {
+  width: 100%;
+  padding: 10px 0;
+  border: 0;
+  border-bottom: 1px solid rgba(247, 241, 231, 0.34);
+  border-radius: 0;
+  background: transparent;
+  color: #fffaf0;
+}
+
+.cinema-intake input:focus-visible,
+.cinema-intake textarea:focus-visible,
+.cinema-intake select:focus-visible {
+  border-bottom-color: #edc57f;
+  outline: 3px solid rgba(237, 197, 127, 0.45);
+  outline-offset: 6px;
+}
+
+.cinema-intake ::placeholder {
+  color: rgba(247, 241, 231, 0.56);
+}
+
+.cinema-intake small,
+.cinema-intake .privacy-note,
+.cinema-intake .legal-note {
+  color: rgba(247, 241, 231, 0.68);
+}
+
+/* The pill pair from the reference: an outline that fills in once chosen, rather than a dot
+   beside a word. .choice already hides its own radio, so only the span is redrawn — and it
+   gets a real 48px target while we are here. */
+.cinema-intake .choice span {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  border-color: rgba(247, 241, 231, 0.4);
+  border-radius: 10px;
+  background: transparent;
+  color: #f7f1e7;
+}
+
+.cinema-intake .choice input:checked + span {
+  border-color: #cfe0ff;
+  background: rgba(207, 224, 255, 0.16);
+  color: #fffaf0;
+}
+
+.cinema-intake .check span {
+  color: rgba(247, 241, 231, 0.88);
+}
+
+.cinema-intake a {
+  color: #edc57f;
+}
+
+.cinema-intake .error {
+  color: #ffb4a2;
+}
+
+/* The same button the opening screen puts under the thumb. */
+.cinema-intake .primary-button {
+  width: 100%;
+  min-height: 58px;
+  border: 1px solid #cfe0ff;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #e8f0ff 0%, #cddcfa 100%);
+  box-shadow: 0 14px 36px rgba(6, 12, 28, 0.5);
+  color: #13224a;
+}
+
+.cinema-intake .form-actions {
+  margin-top: clamp(28px, 7vw, 40px);
+}
+

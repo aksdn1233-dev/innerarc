@@ -46,7 +46,13 @@ test("mobile home has no overflow and the sticky payment bar yields to the form"
     await expect(page.getByRole("heading", { level: 1, name: "왜 나는 같은 선택을 반복할까요?" })).toBeVisible();
     await expect(page.getByRole("link", { name: "내 패턴 확인하기" })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
+
+    // The opening screen carries the same action at thumb height, so the sticky bar stays
+    // out of the way there instead of covering it, and appears once the hero is passed.
+    await expect(page.locator(".mobile-purchase-bar")).toHaveCount(0);
+    await page.locator("#products").scrollIntoViewIfNeeded();
     await expect(page.locator(".mobile-purchase-bar")).toBeVisible();
+
     await page.locator("#onboarding").scrollIntoViewIfNeeded();
     await expect(page.locator(".mobile-purchase-bar")).toHaveCount(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);

@@ -7,9 +7,13 @@ test("the retired Core product is absent and Detailed becomes the default", asyn
   await expect(page.getByText("가장 궁금한 한 가지 (선택)")).toBeVisible();
   await expect(page.locator("#concern")).not.toHaveAttribute("required", "");
   await expect(page.locator('[data-product="plus_30d"]')).toHaveCount(0);
-  await expect(page.locator(".editorial-product")).toHaveCount(2);
+  // Three cards now: the free reading is named as a tier beside the two paid ones. What
+  // this test guards is the paid line-up, so it counts the paid cards rather than every
+  // card, and reads the price off the first paid one instead of whatever comes first.
+  await expect(page.locator(".editorial-product.is-free")).toHaveCount(1);
+  await expect(page.locator(".editorial-product:not(.is-free)")).toHaveCount(2);
   await expect(
-    page.locator(".editorial-product").first().locator(".campaign-price-row strong"),
+    page.locator(".editorial-product:not(.is-free)").first().locator(".campaign-price-row strong"),
   ).toContainText(/9,600|39,000/);
 
   await page.locator("#birthDate").fill("1994-11-04");

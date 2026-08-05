@@ -10,17 +10,43 @@ describe("BASIC_19000 renderer", () => {
     expect(page).toContain('report.sectionPlan === "basic-19000-v2"');
     expect(page).toContain('" basic-report-shell"');
     expect(page).toContain("report.calculationBasis");
-    expect(page).toContain("paid-report-summary basic-report-summary");
+  });
+
+  it("reads as one vertical column of panels rather than a stack of cards", () => {
+    expect(page).toContain("webtoon-shell");
+    expect(page).toContain("<WebtoonReveal />");
+    // A panel is a full-width band with the reading measure rebuilt inside it. Lose either
+    // half and the report is back to being a column of boxes.
+    expect(css).toMatch(/\.webtoon-panel \{[\s\S]*?padding: clamp\(/u);
+    expect(css).toMatch(/\.webtoon-inner \{[\s\S]*?width: min\(100% - 44px, 40rem\);/u);
   });
 
   it("keeps actions before the strong final conclusion on screen and download", () => {
-    expect(page.indexOf("basic-report-actions")).toBeLessThan(page.indexOf("basic-report-final"));
+    expect(page.indexOf('"지금 해볼 일"')).toBeLessThan(page.indexOf("{finalSection && ("));
     expect(download).toMatch(/\$\{sections\}<section>.*\$\{final\}/s);
   });
 
-  it("sets readable mobile type, spacing, and a compact five-number strip", () => {
-    expect(css).toContain(".basic-number-strip");
-    expect(css).toMatch(/@media \(max-width: 640px\)[\s\S]*\.basic-report-shell \.paid-report-section p,[\s\S]*font-size: 1rem;[\s\S]*line-height: 1\.72;/);
-    expect(css).toMatch(/\.basic-report-shell \.paid-report-summary,[\s\S]*padding: 20px;/);
+  it("sets readable mobile type and draws the five core numbers as one group", () => {
+    expect(page).toContain("<WebtoonOrbs");
+    expect(css).toContain(".webtoon-orbs");
+    expect(css).toMatch(/\.webtoon-panel p,[\s\S]*?line-height: 1\.95;/u);
+  });
+
+  it("reveals panels by moving them, never by fading the text", () => {
+    // Text part-way through an opacity transition is text at reduced contrast. A block
+    // caught at 0.91 measured 3.73:1 against its own background and failed the axe AA
+    // gate, so the reveal moves panels and leaves their opacity alone.
+    const reveal = css.slice(css.indexOf(".webtoon-js [data-webtoon-panel]"));
+    const revealRules = reveal.slice(0, reveal.indexOf("/* ---- Persistent"));
+    expect(revealRules).toContain("transform: translate3d");
+    expect(revealRules).not.toContain("opacity");
+  });
+
+  it("never hides a paid reading behind a script that may not run", () => {
+    // The reveal animation starts from opacity 0, and that starting state is gated on a
+    // class only the reveal component sets. If the stylesheet ever hides panels on its
+    // own, a blocked or slow script leaves the buyer staring at an empty page.
+    expect(css).toMatch(/\.webtoon-js \[data-webtoon-panel\]/u);
+    expect(css).not.toMatch(/^\[data-webtoon-panel\] \{[\s\S]*?opacity: 0;/mu);
   });
 });

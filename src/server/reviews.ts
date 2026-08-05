@@ -209,6 +209,26 @@ export async function listPublicReviews(
   };
 }
 
+/**
+ * How many published reviews exist, which is a larger number than the handful the home
+ * page shows. It is counted rather than derived from the rendered list so the figure
+ * stays true when the display limit changes; an unreachable table returns null so the
+ * caller can omit the claim instead of printing a zero it cannot stand behind.
+ */
+export async function countPublicReviews(
+  admin: SupabaseClient,
+  locale: "ko" | "en",
+): Promise<number | null> {
+  const { count, error } = await admin
+    .from("product_reviews")
+    .select("id", { count: "exact", head: true })
+    .eq("locale", locale)
+    .eq("status", "approved")
+    .eq("public_consent", true);
+  if (error) return null;
+  return count ?? null;
+}
+
 export async function listReviewsForModeration(
   admin: SupabaseClient,
   limit = 30,
