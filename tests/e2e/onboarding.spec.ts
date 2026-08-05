@@ -35,12 +35,6 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await page.locator("#name").fill("Minji Kim");
   await page.getByText("개인정보 처리 안내를 확인했습니다.").click();
   await page.getByRole("button", { name: "내 핵심 패턴 보기" }).click();
-  // The reading is calculated in the browser behind dynamic imports, so on a cold CI
-  // runner it can arrive later than the default expect window — this failed three times
-  // in a row there and passed on a re-run with nothing changed. Waiting for the region the
-  // app focuses on submit gates the assertions below on the result existing, rather than
-  // on how fast the runner happened to be. A flaky check here blocks the deploy.
-  await page.waitForSelector("#result", { timeout: 30_000 });
   await expect(page.getByText("대표 아키타입 · 정의")).toBeVisible();
   await expect(page.locator(".number-tile").first()).toContainText("11");
   await page.getByText("계산 근거 보기").click();
