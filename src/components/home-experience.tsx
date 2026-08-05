@@ -220,6 +220,10 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   // sticky bar there would cover it, so the bar waits until the hero has scrolled away.
   const [heroVisible, setHeroVisible] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
+  // A browser refuses to autoplay a clip that makes noise, so it starts muted and the
+  // sound is the visitor's to switch on. Off is the honest default anyway: nobody wants
+  // a page to start talking at them.
+  const [soundOn, setSoundOn] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const trackedRef = useRef(new Set<string>());
@@ -346,6 +350,17 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   // A visitor who has not decided anything yet will not fill in a birth date, but they
   // will answer "which of these is bothering me". Answering that is the cheapest possible
   // first commitment, and it carries straight into the form as the reading's focus.
+  function toggleSound() {
+    const video = heroVideoRef.current;
+    if (!video) return;
+    const next = !soundOn;
+    video.muted = !next;
+    setSoundOn(next);
+    // Switching sound on is a user gesture, which is also the moment a browser will
+    // allow playback if it refused earlier.
+    if (next) void video.play().catch(() => {});
+  }
+
   function chooseQuestion(focus: FocusId) {
     setFocusId(focus);
     captureConversionEvent("form_start", locale, {});
@@ -466,11 +481,22 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
           <MeteorTrails className="cinema-hero-meteors" />
           <div className="cinema-hero-veil" aria-hidden="true" />
 
-          <div className="cinema-hero-copy">
-            <p className="cinema-kicker">{t.heroKicker}</p>
-            <h1 className="cinema-title" id="hero-title">{t.heroTitle}</h1>
-            <p className="cinema-quote">{t.heroBody}</p>
-          </div>
+          {/* Nothing competes with him on the first screen. The heading still exists —
+              a page needs one, and a screen reader has nothing to announce without it —
+              but it is read, not displayed, and the words themselves reappear in full at
+              the top of the page below. */}
+          <h1 className="visually-hidden" id="hero-title">{t.heroTitle}</h1>
+
+          <button
+            aria-pressed={soundOn}
+            className="cinema-sound-toggle"
+            onClick={toggleSound}
+            type="button"
+          >
+            {soundOn
+              ? (locale === "ko" ? "🔊 소리 끄기" : "🔊 Sound off")
+              : (locale === "ko" ? "🔈 소리 켜기" : "🔈 Sound on")}
+          </button>
 
           <div className="cinema-hero-actions">
             <a
@@ -489,7 +515,6 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             >
               {t.freeCta}
             </Link>
-            <p className="cinema-note">{t.heroNote}</p>
           </div>
         </section>
 

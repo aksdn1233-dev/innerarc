@@ -8237,3 +8237,47 @@ summary {
   margin-top: clamp(28px, 7vw, 40px);
 }
 
+
+/* The opening screen carries the character and two actions and nothing else. The heading
+   still has to exist for the page outline and for a screen reader, so it is removed from
+   sight rather than from the document. */
+.visually-hidden {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  margin: -1px;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.cinema-sound-toggle {
+  position: absolute;
+  z-index: 3;
+  right: clamp(16px, 5vw, 28px);
+  bottom: calc(clamp(16px, 5vw, 28px) + env(safe-area-inset-bottom));
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid rgba(220, 207, 161, 0.42);
+  border-radius: 999px;
+  background: rgba(31, 29, 43, 0.55);
+  color: #dccfa1;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.cinema-sound-toggle:hover,
+.cinema-sound-toggle:focus-visible { background: rgba(31, 29, 43, 0.82); }
+
+/* With the copy gone the actions no longer share the screen with a block of text, so
+   they sit lower and the character gets the height back. */
+.cinema-hero-copy::before { content: none; }
+.cinema-hero-actions { margin-top: auto; }
+
+@media (min-width: 900px) {
+  .cinema-sound-toggle { bottom: clamp(20px, 4vw, 36px); }
+}
