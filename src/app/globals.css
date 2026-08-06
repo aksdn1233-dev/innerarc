@@ -8427,3 +8427,26 @@ summary {
 @media (min-width: 900px) {
   .cinema-hero-portrait { object-fit: contain; object-position: center 40%; }
 }
+
+/* ---- A vertical clip, at last -------------------------------------------------------
+   The source is 1080×1920 now, which is the screen's own shape. `cover` crops nothing
+   worth having and leaves no band, so the blurred backdrop that existed to hide the
+   letterbox is no longer needed. */
+
+.cinema-hero-backdrop { display: none; }
+
+.cinema-hero-portrait {
+  object-fit: cover;
+  object-position: center center;
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+
+@media (min-width: 900px) {
+  .cinema-hero-portrait {
+    left: 0;
+    width: 100%;
+    object-fit: cover;
+    object-position: center 28%;
+  }
+}
