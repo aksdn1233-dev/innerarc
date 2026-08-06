@@ -221,7 +221,6 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   // The opening screen already carries the same action at thumb height. Showing the
   // sticky bar there would cover it, so the bar waits until the hero has scrolled away.
   const [heroVisible, setHeroVisible] = useState(true);
-  const [menuOpen, setMenuOpen] = useState(false);
   // A browser refuses to autoplay a clip that makes noise, so it starts muted and the
   // sound is the visitor's to switch on. Off is the honest default anyway: nobody wants
   // a page to start talking at them.
@@ -418,44 +417,18 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             <a className="header-start-link" href="#onboarding">{locale === "ko" ? "리딩 시작하기" : "Start reading"}</a>
             <Link className="locale-switch" href={`/${otherLocale}`}>{otherLocale === "ko" ? "한국어" : "English"}</Link>
           </div>
-          <button
-            aria-controls="home-menu"
-            aria-expanded={menuOpen}
-            aria-label={menuOpen ? (locale === "ko" ? "메뉴 닫기" : "Close menu") : (locale === "ko" ? "메뉴 열기" : "Open menu")}
-            className="cinema-menu-button"
-            onClick={() => setMenuOpen((open) => !open)}
-            type="button"
-          >
-            <span aria-hidden="true" />
-            <span aria-hidden="true" />
-            <span aria-hidden="true" />
-          </button>
         </header>
 
-        <div className={menuOpen ? "cinema-menu is-open" : "cinema-menu"} id="home-menu" hidden={!menuOpen}>
-          <button
-            className="cinema-menu-close"
-            onClick={() => setMenuOpen(false)}
-            type="button"
-          >
-            {locale === "ko" ? "닫기" : "Close"}
-          </button>
-          <nav aria-label={t.navLabel}>
-            {t.nav.map(([href, label]) => (
-              <a href={href} key={href} onClick={() => setMenuOpen(false)}>{label}</a>
-            ))}
-            <Link href={`/${locale}/profile`} onClick={() => setMenuOpen(false)}>{t.freeCardButton}</Link>
-            <Link href={`/${locale}/orders`} onClick={() => setMenuOpen(false)}>{locale === "ko" ? "구매 내역" : "Find a purchase"}</Link>
-            <Link href={`/${locale}/support`} onClick={() => setMenuOpen(false)}>{locale === "ko" ? "고객 문의" : "Support"}</Link>
-            <Link href={`/${otherLocale}`} onClick={() => setMenuOpen(false)}>{otherLocale === "ko" ? "한국어" : "English"}</Link>
-          </nav>
-        </div>
 
         {/* A full-height opening screen rather than a band of text above more text: the
             art fills the viewport, the title carries it, and one action sits under the
             thumb. Everything explanatory has moved below the fold, where it belongs. */}
         <section className="cinema-hero" aria-labelledby="hero-title" ref={heroRef}>
           <NightHorizon className="cinema-hero-scene" />
+          {/* The clip is 16:9 and the screen is 9:16, so filling one crops the other.
+              A blurred, enlarged copy of its first frame fills the screen behind, and the
+              clip itself is shown whole on top: nothing cropped, no dead space. */}
+          <div className="cinema-hero-backdrop" aria-hidden="true" />
           {/* 태율(太律), the numerology guide from the supplied character sheet.
               Decorative: the title beside it carries the meaning, so it is not announced
               again.

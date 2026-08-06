@@ -8348,3 +8348,82 @@ summary {
 @media (min-width: 900px) {
   .cinema-sound-toggle { top: calc(96px + env(safe-area-inset-top)); bottom: auto; }
 }
+
+/* ---- The whole picture, and still a full screen ------------------------------------
+   A 16:9 clip on a 9:16 screen: filling one crops the other, and cropping to the phone's
+   shape zoomed so far in that only his face survived. So the clip is shown whole, and the
+   screen behind it is filled by an enlarged, blurred copy of its own first frame. Nothing
+   is cropped and there is no dead band. */
+
+.cinema-hero-backdrop {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  background-image: url("/images/taeyul-hero.jpg");
+  background-position: center;
+  background-size: cover;
+  filter: blur(34px) saturate(0.85) brightness(0.5);
+  transform: scale(1.18);
+}
+
+.cinema-hero-portrait {
+  object-fit: contain;
+  object-position: center 42%;
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+
+@media (min-width: 900px) {
+  .cinema-hero-portrait {
+    left: 0;
+    width: 100%;
+    object-fit: contain;
+    object-position: center 38%;
+  }
+}
+
+/* Small enough to stay out of the way. */
+.cinema-sound-toggle {
+  top: calc(80px + env(safe-area-inset-top));
+  right: 14px;
+  bottom: auto;
+  min-height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  opacity: 0.82;
+}
+
+.cinema-sound-toggle:hover,
+.cinema-sound-toggle:focus-visible { opacity: 1; }
+
+/* The clip is now 3:4 — his hand, the bells and the shelves are all in it, which the 9:16
+   column had cut away — and that shape fills a phone losing only the far edges. The
+   blurred backdrop is no longer needed, and neither are the bands it was there to hide. */
+.cinema-hero-backdrop { display: none; }
+
+.cinema-hero-portrait {
+  object-fit: cover;
+  object-position: center 20%;
+}
+
+@media (min-width: 900px) {
+  .cinema-hero-portrait { object-fit: cover; object-position: center 16%; }
+}
+
+/* Back to the whole frame. A 16:9 clip on a 9:16 screen cannot both fill it and stay
+   uncropped — any crop that uses the source's full height fills the phone's height too,
+   and that is exactly the scale that made it a close-up. Showing the picture whole is the
+   only way to keep the hand, the bells and the room, so the screen behind it is filled by
+   an enlarged blur of the clip's own first frame rather than left blank. */
+.cinema-hero-backdrop { display: block; }
+
+.cinema-hero-portrait {
+  object-fit: contain;
+  object-position: center 46%;
+}
+
+@media (min-width: 900px) {
+  .cinema-hero-portrait { object-fit: contain; object-position: center 40%; }
+}
