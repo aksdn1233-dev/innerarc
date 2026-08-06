@@ -7796,75 +7796,101 @@ summary {
   color: rgba(255, 250, 240, 0.68);
 }
 
-/* ---- The guide, between panels ----
-   A small figure who turns up every so often with one line to say. This is what makes the
-   column read as an episode instead of a document: the reader is being walked through it
-   by someone, not handed a file. Sits on the page ground between panels, never inside one,
-   so it reads as an aside rather than another section of the report. */
+/* ---- The guide, in frame ----
+   The first version of this put a round portrait outside the content with a bubble beside
+   it, which is a messenger thread, not a comic. A Korean vertical webtoon frames the
+   character: the figure is drawn inside the cut and cropped by its edge, the balloon sits
+   over the artwork rather than beside it, and the tail points back at whoever is speaking.
+   The gutter under each cut is what paces the scroll — the gap is part of the drawing. */
 
-.webtoon-narrator {
-  padding: clamp(26px, 7vw, 44px) 0;
-  background: var(--paper);
-}
-
-.webtoon-narrator-inner {
-  display: flex;
-  width: min(100% - 44px, 40rem);
-  align-items: flex-start;
-  gap: 14px;
-  margin: 0 auto;
-}
-
-.webtoon-narrator-right .webtoon-narrator-inner {
-  flex-direction: row-reverse;
-}
-
-.webtoon-narrator-face {
-  width: clamp(60px, 17vw, 78px);
-  height: clamp(60px, 17vw, 78px);
-  flex: none;
-  border: 2px solid rgba(221, 185, 120, 0.6);
-  border-radius: 50%;
-  background: #0a1020;
-  object-fit: cover;
-  /* The art is a tall portrait; without this the crop lands on his chest. */
-  object-position: center 12%;
-}
-
-.webtoon-narrator-bubble {
+.webtoon-cut {
   position: relative;
-  margin: 4px 0 0;
-  padding: 14px 18px;
-  border: 1px solid rgba(155, 118, 81, 0.34);
-  border-radius: 16px;
-  background: var(--white);
-  box-shadow: 0 6px 18px rgba(49, 43, 35, 0.06);
-  font-size: clamp(0.98rem, 2.3vw, 1.05rem);
-  line-height: 1.72;
+  overflow: hidden;
+  min-height: clamp(240px, 62vw, 340px);
+  margin-block: clamp(10px, 3vw, 18px);
+  background:
+    radial-gradient(circle at 76% 18%, rgba(221, 185, 120, 0.16), transparent 46%),
+    linear-gradient(168deg, #0a1729, #071120 62%, #050d19);
+  isolation: isolate;
 }
 
-/* The tail, drawn as a rotated square tucked under the bubble's edge so the border reads
-   as continuous around it. */
-.webtoon-narrator-bubble::before {
+/* Cropped by the frame, standing in the lower corner and running off the bottom edge, the
+   way a bust shot is composed in a panel. */
+.webtoon-cut-figure {
   position: absolute;
-  top: 20px;
-  left: -7px;
-  width: 12px;
-  height: 12px;
-  border-bottom: 1px solid rgba(155, 118, 81, 0.34);
-  border-left: 1px solid rgba(155, 118, 81, 0.34);
-  background: var(--white);
-  content: "";
-  transform: rotate(45deg);
+  z-index: 0;
+  bottom: 0;
+  left: -2%;
+  width: clamp(150px, 44%, 230px);
+  height: 88%;
+  object-fit: cover;
+  object-position: center 14%;
+  -webkit-mask-image: linear-gradient(to bottom, #000 76%, transparent 99%);
+  mask-image: linear-gradient(to bottom, #000 76%, transparent 99%);
 }
 
-.webtoon-narrator-right .webtoon-narrator-bubble::before {
-  right: -7px;
+.webtoon-cut-right .webtoon-cut-figure {
+  right: -2%;
   left: auto;
-  border-bottom: 0;
-  border-left: 0;
-  border-top: 1px solid rgba(155, 118, 81, 0.34);
-  border-right: 1px solid rgba(155, 118, 81, 0.34);
+  transform: scaleX(-1);
+}
+
+/* White, thin dark outline, sitting over the art. */
+.webtoon-cut-balloon {
+  position: absolute;
+  z-index: 1;
+  top: clamp(20px, 6vw, 34px);
+  right: clamp(16px, 5vw, 30px);
+  max-width: min(64%, 22rem);
+  margin: 0;
+  padding: 15px 19px;
+  border: 2px solid #16202f;
+  border-radius: 22px;
+  background: #fffdf8;
+  color: #16202f;
+  font-size: clamp(0.98rem, 2.4vw, 1.06rem);
+  font-weight: 600;
+  line-height: 1.62;
+}
+
+.webtoon-cut-right .webtoon-cut-balloon {
+  right: auto;
+  left: clamp(16px, 5vw, 30px);
+}
+
+/* The tail points down and back toward the figure's head rather than straight sideways,
+   which is what stops it reading as a chat bubble. Two triangles: the outline, then the
+   fill laid just inside it so the stroke stays continuous around the balloon. */
+.webtoon-cut-balloon::before,
+.webtoon-cut-balloon::after {
+  position: absolute;
+  bottom: -17px;
+  left: 26px;
+  width: 0;
+  height: 0;
+  border-top: 17px solid #16202f;
+  border-right: 15px solid transparent;
+  content: "";
+}
+
+.webtoon-cut-balloon::after {
+  bottom: -13px;
+  left: 28px;
+  border-top-color: #fffdf8;
+  border-right-width: 12px;
+}
+
+.webtoon-cut-right .webtoon-cut-balloon::before,
+.webtoon-cut-right .webtoon-cut-balloon::after {
+  right: 26px;
+  left: auto;
+  border-right: 0;
+  border-left: 15px solid transparent;
+}
+
+.webtoon-cut-right .webtoon-cut-balloon::after {
+  right: 28px;
+  border-left-width: 12px;
 }
 
 /* ---- Scroll cue ----

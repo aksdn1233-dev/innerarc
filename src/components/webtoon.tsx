@@ -90,12 +90,12 @@ export function WebtoonNarrator({
   side?: "left" | "right";
 }) {
   return (
-    <div className={`webtoon-narrator webtoon-narrator-${side}`} data-webtoon-panel="">
-      <div className="webtoon-narrator-inner">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img alt="" aria-hidden="true" className="webtoon-narrator-face" src="/images/taeyul-hero.jpg" />
-        <p className="webtoon-narrator-bubble">{children}</p>
-      </div>
+    <div className={`webtoon-cut webtoon-cut-${side}`} data-webtoon-panel="">
+      {/* The figure is inside the frame and cropped by it, the way a webtoon panel holds a
+          character — not a chip sitting outside the content next to a message. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img alt="" aria-hidden="true" className="webtoon-cut-figure" src="/images/taeyul-hero.jpg" />
+      <p className="webtoon-cut-balloon">{children}</p>
     </div>
   );
 }
