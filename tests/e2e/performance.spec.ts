@@ -5,14 +5,17 @@ const DEFAULT_TRANSFER_BUDGET = 450_000;
 const DEFAULT_DECODED_BUDGET = 1_200_000;
 
 /**
- * The home page carries the 태율 hero clip, roughly 533 KB of MP4 that no other route
- * downloads. It is deliberately excluded from render-blocking — `preload="none"`, fetched
+ * The home page carries the 태율 hero clip — a 720×1280 vertical film, currently 964 KB
+ * of MP4 — plus its poster, which no other route downloads. It is deliberately excluded from render-blocking — `preload="none"`, fetched
  * on idle — but it is still bytes a visitor pays for, so it is written into the budget
  * rather than hidden from it by delaying the fetch past when the test stops measuring.
  * Every other route keeps the original, tighter allowance.
  */
 const routes = [
-  { path: "/en", transfer: 1_050_000, decoded: 1_800_000 },
+  // Measured: ~385 KB of page + ~964 KB clip + ~53 KB poster ≈ 1.4 MB. The allowance
+  // sits above that with room for a re-encode, and still low enough that the clip
+  // growing by half would fail the build rather than quietly ship.
+  { path: "/en", transfer: 1_750_000, decoded: 2_700_000 },
   { path: "/en/question" },
   { path: "/en/relationship" },
   { path: "/en/compatibility" },

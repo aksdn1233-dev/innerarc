@@ -92,11 +92,12 @@ const copy = {
     heroBody: "타고난 성향과 반복되는 관계·일·돈의 패턴을 살펴보고, 올해 어떤 선택에 힘을 주어야 할지 정리해드립니다.",
     primary: "내 패턴 확인하기",
     heroNote: "생년월일 기반 · 1회 결제 · 자동 갱신 없음",
+    heroHook: "반복되는 선택엔, 이유가 있습니다",
     freeCta: "먼저 무료로 확인",
     freeNote: "결제 없이 생년월일만으로 기본 리딩을 볼 수 있어요",
     entryEyebrow: "어떤 게 제일 걸리세요?",
     entryTitle: "요즘 마음에 걸리는 질문을 골라보세요",
-    entryBody: "고른 질문이 리딩의 중심이 됩니다. 지금 정하지 않아도 나중에 바꿀 수 있어요.",
+    entryBody: "고른 질문이 리딩의 중심이 됩니다.",
     entryQuestions: [
       ["relationships", "왜 늘 비슷한 사람에게 마음이 갈까요?", "관계"],
       ["work", "지금 이 일, 계속 가는 게 맞을까요?", "일·진로"],
@@ -107,11 +108,11 @@ const copy = {
     freeCardBadge: "무료",
     freeCardName: "기본 리딩",
     freeCardPrice: "0원",
-    freeCardBody: "생년월일만으로 타고난 성향과 기본 수를 계산해 바로 보여드립니다. 결제도, 계정도 필요하지 않아요.",
+    freeCardBody: "생년월일만으로 바로 확인. 결제도, 계정도 없이.",
     freeCardButton: "무료로 시작하기",
     sampleEyebrow: "리포트 구성 예시",
     sampleTitle: "내 일상에 연결되는 방식으로 정리합니다",
-    sampleBody: "아래 문장은 실제 후기가 아닌 리포트 구성 예시입니다.",
+    sampleBody: "실제 후기가 아닌 리포트 구성 예시입니다.",
     sampleCases: [
       ["성향", "혼자 해결하는 힘은 강하지만, 도움을 늦게 요청해 책임이 한꺼번에 몰릴 수 있습니다."],
       ["관계", "상대의 반응을 오래 확인하다가 표현 시기를 놓치는 패턴이 반복될 수 있습니다."],
@@ -121,12 +122,12 @@ const copy = {
     methodBody: "입력한 생년월일의 수비학적 수치를 계산하고, 성향·관계·일·돈·올해의 흐름을 서로 연결해 해석합니다. 결과는 미래를 단정하는 예언이 아니라, 반복되는 패턴과 현실적인 선택 기준을 정리한 개인 리포트입니다.",
     methodPoints: ["생년월일 기반 계산", "질문 영역을 반영한 개인화", "결제 후 비회원 열람 가능"],
     productsTitle: "필요한 깊이만 고르세요",
-    productsBody: "한 영역을 선명하게 볼지, 여러 영역을 깊게 연결할지에 따라 선택할 수 있습니다.",
+    productsBody: "한 영역만 볼지, 여러 영역을 연결해 볼지.",
     paymentFacts: "1회 결제 · 자동 결제 없음 · 비회원 열람 가능",
     paymentAccess: "결제 후 주문번호와 결제 휴대폰 번호로 다시 열람할 수 있습니다.",
     support: "문의하기",
     formTitle: "내 리딩을 준비할게요",
-    formBody: "생년월일과 가장 궁금한 한 가지를 입력하면 선택한 영역을 중심으로 리포트를 구성합니다.",
+    formBody: "생년월일과 궁금한 한 가지면 됩니다.",
     submit: "입력 완료하고 결제하러 가기",
     privacy: "입력 정보는 결제한 개인 리포트를 만들고 다시 열람할 수 있게 저장하는 데 사용됩니다.",
     trust: [
@@ -144,11 +145,12 @@ const copy = {
     heroBody: "Explore your natural tendencies and recurring patterns in relationships, work, and money—then clarify where to place your energy this year.",
     primary: "See my patterns",
     heroNote: "Birth-date based · One-time payment · No auto-renewal",
+    heroHook: "The choices you repeat have a reason",
     freeCta: "Try it free first",
     freeNote: "See a basic reading from your birth date alone — no payment",
     entryEyebrow: "What is on your mind?",
     entryTitle: "Pick the question that keeps coming back",
-    entryBody: "Your choice becomes the centre of the reading. You can change it later.",
+    entryBody: "Your choice becomes the centre of the reading.",
     entryQuestions: [
       ["relationships", "Why am I drawn to the same kind of person?", "Relationships"],
       ["work", "Is staying in this work still the right call?", "Work"],
@@ -159,7 +161,7 @@ const copy = {
     freeCardBadge: "Free",
     freeCardName: "Basic reading",
     freeCardPrice: "₩0",
-    freeCardBody: "Your birth date alone calculates your core numbers and natural tendencies, shown immediately. No payment, no account.",
+    freeCardBody: "Your birth date alone, shown immediately. No payment, no account.",
     freeCardButton: "Start free",
     sampleEyebrow: "Report format examples",
     sampleTitle: "Patterns connected to real, everyday choices",
@@ -173,12 +175,12 @@ const copy = {
     methodBody: "We calculate numerological values from your birth date, then connect tendencies, relationships, work, money, and the year ahead. This is not a prediction that fixes your future. It is a personal report that organizes recurring patterns and practical criteria for your choices.",
     methodPoints: ["Birth-date based calculation", "Personalized around your chosen area", "Open after payment without an account"],
     productsTitle: "Choose only the depth you need",
-    productsBody: "Choose between making one area clearer or connecting several areas in greater depth.",
+    productsBody: "One area made clear, or several connected in depth.",
     paymentFacts: "One-time payment · No recurring charge · No account required",
     paymentAccess: "Reopen your report with your order number and checkout phone number.",
     support: "Contact support",
     formTitle: "Let's prepare your reading",
-    formBody: "Enter your birth date and the one thing you most want to understand. Your report will focus on the area you choose.",
+    formBody: "Your birth date and one question is all it takes.",
     submit: "Continue to payment",
     privacy: "Your input is used to create, store, and reopen the personal report you purchase.",
     trust: [
@@ -219,7 +221,10 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   // The opening screen already carries the same action at thumb height. Showing the
   // sticky bar there would cover it, so the bar waits until the hero has scrolled away.
   const [heroVisible, setHeroVisible] = useState(true);
-  const [menuOpen, setMenuOpen] = useState(false);
+  // A browser refuses to autoplay a clip that makes noise, so it starts muted and the
+  // sound is the visitor's to switch on. Off is the honest default anyway: nobody wants
+  // a page to start talking at them.
+  const [soundOn, setSoundOn] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const trackedRef = useRef(new Set<string>());
@@ -346,6 +351,17 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   // A visitor who has not decided anything yet will not fill in a birth date, but they
   // will answer "which of these is bothering me". Answering that is the cheapest possible
   // first commitment, and it carries straight into the form as the reading's focus.
+  function toggleSound() {
+    const video = heroVideoRef.current;
+    if (!video) return;
+    const next = !soundOn;
+    video.muted = !next;
+    setSoundOn(next);
+    // Switching sound on is a user gesture, which is also the moment a browser will
+    // allow playback if it refused earlier.
+    if (next) void video.play().catch(() => {});
+  }
+
   function chooseQuestion(focus: FocusId) {
     setFocusId(focus);
     captureConversionEvent("form_start", locale, {});
@@ -401,44 +417,18 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             <a className="header-start-link" href="#onboarding">{locale === "ko" ? "리딩 시작하기" : "Start reading"}</a>
             <Link className="locale-switch" href={`/${otherLocale}`}>{otherLocale === "ko" ? "한국어" : "English"}</Link>
           </div>
-          <button
-            aria-controls="home-menu"
-            aria-expanded={menuOpen}
-            aria-label={menuOpen ? (locale === "ko" ? "메뉴 닫기" : "Close menu") : (locale === "ko" ? "메뉴 열기" : "Open menu")}
-            className="cinema-menu-button"
-            onClick={() => setMenuOpen((open) => !open)}
-            type="button"
-          >
-            <span aria-hidden="true" />
-            <span aria-hidden="true" />
-            <span aria-hidden="true" />
-          </button>
         </header>
 
-        <div className={menuOpen ? "cinema-menu is-open" : "cinema-menu"} id="home-menu" hidden={!menuOpen}>
-          <button
-            className="cinema-menu-close"
-            onClick={() => setMenuOpen(false)}
-            type="button"
-          >
-            {locale === "ko" ? "닫기" : "Close"}
-          </button>
-          <nav aria-label={t.navLabel}>
-            {t.nav.map(([href, label]) => (
-              <a href={href} key={href} onClick={() => setMenuOpen(false)}>{label}</a>
-            ))}
-            <Link href={`/${locale}/profile`} onClick={() => setMenuOpen(false)}>{t.freeCardButton}</Link>
-            <Link href={`/${locale}/orders`} onClick={() => setMenuOpen(false)}>{locale === "ko" ? "구매 내역" : "Find a purchase"}</Link>
-            <Link href={`/${locale}/support`} onClick={() => setMenuOpen(false)}>{locale === "ko" ? "고객 문의" : "Support"}</Link>
-            <Link href={`/${otherLocale}`} onClick={() => setMenuOpen(false)}>{otherLocale === "ko" ? "한국어" : "English"}</Link>
-          </nav>
-        </div>
 
         {/* A full-height opening screen rather than a band of text above more text: the
             art fills the viewport, the title carries it, and one action sits under the
             thumb. Everything explanatory has moved below the fold, where it belongs. */}
         <section className="cinema-hero" aria-labelledby="hero-title" ref={heroRef}>
           <NightHorizon className="cinema-hero-scene" />
+          {/* The clip is 16:9 and the screen is 9:16, so filling one crops the other.
+              A blurred, enlarged copy of its first frame fills the screen behind, and the
+              clip itself is shown whole on top: nothing cropped, no dead space. */}
+          <div className="cinema-hero-backdrop" aria-hidden="true" />
           {/* 태율(太律), the numerology guide from the supplied character sheet.
               Decorative: the title beside it carries the meaning, so it is not announced
               again.
@@ -466,13 +456,26 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
           <MeteorTrails className="cinema-hero-meteors" />
           <div className="cinema-hero-veil" aria-hidden="true" />
 
-          <div className="cinema-hero-copy">
-            <p className="cinema-kicker">{t.heroKicker}</p>
-            <h1 className="cinema-title" id="hero-title">{t.heroTitle}</h1>
-            <p className="cinema-quote">{t.heroBody}</p>
-          </div>
+          {/* Nothing competes with him on the first screen. The heading still exists —
+              a page needs one, and a screen reader has nothing to announce without it —
+              but it is read, not displayed, and the words themselves reappear in full at
+              the top of the page below. */}
+          <h1 className="visually-hidden" id="hero-title">{t.heroTitle}</h1>
+
+          <button
+            aria-pressed={soundOn}
+            className="cinema-sound-toggle"
+            onClick={toggleSound}
+            type="button"
+          >
+            {soundOn
+              ? (locale === "ko" ? "🔊 소리 끄기" : "🔊 Sound off")
+              : (locale === "ko" ? "🔈 소리 켜기" : "🔈 Sound on")}
+          </button>
 
           <div className="cinema-hero-actions">
+            {/* One line, and only one. It has to earn the tap on its own. */}
+            <p className="cinema-hook">{t.heroHook}</p>
             <a
               className="cinema-cta"
               href="#onboarding"
@@ -489,7 +492,6 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             >
               {t.freeCta}
             </Link>
-            <p className="cinema-note">{t.heroNote}</p>
           </div>
         </section>
 

@@ -8237,3 +8237,216 @@ summary {
   margin-top: clamp(28px, 7vw, 40px);
 }
 
+
+/* The opening screen carries the character and two actions and nothing else. The heading
+   still has to exist for the page outline and for a screen reader, so it is removed from
+   sight rather than from the document. */
+.visually-hidden {
+  position: absolute;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  margin: -1px;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.cinema-sound-toggle {
+  position: absolute;
+  z-index: 3;
+  right: clamp(16px, 5vw, 28px);
+  bottom: calc(clamp(16px, 5vw, 28px) + env(safe-area-inset-bottom));
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid rgba(220, 207, 161, 0.42);
+  border-radius: 999px;
+  background: rgba(31, 29, 43, 0.55);
+  color: #dccfa1;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.cinema-sound-toggle:hover,
+.cinema-sound-toggle:focus-visible { background: rgba(31, 29, 43, 0.82); }
+
+/* With the copy gone the actions no longer share the screen with a block of text, so
+   they sit lower and the character gets the height back. */
+.cinema-hero-copy::before { content: none; }
+.cinema-hero-actions { margin-top: auto; }
+
+@media (min-width: 900px) {
+  .cinema-sound-toggle { bottom: clamp(20px, 4vw, 36px); }
+}
+
+/* ---- The clip fills the screen ------------------------------------------------------
+   The mask faded the picture out below the halfway mark, which left the bottom third of
+   the opening screen as flat colour with the buttons floating on it — the empty band.
+   The clip now runs edge to edge and corner to corner; contrast for the buttons comes
+   from the veil above it, which darkens without erasing. */
+
+.cinema-hero-portrait {
+  mask-image: none;
+  -webkit-mask-image: none;
+  object-position: center top;
+}
+
+@media (min-width: 900px) {
+  .cinema-hero-portrait {
+    left: 0;
+    width: 100%;
+    mask-image: none;
+    -webkit-mask-image: none;
+    object-position: center 22%;
+  }
+}
+
+/* Weighted to the bottom, where the words are, and almost clear across his face. */
+.cinema-hero-veil {
+  background: linear-gradient(
+    to bottom,
+    rgba(31, 29, 43, 0.5) 0%,
+    rgba(31, 29, 43, 0.06) 26%,
+    rgba(31, 29, 43, 0.42) 62%,
+    rgba(31, 29, 43, 0.9) 100%
+  );
+}
+
+/* One line, directly above the buttons. */
+.cinema-hook {
+  margin: 0 0 16px;
+  color: #f3ecdd;
+  font-size: clamp(1.18rem, 5vw, 1.5rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-align: center;
+  text-shadow: 0 2px 18px rgba(12, 10, 20, 0.9);
+}
+
+/* The sound control sat on top of the second button. It belongs with the other chrome,
+   under the header, where it overlaps nothing. */
+.cinema-sound-toggle {
+  top: calc(84px + env(safe-area-inset-top));
+  right: clamp(16px, 5vw, 28px);
+  bottom: auto;
+}
+
+/* The three bars were being collapsed by the header's own button rules, so the control
+   rendered as an empty outline. Stated again with the specificity to win. */
+.home-shell .home-topbar.is-over-cinema .cinema-menu-button span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  flex: 0 0 auto;
+  border-radius: 2px;
+  background: #f7f1e7;
+}
+
+@media (min-width: 900px) {
+  .cinema-sound-toggle { top: calc(96px + env(safe-area-inset-top)); bottom: auto; }
+}
+
+/* ---- The whole picture, and still a full screen ------------------------------------
+   A 16:9 clip on a 9:16 screen: filling one crops the other, and cropping to the phone's
+   shape zoomed so far in that only his face survived. So the clip is shown whole, and the
+   screen behind it is filled by an enlarged, blurred copy of its own first frame. Nothing
+   is cropped and there is no dead band. */
+
+.cinema-hero-backdrop {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  background-image: url("/images/taeyul-hero.jpg");
+  background-position: center;
+  background-size: cover;
+  filter: blur(34px) saturate(0.85) brightness(0.5);
+  transform: scale(1.18);
+}
+
+.cinema-hero-portrait {
+  object-fit: contain;
+  object-position: center 42%;
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+
+@media (min-width: 900px) {
+  .cinema-hero-portrait {
+    left: 0;
+    width: 100%;
+    object-fit: contain;
+    object-position: center 38%;
+  }
+}
+
+/* Small enough to stay out of the way. */
+.cinema-sound-toggle {
+  top: calc(80px + env(safe-area-inset-top));
+  right: 14px;
+  bottom: auto;
+  min-height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  opacity: 0.82;
+}
+
+.cinema-sound-toggle:hover,
+.cinema-sound-toggle:focus-visible { opacity: 1; }
+
+/* The clip is now 3:4 — his hand, the bells and the shelves are all in it, which the 9:16
+   column had cut away — and that shape fills a phone losing only the far edges. The
+   blurred backdrop is no longer needed, and neither are the bands it was there to hide. */
+.cinema-hero-backdrop { display: none; }
+
+.cinema-hero-portrait {
+  object-fit: cover;
+  object-position: center 20%;
+}
+
+@media (min-width: 900px) {
+  .cinema-hero-portrait { object-fit: cover; object-position: center 16%; }
+}
+
+/* Back to the whole frame. A 16:9 clip on a 9:16 screen cannot both fill it and stay
+   uncropped — any crop that uses the source's full height fills the phone's height too,
+   and that is exactly the scale that made it a close-up. Showing the picture whole is the
+   only way to keep the hand, the bells and the room, so the screen behind it is filled by
+   an enlarged blur of the clip's own first frame rather than left blank. */
+.cinema-hero-backdrop { display: block; }
+
+.cinema-hero-portrait {
+  object-fit: contain;
+  object-position: center 46%;
+}
+
+@media (min-width: 900px) {
+  .cinema-hero-portrait { object-fit: contain; object-position: center 40%; }
+}
+
+/* ---- A vertical clip, at last -------------------------------------------------------
+   The source is 1080×1920 now, which is the screen's own shape. `cover` crops nothing
+   worth having and leaves no band, so the blurred backdrop that existed to hide the
+   letterbox is no longer needed. */
+
+.cinema-hero-backdrop { display: none; }
+
+.cinema-hero-portrait {
+  object-fit: cover;
+  object-position: center center;
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+
+@media (min-width: 900px) {
+  .cinema-hero-portrait {
+    left: 0;
+    width: 100%;
+    object-fit: cover;
+    object-position: center 28%;
+  }
+}
