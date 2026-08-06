@@ -111,11 +111,6 @@ export function WebtoonCue() {
   );
 }
 
-/* A phrase the reader should leave with, drawn as if run over with a marker. */
-export function WebtoonMark({ children }: { children: ReactNode }) {
-  return <mark className="webtoon-mark">{children}</mark>;
-}
-
 /*
  * The bar that stays on screen for the whole scroll. Only pages without the five-item
  * bottom navigation use it, because the two would sit on top of each other.

@@ -7502,15 +7502,6 @@ summary {
   overflow-x: clip;
 }
 
-/* Results that live inside an existing .shell column reach the edge only on phones. On a
-   wide screen a full-bleed band would drag the line length well past comfortable reading,
-   so there the panel keeps the column and only changes colour. */
-@media (max-width: 760px) {
-  .webtoon-bleed {
-    margin-inline: calc(50% - 50vw);
-  }
-}
-
 /* A reading that renders inside a page it does not own — the free experiences, where the
    result appears under a form that stays on screen. The beats are shorter than a paid
    report's, and the last one leaves room for the five-item navigation fixed over the
@@ -7717,29 +7708,6 @@ summary {
 .webtoon-night .webtoon-badge {
   color: #edc57f;
   opacity: 1;
-}
-
-.webtoon-gold .webtoon-badge,
-.webtoon-gold .webtoon-title {
-  color: #6d4f28;
-}
-
-.webtoon-warn .webtoon-badge,
-.webtoon-warn .webtoon-title {
-  color: #8d4b38;
-}
-
-/* The one phrase per panel worth leaving with, drawn as if run over with a marker rather
-   than shouted in a heavier weight. */
-.webtoon-mark {
-  padding: 0 0.16em;
-  background: linear-gradient(transparent 58%, rgba(221, 185, 120, 0.5) 58%);
-  color: inherit;
-}
-
-.webtoon-night .webtoon-mark {
-  background: linear-gradient(transparent 58%, rgba(221, 185, 120, 0.34) 58%);
-  color: #ffe9c2;
 }
 
 /* ---- Calculated numbers ----
