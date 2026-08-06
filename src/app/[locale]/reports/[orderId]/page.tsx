@@ -2,11 +2,11 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ORDER_PASS_COOKIE, readOrderPass, readOrderTicket } from "@/server/order-pass";
-import { MeteorTrails, NightHorizon } from "@/components/brand-visuals";
+import { MeteorTrails, NightHorizon, NumberPath, SceneDivider, ThreadWeave } from "@/components/brand-visuals";
 import { PaymentStatusWaiting } from "@/components/payment-status-waiting";
 import { ReportActions } from "@/components/report-actions";
 import { ReviewRequestPanel } from "@/components/review-request-panel";
-import { WebtoonCta, WebtoonCue, WebtoonOrbs, WebtoonPanel } from "@/components/webtoon";
+import { WebtoonCta, WebtoonCue, WebtoonNarrator, WebtoonOrbs, WebtoonPanel } from "@/components/webtoon";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
 import { toOwnReviewState } from "@/core/reviews";
 import { isLocale } from "@/i18n/config";
@@ -213,6 +213,15 @@ export default async function PurchasedReportPage({
     : [];
   const chapterBadge = (index: number) =>
     locale === "ko" ? `제 ${index + 1} 장` : `Chapter ${String(index + 1).padStart(2, "0")}`;
+  // Every beat is a drawn frame. The four scenes rotate so a long reading does not repeat
+  // the same picture twice running, which is what made the column read as tinted text.
+  const chapterArt = (index: number) => {
+    const scene = index % 4;
+    if (scene === 0) return <NightHorizon className="webtoon-scene" />;
+    if (scene === 1) return <NumberPath className="webtoon-scene" />;
+    if (scene === 2) return <ThreadWeave className="webtoon-scene" />;
+    return <SceneDivider className="webtoon-scene" />;
+  };
   return (
     <>
       <main
@@ -273,10 +282,17 @@ export default async function PurchasedReportPage({
           </WebtoonPanel>
         )}
 
+        <WebtoonNarrator>
+          {locale === "ko"
+              ? "먼저 결론부터 말씀드릴게요. 이게 오늘 사신 것의 핵심이에요."
+              : "The conclusion first — this is the part you actually paid for."}
+        </WebtoonNarrator>
+
         {/* The direct answer is the thing that was bought, so it gets a panel of its own
             instead of a subheading inside the summary card. */}
         {directSection && (
           <WebtoonPanel
+            art={<MeteorTrails className="webtoon-scene" />}
             badge={locale === "ko" ? "결론" : "The answer"}
             title={directSection.title}
             tone="gold"
@@ -288,6 +304,7 @@ export default async function PurchasedReportPage({
 
         {report.characterLabel && (
           <WebtoonPanel
+            art={<ThreadWeave className="webtoon-scene" />}
             badge={locale === "ko" ? "캐릭터" : "Character"}
             title={report.characterLabel}
             tone="paper"
@@ -296,11 +313,18 @@ export default async function PurchasedReportPage({
           </WebtoonPanel>
         )}
 
+        <WebtoonNarrator side="right">
+          {locale === "ko"
+              ? "여기서부터는 근거예요. 숫자가 어디서 나왔는지 궁금하실 테니까요."
+              : "From here it is the basis — in case you want to see where the numbers came from."}
+        </WebtoonNarrator>
+
         {/* The calculation comes after the reading, not before it: someone who just opened
             a report they paid for wants the answer, and the arithmetic behind it only once
             they have a reason to care. That order predates the webtoon layout and survives it. */}
         {structuredV2 && (
           <WebtoonPanel
+            art={<NumberPath className="webtoon-scene" />}
             badge={locale === "ko" ? "숫자" : "Numbers"}
             title={locale === "ko" ? "핵심 숫자" : "Core numbers"}
             tone="night"
@@ -320,6 +344,7 @@ export default async function PurchasedReportPage({
 
         {foundationSections.map((section, index) => (
           <WebtoonPanel
+            art={chapterArt(index)}
             badge={chapterBadge(index)}
             key={section.title}
             title={section.title}
@@ -328,6 +353,12 @@ export default async function PurchasedReportPage({
             <p className="webtoon-body">{section.body}</p>
           </WebtoonPanel>
         ))}
+
+        <WebtoonNarrator>
+          {locale === "ko"
+            ? "읽는 걸로 끝나면 아무것도 안 바뀌죠. 이번 주에 할 수 있는 것만 골랐어요."
+            : "Reading alone changes nothing, so these are only the ones you could start this week."}
+        </WebtoonNarrator>
 
         <WebtoonPanel
           badge={locale === "ko" ? "실행" : "Action"}
@@ -380,6 +411,7 @@ export default async function PurchasedReportPage({
             </section>
           ) : (
             <WebtoonPanel
+              art={chapterArt(index + 1)}
               badge={locale === "ko" ? "심층" : "In depth"}
               key={section.title}
               title={section.title}
@@ -392,6 +424,7 @@ export default async function PurchasedReportPage({
 
         {finalSection && (
           <WebtoonPanel
+            art={<NightHorizon className="webtoon-scene" />}
             badge={locale === "ko" ? "마무리" : "Closing"}
             title={finalSection.title}
             tone="night"

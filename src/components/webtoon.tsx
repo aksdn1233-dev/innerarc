@@ -13,6 +13,7 @@ import type { ReactNode } from "react";
 type WebtoonTone = "paper" | "night" | "gold" | "warn";
 
 export function WebtoonPanel({
+  art,
   badge,
   children,
   className,
@@ -21,6 +22,9 @@ export function WebtoonPanel({
   title,
   tone = "paper",
 }: {
+  /* Drawn scenery for this beat. A webtoon panel is a picture the words sit inside, not a
+     band of colour behind them — without this the column is just tinted paragraphs. */
+  art?: ReactNode;
   badge?: ReactNode;
   children?: ReactNode;
   className?: string;
@@ -31,10 +35,11 @@ export function WebtoonPanel({
 }) {
   return (
     <section
-      className={`webtoon-panel webtoon-${tone}${className ? ` ${className}` : ""}`}
+      className={`webtoon-panel webtoon-${tone}${art ? " has-art" : ""}${className ? ` ${className}` : ""}`}
       data-webtoon-panel=""
       id={id}
     >
+      {art && <div aria-hidden="true" className="webtoon-panel-art">{art}</div>}
       <div className="webtoon-inner">
         {badge != null && <p className="webtoon-badge">{badge}</p>}
         {title != null && <h2 className="webtoon-title">{title}</h2>}
@@ -65,6 +70,32 @@ export function WebtoonOrbs({
           {item.note && <small>{item.note}</small>}
         </div>
       ))}
+    </div>
+  );
+}
+
+/*
+ * The guide, dropped in between panels with something to say.
+ *
+ * This is the thing that makes a column of panels read as an episode rather than a
+ * document: a small figure who turns up every so often, says one line, and hands the
+ * reader on to the next beat. The portrait is decorative — the line in the bubble is real
+ * text and is what a screen reader announces.
+ */
+export function WebtoonNarrator({
+  children,
+  side = "left",
+}: {
+  children: ReactNode;
+  side?: "left" | "right";
+}) {
+  return (
+    <div className={`webtoon-narrator webtoon-narrator-${side}`} data-webtoon-panel="">
+      <div className="webtoon-narrator-inner">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img alt="" aria-hidden="true" className="webtoon-narrator-face" src="/images/taeyul-hero.jpg" />
+        <p className="webtoon-narrator-bubble">{children}</p>
+      </div>
     </div>
   );
 }

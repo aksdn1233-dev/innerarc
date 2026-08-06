@@ -7599,8 +7599,42 @@ summary {
 }
 
 .webtoon-inner {
+  position: relative;
+  z-index: 1;
   width: min(100% - 44px, 40rem);
   margin: 0 auto;
+}
+
+/* ---- Drawn scenery ----
+   A webtoon frame is a picture with words in it. Panels that carry art get the drawing
+   across the whole frame and the text over it, which is the difference between an episode
+   and a stack of tinted paragraphs. Held back far enough that the reading stays the
+   brightest thing on the panel. */
+.webtoon-panel.has-art {
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.webtoon-panel-art {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+}
+
+.webtoon-panel-art > svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.webtoon-night .webtoon-panel-art {
+  opacity: 0.5;
+}
+
+.webtoon-paper .webtoon-panel-art,
+.webtoon-gold .webtoon-panel-art {
+  opacity: 0.2;
 }
 
 .webtoon-panel > .webtoon-inner > :first-child {
@@ -7762,6 +7796,77 @@ summary {
   color: rgba(255, 250, 240, 0.68);
 }
 
+/* ---- The guide, between panels ----
+   A small figure who turns up every so often with one line to say. This is what makes the
+   column read as an episode instead of a document: the reader is being walked through it
+   by someone, not handed a file. Sits on the page ground between panels, never inside one,
+   so it reads as an aside rather than another section of the report. */
+
+.webtoon-narrator {
+  padding: clamp(26px, 7vw, 44px) 0;
+  background: var(--paper);
+}
+
+.webtoon-narrator-inner {
+  display: flex;
+  width: min(100% - 44px, 40rem);
+  align-items: flex-start;
+  gap: 14px;
+  margin: 0 auto;
+}
+
+.webtoon-narrator-right .webtoon-narrator-inner {
+  flex-direction: row-reverse;
+}
+
+.webtoon-narrator-face {
+  width: clamp(60px, 17vw, 78px);
+  height: clamp(60px, 17vw, 78px);
+  flex: none;
+  border: 2px solid rgba(221, 185, 120, 0.6);
+  border-radius: 50%;
+  background: #0a1020;
+  object-fit: cover;
+  /* The art is a tall portrait; without this the crop lands on his chest. */
+  object-position: center 12%;
+}
+
+.webtoon-narrator-bubble {
+  position: relative;
+  margin: 4px 0 0;
+  padding: 14px 18px;
+  border: 1px solid rgba(155, 118, 81, 0.34);
+  border-radius: 16px;
+  background: var(--white);
+  box-shadow: 0 6px 18px rgba(49, 43, 35, 0.06);
+  font-size: clamp(0.98rem, 2.3vw, 1.05rem);
+  line-height: 1.72;
+}
+
+/* The tail, drawn as a rotated square tucked under the bubble's edge so the border reads
+   as continuous around it. */
+.webtoon-narrator-bubble::before {
+  position: absolute;
+  top: 20px;
+  left: -7px;
+  width: 12px;
+  height: 12px;
+  border-bottom: 1px solid rgba(155, 118, 81, 0.34);
+  border-left: 1px solid rgba(155, 118, 81, 0.34);
+  background: var(--white);
+  content: "";
+  transform: rotate(45deg);
+}
+
+.webtoon-narrator-right .webtoon-narrator-bubble::before {
+  right: -7px;
+  left: auto;
+  border-bottom: 0;
+  border-left: 0;
+  border-top: 1px solid rgba(155, 118, 81, 0.34);
+  border-right: 1px solid rgba(155, 118, 81, 0.34);
+}
+
 /* ---- Scroll cue ----
    Two chevrons falling toward the next panel. Decorative: the panel below is already the
    next thing in document order. */
@@ -7778,6 +7883,9 @@ summary {
   height: 14px;
   border-right: 2px solid currentColor;
   border-bottom: 2px solid currentColor;
+  /* The rotation belongs here, not only inside the keyframes. Left in the animation alone,
+     a reader with motion turned off gets two unrotated corners instead of chevrons. */
+  transform: rotate(45deg);
   opacity: 0.3;
   animation: webtoon-cue-fall 1.9s ease-in-out infinite;
 }
