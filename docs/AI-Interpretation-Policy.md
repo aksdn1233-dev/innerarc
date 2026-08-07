@@ -57,3 +57,39 @@ Timeout, malformed JSON, schema failure, fact mismatch, or safety failure yields
 - Provider refusal and incomplete output are metered when usage exists and then mapped to explicit fallback reasons. Cancellation is propagated and not automatically retried, preventing duplicate cost or records.
 - Transport errors expose bounded codes/status only. Response bodies, authorization headers, prompts, and secrets are not placed in thrown messages or logs.
 - This candidate implementation does not mean that OpenAI, a model, price, retention term, or processing region is approved for production.
+
+## NVIDIA candidate (hosted inference)
+
+`AI_PROVIDER=nvidia` selects `NvidiaChatCompletionsProvider`, which posts to NVIDIA's
+OpenAI-compatible Chat Completions endpoint. It sits behind the same boundary as every
+other provider: it returns an untrusted candidate plus bounded usage, and the runner —
+not the adapter — decides whether the answer is usable.
+
+Configuration is `NVIDIA_API_KEY`, `NVIDIA_MODEL`, and both cost rates. None has a
+default, and a missing one throws `RUNTIME_CONFIG_REQUIRED:<name>` at startup rather
+than starting half-configured. `disabled` remains the default.
+
+Three things differ from the OpenAI adapter and are handled rather than assumed:
+
+- **Model names carry a publisher prefix** (`meta/llama-3.3-70b-instruct`), which the
+  OpenAI alias pattern rejects. The NVIDIA schema requires exactly one interior slash,
+  and the audit alias accepts the same bounded shape.
+- **No date suffix exists to pin.** The production pinning rule cannot apply, so
+  readiness reports `productionModelPinned: null` — not `false`, which would read as a
+  fault rather than a property of the catalogue. Requiring `NVIDIA_MODEL` to be set
+  explicitly is what stands in for pinning.
+- **Truncation surfaces as `finish_reason: "length"`**, not a status field. It is mapped
+  to `incomplete`, so a half-written reading falls back instead of being published.
+
+### Why a free evaluation tier is safe to point at
+
+Because the fallback is not optional. A rate limit, an exhausted allowance, a schema
+miss, a changed calculated number, or an overclaim all produce the complete deterministic
+reading with a machine-readable failure reason. `tests/unit/nvidia-provider.test.ts`
+asserts that a 429 still yields a full interpretation, and that a response whose evidence
+references do not match the canonical engine is rejected.
+
+This does not mean NVIDIA, a model, a retention term, or a processing region is approved
+for production. Before enabling it against real buyers, the privacy notice and terms must
+name the processor and its processing country, because the concern text and the derived
+numbers leave the Worker when it is on.

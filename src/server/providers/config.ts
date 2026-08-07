@@ -1,3 +1,4 @@
+import { NvidiaChatCompletionsProvider } from "./nvidia";
 import { OpenAIResponsesProvider, type ProviderFetch } from "./openai";
 import {
   parseAIProviderRuntime,
@@ -14,5 +15,8 @@ export function createAIProviderFromEnv(
 ) {
   const parsed = parseAIProviderRuntime(env, options.runtimeMode);
   if (parsed.mode === "disabled") return null;
+  if (parsed.mode === "nvidia") {
+    return new NvidiaChatCompletionsProvider(parsed.config, options.fetchImpl);
+  }
   return new OpenAIResponsesProvider(parsed.config, options.fetchImpl);
 }
