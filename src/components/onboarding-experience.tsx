@@ -133,10 +133,12 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
         </header>
 
         <section className="hero" aria-labelledby="hero-title">
+          {/* The hook line, the button, and him. The eyebrow and the six-line paragraph
+              that used to sit here explained the product to someone who had already
+              clicked through to try it — they were read past, not read, and they pushed
+              the character and the form off the first screen. */}
           <div>
-            <p className="eyebrow">{d.eyebrow}</p>
             <h1 id="hero-title">{d.headline}</h1>
-            <p className="hero-copy">{d.intro}</p>
             <button
               className="primary-button"
               type="button"
