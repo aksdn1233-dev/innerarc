@@ -105,6 +105,8 @@ test("onboarding focus, concern, depth, and AI consent create a local context la
   await page.goto("/en/profile");
   await page.locator("#birthDate").fill("1994-11-04");
   await page.locator("#name").fill("Minji Kim");
+  // Focus, concern and depth are folded away on the free page; open them first.
+  await page.getByText("Tell it what you want to know, and it fits closer (optional)").click();
   await page.getByText("Relationships", { exact: true }).click();
   await page.locator("#concern").fill(privateConcern);
   await page.getByText("Deep", { exact: true }).click();
