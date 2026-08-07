@@ -6640,6 +6640,172 @@ summary {
   color: var(--clay);
 }
 
+/* Live-broadcast chat, rebuilt in this page's own materials.
+   Deliberately not a screenshot and not a copy of the streaming app's dark overlay: the
+   words are what is real, so they are set on the same paper, in the same type, as every
+   other block here. The only borrowed shape is the bubble, which is what makes it read
+   as chat at a glance. */
+.live-reactions {
+  margin-top: clamp(32px, 5vw, 56px);
+  padding: clamp(22px, 3.5vw, 34px);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--white);
+}
+
+.live-reactions-head h3 {
+  margin: 12px 0 0;
+  font-size: clamp(1.05rem, 2.6vw, 1.28rem);
+}
+
+.live-reactions-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 11px;
+  border: 1px solid rgba(164, 95, 69, 0.32);
+  border-radius: 999px;
+  color: var(--clay);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.live-reactions-badge i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--clay);
+}
+
+.live-reactions-intro {
+  max-width: 44rem;
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.75;
+}
+
+/* The row drifts on its own. Nothing here is revealed by scrolling: the bubbles pass the
+   reader while they stand still, which is how a live chat behaves and is the opposite of
+   making them work for it. Faded at both edges so lines enter and leave rather than
+   being clipped. */
+.live-reactions-marquee {
+  display: flex;
+  width: 100%;
+  margin-top: 22px;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+
+.live-reactions-track {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 12px;
+  margin: 0;
+  padding: 4px 12px 4px 0;
+  animation: live-reaction-drift 64s linear infinite;
+  list-style: none;
+}
+
+/* Each track slides exactly its own width, landing where its twin began. */
+@keyframes live-reaction-drift {
+  to { transform: translate3d(-100%, 0, 0); }
+}
+
+/* Stop it while someone is reading one, by pointer or by keyboard. */
+.live-reactions-marquee:hover .live-reactions-track,
+.live-reactions-marquee:focus-within .live-reactions-track {
+  animation-play-state: paused;
+}
+
+/* Narrow enough that a second bubble is always partly in view, so the row reads as
+   moving rather than as one card that happens to slide. */
+.live-reaction {
+  display: flex;
+  width: max-content;
+  max-width: min(64vw, 19rem);
+}
+
+.live-reaction-mark {
+  display: grid;
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(215, 208, 195, 0.55);
+  color: var(--sage-dark);
+  font-size: 0.66rem;
+  font-style: normal;
+  place-items: center;
+}
+
+/* Translucent, so the page shows through and the row reads as passing over the section
+   rather than sitting in it. `backdrop-filter` is a refinement; where it is unsupported
+   the tint alone still holds the text. */
+.live-reaction-bubble {
+  padding: 11px 15px;
+  border: 1px solid rgba(215, 208, 195, 0.66);
+  border-radius: 4px 16px 16px 16px;
+  background: rgba(255, 253, 248, 0.52);
+  backdrop-filter: blur(7px);
+}
+
+.live-reaction-handle {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.live-reaction-bubble p {
+  margin: 3px 0 0;
+  font-weight: 600;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+/* Scoped through the bubble so it outranks the rule above it, which sets the weight
+   for the original line. */
+.live-reaction-bubble .live-reaction-gloss {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 400;
+}
+
+.live-reactions-boundary {
+  margin: 20px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.7;
+}
+
+/* Asked for stillness: nothing moves by itself. The row becomes an ordinary swipeable
+   strip and the duplicate track goes away, since it exists only to hide the loop seam. */
+@media (prefers-reduced-motion: reduce) {
+  .live-reactions-marquee {
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+  }
+
+  .live-reactions-track {
+    animation: none;
+  }
+
+  .live-reactions-track[aria-hidden="true"] {
+    display: none;
+  }
+
+  .live-reaction {
+    scroll-snap-align: start;
+  }
+}
+
 .evidence-faq {
   margin-top: clamp(32px, 5vw, 56px);
 }
@@ -7195,15 +7361,6 @@ summary {
   text-shadow: 0 2px 26px rgba(15, 13, 25, 0.85), 0 0 62px rgba(75, 46, 99, 0.5);
 }
 
-.cinema-hero-veil {
-  background: linear-gradient(
-    to bottom,
-    rgba(31, 29, 43, 0.58) 0%,
-    rgba(31, 29, 43, 0.14) 26%,
-    rgba(31, 29, 43, 0.62) 62%,
-    rgba(31, 29, 43, 0.95) 100%
-  );
-}
 
 .cinema-cta {
   border-color: #dccfa1;
@@ -7258,7 +7415,6 @@ summary {
 /* Copy and actions were both pushed by `margin-top: auto`, which split them to opposite
    ends and left a dead band between. They belong together, low on the screen. */
 .cinema-hero-copy { margin-top: auto; padding-bottom: 6px; }
-.cinema-hero-actions { margin-top: 0; }
 
 /* The title crosses the portrait's face. A pool of shadow behind the copy buys the
    contrast back without dimming the whole picture. */
@@ -7329,10 +7485,6 @@ summary {
 
 /* The breathing rides on a wrapper so it composes with the drift instead of replacing
    it — two transforms on one element would overwrite each other. */
-.cinema-hero-portrait {
-  animation: taeyul-breath 7.3s ease-in-out infinite;
-  will-change: transform;
-}
 
 .cinema-hero-portrait::before {
   position: absolute;
@@ -7347,7 +7499,6 @@ summary {
 
 /* The element's own background is hidden so only the drifting copy shows; keeping both
    would double the image and fight at the edges. */
-.cinema-hero-portrait { background-image: none; }
 .cinema-hero-portrait::before { background-image: url("/images/taeyul-hero.jpg"); }
 
 /* Light crossing the gold thread. Clipped to the portrait so it reads as the robe
@@ -7390,22 +7541,6 @@ summary {
    the hero itself. The poster fills the frame exactly as the still did, which is what
    makes "no clip yet" indistinguishable from "clip is loading". */
 
-.cinema-hero-portrait {
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-  object-fit: cover;
-  object-position: 62% 12%;
-  pointer-events: none;
-  /* The still needs the slow push to feel alive; a real clip carries its own motion, so
-     the drift is gentle enough to sit under either without fighting it. */
-  animation: taeyul-drift 19s ease-in-out infinite;
-  mask-image: linear-gradient(to bottom, #000 0%, #000 52%, transparent 88%);
-  will-change: transform;
-}
 
 .cinema-hero-portrait::before,
 .cinema-hero-portrait::after { content: none; }
@@ -7450,12 +7585,6 @@ summary {
 
 /* The clip is already cropped to 3:4 around him, so the framing that suited a wider
    still no longer applies: centre it and let `cover` take the overflow. */
-.cinema-hero-portrait {
-  object-position: center 18%;
-  /* A real clip carries its own camera move. Drifting it as well would fight that, so
-     the push-in is dropped here and kept only for the reduced-motion still. */
-  animation: none;
-}
 
 @media (min-width: 900px) {
   .cinema-hero-portrait { object-position: center 12%; }
@@ -7469,7 +7598,6 @@ summary {
 
 /* The clip is 9:16, which is a phone's own shape, so it fills the opening screen with
    almost nothing cropped. Centring it is enough. */
-.cinema-hero-portrait { object-position: center center; }
 
 @media (min-width: 900px) {
   .cinema-hero-portrait { object-position: center 20%; }
@@ -7477,7 +7605,6 @@ summary {
 
 /* Anchor the clip to the top: the crop begins at his crown, so any other origin cuts it
    off and pushes his eyes down into the kicker line. */
-.cinema-hero-portrait { object-position: center top; }
 
 /* ---- Vertical webtoon result ------------------------------------------------------
    A finished reading used to arrive as a column of bordered cards, each one a box the
@@ -8288,11 +8415,6 @@ summary {
    The clip now runs edge to edge and corner to corner; contrast for the buttons comes
    from the veil above it, which darkens without erasing. */
 
-.cinema-hero-portrait {
-  mask-image: none;
-  -webkit-mask-image: none;
-  object-position: center top;
-}
 
 @media (min-width: 900px) {
   .cinema-hero-portrait {
@@ -8328,11 +8450,6 @@ summary {
 
 /* The sound control sat on top of the second button. It belongs with the other chrome,
    under the header, where it overlaps nothing. */
-.cinema-sound-toggle {
-  top: calc(84px + env(safe-area-inset-top));
-  right: clamp(16px, 5vw, 28px);
-  bottom: auto;
-}
 
 /* The three bars were being collapsed by the header's own button rules, so the control
    rendered as an empty outline. Stated again with the specificity to win. */
@@ -8355,23 +8472,7 @@ summary {
    screen behind it is filled by an enlarged, blurred copy of its own first frame. Nothing
    is cropped and there is no dead band. */
 
-.cinema-hero-backdrop {
-  position: absolute;
-  z-index: -2;
-  inset: 0;
-  background-image: url("/images/taeyul-hero.jpg");
-  background-position: center;
-  background-size: cover;
-  filter: blur(34px) saturate(0.85) brightness(0.5);
-  transform: scale(1.18);
-}
 
-.cinema-hero-portrait {
-  object-fit: contain;
-  object-position: center 42%;
-  mask-image: none;
-  -webkit-mask-image: none;
-}
 
 @media (min-width: 900px) {
   .cinema-hero-portrait {
@@ -8401,12 +8502,7 @@ summary {
 /* The clip is now 3:4 — his hand, the bells and the shelves are all in it, which the 9:16
    column had cut away — and that shape fills a phone losing only the far edges. The
    blurred backdrop is no longer needed, and neither are the bands it was there to hide. */
-.cinema-hero-backdrop { display: none; }
 
-.cinema-hero-portrait {
-  object-fit: cover;
-  object-position: center 20%;
-}
 
 @media (min-width: 900px) {
   .cinema-hero-portrait { object-fit: cover; object-position: center 16%; }
@@ -8417,12 +8513,7 @@ summary {
    and that is exactly the scale that made it a close-up. Showing the picture whole is the
    only way to keep the hand, the bells and the room, so the screen behind it is filled by
    an enlarged blur of the clip's own first frame rather than left blank. */
-.cinema-hero-backdrop { display: block; }
 
-.cinema-hero-portrait {
-  object-fit: contain;
-  object-position: center 46%;
-}
 
 @media (min-width: 900px) {
   .cinema-hero-portrait { object-fit: contain; object-position: center 40%; }
@@ -8433,7 +8524,6 @@ summary {
    worth having and leaves no band, so the blurred backdrop that existed to hide the
    letterbox is no longer needed. */
 
-.cinema-hero-backdrop { display: none; }
 
 .cinema-hero-portrait {
   object-fit: cover;
@@ -8474,3 +8564,421 @@ summary {
 .optional-intake[open] > summary { border-bottom: 1px solid #ede4d6; }
 .optional-intake > *:not(summary) { padding: 0 18px; }
 .optional-intake > *:last-child { padding-bottom: 18px; }
+
+/* ---- The intake, over the film ------------------------------------------------------
+   Pressing the primary action does not leave the opening screen. A translucent panel
+   comes up over the character, who stays visible behind it, and asks for the birth date,
+   gender and name, then what the reader most wants to know. Two steps, because six
+   fields at once is the questionnaire this was meant to stop being. */
+
+.hero-intake {
+  position: absolute;
+  z-index: 6;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 clamp(14px, 4vw, 28px) calc(clamp(18px, 5vw, 32px) + env(safe-area-inset-bottom));
+  background: linear-gradient(to bottom, rgba(20, 18, 30, 0.42) 0%, rgba(20, 18, 30, 0.86) 46%, rgba(20, 18, 30, 0.94) 100%);
+}
+
+.hero-intake-panel {
+  position: relative;
+  width: min(100%, 460px);
+  max-height: 84svh;
+  padding: 22px clamp(16px, 5vw, 24px);
+  border: 1px solid rgba(220, 207, 161, 0.32);
+  border-radius: 20px;
+  /* Translucent, so he is still there behind the form rather than replaced by it. */
+  background: rgba(31, 29, 43, 0.62);
+  backdrop-filter: blur(18px) saturate(1.1);
+  color: #f3ecdd;
+  overflow-y: auto;
+}
+
+.hero-intake-panel h2 {
+  margin: 0 0 18px;
+  font-size: clamp(1.15rem, 4.4vw, 1.4rem);
+}
+
+.hero-intake-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid rgba(220, 207, 161, 0.34);
+  border-radius: 999px;
+  background: transparent;
+  color: #dccfa1;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.hero-intake-step {
+  margin: 0 0 6px;
+  color: #dccfa1;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.hero-intake-panel label,
+.hero-intake-label {
+  display: block;
+  margin: 16px 0 7px;
+  color: rgba(243, 236, 221, 0.86);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+/* Underlined inputs rather than boxes: less furniture on top of a picture. */
+.hero-intake-panel input[type="date"],
+.hero-intake-panel input[type="text"],
+.hero-intake-panel textarea {
+  width: 100%;
+  padding: 11px 2px;
+  border: 0;
+  border-bottom: 1px solid rgba(220, 207, 161, 0.4);
+  background: transparent;
+  color: #fffaf0;
+  font: inherit;
+}
+
+.hero-intake-panel textarea { min-height: 74px; resize: vertical; }
+.hero-intake-panel input:focus-visible,
+.hero-intake-panel textarea:focus-visible { border-bottom-color: #dccfa1; outline: none; }
+
+.hero-intake-choices {
+  display: flex;
+  gap: 8px;
+}
+
+.hero-intake-choices.is-wrap { flex-wrap: wrap; }
+
+.hero-intake-choices > button,
+.hero-intake-choices > label {
+  flex: 1 1 auto;
+  min-height: 46px;
+  padding: 0 14px;
+  border: 1px solid rgba(220, 207, 161, 0.36);
+  border-radius: 12px;
+  margin: 0;
+  background: transparent;
+  color: #f3ecdd;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 44px;
+  text-align: center;
+}
+
+.hero-intake-choices > label input { position: absolute; opacity: 0; pointer-events: none; }
+.hero-intake-choices > .is-chosen { border-color: #dccfa1; background: rgba(220, 207, 161, 0.2); }
+
+.hero-intake-panel .check {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: 20px;
+  font-size: 0.8rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.hero-intake-panel .check input { margin-top: 3px; }
+.hero-intake-panel .cinema-cta { width: 100%; margin-top: 22px; }
+
+.hero-intake-back {
+  width: 100%;
+  min-height: 42px;
+  margin-top: 10px;
+  border: 0;
+  background: transparent;
+  color: rgba(243, 236, 221, 0.72);
+  cursor: pointer;
+  font: inherit;
+}
+
+.hero-intake-panel .field-error { display: block; margin-top: 8px; color: #ffb4a6; font-size: 0.82rem; }
+
+/* Consolidated: the hero clip's sizing and framing in one place, after the churn of
+   earlier overrides was removed. Absolute and inset so it fills the opening screen; the
+   source is 9:16, so `cover` crops nothing worth having. */
+.cinema-hero-portrait {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: cover;
+  object-position: center center;
+  pointer-events: none;
+}
+
+@media (min-width: 900px) {
+  .cinema-hero-portrait { object-position: center 28%; }
+}
+
+/* ── 사주 menu ─────────────────────────────────────────────────────────────── */
+
+.saju-page {
+  max-width: var(--content);
+  margin: 0 auto;
+  padding: clamp(40px, 7vw, 84px) clamp(16px, 4vw, 32px) clamp(64px, 9vw, 120px);
+}
+
+.saju-head h1 {
+  margin: 10px 0 0;
+  font-size: clamp(1.6rem, 5vw, 2.5rem);
+  line-height: 1.28;
+}
+
+.saju-intro {
+  max-width: 44rem;
+  margin: 16px 0 0;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.saju-form {
+  display: grid;
+  gap: 20px;
+  max-width: 34rem;
+  margin-top: clamp(28px, 5vw, 44px);
+  padding: clamp(20px, 4vw, 32px);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--white);
+}
+
+.saju-field {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.saju-field > label,
+.saju-field > legend {
+  padding: 0;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.saju-field input[type="date"],
+.saju-field input[type="time"] {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  color: inherit;
+  font: inherit;
+}
+
+.saju-field label:has(input[type="radio"]) {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-weight: 600;
+}
+
+.saju-field small {
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.65;
+}
+
+.saju-advanced summary {
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.saju-advanced .saju-field { margin-top: 12px; }
+
+.saju-submit {
+  min-height: 50px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--ink);
+  color: var(--paper);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+}
+
+.saju-error { margin: 0; color: var(--clay); font-weight: 700; }
+
+.saju-result { margin-top: clamp(36px, 6vw, 64px); }
+
+.saju-result h2 {
+  margin: 0 0 14px;
+  font-size: clamp(1.15rem, 3vw, 1.5rem);
+}
+
+.saju-warning {
+  margin: 0 0 22px;
+  padding: 14px 16px;
+  border: 1px solid rgba(164, 95, 69, 0.35);
+  border-radius: var(--radius-sm);
+  background: rgba(164, 95, 69, 0.07);
+  line-height: 1.7;
+}
+
+/* Four pillars beside each other is the shape every almanac uses, so it stays that shape
+   on a phone and scrolls inside itself rather than being stacked into something a reader
+   would have to re-assemble. */
+.saju-chart-scroll { overflow-x: auto; }
+
+.saju-chart {
+  width: 100%;
+  min-width: 22rem;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.saju-chart th,
+.saju-chart td {
+  padding: 12px 8px;
+  border: 1px solid var(--line);
+}
+
+.saju-chart thead th { background: var(--paper-deep); font-size: 0.82rem; }
+.saju-chart tbody th { background: var(--paper); font-size: 0.8rem; font-weight: 700; }
+.saju-chart td { background: var(--white); font-size: 1.35rem; font-weight: 700; }
+.saju-chart tbody tr:last-child td { font-size: 0.86rem; font-weight: 600; }
+.saju-chart .is-self { background: rgba(99, 117, 99, 0.12); }
+
+.saju-note,
+.saju-limits {
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.75;
+}
+
+.saju-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 12px;
+  margin: 22px 0 0;
+}
+
+.saju-facts div {
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+}
+
+.saju-facts dt { color: var(--muted); font-size: 0.78rem; font-weight: 700; }
+.saju-facts dd { margin: 5px 0 0; font-weight: 700; }
+
+.saju-derivation {
+  margin-top: 20px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+}
+
+.saju-derivation summary { cursor: pointer; font-weight: 800; }
+.saju-derivation ul { margin: 14px 0 0; padding-left: 18px; }
+.saju-derivation li { margin: 5px 0; font-size: 0.88rem; }
+.saju-derivation p { margin: 14px 0 0; color: var(--muted); font-size: 0.85rem; line-height: 1.75; }
+
+.saju-viewpoints-title { margin-top: clamp(36px, 6vw, 56px) !important; }
+
+.saju-viewpoints-intro {
+  max-width: 44rem;
+  margin: 0 0 22px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.saju-viewpoints {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 14px;
+}
+
+.saju-viewpoint {
+  display: grid;
+  align-content: start;
+  gap: 9px;
+  padding: clamp(18px, 3vw, 24px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--white);
+}
+
+.saju-viewpoint h3 { margin: 0; font-size: 1.02rem; }
+.saju-viewpoint-headline { margin: 0; color: var(--sage-dark); font-size: 1.1rem; font-weight: 800; }
+.saju-viewpoint-blurb { margin: 0; color: var(--muted); font-size: 0.88rem; line-height: 1.7; }
+
+.saju-viewpoint-open {
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--sage-dark);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.saju-viewpoint-derivation { padding-top: 4px; }
+.saju-viewpoint-derivation ul { margin: 0; padding-left: 16px; }
+.saju-viewpoint-derivation li,
+.saju-viewpoint-derivation p { margin: 4px 0; font-size: 0.84rem; line-height: 1.7; }
+
+.saju-upsell {
+  margin-top: clamp(30px, 5vw, 48px);
+  padding: clamp(22px, 4vw, 34px);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: #fbf6ed;
+}
+
+.saju-upsell h3 { margin: 0; font-size: 1.1rem; }
+.saju-upsell > p { margin: 12px 0 0; color: var(--muted); line-height: 1.8; }
+.saju-upsell ul { margin: 16px 0 0; padding-left: 18px; }
+.saju-upsell li { margin: 7px 0; line-height: 1.7; }
+
+.saju-upsell-cta {
+  display: inline-block;
+  min-height: 50px;
+  margin-top: 20px;
+  padding: 14px 26px;
+  border-radius: var(--radius-sm);
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.saju-upsell-honest {
+  margin: 16px 0 0 !important;
+  font-size: 0.84rem !important;
+}
+
+.saju-crosslink {
+  margin: clamp(48px, 7vw, 80px) 0;
+  padding: clamp(24px, 4vw, 40px);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--white);
+}
+
+.saju-crosslink h2 { margin: 0; font-size: clamp(1.15rem, 3vw, 1.5rem); }
+.saju-crosslink p { max-width: 44rem; margin: 14px 0 20px; color: var(--muted); line-height: 1.8; }

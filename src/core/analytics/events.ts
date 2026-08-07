@@ -19,10 +19,13 @@ const event = <Name extends string, Shape extends z.ZodRawShape>(name: Name, sha
 
 export const SafeAnalyticsEventSchema = z.discriminatedUnion("name", [
   event("landing_view", {}),
-  // `hero_free` and `product_free` are the two free-reading entry points. They are
-  // additional values on an existing property, not a new event or a new property, so a
-  // consumer written against the older set still parses every event it knew about.
-  event("primary_cta_click", { location: z.enum(["hero", "sticky", "hero_free", "product_free"]) }),
+  // `hero_free`, `product_free` and `saju_crosslink` are the free-reading entry points.
+  // They are additional values on an existing property, not a new event or a new
+  // property, so a consumer written against the older set still parses every event it
+  // knew about.
+  event("primary_cta_click", {
+    location: z.enum(["hero", "sticky", "hero_free", "product_free", "saju_crosslink"]),
+  }),
   event("sample_section_view", {}),
   event("product_view", { productCode: z.enum(["plus_30d", "pro_30d", "premium_pdf"]) }),
   event("product_select", {

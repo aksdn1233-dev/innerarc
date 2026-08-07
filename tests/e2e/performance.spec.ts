@@ -57,7 +57,11 @@ for (const entry of routes) {
     expect(metrics.resourceCount).toBeLessThan(40);
     expect(metrics.jsTransferBytes).toBeLessThan(350_000);
     expect(metrics.jsDecodedBytes).toBeLessThan(1_050_000);
-    expect(metrics.cssDecodedBytes).toBeLessThan(120_000);
+    // Two real screens' worth of styling have been added to a stylesheet every route
+    // loads: the intake that opens over the hero, and the 사주 menu with its four-pillar
+    // table. Measured at 127.5 KB; the allowance sits above that with room to work and
+    // still low enough that another screen has to be argued for rather than absorbed.
+    expect(metrics.cssDecodedBytes).toBeLessThan(132_000);
     expect(metrics.totalTransferBytes).toBeLessThan(transferBudget);
     expect(metrics.totalDecodedBytes).toBeLessThan(decodedBudget);
   });

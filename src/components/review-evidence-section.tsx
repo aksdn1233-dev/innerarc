@@ -1,5 +1,6 @@
 import { NumberPath, SceneDivider, ThreadWeave } from "@/components/brand-visuals";
 import { summarizeReviewOutcomes, type PublicReview } from "@/core/reviews";
+import { LIVE_REACTIONS } from "@/core/reviews/live-reactions";
 import type { Locale } from "@/i18n/config";
 import { evidenceCopy } from "@/i18n/evidence-copy";
 import {
@@ -116,6 +117,55 @@ export function ReviewEvidenceSection({
           </div>
         </div>
       )}
+
+      {/* Sits below whichever of the two blocks above rendered, and never inside either
+          of them, so nothing here can be read as a review of a purchased report. The
+          provenance line comes before the words, not after. */}
+      <section className="live-reactions" aria-labelledby="live-reactions-title">
+        <header className="live-reactions-head">
+          <span className="live-reactions-badge">
+            <i aria-hidden="true" />
+            {t.liveLabel}
+          </span>
+          <h3 id="live-reactions-title">{t.liveTitle}</h3>
+          <p className="live-reactions-intro">{t.liveIntro}</p>
+        </header>
+
+        {/* The bubbles drift sideways past the reader instead of waiting below the fold
+            for a scroll. Two identical tracks sit end to end and both slide by exactly
+            one track width, so the seam never shows; the second is hidden from assistive
+            technology, which reads the first once and is done. */}
+        <div className="live-reactions-marquee">
+          {[false, true].map((isDuplicate) => (
+            <ol
+              aria-hidden={isDuplicate || undefined}
+              className="live-reactions-track"
+              key={String(isDuplicate)}
+            >
+              {LIVE_REACTIONS.map((reaction, index) => (
+                <li className="live-reaction" key={`${reaction.handle}-${index}`}>
+                  <div className="live-reaction-bubble">
+                    <span className="live-reaction-handle">
+                      {/* The handle's first character, not a photograph. There is no
+                          picture of any of these people here and there is not going to
+                          be one. It sits inside the bubble because in a moving row a
+                          circle beside one reads as belonging to the next. */}
+                      <i aria-hidden="true" className="live-reaction-mark">
+                        {[...reaction.handle][0]}
+                      </i>
+                      {reaction.handle}
+                    </span>
+                    <p lang="ko">{reaction.text}</p>
+                    {locale === "en" && <p className="live-reaction-gloss">{reaction.gloss}</p>}
+                  </div>
+                </li>
+              ))}
+            </ol>
+          ))}
+        </div>
+
+        <p className="live-reactions-boundary">{t.liveBoundary}</p>
+      </section>
 
       <div className="evidence-faq">
         <h3>{t.faqTitle}</h3>

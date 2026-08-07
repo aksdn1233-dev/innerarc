@@ -43,6 +43,15 @@ export const evidenceCopy = {
       ["입력한 내용은 어떻게 쓰이나요?", "구매하신 개인 리포트를 만들고 다시 열람할 수 있게 하는 데 사용합니다. 생년월일과 질문 내용은 공개 화면 어디에도 표시되지 않습니다."],
     ],
     summaryChanged: "공개된 후기 {total}건 중 {n}건이 계획했던 행동이 달라졌다고 답했습니다.",
+    // The live chat block. It says where the words came from before it shows them,
+    // because they are real but they are not website purchase reviews, and a visitor
+    // who cannot tell the difference has been misled even by true sentences.
+    liveTitle: "라이브 리딩 중에 올라온 반응",
+    liveIntro:
+      "운영자가 진행한 실시간 사주·타로 라이브 방송에서 시청자분들이 채팅으로 남긴 말들입니다. 오타까지 원문 그대로이고, 닉네임은 방송 화면에 공개되어 있던 그대로입니다.",
+    liveBoundary:
+      "웹사이트 리포트를 구매하고 남긴 후기와는 별개입니다. 구매 후기는 결제·열람이 확인된 분에게만 요청하며, 공개 승인을 거친 뒤 위에 표시됩니다.",
+    liveLabel: "라이브 채팅",
   },
   en: {
     eyebrow: "Before you buy",
@@ -81,5 +90,11 @@ export const evidenceCopy = {
       ["What happens to what I enter?", "It is used to build the personal report you purchased and to let you reopen it. Your birth date and your question never appear on any public page."],
     ],
     summaryChanged: "{n} of {total} published reviews said the reading changed a planned action.",
+    liveTitle: "Said during a live reading",
+    liveIntro:
+      "Messages viewers typed into the chat during the operator's live Korean fortune and tarot broadcasts. They are reproduced exactly as written, in Korean, with a translation underneath; the handles are the public ones the broadcast showed.",
+    liveBoundary:
+      "These are not reviews of a purchased report. Purchase feedback is requested only from people whose payment and access were confirmed, and appears above once approved.",
+    liveLabel: "Live chat",
   },
 } as const;

@@ -16,13 +16,28 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
     level: 1,
     name: "왜 나는 같은 선택을 반복할까요?",
   })).toBeAttached();
-  await expect(page.getByRole("link", { name: "내 패턴 확인하기" })).toBeVisible();
+  // The primary action is a button, not a link: it opens the intake where the visitor
+  // already is rather than sending them somewhere. Only the free reading navigates.
+  await expect(page.getByRole("button", { name: "내 패턴 확인하기" })).toBeVisible();
   await expect(page.getByRole("link", { name: "먼저 무료로 확인" })).toBeVisible();
 
   // The home page is the opening screen and nothing else — everything that used to sit
   // under it now lives at /reading, so scrolling the home page finds nothing.
   await expect(page.locator(".report-preview")).toHaveCount(0);
   await expect(page.locator("#onboarding")).toHaveCount(0);
+
+  // Pressing it opens the details panel over the character, in place: the film stays on
+  // screen, the address does not change, and there is nothing to scroll to.
+  await page.getByRole("button", { name: "내 패턴 확인하기" }).click();
+  await expect(page.locator(".hero-intake-panel")).toBeVisible();
+  await expect(page.locator(".cinema-hero-portrait")).toBeVisible();
+  await expect(page).toHaveURL(`${E2E_ORIGIN}/ko`);
+  await expect(page.locator("#hero-birthDate")).toBeVisible();
+  await expect(page.getByRole("button", { name: "여성" })).toBeVisible();
+  await expect(page.locator("#hero-name")).toBeVisible();
+  await page.getByRole("button", { name: "다음으로" }).click();
+  await expect(page.getByRole("heading", { name: "무엇이 가장 궁금하세요?" })).toBeVisible();
+  await expect(page).toHaveURL(`${E2E_ORIGIN}/ko`);
 
   await page.goto("/ko/reading");
   await expect(page.locator(".report-preview")).toContainText(
@@ -34,6 +49,21 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await expect(page.getByRole("button", { name: /상세 리딩 받기/ })).toBeVisible();
   await expect(page.getByRole("button", { name: /심층 리딩 받기/ })).toBeVisible();
   await expect(page.locator(".payment-reassurance")).toContainText("1회 결제 · 자동 결제 없음 · 비회원 열람 가능");
+
+  // Real live-chat reactions, shown as their own block with their origin stated, and
+  // never folded into the purchase-review area above them.
+  // One readable track of seven; the second is the loop's seam and is hidden from
+  // assistive technology, so a screen reader hears each line once.
+  await expect(page.locator(".live-reactions-track:not([aria-hidden]) .live-reaction")).toHaveCount(7);
+  await expect(page.locator('.live-reactions-track[aria-hidden="true"]')).toHaveCount(1);
+  await expect(page.locator(".live-reactions-intro")).toContainText("실시간 사주·타로 라이브 방송");
+  await expect(page.locator(".live-reaction-bubble").first()).toContainText("정말 딱 맞네요 훌륭하십니다");
+  await expect(page.locator(".live-reactions-boundary")).toContainText("웹사이트 리포트를 구매하고 남긴 후기와는 별개입니다");
+  // The row drifts inside its own clipped strip, so a track wider than the phone never
+  // becomes a page that scrolls sideways.
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth))
+    .toBeLessThanOrEqual(0);
+  await expect(page.locator(".evidence-section .evidence-review")).toHaveCount(0);
 
   await page.goto("/ko/profile");
   await expect(page).toHaveURL(`${E2E_ORIGIN}/ko/profile`);
@@ -53,11 +83,17 @@ test("mobile home has no overflow and the sticky payment bar yields to the form"
     await page.setViewportSize({ width, height: 844 });
     await page.goto("/ko");
     await expect(page.getByRole("heading", { level: 1, name: "왜 나는 같은 선택을 반복할까요?" })).toBeAttached();
-    await expect(page.getByRole("link", { name: "내 패턴 확인하기" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "내 패턴 확인하기" })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
 
     // Nothing under the opening screen, so nothing for a sticky bar to sit over.
     await expect(page.locator(".mobile-purchase-bar")).toHaveCount(0);
+
+    // The panel is the width of the phone at every size it opens on, and opening it
+    // must not push the page sideways.
+    await page.getByRole("button", { name: "내 패턴 확인하기" }).click();
+    await expect(page.locator(".hero-intake-panel")).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
 
     await page.goto("/ko/reading");
     await expect(page.locator(".mobile-purchase-bar")).toHaveCount(0);
@@ -74,7 +110,7 @@ test("English page keeps the same calculated core meaning", async ({ page }) => 
   await page.goto("/en");
   // Same as the Korean opening screen: the heading is in the document, not on it.
   await expect(page.getByRole("heading", { level: 1, name: "Why do I keep making the same choices?" })).toBeAttached();
-  await expect(page.getByRole("link", { name: "See my patterns" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "See my patterns" })).toBeVisible();
   await page.goto("/en/profile");
   await expect(page).toHaveURL(`${E2E_ORIGIN}/en/profile`);
   await page.locator("#birthDate").fill("1994-11-04");

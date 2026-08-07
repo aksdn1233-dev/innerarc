@@ -115,3 +115,45 @@ report page, and console — the review UI simply does not appear.
 approved it shows what the product actually contains, how the reading is built, what it
 does not do, and the questions buyers ask. That section states plainly that reviews are
 not invented, and the FAQ describes this collection process.
+
+## Live broadcast chat is a separate thing
+
+The operator runs live 사주·타로 readings and viewers reply in the platform's chat. Some
+of those replies are the strongest thing anyone has said about the readings, and they are
+real, so they are shown — but they are not reviews of a purchased report, and the site
+never presents them as if they were.
+
+They live in `src/core/reviews/live-reactions.ts`, which `src/core/reviews/index.ts`
+deliberately does not re-export. Nothing in the review pipeline reads that file: it does
+not become a `PublicReview`, it is not counted by `summarizeReviewOutcomes`, it never
+appears in the operator console, and the review count on the page is unaffected by it.
+
+`ReviewEvidenceSection` renders it in its own `<section>`, after whichever review block
+applied, under a heading and an intro that say where the words came from before showing
+any of them, and above a closing line that states the boundary again. It renders in both
+states — with and without approved reviews — because its truth does not depend on theirs.
+
+The bubbles drift sideways on their own rather than waiting below the fold: two identical
+tracks run end to end inside a clipped, edge-faded strip and each slides exactly one track
+width, so the seam never shows. The duplicate is `aria-hidden`, so a screen reader hears
+each line once. The row pauses on hover and on focus, and under
+`prefers-reduced-motion: reduce` it does not move at all — it becomes an ordinary
+swipeable strip and the duplicate track is removed. Nothing in the block is revealed by
+scrolling; scroll-driven reveal is reserved for the report, where a reader has already
+paid to be led through something.
+
+Rules the list follows:
+
+- Verbatim from broadcast captures the operator kept, typos and trailing dots included.
+- Pseudonymous handles exactly as the platform displayed them; no real name, no photo,
+  no contact detail, nothing that reaches a person. Where the capture showed no handle,
+  the entry reads 익명.
+- The Korean original is shown on both locales. The English gloss appears beside it,
+  never in place of it, so a reader always sees what was actually typed.
+- Bare agreements ("맞아요", "네~") were left out: alone they carry nothing a visitor can
+  weigh, and padding the list with them would be volume for its own sake.
+- No line claims a result, a price, or a guarantee. `tests/unit/reviews.test.ts` asserts
+  each of these properties, including that the block sits outside both review renderers.
+
+Adding to the list means adding a broadcast capture to the operator's own records first.
+Nothing goes in that was written for the website.

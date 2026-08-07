@@ -16,6 +16,9 @@ export const PaidReadingInputSchema = z.object({
   name: z.string().max(200),
   focusId: z.enum(paidReadingFocusIds),
   concern: z.string().max(2_000),
+  // Asked for on the opening screen. Optional because a draft written before this
+  // existed is still a valid draft, and the reading does not require it.
+  gender: z.enum(["female", "male", "unstated"]).optional(),
   createdAt: z.string().datetime(),
 }).strict();
 

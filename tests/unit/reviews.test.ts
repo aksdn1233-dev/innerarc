@@ -12,6 +12,7 @@ import {
   toPublicReviews,
   type StoredReviewRow,
 } from "@/core/reviews";
+import { LIVE_REACTIONS } from "@/core/reviews/live-reactions";
 
 /**
  * These assertions are about what the code does, so the prose explaining it has to come
@@ -224,6 +225,84 @@ describe("an empty review wall shows evidence, not empty cards", () => {
     const copy = await readFile("src/i18n/evidence-copy.ts", "utf8");
     expect(copy).toContain("후기를 지어내지 않습니다");
     expect(copy).toContain("We do not invent reviews");
+  });
+});
+
+describe("live broadcast chat is shown as itself, not as purchase feedback", () => {
+  it("never enters the review pipeline", async () => {
+    // The list is plain data with no path into anything that publishes reviews: it is
+    // not a PublicReview, it is not summarized, and it is not exported from the module
+    // the review API and the admin console import.
+    const index = await readFile("src/core/reviews/index.ts", "utf8");
+    expect(index).not.toContain("live-reactions");
+
+    // The two shapes share no field, so neither list can be rendered by the other's
+    // component or counted as the other's total.
+    const publicShape = toPublicReview(storedReview);
+    expect(publicShape).not.toBeNull();
+    const shared = Object.keys(publicShape!).filter((key) => key in LIVE_REACTIONS[0]);
+    expect(shared).toEqual([]);
+  });
+
+  it("carries no name, contact, or link back to a person", () => {
+    for (const reaction of LIVE_REACTIONS) {
+      expect(Object.keys(reaction).sort()).toEqual(["gloss", "handle", "text"]);
+      const serialized = JSON.stringify(reaction);
+      expect(serialized).not.toMatch(/https?:|@[\w.]+\.\w|\d{2,3}-\d{3,4}-\d{4}/);
+    }
+  });
+
+  it("shows the original Korean on both locales and the translation only beside it", async () => {
+    const section = withoutComments(
+      await readFile("src/components/review-evidence-section.tsx", "utf8"),
+    );
+    // The unconditional line is the message as typed; the gloss is behind a locale check,
+    // so an English reader gets both and never the translation alone.
+    expect(section).toContain("{reaction.text}");
+    expect(section).toContain('locale === "en" && <p className="live-reaction-gloss">');
+  });
+
+  it("says where the words came from before showing them", async () => {
+    const copy = await readFile("src/i18n/evidence-copy.ts", "utf8");
+    expect(copy).toContain("웹사이트 리포트를 구매하고 남긴 후기와는 별개입니다");
+    expect(copy).toContain("These are not reviews of a purchased report");
+
+    const section = withoutComments(
+      await readFile("src/components/review-evidence-section.tsx", "utf8"),
+    );
+    // Provenance is inside the block's own <header>, which precedes the messages.
+    expect(section.indexOf("t.liveIntro")).toBeLessThan(section.indexOf("LIVE_REACTIONS.map"));
+    // And the block sits outside both review renderers, so it cannot be mistaken for one.
+    expect(section).not.toMatch(/hasReviews[\s\S]{0,200}live-reactions/);
+  });
+
+  it("drifts on its own and is not something a reader has to scroll into view", async () => {
+    const section = withoutComments(
+      await readFile("src/components/review-evidence-section.tsx", "utf8"),
+    );
+    // The seam track is a visual duplicate only, so it is hidden from assistive
+    // technology and every line is announced once.
+    expect(section).toContain("aria-hidden={isDuplicate || undefined}");
+
+    const css = await readFile("src/app/globals.css", "utf8");
+    const marquee = css.slice(
+      css.indexOf(".live-reactions-marquee {"),
+      css.indexOf(".evidence-faq {"),
+    );
+    // Clipped, so a track wider than the screen cannot widen the page.
+    expect(marquee).toMatch(/\.live-reactions-marquee \{[^}]*overflow: hidden/);
+    expect(marquee).toContain("animation: live-reaction-drift");
+    // It stops while someone is reading one, and it does not move at all for a visitor
+    // who asked for reduced motion.
+    expect(marquee).toContain("animation-play-state: paused");
+    expect(marquee).toMatch(/prefers-reduced-motion: reduce[\s\S]*animation: none/);
+    // No scroll-driven reveal anywhere in the block: the bubbles pass the reader.
+    expect(marquee).not.toMatch(/animation-timeline|view-timeline|scroll\(/);
+  });
+
+  it("claims no result and quotes no price", () => {
+    const spoken = LIVE_REACTIONS.map((reaction) => `${reaction.text} ${reaction.gloss}`).join(" ");
+    expect(spoken).not.toMatch(/\d+\s*%|원|won|보장|guarantee|refund|환불/i);
   });
 });
 
