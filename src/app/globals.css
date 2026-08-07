@@ -8723,3 +8723,262 @@ summary {
 @media (min-width: 900px) {
   .cinema-hero-portrait { object-position: center 28%; }
 }
+
+/* ── 사주 menu ─────────────────────────────────────────────────────────────── */
+
+.saju-page {
+  max-width: var(--content);
+  margin: 0 auto;
+  padding: clamp(40px, 7vw, 84px) clamp(16px, 4vw, 32px) clamp(64px, 9vw, 120px);
+}
+
+.saju-head h1 {
+  margin: 10px 0 0;
+  font-size: clamp(1.6rem, 5vw, 2.5rem);
+  line-height: 1.28;
+}
+
+.saju-intro {
+  max-width: 44rem;
+  margin: 16px 0 0;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.saju-form {
+  display: grid;
+  gap: 20px;
+  max-width: 34rem;
+  margin-top: clamp(28px, 5vw, 44px);
+  padding: clamp(20px, 4vw, 32px);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--white);
+}
+
+.saju-field {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.saju-field > label,
+.saju-field > legend {
+  padding: 0;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.saju-field input[type="date"],
+.saju-field input[type="time"] {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  color: inherit;
+  font: inherit;
+}
+
+.saju-field label:has(input[type="radio"]) {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-weight: 600;
+}
+
+.saju-field small {
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.65;
+}
+
+.saju-advanced summary {
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.saju-advanced .saju-field { margin-top: 12px; }
+
+.saju-submit {
+  min-height: 50px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--ink);
+  color: var(--paper);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+}
+
+.saju-error { margin: 0; color: var(--clay); font-weight: 700; }
+
+.saju-result { margin-top: clamp(36px, 6vw, 64px); }
+
+.saju-result h2 {
+  margin: 0 0 14px;
+  font-size: clamp(1.15rem, 3vw, 1.5rem);
+}
+
+.saju-warning {
+  margin: 0 0 22px;
+  padding: 14px 16px;
+  border: 1px solid rgba(164, 95, 69, 0.35);
+  border-radius: var(--radius-sm);
+  background: rgba(164, 95, 69, 0.07);
+  line-height: 1.7;
+}
+
+/* Four pillars beside each other is the shape every almanac uses, so it stays that shape
+   on a phone and scrolls inside itself rather than being stacked into something a reader
+   would have to re-assemble. */
+.saju-chart-scroll { overflow-x: auto; }
+
+.saju-chart {
+  width: 100%;
+  min-width: 22rem;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.saju-chart th,
+.saju-chart td {
+  padding: 12px 8px;
+  border: 1px solid var(--line);
+}
+
+.saju-chart thead th { background: var(--paper-deep); font-size: 0.82rem; }
+.saju-chart tbody th { background: var(--paper); font-size: 0.8rem; font-weight: 700; }
+.saju-chart td { background: var(--white); font-size: 1.35rem; font-weight: 700; }
+.saju-chart tbody tr:last-child td { font-size: 0.86rem; font-weight: 600; }
+.saju-chart .is-self { background: rgba(99, 117, 99, 0.12); }
+
+.saju-note,
+.saju-limits {
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.75;
+}
+
+.saju-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 12px;
+  margin: 22px 0 0;
+}
+
+.saju-facts div {
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+}
+
+.saju-facts dt { color: var(--muted); font-size: 0.78rem; font-weight: 700; }
+.saju-facts dd { margin: 5px 0 0; font-weight: 700; }
+
+.saju-derivation {
+  margin-top: 20px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+}
+
+.saju-derivation summary { cursor: pointer; font-weight: 800; }
+.saju-derivation ul { margin: 14px 0 0; padding-left: 18px; }
+.saju-derivation li { margin: 5px 0; font-size: 0.88rem; }
+.saju-derivation p { margin: 14px 0 0; color: var(--muted); font-size: 0.85rem; line-height: 1.75; }
+
+.saju-viewpoints-title { margin-top: clamp(36px, 6vw, 56px) !important; }
+
+.saju-viewpoints-intro {
+  max-width: 44rem;
+  margin: 0 0 22px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.saju-viewpoints {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 14px;
+}
+
+.saju-viewpoint {
+  display: grid;
+  align-content: start;
+  gap: 9px;
+  padding: clamp(18px, 3vw, 24px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--white);
+}
+
+.saju-viewpoint h3 { margin: 0; font-size: 1.02rem; }
+.saju-viewpoint-headline { margin: 0; color: var(--sage-dark); font-size: 1.1rem; font-weight: 800; }
+.saju-viewpoint-blurb { margin: 0; color: var(--muted); font-size: 0.88rem; line-height: 1.7; }
+
+.saju-viewpoint-open {
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--sage-dark);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.saju-viewpoint-derivation { padding-top: 4px; }
+.saju-viewpoint-derivation ul { margin: 0; padding-left: 16px; }
+.saju-viewpoint-derivation li,
+.saju-viewpoint-derivation p { margin: 4px 0; font-size: 0.84rem; line-height: 1.7; }
+
+.saju-upsell {
+  margin-top: clamp(30px, 5vw, 48px);
+  padding: clamp(22px, 4vw, 34px);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: #fbf6ed;
+}
+
+.saju-upsell h3 { margin: 0; font-size: 1.1rem; }
+.saju-upsell > p { margin: 12px 0 0; color: var(--muted); line-height: 1.8; }
+.saju-upsell ul { margin: 16px 0 0; padding-left: 18px; }
+.saju-upsell li { margin: 7px 0; line-height: 1.7; }
+
+.saju-upsell-cta {
+  display: inline-block;
+  min-height: 50px;
+  margin-top: 20px;
+  padding: 14px 26px;
+  border-radius: var(--radius-sm);
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.saju-upsell-honest {
+  margin: 16px 0 0 !important;
+  font-size: 0.84rem !important;
+}
+
+.saju-crosslink {
+  margin: clamp(48px, 7vw, 80px) 0;
+  padding: clamp(24px, 4vw, 40px);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--white);
+}
+
+.saju-crosslink h2 { margin: 0; font-size: clamp(1.15rem, 3vw, 1.5rem); }
+.saju-crosslink p { max-width: 44rem; margin: 14px 0 20px; color: var(--muted); line-height: 1.8; }

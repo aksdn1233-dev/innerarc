@@ -101,6 +101,10 @@ const copy = {
     heroNote: "생년월일 기반 · 1회 결제 · 자동 갱신 없음",
     heroHook: "반복되는 선택엔, 이유가 있습니다",
     freeCta: "먼저 무료로 확인",
+    sajuTitle: "사주도 무료로 세워드립니다",
+    sajuBody:
+      "생년월일과 시각으로 사주 네 기둥과 십신, 오행을 계산해 보여드립니다. 절기와 진태양시까지 보정한 계산 근거를 전부 공개하며, 여기까지는 결제 없이 보실 수 있습니다.",
+    sajuCta: "내 사주 원국 보기",
     freeNote: "결제 없이 생년월일만으로 기본 리딩을 볼 수 있어요",
     entryEyebrow: "어떤 게 제일 걸리세요?",
     entryTitle: "요즘 마음에 걸리는 질문을 골라보세요",
@@ -154,6 +158,10 @@ const copy = {
     heroNote: "Birth-date based · One-time payment · No auto-renewal",
     heroHook: "The choices you repeat have a reason",
     freeCta: "Try it free first",
+    sajuTitle: "Your Four Pillars chart, also free",
+    sajuBody:
+      "A birth date and time give four pillars, the ten gods, and the balance of the five phases — corrected for the solar term and for true solar time, with every step of the derivation shown. All of that is free.",
+    sajuCta: "Draw my chart",
     freeNote: "See a basic reading from your birth date alone — no payment",
     entryEyebrow: "What is on your mind?",
     entryTitle: "Pick the question that keeps coming back",
@@ -673,6 +681,21 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             ))}
           </div>
           <p className="payment-reassurance"><strong>{t.paymentFacts}</strong><br />{t.paymentAccess} <Link href={`/${locale}/support`}>{t.support}</Link></p>
+        </section>
+
+        {/* The 사주 menu, offered as a second free calculation rather than a second sales
+            page. A visitor who is not ready to pay for a numerology reading may still want
+            their chart drawn, and that is a better next step than leaving. */}
+        <section className="saju-crosslink" aria-labelledby="saju-crosslink-title">
+          <h2 id="saju-crosslink-title">{t.sajuTitle}</h2>
+          <p>{t.sajuBody}</p>
+          <Link
+            className="cinema-cta-secondary"
+            href={`/${locale}/saju`}
+            onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "saju_crosslink" })}
+          >
+            {t.sajuCta}
+          </Link>
         </section>
 
         <ReviewEvidenceSection locale={locale} reviews={reviews} reviewCount={reviewCount} />

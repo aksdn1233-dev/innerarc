@@ -2,6 +2,10 @@ import { describe, expect, it } from "vitest";
 import {
   SajuInputError,
   buildSajuChart,
+  readClimate,
+  readStrength,
+  readStructure,
+  readViewpoints,
   stemPhase,
   tenGod,
 } from "@/core/saju";
@@ -271,5 +275,78 @@ describe("no living practitioner is named or leaned on", () => {
     // The classical texts are cited; no person alive is, and no one's method is claimed.
     expect(combined).toMatch(/연해자평|적천수|자평진전|궁통보감/);
     expect(combined).not.toMatch(/박성준|선생님 방식|비법|독점|공식 인증/);
+  });
+});
+
+describe("three viewpoints on the same chart", () => {
+  const chart = buildSajuChart({ birthDate: "1994-11-04", birthTime: "09:30", sex: "female" });
+  const views = readViewpoints(chart);
+
+  it("weighs the month branch heaviest, because the season is the ground", () => {
+    const weights = Object.fromEntries(
+      views.strength.contributions.map(({ source, weight }) => [source, weight]),
+    );
+    expect(weights["월지"]).toBe(30);
+    expect(weights["월지"]).toBeGreaterThan(weights["일지"]!);
+    expect(weights["일지"]).toBeGreaterThan(weights["연간"]!);
+    // Every contribution is shown, so the verdict can be recomputed by hand.
+    const total = views.strength.contributions.reduce((sum, entry) => sum + entry.weight, 0);
+    expect(total).toBe(110);
+  });
+
+  it("scores support against drain and names the band, not a number alone", () => {
+    expect(views.strength.score).toBeGreaterThanOrEqual(-100);
+    expect(views.strength.score).toBeLessThanOrEqual(100);
+    expect(["신강", "중화", "신약"]).toContain(views.strength.label);
+    if (views.strength.label === "중화") {
+      // A balanced chart is not told it needs fixing.
+      expect(views.strength.usefulPhases).toEqual([]);
+      expect(views.strength.straining).toEqual([]);
+    }
+  });
+
+  it("turns the useful phases around when the day master's strength flips", () => {
+    const strong = readStrength({ ...chart, dayMasterPhase: chart.dayMasterPhase });
+    expect(strong.usefulPhases).not.toEqual(strong.straining);
+  });
+
+  it("reads the season and says whether the chart already carries what it asks for", () => {
+    expect(views.climate.season).toBe("가을");
+    expect(views.climate.monthBranch).toBe("戌");
+    expect(typeof views.climate.satisfied).toBe("boolean");
+    expect(views.climate.note.length).toBeGreaterThan(10);
+  });
+
+  it("asks a winter chart for warmth and a summer chart for water", () => {
+    const winter = readClimate(buildSajuChart({ birthDate: "1994-01-05", birthTime: "12:00", sex: "male" }));
+    expect(winter.season).toBe("겨울");
+    expect(winter.need).toBe("온기");
+    expect(winter.usefulPhases).toEqual(["화"]);
+
+    const summer = readClimate(buildSajuChart({ birthDate: "1994-07-05", birthTime: "12:00", sex: "male" }));
+    expect(summer.season).toBe("여름");
+    expect(summer.need).toBe("냉기");
+    expect(summer.usefulPhases).toEqual(["수"]);
+  });
+
+  it("names the structure from the month branch and shows the derivation", () => {
+    expect(views.structure.name).toMatch(/격$/);
+    expect(views.structure.derivedFrom).toContain("월지");
+    expect(views.structure.derivedFrom).toContain(chart.month.branch);
+    expect(views.structure.derivedFrom).toContain(chart.dayMaster);
+  });
+
+  it("names the seat, not the god, when the month gives 비견 or 겁재", () => {
+    expect(readStructure({ ...chart, dayMaster: "戊" }).name).toBe("건록격");
+    expect(readStructure({ ...chart, dayMaster: "己" }).name).toBe("양인격");
+  });
+
+  it("predicts no event and promises no outcome", () => {
+    const spoken = [
+      views.climate.note,
+      views.structure.note,
+      views.structure.derivedFrom,
+    ].join(" ");
+    expect(spoken).not.toMatch(/합니다만|반드시|틀림없|운명|보장|성공한다|실패한다|죽|병에 걸/);
   });
 });

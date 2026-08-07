@@ -1,0 +1,231 @@
+"use client";
+
+import Link from "next/link";
+import { useState } from "react";
+import {
+  SajuInputError,
+  buildSajuChart,
+  readViewpoints,
+  type SajuChart,
+  type SajuViewpoints,
+} from "@/core/saju";
+import type { Locale } from "@/i18n/config";
+import { sajuCopy } from "@/i18n/saju-copy";
+
+/**
+ * The free rung of the 사주 menu.
+ *
+ * The chart itself is given away: four pillars, the day master, the ten gods, the phase
+ * balance, the 절기 the month sits between, and every correction that was applied to get
+ * there. That is the part a visitor can check against any 만세력, and handing it over is
+ * what earns the right to ask for anything else.
+ *
+ * The three viewpoints are named and their headline is shown, but the reading behind each
+ * one is the paid product. The lock is on interpretation, never on the calculation — a
+ * site that hid the chart would be asking to be trusted about arithmetic anyone can
+ * verify, which is the opposite of the argument this product makes.
+ */
+export function SajuExperience({ locale }: { locale: Locale }) {
+  const t = sajuCopy[locale];
+  const [chart, setChart] = useState<SajuChart | null>(null);
+  const [views, setViews] = useState<SajuViewpoints | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [openViewpoint, setOpenViewpoint] = useState<string | null>(null);
+
+  function submit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const birthTime = String(form.get("birthTime") ?? "");
+    try {
+      const built = buildSajuChart({
+        birthDate: String(form.get("birthDate") ?? ""),
+        birthTime: birthTime || undefined,
+        sex: form.get("sex") === "male" ? "male" : "female",
+        midnightConvention: form.get("midnight") === "조자시" ? "조자시" : "야자시",
+      });
+      setChart(built);
+      setViews(readViewpoints(built));
+      setError(null);
+    } catch (caught) {
+      setChart(null);
+      setViews(null);
+      setError(caught instanceof SajuInputError ? caught.message : t.genericError);
+    }
+  }
+
+  return (
+    <main className="saju-page">
+      <header className="saju-head">
+        <p className="eyebrow">{t.eyebrow}</p>
+        <h1>{t.title}</h1>
+        <p className="saju-intro">{t.intro}</p>
+      </header>
+
+      <form className="saju-form" onSubmit={submit} noValidate>
+        <div className="saju-field">
+          <label htmlFor="saju-birthDate">{t.birthDate}</label>
+          <input id="saju-birthDate" name="birthDate" required type="date" />
+          <small>{t.solarOnly}</small>
+        </div>
+
+        <div className="saju-field">
+          <label htmlFor="saju-birthTime">{t.birthTime}</label>
+          <input id="saju-birthTime" name="birthTime" type="time" />
+          {/* Said before the form is submitted, not after: a visitor who does not know
+              their birth time should know what they will and will not get. */}
+          <small>{t.timeOptional}</small>
+        </div>
+
+        <fieldset className="saju-field">
+          <legend>{t.sex}</legend>
+          <label><input defaultChecked name="sex" type="radio" value="female" /> {t.female}</label>
+          <label><input name="sex" type="radio" value="male" /> {t.male}</label>
+          <small>{t.sexReason}</small>
+        </fieldset>
+
+        <details className="saju-advanced">
+          <summary>{t.advanced}</summary>
+          <fieldset className="saju-field">
+            <legend>{t.midnight}</legend>
+            <label><input defaultChecked name="midnight" type="radio" value="야자시" /> {t.lateNight}</label>
+            <label><input name="midnight" type="radio" value="조자시" /> {t.earlyNight}</label>
+            <small>{t.midnightReason}</small>
+          </fieldset>
+        </details>
+
+        <button className="saju-submit" type="submit">{t.submit}</button>
+        {error && <p className="saju-error" role="alert">{error}</p>}
+      </form>
+
+      {chart && views && (
+        <section aria-live="polite" className="saju-result" id="saju-result">
+          {chart.termBoundaryWarning && (
+            <p className="saju-warning" role="status">{chart.termBoundaryWarning}</p>
+          )}
+
+          <h2>{t.chartTitle}</h2>
+          <div className="saju-chart-scroll">
+            <table className="saju-chart">
+              <caption className="visually-hidden">{t.chartTitle}</caption>
+              <thead>
+                <tr>
+                  <th scope="col"><span className="visually-hidden">{t.row}</span></th>
+                  <th scope="col">{t.hourPillar}</th>
+                  <th scope="col">{t.dayPillar}</th>
+                  <th scope="col">{t.monthPillar}</th>
+                  <th scope="col">{t.yearPillar}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">{t.stemRow}</th>
+                  <td>{chart.hour?.stem ?? "—"}</td>
+                  <td className="is-self">{chart.day.stem}</td>
+                  <td>{chart.month.stem}</td>
+                  <td>{chart.year.stem}</td>
+                </tr>
+                <tr>
+                  <th scope="row">{t.branchRow}</th>
+                  <td>{chart.hour?.branch ?? "—"}</td>
+                  <td>{chart.day.branch}</td>
+                  <td>{chart.month.branch}</td>
+                  <td>{chart.year.branch}</td>
+                </tr>
+                <tr>
+                  <th scope="row">{t.godRow}</th>
+                  <td>{chart.tenGods.hourStem ?? "—"}</td>
+                  <td className="is-self">{t.self}</td>
+                  <td>{chart.tenGods.monthStem}</td>
+                  <td>{chart.tenGods.yearStem}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          {chart.hour === null && <p className="saju-note">{t.noHourPillar}</p>}
+
+          <dl className="saju-facts">
+            <div><dt>{t.dayMaster}</dt><dd>{chart.dayMaster} · {chart.dayMasterPhase} · {chart.dayMasterPolarity}</dd></div>
+            <div><dt>{t.monthTerm}</dt><dd>{chart.monthTerm.name} → {chart.nextTerm.name}</dd></div>
+            <div><dt>{t.voidBranches}</dt><dd>{chart.voidBranches.join(" · ")}</dd></div>
+            <div><dt>{t.phaseBalance}</dt><dd>{
+              Object.entries(chart.phaseBalance)
+                .map(([phase, count]) => `${phase} ${count}`).join(" · ")
+            }</dd></div>
+          </dl>
+
+          {/* The corrections are shown because they changed the answer. A visitor who
+              compares this against another site and finds a different hour pillar can
+              see here exactly why, instead of concluding one of them is broken. */}
+          <details className="saju-derivation">
+            <summary>{t.derivationTitle}</summary>
+            <ul>
+              <li>{t.wallClock}: {chart.time.wallClock || t.notGiven}</li>
+              <li>{t.zone}: UTC{chart.time.zoneOffsetMinutes >= 0 ? "+" : ""}
+                {Math.floor(chart.time.zoneOffsetMinutes / 60)}:
+                {String(Math.abs(chart.time.zoneOffsetMinutes % 60)).padStart(2, "0")}</li>
+              <li>{t.longitude}: {chart.time.longitudeCorrectionMinutes}{t.minutes}</li>
+              <li>{t.corrected}: {chart.time.correctedLocalTime}</li>
+              <li>{t.convention}: {chart.time.midnightConvention}</li>
+              <li>{t.ruleVersion}: {chart.ruleVersion}</li>
+            </ul>
+            <p>{t.derivationNote}</p>
+          </details>
+
+          <h2 className="saju-viewpoints-title">{t.viewpointsTitle}</h2>
+          <p className="saju-viewpoints-intro">{t.viewpointsIntro}</p>
+
+          <div className="saju-viewpoints">
+            {([
+              [views.strength.viewpoint, t.strengthBlurb, `${views.strength.label} · ${views.strength.score > 0 ? "+" : ""}${views.strength.score}`],
+              [views.climate.viewpoint, t.climateBlurb, `${views.climate.season} · ${views.climate.need}`],
+              [views.structure.viewpoint, t.structureBlurb, views.structure.name],
+            ] as const).map(([name, blurb, headline]) => (
+              <article className="saju-viewpoint" key={name}>
+                <h3>{name}</h3>
+                <p className="saju-viewpoint-headline">{headline}</p>
+                <p className="saju-viewpoint-blurb">{blurb}</p>
+                <button
+                  aria-expanded={openViewpoint === name}
+                  className="saju-viewpoint-open"
+                  onClick={() => setOpenViewpoint(openViewpoint === name ? null : name)}
+                  type="button"
+                >
+                  {t.howDerived}
+                </button>
+                {openViewpoint === name && (
+                  <div className="saju-viewpoint-derivation">
+                    {name === "억부" && (
+                      <ul>
+                        {views.strength.contributions.map((entry) => (
+                          <li key={entry.source}>
+                            {entry.source} · {entry.god} · {entry.weight}
+                            {entry.supports ? ` (${t.supports})` : ` (${t.drains})`}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {name === "조후" && <p>{views.climate.note}</p>}
+                    {name === "격국" && <p>{views.structure.derivedFrom}</p>}
+                  </div>
+                )}
+              </article>
+            ))}
+          </div>
+
+          <aside className="saju-upsell">
+            <h3>{t.upsellTitle}</h3>
+            <p>{t.upsellBody}</p>
+            <ul>{t.upsellItems.map((item) => <li key={item}>{item}</li>)}</ul>
+            <Link className="saju-upsell-cta" href={`/${locale}/plans?product=pro_30d`}>
+              {t.upsellCta}
+            </Link>
+            <p className="saju-upsell-honest">{t.upsellHonest}</p>
+          </aside>
+
+          <p className="saju-limits">{t.limits}</p>
+        </section>
+      )}
+    </main>
+  );
+}
