@@ -170,7 +170,7 @@ test("skip link and generated result move keyboard focus", async ({ page }, test
 test("mobile interactive targets meet the 44 pixel minimum", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/en/question");
-  const undersized = await page.locator("button, summary, .bottom-nav a, .bottom-nav span, .locale-switch").evaluateAll((elements) =>
+  const undersized = await page.locator("button, summary, .home-bar a, .locale-switch").evaluateAll((elements) =>
     elements
       .filter((element) => {
         const rect = element.getBoundingClientRect();

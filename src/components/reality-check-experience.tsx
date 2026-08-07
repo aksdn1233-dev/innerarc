@@ -35,6 +35,7 @@ import {
 import type { Locale } from "@/i18n/config";
 import type { RealityCheckCopy } from "@/i18n/reality-check-copy";
 import { focusAndScroll } from "@/components/accessibility";
+import { HomeBar } from "@/components/home-bar";
 
 type Props = { locale: Locale; copy: RealityCheckCopy };
 
@@ -575,17 +576,7 @@ export function RealityCheckExperience({ locale, copy }: Props) {
           </section>
         )}
       </main>
-
-      <nav className="bottom-nav reality-nav" aria-label={locale === "ko" ? "주요 탐색" : "Primary navigation"}>
-        {copy.nav.map((item, index) => {
-          if (index === 0) return <Link href={`/${locale}`} key={item}>{item}</Link>;
-          if (index === 1) return <Link href={`/${locale}/me`} prefetch={false} key={item}>{item}</Link>;
-          if (index === 2) return <Link href={`/${locale}/relationship`} key={item}>{item}</Link>;
-          if (index === 3) return <Link href={`/${locale}/question`} key={item}>{item}</Link>;
-          if (index === 4) return <span className="active" key={item}>{item}</span>;
-          return <span key={item}>{item}</span>;
-        })}
-      </nav>
+      <HomeBar locale={locale} />
     </>
   );
 }

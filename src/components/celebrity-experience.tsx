@@ -19,6 +19,7 @@ import { buildCelebrityMatchShare } from "@/core/share";
 import { ShareCardPanel } from "@/components/share-card-panel";
 import { focusAndScroll, scrollToElement } from "@/components/accessibility";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
+import { HomeBar } from "@/components/home-bar";
 
 type Props = { locale: Locale; copy: CelebrityCopy };
 
@@ -139,17 +140,7 @@ export function CelebrityExperience({ locale, copy }: Props) {
           </section>
         )}
       </main>
-
-      <nav className="bottom-nav celebrity-nav" aria-label={locale === "ko" ? "주요 탐색" : "Primary navigation"}>
-        {copy.nav.map((item, index) => {
-          if (index === 0) return <Link href={`/${locale}`} key={item}>{item}</Link>;
-          if (index === 1) return <Link href={`/${locale}/me`} prefetch={false} key={item}>{item}</Link>;
-          if (index === 2) return <Link href={`/${locale}/relationship`} key={item}>{item}</Link>;
-          if (index === 3) return <Link href={`/${locale}/question`} key={item}>{item}</Link>;
-          if (index === 4) return <Link href={`/${locale}/reality-check`} key={item}>{item}</Link>;
-          return <span className="active" key={item}>{item}</span>;
-        })}
-      </nav>
+      <HomeBar locale={locale} />
     </>
   );
 }
