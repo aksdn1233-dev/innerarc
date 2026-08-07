@@ -151,6 +151,12 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
               <small>{d.nameHelp}</small>
             </div>
 
+            {/* A free taster asked for seven things before it would show anything. Only
+                the birth date is needed to calculate, so everything that merely sharpens
+                the result is folded away — still one click from open, not in the way of
+                someone who came to see a number. */}
+            <details className="optional-intake">
+              <summary>{locale === "ko" ? "무엇이 궁금한지 알려주면 더 맞춰드려요 (선택)" : "Tell it what you want to know, and it fits closer (optional)"}</summary>
             <fieldset className="field">
               <legend>{d.interest}</legend>
               <div className="choice-row">
@@ -196,6 +202,8 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
                 ))}
               </div>
             </fieldset>
+
+            </details>
 
             <label className="check">
               <input type="checkbox" name="privacyRequired" required />

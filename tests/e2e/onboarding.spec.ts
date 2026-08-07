@@ -18,6 +18,13 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   })).toBeAttached();
   await expect(page.getByRole("link", { name: "내 패턴 확인하기" })).toBeVisible();
   await expect(page.getByRole("link", { name: "먼저 무료로 확인" })).toBeVisible();
+
+  // The home page is the opening screen and nothing else — everything that used to sit
+  // under it now lives at /reading, so scrolling the home page finds nothing.
+  await expect(page.locator(".report-preview")).toHaveCount(0);
+  await expect(page.locator("#onboarding")).toHaveCount(0);
+
+  await page.goto("/ko/reading");
   await expect(page.locator(".report-preview")).toContainText(
     "실제 후기가 아닌 리포트 구성 예시입니다.",
   );
@@ -49,8 +56,10 @@ test("mobile home has no overflow and the sticky payment bar yields to the form"
     await expect(page.getByRole("link", { name: "내 패턴 확인하기" })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
 
-    // The opening screen carries the same action at thumb height, so the sticky bar stays
-    // out of the way there instead of covering it, and appears once the hero is passed.
+    // Nothing under the opening screen, so nothing for a sticky bar to sit over.
+    await expect(page.locator(".mobile-purchase-bar")).toHaveCount(0);
+
+    await page.goto("/ko/reading");
     await expect(page.locator(".mobile-purchase-bar")).toHaveCount(0);
     await page.locator("#products").scrollIntoViewIfNeeded();
     await expect(page.locator(".mobile-purchase-bar")).toBeVisible();
@@ -96,6 +105,8 @@ test("onboarding focus, concern, depth, and AI consent create a local context la
   await page.goto("/en/profile");
   await page.locator("#birthDate").fill("1994-11-04");
   await page.locator("#name").fill("Minji Kim");
+  // Focus, concern and depth are folded away on the free page; open them first.
+  await page.getByText("Tell it what you want to know, and it fits closer (optional)").click();
   await page.getByText("Relationships", { exact: true }).click();
   await page.locator("#concern").fill(privateConcern);
   await page.getByText("Deep", { exact: true }).click();

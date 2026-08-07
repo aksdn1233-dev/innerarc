@@ -20,6 +20,13 @@ type Props = {
   reviews: readonly PublicReview[];
   /** Every published review, not just the shown few. Null when the table is unreachable. */
   reviewCount: number | null;
+  /**
+   * The home page renders the opening screen alone — film, one line, two buttons, and
+   * nothing under it to scroll to. `/{locale}/reading` renders the same component with
+   * this set, which is where the questions, samples, prices, reviews, method and intake
+   * form live.
+   */
+  showEverything?: boolean;
 };
 
 type ReadingProductId = "comprehensive" | "premium_pdf";
@@ -213,7 +220,7 @@ function isValidGregorianDate(value: string) {
     && date.getUTCDate() === day;
 }
 
-export function HomeExperience({ locale, dictionary: d, pricing, pageContent, reviews, reviewCount }: Props) {
+export function HomeExperience({ locale, dictionary: d, pricing, pageContent, reviews, reviewCount, showEverything = false }: Props) {
   const [selectedProduct, setSelectedProduct] = useState<ReadingProductId>("comprehensive");
   const [focusId, setFocusId] = useState<FocusId>("relationships");
   const [error, setError] = useState<IntakeError | null>(null);
@@ -478,7 +485,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             <p className="cinema-hook">{t.heroHook}</p>
             <a
               className="cinema-cta"
-              href="#onboarding"
+              href={showEverything ? "#onboarding" : `/${locale}/reading#onboarding`}
               onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "hero" })}
             >
               {t.primary}
@@ -495,6 +502,12 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
           </div>
         </section>
 
+        {/* The opening screen is the whole home page: the film, one line, two buttons.
+            Everything that used to sit under it — the questions, the samples, the prices,
+            the reviews, the method, the intake form — now lives at /{locale}/reading, so
+            scrolling the home page finds nothing, which is the point. */}
+        {showEverything && (
+          <>
         <section className="entry-questions" id="questions" aria-labelledby="questions-title">
           <div className="section-heading">
             <p className="eyebrow">{t.entryEyebrow}</p>
@@ -653,8 +666,10 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
           <nav aria-label={locale === "ko" ? "법률 안내" : "Legal"}><Link href={`/${locale}/terms`}>{locale === "ko" ? "이용조건" : "Terms"}</Link><Link href={`/${locale}/privacy`}>{locale === "ko" ? "개인정보" : "Privacy"}</Link><Link href={`/${locale}/orders`}>{locale === "ko" ? "구매 내역" : "Find a purchase"}</Link><Link href={`/${locale}/support`}>{locale === "ko" ? "고객 문의" : "Support"}</Link></nav>
           <small>{locale === "ko" ? "별루프 · 대표 박서준 · 사업자등록번호 482-12-03629 · 부산광역시 북구" : "Byeolloof · Busan, Republic of Korea"}</small>
         </footer>
+          </>
+        )}
       </main>
-      {!intakeVisible && !heroVisible && (
+      {showEverything && !intakeVisible && !heroVisible && (
         <a className="mobile-purchase-bar" href="#onboarding" onClick={() => {
           captureConversionEvent("primary_cta_click", locale, { location: "sticky" });
           captureConversionEvent("product_select", locale, { productCode: "pro_30d", location: "product_card" });

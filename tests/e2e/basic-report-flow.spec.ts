@@ -3,7 +3,8 @@ import { expect, test } from "@playwright/test";
 test.use({ viewport: { width: 390, height: 844 } });
 
 test("the retired Core product is absent and Detailed becomes the default", async ({ page }) => {
-  await page.goto("/ko#onboarding");
+  // The intake form lives on the reading page now; the home page is the film alone.
+  await page.goto("/ko/reading#onboarding");
   await expect(page.getByText("가장 궁금한 한 가지 (선택)")).toBeVisible();
   await expect(page.locator("#concern")).not.toHaveAttribute("required", "");
   await expect(page.locator('[data-product="plus_30d"]')).toHaveCount(0);

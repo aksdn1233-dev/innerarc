@@ -97,6 +97,8 @@ test("relationship-to-Reality-Check prefill has no serious accessibility violati
 test("generated onboarding context has no serious accessibility violation", async ({ page }) => {
   await page.goto("/en/profile");
   await page.locator("#birthDate").fill("1994-11-04");
+  // Focus, concern and depth are folded away on the free page; open them first.
+  await page.getByText("Tell it what you want to know, and it fits closer (optional)").click();
   await page.getByText("Relationships", { exact: true }).click();
   await page.locator("#concern").fill("How can I observe a recurring relationship pattern?");
   await page.getByText("Deep", { exact: true }).click();
