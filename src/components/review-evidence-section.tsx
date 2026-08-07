@@ -1,5 +1,6 @@
 import { NumberPath, SceneDivider, ThreadWeave } from "@/components/brand-visuals";
 import { summarizeReviewOutcomes, type PublicReview } from "@/core/reviews";
+import { LIVE_REACTIONS } from "@/core/reviews/live-reactions";
 import type { Locale } from "@/i18n/config";
 import { evidenceCopy } from "@/i18n/evidence-copy";
 import {
@@ -116,6 +117,39 @@ export function ReviewEvidenceSection({
           </div>
         </div>
       )}
+
+      {/* Sits below whichever of the two blocks above rendered, and never inside either
+          of them, so nothing here can be read as a review of a purchased report. The
+          provenance line comes before the words, not after. */}
+      <section className="live-reactions" aria-labelledby="live-reactions-title">
+        <header className="live-reactions-head">
+          <span className="live-reactions-badge">
+            <i aria-hidden="true" />
+            {t.liveLabel}
+          </span>
+          <h3 id="live-reactions-title">{t.liveTitle}</h3>
+          <p className="live-reactions-intro">{t.liveIntro}</p>
+        </header>
+
+        <ol className="live-reactions-thread">
+          {LIVE_REACTIONS.map((reaction, index) => (
+            <li className="live-reaction" key={`${reaction.handle}-${index}`}>
+              {/* The handle's first character, not a photograph. There is no picture of
+                  any of these people here and there is not going to be one. */}
+              <span aria-hidden="true" className="live-reaction-mark">
+                {[...reaction.handle][0]}
+              </span>
+              <div className="live-reaction-bubble">
+                <span className="live-reaction-handle">{reaction.handle}</span>
+                <p lang="ko">{reaction.text}</p>
+                {locale === "en" && <p className="live-reaction-gloss">{reaction.gloss}</p>}
+              </div>
+            </li>
+          ))}
+        </ol>
+
+        <p className="live-reactions-boundary">{t.liveBoundary}</p>
+      </section>
 
       <div className="evidence-faq">
         <h3>{t.faqTitle}</h3>

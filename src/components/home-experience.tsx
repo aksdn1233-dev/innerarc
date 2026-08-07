@@ -232,6 +232,11 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   // sound is the visitor's to switch on. Off is the honest default anyway: nobody wants
   // a page to start talking at them.
   const [soundOn, setSoundOn] = useState(false);
+  // Pressing the primary action opens the intake over the film, in place. It is not a
+  // page to scroll to and not a place to navigate to — the character stays on screen.
+  const [intakeOpen, setIntakeOpen] = useState(false);
+  const [intakeStep, setIntakeStep] = useState<1 | 2>(1);
+  const [gender, setGender] = useState<"female" | "male" | "unstated">("unstated");
   const heroRef = useRef<HTMLElement>(null);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const trackedRef = useRef(new Set<string>());
@@ -405,6 +410,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
       name: String(form.get("name") ?? "").trim(),
       focusId: String(form.get("interest") ?? "relationships"),
       concern: [concern, reportFocus].filter(Boolean).join(" / ").slice(0, 2_000),
+      gender,
       createdAt: new Date().toISOString(),
     };
     captureConversionEvent("form_complete", locale, { productCode: payload.productCode });
@@ -432,10 +438,6 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             thumb. Everything explanatory has moved below the fold, where it belongs. */}
         <section className="cinema-hero" aria-labelledby="hero-title" ref={heroRef}>
           <NightHorizon className="cinema-hero-scene" />
-          {/* The clip is 16:9 and the screen is 9:16, so filling one crops the other.
-              A blurred, enlarged copy of its first frame fills the screen behind, and the
-              clip itself is shown whole on top: nothing cropped, no dead space. */}
-          <div className="cinema-hero-backdrop" aria-hidden="true" />
           {/* 태율(太律), the numerology guide from the supplied character sheet.
               Decorative: the title beside it carries the meaning, so it is not announced
               again.
@@ -480,16 +482,113 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
               : (locale === "ko" ? "🔈 소리 켜기" : "🔈 Sound on")}
           </button>
 
+
+          {intakeOpen && (
+            <div className="hero-intake" role="dialog" aria-modal="true" aria-label={t.formTitle}>
+              <form className="hero-intake-panel" onSubmit={submit} noValidate>
+                <button
+                  aria-label={locale === "ko" ? "닫기" : "Close"}
+                  className="hero-intake-close"
+                  onClick={() => { setIntakeOpen(false); setIntakeStep(1); }}
+                  type="button"
+                >
+                  ×
+                </button>
+
+                <p className="hero-intake-step">{intakeStep} / 2</p>
+
+                <div hidden={intakeStep !== 1}>
+                  <h2>{locale === "ko" ? "먼저, 당신을 알려주세요" : "First, tell it who you are"}</h2>
+
+                  <label htmlFor="hero-birthDate">{locale === "ko" ? "생년월일 (양력)" : "Birth date"}</label>
+                  <input id="hero-birthDate" name="birthDate" type="date" required />
+                  {error?.field === "birthDate" && <span className="field-error" role="alert">{error.message}</span>}
+
+                  <span className="hero-intake-label">{locale === "ko" ? "성별" : "Gender"}</span>
+                  <div className="hero-intake-choices">
+                    {([["female", locale === "ko" ? "여성" : "Female"],
+                       ["male", locale === "ko" ? "남성" : "Male"],
+                       ["unstated", locale === "ko" ? "밝히지 않음" : "Prefer not to say"]] as const).map(([value, label]) => (
+                      <button
+                        aria-pressed={gender === value}
+                        className={gender === value ? "is-chosen" : undefined}
+                        key={value}
+                        onClick={() => setGender(value)}
+                        type="button"
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+
+                  <label htmlFor="hero-name">{locale === "ko" ? "이름 (선택)" : "Name (optional)"}</label>
+                  <input id="hero-name" name="name" type="text" maxLength={200} autoComplete="name" />
+
+                  <button className="cinema-cta" onClick={() => setIntakeStep(2)} type="button">
+                    {locale === "ko" ? "다음으로" : "Next"}
+                  </button>
+                </div>
+
+                <div hidden={intakeStep !== 2}>
+                  <h2>{locale === "ko" ? "무엇이 가장 궁금하세요?" : "What do you most want to know?"}</h2>
+
+                  <div className="hero-intake-choices is-wrap">
+                    {d.interests.slice(0, 5).map((option) => (
+                      <label className={focusId === option.value ? "is-chosen" : undefined} key={option.value}>
+                        <input
+                          checked={focusId === option.value}
+                          name="interest"
+                          onChange={() => setFocusId(option.value as FocusId)}
+                          type="radio"
+                          value={option.value}
+                        />
+                        <span>{option.label}</span>
+                      </label>
+                    ))}
+                  </div>
+
+                  <label htmlFor="hero-concern">{locale === "ko" ? "궁금한 한 가지 (선택)" : "The one thing (optional)"}</label>
+                  <textarea id="hero-concern" name="concern" maxLength={1_000} placeholder={concernExamples[locale][focusId]} />
+
+                  <label className="check">
+                    <input name="privacyRequired" required type="checkbox" />
+                    <span>{t.privacy}</span>
+                  </label>
+                  {error?.field === "privacy" && <span className="field-error" role="alert">{error.message}</span>}
+
+                  <button className="cinema-cta" type="submit">{t.submit}</button>
+                  <button className="hero-intake-back" onClick={() => setIntakeStep(1)} type="button">
+                    {locale === "ko" ? "뒤로" : "Back"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
           <div className="cinema-hero-actions">
             {/* One line, and only one. It has to earn the tap on its own. */}
             <p className="cinema-hook">{t.heroHook}</p>
-            <a
-              className="cinema-cta"
-              href={showEverything ? "#onboarding" : `/${locale}/reading#onboarding`}
-              onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "hero" })}
-            >
-              {t.primary}
-            </a>
+            {showEverything ? (
+              <a
+                className="cinema-cta"
+                href="#onboarding"
+                onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "hero" })}
+              >
+                {t.primary}
+              </a>
+            ) : (
+              <button
+                className="cinema-cta"
+                onClick={() => {
+                  captureConversionEvent("primary_cta_click", locale, { location: "hero" });
+                  trackFormStart();
+                  setIntakeOpen(true);
+                }}
+                type="button"
+              >
+                {t.primary}
+              </button>
+            )}
             {/* The free calculation at /profile existed but nothing on this page linked to
                 it, so a visitor who was not ready to pay had no next step but to leave. */}
             <Link

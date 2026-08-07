@@ -57,7 +57,10 @@ for (const entry of routes) {
     expect(metrics.resourceCount).toBeLessThan(40);
     expect(metrics.jsTransferBytes).toBeLessThan(350_000);
     expect(metrics.jsDecodedBytes).toBeLessThan(1_050_000);
-    expect(metrics.cssDecodedBytes).toBeLessThan(120_000);
+    // The intake that opens over the hero is a real screen's worth of styling on a
+    // stylesheet every route loads. Ten superseded hero blocks were consolidated away
+    // first, which paid for about half of it; the rest is the feature. Still bounded.
+    expect(metrics.cssDecodedBytes).toBeLessThan(124_000);
     expect(metrics.totalTransferBytes).toBeLessThan(transferBudget);
     expect(metrics.totalDecodedBytes).toBeLessThan(decodedBudget);
   });
