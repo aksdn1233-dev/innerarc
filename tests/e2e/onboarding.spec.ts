@@ -52,10 +52,17 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
 
   // Real live-chat reactions, shown as their own block with their origin stated, and
   // never folded into the purchase-review area above them.
-  await expect(page.locator(".live-reaction")).toHaveCount(7);
+  // One readable track of seven; the second is the loop's seam and is hidden from
+  // assistive technology, so a screen reader hears each line once.
+  await expect(page.locator(".live-reactions-track:not([aria-hidden]) .live-reaction")).toHaveCount(7);
+  await expect(page.locator('.live-reactions-track[aria-hidden="true"]')).toHaveCount(1);
   await expect(page.locator(".live-reactions-intro")).toContainText("실시간 사주·타로 라이브 방송");
   await expect(page.locator(".live-reaction-bubble").first()).toContainText("정말 딱 맞네요 훌륭하십니다");
   await expect(page.locator(".live-reactions-boundary")).toContainText("웹사이트 리포트를 구매하고 남긴 후기와는 별개입니다");
+  // The row drifts inside its own clipped strip, so a track wider than the phone never
+  // becomes a page that scrolls sideways.
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth))
+    .toBeLessThanOrEqual(0);
   await expect(page.locator(".evidence-section .evidence-review")).toHaveCount(0);
 
   await page.goto("/ko/profile");

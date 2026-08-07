@@ -276,6 +276,30 @@ describe("live broadcast chat is shown as itself, not as purchase feedback", () 
     expect(section).not.toMatch(/hasReviews[\s\S]{0,200}live-reactions/);
   });
 
+  it("drifts on its own and is not something a reader has to scroll into view", async () => {
+    const section = withoutComments(
+      await readFile("src/components/review-evidence-section.tsx", "utf8"),
+    );
+    // The seam track is a visual duplicate only, so it is hidden from assistive
+    // technology and every line is announced once.
+    expect(section).toContain("aria-hidden={isDuplicate || undefined}");
+
+    const css = await readFile("src/app/globals.css", "utf8");
+    const marquee = css.slice(
+      css.indexOf(".live-reactions-marquee {"),
+      css.indexOf(".evidence-faq {"),
+    );
+    // Clipped, so a track wider than the screen cannot widen the page.
+    expect(marquee).toMatch(/\.live-reactions-marquee \{[^}]*overflow: hidden/);
+    expect(marquee).toContain("animation: live-reaction-drift");
+    // It stops while someone is reading one, and it does not move at all for a visitor
+    // who asked for reduced motion.
+    expect(marquee).toContain("animation-play-state: paused");
+    expect(marquee).toMatch(/prefers-reduced-motion: reduce[\s\S]*animation: none/);
+    // No scroll-driven reveal anywhere in the block: the bubbles pass the reader.
+    expect(marquee).not.toMatch(/animation-timeline|view-timeline|scroll\(/);
+  });
+
   it("claims no result and quotes no price", () => {
     const spoken = LIVE_REACTIONS.map((reaction) => `${reaction.text} ${reaction.gloss}`).join(" ");
     expect(spoken).not.toMatch(/\d+\s*%|원|won|보장|guarantee|refund|환불/i);

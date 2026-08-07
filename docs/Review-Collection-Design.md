@@ -133,6 +133,15 @@ applied, under a heading and an intro that say where the words came from before 
 any of them, and above a closing line that states the boundary again. It renders in both
 states — with and without approved reviews — because its truth does not depend on theirs.
 
+The bubbles drift sideways on their own rather than waiting below the fold: two identical
+tracks run end to end inside a clipped, edge-faded strip and each slides exactly one track
+width, so the seam never shows. The duplicate is `aria-hidden`, so a screen reader hears
+each line once. The row pauses on hover and on focus, and under
+`prefers-reduced-motion: reduce` it does not move at all — it becomes an ordinary
+swipeable strip and the duplicate track is removed. Nothing in the block is revealed by
+scrolling; scroll-driven reveal is reserved for the report, where a reader has already
+paid to be led through something.
+
 Rules the list follows:
 
 - Verbatim from broadcast captures the operator kept, typos and trailing dots included.

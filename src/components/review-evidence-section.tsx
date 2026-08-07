@@ -131,22 +131,38 @@ export function ReviewEvidenceSection({
           <p className="live-reactions-intro">{t.liveIntro}</p>
         </header>
 
-        <ol className="live-reactions-thread">
-          {LIVE_REACTIONS.map((reaction, index) => (
-            <li className="live-reaction" key={`${reaction.handle}-${index}`}>
-              {/* The handle's first character, not a photograph. There is no picture of
-                  any of these people here and there is not going to be one. */}
-              <span aria-hidden="true" className="live-reaction-mark">
-                {[...reaction.handle][0]}
-              </span>
-              <div className="live-reaction-bubble">
-                <span className="live-reaction-handle">{reaction.handle}</span>
-                <p lang="ko">{reaction.text}</p>
-                {locale === "en" && <p className="live-reaction-gloss">{reaction.gloss}</p>}
-              </div>
-            </li>
+        {/* The bubbles drift sideways past the reader instead of waiting below the fold
+            for a scroll. Two identical tracks sit end to end and both slide by exactly
+            one track width, so the seam never shows; the second is hidden from assistive
+            technology, which reads the first once and is done. */}
+        <div className="live-reactions-marquee">
+          {[false, true].map((isDuplicate) => (
+            <ol
+              aria-hidden={isDuplicate || undefined}
+              className="live-reactions-track"
+              key={String(isDuplicate)}
+            >
+              {LIVE_REACTIONS.map((reaction, index) => (
+                <li className="live-reaction" key={`${reaction.handle}-${index}`}>
+                  <div className="live-reaction-bubble">
+                    <span className="live-reaction-handle">
+                      {/* The handle's first character, not a photograph. There is no
+                          picture of any of these people here and there is not going to
+                          be one. It sits inside the bubble because in a moving row a
+                          circle beside one reads as belonging to the next. */}
+                      <i aria-hidden="true" className="live-reaction-mark">
+                        {[...reaction.handle][0]}
+                      </i>
+                      {reaction.handle}
+                    </span>
+                    <p lang="ko">{reaction.text}</p>
+                    {locale === "en" && <p className="live-reaction-gloss">{reaction.gloss}</p>}
+                  </div>
+                </li>
+              ))}
+            </ol>
           ))}
-        </ol>
+        </div>
 
         <p className="live-reactions-boundary">{t.liveBoundary}</p>
       </section>
