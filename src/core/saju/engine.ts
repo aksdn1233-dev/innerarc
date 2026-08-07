@@ -40,6 +40,9 @@ import {
 
 export const SAJU_RULE_VERSION = "jachyeong-1.0.0";
 
+// This engine's own limit, and a real one: below 1900 the Korean standard-time history
+// this module encodes does not apply, and above 2100 the solar-term series has not been
+// checked. It is not a product policy — that lives in `@/core/birth-range`.
 const MIN_YEAR = 1900;
 const MAX_YEAR = 2100;
 const DAY_MS = 86_400_000;

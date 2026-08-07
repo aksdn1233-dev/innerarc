@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { calculateNumerologyProfile } from "@/core/numerology";
 import { buildSajuChart, readStrength } from "@/core/saju";
 import { readAcrossSystems, type CrossReading } from "@/core/synthesis";
+import { MIN_BIRTH_DATE, currentMaxBirthDate, isAcceptedBirthDate } from "@/core/birth-range";
 
 function read(birthDate: string, birthTime?: string, sex: "female" | "male" = "female"): CrossReading {
   const numerology = calculateNumerologyProfile({ birthDate, name: "Minji Kim", personalYear: 2026 });
@@ -84,5 +85,55 @@ describe("what it refuses to guess", () => {
     // The reader is shown which number produced which phase, so they can disagree.
     expect(phaseFinding.fromNumerology).toMatch(/생명수 \d+ → [목화토금수]/);
     expect(phaseFinding.fromSaju).toMatch(/일간 .+ → [목화토금수]/);
+  });
+});
+
+describe("what a visitor may enter, versus what the engines can calculate", () => {
+  // These are three different limits and conflating them broke the celebrity comparison
+  // once already: narrowing the numerology engine to the product's range stopped it
+  // reading public figures born before 1900.
+  const trySaju = (birthDate: string) => {
+    try { buildSajuChart({ birthDate, sex: "female" }); return "ok"; }
+    catch { return "rejected"; }
+  };
+  const tryNumerology = (birthDate: string) => {
+    try { calculateNumerologyProfile({ birthDate, name: "", personalYear: 2026 }); return "ok"; }
+    catch { return "rejected"; }
+  };
+
+  it("keeps the numerology engine wide enough for historical public figures", () => {
+    // Marie Curie, 1867, is in the celebrity dataset.
+    expect(tryNumerology("1867-11-07")).toBe("ok");
+  });
+
+  it("keeps the 사주 engine at 1900, where its Korean clock history begins", () => {
+    expect(trySaju("1899-12-31")).toBe("rejected");
+    expect(trySaju("1900-01-01")).toBe("ok");
+    expect(trySaju("2100-12-31")).toBe("ok");
+    expect(trySaju("2101-01-01")).toBe("rejected");
+  });
+
+  it("bounds a visitor's own birth date to 1900 through today", () => {
+    const now = new Date("2026-08-07T12:00:00Z");
+    expect(isAcceptedBirthDate("1900-01-01", now)).toBe(true);
+    expect(isAcceptedBirthDate("1994-11-04", now)).toBe(true);
+    expect(isAcceptedBirthDate("1899-12-31", now)).toBe(false);
+    // A birth date in the future is always a typo, even though the engines reach 2100.
+    expect(isAcceptedBirthDate("2027-01-01", now)).toBe(false);
+    expect(isAcceptedBirthDate("2100-01-01", now)).toBe(false);
+  });
+
+  it("catches the dropped-digit typo that used to be calculated straight through", () => {
+    // 1994 mistyped as 0194 is a valid date and the wrong millennium. The engine will
+    // still compute it; the product refuses to accept it from a visitor.
+    expect(tryNumerology("0194-11-04")).toBe("ok");
+    expect(isAcceptedBirthDate("0194-11-04")).toBe(false);
+    expect(isAcceptedBirthDate("194-11-04")).toBe(false);
+    expect(isAcceptedBirthDate("1994-11-04")).toBe(true);
+  });
+
+  it("offers the picker exactly that window", () => {
+    expect(MIN_BIRTH_DATE).toBe("1900-01-01");
+    expect(currentMaxBirthDate(new Date("2026-08-07T12:00:00Z"))).toMatch(/^2026-08-0[67]$/);
   });
 });

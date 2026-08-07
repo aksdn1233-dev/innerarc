@@ -9,6 +9,7 @@ import {
   type SajuChart,
   type SajuViewpoints,
 } from "@/core/saju";
+import { MIN_BIRTH_DATE, currentMaxBirthDate, isAcceptedBirthDate } from "@/core/birth-range";
 import type { Locale } from "@/i18n/config";
 import { sajuCopy } from "@/i18n/saju-copy";
 
@@ -26,6 +27,8 @@ import { sajuCopy } from "@/i18n/saju-copy";
  * verify, which is the opposite of the argument this product makes.
  */
 export function SajuExperience({ locale }: { locale: Locale }) {
+  // Bounded here rather than in the module so a long-lived tab still refuses tomorrow.
+  const maxBirthDate = currentMaxBirthDate();
   const t = sajuCopy[locale];
   const [chart, setChart] = useState<SajuChart | null>(null);
   const [views, setViews] = useState<SajuViewpoints | null>(null);
@@ -36,6 +39,14 @@ export function SajuExperience({ locale }: { locale: Locale }) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const birthTime = String(form.get("birthTime") ?? "");
+    const submittedBirthDate = String(form.get("birthDate") ?? "");
+    // The field carries min/max, but a submitted form can arrive without them.
+    if (!isAcceptedBirthDate(submittedBirthDate)) {
+      setChart(null);
+      setViews(null);
+      setError(t.outOfRange);
+      return;
+    }
     try {
       const built = buildSajuChart({
         birthDate: String(form.get("birthDate") ?? ""),
@@ -64,7 +75,7 @@ export function SajuExperience({ locale }: { locale: Locale }) {
       <form className="saju-form" onSubmit={submit} noValidate>
         <div className="saju-field">
           <label htmlFor="saju-birthDate">{t.birthDate}</label>
-          <input id="saju-birthDate" name="birthDate" required type="date" />
+          <input id="saju-birthDate" name="birthDate" required type="date" max={maxBirthDate} min={MIN_BIRTH_DATE} />
           <small>{t.solarOnly}</small>
         </div>
 

@@ -7,6 +7,7 @@ import { ReviewEvidenceSection } from "@/components/review-evidence-section";
 import { captureConversionEvent } from "@/core/analytics";
 import type { ProductPricingSnapshot } from "@/core/product-prices";
 import type { PublicReview } from "@/core/reviews";
+import { MIN_BIRTH_DATE, currentMaxBirthDate } from "@/core/birth-range";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 import type { AdminPageContent } from "@/server/admin-content";
@@ -229,6 +230,8 @@ function isValidGregorianDate(value: string) {
 }
 
 export function HomeExperience({ locale, dictionary: d, pricing, pageContent, reviews, reviewCount, showEverything = false }: Props) {
+  // Bounded here rather than in the module so a long-lived tab still refuses tomorrow.
+  const maxBirthDate = currentMaxBirthDate();
   const [selectedProduct, setSelectedProduct] = useState<ReadingProductId>("comprehensive");
   const [focusId, setFocusId] = useState<FocusId>("relationships");
   const [error, setError] = useState<IntakeError | null>(null);
@@ -509,7 +512,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                   <h2>{locale === "ko" ? "먼저, 당신을 알려주세요" : "First, tell it who you are"}</h2>
 
                   <label htmlFor="hero-birthDate">{locale === "ko" ? "생년월일 (양력)" : "Birth date"}</label>
-                  <input id="hero-birthDate" name="birthDate" type="date" required />
+                  <input id="hero-birthDate" name="birthDate" type="date" max={maxBirthDate} min={MIN_BIRTH_DATE} required />
                   {error?.field === "birthDate" && <span className="field-error" role="alert">{error.message}</span>}
 
                   <span className="hero-intake-label">{locale === "ko" ? "성별" : "Gender"}</span>
@@ -741,7 +744,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
               <header className="intake-panel-header"><div><h3 id="intake-details-title">{locale === "ko" ? "리딩에 필요한 정보" : "Details for your reading"}</h3><p>{locale === "ko" ? "필수와 선택 항목을 구분해 필요한 정보만 받습니다." : "Required and optional fields are clearly separated."}</p></div></header>
               <div className="field field-premium">
                 <label htmlFor="birthDate">{locale === "ko" ? "2. 생년월일 (필수 · 양력)" : "2. Birth date (Required · Gregorian)"}</label>
-                <input id="birthDate" name="birthDate" type="date" required aria-invalid={error?.field === "birthDate"} aria-describedby="birthDate-help birthDate-error" />
+                <input id="birthDate" name="birthDate" type="date" max={maxBirthDate} min={MIN_BIRTH_DATE} required aria-invalid={error?.field === "birthDate"} aria-describedby="birthDate-help birthDate-error" />
                 <small id="birthDate-help">{locale === "ko" ? "예: 1994년 11월 4일 → 1994-11-04 · 달력에서 선택해 주세요." : "Example: November 4, 1994 → 1994-11-04 · Choose from the calendar."}</small>
                 {error?.field === "birthDate" && <span className="field-error" id="birthDate-error" role="alert">{error.message}</span>}
               </div>
