@@ -25,11 +25,29 @@ overrides:
   # GHSA-5p4m-2wfm-xmqj, fixed in 4.3.1. Reached only through eslint and its configs, so
   # it runs while linting and never in the deployed Worker.
   js-yaml: "4.3.1"
+  # GHSA-2v37-7h3g-55p8, fixed in 3.3.17: a custom generator with size zero loops
+  # forever. Arrives underneath the postcss pin above, so it is present wherever postcss
+  # is — the build toolchain, not the deployed Worker.
+  nanoid: "3.3.17"
   # GHSA-jr45-8vmc-qm54 and GHSA-v3r7-h72x-cjcm, both fixed in 7.29.0. Reached only
   # through wrangler and @cloudflare/vite-plugin by way of miniflare, so it never runs
   # in the deployed Worker, which uses the Cloudflare runtime's own fetch. Pinned inside
   # the 7.x line because that is what miniflare expects; 8.x is a major bump.
   undici: "7.29.0"
+
+# An advisory with no published fix. Unlike an override, this suppresses the finding
+# rather than resolving it, so it carries an expiry condition rather than a version.
+auditConfig:
+  ignoreGhsas:
+    # image-size ICNS / JXL / HEIF decompression-bomb DoS. Both advisories name 2.0.3 as
+    # the patched version, but 2.0.3 does not exist — 2.0.2 is the newest release, so
+    # there is nothing to pin to. It arrives through vinext, a devDependency: image
+    # dimensions are read while building, and the deployed Worker serves /_vinext/image
+    # through the `IMAGES` binding instead, so this parser never runs against anything a
+    # visitor sends. Reaching it would mean committing a hostile image to the repository.
+    # REMOVE THIS as soon as image-size publishes 2.0.3 and replace it with an override.
+    - GHSA-5p2g-fcmc-qvqq
+    - GHSA-w3rx-r6r6-pgpr
 
 patchedDependencies:
   minimatch@3.1.5: patches/minimatch@3.1.5.patch
