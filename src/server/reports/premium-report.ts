@@ -20,6 +20,7 @@ import { tierBadgeLabel } from "@/core/tiers";
 import type { Locale } from "@/i18n/config";
 import { createDetailPaidReport } from "@/server/reports/detail-report";
 import { labelAdviceItems } from "@/server/reports/advice-subject";
+import { polishReportText } from "@/server/reports/report-display";
 
 export const PREMIUM_REPORT_SERVICE_YEAR = 2026;
 export const PREMIUM_REPORT_CONTENT_VERSION = "premium-report-composer-2.0.0";
@@ -236,15 +237,15 @@ function unique(items: readonly string[], limit: number): string[] {
 }
 
 function enrichBody(
-  category: DetailCoverageCategory,
+  _category: DetailCoverageCategory,
   body: string,
   addition: string,
   locale: Locale,
 ): string {
   const bridge = localized(
     locale,
-    `\n\n[프리미엄 확장 · ${category}] ${addition}`,
-    `\n\n[Premium extension · ${category}] ${addition}`,
+    `\n\n더 깊게 보면, ${addition}`,
+    `\n\nIn greater depth, ${addition}`,
   );
   return `${body}${bridge}`;
 }
@@ -369,12 +370,12 @@ export function createPremiumPaidReport(
     people_collaboration: localized(locale, `협업에서는 상대의 성의보다 완료 기준·책임자·검수일을 보세요. 설명하지 않은 기대를 능력 평가로 바꾸지 말고, 기준을 문서로 넘긴 뒤 결과를 판단해야 합니다.`, "Use written completion criteria, ownership, and review dates instead of unspoken expectations."),
     close_relationships: localized(locale, `가까운 관계에서는 마음을 추측하기보다 약속 이행, 경계 존중, 갈등 뒤 수습 행동을 보세요. 한 사람이 계속 이해하고 수습해야만 유지되는 평화는 안정이 아니라 부담의 편중입니다.`, "Judge close relationships by kept commitments, respected boundaries, and repair after conflict."),
     stress_response: localized(locale, `압박 시 통제 욕구가 올라오면 24시간 동안 결정 범위를 줄이고, 지금 직접 해야 할 일 하나·위임할 일 하나·확인만 할 일 하나로 나누세요. 수면과 식사가 흔들리면 판단보다 회복을 먼저 둡니다.`, "Under pressure, separate one task to own, one to delegate, and one merely to monitor."),
-    current_year: localized(locale, `2026 개인년 ${profile.personalYear.value}(${personalYear.phase})에서는 ${personalYear.timing} 올해의 흐름은 결과를 보장하지 않으며, 실제 증거가 방향을 수정할 때 그 수정이 우선입니다.`, `In 2026 Personal Year ${profile.personalYear.value} (${personalYear.phase}), actual evidence overrides the cycle narrative.`),
+    current_year: localized(locale, `2026년 개인년 ${profile.personalYear.value}(${personalYear.phase})의 흐름은 이렇게 읽을 수 있습니다. ${personalYear.timing} 다만 실제 증거가 다른 방향을 가리키면 그 사실을 우선하세요.`, `In 2026 Personal Year ${profile.personalYear.value} (${personalYear.phase}), actual evidence overrides the cycle narrative.`),
     phased_direction: localized(locale, `각 단계는 날짜보다 통과 조건으로 움직이세요. 이전 단계의 완료 증거가 없으면 다음 단계의 비용·범위·관계 약속을 키우지 않는 것이 핵심입니다.`, "Advance by completion gates rather than dates alone."),
     situational_response: localized(locale, `상황이 바뀌면 처음 결론을 지키려 애쓰지 말고 긍정·경고·반증 신호를 다시 분류하세요. 반증이 두 번 누적되면 결론보다 방법과 가정을 먼저 수정합니다.`, "Reclassify positive, warning, and contradictory signals as circumstances change."),
     prioritized_action: localized(locale, `실행은 6단계로 제한하고 각 단계마다 완료 기준과 다음 관문을 붙였습니다.`, "Execution is limited to six gated steps."),
     stop_hold_boundary: localized(locale, `중단은 목표를 포기하는 일이 아니라 현재 방법이 증거를 만들지 못한다는 판단입니다. 목표는 유지하되 방법·범위·시점을 바꿀 수 있습니다.`, "Stopping a method is not abandoning the goal; it is responding to evidence."),
-    strong_conclusion: localized(locale, `최종 판단은 가능성보다 조건에 근거합니다. ${strategy.positive}이면 진행 가치가 높고, ${strategy.warning}이면 보류·축소가 더 유리합니다.`, `Proceed when ${strategy.positive}; reduce or hold when ${strategy.warning}.`),
+    strong_conclusion: localized(locale, `최종 판단은 가능성보다 조건에 근거합니다. 진행을 뒷받침하는 신호는 '${strategy.positive}'입니다. 반대로 '${strategy.warning}'이라는 경고 신호가 보이면 보류하거나 범위를 줄이세요.`, `Proceed when ${strategy.positive}; reduce or hold when ${strategy.warning}.`),
     grounded_advice: localized(locale, strategy.longTerm, strategy.longTerm),
   };
 
@@ -455,8 +456,8 @@ export function createPremiumPaidReport(
     locale,
     [
       `1. 최선 시나리오\n촉발 조건: ${strategy.positive}.\n예상 행동: 범위를 한 단계만 넓히고 합의와 수치를 기록합니다.\n가능한 결과: 성과와 관계 안정이 함께 커집니다.\n확인 신호: ${strategy.proof}이(가) 2회 이상 좋아집니다.\n대응: 다음 단계에 자원의 20%만 추가합니다.\n전환 기준: 긍정 신호가 두 검토 주기 연속 유지될 때만 확대합니다.`,
-      `2. 가장 현실적인 시나리오\n촉발 조건: 좋은 신호와 ${strategy.warning}이(가) 함께 보입니다.\n예상 행동: 진행은 하되 기간·비용·약속 범위를 절반으로 줄입니다.\n가능한 결과: 큰 손실 없이 실제 적합성을 확인합니다.\n확인 신호: 말보다 완료 행동이 조금씩 늘어납니다.\n대응: 한 번에 하나의 가설만 검증합니다.\n전환 기준: 2주 또는 한 계약 주기 뒤 증거표를 다시 평가합니다.`,
-      `3. 위험 시나리오\n촉발 조건: ${strategy.contradiction}.\n예상 행동: 불안을 덮으려고 더 많은 돈·시간·설명을 투입합니다.\n가능한 결과: 손실과 피로가 커지고 철회가 어려워집니다.\n확인 신호: ${strategy.warning}.\n대응: 신규 투입과 되돌리기 어려운 약속을 즉시 멈춥니다.\n전환 기준: ${strategy.threshold}이면 현재 방법을 중단하고 사실 확인부터 다시 시작합니다.`,
+      `2. 가장 현실적인 시나리오\n촉발 조건: 좋은 신호와 경고 신호가 함께 보입니다. 경고 신호는 '${strategy.warning}'입니다.\n예상 행동: 진행은 하되 기간·비용·약속 범위를 절반으로 줄입니다.\n가능한 결과: 큰 손실 없이 실제 적합성을 확인합니다.\n확인 신호: 말보다 완료 행동이 조금씩 늘어납니다.\n대응: 한 번에 하나의 가설만 검증합니다.\n전환 기준: 2주 또는 한 계약 주기 뒤 증거표를 다시 평가합니다.`,
+      `3. 위험 시나리오\n촉발 조건: ${strategy.contradiction}.\n예상 행동: 불안을 덮으려고 더 많은 돈·시간·설명을 투입합니다.\n가능한 결과: 손실과 피로가 커지고 철회가 어려워집니다.\n확인 신호: ${strategy.warning}.\n대응: 신규 투입과 되돌리기 어려운 약속을 즉시 멈춥니다.\n전환 기준: 다음 기준에 해당하면 현재 방법을 중단하고 사실 확인부터 다시 시작합니다. ${strategy.threshold}.`,
     ].join("\n\n"),
     [
       `1. Best case — Trigger: ${strategy.positive}. Behavior: expand only one step. Outcome: stronger results with stability. Signs: ${strategy.proof} improves twice. Response: add only 20% more resources. Threshold: expand after two positive review cycles.`,
@@ -481,7 +482,7 @@ export function createPremiumPaidReport(
       `2. 목표: 기준선 확보 · 행동: 현재 ${strategy.proof}을(를) 숫자·날짜·행동으로 기록합니다. · 완료 기준: 최소 3개 사실 확보 · 위험: 느낌을 사실로 적음 · 다음 관문: 가설 분리`,
       `3. 목표: 작은 검증 실행 · 행동: 비용과 범위를 절반으로 줄인 시험을 한 번 합니다. · 완료 기준: 시작·종료일과 결과가 남음 · 위험: 여러 가설을 동시에 바꿈 · 다음 관문: 신호 판정`,
       `4. 목표: 결과 판정 · 행동: 긍정·경고·반증 신호로 나눠 적습니다. · 완료 기준: 각 칸에 최소 1개 증거 · 위험: 원하는 결과만 고름 · 다음 관문: 유지·수정·중단 선택`,
-      `5. 목표: 경계 설정 · 행동: ${strategy.threshold}을(를) 중단 조건으로 일정과 관련자에게 명시합니다. · 완료 기준: 조건과 책임자가 기록됨 · 위험: 정 때문에 기준을 미룸 · 다음 관문: 두 번째 검증`,
+      `5. 목표: 경계 설정 · 행동: 중단 조건을 일정과 관련자에게 명시합니다. 기준은 '${strategy.threshold}'입니다. · 완료 기준: 조건과 책임자가 기록됨 · 위험: 정 때문에 기준을 미룸 · 다음 관문: 두 번째 검증`,
       `6. 목표: 다음 선택 확정 · 행동: 같은 기준으로 한 번 더 검토해 확대·유지·축소 중 하나를 고릅니다. · 완료 기준: 이유와 다음 검토일을 한 문장으로 기록 · 위험: 결론 없이 계속 분석 · 다음 관문: 실행 또는 종료`,
     ].join("\n\n"),
     "1. Rewrite the goal as one testable sentence.\n\n2. Record three baseline facts.\n\n3. Run one half-sized test.\n\n4. Classify positive, warning, and contradictory signs.\n\n5. Record the stop threshold and owner.\n\n6. Choose expand, maintain, or stop and set the next review date.",
@@ -494,8 +495,8 @@ export function createPremiumPaidReport(
   const stops = localized(
     locale,
     [
-      `1. ${strategy.threshold}이면 현재 방법을 즉시 중단합니다.`,
-      `2. ${strategy.contradiction}이면 기존 결론을 고집하지 않고 가정을 다시 씁니다.`,
+      `1. 다음 중단 기준에 해당하면 현재 방법을 즉시 멈춥니다: ${strategy.threshold}.`,
+      `2. 다음 반증 신호가 나타나면 기존 결론을 고집하지 않고 가정을 다시 씁니다: ${strategy.contradiction}.`,
       `3. 되돌릴 수 없는 비용·계약·관계 약속의 핵심 조건이 문서로 확인되지 않으면 보류합니다.`,
       `4. 수면·식사·업무·학업 같은 일상 기능이 2주 이상 뚜렷하게 나빠지면 속도를 낮추고 필요한 도움을 받습니다.`,
       `5. 모욕·위협·강요·감시·경계 침해가 나타나면 해석보다 안전 확보와 공식 지원을 우선합니다.`,
@@ -521,7 +522,7 @@ export function createPremiumPaidReport(
       body: signals,
     },
     {
-      title: localized(locale, "고객별 의사결정 기준", "Personal decision framework"),
+      title: localized(locale, "나를 위한 의사결정 기준", "Personal decision framework"),
       body: decisionFramework,
     },
     {
@@ -582,7 +583,7 @@ export function createPremiumPaidReport(
         `오늘 ${strategy.proof} 중 확인 가능한 사실 하나를 기록하세요.`,
         "되돌리기 어려운 결정은 사실 두 개와 다음 검토일이 생길 때까지 보류하세요.",
         "이번 주에 작은 검증 하나를 끝내고 긍정·경고·반증 신호로 나누세요.",
-        "직접 할 일·위임할 일·확인만 할 일을 각각 하나로 제한하세요.",
+        `${strategy.subject}에서 직접 바꿀 행동 하나, 외부에서 확인할 조건 하나, 지켜야 할 한계 하나를 정하세요.`,
         `중단 기준 '${strategy.threshold}'을 일정이나 메모에 남기세요.`,
         "두 번째 검토에서 확대·유지·축소 중 하나를 반드시 고르세요.",
       ]
@@ -626,12 +627,23 @@ export function createPremiumPaidReport(
     coverageCategories: [...DETAIL_COVERAGE_CATEGORIES, ...PREMIUM_ONLY_CATEGORIES],
     enrichmentAudit,
   };
+  const polishedDraft: PaidReport = {
+    ...draft,
+    summary: polishReportText(draft.summary, locale),
+    sections: draft.sections.map((section) => ({
+      ...section,
+      body: polishReportText(section.body, locale),
+    })),
+    actions: draft.actions.map((item) => polishReportText(item, locale)),
+    cautions: draft.cautions.map((item) => polishReportText(item, locale)),
+    disclaimer: polishReportText(draft.disclaimer, locale),
+  };
   const tierComparisonAudit = auditTierComparison(
     { ...detail, coverageCategories: DETAIL_COVERAGE_CATEGORIES },
-    draft,
+    polishedDraft,
   );
   if (Object.values(tierComparisonAudit).some((items) => items.length > 0)) {
     throw new Error(`PREMIUM_TIER_INHERITANCE_FAILED:${JSON.stringify(tierComparisonAudit)}`);
   }
-  return { ...draft, tierComparisonAudit };
+  return { ...polishedDraft, tierComparisonAudit };
 }

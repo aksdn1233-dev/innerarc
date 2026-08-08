@@ -30,7 +30,7 @@ export function deduplicateReportSections(
   const result = new Array<{ title: string; body: string }>(sections.length);
   for (let sectionIndex = sections.length - 1; sectionIndex >= 0; sectionIndex -= 1) {
     const section = sections[sectionIndex]!;
-    const sentences = section.body.split(SENTENCE_BOUNDARY);
+    const sentences = section.body.match(/[^.!?。]+[.!?。]+(?:\s+|$)|[^.!?。]+$/gu) ?? [section.body];
     const kept: string[] = [];
     for (let sentenceIndex = sentences.length - 1; sentenceIndex >= 0; sentenceIndex -= 1) {
       const sentence = sentences[sentenceIndex]!;
@@ -39,7 +39,7 @@ export function deduplicateReportSections(
       if (key.length >= 24) seen.add(key);
       kept.push(sentence);
     }
-    result[sectionIndex] = { ...section, body: kept.reverse().join(" ").trim() };
+    result[sectionIndex] = { ...section, body: kept.reverse().join("").trim() };
   }
   return result;
 }

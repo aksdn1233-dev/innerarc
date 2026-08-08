@@ -21,7 +21,14 @@ export function enhancePaidReport(report: PaidReport, input: PaidReadingInput): 
   const supplements: string[] = [];
   const crossBody = ko
     ? cross.findings.slice(0, input.productCode === "plus_30d" ? 1 : undefined)
-      .map((finding) => `[${finding.agreement}] ${finding.fromNumerology} / ${finding.fromSaju}\n${finding.reading}`)
+      .map((finding) => {
+        const label = finding.agreement === "reinforcement"
+          ? "서로 보강되는 지점"
+          : finding.agreement === "tension"
+            ? "서로 충돌하는 지점"
+            : "균형을 잡아야 할 지점";
+        return `${label}: ${finding.fromNumerology} / ${finding.fromSaju}\n${finding.reading}`;
+      })
       .join("\n\n") + (cross.skipped.length ? `\n\n${cross.skipped.join(" ")}` : "")
       + (input.gender === "unstated"
         ? "\n\n성별 미입력으로 대운 방향은 단정하지 않고 원국 구조만 교차했습니다."

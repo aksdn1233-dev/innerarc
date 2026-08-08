@@ -25,6 +25,7 @@ import {
   labelFormattedAdviceBody,
 } from "@/server/reports/advice-subject";
 import { getAuthorizedStoredReport } from "@/server/reports/access";
+import { polishReportText } from "@/server/reports/report-display";
 import { findReviewByOrderId } from "@/server/reviews";
 
 export const dynamic = "force-dynamic";
@@ -226,12 +227,13 @@ export default async function PurchasedReportPage({
   const chapterBadge = (index: number) =>
     locale === "ko" ? `제 ${index + 1} 장` : `Chapter ${String(index + 1).padStart(2, "0")}`;
   const adviceDomain = inferAdviceDomain(report.concern);
-  const labeledActions = labelAdviceItems(report.actions, locale, adviceDomain);
-  const labeledCautions = labelAdviceItems(report.cautions, locale, adviceDomain);
+  const polished = (text: string) => polishReportText(text, locale);
+  const labeledActions = labelAdviceItems(report.actions.map(polished), locale, adviceDomain);
+  const labeledCautions = labelAdviceItems(report.cautions.map(polished), locale, adviceDomain);
   const withAdviceSubject = (title: string, body: string) =>
     /상황별 대처|보류·중단|위험|주의|체크리스트|Situation-specific|Stop, hold|Risk|Caution|checklist/u.test(title)
-      ? labelFormattedAdviceBody(body, locale, adviceDomain)
-      : body;
+      ? labelFormattedAdviceBody(polished(body), locale, adviceDomain)
+      : polished(body);
   return (
     <>
       <main
@@ -303,7 +305,7 @@ export default async function PurchasedReportPage({
             tone="gold"
           >
             <WebtoonCharacterArt src="/images/taeyul/panels/04-insight.jpg" variant="panel" />
-            <WebtoonDialogue text={directSection.body} />
+            <WebtoonDialogue text={polished(directSection.body)} />
             <WebtoonCue />
           </WebtoonPanel>
         )}
@@ -315,7 +317,7 @@ export default async function PurchasedReportPage({
             tone="paper"
           >
             <WebtoonCharacterArt src="/images/taeyul/47-smile-soft.jpg" />
-            {characterLead && <WebtoonDialogue text={characterLead} />}
+            {characterLead && <WebtoonDialogue text={polished(characterLead)} />}
           </WebtoonPanel>
         )}
 
@@ -336,7 +338,7 @@ export default async function PurchasedReportPage({
             {numberSection && (
               <details>
                 <summary>{locale === "ko" ? "계산 기준 보기" : "View the basis"}</summary>
-                <p className="webtoon-body">{numberSection.body}</p>
+                <p className="webtoon-body">{polished(numberSection.body)}</p>
               </details>
             )}
           </WebtoonPanel>
@@ -377,7 +379,7 @@ export default async function PurchasedReportPage({
           {premiumManualSection && (
             <div className="premium-manual">
               <h3>{premiumManualSection.title}</h3>
-              <p className="webtoon-body">{premiumManualSection.body}</p>
+              <WebtoonDialogue text={withAdviceSubject(premiumManualSection.title, premiumManualSection.body)} />
             </div>
           )}
         </WebtoonPanel>
@@ -413,7 +415,7 @@ export default async function PurchasedReportPage({
               <div className="webtoon-inner">
                 <details className="premium-progressive">
                   <summary>{section.title}</summary>
-                  <p className="webtoon-body">{withAdviceSubject(section.title, section.body)}</p>
+                  <WebtoonDialogue text={withAdviceSubject(section.title, section.body)} />
                 </details>
               </div>
             </section>
@@ -447,7 +449,7 @@ export default async function PurchasedReportPage({
             tone="night"
           >
             <WebtoonCharacterArt align="right" src="/images/taeyul/panels/06-closing.jpg" variant="panel" />
-            <WebtoonDialogue text={finalSection.body} />
+            <WebtoonDialogue text={polished(finalSection.body)} />
           </WebtoonPanel>
         )}
 

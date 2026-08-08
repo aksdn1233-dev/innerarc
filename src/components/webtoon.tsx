@@ -105,10 +105,32 @@ export function WebtoonOrbs({
    paragraphs as real <p> elements preserves the reading order while giving each thought
    its own visual beat on a phone. */
 export function WebtoonDialogue({ text }: { text: string }) {
-  const beats = text
+  const paragraphs = text
     .split(/\n{2,}/u)
     .map((beat) => beat.trim())
     .filter(Boolean);
+  const beats = paragraphs.flatMap((paragraph) => {
+    const lines = paragraph.split(/\n+/u).map((line) => line.trim()).filter(Boolean);
+    if (lines.length > 1) return lines;
+    if (paragraph.length <= 180) return [paragraph];
+
+    const sentences = paragraph
+      .split(/(?<=[가-힣A-Za-z][.!?。])\s+/u)
+      .map((sentence) => sentence.trim())
+      .filter(Boolean);
+    const grouped: string[] = [];
+    let current = "";
+    for (const sentence of sentences) {
+      if (current && (current.length + sentence.length > 170 || current.split(/[.!?。]/u).length > 2)) {
+        grouped.push(current);
+        current = sentence;
+      } else {
+        current = current ? `${current} ${sentence}` : sentence;
+      }
+    }
+    if (current) grouped.push(current);
+    return grouped;
+  });
 
   return (
     <div className="webtoon-dialogue">
