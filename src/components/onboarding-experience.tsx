@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import {
   calculateNumerologyProfile,
@@ -38,6 +38,7 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
   const [context, setContext] = useState<OnboardingReflectionContext | null>(null);
   const [error, setError] = useState("");
   const deepProfileRef = useRef<HTMLDetailsElement>(null);
+  const introVideoRef = useRef<HTMLVideoElement>(null);
   const profile = result ? getRuleBasedProfile(result.lifePath.value, locale) : null;
   const integratedProfile = result ? createIntegratedProfile(result, locale) : null;
   const lifestyle = result ? createLifestyleRecommendations(result, locale) : null;
@@ -112,6 +113,24 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
       ] as const
     : [];
 
+  useEffect(() => {
+    const video = introVideoRef.current;
+    if (!video) return;
+
+    const playWithSound = () => {
+      video.muted = false;
+      video.volume = 1;
+      void video.play().catch(() => {
+        // Browsers can still block audible autoplay when the visitor has not
+        // interacted with this origin. There is intentionally no media button.
+      });
+    };
+
+    video.addEventListener("canplay", playWithSound);
+    playWithSound();
+    return () => video.removeEventListener("canplay", playWithSound);
+  }, []);
+
   return (
     <>
       <main className="shell profile-shell" id="main-content" tabIndex={-1}>
@@ -133,12 +152,12 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
             className="profile-video-hero-media"
             disablePictureInPicture
             loop
-            muted
             playsInline
-            preload="metadata"
+            preload="auto"
+            ref={introVideoRef}
             tabIndex={-1}
           >
-            <source src="/videos/taeyul-hero.mp4" type="video/mp4" />
+            <source src="/videos/free-pattern.mp4" type="video/mp4" />
           </video>
         </section>
 

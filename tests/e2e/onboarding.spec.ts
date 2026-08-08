@@ -70,6 +70,9 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "내 흐름 확인하기" })).toBeAttached();
   await expect(page.locator(".profile-video-hero-media")).toBeVisible();
   await expect(page.locator(".profile-video-hero-media")).not.toHaveAttribute("poster", /.+/);
+  await expect(page.locator(".profile-video-hero-media")).not.toHaveAttribute("muted", /.*/);
+  await expect(page.locator(".profile-video-hero-media")).not.toHaveAttribute("controls", /.*/);
+  await expect(page.locator(".profile-video-hero-media source")).toHaveAttribute("src", "/videos/free-pattern.mp4");
   await expect(page.locator(".profile-video-hero .hero-object")).toHaveCount(0);
   await page.locator("#birthDate").fill("1994-11-04");
   await page.locator("#name").fill("Minji Kim");
