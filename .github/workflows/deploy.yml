@@ -1,0 +1,99 @@
+name: Deploy
+
+# The live site is a Cloudflare Worker. Until now the only way to ship was for a person
+# to run `pnpm build:sites` and `wrangler deploy` by hand, which is why main sat three
+# merged pull requests ahead of what visitors were actually being served.
+#
+# This runs after CI passes on main, so a red build never reaches customers.
+on:
+  workflow_run:
+    workflows: ["CI"]
+    branches: ["main"]
+    types: [completed]
+  # Manual runs exist for redeploying the current main without a new commit.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # A deploy is only as trustworthy as the CI run behind it.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build:sites
+
+      # `--keep-vars` is not optional. Without it Wrangler deletes every variable on the
+      # Worker before applying the ones in the config, and the generated config carries
+      # none: the Supabase keys, the PayApp credentials, and the administrator allowlist
+      # all live in the Cloudflare dashboard. A deploy without this flag takes payments
+      # and the database down on a working site.
+      - name: Deploy to Cloudflare Workers
+        run: >-
+          pnpm exec wrangler deploy
+          --config dist/server/wrangler.json
+          --keep-vars
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      # Deploying is not the same as working. This asks the live site whether it still
+      # reaches its database and whether checkout is still open, and fails the run if
+      # either regressed — so a broken deploy is visible here instead of at a checkout.
+      - name: Verify the live site
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5 6; do
+            health="$(curl -fsS --max-time 20 https://mygyeol.kr/api/health || true)"
+            echo "attempt ${attempt}: ${health}"
+            case "${health}" in
+              *'"site":"ok"'*'"database":"ok"'*) break ;;
+            esac
+            if [ "${attempt}" = "6" ]; then
+              echo "::error::mygyeol.kr did not report a healthy site and database after deploy"
+              exit 1
+            fi
+            sleep 10
+          done
+
+          home_status="$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 https://mygyeol.kr/ko)"
+          image_status="$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 'https://mygyeol.kr/_vinext/image?url=%2Ficon.png&w=64&q=75')"
+          echo "home=${home_status} image=${image_status}"
+          [ "${home_status}" = "200" ] || { echo "::error::the Korean home page did not return 200"; exit 1; }
+          [ "${image_status}" = "200" ] || { echo "::error::image optimization is broken — the IMAGES binding may be missing"; exit 1; }
+
+      # Everything above passes just as happily when the deploy landed somewhere the
+      # domain does not point at: a healthy *old* build answers all of it. This is the
+      # only step that distinguishes "deployed" from "serving", by requiring the live
+      # HTML to reference the stylesheet this very build produced.
+      - name: Confirm the domain is serving this build
+        run: |
+          set -euo pipefail
+          asset="$(basename "$(ls dist/client/assets/index-*.css | head -n 1)")"
+          echo "expecting the live site to reference ${asset}"
+          for attempt in 1 2 3 4 5 6; do
+            if curl -fsS --max-time 20 https://mygyeol.kr/ko | grep -qF "${asset}"; then
+              echo "mygyeol.kr is serving this build"
+              exit 0
+            fi
+            echo "attempt ${attempt}: not yet"
+            sleep 10
+          done
+          echo "::error::mygyeol.kr answers, but not with this build — the deploy reached a Worker the domain does not route to. Check that mygyeol.kr is delegated to Cloudflare (zone status must be active, not pending) and that its route points at the Worker named in vite.config.ts."
+          exit 1

@@ -1,0 +1,95 @@
+import type { CelebrityRecord } from "./types";
+
+export const CELEBRITIES: readonly CelebrityRecord[] = [
+  {
+    id: "barack-obama",
+    displayName: { ko: "버락 오바마", en: "Barack Obama" },
+    birthDate: "1961-08-04",
+    fields: ["public_leadership"],
+    source: {
+      title: "President Barack Obama",
+      publisher: "Barack Obama Presidential Library",
+      url: "https://www.obamalibrary.gov/obamas/president-barack-obama",
+      accessedAt: "2026-07-22",
+    },
+    confidence: "confirmed",
+  },
+  {
+    id: "marie-curie",
+    displayName: { ko: "마리 퀴리", en: "Marie Curie" },
+    birthDate: "1867-11-07",
+    fields: ["science"],
+    source: {
+      title: "Marie Curie – Facts",
+      publisher: "Nobel Prize",
+      url: "https://www.nobelprize.org/prizes/physics/1903/marie-curie/facts/",
+      accessedAt: "2026-07-22",
+    },
+    confidence: "confirmed",
+  },
+  {
+    id: "serena-williams",
+    displayName: { ko: "세리나 윌리엄스", en: "Serena Williams" },
+    birthDate: "1981-09-26",
+    fields: ["sports"],
+    source: {
+      title: "Serena Williams – Player Stats & More",
+      publisher: "WTA",
+      url: "https://www.wtatennis.com/legends/230234/serena",
+      accessedAt: "2026-07-22",
+    },
+    confidence: "confirmed",
+  },
+  {
+    id: "son-heung-min",
+    displayName: { ko: "손흥민", en: "Heung-Min Son" },
+    birthDate: "1992-07-08",
+    fields: ["sports"],
+    source: {
+      title: "Heung-Min Son",
+      publisher: "Tottenham Hotspur",
+      url: "https://www.tottenhamhotspur.com/player/85971/heung-min-son",
+      accessedAt: "2026-07-22",
+    },
+    confidence: "confirmed",
+  },
+  {
+    id: "rm-bts",
+    displayName: { ko: "RM", en: "RM" },
+    birthDate: "1994-09-12",
+    fields: ["arts_entertainment"],
+    source: {
+      title: "BTS Profile",
+      publisher: "BIGHIT MUSIC",
+      url: "https://ibighit.com/bts/eng/profile/",
+      accessedAt: "2026-07-22",
+    },
+    confidence: "confirmed",
+  },
+  {
+    id: "nelson-mandela",
+    displayName: { ko: "넬슨 만델라", en: "Nelson Mandela" },
+    birthDate: "1918-07-18",
+    fields: ["public_leadership", "education_advocacy"],
+    source: {
+      title: "Biography of Nelson Mandela",
+      publisher: "Nelson Mandela Foundation",
+      url: "https://www.nelsonmandela.org/biography",
+      accessedAt: "2026-07-22",
+    },
+    confidence: "confirmed",
+  },
+  {
+    id: "malala-yousafzai",
+    displayName: { ko: "말랄라 유사프자이", en: "Malala Yousafzai" },
+    birthDate: "1997-07-12",
+    fields: ["education_advocacy"],
+    source: {
+      title: "Malala's Story",
+      publisher: "Malala Fund",
+      url: "https://malala.org/malalas-story.html",
+      accessedAt: "2026-07-22",
+    },
+    confidence: "confirmed",
+  },
+];

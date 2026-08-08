@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - run: corepack enable
+      - run: pnpm --version
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+      - run: pnpm audit
+      - run: pnpm run generate:sbom
+      - uses: actions/upload-artifact@v7
+        with:
+          name: innerarc-cyclonedx-sbom
+          path: artifacts/sbom.cdx.json
+          if-no-files-found: error
+          retention-days: 30
+      - run: pnpm exec playwright install --with-deps chromium webkit
+      - run: pnpm test:e2e --project=chromium --project=mobile
+      - name: Verify checkout UI with isolated fake provider shell
+        run: pnpm test:e2e tests/e2e/payments.spec.ts --project=chromium --project=mobile --workers=1 --reporter=line
+        env:
+          E2E_PAYMENT_CHECKOUT: "1"

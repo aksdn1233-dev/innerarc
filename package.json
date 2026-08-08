@@ -1,0 +1,53 @@
+{
+  "name": "innerarc",
+  "version": "0.20.1",
+  "private": true,
+  "packageManager": "pnpm@11.9.0",
+  "description": "AI self-discovery and personal pattern intelligence platform",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "build:sites": "vinext build && node scripts/fix-font-urls.mjs",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "node scripts/run-e2e.mjs",
+    "generate:sbom": "node scripts/generate-sbom.mjs",
+    "capture:launch": "node scripts/run-launch-capture.mjs",
+    "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm build"
+  },
+  "dependencies": {
+    "@portone/browser-sdk": "^0.1.9",
+    "@portone/server-sdk": "^0.19.0",
+    "@supabase/ssr": "0.12.3",
+    "@supabase/supabase-js": "2.110.8",
+    "@tosspayments/tosspayments-sdk": "2.7.1",
+    "next": "16.2.12",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "1.47.0",
+    "@playwright/test": "1.62.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-rsc": "0.5.30",
+    "axe-core": "4.12.1",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.2.12",
+    "react-server-dom-webpack": "19.2.8",
+    "typescript": "6.0.3",
+    "vinext": "0.0.50",
+    "vite": "8.1.5",
+    "vitest": "4.1.10",
+    "wrangler": "4.114.0"
+  },
+  "type": "module"
+}
