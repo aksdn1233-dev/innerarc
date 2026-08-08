@@ -81,7 +81,7 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await expect(page.getByText("1 + 9 + 9 + 4 + 1 + 1 + 0 + 4 = 29 → 11")).toBeVisible();
 });
 
-test("desktop hero actions and navigation are balanced", async ({ page }) => {
+test("desktop hero actions are balanced and the free page has no category navigation", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/ko");
 
@@ -91,9 +91,7 @@ test("desktop hero actions and navigation are balanced", async ({ page }) => {
   expect(Math.abs(actionBoxes[0].width - actionBoxes[1].width)).toBeLessThanOrEqual(1);
 
   await page.goto("/ko/profile");
-  const navBox = await page.locator(".bottom-nav").evaluate((element) => element.getBoundingClientRect().toJSON());
-  expect(navBox.top).toBeLessThan(30);
-  expect(Math.abs((navBox.left + navBox.right) / 2 - 720)).toBeLessThanOrEqual(1);
+  await expect(page.locator(".bottom-nav")).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth))
     .toBeLessThanOrEqual(0);
 });
