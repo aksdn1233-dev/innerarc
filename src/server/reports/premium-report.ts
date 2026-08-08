@@ -19,6 +19,7 @@ import { resolveConcernTopic, topicText } from "@/core/topics/concern-topics";
 import { tierBadgeLabel } from "@/core/tiers";
 import type { Locale } from "@/i18n/config";
 import { createDetailPaidReport } from "@/server/reports/detail-report";
+import { labelAdviceItems } from "@/server/reports/advice-subject";
 
 export const PREMIUM_REPORT_SERVICE_YEAR = 2026;
 export const PREMIUM_REPORT_CONTENT_VERSION = "premium-report-composer-2.0.0";
@@ -576,7 +577,7 @@ export function createPremiumPaidReport(
       ? localized(locale, "질문의 직접 결론부터 세 가지 시나리오, 검증 신호, 실행·중단 기준까지 한 흐름으로 정리했습니다.", "A direct answer followed by scenarios, signals, action, and stop criteria.")
       : localized(locale, "질문 없이도 인물·일·돈·관계·2026년 흐름과 장기 전략이 완결되도록 구성했습니다.", "A complete profile, work, money, relationship, 2026, and long-term strategy report without requiring a question."),
     sections,
-    actions: locale === "ko"
+    actions: labelAdviceItems(locale === "ko"
       ? [
         `오늘 ${strategy.proof} 중 확인 가능한 사실 하나를 기록하세요.`,
         "되돌리기 어려운 결정은 사실 두 개와 다음 검토일이 생길 때까지 보류하세요.",
@@ -592,12 +593,12 @@ export function createPremiumPaidReport(
         "Separate ownership, delegation, and monitoring.",
         "Write the stop threshold.",
         "Choose expand, maintain, or reduce at the second review.",
-      ],
-    cautions: unique([
+      ], locale, domain),
+    cautions: labelAdviceItems(unique([
       ...detail.cautions,
       localized(locale, `${strategy.warning}. 이 신호가 보이면 낙관이나 불안으로 추가 투입하지 마세요.`, `Do not add resources when this warning appears: ${strategy.warning}.`),
       localized(locale, "건강·법률·재무·대출·안전 문제는 이 리포트가 아니라 자격 있는 전문가와 공식 문서의 판단을 우선하세요.", "Professional and formal evidence takes priority for health, legal, financial, lending, and safety matters."),
-    ], 4),
+    ], 4), locale, domain),
     disclaimer: localized(
       locale,
       "이 리포트는 자기이해와 선택 정리를 위한 참고 자료입니다. 미래, 건강 상태, 투자 수익, 대출 승인, 시험 합격 또는 타인의 마음과 사적 사실을 보장하지 않으며 실제 사실과 전문가 판단이 해석보다 우선합니다.",

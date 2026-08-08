@@ -19,6 +19,11 @@ import { toOwnReviewState } from "@/core/reviews";
 import { isLocale } from "@/i18n/config";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import { requireSupabaseUser } from "@/lib/supabase/auth";
+import {
+  inferAdviceDomain,
+  labelAdviceItems,
+  labelFormattedAdviceBody,
+} from "@/server/reports/advice-subject";
 import { getAuthorizedStoredReport } from "@/server/reports/access";
 import { findReviewByOrderId } from "@/server/reviews";
 
@@ -220,6 +225,13 @@ export default async function PurchasedReportPage({
     : [];
   const chapterBadge = (index: number) =>
     locale === "ko" ? `제 ${index + 1} 장` : `Chapter ${String(index + 1).padStart(2, "0")}`;
+  const adviceDomain = inferAdviceDomain(report.concern);
+  const labeledActions = labelAdviceItems(report.actions, locale, adviceDomain);
+  const labeledCautions = labelAdviceItems(report.cautions, locale, adviceDomain);
+  const withAdviceSubject = (title: string, body: string) =>
+    /상황별 대처|보류·중단|위험|주의|체크리스트|Situation-specific|Stop, hold|Risk|Caution|checklist/u.test(title)
+      ? labelFormattedAdviceBody(body, locale, adviceDomain)
+      : body;
   return (
     <>
       <main
@@ -349,7 +361,7 @@ export default async function PurchasedReportPage({
               ][index % 6]}
               variant={index % 6 === 0 ? "panel" : "portrait"}
             />
-            <WebtoonDialogue text={section.body} />
+            <WebtoonDialogue text={withAdviceSubject(section.title, section.body)} />
           </WebtoonPanel>
         ))}
 
@@ -361,7 +373,7 @@ export default async function PurchasedReportPage({
           tone="gold"
         >
           <WebtoonCharacterArt align="right" src="/images/taeyul/panels/05-facing.jpg" variant="panel" />
-          <ol className="webtoon-steps">{report.actions.map((item) => <li key={item}>{item}</li>)}</ol>
+          <ol className="webtoon-steps">{labeledActions.map((item) => <li key={item}>{item}</li>)}</ol>
           {premiumManualSection && (
             <div className="premium-manual">
               <h3>{premiumManualSection.title}</h3>
@@ -377,7 +389,7 @@ export default async function PurchasedReportPage({
             tone="warn"
           >
             <WebtoonCharacterArt align="right" src="/images/taeyul/54-annoyed.jpg" />
-            <WebtoonDialogue text={stopSection.body} />
+            <WebtoonDialogue text={withAdviceSubject(stopSection.title, stopSection.body)} />
           </WebtoonPanel>
         )}
 
@@ -388,7 +400,7 @@ export default async function PurchasedReportPage({
             tone="warn"
           >
             <WebtoonCharacterArt align="right" src="/images/taeyul/55-angry.jpg" />
-            <WebtoonDialogue text={premiumStopSection.body} />
+            <WebtoonDialogue text={withAdviceSubject(premiumStopSection.title, premiumStopSection.body)} />
           </WebtoonPanel>
         )}
 
@@ -401,7 +413,7 @@ export default async function PurchasedReportPage({
               <div className="webtoon-inner">
                 <details className="premium-progressive">
                   <summary>{section.title}</summary>
-                  <p className="webtoon-body">{section.body}</p>
+                  <p className="webtoon-body">{withAdviceSubject(section.title, section.body)}</p>
                 </details>
               </div>
             </section>
@@ -423,7 +435,7 @@ export default async function PurchasedReportPage({
                   "/images/taeyul/61-profile-serious.jpg",
                 ][index % 6]}
               />
-              <WebtoonDialogue text={section.body} />
+              <WebtoonDialogue text={withAdviceSubject(section.title, section.body)} />
             </WebtoonPanel>
           );
         })}
@@ -446,7 +458,7 @@ export default async function PurchasedReportPage({
             tone="warn"
           >
             <WebtoonCharacterArt align="right" src="/images/taeyul/61-profile-serious.jpg" />
-            <ul>{report.cautions.map((item) => <li key={item}>{item}</li>)}</ul>
+            <ul>{labeledCautions.map((item) => <li key={item}>{item}</li>)}</ul>
           </WebtoonPanel>
         )}
 
@@ -457,7 +469,7 @@ export default async function PurchasedReportPage({
             tone="warn"
           >
             <WebtoonCharacterArt align="right" src="/images/taeyul/61-profile-serious.jpg" />
-            <ul>{report.cautions.map((item) => <li key={item}>{item}</li>)}</ul>
+            <ul>{labeledCautions.map((item) => <li key={item}>{item}</li>)}</ul>
           </WebtoonPanel>
         )}
 

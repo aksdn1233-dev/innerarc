@@ -3,6 +3,11 @@ import { NextResponse } from "next/server";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import { ORDER_PASS_COOKIE, readOrderPass, readOrderTicket } from "@/server/order-pass";
 import { requireSupabaseUser } from "@/lib/supabase/auth";
+import {
+  inferAdviceDomain,
+  labelAdviceItems,
+  labelFormattedAdviceBody,
+} from "@/server/reports/advice-subject";
 import { getAuthorizedStoredReport } from "@/server/reports/access";
 
 function escapeHtml(value: string): string {
@@ -40,6 +45,9 @@ export async function GET(
     return NextResponse.json({ error: "REPORT_NOT_FOUND" }, { status: 404 });
   }
   const report = stored.report;
+  const adviceDomain = inferAdviceDomain(report.concern);
+  const labeledActions = labelAdviceItems(report.actions, report.locale, adviceDomain);
+  const labeledCautions = labelAdviceItems(report.cautions, report.locale, adviceDomain);
   const basicV2 = report.sectionPlan === "basic-19000-v2";
   const detailV2 = report.sectionPlan === "detail-39000-v2";
   const premiumV2 = report.sectionPlan === "premium-79000-v2";
@@ -73,7 +81,12 @@ export async function GET(
     ? bodySections.findIndex((section) => section.title === premiumStartTitle)
     : -1;
   const renderSections = (items: typeof bodySections) => items
-    .map((section) => `<section><h2>${escapeHtml(section.title)}</h2><p>${escapeHtml(section.body)}</p></section>`)
+    .map((section) => {
+      const body = /상황별 대처|보류·중단|위험|주의|체크리스트|Situation-specific|Stop, hold|Risk|Caution|checklist/u.test(section.title)
+        ? labelFormattedAdviceBody(section.body, report.locale, adviceDomain)
+        : section.body;
+      return `<section><h2>${escapeHtml(section.title)}</h2><p>${escapeHtml(body)}</p></section>`;
+    })
     .join("");
   const sections = renderSections(premiumStart >= 0 ? bodySections.slice(0, premiumStart) : bodySections);
   const premiumExtensions = premiumStart >= 0 ? renderSections(bodySections.slice(premiumStart)) : "";
@@ -84,12 +97,12 @@ export async function GET(
   const question = report.concern ? `<blockquote>${escapeHtml(report.concern)}</blockquote>` : "";
   const cautions = basicV2 || (detailV2 && report.cautions.length === 0)
     ? ""
-    : `<section><h2>${report.locale === "ko" ? "이럴 때는 조심하세요" : "Situations to watch"}</h2>${list(report.cautions)}</section>`;
+    : `<section><h2>${report.locale === "ko" ? "이럴 때는 조심하세요" : "Situations to watch"}</h2>${list(labeledCautions)}</section>`;
   const stop = stopSection
-    ? `<section class="stop"><h2>${escapeHtml(stopSection.title)}</h2><p>${escapeHtml(stopSection.body)}</p></section>`
+    ? `<section class="stop"><h2>${escapeHtml(stopSection.title)}</h2><p>${escapeHtml(labelFormattedAdviceBody(stopSection.body, report.locale, adviceDomain))}</p></section>`
     : "";
   const premiumStop = premiumStopSection
-    ? `<section class="stop"><h2>${escapeHtml(premiumStopSection.title)}</h2><p>${escapeHtml(premiumStopSection.body)}</p></section>`
+    ? `<section class="stop"><h2>${escapeHtml(premiumStopSection.title)}</h2><p>${escapeHtml(labelFormattedAdviceBody(premiumStopSection.body, report.locale, adviceDomain))}</p></section>`
     : "";
   const premiumManual = premiumManualSection
     ? `<section class="manual"><h2>${escapeHtml(premiumManualSection.title)}</h2><p>${escapeHtml(premiumManualSection.body)}</p></section>`
@@ -100,7 +113,7 @@ export async function GET(
   const actionTitle = detailV2 || premiumV2
     ? (report.locale === "ko" ? "우선 실행 계획" : "Prioritized execution plan")
     : (report.locale === "ko" ? "지금 해볼 일" : "Next actions");
-  const html = `<!doctype html><html lang="${report.locale}"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>${escapeHtml(report.title)}</title><style>body{max-width:760px;margin:40px auto;padding:0 22px;color:#20231f;background:#fffdf8;font:18px/1.8 system-ui,sans-serif}h1,h2{font-family:serif;line-height:1.35}section{margin:38px 0;padding-top:20px;border-top:1px solid #d7d0c3}section p{white-space:pre-wrap}blockquote{padding:18px;background:#f5f1e8;border-left:4px solid #9b7651}.basis,.note{color:#686b63;font-size:14px}.stop{padding:24px;background:#fff7f2;border-radius:16px}.manual{padding:24px;background:#f4f1e8;border-radius:16px}.final{padding:24px;background:#f5f1e8;border-radius:16px}@media print{body{margin:0}}</style><body><h1>${escapeHtml(report.title)}</h1>${basis}<p>${escapeHtml(report.summary)}</p>${question}${sections}<section><h2>${actionTitle}</h2>${list(report.actions)}</section>${premiumManual}${stop}${premiumStop}${premiumExtensions}${final}${cautions}<p class="note">${escapeHtml(report.disclaimer)}</p></body></html>`;
+  const html = `<!doctype html><html lang="${report.locale}"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>${escapeHtml(report.title)}</title><style>body{max-width:760px;margin:40px auto;padding:0 22px;color:#20231f;background:#fffdf8;font:18px/1.8 system-ui,sans-serif}h1,h2{font-family:serif;line-height:1.35}section{margin:38px 0;padding-top:20px;border-top:1px solid #d7d0c3}section p{white-space:pre-wrap}blockquote{padding:18px;background:#f5f1e8;border-left:4px solid #9b7651}.basis,.note{color:#686b63;font-size:14px}.stop{padding:24px;background:#fff7f2;border-radius:16px}.manual{padding:24px;background:#f4f1e8;border-radius:16px}.final{padding:24px;background:#f5f1e8;border-radius:16px}@media print{body{margin:0}}</style><body><h1>${escapeHtml(report.title)}</h1>${basis}<p>${escapeHtml(report.summary)}</p>${question}${sections}<section><h2>${actionTitle}</h2>${list(labeledActions)}</section>${premiumManual}${stop}${premiumStop}${premiumExtensions}${final}${cautions}<p class="note">${escapeHtml(report.disclaimer)}</p></body></html>`;
   return new NextResponse(html, {
     headers: {
       "Content-Type": "text/html; charset=utf-8",

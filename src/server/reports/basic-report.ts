@@ -15,6 +15,7 @@ import type { ConcernTopic } from "@/core/topics/topic-types";
 import { resolveConcernTopic, topicText } from "@/core/topics/concern-topics";
 import { tierBadgeLabel } from "@/core/tiers";
 import type { Locale } from "@/i18n/config";
+import { labelAdviceItems } from "@/server/reports/advice-subject";
 
 export const BASIC_REPORT_SERVICE_YEAR = 2026;
 export const BASIC_REPORT_CONTENT_VERSION = "basic-report-composer-2.0.0";
@@ -560,6 +561,11 @@ export function createBasicPaidReport(
         ],
         [context.practicalAction, ...integrated.practicalActions],
       );
+  const cautions = [
+    ...(safety.requiresRealityFirstGuidance ? [] : [topicText(topic.caution, locale)]),
+    context.realityCheck,
+    ...integrated.risks.slice(0, 2),
+  ];
 
   return {
     version: 1,
@@ -574,12 +580,8 @@ export function createBasicPaidReport(
       ? (ko ? "고객 질문에 답하고 핵심 성향과 2026년 방향을 연결했습니다." : "Your question, core temperament, and 2026 direction.")
       : (ko ? "생년월일만으로 구성한 핵심 성향과 2026년 방향입니다." : "Core temperament and 2026 direction from the birth date."),
     sections,
-    actions,
-    cautions: [
-      ...(safety.requiresRealityFirstGuidance ? [] : [topicText(topic.caution, locale)]),
-      context.realityCheck,
-      ...integrated.risks.slice(0, 2),
-    ],
+    actions: labelAdviceItems(actions, locale, domain),
+    cautions: labelAdviceItems(cautions, locale, domain),
     disclaimer: ko
       ? "이 리포트는 자기이해와 선택 정리를 위한 참고 자료이며 미래, 건강, 투자 수익 또는 타인의 사적 사실을 보장하지 않습니다."
       : "This report supports reflection and decision-making. It does not guarantee the future, health outcomes, investment returns, or another person's private facts.",

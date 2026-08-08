@@ -14,6 +14,7 @@ import { resolveConcernTopic, topicText } from "@/core/topics/concern-topics";
 import type { ConcernTopic } from "@/core/topics/topic-types";
 import { tierBadgeLabel } from "@/core/tiers";
 import type { Locale } from "@/i18n/config";
+import { labelAdviceItems } from "@/server/reports/advice-subject";
 
 export const DETAIL_REPORT_SERVICE_YEAR = 2026;
 export const DETAIL_REPORT_CONTENT_VERSION = "detail-report-composer-2.0.0";
@@ -611,8 +612,8 @@ export function createDetailPaidReport(
         { title: ko ? "압박을 받을 때 나타나는 모습" : "Under pressure", body: profileContent.stress },
         { title: ko ? "2026년 핵심 흐름" : "2026 direction", body: yearBody },
         { title: ko ? "단계별 방향" : "Phased direction", body: formatted(plan.phases) },
-        { title: ko ? "상황별 대처" : "Situation-specific responses", body: formatted(plan.situations) },
-        { title: ko ? "보류·중단·재검토 기준" : "Stop, hold, or reconsider", body: formatted(plan.stops) },
+        { title: ko ? "상황별 대처" : "Situation-specific responses", body: formatted(labelAdviceItems(plan.situations, locale, domain)) },
+        { title: ko ? "보류·중단·재검토 기준" : "Stop, hold, or reconsider", body: formatted(labelAdviceItems(plan.stops, locale, domain)) },
         { title: ko ? "최종 결론" : "Final conclusion", body: localized(locale, plan.final, plan.final) },
       ]
     : [
@@ -631,8 +632,8 @@ export function createDetailPaidReport(
         { title: ko ? "압박을 받을 때 나타나는 모습" : "Under pressure", body: profileContent.stress },
         { title: ko ? "2026년 핵심 흐름" : "2026 direction", body: yearBody },
         { title: ko ? "단계별 방향" : "Phased direction", body: formatted(profileContent.phases) },
-        { title: ko ? "상황별 대처" : "Situation-specific responses", body: formatted(profileContent.situations) },
-        { title: ko ? "보류·중단·재검토 기준" : "Stop, hold, or reconsider", body: formatted(profileContent.stops) },
+        { title: ko ? "상황별 대처" : "Situation-specific responses", body: formatted(labelAdviceItems(profileContent.situations, locale, domain)) },
+        { title: ko ? "보류·중단·재검토 기준" : "Stop, hold, or reconsider", body: formatted(labelAdviceItems(profileContent.stops, locale, domain)) },
         { title: ko ? "최종 결론" : "Final conclusion", body: profileContent.conclusion },
       ];
 
@@ -665,8 +666,8 @@ export function createDetailPaidReport(
       ? localized(locale, "질문의 결론부터 판단 구조와 실행 기준까지 상세히 정리했습니다.", "A detailed answer, decision structure, and execution criteria.")
       : localized(locale, "생년월일만으로 구성한 상세 인물·직업·재물·관계·2026년 리포트입니다.", "A detailed profile and 2026 report from the birth date."),
     sections,
-    actions,
-    cautions,
+    actions: labelAdviceItems(actions, locale, domain),
+    cautions: labelAdviceItems(cautions, locale, domain),
     disclaimer: localized(
       locale,
       "이 리포트는 자기이해와 선택 정리를 위한 참고 자료이며 미래, 건강, 투자 수익, 대출 승인 또는 타인의 사적 사실을 보장하지 않습니다.",
