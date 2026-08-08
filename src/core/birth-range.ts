@@ -7,17 +7,21 @@
  * because the Korean standard-time history it encodes does not reach further back. What
  * a *customer* may submit is narrower than either, and is stated here once.
  *
- * The upper bound is today rather than the engines' 2100: a birth date in the future is
- * always a typo. The lower bound is 1900, past the oldest year anyone alive was born in.
+ * The lower bound is 1900, past the oldest year anyone alive was born in, and the year
+ * the 사주 engine's standard-time record begins. The upper bound is today: a birth date
+ * in the future is always a typo. Today is computed on every call rather than frozen into
+ * a constant, so the site does not start refusing everyone the moment the year turns.
  */
-export const MIN_BIRTH_YEAR = 1100;
-export const MAX_BIRTH_YEAR = 2026;
+export const MIN_BIRTH_YEAR = 1900;
 export const MIN_BIRTH_DATE = `${MIN_BIRTH_YEAR}-01-01`;
-export const MAX_BIRTH_DATE = `${MAX_BIRTH_YEAR}-12-31`;
+
+function pad(value: number): string {
+  return String(value).padStart(2, "0");
+}
 
 /** Today, in the visitor's own timezone. */
-export function currentMaxBirthDate(_now: Date = new Date()): string {
-  return MAX_BIRTH_DATE;
+export function currentMaxBirthDate(now: Date = new Date()): string {
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 }
 
 /**
@@ -31,6 +35,8 @@ export function currentMaxBirthDate(_now: Date = new Date()): string {
 export function isAcceptedBirthDate(value: string, now: Date = new Date()): boolean {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
   if (value < MIN_BIRTH_DATE || value > currentMaxBirthDate(now)) return false;
+  // Lexical comparison passes 2026-02-30 and 2023-02-29, which are not days. Round-trip
+  // through the calendar so only dates that actually happened get through.
   const [year, month, day] = value.split("-").map(Number) as [number, number, number];
   const parsed = new Date(Date.UTC(year, month - 1, day));
   return parsed.getUTCFullYear() === year

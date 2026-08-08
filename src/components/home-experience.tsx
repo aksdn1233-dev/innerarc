@@ -415,7 +415,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
     const reportFocus = String(form.get("reportFocus") ?? "").trim();
     const companionBirthDate = String(form.get("companionBirthDate") ?? "").trim();
     if (companionBirthDate && !isAcceptedBirthDate(companionBirthDate)) {
-      setError({ field: "birthDate", message: locale === "ko" ? "동반자 생년월일을 1100~2026년의 올바른 날짜로 입력해 주세요." : "Enter a valid companion date from 1100 through 2026." });
+      setError({ field: "birthDate", message: locale === "ko" ? "동반자 생년월일을 1900년부터 오늘 사이의 올바른 날짜로 입력해 주세요." : "Enter a valid companion date from 1900 through today." });
       return;
     }
     const payload = {
