@@ -26,7 +26,7 @@ export function createAiPartnerConcept(profile: NumerologyProfile, locale: Local
   const index = (profile.lifePath.value + profile.attitude.value + profile.birthday.value) % 3;
   return {
     ...concepts[locale][index]!,
-    imageSrc: "/images/ai-partner-archetype.png",
+    imageSrc: "/images/ai-partner-archetype-realistic.png",
     disclaimer: locale === "ko"
       ? "AI가 수비학의 관계 성향을 시각화한 콘셉트입니다. 실제 인물의 얼굴이나 미래의 만남을 예측하지 않습니다."
       : "An AI visualization of relationship themes—not a prediction of a real person's face or a future meeting.",

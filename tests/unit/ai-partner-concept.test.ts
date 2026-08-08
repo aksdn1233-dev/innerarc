@@ -12,7 +12,7 @@ describe("AI partner archetype concept", () => {
 
     expect(concept.title).toBeTruthy();
     expect(concept.traits).toHaveLength(3);
-    expect(concept.imageSrc).toBe("/images/ai-partner-archetype.png");
+    expect(concept.imageSrc).toBe("/images/ai-partner-archetype-realistic.png");
     expect(concept.disclaimer).toMatch(/실제 인물.*예측하지 않습니다/u);
   });
 
@@ -39,6 +39,6 @@ describe("AI partner archetype concept", () => {
     });
 
     expect(withoutAi.aiPartnerConcept).toBeUndefined();
-    expect(withAi.aiPartnerConcept?.imageSrc).toBe("/images/ai-partner-archetype.png");
+    expect(withAi.aiPartnerConcept?.imageSrc).toBe("/images/ai-partner-archetype-realistic.png");
   });
 });
