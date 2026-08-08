@@ -6,7 +6,14 @@ import { MeteorTrails, NightHorizon } from "@/components/brand-visuals";
 import { PaymentStatusWaiting } from "@/components/payment-status-waiting";
 import { ReportActions } from "@/components/report-actions";
 import { ReviewRequestPanel } from "@/components/review-request-panel";
-import { WebtoonCta, WebtoonCue, WebtoonDialogue, WebtoonOrbs, WebtoonPanel } from "@/components/webtoon";
+import {
+  WebtoonCharacterArt,
+  WebtoonCta,
+  WebtoonCue,
+  WebtoonDialogue,
+  WebtoonOrbs,
+  WebtoonPanel,
+} from "@/components/webtoon";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
 import { toOwnReviewState } from "@/core/reviews";
 import { isLocale } from "@/i18n/config";
@@ -261,6 +268,7 @@ export default async function PurchasedReportPage({
                   : `${birthDateLabel} ${premiumV2 ? "premium in-depth report" : detailV2 ? "detailed report" : "core report"}`)}
             tone="paper"
           >
+            <WebtoonCharacterArt src="/images/taeyul/panels/01-greeting.jpg" variant="panel" />
             {report.concern && <blockquote>{report.concern}</blockquote>}
           </WebtoonPanel>
         ) : (
@@ -269,6 +277,7 @@ export default async function PurchasedReportPage({
             title={report.summary}
             tone="paper"
           >
+            <WebtoonCharacterArt align="right" src="/images/taeyul/52-thinking.jpg" />
             <blockquote>{report.concern}</blockquote>
           </WebtoonPanel>
         )}
@@ -281,6 +290,7 @@ export default async function PurchasedReportPage({
             title={directSection.title}
             tone="gold"
           >
+            <WebtoonCharacterArt src="/images/taeyul/panels/04-insight.jpg" variant="panel" />
             <WebtoonDialogue text={directSection.body} />
             <WebtoonCue />
           </WebtoonPanel>
@@ -292,6 +302,7 @@ export default async function PurchasedReportPage({
             title={report.characterLabel}
             tone="paper"
           >
+            <WebtoonCharacterArt src="/images/taeyul/47-smile-soft.jpg" />
             {characterLead && <WebtoonDialogue text={characterLead} />}
           </WebtoonPanel>
         )}
@@ -305,6 +316,7 @@ export default async function PurchasedReportPage({
             title={locale === "ko" ? "핵심 숫자" : "Core numbers"}
             tone="night"
           >
+            <WebtoonCharacterArt align="right" src="/images/taeyul/panels/02-calculating.jpg" variant="panel" />
             <WebtoonOrbs
               items={orbItems}
               label={locale === "ko" ? "계산된 핵심 숫자" : "Calculated core numbers"}
@@ -325,6 +337,18 @@ export default async function PurchasedReportPage({
             title={section.title}
             tone={index % 2 === 0 ? "night" : "paper"}
           >
+            <WebtoonCharacterArt
+              align={index % 2 === 0 ? "left" : "right"}
+              src={[
+                "/images/taeyul/panels/03-figure.jpg",
+                "/images/taeyul/51-focused.jpg",
+                "/images/taeyul/50-doubt.jpg",
+                "/images/taeyul/53-sad.jpg",
+                "/images/taeyul/59-wistful.jpg",
+                "/images/taeyul/60-profile-smile.jpg",
+              ][index % 6]}
+              variant={index % 6 === 0 ? "panel" : "portrait"}
+            />
             <WebtoonDialogue text={section.body} />
           </WebtoonPanel>
         ))}
@@ -336,6 +360,7 @@ export default async function PurchasedReportPage({
             : (locale === "ko" ? "지금 해볼 일" : "Next actions")}
           tone="gold"
         >
+          <WebtoonCharacterArt align="right" src="/images/taeyul/panels/05-facing.jpg" variant="panel" />
           <ol className="webtoon-steps">{report.actions.map((item) => <li key={item}>{item}</li>)}</ol>
           {premiumManualSection && (
             <div className="premium-manual">
@@ -351,6 +376,7 @@ export default async function PurchasedReportPage({
             title={stopSection.title}
             tone="warn"
           >
+            <WebtoonCharacterArt align="right" src="/images/taeyul/54-annoyed.jpg" />
             <WebtoonDialogue text={stopSection.body} />
           </WebtoonPanel>
         )}
@@ -361,6 +387,7 @@ export default async function PurchasedReportPage({
             title={premiumStopSection.title}
             tone="warn"
           >
+            <WebtoonCharacterArt align="right" src="/images/taeyul/55-angry.jpg" />
             <WebtoonDialogue text={premiumStopSection.body} />
           </WebtoonPanel>
         )}
@@ -385,6 +412,17 @@ export default async function PurchasedReportPage({
               title={section.title}
               tone={index % 2 === 0 ? "night" : "paper"}
             >
+              <WebtoonCharacterArt
+                align={index % 2 === 0 ? "left" : "right"}
+                src={[
+                  "/images/taeyul/45-surprise-eyes.jpg",
+                  "/images/taeyul/46-flustered.jpg",
+                  "/images/taeyul/48-smile-bright.jpg",
+                  "/images/taeyul/57-tired-eyes-closed.jpg",
+                  "/images/taeyul/58-weary-sigh.jpg",
+                  "/images/taeyul/61-profile-serious.jpg",
+                ][index % 6]}
+              />
               <WebtoonDialogue text={section.body} />
             </WebtoonPanel>
           );
@@ -396,6 +434,7 @@ export default async function PurchasedReportPage({
             title={finalSection.title}
             tone="night"
           >
+            <WebtoonCharacterArt align="right" src="/images/taeyul/panels/06-closing.jpg" variant="panel" />
             <WebtoonDialogue text={finalSection.body} />
           </WebtoonPanel>
         )}
@@ -406,6 +445,7 @@ export default async function PurchasedReportPage({
             title={locale === "ko" ? "이럴 때는 조심하세요" : "Situations to watch"}
             tone="warn"
           >
+            <WebtoonCharacterArt align="right" src="/images/taeyul/61-profile-serious.jpg" />
             <ul>{report.cautions.map((item) => <li key={item}>{item}</li>)}</ul>
           </WebtoonPanel>
         )}
@@ -416,6 +456,7 @@ export default async function PurchasedReportPage({
             title={locale === "ko" ? "먼저 확인할 안전 기준" : "Safety check"}
             tone="warn"
           >
+            <WebtoonCharacterArt align="right" src="/images/taeyul/61-profile-serious.jpg" />
             <ul>{report.cautions.map((item) => <li key={item}>{item}</li>)}</ul>
           </WebtoonPanel>
         )}
@@ -426,6 +467,7 @@ export default async function PurchasedReportPage({
             title={locale === "ko" ? "두 사람 궁합" : "Two-person compatibility"}
             tone="gold"
           >
+            <WebtoonCharacterArt align="right" src="/images/taeyul/56-wink.jpg" />
             <p>
               {locale === "ko"
                 ? "이 상품에는 두 사람 궁합 보기가 포함되어 있어요. 상대방 생년월일만 있으면 바로 볼 수 있습니다."

@@ -12,6 +12,38 @@ import type { ReactNode } from "react";
 
 type WebtoonTone = "paper" | "night" | "gold" | "warn";
 
+type WebtoonCharacterArtProps = {
+  align?: "left" | "right";
+  src: string;
+  variant?: "panel" | "portrait";
+};
+
+/* Character art is part of the reading rhythm rather than a decorative background. The
+   tall frames carry major story turns; the smaller expression crops sit beside the text
+   at their native size so they stay sharp. The written heading already names the beat, so
+   these images intentionally have an empty alt attribute. */
+export function WebtoonCharacterArt({
+  align = "left",
+  src,
+  variant = "portrait",
+}: WebtoonCharacterArtProps) {
+  const isPanel = variant === "panel";
+
+  return (
+    <figure className={`webtoon-character-art webtoon-character-${variant} webtoon-character-${align}`}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        alt=""
+        aria-hidden="true"
+        height={isPanel ? 1920 : 230}
+        loading="lazy"
+        src={src}
+        width={isPanel ? 1080 : 242}
+      />
+    </figure>
+  );
+}
+
 export function WebtoonPanel({
   badge,
   children,

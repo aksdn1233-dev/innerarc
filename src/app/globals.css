@@ -7775,6 +7775,60 @@ summary {
   white-space: pre-wrap;
 }
 
+/* Real comic cuts from the supplied Taeyul set. Major beats use the 1080x1920 frames;
+   reaction beats keep the 242x230 crops near their native size and let the next balloon
+   overlap slightly, like a character speaking into the page. */
+.webtoon-character-art {
+  position: relative;
+  z-index: 0;
+  margin-block: clamp(26px, 7vw, 46px);
+  overflow: hidden;
+}
+
+.webtoon-character-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.webtoon-character-panel {
+  width: min(100vw, 48rem);
+  height: min(82svh, 760px);
+  margin-inline: 50%;
+  border-block: 10px solid #020812;
+  background: #071527;
+  box-shadow: 0 30px 64px rgba(2, 8, 18, 0.28);
+  transform: translateX(-50%);
+}
+
+.webtoon-character-panel img {
+  object-position: center 24%;
+}
+
+.webtoon-character-portrait {
+  width: min(62vw, 242px);
+  aspect-ratio: 242 / 230;
+  border: 3px solid #081426;
+  border-radius: 32px 32px 10px;
+  background: #071527;
+  box-shadow: 10px 12px 0 rgba(221, 185, 120, 0.2);
+}
+
+.webtoon-character-portrait.webtoon-character-left {
+  margin-right: auto;
+}
+
+.webtoon-character-portrait.webtoon-character-right {
+  margin-left: auto;
+  border-radius: 32px 32px 32px 10px;
+  box-shadow: -10px 12px 0 rgba(221, 185, 120, 0.2);
+}
+
+.webtoon-character-portrait + .webtoon-dialogue {
+  margin-top: clamp(-18px, -3vw, -8px);
+}
+
 /* The paid result is staged as a vertical comic, not a formatted document. Paragraphs
    alternate between spoken balloons and rectangular narration captions; the dark panels
    carry a cropped guide portrait so the scroll reads as successive scenes. */
@@ -7833,39 +7887,13 @@ summary {
   font-weight: 700;
 }
 
-.webtoon-shell > .webtoon-night:nth-of-type(3n) {
-  min-height: min(920px, 100svh);
-  display: grid;
-  align-items: center;
-  overflow: hidden;
-}
-
-.webtoon-shell > .webtoon-night:nth-of-type(3n)::before {
-  position: absolute;
-  right: -8%;
-  bottom: -8%;
-  width: min(56vw, 520px);
-  height: 82%;
-  background: linear-gradient(90deg, #071527 0%, transparent 42%), url("/images/taeyul-hero.jpg") center top / cover no-repeat;
-  content: "";
-  filter: saturate(0.82) contrast(1.06);
-  opacity: 0.52;
-}
-
-.webtoon-shell > .webtoon-night:nth-of-type(3n) .webtoon-inner {
-  position: relative;
-  z-index: 1;
-}
-
 @media (max-width: 640px) {
   .webtoon-panel {
     border-top: 12px solid #020812;
   }
 
-  .webtoon-shell > .webtoon-night:nth-of-type(3n)::before {
-    right: -30%;
-    width: 92vw;
-    opacity: 0.38;
+  .webtoon-character-panel {
+    height: 78svh;
   }
 }
 
@@ -8304,6 +8332,11 @@ summary {
     padding-block: 16px;
     background: none;
     color: #000;
+    break-inside: avoid;
+  }
+
+  .webtoon-character-art {
+    max-height: 52vh;
     break-inside: avoid;
   }
 
