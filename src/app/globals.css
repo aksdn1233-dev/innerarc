@@ -9279,3 +9279,11 @@ summary {
 
 .saju-crosslink h2 { margin: 0; font-size: clamp(1.15rem, 3vw, 1.5rem); }
 .saju-crosslink p { max-width: 44rem; margin: 14px 0 20px; color: var(--muted); line-height: 1.8; }
+/* The legacy primary navigation is intentionally removed on every route and viewport.
+   Keep this final override so older route components cannot reintroduce the
+   Home / Me / Relationship / Question / Growth dock on phones or desktops. */
+.home-nav,
+.home-bottom-nav,
+.bottom-nav {
+  display: none !important;
+}
