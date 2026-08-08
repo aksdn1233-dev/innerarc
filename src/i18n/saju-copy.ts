@@ -29,7 +29,7 @@ export const sajuCopy = {
       "23시 이후 출생이면 일주가 통째로 달라지는 갈림길입니다. 기본값은 야자시이며, 어느 쪽으로 계산했는지 결과에 표시합니다.",
     submit: "사주 세우기",
     genericError: "계산할 수 없는 입력입니다.",
-    outOfRange: "1100년부터 2026년까지의 생년월일만 계산합니다. 연도를 다시 확인해 주세요.",
+    outOfRange: "1900년부터 오늘까지의 생년월일만 계산합니다. 연도를 다시 확인해 주세요.",
 
     chartTitle: "원국 (原局)",
     row: "구분",
@@ -110,7 +110,7 @@ export const sajuCopy = {
       "For a birth after 23:00 this changes the day pillar entirely. The default is 야자시, and the result states which was used.",
     submit: "Build the chart",
     genericError: "That input cannot be calculated.",
-    outOfRange: "Only birth dates from 1100 through 2026 are calculated. Please check the year.",
+    outOfRange: "Only birth dates from 1900 through today are calculated. Please check the year.",
 
     chartTitle: "The chart",
     row: "Row",

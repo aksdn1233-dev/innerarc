@@ -12,12 +12,13 @@ export default defineConfig({
       config: {
         main: "./worker/index.ts",
         compatibility_flags: ["nodejs_compat"],
-        // The Worker that `mygyeol.kr/*` routes to is called `gyeol`. Without this the
-        // name is derived from the package and comes out `innerarc`, which is a
-        // different, empty Worker in the same account holding only a discard route — so
-        // a deploy would report success while the live site kept serving the old build.
-        // `mygyeol.kr` must route to `innerarc`, so pin the worker name here to
-        // prevent accidental deploys to a detached worker.
+        // Pinned, not derived, and it must match the Worker that actually holds the
+        // `mygyeol.kr` custom domain — deploying to any other Worker reports success and
+        // passes a health check while visitors keep getting the old build, with no error
+        // anywhere to notice. This was `gyeol` until 2026-08-08; that Worker is gone and
+        // `innerarc` is now the only one on the account. Verify against the account
+        // before changing it — see "Where production actually is" in
+        // `docs/Operations-Runbook.md` for the one-line check.
         name: "innerarc",
         routes: [{ pattern: "mygyeol.kr", custom_domain: true }],
         // Keep workers.dev enabled as the rollout fallback host.

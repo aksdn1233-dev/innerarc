@@ -20,6 +20,7 @@ import { ShareCardPanel } from "@/components/share-card-panel";
 import { focusAndScroll, scrollToElement } from "@/components/accessibility";
 import { WebtoonCue, WebtoonPanel } from "@/components/webtoon";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
+import { HomeBar } from "@/components/home-bar";
 
 type Props = { locale: Locale; copy: CompatibilityCopy };
 
@@ -185,16 +186,7 @@ export function CompatibilityExperience({ locale, copy }: Props) {
           </section>
         )}
       </main>
-
-      <nav className="bottom-nav relationship-nav" aria-label={locale === "ko" ? "주요 탐색" : "Primary navigation"}>
-        {copy.nav.map((item, index) => {
-          if (index === 0) return <Link href={`/${locale}`} key={item}>{item}</Link>;
-          if (index === 1) return <Link href={`/${locale}/me`} prefetch={false} key={item}>{item}</Link>;
-          if (index === 3) return <Link href={`/${locale}/question`} key={item}>{item}</Link>;
-          if (index === 4) return <Link href={`/${locale}/reality-check`} key={item}>{item}</Link>;
-          return <span className={index === 2 ? "active" : ""} key={item}>{item}</span>;
-        })}
-      </nav>
+      <HomeBar locale={locale} />
     </>
   );
 }

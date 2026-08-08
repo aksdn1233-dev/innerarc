@@ -32,6 +32,7 @@ import type { QuestionCopy } from "@/i18n/question-copy";
 import { focusAndScroll, scrollToElement } from "@/components/accessibility";
 import { WebtoonCue, WebtoonPanel } from "@/components/webtoon";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
+import { HomeBar } from "@/components/home-bar";
 
 type Props = { locale: Locale; copy: QuestionCopy };
 
@@ -518,22 +519,7 @@ export function QuestionTarotExperience({ locale, copy }: Props) {
           </div>
         </section>
       </main>
-
-      <nav className="bottom-nav question-nav" aria-label={locale === "ko" ? "주요 탐색" : "Primary navigation"}>
-        {copy.nav.map((item, index) =>
-          index === 0 ? (
-            <Link href={`/${locale}`} key={item}>{item}</Link>
-          ) : index === 1 ? (
-            <Link href={`/${locale}/me`} prefetch={false} key={item}>{item}</Link>
-          ) : index === 2 ? (
-            <Link href={`/${locale}/relationship`} key={item}>{item}</Link>
-          ) : index === 4 ? (
-            <Link href={`/${locale}/reality-check`} key={item}>{item}</Link>
-          ) : (
-            <span className={index === 3 ? "active" : ""} key={item}>{item}</span>
-          ),
-        )}
-      </nav>
+      <HomeBar locale={locale} />
     </>
   );
 }

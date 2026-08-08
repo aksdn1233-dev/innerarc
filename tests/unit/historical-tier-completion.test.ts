@@ -15,18 +15,26 @@ const base = {
   createdAt: "2026-08-08T00:00:00.000Z",
 };
 
-describe("1100-2026 historical and tier completion", () => {
+describe("1900-2100 historical and tier completion", () => {
   it("calculates every supported year and rejects outside boundaries", () => {
-    for (let year = 1100; year <= 2026; year += 1) {
+    // 1900 is where the Korean standard-time record in `saju/time.ts` begins; earlier
+    // births would be given a zone this module cannot vouch for, and a solar-term series
+    // nobody has checked against a 만세력. The engine refuses rather than guessing.
+    for (let year = 1900; year <= 2100; year += 1) {
       expect(() => buildSajuChart({ birthDate: `${year}-06-15`, birthTime: "12:00", sex: "female" })).not.toThrow();
     }
-    expect(() => buildSajuChart({ birthDate: "1099-12-31", sex: "female" })).toThrow();
-    expect(() => buildSajuChart({ birthDate: "2027-01-01", sex: "female" })).toThrow();
+    expect(() => buildSajuChart({ birthDate: "1899-12-31", sex: "female" })).toThrow();
+    expect(() => buildSajuChart({ birthDate: "2101-01-01", sex: "female" })).toThrow();
   });
 
   it("uses historical delta-T and discloses pre-standard-time uncertainty", () => {
+    // ΔT is a pure function of the year and stays correct well outside the window the
+    // chart builder accepts; the eleventh century is where it is large enough to be an
+    // unambiguous check that the historical polynomial is wired up at all.
     expect(deltaTSeconds(1100)).toBeGreaterThan(900);
-    const chart = buildSajuChart({ birthDate: "1100-01-01", birthTime: "12:00", sex: "female" });
+    // 1900–1907 predates the 1908 standard-time proclamation. Those births are inside the
+    // supported window and are told so rather than being silently given a modern zone.
+    const chart = buildSajuChart({ birthDate: "1900-01-01", birthTime: "12:00", sex: "female" });
     expect(chart.termBoundaryWarning).toContain("1908년 이전");
     expect(Math.abs(chart.time.longitudeCorrectionMinutes)).toBeLessThan(1);
   });

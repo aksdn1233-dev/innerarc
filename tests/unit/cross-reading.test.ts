@@ -106,20 +106,23 @@ describe("what a visitor may enter, versus what the engines can calculate", () =
     expect(tryNumerology("1867-11-07")).toBe("ok");
   });
 
-  it("keeps the 사주 engine inside the supported 1100-2026 window", () => {
-    expect(trySaju("1099-12-31")).toBe("rejected");
-    expect(trySaju("1100-01-01")).toBe("ok");
-    expect(trySaju("2026-12-31")).toBe("ok");
-    expect(trySaju("2027-01-01")).toBe("rejected");
+  it("keeps the 사주 engine inside the supported 1900-2100 window", () => {
+    // Below 1900 the Korean standard-time history in `saju/time.ts` does not apply and
+    // the solar-term series has not been checked, so the engine refuses rather than
+    // producing a confident chart nobody has verified.
+    expect(trySaju("1899-12-31")).toBe("rejected");
+    expect(trySaju("1900-01-01")).toBe("ok");
+    expect(trySaju("2100-12-31")).toBe("ok");
+    expect(trySaju("2101-01-01")).toBe("rejected");
   });
 
-  it("bounds a visitor's own birth date to 1100 through 2026", () => {
+  it("bounds a visitor's own birth date to 1900 through today", () => {
     const now = new Date("2026-08-07T12:00:00Z");
     expect(isAcceptedBirthDate("1900-01-01", now)).toBe(true);
     expect(isAcceptedBirthDate("1994-11-04", now)).toBe(true);
-    expect(isAcceptedBirthDate("1899-12-31", now)).toBe(true);
-    expect(isAcceptedBirthDate("1099-12-31", now)).toBe(false);
-    expect(isAcceptedBirthDate("2027-01-01", now)).toBe(false);
+    expect(isAcceptedBirthDate("1899-12-31", now)).toBe(false);
+    expect(isAcceptedBirthDate("2026-08-07", now)).toBe(true);
+    expect(isAcceptedBirthDate("2026-08-08", now)).toBe(false);
     expect(isAcceptedBirthDate("2100-01-01", now)).toBe(false);
   });
 
@@ -133,12 +136,33 @@ describe("what a visitor may enter, versus what the engines can calculate", () =
   });
 
   it("offers the picker exactly that window", () => {
-    expect(MIN_BIRTH_DATE).toBe("1100-01-01");
-    expect(currentMaxBirthDate(new Date("2026-08-07T12:00:00Z"))).toBe("2026-12-31");
-    expect(isAcceptedBirthDate("1100-01-01")).toBe(true);
-    expect(isAcceptedBirthDate("2026-12-31")).toBe(true);
-    expect(isAcceptedBirthDate("1099-12-31")).toBe(false);
-    expect(isAcceptedBirthDate("2027-01-01")).toBe(false);
+    expect(MIN_BIRTH_DATE).toBe("1900-01-01");
+    expect(isAcceptedBirthDate("1900-01-01")).toBe(true);
+    expect(isAcceptedBirthDate("1899-12-31")).toBe(false);
     expect(isAcceptedBirthDate("2026-02-30")).toBe(false);
+    expect(isAcceptedBirthDate("2023-02-29")).toBe(false);
+    expect(isAcceptedBirthDate("2024-02-29")).toBe(true);
+  });
+
+  it("moves the ceiling with the calendar instead of freezing it into a constant", () => {
+    // The bug this replaces: the maximum was the literal string "2026-12-31", so on
+    // 2027-01-01 the form would have refused every visitor alive.
+    const localDay = (now: Date) =>
+      `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+
+    for (const iso of ["2026-08-07T12:00:00Z", "2027-01-01T12:00:00Z", "2031-03-09T12:00:00Z"]) {
+      const now = new Date(iso);
+      expect(currentMaxBirthDate(now)).toBe(localDay(now));
+      expect(isAcceptedBirthDate(localDay(now), now)).toBe(true);
+    }
+
+    // A birth date one day past "today" is a typo at every point on the calendar.
+    // Both neighbours are derived from `now` so the assertion does not depend on the
+    // timezone the test runner happens to be in.
+    const now = new Date("2027-01-01T12:00:00Z");
+    const dayOffset = (days: number) =>
+      localDay(new Date(now.getTime() + days * 86_400_000));
+    expect(isAcceptedBirthDate(dayOffset(1), now)).toBe(false);
+    expect(isAcceptedBirthDate(dayOffset(-1), now)).toBe(true);
   });
 });
