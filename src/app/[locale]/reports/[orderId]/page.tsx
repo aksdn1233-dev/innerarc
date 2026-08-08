@@ -6,7 +6,7 @@ import { MeteorTrails, NightHorizon } from "@/components/brand-visuals";
 import { PaymentStatusWaiting } from "@/components/payment-status-waiting";
 import { ReportActions } from "@/components/report-actions";
 import { ReviewRequestPanel } from "@/components/review-request-panel";
-import { WebtoonCta, WebtoonCue, WebtoonOrbs, WebtoonPanel } from "@/components/webtoon";
+import { WebtoonCta, WebtoonCue, WebtoonDialogue, WebtoonOrbs, WebtoonPanel } from "@/components/webtoon";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
 import { toOwnReviewState } from "@/core/reviews";
 import { isLocale } from "@/i18n/config";
@@ -281,7 +281,7 @@ export default async function PurchasedReportPage({
             title={directSection.title}
             tone="gold"
           >
-            <p className="webtoon-body">{directSection.body}</p>
+            <WebtoonDialogue text={directSection.body} />
             <WebtoonCue />
           </WebtoonPanel>
         )}
@@ -292,7 +292,7 @@ export default async function PurchasedReportPage({
             title={report.characterLabel}
             tone="paper"
           >
-            {characterLead && <p className="webtoon-body">{characterLead}</p>}
+            {characterLead && <WebtoonDialogue text={characterLead} />}
           </WebtoonPanel>
         )}
 
@@ -325,7 +325,7 @@ export default async function PurchasedReportPage({
             title={section.title}
             tone={index % 2 === 0 ? "night" : "paper"}
           >
-            <p className="webtoon-body">{section.body}</p>
+            <WebtoonDialogue text={section.body} />
           </WebtoonPanel>
         ))}
 
@@ -351,7 +351,7 @@ export default async function PurchasedReportPage({
             title={stopSection.title}
             tone="warn"
           >
-            <p className="webtoon-body">{stopSection.body}</p>
+            <WebtoonDialogue text={stopSection.body} />
           </WebtoonPanel>
         )}
 
@@ -361,7 +361,7 @@ export default async function PurchasedReportPage({
             title={premiumStopSection.title}
             tone="warn"
           >
-            <p className="webtoon-body">{premiumStopSection.body}</p>
+            <WebtoonDialogue text={premiumStopSection.body} />
           </WebtoonPanel>
         )}
 
@@ -385,7 +385,7 @@ export default async function PurchasedReportPage({
               title={section.title}
               tone={index % 2 === 0 ? "night" : "paper"}
             >
-              <p className="webtoon-body">{section.body}</p>
+              <WebtoonDialogue text={section.body} />
             </WebtoonPanel>
           );
         })}
@@ -396,7 +396,7 @@ export default async function PurchasedReportPage({
             title={finalSection.title}
             tone="night"
           >
-            <p className="webtoon-body">{finalSection.body}</p>
+            <WebtoonDialogue text={finalSection.body} />
           </WebtoonPanel>
         )}
 

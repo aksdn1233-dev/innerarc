@@ -69,6 +69,26 @@ export function WebtoonOrbs({
   );
 }
 
+/* Long report prose becomes a sequence of narration and dialogue balloons. Keeping the
+   paragraphs as real <p> elements preserves the reading order while giving each thought
+   its own visual beat on a phone. */
+export function WebtoonDialogue({ text }: { text: string }) {
+  const beats = text
+    .split(/\n{2,}/u)
+    .map((beat) => beat.trim())
+    .filter(Boolean);
+
+  return (
+    <div className="webtoon-dialogue">
+      {beats.map((beat, index) => (
+        <p className={index % 3 === 2 ? "webtoon-caption" : "webtoon-bubble"} key={`${index}-${beat.slice(0, 32)}`}>
+          {beat}
+        </p>
+      ))}
+    </div>
+  );
+}
+
 /* Two chevrons pointing into the next panel. Decoration only — the panel below is already
    in the document order a screen reader follows. */
 export function WebtoonCue() {

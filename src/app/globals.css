@@ -7775,6 +7775,100 @@ summary {
   white-space: pre-wrap;
 }
 
+/* The paid result is staged as a vertical comic, not a formatted document. Paragraphs
+   alternate between spoken balloons and rectangular narration captions; the dark panels
+   carry a cropped guide portrait so the scroll reads as successive scenes. */
+.webtoon-dialogue {
+  display: grid;
+  gap: clamp(18px, 5vw, 30px);
+  margin-top: clamp(26px, 7vw, 44px);
+}
+
+.webtoon-bubble,
+.webtoon-caption {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: clamp(19px, 5vw, 28px);
+  white-space: pre-wrap;
+}
+
+.webtoon-bubble {
+  width: min(92%, 34rem);
+  border: 2px solid #172131;
+  border-radius: 28px;
+  background: #fffdf8;
+  box-shadow: 7px 9px 0 rgba(3, 10, 20, 0.22);
+  color: #20231f;
+}
+
+.webtoon-bubble:nth-child(even) {
+  justify-self: end;
+}
+
+.webtoon-bubble::after {
+  position: absolute;
+  bottom: -15px;
+  left: 34px;
+  width: 25px;
+  height: 25px;
+  border-right: 2px solid #172131;
+  border-bottom: 2px solid #172131;
+  background: #fffdf8;
+  content: "";
+  transform: skew(28deg) rotate(28deg);
+}
+
+.webtoon-bubble:nth-child(even)::after {
+  right: 38px;
+  left: auto;
+  transform: skew(-28deg) rotate(62deg);
+}
+
+.webtoon-caption {
+  border: 1px solid rgba(221, 185, 120, 0.62);
+  background: #071527;
+  box-shadow: 8px 8px 0 rgba(221, 185, 120, 0.18);
+  color: #fff8e9;
+  font-weight: 700;
+}
+
+.webtoon-shell > .webtoon-night:nth-of-type(3n) {
+  min-height: min(920px, 100svh);
+  display: grid;
+  align-items: center;
+  overflow: hidden;
+}
+
+.webtoon-shell > .webtoon-night:nth-of-type(3n)::before {
+  position: absolute;
+  right: -8%;
+  bottom: -8%;
+  width: min(56vw, 520px);
+  height: 82%;
+  background: linear-gradient(90deg, #071527 0%, transparent 42%), url("/images/taeyul-hero.jpg") center top / cover no-repeat;
+  content: "";
+  filter: saturate(0.82) contrast(1.06);
+  opacity: 0.52;
+}
+
+.webtoon-shell > .webtoon-night:nth-of-type(3n) .webtoon-inner {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 640px) {
+  .webtoon-panel {
+    border-top: 12px solid #020812;
+  }
+
+  .webtoon-shell > .webtoon-night:nth-of-type(3n)::before {
+    right: -30%;
+    width: 92vw;
+    opacity: 0.38;
+  }
+}
+
 /* ---- Tones ----
    Four grounds, used in rotation. Night is the same navy and gold the topbar already
    wears, so the reading does not introduce a palette the rest of the product never uses. */
