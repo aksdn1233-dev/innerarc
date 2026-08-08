@@ -9,7 +9,11 @@ import { containsProhibitedOverclaim } from "./safety";
 
 export const AI_RUN_POLICY_VERSION = "1.1.0" as const;
 
-const alias = z.string().regex(/^[a-z0-9_.-]{2,80}$/);
+// A single interior slash is allowed because hosted-model catalogues publish names that
+// carry a publisher prefix — `meta/llama-3.3-70b-instruct`. The alias goes into the audit
+// record, so it stays bounded, lowercase, and free of anything that could be read as a
+// path traversal or a second segment: one slash, never leading or trailing.
+const alias = z.string().regex(/^[a-z0-9_.-]{2,80}(?:\/[a-z0-9_.-]{2,80})?$/);
 export const ProviderUsageSchema = z.object({
   inputTokens: z.number().int().min(0).max(10_000_000),
   outputTokens: z.number().int().min(0).max(10_000_000),

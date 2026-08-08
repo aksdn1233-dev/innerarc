@@ -10,6 +10,7 @@ import {
 export const NUMEROLOGY_RULE_VERSION = "pythagorean-1.0.0";
 
 const MAX_NAME_LENGTH = 200;
+
 const VOWELS = new Set(["A", "E", "I", "O", "U"]);
 
 const isMasterNumber = (value: number): boolean =>
@@ -66,6 +67,9 @@ export function parseBirthDate(input: string): ParsedDate {
   const year = Number(match[1]);
   const month = Number(match[2]);
   const day = Number(match[3]);
+  // Deliberately wide. This is the engine's own capability, not the product's input
+  // policy: the celebrity comparison calculates public figures born well before 1900.
+  // What a visitor may submit is bounded separately, in `@/core/birth-range`.
   if (year < 1 || year > 9999) {
     throw new NumerologyInputError("YEAR_OUT_OF_RANGE", "Birth year must be 0001–9999.");
   }

@@ -19,6 +19,7 @@ import { buildCoreProfileShare } from "@/core/share";
 import { ShareCardPanel } from "@/components/share-card-panel";
 import { focusAndScroll, scrollToElement } from "@/components/accessibility";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
+import { MIN_BIRTH_DATE, currentMaxBirthDate, isAcceptedBirthDate } from "@/core/birth-range";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 
@@ -30,6 +31,8 @@ function evidence(calculation: NumberCalculation): string {
 }
 
 export function OnboardingExperience({ locale, dictionary: d }: Props) {
+  // Bounded here rather than in the module so a long-lived tab still refuses tomorrow.
+  const maxBirthDate = currentMaxBirthDate();
   const [result, setResult] = useState<NumerologyProfile | null>(null);
   const [context, setContext] = useState<OnboardingReflectionContext | null>(null);
   const [error, setError] = useState("");
@@ -46,6 +49,16 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
       setResult(null);
       setContext(null);
       setError(d.privacyRequired);
+      return;
+    }
+    // `min`/`max` on the field are a convenience, not a guarantee — a form can be
+    // submitted without them. 1994 with a dropped leading digit is a valid date and the
+    // wrong millennium, and it used to be calculated straight through.
+    const submittedBirthDate = String(form.get("birthDate") ?? "");
+    if (!isAcceptedBirthDate(submittedBirthDate)) {
+      setResult(null);
+      setContext(null);
+      setError(d.invalidDate);
       return;
     }
     try {
@@ -141,7 +154,7 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
 
             <div className="field">
               <label htmlFor="birthDate">{d.birthDate}</label>
-              <input id="birthDate" name="birthDate" type="date" required />
+              <input id="birthDate" name="birthDate" type="date" max={maxBirthDate} min={MIN_BIRTH_DATE} required />
               <small>{d.birthHelp}</small>
             </div>
 

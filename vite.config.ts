@@ -16,12 +16,11 @@ export default defineConfig({
         // name is derived from the package and comes out `innerarc`, which is a
         // different, empty Worker in the same account holding only a discard route — so
         // a deploy would report success while the live site kept serving the old build.
-        name: "gyeol",
-        // `mygyeol.kr` is still delegated to hosting.co.kr, so its Cloudflare route does
-        // not fire and nothing deployed here is reachable at the domain yet. Until that
-        // changes, `gyeol.<subdomain>.workers.dev` is the only address that serves this
-        // build, and turning it off leaves no way to look at the site at all. Set this to
-        // false once the domain is delegated and serving.
+        // `mygyeol.kr` must route to `innerarc`, so pin the worker name here to
+        // prevent accidental deploys to a detached worker.
+        name: "innerarc",
+        routes: [{ pattern: "mygyeol.kr", custom_domain: true }],
+        // Keep workers.dev enabled as the rollout fallback host.
         workers_dev: true,
         // `worker/index.ts` calls `env.IMAGES` to serve /_vinext/image. A deploy
         // replaces the Worker's bindings with whatever this config declares, so
