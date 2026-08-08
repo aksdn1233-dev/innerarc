@@ -21,6 +21,7 @@ import { focusAndScroll, scrollToElement } from "@/components/accessibility";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
 import { MIN_BIRTH_DATE, currentMaxBirthDate, isAcceptedBirthDate } from "@/core/birth-range";
 import { createPaidContentPreview } from "@/core/report-preview";
+import { createAiPartnerConcept } from "@/core/ai/partner-concept";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 
@@ -37,12 +38,12 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
   const [result, setResult] = useState<NumerologyProfile | null>(null);
   const [context, setContext] = useState<OnboardingReflectionContext | null>(null);
   const [error, setError] = useState("");
-  const deepProfileRef = useRef<HTMLDetailsElement>(null);
   const introVideoRef = useRef<HTMLVideoElement>(null);
   const profile = result ? getRuleBasedProfile(result.lifePath.value, locale) : null;
   const integratedProfile = result ? createIntegratedProfile(result, locale) : null;
   const lifestyle = result ? createLifestyleRecommendations(result, locale) : null;
   const paidPreview = result ? createPaidContentPreview(result, locale) : null;
+  const partnerConcept = result ? createAiPartnerConcept(result, locale) : null;
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -70,7 +71,7 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
         focusId: String(form.get("interest") ?? ""),
         depth: String(form.get("depth") ?? ""),
         concern: String(form.get("concern") ?? ""),
-        aiPersonalizationConsent: form.get("aiPersonalization") === "on",
+        aiPersonalizationConsent: false,
       });
       const next = calculateNumerologyProfile({
         birthDate: String(form.get("birthDate") ?? ""),
@@ -89,12 +90,6 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
           ? d.invalidDate
           : d.invalidDate);
     }
-  }
-
-  function openDeepProfile() {
-    if (!deepProfileRef.current) return;
-    deepProfileRef.current.open = true;
-    focusAndScroll("#deep-profile");
   }
 
   function restart() {
@@ -240,12 +235,6 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
             <Link className="legal-inline-link" href={`/${locale}/privacy`}>
               {locale === "ko" ? "개인정보 처리 안내 읽기" : "Read the privacy information"}
             </Link>
-            <label className="check">
-              <input type="checkbox" name="aiPersonalization" />
-              <span>{d.personalize}</span>
-            </label>
-            <p className="privacy-note">{d.aiConsentHelp}</p>
-
             <div className="form-actions">
               <button className="primary-button" type="submit">{d.calculate}</button>
               {error && <span className="error" role="alert">{error}</span>}
@@ -298,9 +287,9 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
                   <span>{context.aiBoundary.message}</span>
                 </aside>
                 {context.nextStep.type === "deep_profile" ? (
-                  <button className="secondary-button" type="button" onClick={openDeepProfile}>
-                    {context.nextStep.label}
-                  </button>
+                  <Link className="secondary-button" href={`/${locale}/reading#onboarding`}>
+                    {locale === "ko" ? "상세 리딩에서 이어보기" : "Continue in the detailed reading"}
+                  </Link>
                 ) : (
                   <Link
                     className="secondary-button context-next-link"
@@ -314,14 +303,49 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
               </section>
 
               {paidPreview && (
-                <section className="paid-preview" aria-labelledby="paid-preview-title">
-                  <p className="eyebrow">{locale === "ko" ? "실제 상세 리딩 미리보기" : "Real detailed-reading preview"}</p>
-                  <h3 id="paid-preview-title">{paidPreview.unlockedSectionTitle}</h3>
-                  <p>{paidPreview.visible}</p>
-                  <div className="paid-preview-locks">
-                    {paidPreview.lockedTopics.map((topic) => <span key={topic}>LOCKED · {topic}</span>)}
+                <section className="free-report-preview" aria-labelledby="paid-preview-title">
+                  <header>
+                    <p className="eyebrow">{locale === "ko" ? "상세 리딩 맛보기" : "Detailed-reading preview"}</p>
+                    <h3 id="paid-preview-title">{locale === "ko" ? "지금 보이는 건 전체 리포트의 앞부분입니다" : "This is only the opening of the full report"}</h3>
+                    <p>{locale === "ko" ? "연애·직업·진로·재물 흐름의 핵심 방향을 먼저 보여드리고, 실제 판단 기준과 다음 행동은 결제 후 이어집니다." : "See the opening direction for love, work, career, and money. Decision criteria and next actions continue after payment."}</p>
+                  </header>
+                  <div className="free-report-teaser-grid">
+                    {[
+                      { id: "relationships", label: locale === "ko" ? "연애 흐름" : "Love", text: integratedProfile.domains.find((item) => item.id === "relationships")?.personalizedInference ?? paidPreview.visible },
+                      { id: "career", label: locale === "ko" ? "직업 흐름" : "Work", text: integratedProfile.domains.find((item) => item.id === "career")?.personalizedInference ?? profile.careers },
+                      { id: "path", label: locale === "ko" ? "진로 방향" : "Career direction", text: integratedProfile.careerRecommendations[0] ? `${integratedProfile.careerRecommendations[0].title} — ${integratedProfile.careerRecommendations[0].fitReason}` : profile.careers },
+                      { id: "money", label: locale === "ko" ? "재물 흐름" : "Money", text: integratedProfile.domains.find((item) => item.id === "money")?.personalizedInference ?? integratedProfile.summary },
+                    ].map((item, index) => (
+                      <article className="free-report-teaser" key={item.id}>
+                        <span>0{index + 1}</span>
+                        <h4>{item.label}</h4>
+                        <p>{item.text}</p>
+                        <div aria-hidden="true" className="teaser-mosaic"><i /><i /><i /><i /><i /><i /><i /><i /></div>
+                        <strong>{locale === "ko" ? "반복되는 이유와 다음 행동은 잠겨 있어요" : "The repeating cause and next action are locked"}</strong>
+                      </article>
+                    ))}
                   </div>
-                  <Link className="primary-button" href={`/${locale}#onboarding`}>{locale === "ko" ? "상세 리딩 선택하기" : "Choose a detailed reading"}</Link>
+                  {partnerConcept && (
+                    <article className="ai-partner-preview">
+                      <div className="ai-partner-image-lock">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img alt="" aria-hidden="true" src={partnerConcept.imageSrc} />
+                        <div className="portrait-mosaic" aria-hidden="true" />
+                        <span>{locale === "ko" ? "AI 이미지 콘셉트" : "AI image concept"}</span>
+                      </div>
+                      <div>
+                        <p className="eyebrow">{locale === "ko" ? "미래 배우자상" : "Future-partner archetype"}</p>
+                        <h4>{partnerConcept.title}</h4>
+                        <p>{partnerConcept.summary}</p>
+                        <div className="partner-traits">{partnerConcept.traits.map((trait) => <span key={trait}>{trait}</span>)}</div>
+                        <small>{partnerConcept.disclaimer}</small>
+                      </div>
+                    </article>
+                  )}
+                  <div className="paid-preview-locks">
+                    {paidPreview.lockedTopics.map((topic) => <span key={topic}>{locale === "ko" ? "잠김" : "Locked"} · {topic}</span>)}
+                  </div>
+                  <Link className="primary-button free-report-purchase" href={`/${locale}/reading#onboarding`}>{locale === "ko" ? "결제 후 내용 모두 살펴보기" : "Pay to explore the full report"}</Link>
                 </section>
               )}
 
@@ -443,10 +467,9 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
 
               <details
                 className="deep-profile"
+                hidden
                 id="deep-profile"
                 key={`${context.focusId}:${context.depth}`}
-                ref={deepProfileRef}
-                open={context.showDeepProfileByDefault}
               >
                 <summary>{d.integratedProfile}</summary>
                 <p className="deep-profile-intro">{d.integratedIntro}</p>

@@ -5,6 +5,7 @@ import { createCompatibilityInsight } from "@/core/compatibility/engine";
 import { createPaidContentPreview } from "@/core/report-preview";
 import { auditReportLanguage, deduplicateReportSections } from "@/core/report-quality";
 import type { PaidReadingInput, PaidReport } from "@/core/paid-reading";
+import { createAiPartnerConcept } from "@/core/ai/partner-concept";
 
 export function enhancePaidReport(report: PaidReport, input: PaidReadingInput): PaidReport {
   const serviceYear = report.calculationBasis?.serviceYear ?? new Date(input.createdAt).getUTCFullYear();
@@ -78,6 +79,9 @@ export function enhancePaidReport(report: PaidReport, input: PaidReadingInput): 
       unlockedSectionTitle: deduplicatedSections.at(-1)?.title ?? preview.unlockedSectionTitle,
       lockedTopics: preview.lockedTopics,
     },
+    aiPartnerConcept: input.consent?.aiPartnerImage
+      ? createAiPartnerConcept(profile, input.locale)
+      : undefined,
   };
   return { ...enhanced, qualityAudit: auditReportLanguage(enhanced) };
 }

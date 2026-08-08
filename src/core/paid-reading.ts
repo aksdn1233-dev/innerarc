@@ -34,6 +34,12 @@ export const PaidReadingInputSchema = z.object({
   gender: z.enum(["female", "male", "unstated"]).optional(),
   questions: z.array(z.string().trim().min(1).max(1_000)).max(2).optional(),
   companion: companionSchema.optional(),
+  consent: z.object({
+    privacyRequired: z.literal(true),
+    aiPartnerImage: z.boolean(),
+    acceptedAt: z.string().datetime(),
+    policyVersion: z.literal("checkout-privacy-1.0.0"),
+  }).strict().optional(),
   createdAt: z.string().datetime(),
 }).strict();
 
@@ -92,4 +98,11 @@ export type PaidReport = Readonly<{
     lockedTopics: readonly string[];
   }>;
   qualityAudit?: ReportLanguageAudit;
+  aiPartnerConcept?: Readonly<{
+    title: string;
+    summary: string;
+    traits: readonly string[];
+    imageSrc: string;
+    disclaimer: string;
+  }>;
 }>;

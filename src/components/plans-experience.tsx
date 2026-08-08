@@ -112,6 +112,7 @@ const copy = {
       missing_draft: "먼저 상품과 리딩 정보를 입력해 주세요.",
       invalid_depositor: "실제 입금 내역에 표시될 입금자명을 두 글자 이상 입력해 주세요.",
       invalid_phone: "결제 안내를 받을 국내 휴대폰 번호를 확인해 주세요.",
+      missing_consent: "개인정보 수집·이용 동의를 확인해 주세요.",
       temporarily_unavailable: "현재 결제를 잠시 멈춘 상태입니다. 입력 내용은 그대로 있으니 잠시 후 다시 확인해 주세요.",
       rate_limited: "짧은 시간에 결제 요청이 반복되었습니다. 잠시 후 다시 시도해 주세요.",
       order_failed: "주문을 만들지 못했습니다. 입력 내용을 유지했으니 잠시 후 다시 시도해 주세요.",
@@ -161,6 +162,7 @@ const copy = {
       missing_draft: "Choose a product and enter the reading information first.",
       invalid_depositor: "Enter at least two characters matching the depositor name on the transfer.",
       invalid_phone: "Check the Korean mobile number used for payment instructions.",
+      missing_consent: "Please agree to the required collection and use of personal information.",
       temporarily_unavailable: "Checkout is temporarily paused. Your reading details are still here; please try again shortly.",
       rate_limited: "Too many checkout attempts were made in a short time. Please wait and try again.",
       order_failed: "The order could not be created. Your input is still here; please try again shortly.",
@@ -224,6 +226,8 @@ export function PlansExperience({
   const [error, setError] = useState<CheckoutErrorCode | null>(null);
   const [depositorName, setDepositorName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
+  const [aiPartnerAccepted, setAiPartnerAccepted] = useState(false);
   const [portOneMethod, setPortOneMethod] = useState<PortOneMethod>("kakaopay");
   const [linkCopied, setLinkCopied] = useState(false);
   const checkoutInFlightRef = useRef(false);
@@ -296,6 +300,10 @@ export function PlansExperience({
       setError("missing_draft");
       return;
     }
+    if (!privacyAccepted) {
+      setError("missing_consent");
+      return;
+    }
     const selectedProduct = products.find((product) => product.code === productCode);
     if (selectedProduct?.amount === null || selectedProduct?.amount === undefined) {
       setError("temporarily_unavailable");
@@ -313,7 +321,15 @@ export function PlansExperience({
       return;
     }
     checkoutInFlightRef.current = true;
-    const selectedReadingInput = selectCheckoutReadingInput(readingInput, productCode);
+    const selectedReadingInput = PaidReadingInputSchema.parse({
+      ...selectCheckoutReadingInput(readingInput, productCode),
+      consent: {
+        privacyRequired: true,
+        aiPartnerImage: aiPartnerAccepted,
+        acceptedAt: new Date().toISOString(),
+        policyVersion: "checkout-privacy-1.0.0",
+      },
+    });
     setReadingInput(selectedReadingInput);
     try {
       window.sessionStorage.setItem(
@@ -541,6 +557,23 @@ export function PlansExperience({
         </div>
       )}
 
+      {paymentsEnabled && readingInput && (
+        <section className="checkout-consent" aria-labelledby="checkout-consent-title">
+          <p className="eyebrow">{locale === "ko" ? "결제 전 동의" : "Consent before payment"}</p>
+          <h2 id="checkout-consent-title">{locale === "ko" ? "리포트 제작에 필요한 정보 사용을 확인해 주세요" : "Confirm how your details are used"}</h2>
+          <label className="check">
+            <input checked={privacyAccepted} onChange={(event) => setPrivacyAccepted(event.target.checked)} type="checkbox" />
+            <span>{locale === "ko" ? "(필수) 생년월일·질문·연락처를 결제 처리, 개인 리포트 제작과 다시 보기에 사용하는 데 동의합니다." : "(Required) I agree to the use of my birth date, question, and contact details for payment, report creation, and reopening."}</span>
+          </label>
+          <label className="check">
+            <input checked={aiPartnerAccepted} onChange={(event) => setAiPartnerAccepted(event.target.checked)} type="checkbox" />
+            <span>{locale === "ko" ? "(선택) 수비학 관계 성향을 바탕으로 AI 배우자상 콘셉트 이미지와 설명을 만드는 데 동의합니다." : "(Optional) I agree to an AI partner-archetype concept image and description based on numerology relationship themes."}</span>
+          </label>
+          <p>{locale === "ko" ? "AI 배우자상은 실제 인물이나 미래 얼굴을 예측하지 않습니다. 선택 동의를 하지 않아도 리포트를 구매할 수 있습니다." : "The AI partner concept does not predict a real person or future face. You can purchase without this optional consent."}</p>
+          <Link href={`/${locale}/privacy`}>{locale === "ko" ? "개인정보 처리 안내 자세히 보기" : "Read the privacy notice"}</Link>
+        </section>
+      )}
+
       <section className="plan-grid" aria-label={locale === "ko" ? "이용권" : "Access plans"}>
         {products.map((product) => (
           <article
@@ -565,7 +598,7 @@ export function PlansExperience({
             <button
               className="primary-button"
               type="button"
-              disabled={!paymentsEnabled || !readingInput || loadingCode !== null}
+              disabled={!paymentsEnabled || !readingInput || !privacyAccepted || loadingCode !== null}
               onClick={() => void createOrder(product.code)}
             >
               {loadingCode === product.code

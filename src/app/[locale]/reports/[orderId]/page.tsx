@@ -321,6 +321,24 @@ export default async function PurchasedReportPage({
           </WebtoonPanel>
         )}
 
+        {report.aiPartnerConcept && (
+          <WebtoonPanel
+            badge={locale === "ko" ? "AI 관계 이미지" : "AI relationship image"}
+            title={report.aiPartnerConcept.title}
+            tone="gold"
+          >
+            <div className="paid-ai-partner">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img alt="" aria-hidden="true" src={report.aiPartnerConcept.imageSrc} />
+              <div>
+                <p>{report.aiPartnerConcept.summary}</p>
+                <div className="partner-traits">{report.aiPartnerConcept.traits.map((trait) => <span key={trait}>{trait}</span>)}</div>
+                <small>{report.aiPartnerConcept.disclaimer}</small>
+              </div>
+            </div>
+          </WebtoonPanel>
+        )}
+
         {/* The calculation comes after the reading, not before it: someone who just opened
             a report they paid for wants the answer, and the arithmetic behind it only once
             they have a reason to care. That order predates the webtoon layout and survives it. */}

@@ -43,7 +43,7 @@ export default async function PlansPage({
           amount: readiness.config.products.pro_30d.amount,
           regularAmount: pricing.regularPrices.pro_30d,
           features: locale === "ko"
-            ? ["5가지 핵심 숫자와 성향의 모순", "한 질문 분야 상세 분석 또는 일반 상세 리포트", "두 사람 궁합 이용", "상황별 대처 4~5가지", "우선 실행 계획 5단계", "중단·재검토 기준", "결제 후 열람·다운로드"]
+            ? ["5가지 핵심 숫자와 성향의 모순", "한 질문 분야 상세 분석 또는 일반 상세 리포트", "선택 동의 시 AI 배우자상 콘셉트", "두 사람 궁합 이용", "상황별 대처 4~5가지", "우선 실행 계획 5단계", "중단·재검토 기준", "결제 후 열람·다운로드"]
             : ["Five calculated facts and internal contradiction", "Detailed question or general report", "Two-person compatibility", "Situation guidance", "Five-step execution plan", "Stop criteria", "Saved and downloadable"],
         },
         {
@@ -53,7 +53,7 @@ export default async function PlansPage({
           amount: readiness.config.products.premium_pdf.amount,
           regularAmount: pricing.regularPrices.premium_pdf,
           features: locale === "ko"
-            ? ["상세 리딩의 모든 분석 포함", "질문이 없어도 완결되는 전체 리포트", "숨은 동기·실패의 뿌리", "최선·현실·위험 시나리오 3가지", "확인·반박 신호와 재평가 시점", "6단계 실행과 6가지 중단 기준", "결제 후 열람·다운로드"]
+            ? ["상세 리딩의 모든 분석 포함", "질문이 없어도 완결되는 전체 리포트", "선택 동의 시 AI 배우자상 콘셉트", "숨은 동기·실패의 뿌리", "최선·현실·위험 시나리오 3가지", "확인·반박 신호와 재평가 시점", "6단계 실행과 6가지 중단 기준", "결제 후 열람·다운로드"]
             : ["Everything in Detailed", "Complete with or without a question", "Hidden motivation and root causes", "Three scenarios and observable signals", "Six-step execution and six stop criteria", "Saved and downloadable"],
         },
       ]
@@ -65,7 +65,7 @@ export default async function PlansPage({
           amount: pricing.prices.pro_30d,
           regularAmount: pricing.regularPrices.pro_30d,
           features: locale === "ko"
-            ? ["5가지 핵심 숫자와 성향의 모순", "한 질문 분야 상세 분석 또는 일반 상세 리포트", "두 사람 궁합 이용", "상황별 대처 4~5가지", "우선 실행 계획 5단계", "중단·재검토 기준", "결제 후 열람·다운로드"]
+            ? ["5가지 핵심 숫자와 성향의 모순", "한 질문 분야 상세 분석 또는 일반 상세 리포트", "선택 동의 시 AI 배우자상 콘셉트", "두 사람 궁합 이용", "상황별 대처 4~5가지", "우선 실행 계획 5단계", "중단·재검토 기준", "결제 후 열람·다운로드"]
             : ["Five calculated facts and internal contradiction", "Detailed question or general report", "Two-person compatibility", "Situation guidance", "Five-step execution plan", "Stop criteria", "Saved and downloadable"],
         },
         {
@@ -75,7 +75,7 @@ export default async function PlansPage({
           amount: pricing.prices.premium_pdf,
           regularAmount: pricing.regularPrices.premium_pdf,
           features: locale === "ko"
-            ? ["상세 리딩의 모든 분석 포함", "질문이 없어도 완결되는 전체 리포트", "숨은 동기·실패의 뿌리", "최선·현실·위험 시나리오 3가지", "확인·반박 신호와 재평가 시점", "6단계 실행과 6가지 중단 기준", "결제 후 열람·다운로드"]
+            ? ["상세 리딩의 모든 분석 포함", "질문이 없어도 완결되는 전체 리포트", "선택 동의 시 AI 배우자상 콘셉트", "숨은 동기·실패의 뿌리", "최선·현실·위험 시나리오 3가지", "확인·반박 신호와 재평가 시점", "6단계 실행과 6가지 중단 기준", "결제 후 열람·다운로드"]
             : ["Everything in Detailed", "Complete with or without a question", "Hidden motivation and root causes", "Three scenarios and observable signals", "Six-step execution and six stop criteria", "Saved and downloadable"],
         },
       ];

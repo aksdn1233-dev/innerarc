@@ -35,6 +35,7 @@ describe("checkout UI boundary", () => {
     [503, { error: "SALES_PAUSED" }, "temporarily_unavailable"],
     [400, { error: "PAYMENTS_UNAVAILABLE" }, "temporarily_unavailable"],
     [400, { error: "SUPABASE_DISABLED" }, "temporarily_unavailable"],
+    [400, { error: "PRIVACY_CONSENT_REQUIRED" }, "missing_consent"],
     [502, { error: "PAYAPP_REQUEST_FAILED" }, "order_failed"],
     [500, null, "order_failed"],
   ] as const)("maps status %s to a bounded buyer-facing error", (status, body, expected) => {
