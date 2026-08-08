@@ -9011,3 +9011,57 @@ summary {
 
 .saju-crosslink h2 { margin: 0; font-size: clamp(1.15rem, 3vw, 1.5rem); }
 .saju-crosslink p { max-width: 44rem; margin: 14px 0 20px; color: var(--muted); line-height: 1.8; }
+
+/* 태율 on the free reading. Its own class rather than the old `.hero-object`: that one
+   is an arch with a decorative circle and a dividing line drawn behind the number-and-
+   cards figure it was built for, and those shapes read as damage over a moving picture.
+
+   16:9 here rather than full-bleed. This page is a form, and a clip that filled the
+   screen would push the first field below the fold on a phone, which is the opposite of
+   what the page is for. */
+.hero-guide {
+  justify-self: center;
+  width: 100%;
+  max-width: 460px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--paper-deep);
+}
+
+.hero-guide video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  /* The clip pans down to the desk at the end; holding the top keeps his face in frame
+     wherever it is cropped. */
+  object-position: center 30%;
+  pointer-events: none;
+}
+
+/* One link back home, in place of the five-item tab bar. */
+.home-bar {
+  display: flex;
+  justify-content: center;
+  padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
+}
+
+.home-bar a {
+  min-width: 8rem;
+  padding: 12px 28px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+}
+
+/* The paragraph that used to separate the headline from the button is gone, so the gap
+   it happened to provide has to be stated rather than inherited. */
+.hero h1 + .primary-button {
+  margin-top: clamp(18px, 4vw, 28px);
+}

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HomeBar } from "@/components/home-bar";
 import { createShopPreview } from "@/core/lifestyle";
 import type { Locale } from "@/i18n/config";
 import type { ShopCopy } from "@/i18n/shop-copy";
@@ -59,16 +60,7 @@ export function ShopExperience({ locale, copy }: { locale: Locale; copy: ShopCop
           </aside>
         </section>
       </main>
-
-      <nav className="bottom-nav" aria-label={locale === "ko" ? "주요 탐색" : "Primary navigation"}>
-        {copy.nav.map((item, index) => {
-          if (index === 0) return <Link href={`/${locale}`} key={item}>{item}</Link>;
-          if (index === 1) return <Link href={`/${locale}/me`} prefetch={false} key={item}>{item}</Link>;
-          if (index === 2) return <Link href={`/${locale}/relationship`} key={item}>{item}</Link>;
-          if (index === 3) return <Link href={`/${locale}/question`} key={item}>{item}</Link>;
-          return <Link href={`/${locale}/reality-check`} key={item}>{item}</Link>;
-        })}
-      </nav>
+      <HomeBar locale={locale} />
     </>
   );
 }

@@ -14,6 +14,7 @@ import {
 import type { Locale } from "@/i18n/config";
 import type { MeCopy } from "@/i18n/me-copy";
 import { AccountSyncPanel } from "@/components/account-sync-panel";
+import { HomeBar } from "@/components/home-bar";
 import {
   AccountReportsPanel,
   type AccountReportSummary,
@@ -284,16 +285,7 @@ export function MeExperience({
           </article>
         </section>
       </main>
-
-      <nav className="bottom-nav" aria-label={locale === "ko" ? "주요 탐색" : "Primary navigation"}>
-        {copy.nav.map((item, index) => {
-          if (index === 0) return <Link href={`/${locale}`} key={item}>{item}</Link>;
-          if (index === 1) return <span className="active" key={item}>{item}</span>;
-          if (index === 2) return <Link href={`/${locale}/relationship`} key={item}>{item}</Link>;
-          if (index === 3) return <Link href={`/${locale}/question`} key={item}>{item}</Link>;
-          return <Link href={`/${locale}/reality-check`} key={item}>{item}</Link>;
-        })}
-      </nav>
+      <HomeBar locale={locale} />
     </>
   );
 }

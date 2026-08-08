@@ -94,18 +94,18 @@ verify the wrong thing:
   its production deployments as READY with `mygyeol.kr` in their alias list, but that
   is not what the domain serves. A green Vercel deployment is therefore *not* evidence
   that a change reached users.
-- **The Worker is named `gyeol`, not `innerarc`.** The account holds four Workers —
-  `gyeol`, `innerarc`, `mygyeol`, `innerarc-fix`. Only `gyeol` carries the fifteen
-  `secret_text` bindings the app needs (`SUPABASE_SERVICE_ROLE_KEY`, the `PAYAPP_*`
-  credentials, `ADMIN_EMAILS`, the price overrides); the other three have no bindings at
-  all. The zone's routes are `mygyeol.kr/*` → `gyeol` and
-  `mygyeol.kr/.innerarc-discard/*` → `innerarc`.
-- **`mygyeol.kr` is not yet delegated to Cloudflare.** The zone is `status: pending`;
-  the domain's authoritative nameservers are still `ns1..ns4.hosting.co.kr`, against
-  Cloudflare's assigned `alice.ns.cloudflare.com` / `phil.ns.cloudflare.com`. The
-  `mygyeol.kr/*` → `gyeol` route therefore does not fire, and the domain is served by an
-  older deployment outside this account. Until the nameservers move, deploying to
-  `gyeol` changes what `gyeol` runs but not what visitors get.
+- **The Worker is named `innerarc`, and it is now the only Worker on the account.** It
+  carries the fifteen `secret_text` bindings the app needs
+  (`SUPABASE_SERVICE_ROLE_KEY`, the `PAYAPP_*` credentials, `ADMIN_EMAILS`, the price
+  overrides), which is why `wrangler deploy` must always be given `--keep-vars`. An
+  earlier state of this account had the domain on a Worker called `gyeol` alongside
+  `innerarc`, `mygyeol` and `innerarc-fix`; that arrangement is gone. Because deploying
+  to the wrong Worker fails silently, read the name back from the account rather than
+  from this file — the check is in `docs/Operations-Runbook.md`.
+- **`mygyeol.kr` is delegated to Cloudflare and serving.** As of 2026-08-08 the zone is
+  `status: active` on `alice.ns.cloudflare.com` / `phil.ns.cloudflare.com`, and the apex
+  is attached to `innerarc` as a Workers Custom Domain. `www.mygyeol.kr` does not exist
+  (NXDOMAIN); the apex is the only hostname.
 
 To check what is actually live, request the site and compare against the build — the
 reliable marker is the hashed stylesheet, `dist/client/assets/index-*.css`, which changes

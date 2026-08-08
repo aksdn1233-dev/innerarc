@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import {
   calculateNumerologyProfile,
@@ -21,6 +21,7 @@ import { focusAndScroll, scrollToElement } from "@/components/accessibility";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
 import { MIN_BIRTH_DATE, currentMaxBirthDate, isAcceptedBirthDate } from "@/core/birth-range";
 import { createPaidContentPreview } from "@/core/report-preview";
+import { HomeBar } from "@/components/home-bar";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 
@@ -38,6 +39,27 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
   const [context, setContext] = useState<OnboardingReflectionContext | null>(null);
   const [error, setError] = useState("");
   const deepProfileRef = useRef<HTMLDetailsElement>(null);
+  const guideVideoRef = useRef<HTMLVideoElement>(null);
+
+  // The clip is fetched after first paint so it never competes with the page for the
+  // first bytes, and it is never started for a visitor who asked for reduced motion —
+  // for them the poster is the whole of it, which is a still of the clip's own first
+  // frame, so nothing is missing.
+  useEffect(() => {
+    const video = guideVideoRef.current;
+    if (!video) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const start = () => {
+      video.load();
+      void video.play().catch(() => {});
+    };
+    const idle = window.requestIdleCallback?.(start, { timeout: 2_500 })
+      ?? window.setTimeout(start, 1_200);
+    return () => {
+      if (window.cancelIdleCallback && typeof idle === "number") window.cancelIdleCallback(idle);
+      else window.clearTimeout(idle as number);
+    };
+  }, []);
   const profile = result ? getRuleBasedProfile(result.lifePath.value, locale) : null;
   const integratedProfile = result ? createIntegratedProfile(result, locale) : null;
   const lifestyle = result ? createLifestyleRecommendations(result, locale) : null;
@@ -126,10 +148,12 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
         </header>
 
         <section className="hero" aria-labelledby="hero-title">
+          {/* The hook line, the button, and him. The eyebrow and the six-line paragraph
+              that used to sit here explained the product to someone who had already
+              clicked through to try it — they were read past, not read, and they pushed
+              the character and the form off the first screen. */}
           <div>
-            <p className="eyebrow">{d.eyebrow}</p>
             <h1 id="hero-title">{d.headline}</h1>
-            <p className="hero-copy">{d.intro}</p>
             <button
               className="primary-button"
               type="button"
@@ -138,13 +162,28 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
               {d.start}
             </button>
           </div>
-          <div className="hero-object" aria-hidden="true">
-            <span className="hero-number">11</span>
-            <div className="hero-card-stack">
-              <span className="hero-card hero-card-left" />
-              <span className="hero-card hero-card-center"><i /></span>
-              <span className="hero-card hero-card-right" />
-            </div>
+          {/* 태율 again, so the free reading is recognisably the same place as the
+              opening screen rather than a plain form the character never reaches. The
+              abstract number-and-cards figure that stood here said nothing a visitor
+              could hold on to.
+
+              Same rules as the hero clip: decorative, silent, fetched only once the page
+              is idle so it never competes for the first bytes, and never started for
+              someone who asked for reduced motion. */}
+          <div className="hero-guide" aria-hidden="true">
+            <video
+              className="guide-clip"
+              disablePictureInPicture
+              loop
+              muted
+              playsInline
+              poster="/images/taeyul-guide.jpg"
+              preload="none"
+              ref={guideVideoRef}
+              tabIndex={-1}
+            >
+              <source src="/videos/taeyul-guide.mp4" type="video/mp4" />
+            </video>
           </div>
         </section>
 
@@ -514,22 +553,7 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
           </section>
         )}
       </main>
-
-      <nav className="bottom-nav" aria-label={locale === "ko" ? "주요 탐색" : "Primary navigation"}>
-        {d.nav.map((item, index) =>
-          index === 1 ? (
-            <Link href={`/${locale}/me`} prefetch={false} key={item}>{item}</Link>
-          ) : index === 2 ? (
-            <Link href={`/${locale}/relationship`} key={item}>{item}</Link>
-          ) : index === 3 ? (
-            <Link href={`/${locale}/question`} key={item}>{item}</Link>
-          ) : index === 4 ? (
-            <Link href={`/${locale}/reality-check`} key={item}>{item}</Link>
-          ) : (
-            <span key={item}>{item}</span>
-          ),
-        )}
-      </nav>
+      <HomeBar locale={locale} />
     </>
   );
 }
