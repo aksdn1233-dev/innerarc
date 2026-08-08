@@ -6,9 +6,8 @@ const DEFAULT_DECODED_BUDGET = 1_200_000;
 
 /**
  * The home page carries the 태율 hero clip — a 720×1280 vertical film, currently 964 KB
- * of MP4 — plus its poster, which no other route downloads. It is deliberately excluded from render-blocking — `preload="none"`, fetched
- * on idle — but it is still bytes a visitor pays for, so it is written into the budget
- * rather than hidden from it by delaying the fetch past when the test stops measuring.
+ * of MP4 — plus its poster, which no other route downloads. The clip starts with the
+ * opening screen, so those bytes are written directly into the budget.
  * Every other route keeps the original, tighter allowance.
  */
 const routes = [

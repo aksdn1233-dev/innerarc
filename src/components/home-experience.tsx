@@ -239,9 +239,8 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   // The opening screen already carries the same action at thumb height. Showing the
   // sticky bar there would cover it, so the bar waits until the hero has scrolled away.
   const [heroVisible, setHeroVisible] = useState(true);
-  // A browser refuses to autoplay a clip that makes noise, so it starts muted and the
-  // sound is the visitor's to switch on. Off is the honest default anyway: nobody wants
-  // a page to start talking at them.
+  // The home film starts automatically while muted, which browsers permit reliably.
+  // Sound remains the visitor's choice through the existing toggle.
   const [soundOn, setSoundOn] = useState(false);
   // Pressing the primary action opens the intake over the film, in place. It is not a
   // page to scroll to and not a place to navigate to — the character stays on screen.
@@ -329,27 +328,8 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   useEffect(() => {
     const video = heroVideoRef.current;
     if (!video) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    let cancelled = false;
-    const start = () => {
-      if (cancelled) return;
-      video.load();
-      // Autoplay is allowed for a muted, inline video; a rejection is not an error worth
-      // surfacing, it just leaves the poster showing.
-      void video.play().catch(() => {});
-    };
-
-    // Safari has no requestIdleCallback, so a timeout stands in for it there.
-    const canIdle = typeof window.requestIdleCallback === "function";
-    const handle = canIdle
-      ? window.requestIdleCallback(start, { timeout: 2_500 })
-      : window.setTimeout(start, 1_200);
-    return () => {
-      cancelled = true;
-      if (canIdle) window.cancelIdleCallback(handle);
-      else window.clearTimeout(handle);
-    };
+    video.load();
+    void video.play().catch(() => {});
   }, []);
 
   function trackFormStart() {
@@ -470,18 +450,17 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
               A seven-second loop of him, watermark removed and cross-faded at the seam so
               it repeats without a cut. The poster is the clip's own first frame, so the
               still and the moving picture are the same image and nothing jumps when
-              playback starts. `preload="none"` keeps it out of the initial payload; the
-              effect below starts it once the page is idle, and never when the visitor has
-              asked for reduced motion. */}
+              playback starts. It is preloaded and starts with the opening screen. */}
           <video
             aria-hidden="true"
+            autoPlay
             className="cinema-hero-portrait"
             disablePictureInPicture
             loop
             muted
             playsInline
             poster="/images/taeyul-hero.jpg"
-            preload="none"
+            preload="auto"
             ref={heroVideoRef}
             tabIndex={-1}
           >

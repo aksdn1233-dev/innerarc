@@ -31,6 +31,10 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await page.getByRole("button", { name: "내 패턴 확인하기" }).click();
   await expect(page.locator(".hero-intake-panel")).toBeVisible();
   await expect(page.locator(".cinema-hero-portrait")).toBeVisible();
+  await expect(page.locator(".cinema-hero-portrait")).toHaveAttribute("autoplay", "");
+  await expect(page.locator(".cinema-hero-portrait")).toHaveAttribute("preload", "auto");
+  await expect.poll(() => page.locator(".cinema-hero-portrait")
+    .evaluate((video: HTMLVideoElement) => video.paused)).toBe(false);
   await expect(page).toHaveURL(`${E2E_ORIGIN}/ko`);
   await expect(page.locator("#hero-birthDate")).toBeVisible();
   await expect(page.getByRole("button", { name: "여성" })).toBeVisible();
