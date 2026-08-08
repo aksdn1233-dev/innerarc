@@ -350,8 +350,8 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
               )}
 
               <div className="number-grid">
-                {labels.map(([label, calculation]) => (
-                  <div className="number-tile" key={label}>
+                {labels.map(([label, calculation], index) => (
+                  <div className="number-tile" key={`${index}-${label}`}>
                     <strong>{calculation.value}</strong>
                     <span>{label}</span>
                   </div>
