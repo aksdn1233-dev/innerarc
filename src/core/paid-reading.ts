@@ -1,4 +1,7 @@
 import { z } from "zod";
+import { isAcceptedBirthDate } from "@/core/birth-range";
+import { relationshipTypes } from "@/core/compatibility/types";
+import type { ReportLanguageAudit } from "@/core/report-quality";
 import type {
   EnrichmentAuditEntry,
   ReportCoverageCategory,
@@ -8,17 +11,29 @@ import type {
 export const paidReadingProductCodes = ["plus_30d", "pro_30d", "premium_pdf"] as const;
 export const paidReadingFocusIds = ["work", "relationships", "health", "growth", "money"] as const;
 
+const optionalBirthTime = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/).optional();
+const companionSchema = z.object({
+  name: z.string().max(200),
+  birthDate: z.string().refine(isAcceptedBirthDate, "UNSUPPORTED_BIRTH_DATE"),
+  birthTime: optionalBirthTime,
+  gender: z.enum(["female", "male", "unstated"]).optional(),
+  relationshipType: z.enum(relationshipTypes),
+}).strict();
+
 export const PaidReadingInputSchema = z.object({
   version: z.literal(1),
   locale: z.enum(["ko", "en"]),
   productCode: z.enum(paidReadingProductCodes),
-  birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  birthDate: z.string().refine(isAcceptedBirthDate, "UNSUPPORTED_BIRTH_DATE"),
+  birthTime: optionalBirthTime,
   name: z.string().max(200),
   focusId: z.enum(paidReadingFocusIds),
   concern: z.string().max(2_000),
   // Asked for on the opening screen. Optional because a draft written before this
   // existed is still a valid draft, and the reading does not require it.
   gender: z.enum(["female", "male", "unstated"]).optional(),
+  questions: z.array(z.string().trim().min(1).max(1_000)).max(2).optional(),
+  companion: companionSchema.optional(),
   createdAt: z.string().datetime(),
 }).strict();
 
@@ -71,4 +86,10 @@ export type PaidReport = Readonly<{
   coverageCategories?: readonly ReportCoverageCategory[];
   enrichmentAudit?: readonly EnrichmentAuditEntry[];
   tierComparisonAudit?: TierComparisonAudit;
+  paidPreview?: Readonly<{
+    visible: string;
+    unlockedSectionTitle: string;
+    lockedTopics: readonly string[];
+  }>;
+  qualityAudit?: ReportLanguageAudit;
 }>;

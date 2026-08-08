@@ -20,6 +20,7 @@ import { ShareCardPanel } from "@/components/share-card-panel";
 import { focusAndScroll, scrollToElement } from "@/components/accessibility";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
 import { MIN_BIRTH_DATE, currentMaxBirthDate, isAcceptedBirthDate } from "@/core/birth-range";
+import { createPaidContentPreview } from "@/core/report-preview";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 
@@ -40,6 +41,7 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
   const profile = result ? getRuleBasedProfile(result.lifePath.value, locale) : null;
   const integratedProfile = result ? createIntegratedProfile(result, locale) : null;
   const lifestyle = result ? createLifestyleRecommendations(result, locale) : null;
+  const paidPreview = result ? createPaidContentPreview(result, locale) : null;
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -297,6 +299,18 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
                 <small className="context-uncertainty">{context.uncertainty}</small>
                 <code className="rule-version">{d.ruleVersion}: {context.ruleVersion}</code>
               </section>
+
+              {paidPreview && (
+                <section className="paid-preview" aria-labelledby="paid-preview-title">
+                  <p className="eyebrow">{locale === "ko" ? "실제 상세 리딩 미리보기" : "Real detailed-reading preview"}</p>
+                  <h3 id="paid-preview-title">{paidPreview.unlockedSectionTitle}</h3>
+                  <p>{paidPreview.visible}</p>
+                  <div className="paid-preview-locks">
+                    {paidPreview.lockedTopics.map((topic) => <span key={topic}>LOCKED · {topic}</span>)}
+                  </div>
+                  <Link className="primary-button" href={`/${locale}#onboarding`}>{locale === "ko" ? "상세 리딩 선택하기" : "Choose a detailed reading"}</Link>
+                </section>
+              )}
 
               <div className="number-grid">
                 {labels.map(([label, calculation]) => (

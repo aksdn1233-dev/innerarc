@@ -55,9 +55,30 @@ export function fromJulianDay(jd: number): number {
  * defensible with it simply left out.
  */
 export function deltaTSeconds(year: number): number {
+  if (year < 1600) {
+    const u = (year - 1000) / 100;
+    return 1574.2 - 556.01 * u + 71.23472 * u ** 2 + 0.319781 * u ** 3
+      - 0.8503463 * u ** 4 - 0.005050998 * u ** 5 + 0.0083572073 * u ** 6;
+  }
+  if (year < 1700) {
+    const t = year - 1600;
+    return 120 - 0.9808 * t - 0.01532 * t ** 2 + t ** 3 / 7129;
+  }
+  if (year < 1800) {
+    const t = year - 1700;
+    return 8.83 + 0.1603 * t - 0.0059285 * t ** 2 + 0.00013336 * t ** 3
+      - t ** 4 / 1_174_000;
+  }
+  if (year < 1860) {
+    const t = year - 1800;
+    return 13.72 - 0.332447 * t + 0.0068612 * t ** 2 + 0.0041116 * t ** 3
+      - 0.00037436 * t ** 4 + 0.0000121272 * t ** 5 - 0.0000001699 * t ** 6
+      + 0.000000000875 * t ** 7;
+  }
   if (year < 1900) {
-    const t = (year - 1860) / 100;
-    return 7.62 + 57.37 * t - 2.51 * t * t;
+    const t = year - 1860;
+    return 7.62 + 0.5737 * t - 0.251754 * t ** 2 + 0.01680668 * t ** 3
+      - 0.0004473624 * t ** 4 + t ** 5 / 233_174;
   }
   if (year < 1920) {
     const t = year - 1900;

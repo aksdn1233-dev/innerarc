@@ -7,7 +7,7 @@ import { ReviewEvidenceSection } from "@/components/review-evidence-section";
 import { captureConversionEvent } from "@/core/analytics";
 import type { ProductPricingSnapshot } from "@/core/product-prices";
 import type { PublicReview } from "@/core/reviews";
-import { MIN_BIRTH_DATE, currentMaxBirthDate } from "@/core/birth-range";
+import { MIN_BIRTH_DATE, currentMaxBirthDate, isAcceptedBirthDate } from "@/core/birth-range";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 import type { AdminPageContent } from "@/server/admin-content";
@@ -402,7 +402,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
       setError({ field: "birthDate", message: locale === "ko" ? "생년월일을 선택해 주세요." : "Choose your birth date." });
       return;
     }
-    if (!isValidGregorianDate(birthDate)) {
+    if (!isValidGregorianDate(birthDate) || !isAcceptedBirthDate(birthDate)) {
       setError({ field: "birthDate", message: locale === "ko" ? "달력에서 올바른 날짜를 선택해 주세요." : "Choose a valid date from the calendar." });
       return;
     }
@@ -413,14 +413,28 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
 
     const concern = String(form.get("concern") ?? "").trim();
     const reportFocus = String(form.get("reportFocus") ?? "").trim();
+    const companionBirthDate = String(form.get("companionBirthDate") ?? "").trim();
+    if (companionBirthDate && !isAcceptedBirthDate(companionBirthDate)) {
+      setError({ field: "birthDate", message: locale === "ko" ? "동반자 생년월일을 1100~2026년의 올바른 날짜로 입력해 주세요." : "Enter a valid companion date from 1100 through 2026." });
+      return;
+    }
     const payload = {
       version: 1,
       locale,
       productCode: productCodeByReading[selectedProduct],
       birthDate,
+      birthTime: String(form.get("birthTime") ?? "").trim() || undefined,
       name: String(form.get("name") ?? "").trim(),
       focusId: String(form.get("interest") ?? "relationships"),
       concern: [concern, reportFocus].filter(Boolean).join(" / ").slice(0, 2_000),
+      questions: [concern, reportFocus].filter(Boolean).slice(0, 2),
+      companion: companionBirthDate ? {
+        name: String(form.get("companionName") ?? "").trim(),
+        birthDate: companionBirthDate,
+        birthTime: String(form.get("companionBirthTime") ?? "").trim() || undefined,
+        gender: String(form.get("companionGender") ?? "unstated"),
+        relationshipType: String(form.get("relationshipType") ?? "romance"),
+      } : undefined,
       gender,
       createdAt: new Date().toISOString(),
     };
@@ -513,6 +527,8 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
 
                   <label htmlFor="hero-birthDate">{locale === "ko" ? "생년월일 (양력)" : "Birth date"}</label>
                   <input id="hero-birthDate" name="birthDate" type="date" max={maxBirthDate} min={MIN_BIRTH_DATE} required />
+                  <label htmlFor="hero-birthTime">{locale === "ko" ? "출생 시각 (선택)" : "Birth time (optional)"}</label>
+                  <input id="hero-birthTime" name="birthTime" type="time" />
                   {error?.field === "birthDate" && <span className="field-error" role="alert">{error.message}</span>}
 
                   <span className="hero-intake-label">{locale === "ko" ? "성별" : "Gender"}</span>
@@ -745,6 +761,8 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
               <div className="field field-premium">
                 <label htmlFor="birthDate">{locale === "ko" ? "2. 생년월일 (필수 · 양력)" : "2. Birth date (Required · Gregorian)"}</label>
                 <input id="birthDate" name="birthDate" type="date" max={maxBirthDate} min={MIN_BIRTH_DATE} required aria-invalid={error?.field === "birthDate"} aria-describedby="birthDate-help birthDate-error" />
+                <label htmlFor="birthTime">{locale === "ko" ? "출생 시각 (선택)" : "Birth time (optional)"}</label>
+                <input id="birthTime" name="birthTime" type="time" />
                 <small id="birthDate-help">{locale === "ko" ? "예: 1994년 11월 4일 → 1994-11-04 · 달력에서 선택해 주세요." : "Example: November 4, 1994 → 1994-11-04 · Choose from the calendar."}</small>
                 {error?.field === "birthDate" && <span className="field-error" id="birthDate-error" role="alert">{error.message}</span>}
               </div>
@@ -764,7 +782,17 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                 <small>{locale === "ko" ? "비워두면 선택한 영역과 생년월일을 중심으로 구성합니다." : "Leave blank for a report centered on your birth date and chosen area."}</small>
               </div>
               {selectedProduct === "premium_pdf" && (
-                <div className="field field-premium"><label htmlFor="reportFocus">{locale === "ko" ? "함께 연결해서 볼 내용 (선택)" : "Anything else to connect (Optional)"}</label><textarea id="reportFocus" name="reportFocus" maxLength={1_000} placeholder={locale === "ko" ? "예: 올해의 연애 흐름과 이직 시기를 함께 보고 싶어요" : "e.g. Connect relationship patterns with a career change"} /></div>
+                <>
+                  <div className="field field-premium"><label htmlFor="reportFocus">{locale === "ko" ? "두 번째 개인 질문 (선택)" : "Second personal question (optional)"}</label><textarea id="reportFocus" name="reportFocus" maxLength={1_000} placeholder={locale === "ko" ? "예: 올해의 연애 흐름과 이직 시기를 함께 보고 싶어요" : "e.g. Connect relationship patterns with a career change"} /></div>
+                  <fieldset className="field field-premium companion-intake">
+                    <legend>{locale === "ko" ? "동반자 1인 궁합 (선택)" : "One companion analysis (optional)"}</legend>
+                    <label htmlFor="companionName">{locale === "ko" ? "동반자 이름" : "Companion name"}</label><input id="companionName" name="companionName" maxLength={200} />
+                    <label htmlFor="companionBirthDate">{locale === "ko" ? "동반자 생년월일" : "Companion birth date"}</label><input id="companionBirthDate" name="companionBirthDate" type="date" min={MIN_BIRTH_DATE} max={maxBirthDate} />
+                    <label htmlFor="companionBirthTime">{locale === "ko" ? "동반자 출생 시각 (선택)" : "Companion birth time (optional)"}</label><input id="companionBirthTime" name="companionBirthTime" type="time" />
+                    <label htmlFor="companionGender">{locale === "ko" ? "동반자 성별" : "Companion gender"}</label><select id="companionGender" name="companionGender" defaultValue="unstated"><option value="unstated">{locale === "ko" ? "밝히지 않음" : "Unstated"}</option><option value="female">{locale === "ko" ? "여성" : "Female"}</option><option value="male">{locale === "ko" ? "남성" : "Male"}</option></select>
+                    <label htmlFor="relationshipType">{locale === "ko" ? "관계 유형" : "Relationship type"}</label><select id="relationshipType" name="relationshipType" defaultValue="romance"><option value="romance">{locale === "ko" ? "연애" : "Romance"}</option><option value="marriage">{locale === "ko" ? "결혼·장기 동반" : "Marriage"}</option><option value="friendship">{locale === "ko" ? "친구" : "Friendship"}</option><option value="coworker">{locale === "ko" ? "동료" : "Coworker"}</option><option value="cofounder">{locale === "ko" ? "공동창업" : "Cofounder"}</option><option value="manager_report">{locale === "ko" ? "상사·부하" : "Manager/report"}</option><option value="parent_child">{locale === "ko" ? "부모·자녀" : "Parent/child"}</option></select>
+                  </fieldset>
+                </>
               )}
             </section>
 

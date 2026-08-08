@@ -106,19 +106,19 @@ describe("what a visitor may enter, versus what the engines can calculate", () =
     expect(tryNumerology("1867-11-07")).toBe("ok");
   });
 
-  it("keeps the 사주 engine at 1900, where its Korean clock history begins", () => {
-    expect(trySaju("1899-12-31")).toBe("rejected");
-    expect(trySaju("1900-01-01")).toBe("ok");
-    expect(trySaju("2100-12-31")).toBe("ok");
-    expect(trySaju("2101-01-01")).toBe("rejected");
+  it("keeps the 사주 engine inside the supported 1100-2026 window", () => {
+    expect(trySaju("1099-12-31")).toBe("rejected");
+    expect(trySaju("1100-01-01")).toBe("ok");
+    expect(trySaju("2026-12-31")).toBe("ok");
+    expect(trySaju("2027-01-01")).toBe("rejected");
   });
 
-  it("bounds a visitor's own birth date to 1900 through today", () => {
+  it("bounds a visitor's own birth date to 1100 through 2026", () => {
     const now = new Date("2026-08-07T12:00:00Z");
     expect(isAcceptedBirthDate("1900-01-01", now)).toBe(true);
     expect(isAcceptedBirthDate("1994-11-04", now)).toBe(true);
-    expect(isAcceptedBirthDate("1899-12-31", now)).toBe(false);
-    // A birth date in the future is always a typo, even though the engines reach 2100.
+    expect(isAcceptedBirthDate("1899-12-31", now)).toBe(true);
+    expect(isAcceptedBirthDate("1099-12-31", now)).toBe(false);
     expect(isAcceptedBirthDate("2027-01-01", now)).toBe(false);
     expect(isAcceptedBirthDate("2100-01-01", now)).toBe(false);
   });
@@ -133,7 +133,12 @@ describe("what a visitor may enter, versus what the engines can calculate", () =
   });
 
   it("offers the picker exactly that window", () => {
-    expect(MIN_BIRTH_DATE).toBe("1900-01-01");
-    expect(currentMaxBirthDate(new Date("2026-08-07T12:00:00Z"))).toMatch(/^2026-08-0[67]$/);
+    expect(MIN_BIRTH_DATE).toBe("1100-01-01");
+    expect(currentMaxBirthDate(new Date("2026-08-07T12:00:00Z"))).toBe("2026-12-31");
+    expect(isAcceptedBirthDate("1100-01-01")).toBe(true);
+    expect(isAcceptedBirthDate("2026-12-31")).toBe(true);
+    expect(isAcceptedBirthDate("1099-12-31")).toBe(false);
+    expect(isAcceptedBirthDate("2027-01-01")).toBe(false);
+    expect(isAcceptedBirthDate("2026-02-30")).toBe(false);
   });
 });

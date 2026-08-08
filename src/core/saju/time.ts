@@ -59,9 +59,9 @@ export function longitudeCorrectionMinutes(
   longitudeDegrees: number,
   standardOffsetMinutesValue: number,
 ): number {
-  const meridian = standardOffsetMinutesValue === 510
-    ? 127.5
-    : STANDARD_MERIDIAN_DEGREES;
+  const meridian = standardOffsetMinutesValue === 540
+    ? STANDARD_MERIDIAN_DEGREES
+    : standardOffsetMinutesValue / 4;
   return (longitudeDegrees - meridian) * 4;
 }
 
@@ -130,6 +130,9 @@ export function resolveBirthInstant(
 }
 
 function summerTimeWarningFor(naiveLocal: number, year: number): string | null {
+  if (year < 1908) {
+    return "1908년 이전 출생은 표준시 제정 전 구간입니다. 서울 경도 기준 지방평균시(UTC+8:28)와 역산 그레고리력을 적용했으며, 출생지와 당시 기록 방식에 따라 특히 시주 경계가 달라질 수 있습니다.";
+  }
   if (KNOWN_SUMMER_TIME.some(({ from, to }) => naiveLocal >= from && naiveLocal < to)) {
     return "이 날짜에는 서머타임(일광절약시간)이 시행 중이었습니다. 출생 시각이 서머타임 기준으로 기록되었다면 한 시간을 빼야 시주가 맞습니다.";
   }

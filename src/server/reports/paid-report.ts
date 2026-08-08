@@ -4,17 +4,23 @@ import { PaidReadingInputSchema } from "@/core/paid-reading";
 import { createBasicPaidReport } from "@/server/reports/basic-report";
 import { createDetailPaidReport } from "@/server/reports/detail-report";
 import { createPremiumPaidReport } from "@/server/reports/premium-report";
+import { enhancePaidReport } from "@/server/reports/enhance-report";
 
 export function createPaidReport(orderId: string, rawInput: unknown): PaidReport {
   const input = PaidReadingInputSchema.parse(rawInput);
+  let report: PaidReport;
   switch (input.productCode) {
     case "plus_30d":
-      return createBasicPaidReport(orderId, input);
+      report = createBasicPaidReport(orderId, input);
+      break;
     case "pro_30d":
-      return createDetailPaidReport(orderId, input);
+      report = createDetailPaidReport(orderId, input);
+      break;
     case "premium_pdf":
-      return createPremiumPaidReport(orderId, input);
+      report = createPremiumPaidReport(orderId, input);
+      break;
   }
+  return enhancePaidReport(report, input);
 }
 
 export async function revokeGuestPaidReport(

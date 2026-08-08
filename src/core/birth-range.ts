@@ -10,13 +10,14 @@
  * The upper bound is today rather than the engines' 2100: a birth date in the future is
  * always a typo. The lower bound is 1900, past the oldest year anyone alive was born in.
  */
-export const MIN_BIRTH_YEAR = 1900;
+export const MIN_BIRTH_YEAR = 1100;
+export const MAX_BIRTH_YEAR = 2026;
 export const MIN_BIRTH_DATE = `${MIN_BIRTH_YEAR}-01-01`;
+export const MAX_BIRTH_DATE = `${MAX_BIRTH_YEAR}-12-31`;
 
 /** Today, in the visitor's own timezone. */
-export function currentMaxBirthDate(now: Date = new Date()): string {
-  const pad = (value: number) => String(value).padStart(2, "0");
-  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+export function currentMaxBirthDate(_now: Date = new Date()): string {
+  return MAX_BIRTH_DATE;
 }
 
 /**
@@ -29,5 +30,10 @@ export function currentMaxBirthDate(now: Date = new Date()): string {
  */
 export function isAcceptedBirthDate(value: string, now: Date = new Date()): boolean {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
-  return value >= MIN_BIRTH_DATE && value <= currentMaxBirthDate(now);
+  if (value < MIN_BIRTH_DATE || value > currentMaxBirthDate(now)) return false;
+  const [year, month, day] = value.split("-").map(Number) as [number, number, number];
+  const parsed = new Date(Date.UTC(year, month - 1, day));
+  return parsed.getUTCFullYear() === year
+    && parsed.getUTCMonth() === month - 1
+    && parsed.getUTCDate() === day;
 }

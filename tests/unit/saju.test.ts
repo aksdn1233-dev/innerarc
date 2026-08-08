@@ -257,7 +257,7 @@ describe("what the chart refuses to invent", () => {
       .toThrow(SajuInputError);
     expect(() => buildSajuChart({ birthDate: "2023-02-29", sex: "male" }))
       .toThrow(SajuInputError);
-    expect(() => buildSajuChart({ birthDate: "1850-01-01", sex: "male" }))
+    expect(() => buildSajuChart({ birthDate: "1099-01-01", sex: "male" }))
       .toThrow(SajuInputError);
     expect(() => buildSajuChart({ birthDate: "1994-11-04", birthTime: "25:00", sex: "male" }))
       .toThrow(SajuInputError);
