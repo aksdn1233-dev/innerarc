@@ -313,16 +313,6 @@ export function RelationshipExperience({ locale, copy }: Props) {
           </section>
         )}
       </main>
-
-      <nav className="bottom-nav relationship-nav" aria-label={locale === "ko" ? "주요 탐색" : "Primary navigation"}>
-        {copy.nav.map((item, index) => {
-          if (index === 0) return <Link href={`/${locale}`} key={item}>{item}</Link>;
-          if (index === 1) return <Link href={`/${locale}/me`} prefetch={false} key={item}>{item}</Link>;
-          if (index === 3) return <Link href={`/${locale}/question`} key={item}>{item}</Link>;
-          if (index === 4) return <Link href={`/${locale}/reality-check`} key={item}>{item}</Link>;
-          return <span className={index === 2 ? "active" : ""} key={item}>{item}</span>;
-        })}
-      </nav>
     </>
   );
 }

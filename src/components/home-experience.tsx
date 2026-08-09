@@ -480,8 +480,21 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             controlsList="nofullscreen noremoteplayback"
             disablePictureInPicture
             loop
-            muted
-            onCanPlay={(event) => void event.currentTarget.play().catch(() => {})}
+            muted={!soundOn}
+            onCanPlay={(event) => {
+              const video = event.currentTarget;
+              if (/Android/i.test(navigator.userAgent) && !soundOn) {
+                video.muted = false;
+                void video.play()
+                  .then(() => setSoundOn(true))
+                  .catch(() => {
+                    video.muted = true;
+                    void video.play().catch(() => {});
+                  });
+                return;
+              }
+              void video.play().catch(() => {});
+            }}
             playsInline
             poster="/images/taeyul-hero.jpg"
             preload="auto"

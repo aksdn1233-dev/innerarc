@@ -9169,6 +9169,32 @@ summary {
   }
 }
 
+/* The free-reading controls remain part of the film instead of reverting to the
+   generic opaque paper card used elsewhere. */
+.profile-shell .cinema-intake .form-card,
+.profile-shell .cinema-intake .optional-intake {
+  border-color: rgba(220, 207, 161, 0.3);
+  background: rgba(31, 29, 43, 0.52);
+  color: #f3ecdd;
+  backdrop-filter: blur(18px) saturate(1.08);
+  box-shadow: none;
+}
+
+.profile-shell .cinema-intake .optional-intake summary {
+  background: transparent;
+  color: rgba(255, 250, 240, 0.9);
+}
+
+.profile-shell .cinema-intake .optional-intake :is(input, textarea, select) {
+  border-color: rgba(220, 207, 161, 0.34);
+  background: rgba(255, 255, 255, 0.07);
+  color: #fffaf0;
+}
+
+.profile-shell .cinema-intake .optional-intake :is(label, legend, small) {
+  color: rgba(255, 250, 240, 0.78);
+}
+
 @media (max-width: 899px) {
   .cinema-hero {
     min-height: 0;

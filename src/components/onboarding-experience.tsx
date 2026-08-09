@@ -160,15 +160,29 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
               {d.start}
             </button>
           </div>
-          <div className="hero-guide" aria-hidden="true">
+          <div className="hero-guide">
             <video
               autoPlay
+              aria-hidden="true"
               className="guide-clip"
               controls={false}
               controlsList="nofullscreen noremoteplayback"
               disablePictureInPicture
               muted={!guideSoundOn}
-              onCanPlay={(event) => void event.currentTarget.play().catch(() => {})}
+              onCanPlay={(event) => {
+                const video = event.currentTarget;
+                if (/Android/i.test(navigator.userAgent) && !guideSoundOn) {
+                  video.muted = false;
+                  void video.play()
+                    .then(() => setGuideSoundOn(true))
+                    .catch(() => {
+                      video.muted = true;
+                      void video.play().catch(() => {});
+                    });
+                  return;
+                }
+                void video.play().catch(() => {});
+              }}
               playsInline
               poster="/images/taeyul-hero.jpg"
               preload="auto"
@@ -562,22 +576,6 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
           </section>
         )}
       </main>
-
-      <nav className="bottom-nav" aria-label={locale === "ko" ? "주요 탐색" : "Primary navigation"}>
-        {d.nav.map((item, index) =>
-          index === 1 ? (
-            <Link href={`/${locale}/me`} prefetch={false} key={item}>{item}</Link>
-          ) : index === 2 ? (
-            <Link href={`/${locale}/relationship`} key={item}>{item}</Link>
-          ) : index === 3 ? (
-            <Link href={`/${locale}/question`} key={item}>{item}</Link>
-          ) : index === 4 ? (
-            <Link href={`/${locale}/reality-check`} key={item}>{item}</Link>
-          ) : (
-            <span key={item}>{item}</span>
-          ),
-        )}
-      </nav>
     </>
   );
 }

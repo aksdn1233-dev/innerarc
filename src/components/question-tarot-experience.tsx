@@ -518,22 +518,6 @@ export function QuestionTarotExperience({ locale, copy }: Props) {
           </div>
         </section>
       </main>
-
-      <nav className="bottom-nav question-nav" aria-label={locale === "ko" ? "주요 탐색" : "Primary navigation"}>
-        {copy.nav.map((item, index) =>
-          index === 0 ? (
-            <Link href={`/${locale}`} key={item}>{item}</Link>
-          ) : index === 1 ? (
-            <Link href={`/${locale}/me`} prefetch={false} key={item}>{item}</Link>
-          ) : index === 2 ? (
-            <Link href={`/${locale}/relationship`} key={item}>{item}</Link>
-          ) : index === 4 ? (
-            <Link href={`/${locale}/reality-check`} key={item}>{item}</Link>
-          ) : (
-            <span className={index === 3 ? "active" : ""} key={item}>{item}</span>
-          ),
-        )}
-      </nav>
     </>
   );
 }
