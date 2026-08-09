@@ -19,7 +19,9 @@ export default defineConfig({
         // `mygyeol.kr` must route to `innerarc`, so pin the worker name here to
         // prevent accidental deploys to a detached worker.
         name: "innerarc",
-        routes: [{ pattern: "mygyeol.kr", custom_domain: true }],
+        // Use the existing proxied apex DNS and make this Worker authoritative for
+        // every path without replacing the DNS record as a Custom Domain.
+        routes: [{ pattern: "mygyeol.kr/*", zone_name: "mygyeol.kr" }],
         // Keep workers.dev enabled as the rollout fallback host.
         workers_dev: true,
         // `worker/index.ts` calls `env.IMAGES` to serve /_vinext/image. A deploy
