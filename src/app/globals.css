@@ -9150,7 +9150,8 @@ summary {
   .profile-shell .hero-guide {
     order: 1;
     width: 100%;
-    height: min(148vw, 680px);
+    height: auto;
+    aspect-ratio: 910 / 512;
     border: 0;
     border-radius: 0;
     background: #171522;
@@ -9159,9 +9160,10 @@ summary {
   .profile-shell .hero-guide video {
     width: 100%;
     height: 100%;
-    aspect-ratio: auto;
-    object-fit: cover;
-    object-position: center center;
+    aspect-ratio: 910 / 512;
+    object-fit: contain;
+    object-position: center bottom;
+    background: #171522;
   }
 
   .profile-shell .guide-sound-toggle {
@@ -9216,6 +9218,17 @@ summary {
   z-index: 1;
   max-width: 680px;
   margin-inline: auto;
+}
+
+.guide-clip,
+.cinema-hero-portrait {
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.guide-clip {
+  pointer-events: none;
 }
 
 @media (max-width: 680px) {

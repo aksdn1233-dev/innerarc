@@ -481,6 +481,13 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             disablePictureInPicture
             loop
             muted={!soundOn}
+            onLoadedMetadata={(event) => {
+              const video = event.currentTarget;
+              video.setAttribute("playsinline", "");
+              video.setAttribute("webkit-playsinline", "");
+              video.controls = false;
+              void video.play().catch(() => {});
+            }}
             onCanPlay={(event) => {
               const video = event.currentTarget;
               if (/Android/i.test(navigator.userAgent) && !soundOn) {

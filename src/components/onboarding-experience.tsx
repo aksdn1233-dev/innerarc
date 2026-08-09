@@ -169,6 +169,13 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
               controlsList="nofullscreen noremoteplayback"
               disablePictureInPicture
               muted={!guideSoundOn}
+              onLoadedMetadata={(event) => {
+                const video = event.currentTarget;
+                video.setAttribute("playsinline", "");
+                video.setAttribute("webkit-playsinline", "");
+                video.controls = false;
+                void video.play().catch(() => {});
+              }}
               onCanPlay={(event) => {
                 const video = event.currentTarget;
                 if (/Android/i.test(navigator.userAgent) && !guideSoundOn) {
