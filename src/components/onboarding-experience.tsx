@@ -39,6 +39,7 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
   const [error, setError] = useState("");
   const deepProfileRef = useRef<HTMLDetailsElement>(null);
   const guideVideoRef = useRef<HTMLVideoElement>(null);
+  const [guideSoundOn, setGuideSoundOn] = useState(false);
 
   useEffect(() => {
     const video = guideVideoRef.current;
@@ -166,16 +167,32 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
               controls={false}
               controlsList="nofullscreen noremoteplayback"
               disablePictureInPicture
-              muted
+              muted={!guideSoundOn}
               onCanPlay={(event) => void event.currentTarget.play().catch(() => {})}
               playsInline
-              poster="/images/taeyul-guide.jpg"
+              poster="/images/taeyul-hero.jpg"
               preload="auto"
               ref={guideVideoRef}
               tabIndex={-1}
             >
-              <source src="/videos/taeyul-guide.mp4" type="video/mp4" />
+              <source src="/videos/taeyul-hero.mp4" type="video/mp4" />
             </video>
+            <button
+              aria-label={guideSoundOn ? "소리 끄기" : "소리 켜기"}
+              className="guide-sound-toggle"
+              onClick={() => {
+                const next = !guideSoundOn;
+                const video = guideVideoRef.current;
+                if (video) {
+                  video.muted = !next;
+                  if (next) void video.play().catch(() => {});
+                }
+                setGuideSoundOn(next);
+              }}
+              type="button"
+            >
+              {guideSoundOn ? "소리 끄기" : "소리 켜기"}
+            </button>
           </div>
         </section>
 

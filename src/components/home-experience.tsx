@@ -481,9 +481,10 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             disablePictureInPicture
             loop
             muted
+            onCanPlay={(event) => void event.currentTarget.play().catch(() => {})}
             playsInline
             poster="/images/taeyul-hero.jpg"
-            preload="none"
+            preload="auto"
             ref={heroVideoRef}
             tabIndex={-1}
           >

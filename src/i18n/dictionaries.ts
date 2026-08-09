@@ -87,12 +87,12 @@ const ko: Dictionary = {
   // Side line above the headline: names the frame most visitors arrive with, without
   // claiming to beat it.
   eyebrow: "MBTI는 알려주지 않는, 지금 나의 결",
-  headline: "막막한 순간, 결이 답의 방향을 밝혀드립니다.",
+  headline: "반복되는 선택엔, 이유가 있습니다.",
   // States a difference in what each thing answers, not a claim to be more accurate:
   // this is symbolic reflection, and a comparative accuracy claim would be both false
   // and the kind of 비교표시광고 that 표시광고법 prohibits.
   intro: "성격유형이 '나는 어떤 사람인가'를 알려준다면, 결은 '지금 내 상황에서 무엇을 확인해야 하는가'를 짚어드립니다. 생년월일과 가장 궁금한 것만 알려주세요. 연애·관계·진로·재물의 흐름과 조심할 점을 쉽고 또렷하게 정리해 드립니다.",
-  start: "내 흐름 확인하기",
+  start: "내 패턴 확인하기",
   birthDate: "생년월일 (양력)",
   birthHelp: "양력 기준으로 입력하세요. 날짜는 계산에만 사용하며 게스트 입력은 서버로 전송하지 않습니다.",
   name: "이름 또는 로마자 표기 (선택)",
