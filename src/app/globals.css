@@ -9032,6 +9032,36 @@ summary {
   pointer-events: none;
 }
 
+/* The free reading clip behaves like the home film: it starts as an inline visual,
+   never exposes Safari's transport UI, and does not become a full-screen player. */
+.guide-clip::-webkit-media-controls,
+.guide-clip::-webkit-media-controls-enclosure,
+.guide-clip::-webkit-media-controls-panel,
+.guide-clip::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none;
+}
+
+@media (max-width: 680px) {
+  .profile-shell .hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .profile-shell .hero > div {
+    min-width: 0;
+  }
+
+  .profile-shell .hero h1 {
+    max-width: 100%;
+    font-size: clamp(2rem, 10vw, 2.8rem);
+    letter-spacing: -0.045em;
+    line-height: 1.12;
+    overflow-wrap: break-word;
+    word-break: keep-all;
+    white-space: normal;
+  }
+}
+
 @media (max-width: 899px) {
   .cinema-hero {
     min-height: 0;

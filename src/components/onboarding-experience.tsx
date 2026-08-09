@@ -163,12 +163,14 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
             <video
               autoPlay
               className="guide-clip"
+              controls={false}
               controlsList="nofullscreen noremoteplayback"
               disablePictureInPicture
               muted
+              onCanPlay={(event) => void event.currentTarget.play().catch(() => {})}
               playsInline
               poster="/images/taeyul-guide.jpg"
-              preload="none"
+              preload="auto"
               ref={guideVideoRef}
               tabIndex={-1}
             >

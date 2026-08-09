@@ -87,7 +87,7 @@ const ko: Dictionary = {
   // Side line above the headline: names the frame most visitors arrive with, without
   // claiming to beat it.
   eyebrow: "MBTI는 알려주지 않는, 지금 나의 결",
-  headline: "막막한 순간,\n결이 답의 방향을 밝혀드립니다.",
+  headline: "막막한 순간, 결이 답의 방향을 밝혀드립니다.",
   // States a difference in what each thing answers, not a claim to be more accurate:
   // this is symbolic reflection, and a comparative accuracy claim would be both false
   // and the kind of 비교표시광고 that 표시광고법 prohibits.
