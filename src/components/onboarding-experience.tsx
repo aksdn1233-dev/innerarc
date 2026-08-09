@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import {
   calculateNumerologyProfile,
@@ -38,6 +38,27 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
   const [context, setContext] = useState<OnboardingReflectionContext | null>(null);
   const [error, setError] = useState("");
   const deepProfileRef = useRef<HTMLDetailsElement>(null);
+  const guideVideoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = guideVideoRef.current;
+    if (!video || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let cancelled = false;
+    const start = () => {
+      if (cancelled) return;
+      video.load();
+      void video.play().catch(() => {});
+    };
+    const canIdle = typeof window.requestIdleCallback === "function";
+    const handle = canIdle
+      ? window.requestIdleCallback(start, { timeout: 2_500 })
+      : window.setTimeout(start, 1_200);
+    return () => {
+      cancelled = true;
+      if (canIdle) window.cancelIdleCallback(handle);
+      else window.clearTimeout(handle);
+    };
+  }, []);
   const profile = result ? getRuleBasedProfile(result.lifePath.value, locale) : null;
   const integratedProfile = result ? createIntegratedProfile(result, locale) : null;
   const lifestyle = result ? createLifestyleRecommendations(result, locale) : null;
@@ -138,13 +159,21 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
               {d.start}
             </button>
           </div>
-          <div className="hero-object" aria-hidden="true">
-            <span className="hero-number">11</span>
-            <div className="hero-card-stack">
-              <span className="hero-card hero-card-left" />
-              <span className="hero-card hero-card-center"><i /></span>
-              <span className="hero-card hero-card-right" />
-            </div>
+          <div className="hero-guide" aria-hidden="true">
+            <video
+              autoPlay
+              className="guide-clip"
+              controlsList="nofullscreen noremoteplayback"
+              disablePictureInPicture
+              muted
+              playsInline
+              poster="/images/taeyul-guide.jpg"
+              preload="none"
+              ref={guideVideoRef}
+              tabIndex={-1}
+            >
+              <source src="/videos/taeyul-guide.mp4" type="video/mp4" />
+            </video>
           </div>
         </section>
 

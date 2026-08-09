@@ -474,8 +474,10 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
               effect below starts it once the page is idle, and never when the visitor has
               asked for reduced motion. */}
           <video
+            autoPlay
             aria-hidden="true"
             className="cinema-hero-portrait"
+            controlsList="nofullscreen noremoteplayback"
             disablePictureInPicture
             loop
             muted
