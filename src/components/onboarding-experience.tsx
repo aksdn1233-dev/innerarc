@@ -184,12 +184,11 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
                 void video.play().catch(() => {});
               }}
               playsInline
-              poster="/images/taeyul-hero.jpg"
               preload="auto"
               ref={guideVideoRef}
               tabIndex={-1}
             >
-              <source src="/videos/taeyul-hero.mp4" type="video/mp4" />
+              <source src="/videos/taeyul-guide.mp4" type="video/mp4" />
             </video>
             <button
               aria-label={guideSoundOn ? "소리 끄기" : "소리 켜기"}

@@ -9195,6 +9195,40 @@ summary {
   color: rgba(255, 250, 240, 0.78);
 }
 
+/* The form is the next beat of the same film, not a detached white page. */
+.profile-shell .hero + .cinema-intake {
+  max-width: none;
+  margin-top: 0;
+  padding: clamp(42px, 8vw, 78px) clamp(18px, 6vw, 64px);
+  border-top: 1px solid rgba(220, 207, 161, 0.22);
+  background:
+    linear-gradient(180deg, rgba(32, 28, 44, 0.96), rgba(20, 24, 36, 0.9)),
+    #201c2c;
+}
+
+.profile-shell .hero + .cinema-intake .cinema-intake-art {
+  opacity: 0.28;
+  filter: saturate(0.72) contrast(1.05);
+}
+
+.profile-shell .hero + .cinema-intake .form-card {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+  margin-inline: auto;
+}
+
+@media (max-width: 680px) {
+  .profile-shell .hero + .cinema-intake {
+    padding: 34px 14px 54px;
+  }
+
+  .profile-shell .hero + .cinema-intake .form-card {
+    padding: 24px 18px 28px;
+    border-radius: 22px;
+  }
+}
+
 @media (max-width: 899px) {
   .cinema-hero {
     min-height: 0;
