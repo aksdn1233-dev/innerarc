@@ -331,26 +331,10 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
     const video = heroVideoRef.current;
     if (!video) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    let cancelled = false;
-    const start = () => {
-      if (cancelled) return;
-      const isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent)
-        || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-      if (isIOS) return;
-      void video.play().catch(() => {});
-    };
-
-    // Safari has no requestIdleCallback, so a timeout stands in for it there.
-    const canIdle = typeof window.requestIdleCallback === "function";
-    const handle = canIdle
-      ? window.requestIdleCallback(start, { timeout: 2_500 })
-      : window.setTimeout(start, 1_200);
-    return () => {
-      cancelled = true;
-      if (canIdle) window.cancelIdleCallback(handle);
-      else window.clearTimeout(handle);
-    };
+    const isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent)
+      || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    if (isIOS) return;
+    void video.play().catch(() => {});
   }, []);
 
   function trackFormStart() {
