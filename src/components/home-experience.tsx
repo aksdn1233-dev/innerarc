@@ -334,7 +334,6 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
     let cancelled = false;
     const start = () => {
       if (cancelled) return;
-      video.load();
     };
 
     // Safari has no requestIdleCallback, so a timeout stands in for it there.
@@ -468,12 +467,14 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
               effect below starts it once the page is idle, and never when the visitor has
               asked for reduced motion. */}
           <video
+            {...{ "webkit-playsinline": "true", "x-webkit-airplay": "deny" }}
             autoPlay
             aria-hidden="true"
             className="cinema-hero-portrait"
             controls={false}
             controlsList="nofullscreen noremoteplayback"
             disablePictureInPicture
+            disableRemotePlayback
             loop
             muted={!soundOn}
             onLoadedMetadata={(event) => {
@@ -481,6 +482,10 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
               video.setAttribute("playsinline", "");
               video.setAttribute("webkit-playsinline", "");
               video.controls = false;
+              video.addEventListener("webkitbeginfullscreen", () => {
+                (video as HTMLVideoElement & { webkitExitFullscreen?: () => void })
+                  .webkitExitFullscreen?.();
+              }, { once: true });
             }}
             playsInline
             poster="/images/taeyul-hero.jpg"
@@ -488,7 +493,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             ref={heroVideoRef}
             tabIndex={-1}
           >
-            <source src="/videos/taeyul-hero.mp4" type="video/mp4" />
+            <source src="/videos/taeyul-hero.mp4?v=20260810-inline2" type="video/mp4" />
           </video>
           <MeteorTrails className="cinema-hero-meteors" />
           <div className="cinema-hero-veil" aria-hidden="true" />

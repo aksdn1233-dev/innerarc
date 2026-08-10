@@ -3,6 +3,9 @@ import { OnboardingExperience } from "@/components/onboarding-experience";
 import { dictionaries } from "@/i18n/dictionaries";
 import { isLocale } from "@/i18n/config";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function CoreProfilePage({
   params,
 }: {

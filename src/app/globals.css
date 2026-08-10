@@ -9227,7 +9227,8 @@ summary {
   user-select: none;
 }
 
-.guide-clip {
+.guide-clip,
+.cinema-hero-portrait {
   pointer-events: none;
 }
 

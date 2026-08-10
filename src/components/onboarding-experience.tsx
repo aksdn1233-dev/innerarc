@@ -47,7 +47,6 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
     let cancelled = false;
     const start = () => {
       if (cancelled) return;
-      video.load();
     };
     const canIdle = typeof window.requestIdleCallback === "function";
     const handle = canIdle
@@ -161,25 +160,31 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
           </div>
           <div className="hero-guide">
             <video
+              {...{ "webkit-playsinline": "true", "x-webkit-airplay": "deny" }}
               autoPlay
               aria-hidden="true"
               className="guide-clip"
               controls={false}
               controlsList="nofullscreen noremoteplayback"
               disablePictureInPicture
+              disableRemotePlayback
               muted={!guideSoundOn}
               onLoadedMetadata={(event) => {
                 const video = event.currentTarget;
                 video.setAttribute("playsinline", "");
                 video.setAttribute("webkit-playsinline", "");
                 video.controls = false;
+                video.addEventListener("webkitbeginfullscreen", () => {
+                  (video as HTMLVideoElement & { webkitExitFullscreen?: () => void })
+                    .webkitExitFullscreen?.();
+                }, { once: true });
               }}
               playsInline
               preload="auto"
               ref={guideVideoRef}
               tabIndex={-1}
             >
-              <source src="/videos/taeyul-guide.mp4" type="video/mp4" />
+              <source src="/videos/taeyul-guide.mp4?v=20260810-inline2" type="video/mp4" />
             </video>
             <button
               aria-label={guideSoundOn ? "소리 끄기" : "소리 켜기"}
