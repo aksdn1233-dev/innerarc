@@ -48,7 +48,6 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
     const start = () => {
       if (cancelled) return;
       video.load();
-      void video.play().catch(() => {});
     };
     const canIdle = typeof window.requestIdleCallback === "function";
     const handle = canIdle
@@ -174,21 +173,6 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
                 video.setAttribute("playsinline", "");
                 video.setAttribute("webkit-playsinline", "");
                 video.controls = false;
-                void video.play().catch(() => {});
-              }}
-              onCanPlay={(event) => {
-                const video = event.currentTarget;
-                if (/Android/i.test(navigator.userAgent) && !guideSoundOn) {
-                  video.muted = false;
-                  void video.play()
-                    .then(() => setGuideSoundOn(true))
-                    .catch(() => {
-                      video.muted = true;
-                      void video.play().catch(() => {});
-                    });
-                  return;
-                }
-                void video.play().catch(() => {});
               }}
               playsInline
               preload="auto"
@@ -205,7 +189,6 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
                 const video = guideVideoRef.current;
                 if (video) {
                   video.muted = !next;
-                  if (next) void video.play().catch(() => {});
                 }
                 setGuideSoundOn(next);
               }}

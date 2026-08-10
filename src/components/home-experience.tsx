@@ -335,9 +335,6 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
     const start = () => {
       if (cancelled) return;
       video.load();
-      // Autoplay is allowed for a muted, inline video; a rejection is not an error worth
-      // surfacing, it just leaves the poster showing.
-      void video.play().catch(() => {});
     };
 
     // Safari has no requestIdleCallback, so a timeout stands in for it there.
@@ -380,9 +377,6 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
     const next = !soundOn;
     video.muted = !next;
     setSoundOn(next);
-    // Switching sound on is a user gesture, which is also the moment a browser will
-    // allow playback if it refused earlier.
-    if (next) void video.play().catch(() => {});
   }
 
   function chooseQuestion(focus: FocusId) {
@@ -477,6 +471,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             autoPlay
             aria-hidden="true"
             className="cinema-hero-portrait"
+            controls={false}
             controlsList="nofullscreen noremoteplayback"
             disablePictureInPicture
             loop
@@ -486,21 +481,6 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
               video.setAttribute("playsinline", "");
               video.setAttribute("webkit-playsinline", "");
               video.controls = false;
-              void video.play().catch(() => {});
-            }}
-            onCanPlay={(event) => {
-              const video = event.currentTarget;
-              if (/Android/i.test(navigator.userAgent) && !soundOn) {
-                video.muted = false;
-                void video.play()
-                  .then(() => setSoundOn(true))
-                  .catch(() => {
-                    video.muted = true;
-                    void video.play().catch(() => {});
-                  });
-                return;
-              }
-              void video.play().catch(() => {});
             }}
             playsInline
             poster="/images/taeyul-hero.jpg"
