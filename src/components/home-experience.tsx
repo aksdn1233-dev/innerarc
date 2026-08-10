@@ -250,6 +250,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   const [gender, setGender] = useState<"female" | "male" | "unstated">("unstated");
   const heroRef = useRef<HTMLElement>(null);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
+  const heroAudioRef = useRef<HTMLAudioElement>(null);
   const trackedRef = useRef(new Set<string>());
   const sampleRef = useRef<HTMLElement>(null);
   const productsRef = useRef<HTMLElement>(null);
@@ -334,6 +335,10 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
     let cancelled = false;
     const start = () => {
       if (cancelled) return;
+      const isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent)
+        || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      if (isIOS) return;
+      void video.play().catch(() => {});
     };
 
     // Safari has no requestIdleCallback, so a timeout stands in for it there.
@@ -374,7 +379,14 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
     const video = heroVideoRef.current;
     if (!video) return;
     const next = !soundOn;
-    video.muted = !next;
+    const fallbackActive = window.getComputedStyle(video).display === "none";
+    if (fallbackActive) {
+      const audio = heroAudioRef.current;
+      if (audio && next) void audio.play().catch(() => {});
+      else audio?.pause();
+    } else {
+      video.muted = !next;
+    }
     setSoundOn(next);
   }
 
@@ -466,11 +478,16 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
               playback starts. `preload="none"` keeps it out of the initial payload; the
               effect below starts it once the page is idle, and never when the visitor has
               asked for reduced motion. */}
+          <img
+            alt=""
+            aria-hidden="true"
+            className="cinema-hero-portrait inline-video-fallback"
+            src="/videos/taeyul-hero-ios.webp?v=20260810-ios1"
+          />
           <video
             {...{ "webkit-playsinline": "true", "x-webkit-airplay": "deny" }}
-            autoPlay
             aria-hidden="true"
-            className="cinema-hero-portrait"
+            className="cinema-hero-portrait inline-video-source"
             controls={false}
             controlsList="nofullscreen noremoteplayback"
             disablePictureInPicture
@@ -493,8 +510,11 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             ref={heroVideoRef}
             tabIndex={-1}
           >
-            <source src="/videos/taeyul-hero.mp4?v=20260810-inline2" type="video/mp4" />
+            <source src="/videos/taeyul-hero.mp4?v=20260810-ios1" type="video/mp4" />
           </video>
+          <audio className="inline-video-audio" loop preload="metadata" ref={heroAudioRef}>
+            <source src="/videos/taeyul-hero-audio.m4a?v=20260810-ios1" type="audio/mp4" />
+          </audio>
           <MeteorTrails className="cinema-hero-meteors" />
           <div className="cinema-hero-veil" aria-hidden="true" />
 

@@ -9232,6 +9232,33 @@ summary {
   pointer-events: none;
 }
 
+.inline-video-fallback,
+.inline-video-audio {
+  display: none;
+}
+
+.hero-guide .guide-clip-fallback {
+  width: 100%;
+  aspect-ratio: 910 / 512;
+  object-fit: contain;
+  object-position: center bottom;
+  background: #171522;
+}
+
+/* Some WKWebViews ignore playsinline and launch the native player. On touch iOS,
+   never start the video element: use an animated in-page rendering instead. */
+@supports (-webkit-touch-callout: none) {
+  @media (hover: none) and (pointer: coarse) {
+    .inline-video-source {
+      display: none !important;
+    }
+
+    .inline-video-fallback {
+      display: block !important;
+    }
+  }
+}
+
 @media (max-width: 680px) {
   .profile-shell .hero + .cinema-intake {
     padding: 34px 14px 54px;

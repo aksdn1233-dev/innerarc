@@ -39,6 +39,7 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
   const [error, setError] = useState("");
   const deepProfileRef = useRef<HTMLDetailsElement>(null);
   const guideVideoRef = useRef<HTMLVideoElement>(null);
+  const guideAudioRef = useRef<HTMLAudioElement>(null);
   const [guideSoundOn, setGuideSoundOn] = useState(false);
 
   useEffect(() => {
@@ -47,6 +48,10 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
     let cancelled = false;
     const start = () => {
       if (cancelled) return;
+      const isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent)
+        || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      if (isIOS) return;
+      void video.play().catch(() => {});
     };
     const canIdle = typeof window.requestIdleCallback === "function";
     const handle = canIdle
@@ -159,11 +164,16 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
             </button>
           </div>
           <div className="hero-guide">
+            <img
+              alt=""
+              aria-hidden="true"
+              className="guide-clip guide-clip-fallback inline-video-fallback"
+              src="/videos/taeyul-guide-ios.webp?v=20260810-ios1"
+            />
             <video
               {...{ "webkit-playsinline": "true", "x-webkit-airplay": "deny" }}
-              autoPlay
               aria-hidden="true"
-              className="guide-clip"
+              className="guide-clip inline-video-source"
               controls={false}
               controlsList="nofullscreen noremoteplayback"
               disablePictureInPicture
@@ -184,15 +194,29 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
               ref={guideVideoRef}
               tabIndex={-1}
             >
-              <source src="/videos/taeyul-guide.mp4?v=20260810-inline2" type="video/mp4" />
+              <source src="/videos/taeyul-guide.mp4?v=20260810-ios1" type="video/mp4" />
             </video>
+            <audio className="inline-video-audio" preload="metadata" ref={guideAudioRef}>
+              <source src="/videos/taeyul-guide-audio.m4a?v=20260810-ios1" type="audio/mp4" />
+            </audio>
             <button
               aria-label={guideSoundOn ? "소리 끄기" : "소리 켜기"}
               className="guide-sound-toggle"
               onClick={() => {
                 const next = !guideSoundOn;
                 const video = guideVideoRef.current;
-                if (video) {
+                const fallbackActive = video
+                  ? window.getComputedStyle(video).display === "none"
+                  : false;
+                if (fallbackActive) {
+                  const audio = guideAudioRef.current;
+                  if (audio && next) {
+                    audio.currentTime = 0;
+                    void audio.play().catch(() => {});
+                  } else if (audio) {
+                    audio.pause();
+                  }
+                } else if (video) {
                   video.muted = !next;
                 }
                 setGuideSoundOn(next);
