@@ -548,3 +548,20 @@
 - Revisit when: A reviewed CMS role model or consented user-level analytics processor
   is approved with retention and deletion rules.
 - Status: Decided.
+
+## D-060 - Quarantine untrusted static image formats until the upstream parser fix ships
+
+- Date: 2026-08-11
+- Decision: Keep `image-size@2.0.2` only as vinext's build-time transitive dependency,
+  prohibit untrusted ICNS, JXL, and HEIF inputs in that path, and temporarily ignore
+  only GHSA-w3rx-r6r6-pgpr and GHSA-5p2g-fcmc-qvqq in the CI audit.
+- Alternatives: Disable the dependency audit; pin the advisory-listed 2.0.3 release
+  before it exists in npm; replace vinext without compatibility evidence.
+- Reason: Both advisories describe infinite-loop denial of service, but npm currently
+  publishes no patched `image-size` release. A narrow format boundary preserves a
+  meaningful audit gate without pretending an unavailable package can be installed.
+- Impact: Trusted repository assets continue to build. Untrusted ICNS, JXL, and HEIF
+  assets must not enter the build, and the two-advisory exception remains visible.
+- Revisit when: Weekly, and immediately when a patched release or verified upstream
+  replacement becomes installable. Remove both the exception and this quarantine.
+- Status: Temporary exception; blocks untrusted use of the affected formats.
