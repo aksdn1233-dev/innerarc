@@ -35,7 +35,7 @@ jobs:
           if-no-files-found: error
           retention-days: 30
       - run: pnpm exec playwright install --with-deps chromium webkit
-      - run: pnpm test:e2e --project=chromium --project=mobile
+      - run: pnpm test:e2e --project=chromium --project=mobile --workers=4 --reporter=line
       - name: Verify checkout UI with isolated fake provider shell
         run: pnpm test:e2e tests/e2e/payments.spec.ts --project=chromium --project=mobile --workers=1 --reporter=line
         env:
