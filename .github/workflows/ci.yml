@@ -24,7 +24,9 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
-      - run: pnpm audit
+      # image-size 2.0.3 is listed as patched by the advisories but is not published
+      # in npm yet. D-060 defines this narrow, expiring exception.
+      - run: pnpm audit --ignore GHSA-w3rx-r6r6-pgpr --ignore GHSA-5p2g-fcmc-qvqq
       - run: pnpm run generate:sbom
       - uses: actions/upload-artifact@v7
         with:

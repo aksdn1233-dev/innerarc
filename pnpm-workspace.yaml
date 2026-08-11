@@ -7,6 +7,11 @@ allowBuilds:
   unrs-resolver: true
   workerd: true
 
+auditConfig:
+  ignoreGhsas:
+    - GHSA-w3rx-r6r6-pgpr
+    - GHSA-5p2g-fcmc-qvqq
+
 # Every pin here answers a published advisory in the build, lint, or local-development
 # toolchain. None of these packages runs in the deployed Worker. A pin that was current
 # when it was written goes stale the moment the next advisory lands — `pnpm audit` in CI
@@ -30,6 +35,8 @@ overrides:
   # in the deployed Worker, which uses the Cloudflare runtime's own fetch. Pinned inside
   # the 7.x line because that is what miniflare expects; 8.x is a major bump.
   undici: "7.29.0"
+  # Zero and negative-size infinite loops reached through PostCSS tooling.
+  nanoid: "3.3.17"
 
 patchedDependencies:
   minimatch@3.1.5: patches/minimatch@3.1.5.patch
