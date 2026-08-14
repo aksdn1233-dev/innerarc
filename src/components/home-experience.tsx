@@ -239,10 +239,6 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   // The opening screen already carries the same action at thumb height. Showing the
   // sticky bar there would cover it, so the bar waits until the hero has scrolled away.
   const [heroVisible, setHeroVisible] = useState(true);
-  // A browser refuses to autoplay a clip that makes noise, so it starts muted and the
-  // sound is the visitor's to switch on. Off is the honest default anyway: nobody wants
-  // a page to start talking at them.
-  const [soundOn, setSoundOn] = useState(false);
   // Pressing the primary action opens the intake over the film, in place. It is not a
   // page to scroll to and not a place to navigate to — the character stays on screen.
   const [intakeOpen, setIntakeOpen] = useState(false);
@@ -333,8 +329,15 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent)
       || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-    if (isIOS) return;
-    void video.play().catch(() => {});
+    if (isIOS) {
+      void heroAudioRef.current?.play().catch(() => {});
+      return;
+    }
+    video.muted = false;
+    void video.play().catch(() => {
+      video.muted = true;
+      void video.play().catch(() => {});
+    });
   }, []);
 
   function trackFormStart() {
@@ -359,21 +362,6 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   // A visitor who has not decided anything yet will not fill in a birth date, but they
   // will answer "which of these is bothering me". Answering that is the cheapest possible
   // first commitment, and it carries straight into the form as the reading's focus.
-  function toggleSound() {
-    const video = heroVideoRef.current;
-    if (!video) return;
-    const next = !soundOn;
-    const fallbackActive = window.getComputedStyle(video).display === "none";
-    if (fallbackActive) {
-      const audio = heroAudioRef.current;
-      if (audio && next) void audio.play().catch(() => {});
-      else audio?.pause();
-    } else {
-      video.muted = !next;
-    }
-    setSoundOn(next);
-  }
-
   function chooseQuestion(focus: FocusId) {
     setFocusId(focus);
     captureConversionEvent("form_start", locale, {});
@@ -466,7 +454,9 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             alt=""
             aria-hidden="true"
             className="cinema-hero-portrait inline-video-fallback"
-            src="/videos/taeyul-hero-ios.webp?v=20260810-ios1"
+            fetchPriority="high"
+            loading="eager"
+            src="/videos/taeyul-hero-ios-smooth.webp?v=20260814-smooth1"
           />
           <video
             {...{ "webkit-playsinline": "true", "x-webkit-airplay": "deny" }}
@@ -477,7 +467,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             disablePictureInPicture
             disableRemotePlayback
             loop
-            muted={!soundOn}
+            muted
             onLoadedMetadata={(event) => {
               const video = event.currentTarget;
               video.setAttribute("playsinline", "");
@@ -494,9 +484,9 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             ref={heroVideoRef}
             tabIndex={-1}
           >
-            <source src="/videos/taeyul-hero.mp4?v=20260810-ios1" type="video/mp4" />
+            <source src="/videos/taeyul-hero-smooth.mp4?v=20260814-smooth1" type="video/mp4" />
           </video>
-          <audio className="inline-video-audio" loop preload="metadata" ref={heroAudioRef}>
+          <audio autoPlay className="inline-video-audio" loop preload="auto" ref={heroAudioRef}>
             <source src="/videos/taeyul-hero-audio.m4a?v=20260810-ios1" type="audio/mp4" />
           </audio>
           <MeteorTrails className="cinema-hero-meteors" />
@@ -507,18 +497,6 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
               but it is read, not displayed, and the words themselves reappear in full at
               the top of the page below. */}
           <h1 className="visually-hidden" id="hero-title">{t.heroTitle}</h1>
-
-          <button
-            aria-pressed={soundOn}
-            className="cinema-sound-toggle"
-            onClick={toggleSound}
-            type="button"
-          >
-            {soundOn
-              ? (locale === "ko" ? "🔊 소리 끄기" : "🔊 Sound off")
-              : (locale === "ko" ? "🔈 소리 켜기" : "🔈 Sound on")}
-          </button>
-
 
           {intakeOpen && (
             <div className="hero-intake" role="dialog" aria-modal="true" aria-label={t.formTitle}>

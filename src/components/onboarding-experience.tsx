@@ -40,15 +40,21 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
   const deepProfileRef = useRef<HTMLDetailsElement>(null);
   const guideVideoRef = useRef<HTMLVideoElement>(null);
   const guideAudioRef = useRef<HTMLAudioElement>(null);
-  const [guideSoundOn, setGuideSoundOn] = useState(false);
 
   useEffect(() => {
     const video = guideVideoRef.current;
     if (!video || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent)
       || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-    if (isIOS) return;
-    void video.play().catch(() => {});
+    if (isIOS) {
+      void guideAudioRef.current?.play().catch(() => {});
+      return;
+    }
+    video.muted = false;
+    void video.play().catch(() => {
+      video.muted = true;
+      void video.play().catch(() => {});
+    });
   }, []);
   const profile = result ? getRuleBasedProfile(result.lifePath.value, locale) : null;
   const integratedProfile = result ? createIntegratedProfile(result, locale) : null;
@@ -155,7 +161,9 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
               alt=""
               aria-hidden="true"
               className="guide-clip guide-clip-fallback inline-video-fallback"
-              src="/videos/taeyul-guide-ios.webp?v=20260810-ios1"
+              fetchPriority="high"
+              loading="eager"
+              src="/videos/taeyul-guide-ios-smooth.webp?v=20260814-smooth1"
             />
             <video
               {...{ "webkit-playsinline": "true", "x-webkit-airplay": "deny" }}
@@ -165,7 +173,7 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
               controlsList="nofullscreen noremoteplayback"
               disablePictureInPicture
               disableRemotePlayback
-              muted={!guideSoundOn}
+              muted
               onLoadedMetadata={(event) => {
                 const video = event.currentTarget;
                 video.setAttribute("playsinline", "");
@@ -181,37 +189,11 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
               ref={guideVideoRef}
               tabIndex={-1}
             >
-              <source src="/videos/taeyul-guide.mp4?v=20260810-ios1" type="video/mp4" />
+              <source src="/videos/taeyul-guide-smooth.mp4?v=20260814-smooth1" type="video/mp4" />
             </video>
-            <audio className="inline-video-audio" preload="metadata" ref={guideAudioRef}>
+            <audio autoPlay className="inline-video-audio" preload="auto" ref={guideAudioRef}>
               <source src="/videos/taeyul-guide-audio.m4a?v=20260810-ios1" type="audio/mp4" />
             </audio>
-            <button
-              aria-label={guideSoundOn ? "소리 끄기" : "소리 켜기"}
-              className="guide-sound-toggle"
-              onClick={() => {
-                const next = !guideSoundOn;
-                const video = guideVideoRef.current;
-                const fallbackActive = video
-                  ? window.getComputedStyle(video).display === "none"
-                  : false;
-                if (fallbackActive) {
-                  const audio = guideAudioRef.current;
-                  if (audio && next) {
-                    audio.currentTime = 0;
-                    void audio.play().catch(() => {});
-                  } else if (audio) {
-                    audio.pause();
-                  }
-                } else if (video) {
-                  video.muted = !next;
-                }
-                setGuideSoundOn(next);
-              }}
-              type="button"
-            >
-              {guideSoundOn ? "소리 끄기" : "소리 켜기"}
-            </button>
           </div>
         </section>
 
