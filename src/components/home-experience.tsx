@@ -456,7 +456,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             className="cinema-hero-portrait inline-video-fallback"
             fetchPriority="high"
             loading="eager"
-            src="/videos/taeyul-hero-ios-fluid.webp?v=20260815-fluid1"
+            src="/videos/taeyul-hero-ios-mini.webp?v=20260815-mini1"
           />
           <video
             {...{ "webkit-playsinline": "true", "x-webkit-airplay": "deny" }}

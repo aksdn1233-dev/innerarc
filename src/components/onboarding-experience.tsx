@@ -163,7 +163,7 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
               className="guide-clip guide-clip-fallback inline-video-fallback"
               fetchPriority="high"
               loading="eager"
-              src="/videos/taeyul-guide-ios-smooth.webp?v=20260814-smooth1"
+              src="/videos/taeyul-guide-ios-clean.webp?v=20260815-clean1"
             />
             <video
               {...{ "webkit-playsinline": "true", "x-webkit-airplay": "deny" }}
@@ -189,7 +189,7 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
               ref={guideVideoRef}
               tabIndex={-1}
             >
-              <source src="/videos/taeyul-guide-smooth.mp4?v=20260814-smooth1" type="video/mp4" />
+              <source src="/videos/taeyul-guide-clean.mp4?v=20260815-clean1" type="video/mp4" />
             </video>
             <audio autoPlay className="inline-video-audio" preload="auto" ref={guideAudioRef}>
               <source src="/videos/taeyul-guide-audio.m4a?v=20260810-ios1" type="audio/mp4" />
