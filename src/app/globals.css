@@ -7658,15 +7658,6 @@ summary {
   overflow-x: clip;
 }
 
-/* Results that live inside an existing .shell column reach the edge only on phones. On a
-   wide screen a full-bleed band would drag the line length well past comfortable reading,
-   so there the panel keeps the column and only changes colour. */
-@media (max-width: 760px) {
-  .webtoon-bleed {
-    margin-inline: calc(50% - 50vw);
-  }
-}
-
 /* A reading that renders inside a page it does not own — the free experiences, where the
    result appears under a form that stays on screen. The beats are shorter than a paid
    report's, and the last one leaves room for the five-item navigation fixed over the
@@ -7755,8 +7746,42 @@ summary {
 }
 
 .webtoon-inner {
+  position: relative;
+  z-index: 1;
   width: min(100% - 44px, 40rem);
   margin: 0 auto;
+}
+
+/* ---- Drawn scenery ----
+   A webtoon frame is a picture with words in it. Panels that carry art get the drawing
+   across the whole frame and the text over it, which is the difference between an episode
+   and a stack of tinted paragraphs. Held back far enough that the reading stays the
+   brightest thing on the panel. */
+.webtoon-panel.has-art {
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.webtoon-panel-art {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+}
+
+.webtoon-panel-art > svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.webtoon-night .webtoon-panel-art {
+  opacity: 0.5;
+}
+
+.webtoon-paper .webtoon-panel-art,
+.webtoon-gold .webtoon-panel-art {
+  opacity: 0.2;
 }
 
 .webtoon-panel > .webtoon-inner > :first-child {
@@ -7841,29 +7866,6 @@ summary {
   opacity: 1;
 }
 
-.webtoon-gold .webtoon-badge,
-.webtoon-gold .webtoon-title {
-  color: #6d4f28;
-}
-
-.webtoon-warn .webtoon-badge,
-.webtoon-warn .webtoon-title {
-  color: #8d4b38;
-}
-
-/* The one phrase per panel worth leaving with, drawn as if run over with a marker rather
-   than shouted in a heavier weight. */
-.webtoon-mark {
-  padding: 0 0.16em;
-  background: linear-gradient(transparent 58%, rgba(221, 185, 120, 0.5) 58%);
-  color: inherit;
-}
-
-.webtoon-night .webtoon-mark {
-  background: linear-gradient(transparent 58%, rgba(221, 185, 120, 0.34) 58%);
-  color: #ffe9c2;
-}
-
 /* ---- Calculated numbers ----
    The one place the reader is hunting for a figure and not a sentence, so the figures stop
    being table cells and become objects on the page. */
@@ -7918,6 +7920,103 @@ summary {
   color: rgba(255, 250, 240, 0.68);
 }
 
+/* ---- The guide, in frame ----
+   The first version of this put a round portrait outside the content with a bubble beside
+   it, which is a messenger thread, not a comic. A Korean vertical webtoon frames the
+   character: the figure is drawn inside the cut and cropped by its edge, the balloon sits
+   over the artwork rather than beside it, and the tail points back at whoever is speaking.
+   The gutter under each cut is what paces the scroll — the gap is part of the drawing. */
+
+.webtoon-cut {
+  position: relative;
+  overflow: hidden;
+  min-height: clamp(240px, 62vw, 340px);
+  margin-block: clamp(10px, 3vw, 18px);
+  background:
+    radial-gradient(circle at 76% 18%, rgba(221, 185, 120, 0.16), transparent 46%),
+    linear-gradient(168deg, #0a1729, #071120 62%, #050d19);
+  isolation: isolate;
+}
+
+/* Cropped by the frame, standing in the lower corner and running off the bottom edge, the
+   way a bust shot is composed in a panel. */
+.webtoon-cut-figure {
+  position: absolute;
+  z-index: 0;
+  bottom: 0;
+  left: -2%;
+  width: clamp(150px, 44%, 230px);
+  height: 88%;
+  object-fit: cover;
+  object-position: center 14%;
+  -webkit-mask-image: linear-gradient(to bottom, #000 76%, transparent 99%);
+  mask-image: linear-gradient(to bottom, #000 76%, transparent 99%);
+}
+
+.webtoon-cut-right .webtoon-cut-figure {
+  right: -2%;
+  left: auto;
+  transform: scaleX(-1);
+}
+
+/* White, thin dark outline, sitting over the art. */
+.webtoon-cut-balloon {
+  position: absolute;
+  z-index: 1;
+  top: clamp(20px, 6vw, 34px);
+  right: clamp(16px, 5vw, 30px);
+  max-width: min(64%, 22rem);
+  margin: 0;
+  padding: 15px 19px;
+  border: 2px solid #16202f;
+  border-radius: 22px;
+  background: #fffdf8;
+  color: #16202f;
+  font-size: clamp(0.98rem, 2.4vw, 1.06rem);
+  font-weight: 600;
+  line-height: 1.62;
+}
+
+.webtoon-cut-right .webtoon-cut-balloon {
+  right: auto;
+  left: clamp(16px, 5vw, 30px);
+}
+
+/* The tail points down and back toward the figure's head rather than straight sideways,
+   which is what stops it reading as a chat bubble. Two triangles: the outline, then the
+   fill laid just inside it so the stroke stays continuous around the balloon. */
+.webtoon-cut-balloon::before,
+.webtoon-cut-balloon::after {
+  position: absolute;
+  bottom: -17px;
+  left: 26px;
+  width: 0;
+  height: 0;
+  border-top: 17px solid #16202f;
+  border-right: 15px solid transparent;
+  content: "";
+}
+
+.webtoon-cut-balloon::after {
+  bottom: -13px;
+  left: 28px;
+  border-top-color: #fffdf8;
+  border-right-width: 12px;
+}
+
+.webtoon-cut-right .webtoon-cut-balloon::before,
+.webtoon-cut-right .webtoon-cut-balloon::after {
+  right: 26px;
+  left: auto;
+  border-right: 0;
+  border-left: 15px solid transparent;
+}
+
+.webtoon-cut-right .webtoon-cut-balloon::after {
+  right: 28px;
+  border-left-width: 12px;
+}
+
 /* ---- Scroll cue ----
    Two chevrons falling toward the next panel. Decorative: the panel below is already the
    next thing in document order. */
@@ -7934,6 +8033,9 @@ summary {
   height: 14px;
   border-right: 2px solid currentColor;
   border-bottom: 2px solid currentColor;
+  /* The rotation belongs here, not only inside the keyframes. Left in the animation alone,
+     a reader with motion turned off gets two unrotated corners instead of chevrons. */
+  transform: rotate(45deg);
   opacity: 0.3;
   animation: webtoon-cue-fall 1.9s ease-in-out infinite;
 }
