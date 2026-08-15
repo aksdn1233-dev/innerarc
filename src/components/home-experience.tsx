@@ -456,7 +456,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             className="cinema-hero-portrait inline-video-fallback"
             fetchPriority="high"
             loading="eager"
-            src="/videos/taeyul-hero-ios-smooth.webp?v=20260814-smooth1"
+            src="/videos/taeyul-hero-ios-fluid.webp?v=20260815-fluid1"
           />
           <video
             {...{ "webkit-playsinline": "true", "x-webkit-airplay": "deny" }}
@@ -484,7 +484,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             ref={heroVideoRef}
             tabIndex={-1}
           >
-            <source src="/videos/taeyul-hero-smooth.mp4?v=20260814-smooth1" type="video/mp4" />
+            <source src="/videos/taeyul-hero.mp4?v=20260815-fluid1" type="video/mp4" />
           </video>
           <audio autoPlay className="inline-video-audio" loop preload="auto" ref={heroAudioRef}>
             <source src="/videos/taeyul-hero-audio.m4a?v=20260810-ios1" type="audio/mp4" />
