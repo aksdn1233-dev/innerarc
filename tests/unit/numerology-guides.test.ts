@@ -16,18 +16,15 @@ describe("GYEOL numerology guides", () => {
       expect(guide.role.ko).not.toBe("");
       expect(guide.specialties.ko.length).toBeGreaterThanOrEqual(3);
       expect(guide.focusIds).toContain(guide.primaryFocus);
-      expect(guide.image).toMatch(/^\/images\/numerology-guides\/gyeol-[a-z]+\.jpg$/);
+      expect(guide.image).toMatch(/^\/assets\/gyeol-webtoon\/characters\/[a-z]+\/[a-z]+_result-card_confident_01\.png$/);
       const asset = await stat(`public${guide.image}`);
       expect(asset.size).toBeGreaterThan(40_000);
     }
   });
 
-  it("keeps the supplied Taeryeong reference art byte-for-byte", async () => {
-    const [reference, rosterAsset] = await Promise.all([
-      readFile("public/images/taeyul-hero.jpg"),
-      readFile("public/images/numerology-guides/gyeol-taeryeong.jpg"),
-    ]);
-    expect(rosterAsset.equals(reference)).toBe(true);
+  it("uses the supplied independent transparent character cuts", async () => {
+    const taeryeong = await readFile("public/assets/gyeol-webtoon/characters/taeryeong/taeryeong_result-card_confident_01.png");
+    expect(taeryeong.subarray(1, 4).toString()).toBe("PNG");
   });
 
   it("connects each existing focus to a guide without changing the calculation engine", () => {
@@ -46,7 +43,7 @@ describe("GYEOL numerology guides", () => {
       readFile("src/components/saju-service-hub.tsx", "utf8"),
     ]);
     expect(css).toContain(".numerology-guide-image-frame");
-    expect(css).toContain("aspect-ratio: 2 / 3");
+    expect(css).toContain("aspect-ratio: 1");
     expect(css).toContain("object-fit: contain");
     expect(css).toContain("object-position: center center");
     expect(onboarding).not.toContain("NumerologyGuideRoster");

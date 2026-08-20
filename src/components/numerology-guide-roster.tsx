@@ -37,11 +37,11 @@ function GuideCard({
           alt={guide.imageAlt[locale]}
           className="numerology-guide-image"
           decoding="async"
-          height="1200"
+          height="384"
           priority={guide.id === "taeryeong"}
-          sizes="(max-width: 560px) calc(100vw - 24px), (max-width: 840px) 50vw, 33vw"
+          sizes="(max-width: 560px) calc(100vw - 24px), (max-width: 840px) 50vw, 384px"
           src={guide.image}
-          width="800"
+          width="384"
         />
       </div>
       <div className="numerology-guide-copy">

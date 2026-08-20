@@ -14,7 +14,9 @@ Status: Supabase account persistence connected; production deployment and remain
    - Current database migration: `20260727000300_atomic_account_deletion.sql`.
 5. Generate and archive the validated CycloneDX production SBOM. Review launch screenshots for synthetic-only content, expected dimensions, and absence of external requests.
 6. Confirm crisis contacts against the official sources and review date in [Crisis Response Protocol](Crisis-Response-Protocol.md).
-7. Actual production deployment requires explicit user authorization.
+7. The product owner authorized automatic production deployment after validated site changes
+   on 2026-08-21. Preserve the last verified rollback commit before every publish and stop for
+   new authority only when access level, payments, migrations, or destructive scope changes.
 
 ## Feature rollback
 
@@ -45,6 +47,15 @@ Status: Supabase account persistence connected; production deployment and remain
 - Current engine/policy rollback reference: `saju-core-1.1.0` /
   `kr-standard-1.0.0`; the prior UI-compatible engine identifier was
   `jachyeong-1.0.0` in repository history.
+
+### Character webtoon rollback
+
+- Current pre-character rollback reference: commit `86d9630`.
+- A character-layer incident must not change numerology calculations. Disable or revert the
+  webtoon component and manifest mapping while preserving the original text result, checkout,
+  account, and entitlement paths.
+- Remove a malformed cut from selector candidates only with a manifest/test update; never
+  substitute an invented glyph, third-party character, or baked-in dialogue image.
 
 ## Incident priorities
 

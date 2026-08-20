@@ -24,13 +24,15 @@
 .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
 .serviceCard { position: relative; display: flex; min-height: 174px; flex-direction: column; padding: 17px; border: 1px solid #e7e1d7; border-radius: 20px; background: #fff; color: #2f2a23; text-decoration: none; transition: transform 160ms ease, box-shadow 160ms ease; }
 a.serviceCard:hover { box-shadow: 0 12px 28px rgba(66, 56, 40, 0.09); transform: translateY(-2px); }
-.serviceMeta { margin-top: 2px; }
+.serviceMeta { position: relative; z-index: 1; margin-top: 2px; padding-right: 52px; }
 .serviceMeta small { color: #9a7560; font-size: 0.69rem; font-weight: 800; }
 .serviceMeta strong { margin-top: 4px; font-size: 0.98rem; }
 .serviceMeta > span { margin-top: 8px; color: #7c756b; font-size: 0.76rem; line-height: 1.5; }
-.cardState { margin-top: auto; padding-top: 12px; color: #80624e; font-size: 0.72rem; font-weight: 800; }
+.serviceCharacter { position: absolute; right: -8px; bottom: 0; width: 108px; height: 108px; object-fit: contain; object-position: right bottom; filter: drop-shadow(0 8px 12px rgba(60,45,30,.16)); }
+.cardState { position: relative; z-index: 1; margin-top: auto; padding-top: 12px; color: #80624e; font-size: 0.72rem; font-weight: 800; }
 .disabled { background: #f3f0ea; color: #8b857c; }
 .disabled .serviceMeta small, .disabled .serviceMeta > span, .disabled .cardState { color: #9f9990; }
+.disabled .serviceCharacter { filter: grayscale(.45); opacity: .58; }
 .disclaimer { margin: 34px 5px 0; color: #837c72; font-size: 0.72rem; line-height: 1.65; }
 .bottomNav { position: fixed; z-index: 5; right: 0; bottom: 0; left: 0; display: grid; grid-template-columns: repeat(4, 1fr); width: min(100%, 520px); margin: 0 auto; padding: 10px 10px calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid #e6e0d6; background: rgba(251, 250, 247, 0.96); backdrop-filter: blur(16px); }
 .bottomNav a { display: flex; min-height: 48px; align-items: center; justify-content: center; color: #8d867b; font-size: 0.72rem; font-weight: 700; text-decoration: none; }

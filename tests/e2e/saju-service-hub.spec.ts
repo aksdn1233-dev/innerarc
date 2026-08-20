@@ -24,6 +24,7 @@ test("the Saju service hub exposes real routes and labels unfinished services", 
   await expect(page.getByRole("link", { name: /두 사람 궁합/ })).toHaveAttribute("href", "/ko/compatibility");
   await expect(page.getByRole("link", { name: /내 기록/ })).toHaveAttribute("href", "/ko/me");
   await expect(page.locator("article[data-state='unavailable']")).toHaveCount(2);
+  await expect(page.locator("[class*='grid'] [class*='serviceCharacter']")).toHaveCount(6);
   await expect(page.locator("main")).toContainText("자기 성찰 도구");
   await expect(page.locator("main")).not.toContainText(/[四⌂◉□♡○]/);
   const navigation = page.getByRole("navigation", { name: "사주 서비스 탐색" });

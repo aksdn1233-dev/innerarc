@@ -47,9 +47,7 @@ export const NUMEROLOGY_GUIDES: readonly NumerologyGuide[] = [
       color: "#6f5792",
       symbol: "결 문양",
     },
-    // This is the repository's existing supplied reference design. It is intentionally
-    // reused instead of replacing Taeryeong with one of the later generated variants.
-    image: "/images/numerology-guides/gyeol-taeryeong.jpg",
+    image: "/assets/gyeol-webtoon/characters/taeryeong/taeryeong_result-card_confident_01.png",
     imageAlt: {
       ko: "검은 머리와 안경, 흑금·보라 전통복을 입은 중심 해석자 태령",
       en: "Taeryeong, the lead interpreter, in the preserved black, gold, and violet reference design",
@@ -71,7 +69,7 @@ export const NUMEROLOGY_GUIDES: readonly NumerologyGuide[] = [
       color: "#8063a9",
       symbol: "인연 매듭",
     },
-    image: "/images/numerology-guides/gyeol-yeonhui.jpg",
+    image: "/assets/gyeol-webtoon/characters/yeonhui/yeonhui_result-card_confident_01.png",
     imageAlt: { ko: "보랏빛 꽃과 붓을 든 관계 해석자 연희", en: "Yeonhui with violet flowers and a brush" },
     primaryFocus: "relationships",
     focusIds: ["relationships"],
@@ -90,7 +88,7 @@ export const NUMEROLOGY_GUIDES: readonly NumerologyGuide[] = [
       color: "#b98b46",
       symbol: "수리 문양",
     },
-    image: "/images/numerology-guides/gyeol-sahyeon.jpg",
+    image: "/assets/gyeol-webtoon/characters/sahyeon/sahyeon_result-card_confident_01.png",
     imageAlt: { ko: "은빛 단발과 책을 든 패턴 해석자 사현", en: "Sahyeon with silver hair and an open book" },
     primaryFocus: "work",
     focusIds: ["work", "leadership", "money"],
@@ -109,7 +107,7 @@ export const NUMEROLOGY_GUIDES: readonly NumerologyGuide[] = [
       color: "#a63f37",
       symbol: "불꽃 문양",
     },
-    image: "/images/numerology-guides/gyeol-hwayeon.jpg",
+    image: "/assets/gyeol-webtoon/characters/hwayeon/hwayeon_result-card_confident_01.png",
     imageAlt: { ko: "붉은 부채와 흑적색 전통복의 흐름 해석자 화연", en: "Hwayeon with a red fan and black-red traditional attire" },
     primaryFocus: "money",
     focusIds: ["money", "work", "growth"],
@@ -128,7 +126,7 @@ export const NUMEROLOGY_GUIDES: readonly NumerologyGuide[] = [
       color: "#527ea6",
       symbol: "균형 문양",
     },
-    image: "/images/numerology-guides/gyeol-yundo.jpg",
+    image: "/assets/gyeol-webtoon/characters/yundo/yundo_result-card_confident_01.png",
     imageAlt: { ko: "은청색 단발과 청백색 전통복의 균형 해석자 윤도", en: "Yundo with short silver-blue hair and blue-white attire" },
     primaryFocus: "health",
     focusIds: ["health", "relationships"],
@@ -147,7 +145,7 @@ export const NUMEROLOGY_GUIDES: readonly NumerologyGuide[] = [
       color: "#b47724",
       symbol: "태양 문양",
     },
-    image: "/images/numerology-guides/gyeol-hoyeon.jpg",
+    image: "/assets/gyeol-webtoon/characters/hoyeon/hoyeon_result-card_confident_01.png",
     imageAlt: { ko: "갈색 단발과 황금빛 전통복의 직관 해석자 호연", en: "Hoyeon with short brown hair and gold-toned attire" },
     primaryFocus: "growth",
     focusIds: ["growth", "leadership", "relationships"],
@@ -174,4 +172,3 @@ export function getNumerologyGuide(id: NumerologyGuideId): NumerologyGuide {
 export function getDefaultNumerologyGuide(focusId: OnboardingFocusId): NumerologyGuide {
   return getNumerologyGuide(DEFAULT_GUIDE_BY_FOCUS[focusId]);
 }
-

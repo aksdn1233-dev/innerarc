@@ -21,6 +21,32 @@
 - Revisit when: A future campaign requires a database-managed calendar or multiple regions.
 - Status: Decided.
 
+## D-065 - Use the owner-supplied character package as an additive webtoon layer
+
+- Date: 2026-08-21
+- Decision: Install the 192 independent PNG character cuts plus 16 shared backgrounds
+  and 16 props/effects under `public/assets/gyeol-webtoon`, connect the supplied manifest
+  to a versioned deterministic scene selector, and render dialogue as accessible HTML over
+  the existing numerology result. Keep calculation, payment, account, and entitlement code
+  unchanged. Use redesigned Yundo and Hoyeon only.
+- Demand evidence: The product owner directly supplied the production package and requested
+  its integration after reviewing the live card layout. Distribution remains the existing
+  web-first `/numerology` and `/fortune` routes; no new provider or fulfillment cost is added.
+- Alternatives: Keep the prior six poster images; bake dialogue into images; let the UI pick
+  scenes randomly; rewrite the numerology engine around characters.
+- Reason: Supplied independent cuts provide the requested character-led experience while a
+  pure selector and HTML dialogue preserve deterministic evidence, accessibility, translation,
+  and graceful text-only fallback.
+- Success and guardrails: Character panels render after a completed reading, 1994-11-04
+  remains 11/4/6, all manifest paths exist, 320/360/375/390/430 px stay overflow-free, and
+  symbolic-boundary copy remains visible. Monitor result completion and detailed-reading
+  entry without collecting birth dates or dialogue; stop if completion falls materially or
+  image bytes harm the current performance budget.
+- Reversal condition: Revert the presentation layer to commit `86d9630` if assets are found
+  malformed, character identity is mixed, mobile overflow returns, text fallback fails, or
+  calculation/payment regressions appear. The calculation engine needs no rollback.
+- Status: Decided and implemented; individual anatomical art review remains an editorial gate.
+
 ## D-048 — Referral foundation remains inactive
 
 - Date: 2026-08-01

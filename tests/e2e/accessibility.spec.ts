@@ -102,7 +102,7 @@ test("generated onboarding context has no serious accessibility violation", asyn
   await page.getByText("Relationships", { exact: true }).click();
   await page.locator("#concern").fill("How can I observe a recurring relationship pattern?");
   await page.getByText("Deep", { exact: true }).click();
-  await page.getByText("I have read the privacy notice.").click();
+  await page.locator('input[name="privacyRequired"]').check();
   await page.getByRole("button", { name: "Show my core pattern" }).click();
   await expect(page.locator(".onboarding-context-card")).toBeVisible();
   await page.addScriptTag({ content: axe.source });
@@ -123,7 +123,7 @@ test("generated onboarding context has no serious accessibility violation", asyn
 test("generated share controls have no serious accessibility violation", async ({ page }) => {
   await page.goto("/en/profile");
   await page.locator("#birthDate").fill("1994-11-04");
-  await page.getByText("I have read the privacy notice.").click();
+  await page.locator('input[name="privacyRequired"]').check();
   await page.getByRole("button", { name: "Show my core pattern" }).click();
   await page.getByText("Privacy-safe share card", { exact: true }).click();
   await page.addScriptTag({ content: axe.source });

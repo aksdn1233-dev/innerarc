@@ -1,0 +1,33 @@
+.reading { width: min(100%, 760px); margin: 0 auto 38px; }
+.heading { padding: 30px 22px; background: #17140f; color: #fffaf0; text-align: center; }
+.heading p { margin: 0 0 8px; color: #d5aa62; font-size: .76rem; font-weight: 850; letter-spacing: .08em; }
+.heading h2 { margin: 0; font-size: clamp(1.7rem, 7vw, 2.7rem); letter-spacing: -.055em; line-height: 1.15; }
+.heading span { display: block; max-width: 45rem; margin: 14px auto 0; color: rgba(255,250,240,.72); font-size: .82rem; line-height: 1.65; }
+.panels { display: flex; flex-direction: column; }
+.panel { position: relative; isolation: isolate; display: grid; min-height: 660px; grid-template-columns: minmax(0, 1fr); align-items: end; overflow: hidden; padding: 28px 22px; background: #272017; }
+.background, .effect { z-index: -3; width: 100%; height: 100%; object-fit: cover; }
+.background { filter: saturate(.82) brightness(.65); }
+.effect { z-index: -1; opacity: .3; object-fit: cover; mix-blend-mode: screen; }
+.panel::after { position: absolute; z-index: -2; inset: 0; background: linear-gradient(180deg, rgba(12,10,8,.08), rgba(12,10,8,.24) 50%, rgba(12,10,8,.74)); content: ""; }
+.characterLayer { position: absolute; z-index: 0; top: 18px; right: 0; display: grid; width: min(78vw, 420px); height: min(78vw, 420px); place-items: end center; }
+.reverse .characterLayer { right: auto; left: 0; }
+.character { position: relative; z-index: 1; width: 100%; height: 100%; object-fit: contain; object-position: center bottom; filter: drop-shadow(0 18px 28px rgba(0,0,0,.38)); }
+.characterFallback { position: absolute; bottom: 45%; color: rgba(255,255,255,.2); font-size: .72rem; letter-spacing: .2em; }
+.bubble { position: relative; z-index: 2; width: min(92%, 510px); padding: 22px; border: 2px solid rgba(45,37,27,.14); border-radius: 26px 26px 26px 6px; background: rgba(255,253,247,.96); color: #2d281f; box-shadow: 0 18px 48px rgba(0,0,0,.28); overflow-wrap: anywhere; }
+.reverse .bubble { justify-self: end; border-radius: 26px 26px 6px; }
+.speaker { display: inline-flex; margin-bottom: 8px; padding: 5px 10px; border-radius: 999px; background: #2c261d; color: #f2cf91; font-size: .72rem; }
+.bubble small { display: block; color: #8c684e; font-size: .72rem; font-weight: 800; }
+.bubble h3 { margin: 6px 0 12px; font-size: clamp(1.25rem, 5vw, 1.75rem); letter-spacing: -.045em; line-height: 1.25; }
+.dialogue { font-size: .94rem; line-height: 1.72; }
+.dialogue p { margin: 0; }
+.dialogue p + p, .dialogue ul + p { margin-top: 12px; }
+.dialogue ul { padding-left: 1.15rem; margin: 0; }
+.dialogue blockquote { padding: 10px 12px; border-left: 3px solid #9c724d; margin: 12px 0 0; background: #f4ede2; white-space: pre-wrap; }
+.numberList { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0; }
+.numberList div { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 12px; background: #f4eee4; }
+.numberList dt { font-size: .72rem; font-weight: 750; }
+.numberList dd { margin: 0; color: #775331; font-size: 1.25rem; font-weight: 900; }
+.boundary { padding: 20px 22px; margin: 0; background: #eee7dc; color: #6e675e; font-size: .75rem; line-height: 1.7; }
+@media (min-width: 680px) { .panel { min-height: 720px; padding: 42px; } .characterLayer { top: 28px; right: 20px; } .reverse .characterLayer { left: 20px; } }
+@media (max-width: 360px) { .panel { min-height: 600px; padding: 18px 14px; } .bubble { width: 100%; padding: 18px; } .characterLayer { width: 84vw; height: 84vw; } }
+@media (prefers-reduced-motion: reduce) { .panel, .character, .effect { animation: none !important; transition: none !important; } }

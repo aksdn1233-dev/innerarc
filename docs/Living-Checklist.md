@@ -27,9 +27,15 @@ Last updated: 2026-08-01
 - [x] Preserve master numbers 11/22/33 and validate invalid dates, leap years, century edges, formats, long names, accents, separators, and non-Latin scripts.
 - [x] Calculation evidence UI and deterministic regression vectors.
 - [ ] Independent numerology editorial review before public launch.
-- [x] Six-guide numerology roster uses approved independent assets, preserved Taeryeong
-  reference art, explicit roles/themes, whole-image responsive layout, and focus-only
-  routing that leaves deterministic calculation facts unchanged.
+- [x] Six-guide numerology roster uses the owner-supplied independent transparent cuts,
+  explicit roles/themes, whole-image responsive layout, and focus-only routing that leaves
+  deterministic calculation facts unchanged.
+- [x] Owner-supplied 192-cut webtoon manifest is connected to a versioned deterministic
+  selector with theme/section/emotion fallback, recent-pose avoidance, and path validation.
+- [x] Numerology dialogue remains selectable HTML over character/background layers, keeps a
+  text-only failure path, and is overflow-checked at 320/360/375/390/430 px.
+- [ ] Complete enlarged human review of all 192 cuts for fingers, eyes, glasses, ornaments,
+  props, and transparent-edge defects before treating every pose as editorially approved.
 
 ## Phase 3 - AI profile
 

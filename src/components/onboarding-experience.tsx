@@ -19,6 +19,7 @@ import { buildCoreProfileShare } from "@/core/share";
 import { ShareCardPanel } from "@/components/share-card-panel";
 import { focusAndScroll, scrollToElement } from "@/components/accessibility";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
+import { NumerologyWebtoonReading } from "@/components/numerology-webtoon-reading";
 import { MIN_BIRTH_DATE, currentMaxBirthDate, isAcceptedBirthDate } from "@/core/birth-range";
 import { createPaidContentPreview } from "@/core/report-preview";
 import type { OnboardingFocusId } from "@/core/onboarding";
@@ -310,6 +311,15 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
         {result && profile && integratedProfile && lifestyle && context && (
           <section className="result-section webtoon-flow" id="result" aria-live="polite" tabIndex={-1}>
             <WebtoonReveal />
+            <NumerologyWebtoonReading
+              archetype={profile.archetype}
+              context={context}
+              locale={locale}
+              relationship={profile.relationship}
+              result={result}
+              risks={profile.risks}
+              summary={profile.summary}
+            />
             <article className="result-card webtoon-adapt">
               <header className="result-header">
                 <p className="eyebrow">{d.resultEyebrow}</p>

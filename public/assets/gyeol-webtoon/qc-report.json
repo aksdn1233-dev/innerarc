@@ -1,0 +1,2311 @@
+{
+  "assetCount": 192,
+  "autoPassed": 192,
+  "needsReview": 0,
+  "checks": [
+    {
+      "file": "characters/taeryeong/taeryeong_front_neutral_01.png",
+      "rgba": true,
+      "transparentRatio": 0.786,
+      "contentBox": [
+        106,
+        46,
+        253,
+        349
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_three-quarter_neutral_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7888,
+      "contentBox": [
+        73,
+        45,
+        227,
+        349
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_side_neutral_01.png",
+      "rgba": true,
+      "transparentRatio": 0.8382,
+      "contentBox": [
+        80,
+        47,
+        200,
+        349
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_explain_calm_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7384,
+      "contentBox": [
+        41,
+        45,
+        237,
+        349
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_reach-hand_welcoming_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7936,
+      "contentBox": [
+        75,
+        84,
+        258,
+        339
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_read-book_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7984,
+      "contentBox": [
+        53,
+        82,
+        230,
+        339
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_read-chart_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7858,
+      "contentBox": [
+        40,
+        84,
+        223,
+        339
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_calculate_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.746,
+      "contentBox": [
+        39,
+        35,
+        261,
+        339
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_signature-prop-1_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7515,
+      "contentBox": [
+        64,
+        36,
+        264,
+        308
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_signature-prop-2_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7841,
+      "contentBox": [
+        62,
+        36,
+        223,
+        308
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_result-reveal_certain_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7448,
+      "contentBox": [
+        37,
+        36,
+        245,
+        307
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_closing-bow_polite_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7407,
+      "contentBox": [
+        63,
+        42,
+        290,
+        335
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_comfort_gentle_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7258,
+      "contentBox": [
+        61,
+        35,
+        259,
+        325
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_warning_serious_01.png",
+      "rgba": true,
+      "transparentRatio": 0.704,
+      "contentBox": [
+        45,
+        35,
+        248,
+        325
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_cheer_encouraging_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7067,
+      "contentBox": [
+        46,
+        35,
+        242,
+        325
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_chibi_happy_01.png",
+      "rgba": true,
+      "transparentRatio": 0.739,
+      "contentBox": [
+        38,
+        36,
+        245,
+        301
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_react_surprised_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6255,
+      "contentBox": [
+        46,
+        40,
+        328,
+        345
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_ponder_thoughtful_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6785,
+      "contentBox": [
+        49,
+        40,
+        288,
+        345
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_analyze_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6534,
+      "contentBox": [
+        35,
+        39,
+        316,
+        345
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_assure_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6736,
+      "contentBox": [
+        51,
+        39,
+        318,
+        345
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_smile_warm_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6634,
+      "contentBox": [
+        62,
+        40,
+        328,
+        345
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_tease_playful_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6269,
+      "contentBox": [
+        52,
+        38,
+        348,
+        345
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_celebrate_delighted_01.png",
+      "rgba": true,
+      "transparentRatio": 0.5281,
+      "contentBox": [
+        35,
+        39,
+        340,
+        345
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_judge_serious_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6594,
+      "contentBox": [
+        47,
+        37,
+        324,
+        345
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_judge_cold_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6741,
+      "contentBox": [
+        53,
+        39,
+        301,
+        346
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_comfort_compassionate_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6746,
+      "contentBox": [
+        42,
+        36,
+        300,
+        346
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_thumbs-up_encouraging_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6129,
+      "contentBox": [
+        35,
+        36,
+        307,
+        346
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_emphasize_certain_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6232,
+      "contentBox": [
+        35,
+        36,
+        309,
+        346
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_result-card_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6279,
+      "contentBox": [
+        36,
+        36,
+        298,
+        346
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_write_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6308,
+      "contentBox": [
+        35,
+        37,
+        348,
+        346
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_result-reveal_dramatic_01.png",
+      "rgba": true,
+      "transparentRatio": 0.5928,
+      "contentBox": [
+        35,
+        35,
+        317,
+        346
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/taeryeong/taeryeong_chibi_shocked_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6574,
+      "contentBox": [
+        76,
+        40,
+        310,
+        343
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_front_neutral_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7995,
+      "contentBox": [
+        104,
+        46,
+        280,
+        342
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_three-quarter_neutral_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7827,
+      "contentBox": [
+        91,
+        45,
+        275,
+        342
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_side_neutral_01.png",
+      "rgba": true,
+      "transparentRatio": 0.8396,
+      "contentBox": [
+        88,
+        45,
+        207,
+        342
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_explain_calm_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7406,
+      "contentBox": [
+        39,
+        47,
+        254,
+        341
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_reach-hand_welcoming_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7505,
+      "contentBox": [
+        74,
+        39,
+        284,
+        325
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_read-book_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7396,
+      "contentBox": [
+        66,
+        43,
+        281,
+        325
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_read-chart_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.737,
+      "contentBox": [
+        56,
+        43,
+        279,
+        325
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_calculate_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7454,
+      "contentBox": [
+        35,
+        56,
+        298,
+        325
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_signature-prop-1_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7698,
+      "contentBox": [
+        72,
+        37,
+        272,
+        308
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_signature-prop-2_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7414,
+      "contentBox": [
+        55,
+        35,
+        273,
+        308
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_result-reveal_certain_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7718,
+      "contentBox": [
+        77,
+        35,
+        274,
+        308
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_closing-bow_polite_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6923,
+      "contentBox": [
+        50,
+        45,
+        301,
+        308
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_comfort_gentle_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6982,
+      "contentBox": [
+        72,
+        35,
+        291,
+        335
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_warning_serious_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6613,
+      "contentBox": [
+        35,
+        35,
+        274,
+        335
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_cheer_encouraging_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6846,
+      "contentBox": [
+        53,
+        35,
+        282,
+        336
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_chibi_happy_01.png",
+      "rgba": true,
+      "transparentRatio": 0.759,
+      "contentBox": [
+        70,
+        35,
+        251,
+        302
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_react_surprised_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6888,
+      "contentBox": [
+        62,
+        56,
+        325,
+        346
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_ponder_thoughtful_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7009,
+      "contentBox": [
+        55,
+        55,
+        304,
+        346
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_analyze_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7006,
+      "contentBox": [
+        72,
+        58,
+        331,
+        346
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_assure_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7249,
+      "contentBox": [
+        70,
+        57,
+        307,
+        348
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_smile_warm_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7071,
+      "contentBox": [
+        66,
+        54,
+        316,
+        344
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_tease_playful_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6864,
+      "contentBox": [
+        50,
+        48,
+        307,
+        343
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_celebrate_delighted_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6077,
+      "contentBox": [
+        40,
+        52,
+        338,
+        344
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_judge_serious_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7167,
+      "contentBox": [
+        75,
+        49,
+        297,
+        343
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_judge_cold_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7208,
+      "contentBox": [
+        72,
+        45,
+        317,
+        322
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_comfort_compassionate_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7,
+      "contentBox": [
+        59,
+        39,
+        319,
+        321
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_thumbs-up_encouraging_01.png",
+      "rgba": true,
+      "transparentRatio": 0.695,
+      "contentBox": [
+        52,
+        43,
+        318,
+        321
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_emphasize_certain_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6701,
+      "contentBox": [
+        40,
+        38,
+        316,
+        322
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_result-card_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6769,
+      "contentBox": [
+        58,
+        35,
+        321,
+        317
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_write_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6766,
+      "contentBox": [
+        40,
+        35,
+        317,
+        318
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_result-reveal_dramatic_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6866,
+      "contentBox": [
+        41,
+        35,
+        337,
+        318
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yeonhui/yeonhui_chibi_shocked_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7076,
+      "contentBox": [
+        84,
+        41,
+        311,
+        317
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_front_neutral_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7865,
+      "contentBox": [
+        103,
+        50,
+        306,
+        349
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_three-quarter_neutral_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7991,
+      "contentBox": [
+        129,
+        52,
+        301,
+        349
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_side_neutral_01.png",
+      "rgba": true,
+      "transparentRatio": 0.8677,
+      "contentBox": [
+        139,
+        55,
+        271,
+        349
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_explain_calm_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7313,
+      "contentBox": [
+        56,
+        54,
+        265,
+        349
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_reach-hand_welcoming_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7025,
+      "contentBox": [
+        90,
+        51,
+        305,
+        348
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_read-book_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7442,
+      "contentBox": [
+        73,
+        51,
+        274,
+        348
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_read-chart_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7064,
+      "contentBox": [
+        50,
+        53,
+        272,
+        348
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_calculate_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.716,
+      "contentBox": [
+        38,
+        55,
+        267,
+        348
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_signature-prop-1_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7218,
+      "contentBox": [
+        81,
+        53,
+        305,
+        336
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_signature-prop-2_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7429,
+      "contentBox": [
+        84,
+        51,
+        271,
+        338
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_result-reveal_certain_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6981,
+      "contentBox": [
+        53,
+        42,
+        281,
+        338
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_closing-bow_polite_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7377,
+      "contentBox": [
+        64,
+        55,
+        292,
+        348
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_comfort_gentle_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7361,
+      "contentBox": [
+        95,
+        35,
+        289,
+        328
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_warning_serious_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7252,
+      "contentBox": [
+        73,
+        35,
+        278,
+        328
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_cheer_encouraging_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7403,
+      "contentBox": [
+        64,
+        35,
+        258,
+        327
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_chibi_happy_01.png",
+      "rgba": true,
+      "transparentRatio": 0.788,
+      "contentBox": [
+        89,
+        50,
+        264,
+        320
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_react_surprised_01.png",
+      "rgba": true,
+      "transparentRatio": 0.643,
+      "contentBox": [
+        46,
+        47,
+        340,
+        349
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_ponder_thoughtful_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6924,
+      "contentBox": [
+        59,
+        45,
+        289,
+        349
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_analyze_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6387,
+      "contentBox": [
+        35,
+        45,
+        329,
+        349
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_assure_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6897,
+      "contentBox": [
+        61,
+        47,
+        331,
+        349
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_smile_warm_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6868,
+      "contentBox": [
+        57,
+        52,
+        334,
+        348
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_tease_playful_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6383,
+      "contentBox": [
+        48,
+        54,
+        302,
+        348
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_celebrate_delighted_01.png",
+      "rgba": true,
+      "transparentRatio": 0.566,
+      "contentBox": [
+        35,
+        63,
+        328,
+        348
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_judge_serious_01.png",
+      "rgba": true,
+      "transparentRatio": 0.694,
+      "contentBox": [
+        45,
+        51,
+        287,
+        348
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_judge_cold_01.png",
+      "rgba": true,
+      "transparentRatio": 0.579,
+      "contentBox": [
+        35,
+        41,
+        331,
+        344
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_comfort_compassionate_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6745,
+      "contentBox": [
+        48,
+        45,
+        303,
+        344
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_thumbs-up_encouraging_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6426,
+      "contentBox": [
+        35,
+        42,
+        307,
+        344
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_emphasize_certain_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6444,
+      "contentBox": [
+        42,
+        44,
+        332,
+        346
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_result-card_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6138,
+      "contentBox": [
+        48,
+        35,
+        314,
+        341
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_write_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.649,
+      "contentBox": [
+        35,
+        35,
+        286,
+        341
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_result-reveal_dramatic_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6238,
+      "contentBox": [
+        35,
+        35,
+        315,
+        341
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/sahyeon/sahyeon_chibi_shocked_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7259,
+      "contentBox": [
+        95,
+        46,
+        293,
+        333
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_front_neutral_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7949,
+      "contentBox": [
+        102,
+        57,
+        297,
+        349
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_three-quarter_neutral_01.png",
+      "rgba": true,
+      "transparentRatio": 0.8007,
+      "contentBox": [
+        109,
+        57,
+        299,
+        349
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_side_neutral_01.png",
+      "rgba": true,
+      "transparentRatio": 0.8365,
+      "contentBox": [
+        120,
+        58,
+        279,
+        349
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_explain_calm_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7461,
+      "contentBox": [
+        49,
+        62,
+        289,
+        347
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_reach-hand_welcoming_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7331,
+      "contentBox": [
+        81,
+        48,
+        296,
+        338
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_read-book_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7289,
+      "contentBox": [
+        63,
+        49,
+        292,
+        338
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_read-chart_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7332,
+      "contentBox": [
+        65,
+        54,
+        278,
+        338
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_calculate_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7168,
+      "contentBox": [
+        35,
+        57,
+        302,
+        326
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_signature-prop-1_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7636,
+      "contentBox": [
+        96,
+        42,
+        291,
+        313
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_signature-prop-2_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7185,
+      "contentBox": [
+        74,
+        39,
+        293,
+        313
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_result-reveal_certain_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7122,
+      "contentBox": [
+        67,
+        37,
+        297,
+        313
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_closing-bow_polite_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7174,
+      "contentBox": [
+        67,
+        49,
+        300,
+        313
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_comfort_gentle_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7352,
+      "contentBox": [
+        79,
+        35,
+        283,
+        317
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_warning_serious_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7115,
+      "contentBox": [
+        62,
+        35,
+        290,
+        317
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_cheer_encouraging_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7219,
+      "contentBox": [
+        62,
+        35,
+        282,
+        317
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_chibi_happy_01.png",
+      "rgba": true,
+      "transparentRatio": 0.77,
+      "contentBox": [
+        67,
+        47,
+        271,
+        299
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_react_surprised_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6067,
+      "contentBox": [
+        47,
+        56,
+        343,
+        349
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_ponder_thoughtful_01.png",
+      "rgba": true,
+      "transparentRatio": 0.661,
+      "contentBox": [
+        73,
+        47,
+        325,
+        349
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_analyze_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6353,
+      "contentBox": [
+        58,
+        51,
+        343,
+        349
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_assure_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6505,
+      "contentBox": [
+        57,
+        47,
+        326,
+        349
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_smile_warm_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6816,
+      "contentBox": [
+        83,
+        55,
+        326,
+        348
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_tease_playful_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6296,
+      "contentBox": [
+        51,
+        45,
+        320,
+        348
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_celebrate_delighted_01.png",
+      "rgba": true,
+      "transparentRatio": 0.5144,
+      "contentBox": [
+        35,
+        49,
+        338,
+        348
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_judge_serious_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6561,
+      "contentBox": [
+        54,
+        42,
+        312,
+        348
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_judge_cold_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6738,
+      "contentBox": [
+        79,
+        52,
+        321,
+        348
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_comfort_compassionate_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6402,
+      "contentBox": [
+        58,
+        44,
+        314,
+        348
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_thumbs-up_encouraging_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6176,
+      "contentBox": [
+        49,
+        46,
+        324,
+        348
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_emphasize_certain_01.png",
+      "rgba": true,
+      "transparentRatio": 0.5826,
+      "contentBox": [
+        35,
+        41,
+        336,
+        348
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_result-card_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6292,
+      "contentBox": [
+        63,
+        46,
+        311,
+        349
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_write_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6385,
+      "contentBox": [
+        45,
+        45,
+        316,
+        349
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_result-reveal_dramatic_01.png",
+      "rgba": true,
+      "transparentRatio": 0.5716,
+      "contentBox": [
+        35,
+        45,
+        336,
+        349
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hwayeon/hwayeon_chibi_shocked_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6675,
+      "contentBox": [
+        74,
+        74,
+        317,
+        333
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_front_neutral_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7798,
+      "contentBox": [
+        123,
+        43,
+        291,
+        347
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_three-quarter_neutral_01.png",
+      "rgba": true,
+      "transparentRatio": 0.8043,
+      "contentBox": [
+        131,
+        42,
+        275,
+        347
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_side_neutral_01.png",
+      "rgba": true,
+      "transparentRatio": 0.864,
+      "contentBox": [
+        124,
+        46,
+        241,
+        347
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_explain_calm_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7397,
+      "contentBox": [
+        35,
+        43,
+        245,
+        347
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_reach-hand_welcoming_01.png",
+      "rgba": true,
+      "transparentRatio": 0.729,
+      "contentBox": [
+        101,
+        40,
+        310,
+        346
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_read-book_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7389,
+      "contentBox": [
+        63,
+        45,
+        278,
+        346
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_read-chart_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7268,
+      "contentBox": [
+        37,
+        42,
+        267,
+        346
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_calculate_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6947,
+      "contentBox": [
+        35,
+        51,
+        284,
+        346
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_signature-prop-1_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6858,
+      "contentBox": [
+        72,
+        44,
+        334,
+        342
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_signature-prop-2_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6989,
+      "contentBox": [
+        68,
+        40,
+        300,
+        342
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_result-reveal_certain_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7062,
+      "contentBox": [
+        49,
+        42,
+        278,
+        342
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_closing-bow_polite_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7113,
+      "contentBox": [
+        35,
+        42,
+        262,
+        342
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_comfort_gentle_01.png",
+      "rgba": true,
+      "transparentRatio": 0.718,
+      "contentBox": [
+        88,
+        35,
+        303,
+        336
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_warning_serious_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7149,
+      "contentBox": [
+        54,
+        35,
+        303,
+        336
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_cheer_encouraging_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6578,
+      "contentBox": [
+        42,
+        35,
+        306,
+        336
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_chibi_happy_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7201,
+      "contentBox": [
+        40,
+        46,
+        272,
+        336
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_react_surprised_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6378,
+      "contentBox": [
+        44,
+        54,
+        349,
+        347
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_ponder_thoughtful_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6845,
+      "contentBox": [
+        66,
+        50,
+        316,
+        347
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_analyze_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6669,
+      "contentBox": [
+        50,
+        58,
+        332,
+        348
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_assure_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6995,
+      "contentBox": [
+        75,
+        52,
+        322,
+        349
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_smile_warm_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7,
+      "contentBox": [
+        66,
+        52,
+        327,
+        348
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_tease_playful_01.png",
+      "rgba": true,
+      "transparentRatio": 0.5922,
+      "contentBox": [
+        35,
+        52,
+        348,
+        348
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_celebrate_delighted_01.png",
+      "rgba": true,
+      "transparentRatio": 0.5751,
+      "contentBox": [
+        35,
+        62,
+        348,
+        348
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_judge_serious_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7084,
+      "contentBox": [
+        50,
+        54,
+        292,
+        348
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_judge_cold_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7019,
+      "contentBox": [
+        61,
+        49,
+        303,
+        334
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_comfort_compassionate_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6768,
+      "contentBox": [
+        35,
+        50,
+        301,
+        335
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_thumbs-up_encouraging_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6911,
+      "contentBox": [
+        35,
+        51,
+        292,
+        335
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_emphasize_certain_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6883,
+      "contentBox": [
+        36,
+        53,
+        287,
+        336
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_result-card_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6278,
+      "contentBox": [
+        52,
+        40,
+        339,
+        331
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_write_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7048,
+      "contentBox": [
+        37,
+        38,
+        286,
+        331
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_result-reveal_dramatic_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6334,
+      "contentBox": [
+        35,
+        36,
+        348,
+        331
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/yundo/yundo_chibi_shocked_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7942,
+      "contentBox": [
+        89,
+        51,
+        252,
+        311
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_front_neutral_01.png",
+      "rgba": true,
+      "transparentRatio": 0.778,
+      "contentBox": [
+        138,
+        46,
+        302,
+        345
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_three-quarter_neutral_01.png",
+      "rgba": true,
+      "transparentRatio": 0.792,
+      "contentBox": [
+        136,
+        44,
+        280,
+        346
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_side_neutral_01.png",
+      "rgba": true,
+      "transparentRatio": 0.8504,
+      "contentBox": [
+        117,
+        47,
+        237,
+        346
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_explain_calm_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7272,
+      "contentBox": [
+        35,
+        53,
+        275,
+        345
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_reach-hand_welcoming_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6853,
+      "contentBox": [
+        99,
+        46,
+        329,
+        344
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_read-book_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6965,
+      "contentBox": [
+        84,
+        48,
+        308,
+        344
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_read-chart_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7024,
+      "contentBox": [
+        53,
+        46,
+        278,
+        344
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_calculate_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7091,
+      "contentBox": [
+        35,
+        62,
+        303,
+        333
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_signature-prop-1_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6486,
+      "contentBox": [
+        80,
+        44,
+        339,
+        339
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_signature-prop-2_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6879,
+      "contentBox": [
+        82,
+        47,
+        309,
+        338
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_result-reveal_certain_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6802,
+      "contentBox": [
+        71,
+        45,
+        310,
+        338
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_closing-bow_polite_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6475,
+      "contentBox": [
+        45,
+        48,
+        298,
+        339
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_comfort_gentle_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6858,
+      "contentBox": [
+        93,
+        35,
+        329,
+        337
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_warning_serious_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6788,
+      "contentBox": [
+        58,
+        39,
+        299,
+        338
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_cheer_encouraging_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6622,
+      "contentBox": [
+        64,
+        39,
+        325,
+        337
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_chibi_happy_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7442,
+      "contentBox": [
+        72,
+        42,
+        265,
+        327
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_react_surprised_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6518,
+      "contentBox": [
+        77,
+        57,
+        349,
+        346
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_ponder_thoughtful_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7087,
+      "contentBox": [
+        79,
+        56,
+        293,
+        346
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_analyze_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6684,
+      "contentBox": [
+        52,
+        59,
+        323,
+        346
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_assure_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7063,
+      "contentBox": [
+        45,
+        59,
+        269,
+        346
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_smile_warm_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6698,
+      "contentBox": [
+        64,
+        49,
+        316,
+        334
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_tease_playful_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6892,
+      "contentBox": [
+        57,
+        50,
+        301,
+        334
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_celebrate_delighted_01.png",
+      "rgba": true,
+      "transparentRatio": 0.5921,
+      "contentBox": [
+        44,
+        52,
+        326,
+        334
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_judge_serious_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6942,
+      "contentBox": [
+        48,
+        42,
+        298,
+        334
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_judge_cold_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7237,
+      "contentBox": [
+        79,
+        41,
+        294,
+        324
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_comfort_compassionate_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6803,
+      "contentBox": [
+        45,
+        39,
+        298,
+        324
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_thumbs-up_encouraging_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6377,
+      "contentBox": [
+        43,
+        35,
+        314,
+        324
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_emphasize_certain_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6673,
+      "contentBox": [
+        38,
+        41,
+        300,
+        324
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_result-card_confident_01.png",
+      "rgba": true,
+      "transparentRatio": 0.662,
+      "contentBox": [
+        69,
+        35,
+        320,
+        312
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_write_focused_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6773,
+      "contentBox": [
+        46,
+        35,
+        302,
+        312
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_result-reveal_dramatic_01.png",
+      "rgba": true,
+      "transparentRatio": 0.6317,
+      "contentBox": [
+        35,
+        35,
+        321,
+        312
+      ],
+      "autoPass": true
+    },
+    {
+      "file": "characters/hoyeon/hoyeon_chibi_shocked_01.png",
+      "rgba": true,
+      "transparentRatio": 0.7307,
+      "contentBox": [
+        69,
+        40,
+        272,
+        312
+      ],
+      "autoPass": true
+    }
+  ]
+}

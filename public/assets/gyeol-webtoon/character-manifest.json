@@ -1,0 +1,1107 @@
+{
+  "version": 1,
+  "naming": "character_pose_expression_variant.png",
+  "characters": {
+    "taeryeong": {
+      "nameKo": "태령",
+      "role": "결의 중심 해석자",
+      "theme": [
+        "core",
+        "life-path",
+        "integrated"
+      ],
+      "props": [
+        "numerology-card",
+        "chart-scroll",
+        "abacus"
+      ],
+      "slug": "taeryeong",
+      "assets": [
+        {
+          "file": "taeryeong_front_neutral_01.png",
+          "pose": "front",
+          "expression": "neutral"
+        },
+        {
+          "file": "taeryeong_three-quarter_neutral_01.png",
+          "pose": "three-quarter",
+          "expression": "neutral"
+        },
+        {
+          "file": "taeryeong_side_neutral_01.png",
+          "pose": "side",
+          "expression": "neutral"
+        },
+        {
+          "file": "taeryeong_explain_calm_01.png",
+          "pose": "explain",
+          "expression": "calm"
+        },
+        {
+          "file": "taeryeong_reach-hand_welcoming_01.png",
+          "pose": "reach-hand",
+          "expression": "welcoming"
+        },
+        {
+          "file": "taeryeong_read-book_focused_01.png",
+          "pose": "read-book",
+          "expression": "focused"
+        },
+        {
+          "file": "taeryeong_read-chart_focused_01.png",
+          "pose": "read-chart",
+          "expression": "focused"
+        },
+        {
+          "file": "taeryeong_calculate_focused_01.png",
+          "pose": "calculate",
+          "expression": "focused"
+        },
+        {
+          "file": "taeryeong_signature-prop-1_confident_01.png",
+          "pose": "signature-prop-1",
+          "expression": "confident"
+        },
+        {
+          "file": "taeryeong_signature-prop-2_confident_01.png",
+          "pose": "signature-prop-2",
+          "expression": "confident"
+        },
+        {
+          "file": "taeryeong_result-reveal_certain_01.png",
+          "pose": "result-reveal",
+          "expression": "certain"
+        },
+        {
+          "file": "taeryeong_closing-bow_polite_01.png",
+          "pose": "closing-bow",
+          "expression": "polite"
+        },
+        {
+          "file": "taeryeong_comfort_gentle_01.png",
+          "pose": "comfort",
+          "expression": "gentle"
+        },
+        {
+          "file": "taeryeong_warning_serious_01.png",
+          "pose": "warning",
+          "expression": "serious"
+        },
+        {
+          "file": "taeryeong_cheer_encouraging_01.png",
+          "pose": "cheer",
+          "expression": "encouraging"
+        },
+        {
+          "file": "taeryeong_chibi_happy_01.png",
+          "pose": "chibi",
+          "expression": "happy"
+        },
+        {
+          "file": "taeryeong_react_surprised_01.png",
+          "pose": "react",
+          "expression": "surprised"
+        },
+        {
+          "file": "taeryeong_ponder_thoughtful_01.png",
+          "pose": "ponder",
+          "expression": "thoughtful"
+        },
+        {
+          "file": "taeryeong_analyze_focused_01.png",
+          "pose": "analyze",
+          "expression": "focused"
+        },
+        {
+          "file": "taeryeong_assure_confident_01.png",
+          "pose": "assure",
+          "expression": "confident"
+        },
+        {
+          "file": "taeryeong_smile_warm_01.png",
+          "pose": "smile",
+          "expression": "warm"
+        },
+        {
+          "file": "taeryeong_tease_playful_01.png",
+          "pose": "tease",
+          "expression": "playful"
+        },
+        {
+          "file": "taeryeong_celebrate_delighted_01.png",
+          "pose": "celebrate",
+          "expression": "delighted"
+        },
+        {
+          "file": "taeryeong_judge_serious_01.png",
+          "pose": "judge",
+          "expression": "serious"
+        },
+        {
+          "file": "taeryeong_judge_cold_01.png",
+          "pose": "judge",
+          "expression": "cold"
+        },
+        {
+          "file": "taeryeong_comfort_compassionate_01.png",
+          "pose": "comfort",
+          "expression": "compassionate"
+        },
+        {
+          "file": "taeryeong_thumbs-up_encouraging_01.png",
+          "pose": "thumbs-up",
+          "expression": "encouraging"
+        },
+        {
+          "file": "taeryeong_emphasize_certain_01.png",
+          "pose": "emphasize",
+          "expression": "certain"
+        },
+        {
+          "file": "taeryeong_result-card_confident_01.png",
+          "pose": "result-card",
+          "expression": "confident"
+        },
+        {
+          "file": "taeryeong_write_focused_01.png",
+          "pose": "write",
+          "expression": "focused"
+        },
+        {
+          "file": "taeryeong_result-reveal_dramatic_01.png",
+          "pose": "result-reveal",
+          "expression": "dramatic"
+        },
+        {
+          "file": "taeryeong_chibi_shocked_01.png",
+          "pose": "chibi",
+          "expression": "shocked"
+        }
+      ]
+    },
+    "yeonhui": {
+      "nameKo": "연희",
+      "role": "관계와 마음의 해석자",
+      "theme": [
+        "relationship",
+        "compatibility",
+        "emotion"
+      ],
+      "props": [
+        "brush",
+        "relationship-ledger",
+        "purple-knot"
+      ],
+      "slug": "yeonhui",
+      "assets": [
+        {
+          "file": "yeonhui_front_neutral_01.png",
+          "pose": "front",
+          "expression": "neutral"
+        },
+        {
+          "file": "yeonhui_three-quarter_neutral_01.png",
+          "pose": "three-quarter",
+          "expression": "neutral"
+        },
+        {
+          "file": "yeonhui_side_neutral_01.png",
+          "pose": "side",
+          "expression": "neutral"
+        },
+        {
+          "file": "yeonhui_explain_calm_01.png",
+          "pose": "explain",
+          "expression": "calm"
+        },
+        {
+          "file": "yeonhui_reach-hand_welcoming_01.png",
+          "pose": "reach-hand",
+          "expression": "welcoming"
+        },
+        {
+          "file": "yeonhui_read-book_focused_01.png",
+          "pose": "read-book",
+          "expression": "focused"
+        },
+        {
+          "file": "yeonhui_read-chart_focused_01.png",
+          "pose": "read-chart",
+          "expression": "focused"
+        },
+        {
+          "file": "yeonhui_calculate_focused_01.png",
+          "pose": "calculate",
+          "expression": "focused"
+        },
+        {
+          "file": "yeonhui_signature-prop-1_confident_01.png",
+          "pose": "signature-prop-1",
+          "expression": "confident"
+        },
+        {
+          "file": "yeonhui_signature-prop-2_confident_01.png",
+          "pose": "signature-prop-2",
+          "expression": "confident"
+        },
+        {
+          "file": "yeonhui_result-reveal_certain_01.png",
+          "pose": "result-reveal",
+          "expression": "certain"
+        },
+        {
+          "file": "yeonhui_closing-bow_polite_01.png",
+          "pose": "closing-bow",
+          "expression": "polite"
+        },
+        {
+          "file": "yeonhui_comfort_gentle_01.png",
+          "pose": "comfort",
+          "expression": "gentle"
+        },
+        {
+          "file": "yeonhui_warning_serious_01.png",
+          "pose": "warning",
+          "expression": "serious"
+        },
+        {
+          "file": "yeonhui_cheer_encouraging_01.png",
+          "pose": "cheer",
+          "expression": "encouraging"
+        },
+        {
+          "file": "yeonhui_chibi_happy_01.png",
+          "pose": "chibi",
+          "expression": "happy"
+        },
+        {
+          "file": "yeonhui_react_surprised_01.png",
+          "pose": "react",
+          "expression": "surprised"
+        },
+        {
+          "file": "yeonhui_ponder_thoughtful_01.png",
+          "pose": "ponder",
+          "expression": "thoughtful"
+        },
+        {
+          "file": "yeonhui_analyze_focused_01.png",
+          "pose": "analyze",
+          "expression": "focused"
+        },
+        {
+          "file": "yeonhui_assure_confident_01.png",
+          "pose": "assure",
+          "expression": "confident"
+        },
+        {
+          "file": "yeonhui_smile_warm_01.png",
+          "pose": "smile",
+          "expression": "warm"
+        },
+        {
+          "file": "yeonhui_tease_playful_01.png",
+          "pose": "tease",
+          "expression": "playful"
+        },
+        {
+          "file": "yeonhui_celebrate_delighted_01.png",
+          "pose": "celebrate",
+          "expression": "delighted"
+        },
+        {
+          "file": "yeonhui_judge_serious_01.png",
+          "pose": "judge",
+          "expression": "serious"
+        },
+        {
+          "file": "yeonhui_judge_cold_01.png",
+          "pose": "judge",
+          "expression": "cold"
+        },
+        {
+          "file": "yeonhui_comfort_compassionate_01.png",
+          "pose": "comfort",
+          "expression": "compassionate"
+        },
+        {
+          "file": "yeonhui_thumbs-up_encouraging_01.png",
+          "pose": "thumbs-up",
+          "expression": "encouraging"
+        },
+        {
+          "file": "yeonhui_emphasize_certain_01.png",
+          "pose": "emphasize",
+          "expression": "certain"
+        },
+        {
+          "file": "yeonhui_result-card_confident_01.png",
+          "pose": "result-card",
+          "expression": "confident"
+        },
+        {
+          "file": "yeonhui_write_focused_01.png",
+          "pose": "write",
+          "expression": "focused"
+        },
+        {
+          "file": "yeonhui_result-reveal_dramatic_01.png",
+          "pose": "result-reveal",
+          "expression": "dramatic"
+        },
+        {
+          "file": "yeonhui_chibi_shocked_01.png",
+          "pose": "chibi",
+          "expression": "shocked"
+        }
+      ]
+    },
+    "sahyeon": {
+      "nameKo": "사현",
+      "role": "지혜와 통찰의 해석자",
+      "theme": [
+        "analysis",
+        "pattern",
+        "decision"
+      ],
+      "props": [
+        "calculation-book",
+        "celestial-sphere",
+        "geometry-chart"
+      ],
+      "slug": "sahyeon",
+      "assets": [
+        {
+          "file": "sahyeon_front_neutral_01.png",
+          "pose": "front",
+          "expression": "neutral"
+        },
+        {
+          "file": "sahyeon_three-quarter_neutral_01.png",
+          "pose": "three-quarter",
+          "expression": "neutral"
+        },
+        {
+          "file": "sahyeon_side_neutral_01.png",
+          "pose": "side",
+          "expression": "neutral"
+        },
+        {
+          "file": "sahyeon_explain_calm_01.png",
+          "pose": "explain",
+          "expression": "calm"
+        },
+        {
+          "file": "sahyeon_reach-hand_welcoming_01.png",
+          "pose": "reach-hand",
+          "expression": "welcoming"
+        },
+        {
+          "file": "sahyeon_read-book_focused_01.png",
+          "pose": "read-book",
+          "expression": "focused"
+        },
+        {
+          "file": "sahyeon_read-chart_focused_01.png",
+          "pose": "read-chart",
+          "expression": "focused"
+        },
+        {
+          "file": "sahyeon_calculate_focused_01.png",
+          "pose": "calculate",
+          "expression": "focused"
+        },
+        {
+          "file": "sahyeon_signature-prop-1_confident_01.png",
+          "pose": "signature-prop-1",
+          "expression": "confident"
+        },
+        {
+          "file": "sahyeon_signature-prop-2_confident_01.png",
+          "pose": "signature-prop-2",
+          "expression": "confident"
+        },
+        {
+          "file": "sahyeon_result-reveal_certain_01.png",
+          "pose": "result-reveal",
+          "expression": "certain"
+        },
+        {
+          "file": "sahyeon_closing-bow_polite_01.png",
+          "pose": "closing-bow",
+          "expression": "polite"
+        },
+        {
+          "file": "sahyeon_comfort_gentle_01.png",
+          "pose": "comfort",
+          "expression": "gentle"
+        },
+        {
+          "file": "sahyeon_warning_serious_01.png",
+          "pose": "warning",
+          "expression": "serious"
+        },
+        {
+          "file": "sahyeon_cheer_encouraging_01.png",
+          "pose": "cheer",
+          "expression": "encouraging"
+        },
+        {
+          "file": "sahyeon_chibi_happy_01.png",
+          "pose": "chibi",
+          "expression": "happy"
+        },
+        {
+          "file": "sahyeon_react_surprised_01.png",
+          "pose": "react",
+          "expression": "surprised"
+        },
+        {
+          "file": "sahyeon_ponder_thoughtful_01.png",
+          "pose": "ponder",
+          "expression": "thoughtful"
+        },
+        {
+          "file": "sahyeon_analyze_focused_01.png",
+          "pose": "analyze",
+          "expression": "focused"
+        },
+        {
+          "file": "sahyeon_assure_confident_01.png",
+          "pose": "assure",
+          "expression": "confident"
+        },
+        {
+          "file": "sahyeon_smile_warm_01.png",
+          "pose": "smile",
+          "expression": "warm"
+        },
+        {
+          "file": "sahyeon_tease_playful_01.png",
+          "pose": "tease",
+          "expression": "playful"
+        },
+        {
+          "file": "sahyeon_celebrate_delighted_01.png",
+          "pose": "celebrate",
+          "expression": "delighted"
+        },
+        {
+          "file": "sahyeon_judge_serious_01.png",
+          "pose": "judge",
+          "expression": "serious"
+        },
+        {
+          "file": "sahyeon_judge_cold_01.png",
+          "pose": "judge",
+          "expression": "cold"
+        },
+        {
+          "file": "sahyeon_comfort_compassionate_01.png",
+          "pose": "comfort",
+          "expression": "compassionate"
+        },
+        {
+          "file": "sahyeon_thumbs-up_encouraging_01.png",
+          "pose": "thumbs-up",
+          "expression": "encouraging"
+        },
+        {
+          "file": "sahyeon_emphasize_certain_01.png",
+          "pose": "emphasize",
+          "expression": "certain"
+        },
+        {
+          "file": "sahyeon_result-card_confident_01.png",
+          "pose": "result-card",
+          "expression": "confident"
+        },
+        {
+          "file": "sahyeon_write_focused_01.png",
+          "pose": "write",
+          "expression": "focused"
+        },
+        {
+          "file": "sahyeon_result-reveal_dramatic_01.png",
+          "pose": "result-reveal",
+          "expression": "dramatic"
+        },
+        {
+          "file": "sahyeon_chibi_shocked_01.png",
+          "pose": "chibi",
+          "expression": "shocked"
+        }
+      ]
+    },
+    "hwayeon": {
+      "nameKo": "화연",
+      "role": "운명과 흐름의 해석자",
+      "theme": [
+        "timing",
+        "change",
+        "warning"
+      ],
+      "props": [
+        "butterfly-fan",
+        "red-talisman",
+        "timing-wheel"
+      ],
+      "slug": "hwayeon",
+      "assets": [
+        {
+          "file": "hwayeon_front_neutral_01.png",
+          "pose": "front",
+          "expression": "neutral"
+        },
+        {
+          "file": "hwayeon_three-quarter_neutral_01.png",
+          "pose": "three-quarter",
+          "expression": "neutral"
+        },
+        {
+          "file": "hwayeon_side_neutral_01.png",
+          "pose": "side",
+          "expression": "neutral"
+        },
+        {
+          "file": "hwayeon_explain_calm_01.png",
+          "pose": "explain",
+          "expression": "calm"
+        },
+        {
+          "file": "hwayeon_reach-hand_welcoming_01.png",
+          "pose": "reach-hand",
+          "expression": "welcoming"
+        },
+        {
+          "file": "hwayeon_read-book_focused_01.png",
+          "pose": "read-book",
+          "expression": "focused"
+        },
+        {
+          "file": "hwayeon_read-chart_focused_01.png",
+          "pose": "read-chart",
+          "expression": "focused"
+        },
+        {
+          "file": "hwayeon_calculate_focused_01.png",
+          "pose": "calculate",
+          "expression": "focused"
+        },
+        {
+          "file": "hwayeon_signature-prop-1_confident_01.png",
+          "pose": "signature-prop-1",
+          "expression": "confident"
+        },
+        {
+          "file": "hwayeon_signature-prop-2_confident_01.png",
+          "pose": "signature-prop-2",
+          "expression": "confident"
+        },
+        {
+          "file": "hwayeon_result-reveal_certain_01.png",
+          "pose": "result-reveal",
+          "expression": "certain"
+        },
+        {
+          "file": "hwayeon_closing-bow_polite_01.png",
+          "pose": "closing-bow",
+          "expression": "polite"
+        },
+        {
+          "file": "hwayeon_comfort_gentle_01.png",
+          "pose": "comfort",
+          "expression": "gentle"
+        },
+        {
+          "file": "hwayeon_warning_serious_01.png",
+          "pose": "warning",
+          "expression": "serious"
+        },
+        {
+          "file": "hwayeon_cheer_encouraging_01.png",
+          "pose": "cheer",
+          "expression": "encouraging"
+        },
+        {
+          "file": "hwayeon_chibi_happy_01.png",
+          "pose": "chibi",
+          "expression": "happy"
+        },
+        {
+          "file": "hwayeon_react_surprised_01.png",
+          "pose": "react",
+          "expression": "surprised"
+        },
+        {
+          "file": "hwayeon_ponder_thoughtful_01.png",
+          "pose": "ponder",
+          "expression": "thoughtful"
+        },
+        {
+          "file": "hwayeon_analyze_focused_01.png",
+          "pose": "analyze",
+          "expression": "focused"
+        },
+        {
+          "file": "hwayeon_assure_confident_01.png",
+          "pose": "assure",
+          "expression": "confident"
+        },
+        {
+          "file": "hwayeon_smile_warm_01.png",
+          "pose": "smile",
+          "expression": "warm"
+        },
+        {
+          "file": "hwayeon_tease_playful_01.png",
+          "pose": "tease",
+          "expression": "playful"
+        },
+        {
+          "file": "hwayeon_celebrate_delighted_01.png",
+          "pose": "celebrate",
+          "expression": "delighted"
+        },
+        {
+          "file": "hwayeon_judge_serious_01.png",
+          "pose": "judge",
+          "expression": "serious"
+        },
+        {
+          "file": "hwayeon_judge_cold_01.png",
+          "pose": "judge",
+          "expression": "cold"
+        },
+        {
+          "file": "hwayeon_comfort_compassionate_01.png",
+          "pose": "comfort",
+          "expression": "compassionate"
+        },
+        {
+          "file": "hwayeon_thumbs-up_encouraging_01.png",
+          "pose": "thumbs-up",
+          "expression": "encouraging"
+        },
+        {
+          "file": "hwayeon_emphasize_certain_01.png",
+          "pose": "emphasize",
+          "expression": "certain"
+        },
+        {
+          "file": "hwayeon_result-card_confident_01.png",
+          "pose": "result-card",
+          "expression": "confident"
+        },
+        {
+          "file": "hwayeon_write_focused_01.png",
+          "pose": "write",
+          "expression": "focused"
+        },
+        {
+          "file": "hwayeon_result-reveal_dramatic_01.png",
+          "pose": "result-reveal",
+          "expression": "dramatic"
+        },
+        {
+          "file": "hwayeon_chibi_shocked_01.png",
+          "pose": "chibi",
+          "expression": "shocked"
+        }
+      ]
+    },
+    "yundo": {
+      "nameKo": "윤도",
+      "role": "균형과 치유의 해석자",
+      "theme": [
+        "balance",
+        "healing",
+        "stability"
+      ],
+      "props": [
+        "blue-crystal-sphere",
+        "water-chart",
+        "balance-compass"
+      ],
+      "slug": "yundo",
+      "assets": [
+        {
+          "file": "yundo_front_neutral_01.png",
+          "pose": "front",
+          "expression": "neutral"
+        },
+        {
+          "file": "yundo_three-quarter_neutral_01.png",
+          "pose": "three-quarter",
+          "expression": "neutral"
+        },
+        {
+          "file": "yundo_side_neutral_01.png",
+          "pose": "side",
+          "expression": "neutral"
+        },
+        {
+          "file": "yundo_explain_calm_01.png",
+          "pose": "explain",
+          "expression": "calm"
+        },
+        {
+          "file": "yundo_reach-hand_welcoming_01.png",
+          "pose": "reach-hand",
+          "expression": "welcoming"
+        },
+        {
+          "file": "yundo_read-book_focused_01.png",
+          "pose": "read-book",
+          "expression": "focused"
+        },
+        {
+          "file": "yundo_read-chart_focused_01.png",
+          "pose": "read-chart",
+          "expression": "focused"
+        },
+        {
+          "file": "yundo_calculate_focused_01.png",
+          "pose": "calculate",
+          "expression": "focused"
+        },
+        {
+          "file": "yundo_signature-prop-1_confident_01.png",
+          "pose": "signature-prop-1",
+          "expression": "confident"
+        },
+        {
+          "file": "yundo_signature-prop-2_confident_01.png",
+          "pose": "signature-prop-2",
+          "expression": "confident"
+        },
+        {
+          "file": "yundo_result-reveal_certain_01.png",
+          "pose": "result-reveal",
+          "expression": "certain"
+        },
+        {
+          "file": "yundo_closing-bow_polite_01.png",
+          "pose": "closing-bow",
+          "expression": "polite"
+        },
+        {
+          "file": "yundo_comfort_gentle_01.png",
+          "pose": "comfort",
+          "expression": "gentle"
+        },
+        {
+          "file": "yundo_warning_serious_01.png",
+          "pose": "warning",
+          "expression": "serious"
+        },
+        {
+          "file": "yundo_cheer_encouraging_01.png",
+          "pose": "cheer",
+          "expression": "encouraging"
+        },
+        {
+          "file": "yundo_chibi_happy_01.png",
+          "pose": "chibi",
+          "expression": "happy"
+        },
+        {
+          "file": "yundo_react_surprised_01.png",
+          "pose": "react",
+          "expression": "surprised"
+        },
+        {
+          "file": "yundo_ponder_thoughtful_01.png",
+          "pose": "ponder",
+          "expression": "thoughtful"
+        },
+        {
+          "file": "yundo_analyze_focused_01.png",
+          "pose": "analyze",
+          "expression": "focused"
+        },
+        {
+          "file": "yundo_assure_confident_01.png",
+          "pose": "assure",
+          "expression": "confident"
+        },
+        {
+          "file": "yundo_smile_warm_01.png",
+          "pose": "smile",
+          "expression": "warm"
+        },
+        {
+          "file": "yundo_tease_playful_01.png",
+          "pose": "tease",
+          "expression": "playful"
+        },
+        {
+          "file": "yundo_celebrate_delighted_01.png",
+          "pose": "celebrate",
+          "expression": "delighted"
+        },
+        {
+          "file": "yundo_judge_serious_01.png",
+          "pose": "judge",
+          "expression": "serious"
+        },
+        {
+          "file": "yundo_judge_cold_01.png",
+          "pose": "judge",
+          "expression": "cold"
+        },
+        {
+          "file": "yundo_comfort_compassionate_01.png",
+          "pose": "comfort",
+          "expression": "compassionate"
+        },
+        {
+          "file": "yundo_thumbs-up_encouraging_01.png",
+          "pose": "thumbs-up",
+          "expression": "encouraging"
+        },
+        {
+          "file": "yundo_emphasize_certain_01.png",
+          "pose": "emphasize",
+          "expression": "certain"
+        },
+        {
+          "file": "yundo_result-card_confident_01.png",
+          "pose": "result-card",
+          "expression": "confident"
+        },
+        {
+          "file": "yundo_write_focused_01.png",
+          "pose": "write",
+          "expression": "focused"
+        },
+        {
+          "file": "yundo_result-reveal_dramatic_01.png",
+          "pose": "result-reveal",
+          "expression": "dramatic"
+        },
+        {
+          "file": "yundo_chibi_shocked_01.png",
+          "pose": "chibi",
+          "expression": "shocked"
+        }
+      ]
+    },
+    "hoyeon": {
+      "nameKo": "호연",
+      "role": "직관과 자유의 해석자",
+      "theme": [
+        "intuition",
+        "possibility",
+        "encouragement"
+      ],
+      "props": [
+        "sun-card",
+        "feather",
+        "amber-crystal",
+        "gold-compass"
+      ],
+      "slug": "hoyeon",
+      "assets": [
+        {
+          "file": "hoyeon_front_neutral_01.png",
+          "pose": "front",
+          "expression": "neutral"
+        },
+        {
+          "file": "hoyeon_three-quarter_neutral_01.png",
+          "pose": "three-quarter",
+          "expression": "neutral"
+        },
+        {
+          "file": "hoyeon_side_neutral_01.png",
+          "pose": "side",
+          "expression": "neutral"
+        },
+        {
+          "file": "hoyeon_explain_calm_01.png",
+          "pose": "explain",
+          "expression": "calm"
+        },
+        {
+          "file": "hoyeon_reach-hand_welcoming_01.png",
+          "pose": "reach-hand",
+          "expression": "welcoming"
+        },
+        {
+          "file": "hoyeon_read-book_focused_01.png",
+          "pose": "read-book",
+          "expression": "focused"
+        },
+        {
+          "file": "hoyeon_read-chart_focused_01.png",
+          "pose": "read-chart",
+          "expression": "focused"
+        },
+        {
+          "file": "hoyeon_calculate_focused_01.png",
+          "pose": "calculate",
+          "expression": "focused"
+        },
+        {
+          "file": "hoyeon_signature-prop-1_confident_01.png",
+          "pose": "signature-prop-1",
+          "expression": "confident"
+        },
+        {
+          "file": "hoyeon_signature-prop-2_confident_01.png",
+          "pose": "signature-prop-2",
+          "expression": "confident"
+        },
+        {
+          "file": "hoyeon_result-reveal_certain_01.png",
+          "pose": "result-reveal",
+          "expression": "certain"
+        },
+        {
+          "file": "hoyeon_closing-bow_polite_01.png",
+          "pose": "closing-bow",
+          "expression": "polite"
+        },
+        {
+          "file": "hoyeon_comfort_gentle_01.png",
+          "pose": "comfort",
+          "expression": "gentle"
+        },
+        {
+          "file": "hoyeon_warning_serious_01.png",
+          "pose": "warning",
+          "expression": "serious"
+        },
+        {
+          "file": "hoyeon_cheer_encouraging_01.png",
+          "pose": "cheer",
+          "expression": "encouraging"
+        },
+        {
+          "file": "hoyeon_chibi_happy_01.png",
+          "pose": "chibi",
+          "expression": "happy"
+        },
+        {
+          "file": "hoyeon_react_surprised_01.png",
+          "pose": "react",
+          "expression": "surprised"
+        },
+        {
+          "file": "hoyeon_ponder_thoughtful_01.png",
+          "pose": "ponder",
+          "expression": "thoughtful"
+        },
+        {
+          "file": "hoyeon_analyze_focused_01.png",
+          "pose": "analyze",
+          "expression": "focused"
+        },
+        {
+          "file": "hoyeon_assure_confident_01.png",
+          "pose": "assure",
+          "expression": "confident"
+        },
+        {
+          "file": "hoyeon_smile_warm_01.png",
+          "pose": "smile",
+          "expression": "warm"
+        },
+        {
+          "file": "hoyeon_tease_playful_01.png",
+          "pose": "tease",
+          "expression": "playful"
+        },
+        {
+          "file": "hoyeon_celebrate_delighted_01.png",
+          "pose": "celebrate",
+          "expression": "delighted"
+        },
+        {
+          "file": "hoyeon_judge_serious_01.png",
+          "pose": "judge",
+          "expression": "serious"
+        },
+        {
+          "file": "hoyeon_judge_cold_01.png",
+          "pose": "judge",
+          "expression": "cold"
+        },
+        {
+          "file": "hoyeon_comfort_compassionate_01.png",
+          "pose": "comfort",
+          "expression": "compassionate"
+        },
+        {
+          "file": "hoyeon_thumbs-up_encouraging_01.png",
+          "pose": "thumbs-up",
+          "expression": "encouraging"
+        },
+        {
+          "file": "hoyeon_emphasize_certain_01.png",
+          "pose": "emphasize",
+          "expression": "certain"
+        },
+        {
+          "file": "hoyeon_result-card_confident_01.png",
+          "pose": "result-card",
+          "expression": "confident"
+        },
+        {
+          "file": "hoyeon_write_focused_01.png",
+          "pose": "write",
+          "expression": "focused"
+        },
+        {
+          "file": "hoyeon_result-reveal_dramatic_01.png",
+          "pose": "result-reveal",
+          "expression": "dramatic"
+        },
+        {
+          "file": "hoyeon_chibi_shocked_01.png",
+          "pose": "chibi",
+          "expression": "shocked"
+        }
+      ]
+    }
+  },
+  "shared": {
+    "propsEffects": [
+      "numerology-card_01.png",
+      "relationship-knot_01.png",
+      "butterfly-fan_01.png",
+      "blue-crystal-sphere_01.png",
+      "sun-compass_01.png",
+      "celestial-sphere_01.png",
+      "numerology-book_01.png",
+      "chart-scroll_01.png",
+      "gold-sparkle_01.png",
+      "red-warning-aura_01.png",
+      "blue-healing-glow_01.png",
+      "purple-empathy-petals_01.png",
+      "celebration-confetti_01.png",
+      "reveal-rays_01.png",
+      "thought-cloud_01.png",
+      "closing-light-particles_01.png"
+    ],
+    "backgrounds": [
+      "black-gold-study_01.png",
+      "wisteria-garden_01.png",
+      "celestial-library_01.png",
+      "crimson-fate-chamber_01.png",
+      "blue-healing-observatory_01.png",
+      "amber-intuitive-studio_01.png",
+      "parchment-calculation-room_01.png",
+      "star-chart-void_01.png",
+      "moonlit-corridor_01.png",
+      "sunrise-terrace_01.png",
+      "warning-red-chamber_01.png",
+      "comfort-blue-lavender-room_01.png",
+      "celebration-gold-hall_01.png",
+      "result-reveal-portal_01.png",
+      "closing-dusk-terrace_01.png",
+      "cream-paper-panel_01.png"
+    ]
+  }
+}

@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { NumerologyGuideRoster } from "@/components/numerology-guide-roster";
-import type { NumerologyGuideId } from "@/core/numerology-guides";
+import { getNumerologyGuide, type NumerologyGuideId } from "@/core/numerology-guides";
 import type { Locale } from "@/i18n/config";
 import styles from "./saju-service-hub.module.css";
 
@@ -57,6 +58,15 @@ const services = {
   ],
 } as const;
 
+const serviceGuideIds: readonly NumerologyGuideId[] = [
+  "taeryeong",
+  "sahyeon",
+  "yeonhui",
+  "hwayeon",
+  "hoyeon",
+  "yundo",
+];
+
 export function SajuServiceHub({ locale }: { locale: Locale }) {
   const t = copy[locale];
   const otherLocale = locale === "ko" ? "en" : "ko";
@@ -101,7 +111,8 @@ export function SajuServiceHub({ locale }: { locale: Locale }) {
             <span>{t.ready}</span>
           </div>
           <div className={styles.grid}>
-            {services[locale].map(([eyebrow, title, body, href, badge, ready]) => {
+            {services[locale].map(([eyebrow, title, body, href, badge, ready], index) => {
+              const guide = getNumerologyGuide(serviceGuideIds[index]);
               const content = (
                 <>
                   <span className={styles.serviceMeta}>
@@ -109,6 +120,15 @@ export function SajuServiceHub({ locale }: { locale: Locale }) {
                     <strong>{title}</strong>
                     <span>{body}</span>
                   </span>
+                  <Image
+                    alt={guide.imageAlt[locale]}
+                    className={styles.serviceCharacter}
+                    height={384}
+                    loading="lazy"
+                    sizes="112px"
+                    src={guide.image}
+                    width={384}
+                  />
                   <span className={styles.cardState}>{ready ? "→" : t.soon}</span>
                 </>
               );
