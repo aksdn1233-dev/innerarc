@@ -26,6 +26,9 @@ Scope: repository source, configuration, local production bundle, and automated 
 - CI uses the current Node 24-based official action majors for checkout, Node setup, and artifact upload. The Node-distributed Corepack activates the exact `pnpm@11.9.0` from `package.json`; `pnpm/action-setup` is intentionally absent because its 11.7.0 bootstrap emitted a high-severity audit finding before self-update.
 - Overrides must be reviewed whenever Next.js is upgraded and removed once the upstream graph resolves equally safe or newer compatible releases.
 - `image-size@2.0.2` is reached only through vinext's build-time static image inspection. Do not process untrusted ICNS, JXL, or HEIF assets in that path. CI ignores only GHSA-w3rx-r6r6-pgpr and GHSA-5p2g-fcmc-qvqq until `image-size@2.0.3` or another verified upstream fix is actually published; review weekly and remove the exception immediately when resolvable.
+- `nanoid` is overridden to 3.3.18 after the 2026-08-21 production audit identified
+  GHSA-2v37-7h3g-55p8 in the prior explicit 3.3.17 pin. The patched version remains on the
+  PostCSS-compatible 3.x line; audit and build are regression gates for this override.
 
 ## Remaining production work
 
@@ -35,3 +38,7 @@ Scope: repository source, configuration, local production bundle, and automated 
 - Payment webhook, replay, refund, subscription-state, and tax/invoice verification.
 - Redacted monitoring and incident alerting, independent penetration testing, and abuse/rate-limit tuning under realistic load.
 - Current locale-aware crisis resources and qualified legal/privacy/age-policy review.
+- The inactive Saju tables have owner RLS for profile CRUD and read-only owner policies for
+  immutable artifacts; service-role-only calculation/audit writes and cost events. They have
+  not been applied or penetration-tested. Production collection is blocked on two-account
+  isolation, IDOR, export/deletion, backup residue, and recalculation authorization tests.

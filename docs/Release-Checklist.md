@@ -39,6 +39,10 @@
 - [x] CycloneDX 1.6 production SBOM generation verified locally for 0.17.1 (110 production components); CI artifact archival remains configured.
 - [x] Korean/English Open Graph/X titles and descriptions, same-origin 1200×630 PNG responses, alt/type/dimension tags, and non-personalized URL checks are covered in both browser projects.
 - [ ] Verify real monitoring, redacted telemetry, migrations, backup/restore, and rollback in staging.
+- [x] Versioned deterministic Saju facts, explicit late-Zi/time/term/luck policies, golden fixtures, serialization invariant, and AI fact guard pass locally.
+- [ ] Korean lunar/leap-month conversion passes KASI plus independent implementation fixtures; current typed rejection is not launch support.
+- [ ] Saju chart-version migration, recalculation diff/invalidation, RLS, two-account isolation, export, deletion, and rollback pass in staging.
+- [ ] Paid Saju generation retry/compensation and Saju-specific E2E flows pass before a Saju SKU is enabled.
 
 ## Commerce
 

@@ -31,6 +31,21 @@ Status: Supabase account persistence connected; production deployment and remain
 - Database migrations must be forward-compatible or have a separately tested restoration plan. Never improvise a destructive down migration in production.
 - Re-run smoke, authorization, deletion, and canonical calculation checks after rollback.
 
+### Saju recalculation and migration hold
+
+- Do not apply `20260821000100_versioned_saju_foundation.sql` in production until staging
+  proves migration/rollback, RLS, account export/deletion, and backup restore. Its rollback
+  reference drops only new Saju/cost/audit tables in reverse dependency order.
+- A calculation change creates a candidate chart version. Compare canonical JSON, name
+  affected profiles and interpretations, and obtain an operator decision before making it
+  current. Never update historical canonical results or generated prose in place.
+- If a material engine defect is found, disable new Saju generation, preserve the old and
+  candidate versions, add a permanent fixture/regression test, identify affected users,
+  invalidate only dependent interpretations, and keep payment/compensation evidence.
+- Current engine/policy rollback reference: `saju-core-1.1.0` /
+  `kr-standard-1.0.0`; the prior UI-compatible engine identifier was
+  `jachyeong-1.0.0` in repository history.
+
 ## Incident priorities
 
 1. Immediate safety or cross-user data exposure.

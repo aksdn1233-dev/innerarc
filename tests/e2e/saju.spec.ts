@@ -20,7 +20,7 @@ test("the free chart is given away, and the reading is what costs", async ({ pag
   await page.getByText("이 결과가 나온 과정").click();
   await expect(page.locator(".saju-derivation")).toContainText("1994-11-04 08:57");
   await expect(page.locator(".saju-derivation")).toContainText("야자시");
-  await expect(page.locator(".saju-derivation")).toContainText("jachyeong-1.0.0");
+  await expect(page.locator(".saju-derivation")).toContainText("saju-core-1.1.0");
 
   // Three viewpoints, each with its own derivation on demand.
   await expect(page.locator(".saju-viewpoint")).toHaveCount(3);
@@ -57,11 +57,11 @@ test("an unknown birth time leaves the hour pillar empty instead of inventing on
 
 test("a date the engine will not stand behind is refused, not answered", async ({ page }) => {
   await page.goto("/ko/saju");
-  await page.locator("#saju-birthDate").fill("1850-01-01");
+  await page.locator("#saju-birthDate").fill("1099-01-01");
   await page.getByRole("button", { name: "사주 세우기" }).click();
   // Scoped to the form's own error: `role="alert"` alone also matches Next's route
   // announcer, which is empty.
-  await expect(page.locator(".saju-error")).toContainText("1900");
+  await expect(page.locator(".saju-error")).toContainText("1100");
   await expect(page.locator(".saju-chart")).toHaveCount(0);
 });
 

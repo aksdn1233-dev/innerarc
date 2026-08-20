@@ -565,3 +565,53 @@
 - Revisit when: Weekly, and immediately when a patched release or verified upstream
   replacement becomes installable. Remove both the exception and this quarantine.
 - Status: Temporary exception; blocks untrusted use of the affected formats.
+
+## D-061 - Version Saju facts and fail closed on unvalidated lunar conversion
+
+- Date: 2026-08-21
+- Decision: Extend the existing deterministic Saju engine with an explicit stored policy,
+  five version identifiers, canonical structured facts, stable relationship rule IDs, and
+  immutable recalculation schema. Represent lunar/leap-month requests but reject them until
+  a Korean converter passes two-source validation.
+- Alternatives: Let an AI infer pillars; accept a generic East Asian lunar converter;
+  replace the existing engine with a new package; store rendered prose only.
+- Reason: One conversion or boundary defect can corrupt every downstream interpretation.
+  Explicit rejection is safer than a plausible but unverifiable chart, and extending the
+  tested module preserves working behavior.
+- Impact: Existing Gregorian Saju UI remains compatible. The new persistence migration is
+  inactive until RLS/export/deletion staging gates pass. No product or price changes.
+- Revisit when: KASI-table coverage and an independent converter agree over the supported
+  range, with disagreements documented rather than silently resolved.
+- Status: Decided; lunar conversion and production persistence remain held.
+
+## D-062 - Advance the Nano ID security override to 3.3.18
+
+- Date: 2026-08-21
+- Decision: Replace the explicit `nanoid@3.3.17` transitive override with patched 3.3.18.
+- Alternatives: Ignore GHSA-2v37-7h3g-55p8; remove the override and accept resolver drift.
+- Reason: The production dependency audit reported a high-severity infinite-loop advisory
+  in the existing pinned release. PostCSS supports the patched 3.x version.
+- Impact: Lockfile-only dependency change; full verification and both production builds
+  must remain green. No application behavior or runtime secret changes.
+- Revisit when: The parent dependency graph no longer requires an override.
+- Status: Decided.
+
+## D-063 - Isolate the Saju service menu behind a dedicated route
+
+- Date: 2026-08-21
+- Decision: Keep the main and free-pattern screens focused, add a single route button to
+  `/[locale]/fortune`, and place the mobile card menu and bottom navigation on that route.
+  Link only implemented services; mark unimplemented daily and yearly flows as unavailable.
+  Do not invent character art, character stand-ins, Han-character badges, or placeholder
+  icon glyphs; character assets remain empty until the product owner supplies them.
+- Alternatives: Insert the full Saju catalog into the existing main and numerology pages;
+  copy a third-party Saju service's brand, characters, copy, or artwork; expose placeholder
+  cards as working services.
+- Reason: A separate hub preserves the current launch funnels while giving Saju a clear,
+  app-like entry point. Original styling and honest availability labels avoid brand confusion
+  and unsupported product claims.
+- Impact: Adds one reversible presentation route and entry links. No calculation, storage,
+  payment, entitlement, privacy, or deployment behavior changes.
+- Revisit when: Demand evidence supports implementing one of the unavailable flow services,
+  with success and safety guardrails defined before it becomes interactive.
+- Status: Decided.

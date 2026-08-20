@@ -35,8 +35,9 @@ overrides:
   # in the deployed Worker, which uses the Cloudflare runtime's own fetch. Pinned inside
   # the 7.x line because that is what miniflare expects; 8.x is a major bump.
   undici: "7.29.0"
-  # Zero and negative-size infinite loops reached through PostCSS tooling.
-  nanoid: "3.3.17"
+  # Zero/negative and custom-generator size infinite loops reached through PostCSS
+  # tooling (GHSA-2v37-7h3g-55p8). 3.3.18 is the patched 3.x release.
+  nanoid: "3.3.18"
 
 patchedDependencies:
   minimatch@3.1.5: patches/minimatch@3.1.5.patch

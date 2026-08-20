@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   calculateNumerologyProfile,
   NumerologyInputError,
@@ -19,24 +20,37 @@ import { buildCoreProfileShare } from "@/core/share";
 import { ShareCardPanel } from "@/components/share-card-panel";
 import { focusAndScroll, scrollToElement } from "@/components/accessibility";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
+import { NumerologyGuideRoster } from "@/components/numerology-guide-roster";
 import { MIN_BIRTH_DATE, currentMaxBirthDate, isAcceptedBirthDate } from "@/core/birth-range";
+import {
+  getDefaultNumerologyGuide,
+  getNumerologyGuide,
+  type NumerologyGuideId,
+} from "@/core/numerology-guides";
 import { createPaidContentPreview } from "@/core/report-preview";
+import type { OnboardingFocusId } from "@/core/onboarding";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 
-type Props = { locale: Locale; dictionary: Dictionary };
+type Props = {
+  locale: Locale;
+  dictionary: Dictionary;
+  routeName?: "profile" | "numerology";
+};
 
 function evidence(calculation: NumberCalculation): string {
   const reductions = calculation.steps.map((step) => step.output);
   return [`${calculation.expression} = ${calculation.initialTotal}`, ...reductions.map(String)].join(" → ");
 }
 
-export function OnboardingExperience({ locale, dictionary: d }: Props) {
+export function OnboardingExperience({ locale, dictionary: d, routeName = "profile" }: Props) {
   // Bounded here rather than in the module so a long-lived tab still refuses tomorrow.
   const maxBirthDate = currentMaxBirthDate();
   const [result, setResult] = useState<NumerologyProfile | null>(null);
   const [context, setContext] = useState<OnboardingReflectionContext | null>(null);
   const [error, setError] = useState("");
+  const [selectedFocus, setSelectedFocus] = useState<OnboardingFocusId>(d.interests[0]?.value ?? "work");
+  const [selectedGuideId, setSelectedGuideId] = useState<NumerologyGuideId>("taeryeong");
   const deepProfileRef = useRef<HTMLDetailsElement>(null);
   const guideVideoRef = useRef<HTMLVideoElement>(null);
   const guideAudioRef = useRef<HTMLAudioElement>(null);
@@ -60,6 +74,7 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
   const integratedProfile = result ? createIntegratedProfile(result, locale) : null;
   const lifestyle = result ? createLifestyleRecommendations(result, locale) : null;
   const paidPreview = result ? createPaidContentPreview(result, locale) : null;
+  const selectedGuide = getNumerologyGuide(selectedGuideId);
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -120,6 +135,17 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
     scrollToElement("#onboarding");
   }
 
+  function selectGuide(guideId: NumerologyGuideId, focusId: OnboardingFocusId) {
+    setSelectedGuideId(guideId);
+    setSelectedFocus(focusId);
+    window.requestAnimationFrame(() => scrollToElement("#onboarding"));
+  }
+
+  function selectFocus(focusId: OnboardingFocusId) {
+    setSelectedFocus(focusId);
+    setSelectedGuideId(getDefaultNumerologyGuide(focusId).id);
+  }
+
   const otherLocale = locale === "ko" ? "en" : "ko";
   const labels = result
     ? [
@@ -138,7 +164,7 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
             <strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong>
             <small>{d.brandTagline}</small>
           </Link>
-          <Link className="locale-switch" href={`/${otherLocale}/profile`}>
+          <Link className="locale-switch" href={`/${otherLocale}/${routeName}`}>
             {otherLocale === "ko" ? "한국어" : "English"}
           </Link>
         </header>
@@ -155,6 +181,9 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
             >
               {d.start}
             </button>
+            <Link className="profile-saju-route" href={`/${locale}/fortune`}>
+              {locale === "ko" ? "사주 서비스로 이동" : "Open Saju services"}
+            </Link>
           </div>
           <div className="hero-guide">
             <img
@@ -197,6 +226,14 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
           </div>
         </section>
 
+        {routeName === "numerology" && (
+          <NumerologyGuideRoster
+            locale={locale}
+            onSelect={selectGuide}
+            selectedGuideId={selectedGuideId}
+          />
+        )}
+
         <section className="form-section cinema-intake" id="onboarding" aria-labelledby="onboarding-title">
           <div className="cinema-intake-art" aria-hidden="true" />
           <form className="form-card" onSubmit={submit} noValidate>
@@ -224,13 +261,14 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
             <fieldset className="field">
               <legend>{d.interest}</legend>
               <div className="choice-row">
-                {d.interests.map((option, index) => (
+                {d.interests.map((option) => (
                   <label className="choice" key={option.value}>
                     <input
                       type="radio"
                       name="interest"
                       value={option.value}
-                      defaultChecked={index === 0}
+                      checked={selectedFocus === option.value}
+                      onChange={() => selectFocus(option.value)}
                     />
                     <span>{option.label}</span>
                   </label>
@@ -303,6 +341,34 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
                 <h2>{d.oneLine}</h2>
                 <p className="summary">{profile.summary}</p>
               </header>
+
+              {routeName === "numerology" && (
+                <aside
+                  className="selected-guide-result"
+                  style={{ "--guide-color": selectedGuide.theme.color } as CSSProperties}
+                  aria-label={locale === "ko" ? "선택한 해석자" : "Selected guide"}
+                >
+                  <Image
+                    alt={selectedGuide.imageAlt[locale]}
+                    decoding="async"
+                    height="1200"
+                    loading="eager"
+                    sizes="(max-width: 560px) 96px, 160px"
+                    src={selectedGuide.image}
+                    width="800"
+                  />
+                  <div>
+                    <p className="eyebrow">{locale === "ko" ? "이 결과의 해석 관점" : "Perspective for this result"}</p>
+                    <h3>{selectedGuide.name[locale]} · {selectedGuide.role[locale]}</h3>
+                    <p>{selectedGuide.specialties[locale].join(" · ")}</p>
+                    <small>
+                      {locale === "ko"
+                        ? "해석자 선택은 설명의 관점만 정하며 수비학 계산값은 바꾸지 않습니다."
+                        : "The guide changes only the reflection lens, never the numerology calculation."}
+                    </small>
+                  </div>
+                </aside>
+              )}
 
               <section className="onboarding-context-card" aria-labelledby="context-title">
                 <p className="eyebrow">{d.contextEyebrow} · {context.focusLabel}</p>
@@ -492,7 +558,7 @@ export function OnboardingExperience({ locale, dictionary: d }: Props) {
                     <article className="domain-card" key={domain.id}>
                       <h3>{domain.title}</h3>
                       <div className="domain-facts">
-                        {domain.calculatedFacts.map((item) => <span key={item}>{item}</span>)}
+                        {domain.calculatedFacts.map((item, index) => <span key={`${domain.id}:${index}:${item}`}>{item}</span>)}
                       </div>
                       <div><strong>{d.symbolicLabel}</strong><p>{domain.traditionalInterpretation}</p></div>
                       <div><strong>{d.inferenceLabel}</strong><p>{domain.personalizedInference}</p></div>

@@ -27,6 +27,9 @@ Last updated: 2026-08-01
 - [x] Preserve master numbers 11/22/33 and validate invalid dates, leap years, century edges, formats, long names, accents, separators, and non-Latin scripts.
 - [x] Calculation evidence UI and deterministic regression vectors.
 - [ ] Independent numerology editorial review before public launch.
+- [x] Six-guide numerology roster uses approved independent assets, preserved Taeryeong
+  reference art, explicit roles/themes, whole-image responsive layout, and focus-only
+  routing that leaves deterministic calculation facts unchanged.
 
 ## Phase 3 - AI profile
 
@@ -35,6 +38,17 @@ Last updated: 2026-08-01
 - [x] Owner-scoped consented context retrieval, raw-journal retention gate, bounded untrusted-data envelope, and cost event contract.
 - [x] Disabled-by-default server-only OpenAI Responses candidate with strict schema, minimized payload, `store: false`, metering, refusal/incomplete fallback, startup secret/model/cost validation, and client-bundle leak tests.
 - [ ] Connect an approved provider and pass bilingual quality, latency, cost, privacy/DPA, injection, and safety gates.
+
+## Saju platform workstream
+
+- [x] Public-only reference analysis labels every observed behavior VERIFIED, INFERRED, or UNKNOWN.
+- [x] Calculation remains code-only and publishes normalized input, policy, canonical facts, warnings, rule IDs, and all five version identifiers.
+- [x] Golden fixtures cover ordinary, unknown-time, solar-term, late-Zi policy, invalid date, old/future, timezone, and lunar/leap fail-closed cases.
+- [x] Narrative guard rejects unsupported fact IDs, duplicated prose, fixed/high-stakes claims, and invented pillar labels.
+- [x] Additive schema separates reusable profiles, immutable charts, generated interpretations, job state, recalculation audit, and AI cost.
+- [ ] Validate Korean lunar conversion against KASI tables and a second independent implementation before enabling it.
+- [ ] Run new migration, rollback, owner-isolation, export, deletion, and backup/restore tests in staging before collecting Saju profile data.
+- [ ] Complete domain-expert review and broad external pillar parity before selling a Saju-specific report.
 
 ## Phase 4 - Tarot
 

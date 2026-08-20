@@ -102,6 +102,7 @@ const copy = {
     heroNote: "생년월일 기반 · 1회 결제 · 자동 갱신 없음",
     heroHook: "반복되는 선택엔, 이유가 있습니다",
     freeCta: "먼저 무료로 확인",
+    sajuHubCta: "사주 서비스로 이동",
     sajuTitle: "사주도 무료로 세워드립니다",
     sajuBody:
       "생년월일과 시각으로 사주 네 기둥과 십신, 오행을 계산해 보여드립니다. 절기와 진태양시까지 보정한 계산 근거를 전부 공개하며, 여기까지는 결제 없이 보실 수 있습니다.",
@@ -159,6 +160,7 @@ const copy = {
     heroNote: "Birth-date based · One-time payment · No auto-renewal",
     heroHook: "The choices you repeat have a reason",
     freeCta: "Try it free first",
+    sajuHubCta: "Open Saju services",
     sajuTitle: "Your Four Pillars chart, also free",
     sajuBody:
       "A birth date and time give four pillars, the ten gods, and the balance of the five phases — corrected for the solar term and for true solar time, with every step of the derivation shown. All of that is free.",
@@ -583,42 +585,38 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
           )}
 
           <div className="cinema-hero-actions">
-            {/* One line, and only one. It has to earn the tap on its own. */}
-            <p className="cinema-hook">{t.heroHook}</p>
             {showEverything ? (
-              <a
-                className="cinema-cta"
-                href="#onboarding"
-                onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "hero" })}
-              >
-                {t.primary}
-              </a>
-            ) : (
-              <button
-                className="cinema-cta"
-                onClick={() => {
-                  captureConversionEvent("primary_cta_click", locale, { location: "hero" });
-                  trackFormStart();
-                  setIntakeOpen(true);
-                }}
-                type="button"
-              >
-                {t.primary}
-              </button>
-            )}
-            {/* The free calculation at /profile existed but nothing on this page linked to
-                it, so a visitor who was not ready to pay had no next step but to leave. */}
+              <>
+                <p className="cinema-hook">{t.heroHook}</p>
+                <a
+                  className="cinema-cta"
+                  href="#onboarding"
+                  onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "hero" })}
+                >
+                  {t.primary}
+                </a>
+              </>
+            ) : null}
+            {/* Numerology has its own named menu. `/profile` remains a compatible historical
+                route, while new visitors enter through the product-shaped URL. */}
             <Link
               className="cinema-cta-secondary"
-              href={`/${locale}/profile`}
+              href={`/${locale}/numerology`}
               onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "hero_free" })}
             >
               {t.freeCta}
             </Link>
+            <Link
+              className="cinema-cta-secondary"
+              href={`/${locale}/fortune`}
+              onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "saju_crosslink" })}
+            >
+              {t.sajuHubCta}
+            </Link>
           </div>
         </section>
 
-        {/* The opening screen is the whole home page: the film, one line, two buttons.
+        {/* The opening screen is the whole home page: the film and two route buttons.
             Everything that used to sit under it — the questions, the samples, the prices,
             the reviews, the method, the intake form — now lives at /{locale}/reading, so
             scrolling the home page finds nothing, which is the point. */}
@@ -675,7 +673,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
               <h3>{t.freeCardName}</h3>
               <div className="campaign-price-row"><strong>{t.freeCardPrice}</strong></div>
               <p>{t.freeCardBody}</p>
-              <Link href={`/${locale}/profile`} onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "product_free" })}>{t.freeCardButton}</Link>
+              <Link href={`/${locale}/numerology`} onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "product_free" })}>{t.freeCardButton}</Link>
             </article>
             {products.map((product) => (
               <article className={product.id === "comprehensive" ? "editorial-product is-featured" : "editorial-product"} key={product.id}>
@@ -690,21 +688,6 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             ))}
           </div>
           <p className="payment-reassurance"><strong>{t.paymentFacts}</strong><br />{t.paymentAccess} <Link href={`/${locale}/support`}>{t.support}</Link></p>
-        </section>
-
-        {/* The 사주 menu, offered as a second free calculation rather than a second sales
-            page. A visitor who is not ready to pay for a numerology reading may still want
-            their chart drawn, and that is a better next step than leaving. */}
-        <section className="saju-crosslink" aria-labelledby="saju-crosslink-title">
-          <h2 id="saju-crosslink-title">{t.sajuTitle}</h2>
-          <p>{t.sajuBody}</p>
-          <Link
-            className="cinema-cta-secondary"
-            href={`/${locale}/saju`}
-            onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "saju_crosslink" })}
-          >
-            {t.sajuCta}
-          </Link>
         </section>
 
         <ReviewEvidenceSection locale={locale} reviews={reviews} reviewCount={reviewCount} />

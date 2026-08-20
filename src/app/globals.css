@@ -1100,6 +1100,27 @@ a:focus-visible {
   background: #324438;
 }
 
+.profile-saju-route {
+  display: inline-flex;
+  min-height: 54px;
+  align-items: center;
+  margin-left: 10px;
+  padding: 0 22px;
+  border: 1px solid var(--sage-dark);
+  border-radius: 999px;
+  color: var(--sage-dark);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+@media (max-width: 720px) {
+  .profile-saju-route {
+    width: 100%;
+    justify-content: center;
+    margin: 10px 0 0;
+  }
+}
+
 .hero-object {
   position: relative;
   aspect-ratio: 0.86;
@@ -7480,6 +7501,172 @@ summary {
   }
 }
 
+/* ---- GYEOL numerology guide roster ----------------------------------------------
+   The source posters remain whole. Metadata is repeated as real text so the names and
+   specialties do not depend on tiny lettering baked into the artwork. */
+.numerology-guide-section {
+  width: min(100% - 28px, 1180px);
+  padding: clamp(54px, 8vw, 92px) 0;
+  margin: 0 auto;
+}
+
+.numerology-guide-heading {
+  max-width: 720px;
+  margin: 0 auto clamp(28px, 5vw, 46px);
+  text-align: center;
+}
+
+.numerology-guide-heading h2 {
+  margin: 8px 0 14px;
+  font: 800 clamp(1.85rem, 5vw, 3rem)/1.18 var(--display-font);
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.numerology-guide-heading > p:last-child {
+  color: var(--muted);
+  line-height: 1.75;
+  text-wrap: pretty;
+}
+
+.numerology-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(16px, 2.5vw, 28px);
+}
+
+.numerology-guide-card {
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--guide-color) 42%, #d8d0c4);
+  border-radius: 24px;
+  background: #fffdf9;
+  box-shadow: 0 16px 44px rgba(31, 29, 43, 0.08);
+}
+
+.numerology-guide-card.is-selected {
+  border-color: var(--guide-color);
+  box-shadow: 0 18px 48px color-mix(in srgb, var(--guide-color) 22%, transparent);
+}
+
+.numerology-guide-image-frame {
+  display: grid;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  place-items: center;
+  background: color-mix(in srgb, var(--guide-color) 10%, #f4efe7);
+  overflow: hidden;
+}
+
+.numerology-guide-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
+}
+
+.numerology-guide-copy {
+  padding: 22px;
+}
+
+.numerology-guide-theme {
+  margin: 0 0 7px;
+  color: var(--guide-color);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.numerology-guide-copy h3 {
+  display: inline;
+  margin: 0 8px 0 0;
+  font: 800 1.55rem/1.2 var(--display-font);
+}
+
+.numerology-guide-copy > small {
+  color: var(--muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+}
+
+.numerology-guide-role {
+  margin: 12px 0;
+  font-weight: 750;
+}
+
+.numerology-guide-copy ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 0;
+  margin: 0 0 18px;
+  list-style: none;
+}
+
+.numerology-guide-copy li {
+  padding: 6px 9px;
+  border: 1px solid color-mix(in srgb, var(--guide-color) 35%, #ded6ca);
+  border-radius: 999px;
+  color: #4f4942;
+  font-size: 0.78rem;
+}
+
+.numerology-guide-select {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--guide-color);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--guide-color);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+}
+
+.numerology-guide-card.is-selected .numerology-guide-select {
+  background: var(--guide-color);
+  color: #fff;
+}
+
+.selected-guide-result {
+  display: grid;
+  grid-template-columns: minmax(110px, 160px) 1fr;
+  gap: clamp(18px, 4vw, 30px);
+  align-items: center;
+  padding: clamp(18px, 4vw, 28px);
+  border: 1px solid color-mix(in srgb, var(--guide-color) 48%, #d8d0c4);
+  border-radius: 22px;
+  margin: 22px 0;
+  background: color-mix(in srgb, var(--guide-color) 7%, #fffdf9);
+}
+
+.selected-guide-result img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 3;
+  border-radius: 14px;
+  background: #eee8df;
+  object-fit: contain;
+  object-position: center center;
+}
+
+.selected-guide-result h3 { margin: 6px 0 10px; }
+.selected-guide-result p:not(.eyebrow) { margin: 0 0 12px; }
+.selected-guide-result small { color: var(--muted); line-height: 1.6; }
+
+@media (max-width: 840px) {
+  .numerology-guide-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 560px) {
+  .numerology-guide-section { width: min(100% - 24px, 1180px); }
+  .numerology-guide-grid { grid-template-columns: minmax(0, 1fr); }
+  .numerology-guide-card { border-radius: 20px; }
+  .numerology-guide-copy { padding: 18px; }
+  .selected-guide-result { grid-template-columns: 96px minmax(0, 1fr); padding: 16px; }
+}
+
 /* ---- 태율 in motion -----------------------------------------------------------------
    One still image, so the movement has to come from how it is shown. Three slow cycles
    at different periods, which never line up and so never look like a loop:
@@ -9198,7 +9385,7 @@ summary {
 }
 
 /* The form is the next beat of the same film, not a detached white page. */
-.profile-shell .hero + .cinema-intake {
+.profile-shell :is(.hero, .numerology-guide-section) + .cinema-intake {
   max-width: none;
   margin-top: 0;
   padding: clamp(42px, 8vw, 78px) clamp(18px, 6vw, 64px);
@@ -9208,12 +9395,12 @@ summary {
     #201c2c;
 }
 
-.profile-shell .hero + .cinema-intake .cinema-intake-art {
+.profile-shell :is(.hero, .numerology-guide-section) + .cinema-intake .cinema-intake-art {
   opacity: 0.28;
   filter: saturate(0.72) contrast(1.05);
 }
 
-.profile-shell .hero + .cinema-intake .form-card {
+.profile-shell :is(.hero, .numerology-guide-section) + .cinema-intake .form-card {
   position: relative;
   z-index: 1;
   max-width: 680px;
@@ -9260,11 +9447,11 @@ summary {
 }
 
 @media (max-width: 680px) {
-  .profile-shell .hero + .cinema-intake {
+  .profile-shell :is(.hero, .numerology-guide-section) + .cinema-intake {
     padding: 34px 14px 54px;
   }
 
-  .profile-shell .hero + .cinema-intake .form-card {
+  .profile-shell :is(.hero, .numerology-guide-section) + .cinema-intake .form-card {
     padding: 24px 18px 28px;
     border-radius: 22px;
   }

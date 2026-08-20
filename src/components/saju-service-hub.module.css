@@ -1,0 +1,35 @@
+.page { min-height: 100vh; background: #eeeae3; color: #28251f; }
+.appShell { width: min(100%, 520px); min-height: 100vh; margin: 0 auto; padding: 0 18px 108px; background: #fbfaf7; box-shadow: 0 0 44px rgba(54, 46, 32, 0.08); }
+.topbar { display: flex; min-height: 68px; align-items: center; justify-content: space-between; }
+.brand { color: #28251f; font-size: 1.04rem; font-weight: 900; letter-spacing: -0.04em; text-decoration: none; }
+.locale { padding: 8px 12px; border: 1px solid #ded8cd; border-radius: 999px; color: #676157; font-size: 0.78rem; font-weight: 700; text-decoration: none; }
+.hero { padding: 30px 6px 25px; }
+.hero p { margin: 0 0 11px; color: #8c634d; font-size: 0.78rem; font-weight: 800; }
+.hero h1 { max-width: 12ch; margin: 0; font-size: clamp(2rem, 9vw, 2.8rem); letter-spacing: -0.07em; line-height: 1.08; }
+.hero > span { display: block; max-width: 36ch; margin-top: 16px; color: #736d63; font-size: 0.94rem; line-height: 1.65; }
+.profileCard { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; padding: 20px; border-radius: 22px; background: #363c31; color: #fffdf7; box-shadow: 0 14px 34px rgba(47, 52, 42, 0.18); text-decoration: none; }
+.profileCopy, .serviceMeta { display: flex; min-width: 0; flex-direction: column; }
+.profileCopy small { color: #ddc39e; font-size: 0.72rem; font-weight: 800; }
+.profileCopy strong { margin-top: 3px; font-size: 1.03rem; }
+.profileCopy > span { margin-top: 5px; color: rgba(255, 253, 247, 0.7); font-size: 0.76rem; line-height: 1.45; }
+.arrow { font-size: 1.25rem; }
+.menu { margin-top: 38px; }
+.sectionHeading { display: flex; align-items: flex-end; justify-content: space-between; margin: 0 4px 15px; }
+.sectionHeading h2 { margin: 0; font-size: 1.18rem; letter-spacing: -0.045em; }
+.sectionHeading span { color: #938b7f; font-size: 0.72rem; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+.serviceCard { position: relative; display: flex; min-height: 174px; flex-direction: column; padding: 17px; border: 1px solid #e7e1d7; border-radius: 20px; background: #fff; color: #2f2a23; text-decoration: none; transition: transform 160ms ease, box-shadow 160ms ease; }
+a.serviceCard:hover { box-shadow: 0 12px 28px rgba(66, 56, 40, 0.09); transform: translateY(-2px); }
+.serviceMeta { margin-top: 2px; }
+.serviceMeta small { color: #9a7560; font-size: 0.69rem; font-weight: 800; }
+.serviceMeta strong { margin-top: 4px; font-size: 0.98rem; }
+.serviceMeta > span { margin-top: 8px; color: #7c756b; font-size: 0.76rem; line-height: 1.5; }
+.cardState { margin-top: auto; padding-top: 12px; color: #80624e; font-size: 0.72rem; font-weight: 800; }
+.disabled { background: #f3f0ea; color: #8b857c; }
+.disabled .serviceMeta small, .disabled .serviceMeta > span, .disabled .cardState { color: #9f9990; }
+.disclaimer { margin: 34px 5px 0; color: #837c72; font-size: 0.72rem; line-height: 1.65; }
+.bottomNav { position: fixed; z-index: 5; right: 0; bottom: 0; left: 0; display: grid; grid-template-columns: repeat(5, 1fr); width: min(100%, 520px); margin: 0 auto; padding: 10px 10px calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid #e6e0d6; background: rgba(251, 250, 247, 0.96); backdrop-filter: blur(16px); }
+.bottomNav a { display: flex; min-height: 48px; align-items: center; justify-content: center; color: #8d867b; font-size: 0.72rem; font-weight: 700; text-decoration: none; }
+.bottomNav .active { color: #805b42; }
+@media (max-width: 370px) { .grid { grid-template-columns: 1fr; } .serviceCard { min-height: 180px; } }
+@media (prefers-reduced-motion: reduce) { .serviceCard { transition: none; } }

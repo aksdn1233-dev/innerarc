@@ -8,6 +8,9 @@ Version 0.18.1 provides a web-first, guest-first Korean/English application with
 
 - a mobile-first premium homepage that introduces the InnerArc pattern model, previews a result, explains four analysis fields, and leads clearly into the existing free calculation flow;
 - deterministic Pythagorean numerology and calculation evidence;
+- a deterministic, policy-versioned Gregorian Saju core with canonical Four Pillars
+  evidence, explicit late-Zi/time/solar-term assumptions, stable relationship rule IDs,
+  golden boundary fixtures, and fail-closed lunar/leap-month inputs pending validation;
 - a context-aware first result that uses stable focus/depth choices and optional page-memory-only concern text without changing calculations, storage, sharing, analytics, or provider state;
 - an eight-domain integrated profile and explanatory career exploration;
 - a 78-card auditable tarot engine with seeded or manual draws;

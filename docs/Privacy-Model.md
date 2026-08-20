@@ -46,6 +46,12 @@ Birth date, names, relationship details, journals, finances, and consultation qu
 - Explicit sync validates local preferences, tarot history, and Reality Checks before owner-scoped upserts. Restore validates server records again before writing device storage.
 - Authenticated account export is versioned JSON. Atomic deletion removes profiles, consent receipts, tarot readings, and Reality Checks while retaining the auth identity and minimal data-rights request metadata.
 - All account tables use `auth.uid()` owner policies, authenticated-only grants, and no anonymous table privileges.
+- The versioned Saju schema is an inactive foundation. If enabled after staging review, it
+  stores multiple people per owner, sensitive birth/time/relationship data, immutable
+  canonical chart versions, and generated content as separate records. Direct clients may
+  manage only their owner-scoped Saju profile metadata and read their artifacts; immutable
+  calculation/audit writes remain server-only. Foreign keys cascade on account deletion,
+  but account export/deletion integration must be extended and tested before collection is enabled.
 
 ## Planned controls
 

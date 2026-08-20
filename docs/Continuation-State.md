@@ -4,6 +4,25 @@ Last updated: 2026-08-02 (mobile trust and checkout-conversion refinement)<br>
 Current version: 0.20.1
 Overall progress: 97% (web MVP code 100%; production deployment and payment path 98%; native app not started)
 
+## 2026-08-21 — Independent numerology menu
+
+- Added `/{locale}/numerology` as the named public entry for the existing deterministic
+  numerology experience. The calculator, interpretation rules, character-led result,
+  privacy behavior and paid-report handoff are reused rather than duplicated.
+- Updated new free-reading entry links to use the numerology menu while retaining
+  `/{locale}/profile` unchanged for historical links and regression coverage.
+- Added the bilingual route to generated site documents and a regression guard that
+  requires both the new menu and the old compatible route to remain present.
+- Added the six approved GYEOL guide assets and versioned role metadata to the named
+  numerology menu only. Taeryeong reuses the existing supplied reference art; Yeonhui,
+  Sahyeon, Hwayeon, redesigned Yundo and redesigned Hoyeon use independent final assets.
+  Guide selection maps to an existing reflection focus and is shown with the result, but
+  it does not alter deterministic values, payment, entitlement, or stored-report logic.
+- Guide posters use lazy responsive images inside a fixed aspect-ratio frame with
+  `object-fit: contain`, so the source is never cropped on narrow screens. Text metadata
+  remains readable outside the artwork and the historical `/{locale}/profile` surface is
+  unchanged.
+
 ## 2026-08-02 — Owner-controlled home copy and aggregate operations data
 
 - Restricted the owner console to the allowlisted email and one-time Supabase email

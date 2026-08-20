@@ -30,6 +30,8 @@ import {
   type ResolvedTerm,
 } from "./solar-terms";
 import { DEFAULT_LONGITUDE_DEGREES, resolveBirthInstant } from "./time";
+import { findStableRelationships } from "./relationships";
+import { resolveSajuPolicy } from "./policy";
 import {
   SajuInputError,
   type LuckPillar,
@@ -38,7 +40,12 @@ import {
   type TermBoundary,
 } from "./types";
 
-export const SAJU_RULE_VERSION = "jachyeong-1.0.0";
+export const SAJU_ENGINE_VERSION = "saju-core-1.1.0";
+export const SAJU_INTERPRETATION_RULE_VERSION = "saju-interpretation-1.0.0";
+export const SAJU_AI_PROMPT_VERSION = "disabled-1";
+export const SAJU_MODEL_VERSION = "none";
+/** Compatibility alias used by the existing result page and historical snapshots. */
+export const SAJU_RULE_VERSION = SAJU_ENGINE_VERSION;
 
 // This engine's own limit, and a real one: below 1900 the Korean standard-time history
 // this module encodes does not apply, and above 2100 the solar-term series has not been
@@ -48,7 +55,7 @@ const MAX_YEAR = 2026;
 const DAY_MS = 86_400_000;
 
 export type SajuInput = {
-  /** "YYYY-MM-DD" on the Gregorian calendar. 음력 must be converted before this point. */
+  /** "YYYY-MM-DD" in the selected calendar. */
   readonly birthDate: string;
   /** "HH:mm" in the clock time in force at birth. Omit when it was never recorded. */
   readonly birthTime?: string;
@@ -58,6 +65,11 @@ export type SajuInput = {
   readonly longitude?: number;
   /** 야자시 moves a birth after 23:00 onto the next day pillar. 조자시 leaves it. */
   readonly midnightConvention?: "야자시" | "조자시";
+  /** Lunar input is represented but rejected until a validated Korean converter ships. */
+  readonly calendarType?: "gregorian" | "lunar";
+  readonly leapMonth?: boolean;
+  /** The current engine intentionally supports Korean civil-time history only. */
+  readonly timezone?: "Asia/Seoul" | string;
 };
 
 function parseDate(input: string): { year: number; month: number; day: number } {
@@ -152,6 +164,23 @@ function luckCycle(
 }
 
 export function buildSajuChart(input: SajuInput): SajuChart {
+  const calendarType = input.calendarType ?? "gregorian";
+  if (calendarType === "lunar") {
+    throw new SajuInputError(
+      "UNSUPPORTED_CALENDAR",
+      "검증된 한국 음양력 변환기가 아직 연결되지 않았습니다. 양력 날짜로 변환한 뒤 입력해 주세요.",
+    );
+  }
+  if (input.leapMonth) {
+    throw new SajuInputError("INVALID_LEAP_MONTH", "윤달 표시는 음력 입력에서만 사용할 수 있습니다.");
+  }
+  const timezone = input.timezone ?? "Asia/Seoul";
+  if (timezone !== "Asia/Seoul") {
+    throw new SajuInputError(
+      "UNSUPPORTED_TIMEZONE",
+      "현재 검증된 시간대는 Asia/Seoul뿐입니다. 다른 지역은 출생지 시간 정책 검증이 필요합니다.",
+    );
+  }
   // Only the year is needed here — the month and day reach the pillars through the
   // corrected instant, not through the calendar fields. Parsing still validates all three.
   const { year } = parseDate(input.birthDate);
@@ -162,6 +191,9 @@ export function buildSajuChart(input: SajuInput): SajuChart {
   const { hour, minute } = input.birthTime ? parseTime(input.birthTime) : { hour: 12, minute: 0 };
   const midnightConvention = input.midnightConvention ?? "야자시";
   const longitude = input.longitude ?? DEFAULT_LONGITUDE_DEGREES;
+  const policy = resolveSajuPolicy(
+    midnightConvention === "야자시" ? "late-zi-next-day" : "late-zi-same-day",
+  );
 
   const resolved = resolveBirthInstant(
     input.birthDate,
@@ -203,8 +235,48 @@ export function buildSajuChart(input: SajuInput): SajuChart {
 
   const present = hourP ? [yearP, monthP, dayP, hourP] : [yearP, monthP, dayP];
 
+  const locatedPillars = [
+    { location: "year" as const, pillar: yearP },
+    { location: "month" as const, pillar: monthP },
+    { location: "day" as const, pillar: dayP },
+    ...(hourP ? [{ location: "hour" as const, pillar: hourP }] : []),
+  ];
+  const relationships = findStableRelationships(locatedPillars);
+  const elements = phaseBalance(present);
+  const yinYang = present.reduce(
+    (total, pillar) => {
+      total[stemPolarity(pillar.stem)] += 1;
+      total[pillar.branch === "子" || pillar.branch === "寅" || pillar.branch === "辰"
+        || pillar.branch === "午" || pillar.branch === "申" || pillar.branch === "戌" ? "양" : "음"] += 1;
+      return total;
+    },
+    { 양: 0, 음: 0 },
+  );
+  const warning = termBoundaryWarning ?? resolved.summerTimeWarning;
+  const canonicalInput = {
+    calendarType,
+    birthDate: input.birthDate,
+    birthTime: input.birthTime ?? null,
+    birthTimeKnown: !hourUnknown,
+    leapMonth: false,
+    sex: input.sex,
+    timezone: "Asia/Seoul" as const,
+    longitude,
+  };
+
   return {
     ruleVersion: SAJU_RULE_VERSION,
+    versions: {
+      engineVersion: SAJU_ENGINE_VERSION,
+      calculationPolicyVersion: policy.version,
+      interpretationRuleVersion: SAJU_INTERPRETATION_RULE_VERSION,
+      aiPromptVersion: SAJU_AI_PROMPT_VERSION,
+      modelVersion: SAJU_MODEL_VERSION,
+    },
+    policy,
+    input: canonicalInput,
+    normalizedInput: { ...canonicalInput, gregorianBirthDate: input.birthDate },
+    calendar: { inputType: calendarType, normalizedType: "gregorian", leapMonth: false },
     birthDate: input.birthDate,
     time: {
       wallClock: input.birthTime ?? "",
@@ -223,7 +295,7 @@ export function buildSajuChart(input: SajuInput): SajuChart {
     dayMasterPolarity: stemPolarity(dayP.stem),
     monthTerm: toBoundary(current),
     nextTerm: toBoundary(next),
-    termBoundaryWarning: termBoundaryWarning ?? resolved.summerTimeWarning,
+    termBoundaryWarning: warning,
     tenGods: {
       yearStem: tenGod(dayP.stem, yearP.stem),
       monthStem: tenGod(dayP.stem, monthP.stem),
@@ -239,7 +311,7 @@ export function buildSajuChart(input: SajuInput): SajuChart {
       day: hiddenStemsOf(dayP.branch),
       hour: hourP ? hiddenStemsOf(hourP.branch) : null,
     },
-    phaseBalance: phaseBalance(present),
+    phaseBalance: elements,
     voidBranches: voidBranches(dayP.cycleIndex),
     luck: luckCycle(
       resolved.utc,
@@ -249,5 +321,34 @@ export function buildSajuChart(input: SajuInput): SajuChart {
       monthP.cycleIndex,
       year,
     ),
+    pillars: { year: yearP, month: monthP, day: dayP, hour: hourP },
+    stems: present.map(({ stem }) => stem),
+    branches: present.map(({ branch }) => branch),
+    elements,
+    yinYang,
+    relationships,
+    derivedFacts: [
+      {
+        id: "day-master",
+        value: dayP.stem,
+        ruleId: "saju.fact.day-master.v1",
+      },
+      {
+        id: "void-branches",
+        value: voidBranches(dayP.cycleIndex),
+        ruleId: "saju.fact.void-branches.v1",
+      },
+      {
+        id: "hour-known",
+        value: !hourUnknown,
+        ruleId: "saju.fact.hour-known.v1",
+      },
+      {
+        id: "relationship-count",
+        value: relationships.length,
+        ruleId: "saju.fact.relationship-count.v1",
+      },
+    ],
+    warnings: warning ? [warning] : [],
   };
 }

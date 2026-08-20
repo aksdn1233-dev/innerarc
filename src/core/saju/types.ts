@@ -105,8 +105,37 @@ export type LuckCycle = {
 
 export type PhaseCount = Readonly<Record<FivePhase, number>>;
 
+export type SajuVersionSet = {
+  readonly engineVersion: string;
+  readonly calculationPolicyVersion: string;
+  readonly interpretationRuleVersion: string;
+  readonly aiPromptVersion: string;
+  readonly modelVersion: string;
+};
+
+export type SajuCanonicalInput = {
+  readonly calendarType: "gregorian" | "lunar";
+  readonly birthDate: string;
+  readonly birthTime: string | null;
+  readonly birthTimeKnown: boolean;
+  readonly leapMonth: boolean;
+  readonly sex: "female" | "male";
+  readonly timezone: "Asia/Seoul";
+  readonly longitude: number;
+};
+
 export type SajuChart = {
+  /** Compatibility alias retained for existing stored/UI results. */
   readonly ruleVersion: string;
+  readonly versions: SajuVersionSet;
+  readonly policy: import("./policy").SajuCalculationPolicy;
+  readonly input: SajuCanonicalInput;
+  readonly normalizedInput: SajuCanonicalInput & { readonly gregorianBirthDate: string };
+  readonly calendar: {
+    readonly inputType: "gregorian" | "lunar";
+    readonly normalizedType: "gregorian";
+    readonly leapMonth: boolean;
+  };
   readonly birthDate: string;
   readonly time: TimeResolution;
   readonly year: Pillar;
@@ -147,6 +176,23 @@ export type SajuChart = {
   /** 공망(空亡): the two branches empty for this day pillar's decade. */
   readonly voidBranches: readonly [EarthlyBranch, EarthlyBranch];
   readonly luck: LuckCycle;
+  readonly pillars: {
+    readonly year: Pillar;
+    readonly month: Pillar;
+    readonly day: Pillar;
+    readonly hour: Pillar | null;
+  };
+  readonly stems: readonly HeavenlyStem[];
+  readonly branches: readonly EarthlyBranch[];
+  readonly elements: PhaseCount;
+  readonly yinYang: Readonly<Record<Polarity, number>>;
+  readonly relationships: readonly import("./relationships").SajuRelationship[];
+  readonly derivedFacts: readonly {
+    readonly id: string;
+    readonly value: string | number | boolean | readonly string[];
+    readonly ruleId: string;
+  }[];
+  readonly warnings: readonly string[];
 };
 
 export class SajuInputError extends Error {
@@ -155,7 +201,10 @@ export class SajuInputError extends Error {
       | "INVALID_DATE_FORMAT"
       | "INVALID_CALENDAR_DATE"
       | "INVALID_TIME_FORMAT"
-      | "YEAR_OUT_OF_RANGE",
+      | "YEAR_OUT_OF_RANGE"
+      | "UNSUPPORTED_CALENDAR"
+      | "UNSUPPORTED_TIMEZONE"
+      | "INVALID_LEAP_MONTH",
     message: string,
   ) {
     super(message);

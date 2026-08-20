@@ -44,6 +44,7 @@ const PRIVATE_PATHS = [
 const PUBLIC_ROUTES = [
   "",
   "/profile",
+  "/numerology",
   "/relationship",
   "/question",
   "/reality-check",

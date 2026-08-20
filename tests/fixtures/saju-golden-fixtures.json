@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "saju-golden-fixtures-1.0.0",
+  "validationStatus": "PARTIALLY_VALIDATED",
+  "fixtures": [
+    {
+      "id": "ordinary-seoul-known-time",
+      "input": { "birthDate": "1994-11-04", "birthTime": "09:30", "sex": "female" },
+      "expected": { "status": "accepted", "year": "甲戌", "month": "甲戌", "day": "甲午", "hour": "戊辰" },
+      "evidence": ["sexagenary-day-anchor", "engine-regression"]
+    },
+    {
+      "id": "unknown-birth-time",
+      "input": { "birthDate": "1994-11-04", "sex": "female" },
+      "expected": { "status": "accepted", "year": "甲戌", "month": "甲戌", "day": "甲午", "hour": null },
+      "evidence": ["engine-regression"]
+    },
+    {
+      "id": "before-2024-ipchun",
+      "input": { "birthDate": "2024-02-04", "birthTime": "06:00", "sex": "male" },
+      "expected": { "status": "accepted", "year": "癸卯", "month": "乙丑" },
+      "evidence": ["KASI-2024-almanac-ipchun-17:27-KST"]
+    },
+    {
+      "id": "after-2024-ipchun",
+      "input": { "birthDate": "2024-02-04", "birthTime": "20:00", "sex": "male" },
+      "expected": { "status": "accepted", "year": "甲辰", "month": "丙寅" },
+      "evidence": ["KASI-2024-almanac-ipchun-17:27-KST"]
+    },
+    {
+      "id": "term-boundary-uncertainty",
+      "input": { "birthDate": "2024-02-04", "birthTime": "17:25", "sex": "male" },
+      "expected": { "status": "accepted", "warning": true },
+      "evidence": ["KASI-2024-almanac-ipchun-17:27-KST", "declared-15-minute-engine-band"]
+    },
+    {
+      "id": "late-zi-next-day-policy",
+      "input": { "birthDate": "2000-01-01", "birthTime": "23:50", "sex": "male", "midnightConvention": "야자시" },
+      "expected": { "status": "accepted", "policy": "late-zi-next-day" },
+      "comparisonGroup": "late-zi-policy"
+    },
+    {
+      "id": "late-zi-same-day-policy",
+      "input": { "birthDate": "2000-01-01", "birthTime": "23:50", "sex": "male", "midnightConvention": "조자시" },
+      "expected": { "status": "accepted", "policy": "late-zi-same-day" },
+      "comparisonGroup": "late-zi-policy"
+    },
+    {
+      "id": "invalid-gregorian-date",
+      "input": { "birthDate": "2023-02-29", "sex": "male" },
+      "expected": { "status": "rejected", "errorCode": "INVALID_CALENDAR_DATE" }
+    },
+    {
+      "id": "future-out-of-engine-range",
+      "input": { "birthDate": "2027-01-01", "sex": "male" },
+      "expected": { "status": "rejected", "errorCode": "YEAR_OUT_OF_RANGE" }
+    },
+    {
+      "id": "very-old-out-of-engine-range",
+      "input": { "birthDate": "1099-12-31", "sex": "female" },
+      "expected": { "status": "rejected", "errorCode": "YEAR_OUT_OF_RANGE" }
+    },
+    {
+      "id": "unsupported-timezone-edge",
+      "input": { "birthDate": "1994-11-04", "birthTime": "09:30", "sex": "female", "timezone": "America/New_York" },
+      "expected": { "status": "rejected", "errorCode": "UNSUPPORTED_TIMEZONE" }
+    },
+    {
+      "id": "lunar-day-29-pending-validation",
+      "input": { "birthDate": "2024-01-29", "calendarType": "lunar", "sex": "female" },
+      "expected": { "status": "rejected", "errorCode": "UNSUPPORTED_CALENDAR" },
+      "validationGap": "No independently validated Korean lunar converter is shipped."
+    },
+    {
+      "id": "lunar-day-30-pending-validation",
+      "input": { "birthDate": "2024-01-30", "calendarType": "lunar", "sex": "male" },
+      "expected": { "status": "rejected", "errorCode": "UNSUPPORTED_CALENDAR" },
+      "validationGap": "Month length must be established by a Korean almanac table before acceptance."
+    },
+    {
+      "id": "leap-lunar-month-pending-validation",
+      "input": { "birthDate": "2023-02-01", "calendarType": "lunar", "leapMonth": true, "sex": "female" },
+      "expected": { "status": "rejected", "errorCode": "UNSUPPORTED_CALENDAR" },
+      "validationGap": "KASI identifies leap second month in 2023; conversion implementation remains deferred."
+    },
+    {
+      "id": "leap-flag-on-gregorian",
+      "input": { "birthDate": "2023-03-22", "calendarType": "gregorian", "leapMonth": true, "sex": "female" },
+      "expected": { "status": "rejected", "errorCode": "INVALID_LEAP_MONTH" }
+    }
+  ]
+}
