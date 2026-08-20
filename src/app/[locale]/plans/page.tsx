@@ -37,6 +37,16 @@ export default async function PlansPage({
   const products = readiness.enabled
     ? [
         {
+          code: "plus_30d" as const,
+          tier: locale === "ko" ? "사주 원국 · 1회" : "Four Pillars · one time",
+          name: readiness.config.products.plus_30d.names[locale],
+          amount: readiness.config.products.plus_30d.amount,
+          regularAmount: pricing.regularPrices.plus_30d,
+          features: locale === "ko"
+            ? ["사주 네 기둥과 십신", "오행 분포와 절기", "출생 시각·진태양시 보정 근거", "억부·조후·격국 세 관점", "웹 열람·파일 저장", "이메일로 보관하기"]
+            : ["Four pillars and ten gods", "Five-phase balance and solar terms", "Birth-time and true-solar correction evidence", "Three traditional viewpoints", "Web access and file download", "Keep by email"],
+        },
+        {
           code: "pro_30d" as const,
           tier: locale === "ko" ? "상세 분석" : "Detailed",
           name: readiness.config.products.pro_30d.names[locale],
@@ -58,6 +68,16 @@ export default async function PlansPage({
         },
       ]
     : [
+        {
+          code: "plus_30d" as const,
+          tier: locale === "ko" ? "사주 원국 · 1회" : "Four Pillars · one time",
+          name: locale === "ko" ? "사주 원국" : "Four Pillars chart",
+          amount: pricing.prices.plus_30d,
+          regularAmount: pricing.regularPrices.plus_30d,
+          features: locale === "ko"
+            ? ["사주 네 기둥과 십신", "오행 분포와 절기", "출생 시각·진태양시 보정 근거", "억부·조후·격국 세 관점", "웹 열람·파일 저장", "이메일로 보관하기"]
+            : ["Four pillars and ten gods", "Five-phase balance and solar terms", "Birth-time and true-solar correction evidence", "Three traditional viewpoints", "Web access and file download", "Keep by email"],
+        },
         {
           code: "pro_30d" as const,
           tier: locale === "ko" ? "상세 분석" : "Detailed",
@@ -85,6 +105,7 @@ export default async function PlansPage({
       locale={locale}
       products={products}
       initialProduct={
+        query.product === "plus_30d" ||
         query.product === "pro_30d" ||
         query.product === "premium_pdf"
           ? query.product

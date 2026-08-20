@@ -22,7 +22,9 @@ export const TIER_META: Readonly<Record<PaymentProductCode, TierMeta>> = {
   plus_30d: {
     canonicalId: "BASIC_19000",
     displayName: { ko: "핵심 리딩", en: "Core reading" },
-    defaultPriceKrw: STANDARD_PRODUCT_PRICES_KRW.plus_30d,
+    // Historical `plus_30d` reports remain the retired 19,000원 numerology tier.
+    // New 5,500원 Saju orders are distinguished by `readingKind: saju_chart`.
+    defaultPriceKrw: 19_000,
     availability: "temporarily_retired",
     contentDepth: "basic",
     sharpInsightCount: 2,

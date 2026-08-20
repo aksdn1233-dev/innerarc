@@ -4,10 +4,14 @@ import { PaidReadingInputSchema } from "@/core/paid-reading";
 import { createBasicPaidReport } from "@/server/reports/basic-report";
 import { createDetailPaidReport } from "@/server/reports/detail-report";
 import { createPremiumPaidReport } from "@/server/reports/premium-report";
+import { createSajuChartReport } from "@/server/reports/saju-chart-report";
 import { enhancePaidReport } from "@/server/reports/enhance-report";
 
 export function createPaidReport(orderId: string, rawInput: unknown): PaidReport {
   const input = PaidReadingInputSchema.parse(rawInput);
+  if (input.productCode === "plus_30d" && input.readingKind === "saju_chart") {
+    return createSajuChartReport(orderId, input);
+  }
   let report: PaidReport;
   switch (input.productCode) {
     case "plus_30d":

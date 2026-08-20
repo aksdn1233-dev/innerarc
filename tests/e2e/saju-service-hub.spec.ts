@@ -19,6 +19,7 @@ test("the Saju service hub exposes real routes and labels unfinished services", 
   await expect(page.getByRole("heading", { name: "지금 필요한 관점의 해석자를 고르세요" })).toBeVisible();
   await expect(page.locator(".numerology-guide-card")).toHaveCount(6);
   await expect(page.getByRole("link", { name: /먼저 내 사주 원국 만들기/ })).toHaveAttribute("href", "/ko/saju");
+  await expect(page.getByRole("link", { name: /먼저 내 사주 원국 만들기/ })).toContainText("1회 5,500원");
   await expect(page.getByRole("link", { name: /상세 리딩/ })).toHaveAttribute("href", "/ko/plans");
   await expect(page.getByRole("link", { name: /두 사람 궁합/ })).toHaveAttribute("href", "/ko/compatibility");
   await expect(page.getByRole("link", { name: /내 기록/ })).toHaveAttribute("href", "/ko/me");

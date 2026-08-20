@@ -1,5 +1,16 @@
 # Decision Log
 
+## D-064 — Convert the free Saju chart into a 5,500 KRW one-time product
+
+- Date: 2026-08-21
+- Decision: The Four Pillars chart is no longer shown before payment. Its birth input creates a `SAJU_5500` checkout draft using the existing historically compatible `plus_30d` database code, while `readingKind=saju_chart` separates new Saju orders from retired Core reports. A verified payment opens the auditable chart report, file download, print/PDF, and a user-initiated email handoff containing the protected report URL.
+- Demand evidence: The product owner explicitly requested the free-to-paid conversion and the 5,500 KRW price. External paid-demand evidence is not yet available.
+- Unit economics: Gross revenue is 5,500 KRW per order. PayApp/payment-method fees, VAT, refunds, support time, and any future transactional-email provider cost must be measured before paid acquisition. No recurring access or automatic renewal is created.
+- Safety and privacy: The chart keeps deterministic rule evidence, unknown-time disclosure, and non-prediction boundaries. The email action opens the buyer's own mail client; the application does not collect a delivery email or send the protected report URL to a new provider.
+- Success metrics: first 20 verified purchases, payment completion, report-ready delivery above 99%, support/refund rate below 10%, and zero cross-user or access-token disclosure incidents.
+- Reversal conditions: pause the product if a verified payment cannot produce the chart, calculation parity fails, refund/support burden exceeds the guardrail, or a privacy/access incident occurs. Reversal removes new checkout entry while preserving historical paid access.
+- Status: Owner-authorized implementation; external demand, provider-fee, editorial, and real-payment evidence pending.
+
 ## D-047 — Clock-owned summer event pricing
 
 - Date: 2026-08-01

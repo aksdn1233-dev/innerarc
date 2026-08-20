@@ -7,10 +7,10 @@
  */
 export const sajuCopy = {
   ko: {
-    eyebrow: "사주 · 무료",
-    title: "내 사주 원국, 계산부터 공개합니다",
+    eyebrow: "사주 원국 · 1회 5,500원",
+    title: "내 사주 원국을 정확히 세웁니다",
     intro:
-      "생년월일과 태어난 시각으로 사주 네 기둥과 십신, 오행을 계산합니다. 계산 결과와 보정 내역은 전부 무료로 보여드립니다. 어느 만세력과 대조하셔도 됩니다.",
+      "생년월일과 태어난 시각으로 사주 네 기둥과 십신, 오행을 계산합니다. 1회 결제로 웹에서 보고 파일로 저장하며 이메일로도 보관할 수 있습니다.",
 
     birthDate: "생년월일 (양력)",
     solarOnly: "음력으로 알고 계시면 양력으로 변환한 날짜를 넣어주세요.",
@@ -27,7 +27,8 @@ export const sajuCopy = {
     earlyNight: "조자시 (자정부터 다음 날)",
     midnightReason:
       "23시 이후 출생이면 일주가 통째로 달라지는 갈림길입니다. 기본값은 야자시이며, 어느 쪽으로 계산했는지 결과에 표시합니다.",
-    submit: "사주 세우기",
+    submit: "5,500원 결제로 원국 받기",
+    privacyRequired: "원국 생성과 결제 처리를 위한 개인정보 안내를 확인했습니다.",
     genericError: "계산할 수 없는 입력입니다.",
     outOfRange: "1100년부터 2026년까지의 생년월일만 계산합니다. 연도를 다시 확인해 주세요.",
 
@@ -88,10 +89,10 @@ export const sajuCopy = {
       "사주는 미래를 확정해 알려주는 도구가 아닙니다. 이 페이지는 전통 규칙에 따른 계산과 해석을 보여줄 뿐, 의료·법률·투자 판단을 대신하지 않으며 행운이나 성과를 보장하지 않습니다.",
   },
   en: {
-    eyebrow: "Four Pillars · free",
-    title: "Your chart, with the calculation shown",
+    eyebrow: "Four Pillars chart · ₩5,500 once",
+    title: "Build my Four Pillars chart",
     intro:
-      "Your birth date and time give four pillars, the ten gods, and the balance of the five phases. The chart and every correction behind it are free. Check them against any almanac you like.",
+      "Your birth date and time produce the four pillars, ten gods, and five-phase balance. Pay once to view it on the web, save the file, and keep it by email.",
 
     birthDate: "Birth date (solar)",
     solarOnly: "If you know a lunar date, convert it to the solar calendar first.",
@@ -108,7 +109,8 @@ export const sajuCopy = {
     earlyNight: "조자시 — the day turns at midnight",
     midnightReason:
       "For a birth after 23:00 this changes the day pillar entirely. The default is 야자시, and the result states which was used.",
-    submit: "Build the chart",
+    submit: "Get the chart for ₩5,500",
+    privacyRequired: "I reviewed the privacy notice for chart generation and payment processing.",
     genericError: "That input cannot be calculated.",
     outOfRange: "Only birth dates from 1100 through 2026 are calculated. Please check the year.",
 

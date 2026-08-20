@@ -69,6 +69,12 @@ export async function POST(request: Request) {
   ) {
     return NextResponse.json({ error: "READING_INPUT_MISMATCH" }, { status: 400 });
   }
+  if (
+    parsed.data.productCode === "plus_30d" &&
+    parsed.data.readingInput.readingKind !== "saju_chart"
+  ) {
+    return NextResponse.json({ error: "READING_INPUT_MISMATCH" }, { status: 400 });
+  }
   const orderId = `ia${randomUUID().replaceAll("-", "")}`;
   if (readiness.config.provider === "manual_transfer" && !parsed.data.depositorName) {
     return NextResponse.json({ error: "DEPOSITOR_NAME_REQUIRED" }, { status: 400 });

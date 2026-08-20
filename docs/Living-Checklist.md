@@ -49,6 +49,7 @@ Last updated: 2026-08-01
 - [ ] Validate Korean lunar conversion against KASI tables and a second independent implementation before enabling it.
 - [ ] Run new migration, rollback, owner-isolation, export, deletion, and backup/restore tests in staging before collecting Saju profile data.
 - [ ] Complete domain-expert review and broad external pillar parity before selling a Saju-specific report.
+- [x] Owner-authorized `SAJU_5500` one-time flow replaces the public free chart, preserves deterministic calculation evidence, and provides protected web/file/PDF plus user-initiated email-link delivery; external paid-demand, fee, editorial, and live-payment evidence remain pending.
 
 ## Phase 4 - Tarot
 

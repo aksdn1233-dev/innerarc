@@ -24,6 +24,7 @@ export const PaidReadingInputSchema = z.object({
   version: z.literal(1),
   locale: z.enum(["ko", "en"]),
   productCode: z.enum(paidReadingProductCodes),
+  readingKind: z.enum(["numerology", "saju_chart"]).optional(),
   birthDate: z.string().refine(isAcceptedBirthDate, "UNSUPPORTED_BIRTH_DATE"),
   birthTime: optionalBirthTime,
   name: z.string().max(200),
@@ -32,6 +33,7 @@ export const PaidReadingInputSchema = z.object({
   // Asked for on the opening screen. Optional because a draft written before this
   // existed is still a valid draft, and the reading does not require it.
   gender: z.enum(["female", "male", "unstated"]).optional(),
+  midnightConvention: z.enum(["야자시", "조자시"]).optional(),
   questions: z.array(z.string().trim().min(1).max(1_000)).max(2).optional(),
   companion: companionSchema.optional(),
   createdAt: z.string().datetime(),

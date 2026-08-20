@@ -99,11 +99,11 @@ describe("payment readiness", () => {
     const development = inspectPaymentReadiness(validEnvironment, "development");
     expect(development.enabled).toBe(true);
     if (development.enabled) {
-      expect(development.config.products.plus_30d.amount).toBe(19000);
+      expect(development.config.products.plus_30d.amount).toBe(5500);
       expect(development.config.products.pro_30d.amount).toBe(39000);
       expect(development.config.products.premium_pdf.amount).toBe(79000);
     }
-    expect(purchasablePaymentProductCodes).toEqual(["pro_30d", "premium_pdf"]);
+    expect(purchasablePaymentProductCodes).toEqual(["plus_30d", "pro_30d", "premium_pdf"]);
     expect(inspectPaymentReadiness({
       ...validEnvironment,
       INNERARC_PRO_30D_PRICE_KRW: "39000",
@@ -139,7 +139,7 @@ describe("payment readiness", () => {
     expect(readiness.enabled).toBe(true);
     if (readiness.enabled) {
       expect(readiness.config.provider).toBe("portone");
-      expect(readiness.config.products.plus_30d.amount).toBe(19000);
+      expect(readiness.config.products.plus_30d.amount).toBe(5500);
       expect(readiness.config.products.premium_pdf.amount).toBe(79000);
     }
     expect(inspectPaymentReadiness({
@@ -171,9 +171,9 @@ describe("payment readiness", () => {
     if (readiness.enabled && readiness.config.provider === "payapp") {
       expect(readiness.config.userId).toBe("test-seller");
       expect(readiness.config.openPayTypes).toContain("vbank");
-      expect(readiness.config.products.plus_30d.amount).toBe(19000);
+      expect(readiness.config.products.plus_30d.amount).toBe(5500);
       expect(readiness.config.products.pro_30d.amount).toBe(39000);
-      expect(readiness.config.products.plus_30d.names.ko).toBe("핵심 리딩");
+      expect(readiness.config.products.plus_30d.names.ko).toBe("사주 원국");
       expect(readiness.config.products.pro_30d.names.ko).toBe("상세 리딩");
       expect(readiness.config.products.premium_pdf.names.ko).toBe("프리미엄 심층 리딩");
       expect(Object.values(readiness.config.products).map((product) => product.names.ko).join(" ")).not.toMatch(/[?�]|由щ|誘몄/);

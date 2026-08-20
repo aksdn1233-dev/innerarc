@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   SajuInputError,
   buildSajuChart,
-  readViewpoints,
   type SajuChart,
   type SajuViewpoints,
 } from "@/core/saju";
@@ -30,6 +30,7 @@ export function SajuExperience({ locale }: { locale: Locale }) {
   // Bounded here rather than in the module so a long-lived tab still refuses tomorrow.
   const maxBirthDate = currentMaxBirthDate();
   const t = sajuCopy[locale];
+  const router = useRouter();
   const [chart, setChart] = useState<SajuChart | null>(null);
   const [views, setViews] = useState<SajuViewpoints | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -40,6 +41,12 @@ export function SajuExperience({ locale }: { locale: Locale }) {
     const form = new FormData(event.currentTarget);
     const birthTime = String(form.get("birthTime") ?? "");
     const submittedBirthDate = String(form.get("birthDate") ?? "");
+    if (form.get("privacyRequired") !== "on") {
+      setChart(null);
+      setViews(null);
+      setError(t.privacyRequired);
+      return;
+    }
     // The field carries min/max, but a submitted form can arrive without them.
     if (!isAcceptedBirthDate(submittedBirthDate)) {
       setChart(null);
@@ -48,15 +55,31 @@ export function SajuExperience({ locale }: { locale: Locale }) {
       return;
     }
     try {
-      const built = buildSajuChart({
+      buildSajuChart({
         birthDate: String(form.get("birthDate") ?? ""),
         birthTime: birthTime || undefined,
         sex: form.get("sex") === "male" ? "male" : "female",
         midnightConvention: form.get("midnight") === "조자시" ? "조자시" : "야자시",
       });
-      setChart(built);
-      setViews(readViewpoints(built));
+      const draft = {
+        version: 1 as const,
+        locale,
+        productCode: "plus_30d" as const,
+        readingKind: "saju_chart" as const,
+        birthDate: submittedBirthDate,
+        birthTime: birthTime || undefined,
+        name: "",
+        focusId: "growth" as const,
+        concern: "",
+        gender: form.get("sex") === "male" ? "male" as const : "female" as const,
+        midnightConvention: form.get("midnight") === "조자시" ? "조자시" as const : "야자시" as const,
+        createdAt: new Date().toISOString(),
+      };
+      window.sessionStorage.setItem("innerarc.checkoutDraft.v1", JSON.stringify(draft));
+      setChart(null);
+      setViews(null);
       setError(null);
+      router.push(`/${locale}/plans?product=plus_30d`);
     } catch (caught) {
       setChart(null);
       setViews(null);
@@ -103,6 +126,11 @@ export function SajuExperience({ locale }: { locale: Locale }) {
             <small>{t.midnightReason}</small>
           </fieldset>
         </details>
+
+        <label className="check">
+          <input name="privacyRequired" required type="checkbox" />
+          <span>{t.privacyRequired}</span>
+        </label>
 
         <button className="saju-submit" type="submit">{t.submit}</button>
         {error && <p className="saju-error" role="alert">{error}</p>}

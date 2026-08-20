@@ -142,7 +142,7 @@ const copy = {
   },
   en: {
     brand: "Personal pattern intelligence",
-    eyebrow: "30-day access",
+    eyebrow: "One-time readings",
     title: "Choose only the depth you need",
     intro: "Pay once without creating an account. Open the same report on mobile or desktop after payment.",
     unavailable: "Payments remain closed until merchant review, prices, the production domain, and legal notices are finalized.",
@@ -170,7 +170,7 @@ const copy = {
     },
     notice: "Available methods and limits depend on PayApp merchant settings and payment-method review.",
     terms: "Refund requests are accepted by support email and processed within seven days after receipt. Review the terms, refund policy, and privacy notice before payment.",
-    duration: "30 days from purchase",
+    duration: "One-time payment · no renewal",
     depositorName: "Depositor name",
     depositorPlaceholder: "Name shown on the bank transfer",
     depositorHelp: "Use the same name that will appear on the receiving account.",
@@ -669,8 +669,8 @@ export function PlansExperience({
       {!readingInput && (
         <p className="plans-gate">
           {t.errors.missing_draft}{" "}
-          <Link href={`/${locale}#onboarding`}>
-            {locale === "ko" ? "상품 선택하러 가기" : "Choose a product"}
+          <Link href={`/${locale}/fortune`}>
+            {locale === "ko" ? "사주 서비스로 가기" : "Open Saju services"}
           </Link>
         </p>
       )}

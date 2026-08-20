@@ -126,7 +126,7 @@ function buildProducts(comprehensivePrice: number, premiumPdfPrice: number) {
       tier: "plus",
       durationDays: 30,
       amount: STANDARD_PRODUCT_PRICES_KRW.plus_30d,
-      names: { ko: "핵심 리딩", en: "Core reading" },
+      names: { ko: "사주 원국", en: "Four Pillars chart" },
     },
     pro_30d: {
       code: "pro_30d",

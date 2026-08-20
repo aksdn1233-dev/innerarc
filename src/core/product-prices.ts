@@ -1,5 +1,5 @@
 export const STANDARD_PRODUCT_PRICES_KRW = {
-  plus_30d: 19_000,
+  plus_30d: 5_500,
   pro_30d: 39_000,
   premium_pdf: 79_000,
 } as const;
@@ -18,7 +18,7 @@ export const RETIRED_EVENT_PRODUCT_PRICES_KRW = {
   premium_pdf: 39_000,
 } as const;
 
-export const PURCHASABLE_PRODUCT_CODES = ["pro_30d", "premium_pdf"] as const;
+export const PURCHASABLE_PRODUCT_CODES = ["plus_30d", "pro_30d", "premium_pdf"] as const;
 
 export type ProductPriceCode = keyof typeof STANDARD_PRODUCT_PRICES_KRW;
 export type ProductPriceSet = Readonly<Record<ProductPriceCode, number>>;

@@ -22,8 +22,8 @@ test("the retired Core product is absent and Detailed becomes the default", asyn
   await page.locator(".home-form-section button[type='submit']").click();
 
   await expect(page).toHaveURL(/\/ko\/plans\?product=pro_30d$/);
-  await expect(page.locator(".plan-card")).toHaveCount(2);
-  await expect(page.locator('[data-product="plus_30d"]')).toHaveCount(0);
+  await expect(page.locator(".plan-card")).toHaveCount(3);
+  await expect(page.locator('[data-product="plus_30d"]')).toContainText("사주 원국");
   const draft = await page.evaluate(() => {
     const raw = window.sessionStorage.getItem("innerarc.checkoutDraft.v1");
     return raw ? JSON.parse(raw) : null;

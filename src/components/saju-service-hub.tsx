@@ -13,7 +13,7 @@ const copy = {
     label: "나를 읽는 작은 시작",
     title: "오늘, 무엇이 가장 궁금하세요?",
     intro: "생년월일로 원국을 세우고, 지금 필요한 성찰 메뉴를 골라보세요.",
-    start: "무료로 시작",
+    start: "1회 5,500원",
     profileTitle: "먼저 내 사주 원국 만들기",
     profileBody: "네 기둥과 오행, 십신의 계산 근거까지 확인할 수 있어요.",
     section: "사주와 함께 보는 메뉴",
@@ -27,7 +27,7 @@ const copy = {
     label: "A small start to understanding yourself",
     title: "What are you most curious about today?",
     intro: "Build your Four Pillars chart, then choose the reflection that fits this moment.",
-    start: "Start free",
+    start: "₩5,500 once",
     profileTitle: "Create my Four Pillars chart",
     profileBody: "See the calculation evidence behind the pillars, elements, and Ten Gods.",
     section: "Explore with your chart",
@@ -40,7 +40,7 @@ const copy = {
 
 const services = {
   ko: [
-    ["원국", "내 사주 원국", "사주 네 기둥과 오행 분포를 계산 근거와 함께 봅니다.", "/saju", "무료", true],
+    ["원국", "내 사주 원국", "사주 네 기둥과 오행 분포를 계산 근거와 함께 봅니다.", "/saju", "5,500원", true],
     ["상세", "상세 리딩", "반복되는 선택과 지금의 현실 질문을 더 깊게 정리합니다.", "/plans", "상세", true],
     ["관계", "두 사람 궁합", "두 사람의 성향과 관계 패턴을 나란히 비교합니다.", "/compatibility", "무료", true],
     ["오늘", "오늘의 흐름", "하루를 돌아볼 수 있는 짧은 질문을 준비하고 있어요.", "", "", false],
@@ -48,7 +48,7 @@ const services = {
     ["기록", "내 기록", "저장한 리딩과 주문 내역을 한곳에서 확인합니다.", "/me", "", true],
   ],
   en: [
-    ["Chart", "My Four Pillars", "See your pillars and element balance with calculation evidence.", "/saju", "Free", true],
+    ["Chart", "My Four Pillars", "See your pillars and element balance with calculation evidence.", "/saju", "₩5,500", true],
     ["Deep", "Detailed reading", "Explore recurring choices and your current real-life question.", "/plans", "Detailed", true],
     ["Match", "Two-person match", "Compare two people's traits and relationship patterns.", "/compatibility", "Free", true],
     ["Today", "Today's flow", "A short daily reflection is being prepared.", "", "", false],

@@ -45,7 +45,7 @@ test("checkout validates locally and switches product and report input together"
   });
 
   await page.goto("/en/plans?product=pro_30d");
-  await expect(page.locator('[data-product="plus_30d"]')).toHaveCount(0);
+  await expect(page.locator('[data-product="plus_30d"]')).toContainText("Four Pillars chart");
   await expect(page.locator("#customer-phone")).toBeVisible();
   const premium = page.locator('[data-product="premium_pdf"]');
   await expect(premium.getByRole("button", { name: "Pay now" })).toBeEnabled();
