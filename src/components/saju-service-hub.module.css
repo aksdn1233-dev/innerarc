@@ -32,7 +32,7 @@ a.serviceCard:hover { box-shadow: 0 12px 28px rgba(66, 56, 40, 0.09); transform:
 .disabled { background: #f3f0ea; color: #8b857c; }
 .disabled .serviceMeta small, .disabled .serviceMeta > span, .disabled .cardState { color: #9f9990; }
 .disclaimer { margin: 34px 5px 0; color: #837c72; font-size: 0.72rem; line-height: 1.65; }
-.bottomNav { position: fixed; z-index: 5; right: 0; bottom: 0; left: 0; display: grid; grid-template-columns: repeat(5, 1fr); width: min(100%, 520px); margin: 0 auto; padding: 10px 10px calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid #e6e0d6; background: rgba(251, 250, 247, 0.96); backdrop-filter: blur(16px); }
+.bottomNav { position: fixed; z-index: 5; right: 0; bottom: 0; left: 0; display: grid; grid-template-columns: repeat(4, 1fr); width: min(100%, 520px); margin: 0 auto; padding: 10px 10px calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid #e6e0d6; background: rgba(251, 250, 247, 0.96); backdrop-filter: blur(16px); }
 .bottomNav a { display: flex; min-height: 48px; align-items: center; justify-content: center; color: #8d867b; font-size: 0.72rem; font-weight: 700; text-decoration: none; }
 .bottomNav .active { color: #805b42; }
 @media (max-width: 370px) { .grid { grid-template-columns: 1fr; } .serviceCard { min-height: 180px; } }

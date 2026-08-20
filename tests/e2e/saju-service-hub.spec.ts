@@ -25,6 +25,9 @@ test("the Saju service hub exposes real routes and labels unfinished services", 
   await expect(page.locator("article[data-state='unavailable']")).toHaveCount(2);
   await expect(page.locator("main")).toContainText("자기 성찰 도구");
   await expect(page.locator("main")).not.toContainText(/[四⌂◉□♡○]/);
+  const navigation = page.getByRole("navigation", { name: "사주 서비스 탐색" });
+  await expect(navigation.getByRole("link")).toHaveCount(4);
+  await expect(navigation.getByRole("link", { name: "궁합" })).toHaveCount(0);
 });
 
 test("the Saju service hub preserves English route truth", async ({ page }) => {

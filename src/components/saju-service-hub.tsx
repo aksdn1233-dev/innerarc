@@ -20,7 +20,7 @@ const copy = {
     ready: "바로 보기",
     soon: "준비 중",
     disclaimer: "사주는 전통 상징을 바탕으로 한 자기 성찰 도구입니다. 미래를 보장하거나 과학적 진단·치료·전문가의 조언을 대신하지 않습니다.",
-    nav: ["홈", "사주", "원국", "궁합", "기록"],
+    nav: ["홈", "사주", "원국", "기록"],
   },
   en: {
     brand: "GYEOL SAJU",
@@ -34,7 +34,7 @@ const copy = {
     ready: "Open",
     soon: "Coming soon",
     disclaimer: "Saju is a symbolic reflection tool rooted in tradition. It does not guarantee the future or replace scientific diagnosis, treatment, or professional advice.",
-    nav: ["Home", "Saju", "Chart", "Match", "Records"],
+    nav: ["Home", "Saju", "Chart", "Records"],
   },
 } as const;
 
@@ -60,7 +60,7 @@ const services = {
 export function SajuServiceHub({ locale }: { locale: Locale }) {
   const t = copy[locale];
   const otherLocale = locale === "ko" ? "en" : "ko";
-  const navHrefs = ["", "/fortune", "/saju", "/compatibility", "/me"];
+  const navHrefs = ["", "/fortune", "/saju", "/me"];
   const [selectedGuideId, setSelectedGuideId] = useState<NumerologyGuideId>("taeryeong");
 
   return (
