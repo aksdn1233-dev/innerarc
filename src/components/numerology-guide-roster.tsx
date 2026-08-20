@@ -12,6 +12,7 @@ type Props = {
   locale: Locale;
   selectedGuideId: NumerologyGuideId;
   onSelect: (guideId: NumerologyGuideId, focusId: OnboardingFocusId) => void;
+  surface?: "numerology" | "saju";
 };
 
 function GuideCard({
@@ -66,17 +67,26 @@ function GuideCard({
   );
 }
 
-export function NumerologyGuideRoster({ locale, selectedGuideId, onSelect }: Props) {
+export function NumerologyGuideRoster({ locale, selectedGuideId, onSelect, surface = "numerology" }: Props) {
   const ko = locale === "ko";
+  const isSaju = surface === "saju";
   return (
     <section className="numerology-guide-section" aria-labelledby="numerology-guide-title">
       <header className="numerology-guide-heading">
-        <p className="eyebrow">{ko ? "결 수비학 해석자" : "GYEOL numerology guides"}</p>
+        <p className="eyebrow">
+          {isSaju
+            ? (ko ? "결 사주 서비스 해석자" : "GYEOL Saju service guides")
+            : (ko ? "결 수비학 해석자" : "GYEOL numerology guides")}
+        </p>
         <h2 id="numerology-guide-title">{ko ? "지금 필요한 관점의 해석자를 고르세요" : "Choose the perspective you need now"}</h2>
         <p>
-          {ko
-            ? "해석자는 결과를 바라보는 관점을 정합니다. 숫자 계산식과 결과값은 누구를 선택해도 바뀌지 않습니다."
-            : "Your guide sets the reflection lens. The deterministic formula and calculated values never change with this choice."}
+          {isSaju
+            ? (ko
+                ? "사주 서비스에서 먼저 필요한 해석 관점을 고르세요. 해석자 선택은 원국 계산값을 바꾸지 않습니다."
+                : "Choose the perspective you need before entering a Saju service. Your guide never changes the calculated chart facts.")
+            : (ko
+                ? "해석자는 결과를 바라보는 관점을 정합니다. 숫자 계산식과 결과값은 누구를 선택해도 바뀌지 않습니다."
+                : "Your guide sets the reflection lens. The deterministic formula and calculated values never change with this choice.")}
         </p>
       </header>
       <div className="numerology-guide-grid">

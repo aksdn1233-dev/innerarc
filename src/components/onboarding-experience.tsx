@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import {
   calculateNumerologyProfile,
   NumerologyInputError,
@@ -20,13 +19,7 @@ import { buildCoreProfileShare } from "@/core/share";
 import { ShareCardPanel } from "@/components/share-card-panel";
 import { focusAndScroll, scrollToElement } from "@/components/accessibility";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
-import { NumerologyGuideRoster } from "@/components/numerology-guide-roster";
 import { MIN_BIRTH_DATE, currentMaxBirthDate, isAcceptedBirthDate } from "@/core/birth-range";
-import {
-  getDefaultNumerologyGuide,
-  getNumerologyGuide,
-  type NumerologyGuideId,
-} from "@/core/numerology-guides";
 import { createPaidContentPreview } from "@/core/report-preview";
 import type { OnboardingFocusId } from "@/core/onboarding";
 import type { Locale } from "@/i18n/config";
@@ -50,7 +43,6 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
   const [context, setContext] = useState<OnboardingReflectionContext | null>(null);
   const [error, setError] = useState("");
   const [selectedFocus, setSelectedFocus] = useState<OnboardingFocusId>(d.interests[0]?.value ?? "work");
-  const [selectedGuideId, setSelectedGuideId] = useState<NumerologyGuideId>("taeryeong");
   const deepProfileRef = useRef<HTMLDetailsElement>(null);
   const guideVideoRef = useRef<HTMLVideoElement>(null);
   const guideAudioRef = useRef<HTMLAudioElement>(null);
@@ -74,7 +66,6 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
   const integratedProfile = result ? createIntegratedProfile(result, locale) : null;
   const lifestyle = result ? createLifestyleRecommendations(result, locale) : null;
   const paidPreview = result ? createPaidContentPreview(result, locale) : null;
-  const selectedGuide = getNumerologyGuide(selectedGuideId);
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -135,15 +126,8 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
     scrollToElement("#onboarding");
   }
 
-  function selectGuide(guideId: NumerologyGuideId, focusId: OnboardingFocusId) {
-    setSelectedGuideId(guideId);
-    setSelectedFocus(focusId);
-    window.requestAnimationFrame(() => scrollToElement("#onboarding"));
-  }
-
   function selectFocus(focusId: OnboardingFocusId) {
     setSelectedFocus(focusId);
-    setSelectedGuideId(getDefaultNumerologyGuide(focusId).id);
   }
 
   const otherLocale = locale === "ko" ? "en" : "ko";
@@ -225,14 +209,6 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
             </audio>
           </div>
         </section>
-
-        {routeName === "numerology" && (
-          <NumerologyGuideRoster
-            locale={locale}
-            onSelect={selectGuide}
-            selectedGuideId={selectedGuideId}
-          />
-        )}
 
         <section className="form-section cinema-intake" id="onboarding" aria-labelledby="onboarding-title">
           <div className="cinema-intake-art" aria-hidden="true" />
@@ -341,34 +317,6 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
                 <h2>{d.oneLine}</h2>
                 <p className="summary">{profile.summary}</p>
               </header>
-
-              {routeName === "numerology" && (
-                <aside
-                  className="selected-guide-result"
-                  style={{ "--guide-color": selectedGuide.theme.color } as CSSProperties}
-                  aria-label={locale === "ko" ? "선택한 해석자" : "Selected guide"}
-                >
-                  <Image
-                    alt={selectedGuide.imageAlt[locale]}
-                    decoding="async"
-                    height="1200"
-                    loading="eager"
-                    sizes="(max-width: 560px) 96px, 160px"
-                    src={selectedGuide.image}
-                    width="800"
-                  />
-                  <div>
-                    <p className="eyebrow">{locale === "ko" ? "이 결과의 해석 관점" : "Perspective for this result"}</p>
-                    <h3>{selectedGuide.name[locale]} · {selectedGuide.role[locale]}</h3>
-                    <p>{selectedGuide.specialties[locale].join(" · ")}</p>
-                    <small>
-                      {locale === "ko"
-                        ? "해석자 선택은 설명의 관점만 정하며 수비학 계산값은 바꾸지 않습니다."
-                        : "The guide changes only the reflection lens, never the numerology calculation."}
-                    </small>
-                  </div>
-                </aside>
-              )}
 
               <section className="onboarding-context-card" aria-labelledby="context-title">
                 <p className="eyebrow">{d.contextEyebrow} · {context.focusLabel}</p>

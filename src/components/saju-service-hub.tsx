@@ -1,4 +1,9 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
+import { NumerologyGuideRoster } from "@/components/numerology-guide-roster";
+import type { NumerologyGuideId } from "@/core/numerology-guides";
 import type { Locale } from "@/i18n/config";
 import styles from "./saju-service-hub.module.css";
 
@@ -56,6 +61,7 @@ export function SajuServiceHub({ locale }: { locale: Locale }) {
   const t = copy[locale];
   const otherLocale = locale === "ko" ? "en" : "ko";
   const navHrefs = ["", "/fortune", "/saju", "/compatibility", "/me"];
+  const [selectedGuideId, setSelectedGuideId] = useState<NumerologyGuideId>("taeryeong");
 
   return (
     <main className={styles.page} id="main-content" tabIndex={-1}>
@@ -72,6 +78,13 @@ export function SajuServiceHub({ locale }: { locale: Locale }) {
           <h1 id="fortune-title">{t.title}</h1>
           <span>{t.intro}</span>
         </section>
+
+        <NumerologyGuideRoster
+          locale={locale}
+          onSelect={(guideId) => setSelectedGuideId(guideId)}
+          selectedGuideId={selectedGuideId}
+          surface="saju"
+        />
 
         <Link className={styles.profileCard} href={`/${locale}/saju`}>
           <span className={styles.profileCopy}>

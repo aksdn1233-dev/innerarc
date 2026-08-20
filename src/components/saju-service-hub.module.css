@@ -7,6 +7,10 @@
 .hero p { margin: 0 0 11px; color: #8c634d; font-size: 0.78rem; font-weight: 800; }
 .hero h1 { max-width: 12ch; margin: 0; font-size: clamp(2rem, 9vw, 2.8rem); letter-spacing: -0.07em; line-height: 1.08; }
 .hero > span { display: block; max-width: 36ch; margin-top: 16px; color: #736d63; font-size: 0.94rem; line-height: 1.65; }
+.appShell :global(.numerology-guide-section) { width: 100%; padding: 24px 0 34px; }
+.appShell :global(.numerology-guide-heading) { margin-bottom: 22px; text-align: left; }
+.appShell :global(.numerology-guide-heading h2) { font-size: clamp(1.6rem, 7vw, 2.15rem); }
+.appShell :global(.numerology-guide-grid) { grid-template-columns: 1fr; }
 .profileCard { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; padding: 20px; border-radius: 22px; background: #363c31; color: #fffdf7; box-shadow: 0 14px 34px rgba(47, 52, 42, 0.18); text-decoration: none; }
 .profileCopy, .serviceMeta { display: flex; min-width: 0; flex-direction: column; }
 .profileCopy small { color: #ddc39e; font-size: 0.72rem; font-weight: 800; }

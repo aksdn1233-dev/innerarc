@@ -40,16 +40,17 @@ describe("GYEOL numerology guides", () => {
   });
 
   it("uses whole-image responsive rendering for the roster and result", async () => {
-    const [css, onboarding] = await Promise.all([
+    const [css, onboarding, sajuHub] = await Promise.all([
       readFile("src/app/globals.css", "utf8"),
       readFile("src/components/onboarding-experience.tsx", "utf8"),
+      readFile("src/components/saju-service-hub.tsx", "utf8"),
     ]);
     expect(css).toContain(".numerology-guide-image-frame");
     expect(css).toContain("aspect-ratio: 2 / 3");
     expect(css).toContain("object-fit: contain");
     expect(css).toContain("object-position: center center");
-    expect(onboarding).toContain('routeName === "numerology"');
-    expect(onboarding).toContain("getDefaultNumerologyGuide");
+    expect(onboarding).not.toContain("NumerologyGuideRoster");
+    expect(sajuHub).toContain("NumerologyGuideRoster");
+    expect(sajuHub).toContain('surface="saju"');
   });
 });
-
