@@ -14,6 +14,7 @@
 - [x] Key context and decision terms are consistently emphasized across Numerology, Saju, and compatibility report bodies.
 - [x] Report immersion includes guide-specific voice lines, dark vignette gradients, and reduced-motion-safe atmospheric effects.
 - [x] Consecutive scenes featuring the same guide use distinct, personality-consistent dialogue in Korean and English.
+- [x] Every Korean Taeryeong bridge line passes the honorific-ending check.
 - [x] Saved relationship outcomes can inform the next reflection only after explicit use, with misses preserved and facts/ranking unchanged.
 - [x] A selected relationship environment becomes an editable one-time Reality Check draft without URL data, persistent fallback, implicit record creation, or sensitive profile transfer.
 - [x] Monthly Reality Check reports capture the browser-local review month, revisit prior months without writes, disclose legacy UTC fallback, and preserve the stored source records.

@@ -13,6 +13,12 @@ async function expectConsecutiveCharacterVoicesToVary(panels: Locator) {
   }
 }
 
+async function expectTaeryeongToUseHonorifics(panels: Locator) {
+  const voices = await panels.locator('[data-character="taeryeong"] .webtoon-character-voice').allTextContents();
+  expect(voices.length).toBeGreaterThan(0);
+  for (const voice of voices) expect(voice).toMatch(/(습니다|겠습니다|입니다|세요)\.”$/);
+}
+
 test("compatibility offers the five plain-language relationship choices", async ({ page }) => {
   await page.goto("/ko/compatibility");
   await expect(page.locator("#compatibility-type option")).toHaveText([
@@ -49,6 +55,7 @@ test("fixed 941104 product samples create no checkout controls", async ({ page }
     await expect(page.locator(".webtoon-story-bubble").first()).toBeVisible();
     await expect(page.locator(".webtoon-character-voice").first()).toBeVisible();
     await expectConsecutiveCharacterVoicesToVary(page.locator(".webtoon-story-panel"));
+    if (kind === "detail") await expectTaeryeongToUseHonorifics(page.locator("main"));
     await expect(page.locator(".report-context-emphasis").first()).toBeVisible();
     await expect(page.getByRole("button", { name: /결제|구매/ })).toHaveCount(0);
   }

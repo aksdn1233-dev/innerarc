@@ -67,11 +67,11 @@ function storyTheme(title: ReactNode, tone: WebtoonTone): { theme: string; secti
 const characterVoices = {
   taeryeong: {
     ko: [
-      (subject: string) => `좋아, ‘${subject}’부터 큰 흐름을 잡아볼게.`,
-      (subject: string) => `흩어진 신호를 모아서 ‘${subject}’의 구조부터 보자.`,
-      (subject: string) => `‘${subject}’, 여기서 전체 판이 어떻게 움직이는지 읽어볼게.`,
-      (subject: string) => `먼저 중심을 세우자. 이번 장면의 축은 ‘${subject}’야.`,
-      (subject: string) => `복잡해 보여도 괜찮아. ‘${subject}’의 큰 결부터 연결해볼게.`,
+      (subject: string) => `좋습니다. ‘${subject}’부터 큰 흐름을 잡아보겠습니다.`,
+      (subject: string) => `흩어진 신호를 모아서 ‘${subject}’의 구조부터 살펴보겠습니다.`,
+      (subject: string) => `‘${subject}’, 여기서 전체 판이 어떻게 움직이는지 읽어보겠습니다.`,
+      (subject: string) => `먼저 중심을 세워보겠습니다. 이번 장면의 축은 ‘${subject}’입니다.`,
+      (subject: string) => `복잡해 보여도 괜찮습니다. ‘${subject}’의 큰 결부터 연결해보겠습니다.`,
     ],
     en: [
       (subject: string) => `All right. Let’s map the larger pattern behind “${subject}.”`,
