@@ -218,14 +218,18 @@ export function CharacterWebtoonPanel({
       <div aria-hidden="true" className="webtoon-story-art">
         <Image className="webtoon-story-background" fill sizes="(max-width: 900px) 100vw, 900px" src={scene.backgroundPath} alt="" />
         {scene.effectPath && <Image className="webtoon-story-effect" fill sizes="(max-width: 900px) 100vw, 900px" src={scene.effectPath} alt="" />}
-        <Image
+        {/* Native character PNGs must not receive responsive srcset density descriptors:
+            their source canvas is 384px and browsers otherwise enlarge a falsely declared
+            640/750w candidate. Backgrounds still use the optimized Image component. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           alt=""
           className="webtoon-story-character"
+          decoding="async"
           draggable={false}
           height={384}
-          sizes="(max-width: 680px) 88vw, 384px"
+          loading="lazy"
           src={scene.assetPath}
-          unoptimized
           width={384}
         />
       </div>
