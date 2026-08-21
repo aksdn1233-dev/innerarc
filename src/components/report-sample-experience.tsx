@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { PaidReport } from "@/core/paid-reading";
 import type { Locale } from "@/i18n/config";
-import { WebtoonCue, WebtoonOrbs, WebtoonPanel } from "@/components/webtoon";
+import { CharacterWebtoonPanel as WebtoonPanel, WebtoonCue, WebtoonOrbs } from "@/components/webtoon";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
 
 type SampleKind = "detail" | "premium" | "saju";
@@ -59,10 +59,9 @@ export function ReportSampleExperience({
         </nav>
       </header>
 
-      {basis && <WebtoonOrbs items={orbItems} label={ko ? "수비학 계산 기준" : "Numerology calculation basis"} />}
-
       <WebtoonPanel badge={ko ? "요약" : "Summary"} title={report.summary} tone="night">
         {report.characterLabel && <p className="webtoon-lead">{report.characterLabel}</p>}
+        {basis && <WebtoonOrbs items={orbItems} label={ko ? "수비학 계산 기준" : "Numerology calculation basis"} />}
         <WebtoonCue />
       </WebtoonPanel>
 

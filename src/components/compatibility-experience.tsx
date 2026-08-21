@@ -18,7 +18,7 @@ import type { CompatibilityCopy } from "@/i18n/compatibility-copy";
 import { buildCompatibilityShare } from "@/core/share";
 import { ShareCardPanel } from "@/components/share-card-panel";
 import { focusAndScroll, scrollToElement } from "@/components/accessibility";
-import { WebtoonCue, WebtoonPanel } from "@/components/webtoon";
+import { CharacterWebtoonPanel as WebtoonPanel, WebtoonCue } from "@/components/webtoon";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
 
 type Props = { locale: Locale; copy: CompatibilityCopy };

@@ -7507,21 +7507,26 @@ summary {
 }
 
 .sample-report-head {
-  max-width: 820px;
+  width: min(100%, 900px);
+  max-width: none;
   margin: 0 auto;
-  padding: 44px 24px 30px;
+  padding: 34px 24px 30px;
+  background:
+    radial-gradient(circle at 88% 8%, rgba(221, 185, 120, .2), transparent 38%),
+    linear-gradient(155deg, #06101f, #11192a);
+  color: #fff9ee;
 }
 
 .sample-report-head h1 {
   margin: 14px 0 8px;
-  font-size: clamp(2.2rem, 8vw, 5rem);
+  font-size: clamp(2rem, 7vw, 4.2rem);
   line-height: .98;
 }
 
 .sample-report-notice {
   max-width: 680px;
   margin-top: 18px;
-  color: var(--muted);
+  color: rgba(255, 249, 238, .68);
 }
 
 .sample-report-tabs {
@@ -7533,7 +7538,7 @@ summary {
 
 .sample-report-tabs a {
   padding: 10px 14px;
-  border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
+  border: 1px solid rgba(255, 249, 238, .3);
   border-radius: 999px;
   color: inherit;
   text-decoration: none;
@@ -7545,8 +7550,247 @@ summary {
   color: #fff;
 }
 
+.sample-report-head .brand { color: #fff9ee; }
+.sample-report-head .eyebrow { color: #f1c67b; }
+
 .sample-report-body {
   white-space: pre-line;
+}
+
+/* ---- Character-led report episodes ------------------------------------------------
+   These are scenes, not cards: each result beat owns a full illustrated frame, a guide
+   acts inside it, narration sits outside the dialogue, and the report copy lives in an
+   accessible HTML speech bubble. */
+.webtoon-story-panel {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  width: min(100%, 900px);
+  min-height: 100svh;
+  align-content: start;
+  padding: clamp(28px, 6vw, 56px);
+  margin: 0 auto;
+  background: #15131c;
+  color: #28231d;
+  overflow: hidden;
+}
+
+.webtoon-story-art,
+.webtoon-story-background,
+.webtoon-story-effect {
+  position: absolute;
+  inset: 0;
+}
+
+.webtoon-story-art {
+  z-index: -3;
+}
+
+.webtoon-story-background {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(.88) brightness(.58);
+}
+
+.webtoon-story-effect {
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: .34;
+  mix-blend-mode: screen;
+}
+
+.webtoon-story-art::after {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(7, 8, 13, .06), rgba(7, 8, 13, .14) 38%, rgba(7, 8, 13, .8) 86%),
+    linear-gradient(90deg, rgba(7, 8, 13, .42), transparent 48%);
+  content: "";
+}
+
+.webtoon-story-character {
+  position: absolute;
+  z-index: 3;
+  top: clamp(70px, 10vw, 110px);
+  right: clamp(-54px, -3vw, -16px);
+  width: min(76vw, 560px);
+  height: min(70svh, 620px);
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 28px 36px rgba(0, 0, 0, .42));
+}
+
+.webtoon-story-panel:nth-of-type(even) .webtoon-story-character {
+  right: auto;
+  left: clamp(-54px, -3vw, -16px);
+  transform: scaleX(-1);
+}
+
+.webtoon-story-narration {
+  position: absolute;
+  z-index: 4;
+  top: clamp(24px, 5vw, 48px);
+  left: clamp(20px, 5vw, 52px);
+  width: min(78%, 33rem);
+  color: #fff9ee;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, .7);
+}
+
+.webtoon-story-narration p {
+  margin: 0 0 8px;
+  color: #f1c67b;
+  font-size: .74rem;
+  font-weight: 900;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+}
+
+.webtoon-story-narration span {
+  display: block;
+  font-size: clamp(.82rem, 2vw, 1rem);
+  line-height: 1.65;
+}
+
+.webtoon-story-bubble {
+  position: relative;
+  z-index: 5;
+  width: min(94%, 620px);
+  margin-top: clamp(430px, 58svh, 560px);
+  padding: clamp(22px, 5vw, 36px);
+  border: 3px solid #241f1a;
+  border-radius: 34px 34px 34px 8px;
+  background: rgba(255, 253, 247, .97);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .4);
+  overflow-wrap: anywhere;
+}
+
+.webtoon-story-panel:nth-of-type(even) .webtoon-story-bubble {
+  justify-self: end;
+  border-radius: 34px 34px 8px;
+}
+
+.webtoon-story-bubble::before {
+  position: absolute;
+  top: -26px;
+  left: 52px;
+  width: 34px;
+  height: 34px;
+  border-top: 3px solid #241f1a;
+  border-left: 3px solid #241f1a;
+  background: rgba(255, 253, 247, .97);
+  content: "";
+  transform: rotate(45deg);
+}
+
+.webtoon-story-panel:nth-of-type(even) .webtoon-story-bubble::before {
+  right: 52px;
+  left: auto;
+}
+
+.webtoon-story-bubble > strong {
+  display: inline-flex;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #241f1a;
+  color: #f1c67b;
+  font-size: .76rem;
+  letter-spacing: .05em;
+}
+
+.webtoon-story-bubble h2 {
+  margin: 12px 0 18px;
+  font-size: clamp(1.55rem, 5vw, 2.7rem);
+  letter-spacing: -.055em;
+  line-height: 1.13;
+}
+
+.webtoon-story-dialogue,
+.webtoon-story-dialogue p,
+.webtoon-story-dialogue li {
+  font-size: clamp(.97rem, 2.3vw, 1.08rem);
+  line-height: 1.82;
+}
+
+.webtoon-story-dialogue p,
+.webtoon-story-dialogue ul,
+.webtoon-story-dialogue ol {
+  margin-top: 14px;
+  margin-bottom: 0;
+}
+
+.webtoon-story-dialogue .webtoon-body,
+.webtoon-story-dialogue .sample-report-body {
+  white-space: pre-wrap;
+}
+
+.webtoon-story-dialogue details {
+  margin-top: 18px;
+  border-top: 1px solid rgba(36, 31, 26, .16);
+  padding-top: 14px;
+}
+
+.webtoon-story-dialogue a,
+.webtoon-story-dialogue button,
+.webtoon-story-dialogue summary {
+  position: relative;
+  z-index: 1;
+}
+
+.webtoon-story-gold .webtoon-story-bubble { background: rgba(255, 247, 225, .98); }
+.webtoon-story-warn .webtoon-story-bubble { background: rgba(255, 240, 232, .98); }
+
+@media (min-width: 901px) {
+  .webtoon-story-panel {
+    border-right: 1px solid rgba(255, 255, 255, .06);
+    border-left: 1px solid rgba(255, 255, 255, .06);
+  }
+}
+
+@media (max-width: 680px) {
+  .webtoon-story-panel {
+    width: 100%;
+    min-height: 760px;
+    padding: 22px 16px 30px;
+  }
+
+  .webtoon-story-character {
+    top: 72px;
+    right: -14vw;
+    width: 92vw;
+    height: 60svh;
+  }
+
+  .webtoon-story-panel:nth-of-type(even) .webtoon-story-character {
+    left: -14vw;
+  }
+
+  .webtoon-story-bubble {
+    width: 100%;
+    margin-top: 400px;
+    padding: 22px 19px 24px;
+    border-width: 2px;
+    border-radius: 25px 25px 25px 7px;
+  }
+
+  .webtoon-story-panel:nth-of-type(even) .webtoon-story-bubble {
+    border-radius: 25px 25px 7px;
+  }
+
+  .webtoon-story-bubble::before {
+    border-width: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .webtoon-story-character,
+  .webtoon-story-effect {
+    animation: none !important;
+    transition: none !important;
+  }
 }
 
 @media (max-width: 680px) {

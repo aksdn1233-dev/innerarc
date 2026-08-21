@@ -1,4 +1,6 @@
+import Image from "next/image";
 import type { ReactNode } from "react";
+import { selectWebtoonScene, type WebtoonSectionType } from "@/core/webtoon-scenes";
 
 /*
  * The vertical-webtoon reading surface.
@@ -40,6 +42,85 @@ export function WebtoonPanel({
         {title != null && <h2 className="webtoon-title">{title}</h2>}
         {lead != null && <p className="webtoon-lead">{lead}</p>}
         {children}
+      </div>
+    </section>
+  );
+}
+
+function storyTheme(title: ReactNode, tone: WebtoonTone): { theme: string; sectionType: WebtoonSectionType } {
+  const text = typeof title === "string" ? title : "";
+  if (/관계|궁합|연애|가족|친구|동료|협업|대화|갈등|relationship|compatib|family|friend|cowork/i.test(text)) {
+    return { theme: "relationship", sectionType: "relationship" };
+  }
+  if (/숫자|계산|근거|원국|오행|절기|십신|억부|조후|격국|number|calculation|pillar|phase/i.test(text)) {
+    return { theme: "analysis", sectionType: "numbers" };
+  }
+  if (tone === "warn" || /주의|안전|중단|보류|위험|warning|safety|stop|risk/i.test(text)) {
+    return { theme: "warning", sectionType: "warning" };
+  }
+  if (tone === "gold" || /실행|행동|마무리|결론|action|closing|conclusion/i.test(text)) {
+    return { theme: "encouragement", sectionType: "encouragement" };
+  }
+  return { theme: tone === "night" ? "decision" : "core", sectionType: tone === "night" ? "decision" : "summary" };
+}
+
+/** A real scene beat: art, character acting, narration and an HTML speech bubble. */
+export function CharacterWebtoonPanel({
+  badge,
+  children,
+  className,
+  id,
+  lead,
+  sceneKey,
+  title,
+  tone = "paper",
+}: {
+  badge?: ReactNode;
+  children?: ReactNode;
+  className?: string;
+  id?: string;
+  lead?: ReactNode;
+  sceneKey?: string;
+  title?: ReactNode;
+  tone?: WebtoonTone;
+}) {
+  const selection = storyTheme(title, tone);
+  const titleText = typeof title === "string" ? title : sceneKey ?? tone;
+  const scene = selectWebtoonScene({
+    seed: sceneKey ?? `${selection.theme}:${titleText}`,
+    theme: selection.theme,
+    sectionType: selection.sectionType,
+    emotion: tone === "warn" ? "serious" : tone === "gold" ? "hopeful" : tone === "night" ? "focused" : "calm",
+    emphasis: tone === "warn" ? "high" : "medium",
+  });
+
+  return (
+    <section
+      className={`webtoon-story-panel webtoon-story-${tone}${className ? ` ${className}` : ""}`}
+      data-character={scene.character}
+      data-webtoon-panel=""
+      id={id}
+    >
+      <div aria-hidden="true" className="webtoon-story-art">
+        <Image className="webtoon-story-background" fill sizes="(max-width: 900px) 100vw, 900px" src={scene.backgroundPath} alt="" />
+        {scene.effectPath && <Image className="webtoon-story-effect" fill sizes="(max-width: 900px) 100vw, 900px" src={scene.effectPath} alt="" />}
+        <Image
+          alt=""
+          className="webtoon-story-character"
+          height={560}
+          sizes="(max-width: 680px) 82vw, 520px"
+          src={scene.assetPath}
+          width={560}
+        />
+      </div>
+      <div className="webtoon-story-narration">
+        {badge != null && <p>{badge}</p>}
+        {lead != null && <span>{lead}</span>}
+      </div>
+      <div className="webtoon-story-bubble">
+        <strong>{scene.characterNameKo}</strong>
+        {title != null && <h2>{title}</h2>}
+        <div className="webtoon-story-dialogue">{children}</div>
       </div>
     </section>
   );

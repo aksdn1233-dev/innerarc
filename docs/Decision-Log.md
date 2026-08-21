@@ -1,5 +1,35 @@
 # Decision Log
 
+## D-068 — Replace report-card stacks with actual character webtoon scenes
+
+- Date: 2026-08-21
+- Decision: Render every purchased Numerology chapter, Saju chapter, fixed product sample,
+  and compatibility result as a full illustrated scene selected deterministically from the
+  owner-supplied character manifest. Each scene combines a background, effect layer,
+  character acting cut, separate narration, and accessible HTML speech bubble. Keep order,
+  calculation evidence, report text, safety copy, downloads, feedback, and entitlements
+  unchanged. Utility forms and post-report controls remain ordinary interface elements.
+- Demand evidence and distribution: The product owner reviewed all four deployed 1994-11-04
+  results and explicitly rejected the card-like presentation as not being a webtoon. The
+  change applies to the same protected paid-report, sample, Saju, and compatibility routes;
+  no new acquisition channel is added.
+- Unit economics: Prices remain 5,500 / 39,000 / 79,000 KRW. Existing first-party PNG assets
+  create no AI, licensing, storage, payment, messaging, or fulfillment provider cost. Image
+  bytes and mobile completion are the relevant operating costs.
+- Safety and accessibility: Dialogue stays in selectable HTML rather than being baked into
+  art. Decorative layers have empty alternative text, heading order and result text remain
+  available to assistive technology, reduced-motion preferences are respected, and symbolic
+  limits remain in the report.
+- Success and guardrails: A result must visibly include character art, scene backgrounds,
+  narration, and speech bubbles in its first episode beat; 390px and desktop layouts must not
+  overflow horizontally; every chapter remains readable; calculation and payment regression
+  suites stay green. Monitor result completion and image-load performance under existing
+  consented analytics without collecting birth dates.
+- Reversal conditions: Return to the prior presentation commit if character assets fail,
+  dialogue becomes unreadable, mobile completion drops materially, accessibility regresses,
+  or image bytes break the current performance budget. Reversion affects presentation only.
+- Status: Owner-authorized correction after direct visual review.
+
 ## D-067 — Simplify compatibility choices and separate Numerology from Saju
 
 - Date: 2026-08-21

@@ -6,7 +6,7 @@ import { MeteorTrails, NightHorizon } from "@/components/brand-visuals";
 import { PaymentStatusWaiting } from "@/components/payment-status-waiting";
 import { ReportActions } from "@/components/report-actions";
 import { ReviewRequestPanel } from "@/components/review-request-panel";
-import { WebtoonCta, WebtoonCue, WebtoonOrbs, WebtoonPanel } from "@/components/webtoon";
+import { CharacterWebtoonPanel as WebtoonPanel, WebtoonCta, WebtoonCue, WebtoonOrbs } from "@/components/webtoon";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
 import { toOwnReviewState } from "@/core/reviews";
 import { isLocale } from "@/i18n/config";
@@ -370,14 +370,17 @@ export default async function PurchasedReportPage({
           // A checklist is something the reader opens when they are ready to work through
           // it, so it stays folded away inside its panel rather than unrolling mid-scroll.
           return progressive ? (
-            <section className="webtoon-panel webtoon-paper" data-webtoon-panel="" key={section.title}>
-              <div className="webtoon-inner">
-                <details className="premium-progressive">
-                  <summary>{section.title}</summary>
-                  <p className="webtoon-body">{section.body}</p>
-                </details>
-              </div>
-            </section>
+            <WebtoonPanel
+              badge={locale === "ko" ? "체크 장면" : "Check scene"}
+              key={section.title}
+              title={section.title}
+              tone="paper"
+            >
+              <details className="premium-progressive">
+                <summary>{locale === "ko" ? "내용 펼치기" : "Open checklist"}</summary>
+                <p className="webtoon-body">{section.body}</p>
+              </details>
+            </WebtoonPanel>
           ) : (
             <WebtoonPanel
               badge={locale === "ko" ? "심층" : "In depth"}
