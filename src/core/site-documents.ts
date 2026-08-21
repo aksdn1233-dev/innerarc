@@ -43,6 +43,8 @@ const PRIVATE_PATHS = [
 
 const PUBLIC_ROUTES = [
   "",
+  "/fortune",
+  "/daily-fortune",
   "/profile",
   "/numerology",
   "/relationship",
@@ -97,8 +99,8 @@ export function createSitemapDocument(
     PUBLIC_ROUTES.map((route) => ({
       url: new URL(`/${locale}${route}`, baseUrl).toString(),
       lastModified,
-      changeFrequency: route === "" ? "weekly" as const : "monthly" as const,
-      priority: route === "" ? 1 : route === "/plans" ? 0.9 : 0.7,
+      changeFrequency: route === "/daily-fortune" ? "daily" as const : route === "" ? "weekly" as const : "monthly" as const,
+      priority: route === "" ? 1 : route === "/plans" ? 0.9 : route === "/daily-fortune" ? 0.8 : 0.7,
       alternates: {
         languages: {
           ko: new URL(`/ko${route}`, baseUrl).toString(),

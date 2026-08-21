@@ -22,8 +22,10 @@ test("the Saju service hub exposes real routes and labels unfinished services", 
   await expect(page.getByRole("link", { name: /먼저 내 사주 원국 만들기/ })).toContainText("1회 5,500원");
   await expect(page.getByRole("link", { name: /상세 리딩/ })).toHaveAttribute("href", "/ko/plans");
   await expect(page.getByRole("link", { name: /두 사람 궁합/ })).toHaveAttribute("href", "/ko/compatibility");
+  await expect(page.getByRole("link", { name: /오늘의 흐름/ })).toHaveAttribute("href", "/ko/daily-fortune");
+  await expect(page.getByRole("link", { name: /오늘의 흐름/ })).toContainText("무료");
   await expect(page.getByRole("link", { name: /내 기록/ })).toHaveAttribute("href", "/ko/me");
-  await expect(page.locator("article[data-state='unavailable']")).toHaveCount(2);
+  await expect(page.locator("article[data-state='unavailable']")).toHaveCount(1);
   await expect(page.locator("[class*='grid'] [class*='serviceCharacter']")).toHaveCount(6);
   await expect(page.locator("main")).toContainText("자기 성찰 도구");
   await expect(page.locator("main")).not.toContainText(/[四⌂◉□♡○]/);

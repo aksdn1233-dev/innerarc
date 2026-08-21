@@ -90,6 +90,10 @@ Last updated: 2026-08-01
 
 ## Phase 7 - Release foundation
 
+- [x] Optional free Daily Flow with explicit device-only opt-in, month/day minimization,
+  same-day deterministic output, next-local-date refresh, device export/deletion, bilingual
+  copy, character art, mobile coverage, and no background notification/provider request.
+
 - [x] Free/Plus/Pro entitlement and quota policy.
 - [x] Provider-neutral checkout/cancel and retry-safe subscription ledger.
 - [x] Consent-gated analytics and AI unit-cost event schemas with no raw text/PII.

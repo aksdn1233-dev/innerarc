@@ -17,6 +17,12 @@ Birth date, names, relationship details, journals, finances, and consultation qu
 - AI personalization, model training, product analytics, marketing, and raw journal retention are separate opt-ins and default off.
 - Deterministic calculation does not require AI consent.
 - Current preview holds guest input in browser memory only.
+- Daily Flow uses birth month and day rather than a full birth date. “View today” keeps those
+  values in page memory only. The separate explicit daily-update action stores a versioned
+  month/day preference on the device; it is validated, included in device inspect/export/delete,
+  excluded from account sync, URLs, analytics, logs, and providers, and can be disabled on the
+  same page. The result is recomputed from the device-local date when the page opens; there is
+  no background schedule, push token, email, SMS, or external notification request.
 - Onboarding focus and depth are stable non-sensitive choice IDs. The optional current concern is normalized and bounded but remains sensitive untrusted text in current-page memory. It may be shown back to the user with a “your words” label, but it is excluded from calculation evidence, URLs, share cards, browser storage, analytics, logs, and the disabled provider boundary.
 - Checking AI-personalization consent in the provider-neutral preview authorizes no hidden transfer. The UI states that no approved provider is connected and the result remains local and rule-based; declining the checkbox does not reduce deterministic output.
 - Personal romantic-discovery insights use only the user’s profile; they do not require or infer a third person’s birth date or identity.

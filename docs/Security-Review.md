@@ -14,7 +14,10 @@ Scope: repository source, configuration, local production bundle, and automated 
 - Authorization/idempotency: owner mismatch fails closed, and reused request IDs with different payloads are rejected.
 - Supabase boundary: anonymous table access returns 401; account tables use owner RLS and authenticated-only grants; server deletion executes atomically and keeps only request metadata/counts.
 - The temporary database password used for migration setup was rotated after the remote migration/lint checks and is not stored by the project.
-- Device privacy center: corrupt local records are excluded from counts/exports, no read writes data implicitly, and one explicit action removes preference, tarot-history, and Reality Check keys.
+- Device privacy center: corrupt local records are excluded from counts/exports, no read writes data implicitly, and one explicit action removes preference, tarot-history, Reality Check, and Daily Flow keys.
+- Daily Flow: month/day persistence requires an explicit button, malformed values fail closed,
+  “view today” leaves storage untouched, and calculation makes no network, AI, account,
+  analytics, notification, or payment request.
 - AI boundary: user context is delimited as untrusted data; structured output, canonical facts, high-risk routing, prompt-injection normalization, and overclaim screening are tested.
 
 ## Dependency decisions

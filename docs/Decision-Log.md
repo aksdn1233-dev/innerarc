@@ -47,6 +47,35 @@
   calculation/payment regressions appear. The calculation engine needs no rollback.
 - Status: Decided and implemented; individual anatomical art review remains an editorial gate.
 
+## D-066 — Add an optional device-local Daily Flow
+
+- Date: 2026-08-21
+- Decision: Open the previously unavailable `/daily-fortune` menu as a free bilingual
+  reflection. It calculates one stable result per device-local calendar date from birth
+  month/day only. Viewing once writes nothing; the separate “daily updates” action stores
+  only month, day, version, and enable time in browser storage. Opening the page on a later
+  local date derives the new result without a background job, notification, or provider.
+- Demand evidence and distribution: The product owner directly requested an optional daily
+  fortune update. Existing public competitor evidence verifies a daily return surface, but
+  not demand for notifications. Distribution is limited to the existing `/fortune` service
+  hub; the deliberately minimal home page is unchanged.
+- Unit economics: The feature is free and deterministic with no AI, messaging, email,
+  database, payment, or fulfillment provider cost. It does not change the 9,600/39,000 KRW
+  report economics or create a subscription promise.
+- Safety and privacy: Copy is framed as symbolic reflection with a practical action,
+  caution, reality question, calculation evidence, and explicit no-prediction/no-professional-
+  advice boundary. No birth year, name, question, account, analytics identifier, push token,
+  or server record is collected. The preference is covered by device inspect/export/delete.
+- Success and guardrails: Measure aggregate route opens and return-day opens only after
+  analytics consent and without month/day. Target repeated voluntary use without reducing
+  numerology completion; guardrails are zero external requests, zero silent storage, stable
+  same-day output, bilingual parity, mobile accessibility, and no unsupported claims.
+- Reversal conditions: Return the Today card to unavailable if the date boundary is wrong,
+  local deletion/export misses the preference, users reasonably interpret it as prediction,
+  or it materially harms performance or the primary service flow.
+- Status: Decided and implemented; push/email/SMS reminders remain held pending separate
+  demand, consent, provider, cost, quiet-hours, unsubscribe, and legal review.
+
 ## D-048 — Referral foundation remains inactive
 
 - Date: 2026-08-01

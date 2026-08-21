@@ -57,6 +57,16 @@ Status: Supabase account persistence connected; production deployment and remain
 - Remove a malformed cut from selector candidates only with a manifest/test update; never
   substitute an invented glyph, third-party character, or baked-in dialogue image.
 
+### Daily Flow rollback
+
+- Daily Flow is additive and has no migration, provider, payment, or account dependency.
+  Revert its `/daily-fortune` route and return the Today service card to unavailable.
+- Preserve device-data cleanup support for `innerarc:daily-fortune:v1` for at least one
+  release after removing the UI so existing users can still export or delete the preference.
+- Stop the feature immediately if device-local date rollover is wrong, same-day output drifts,
+  the opt-in writes before an explicit action, deletion/export omits the preference, or copy
+  crosses the symbolic-reflection boundary. Push/email/SMS reminders are not part of this release.
+
 ## Incident priorities
 
 1. Immediate safety or cross-user data exposure.

@@ -30,6 +30,7 @@ export interface MeCopy {
   preferencesCount: string;
   tarotCount: string;
   realityCount: string;
+  dailyFortuneCount: string;
   exportAll: string;
   deleteAll: string;
   deleteConfirm: string;
@@ -42,7 +43,7 @@ const ko: MeCopy = {
   brandTagline: "나·관계·올해의 흐름 리딩",
   eyebrow: "나 · 개인정보 관리",
   title: "내 설정과 기록을 내가 통제합니다",
-  intro: "현재는 게스트 모드입니다. 이 브라우저에 명시적으로 저장한 설정·타로 기록·Reality Check만 여기서 확인하고 내보내거나 삭제할 수 있습니다.",
+  intro: "현재는 게스트 모드입니다. 이 브라우저에 명시적으로 저장한 설정·타로 기록·Reality Check·오늘의 흐름 설정만 여기서 확인하고 내보내거나 삭제할 수 있습니다.",
   guestTitle: "게스트 모드",
   guestBody: "현재 로그인된 계정이 없습니다. 기본 분석 입력은 저장되지 않으며, 기기 저장을 직접 켠 기록만 남습니다.",
   providerNote: "Supabase 이메일 로그인이 구성되어 있습니다. 로그인 후 명시적으로 동기화한 기록만 소유자 전용 서버 저장소로 전송됩니다.",
@@ -68,6 +69,7 @@ const ko: MeCopy = {
   preferencesCount: "설정",
   tarotCount: "타로 기록",
   realityCount: "Reality Check",
+  dailyFortuneCount: "오늘의 흐름",
   exportAll: "전체 JSON 내보내기",
   deleteAll: "이 기기 데이터 모두 삭제",
   deleteConfirm: "이 브라우저에 저장된 InnerArc 설정과 기록을 모두 삭제할까요? 이 작업은 복구할 수 없습니다.",
@@ -80,7 +82,7 @@ const en: MeCopy = {
   brandTagline: "Personal pattern intelligence",
   eyebrow: "Me · Privacy controls",
   title: "You control your settings and records",
-  intro: "You are currently in guest mode. This page can inspect, export, or delete only the preferences, tarot history, and Reality Checks you explicitly saved in this browser.",
+  intro: "You are currently in guest mode. This page can inspect, export, or delete only the preferences, tarot history, Reality Checks, and Daily Flow setting you explicitly saved in this browser.",
   guestTitle: "Guest mode",
   guestBody: "No account is currently signed in. Core analysis inputs are not stored; only records for which you explicitly enabled device storage remain.",
   providerNote: "Supabase email sign-in is configured. After sign-in, only records you explicitly synchronize are sent to owner-scoped server storage.",
@@ -106,6 +108,7 @@ const en: MeCopy = {
   preferencesCount: "Preferences",
   tarotCount: "Tarot readings",
   realityCount: "Reality Checks",
+  dailyFortuneCount: "Daily Flow",
   exportAll: "Export all JSON",
   deleteAll: "Delete all device data",
   deleteConfirm: "Delete every InnerArc preference and record saved in this browser? This cannot be undone.",

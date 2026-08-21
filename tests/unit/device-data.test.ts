@@ -10,6 +10,7 @@ import {
   validateDevicePreferences,
   type DeviceStorage,
 } from "@/core/privacy";
+import { DAILY_FORTUNE_STORAGE_KEY, saveDailyFortunePreference } from "@/core/daily-fortune";
 import { TAROT_HISTORY_STORAGE_KEY } from "@/core/tarot";
 import { REALITY_CHECK_STORAGE_KEY } from "@/core/reality-check";
 
@@ -61,6 +62,7 @@ describe("device privacy data", () => {
       preferences: 1,
       tarotReadings: 0,
       realityChecks: 0,
+      dailyFortune: 0,
       total: 1,
     });
   });
@@ -75,18 +77,20 @@ describe("device privacy data", () => {
     expect(inspectDeviceData(storage).total).toBe(0);
     const bundle = JSON.parse(exportDeviceData(storage, now));
     expect(bundle).toMatchObject({
-      schemaVersion: "device-export-1.0.0",
+      schemaVersion: "device-export-1.1.0",
       scope: "this_browser_device",
-      data: { preferences: null, tarotReadings: [], realityChecks: [] },
+      data: { preferences: null, tarotReadings: [], realityChecks: [], dailyFortune: null },
     });
   });
 
   it("exports validated preferences and clears every owned device key", () => {
     const storage = new MemoryStorage();
     saveDevicePreferences(storage, preferences);
+    saveDailyFortunePreference(storage, { version: 1, birthMonth: 11, birthDay: 4, enabledAt: now });
     const bundle = JSON.parse(exportDeviceData(storage, now));
     expect(bundle.data.preferences.timeZone).toBe("Asia/Seoul");
     expect(bundle.data.preferences.consents.modelTraining).toBe(false);
+    expect(bundle.data.dailyFortune).toMatchObject({ birthMonth: 11, birthDay: 4 });
 
     storage.setItem(TAROT_HISTORY_STORAGE_KEY, "temporary");
     storage.setItem(REALITY_CHECK_STORAGE_KEY, "temporary");
@@ -94,6 +98,7 @@ describe("device privacy data", () => {
     expect(storage.getItem(DEVICE_PREFERENCES_STORAGE_KEY)).toBeNull();
     expect(storage.getItem(TAROT_HISTORY_STORAGE_KEY)).toBeNull();
     expect(storage.getItem(REALITY_CHECK_STORAGE_KEY)).toBeNull();
+    expect(storage.getItem(DAILY_FORTUNE_STORAGE_KEY)).toBeNull();
     clearAllDeviceData(storage);
     expect(storage.values.size).toBe(0);
   });

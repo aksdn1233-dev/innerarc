@@ -4,10 +4,13 @@ InnerArc is an AI self-discovery and personal pattern intelligence platform. It 
 
 ## Current scope
 
-Version 0.18.1 provides a web-first, guest-first Korean/English application with:
+Version 0.18.2 provides a web-first, guest-first Korean/English application with:
 
 - a mobile-first premium homepage that introduces the InnerArc pattern model, previews a result, explains four analysis fields, and leads clearly into the existing free calculation flow;
 - deterministic Pythagorean numerology and calculation evidence;
+- an optional free Daily Flow that uses only birth month/day plus the device-local date,
+  stays stable for the day, updates on the next local date, and stores its setting only
+  after an explicit on-device opt-in;
 - a deterministic, policy-versioned Gregorian Saju core with canonical Four Pillars
   evidence, explicit late-Zi/time/solar-term assumptions, stable relationship rule IDs,
   golden boundary fixtures, and fail-closed lunar/leap-month inputs pending validation;

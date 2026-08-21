@@ -6,6 +6,8 @@
 - [x] No unsupported scientific, diagnostic, probability, fate, or prediction claim in tested output.
 - [x] Free first value and deterministic entitlement policies.
 - [x] Claim-free accessory/music directions and a visibly closed shop category preview.
+- [x] Optional Daily Flow is deterministic for the local date, visibly symbolic, free,
+  bilingual, and separate from push/email/SMS promises.
 - [x] Saved relationship outcomes can inform the next reflection only after explicit use, with misses preserved and facts/ranking unchanged.
 - [x] A selected relationship environment becomes an editable one-time Reality Check draft without URL data, persistent fallback, implicit record creation, or sensitive profile transfer.
 - [x] Monthly Reality Check reports capture the browser-local review month, revisit prior months without writes, disclose legacy UTC fallback, and preserve the stored source records.
@@ -16,6 +18,8 @@
 ## Privacy and safety
 
 - [x] Local owner-scope, export, all-data/third-party deletion, retry, and cross-owner denial tests.
+- [x] Daily Flow view-only leaves storage untouched; explicit month/day persistence is
+  validated and included in device inspect/export/delete without server sync.
 - [x] Supabase owner RLS, authenticated-only grants, anonymous fail-closed probe, validated explicit sync/restore, account export, and atomic deletion migration.
 - [x] Share outputs omit dates, names, contact details, concerns, journals, and questions by construction.
 - [x] Prompt-injection, high-risk-category, overclaim, and authorization adversarial baseline.

@@ -40,6 +40,7 @@ const emptyCounts: DeviceDataCounts = {
   preferences: 0,
   tarotReadings: 0,
   realityChecks: 0,
+  dailyFortune: 0,
   total: 0,
 };
 
@@ -274,6 +275,7 @@ export function MeExperience({
               <div><strong>{counts.preferences}</strong><span>{copy.preferencesCount}</span></div>
               <div><strong>{counts.tarotReadings}</strong><span>{copy.tarotCount}</span></div>
               <div><strong>{counts.realityChecks}</strong><span>{copy.realityCount}</span></div>
+              <div><strong>{counts.dailyFortune}</strong><span>{copy.dailyFortuneCount}</span></div>
             </div>
             <div className="history-actions">
               <button type="button" onClick={inspectSavedData}>{copy.inspect}</button>
