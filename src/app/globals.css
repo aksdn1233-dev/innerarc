@@ -7642,11 +7642,14 @@ summary {
   position: absolute;
   z-index: 3;
   top: clamp(70px, 10vw, 110px);
-  right: clamp(-54px, -3vw, -16px);
-  width: min(76vw, 560px);
-  height: min(70svh, 620px);
+  right: clamp(-28px, -2vw, -8px);
+  width: min(74vw, 384px);
+  height: auto;
+  aspect-ratio: 1;
   object-fit: contain;
   object-position: center bottom;
+  image-rendering: auto;
+  backface-visibility: hidden;
   filter: drop-shadow(0 28px 36px rgba(0, 0, 0, .42));
 }
 
@@ -7805,13 +7808,13 @@ summary {
 
   .webtoon-story-character {
     top: 72px;
-    right: -14vw;
-    width: 92vw;
-    height: 60svh;
+    right: -7vw;
+    width: min(88vw, 384px);
+    height: auto;
   }
 
   .webtoon-story-panel:nth-of-type(even) .webtoon-story-character {
-    left: -14vw;
+    left: -7vw;
   }
 
   .webtoon-story-bubble {

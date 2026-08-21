@@ -46,12 +46,24 @@ test("family comparison keeps consent and renders all eight operating areas", as
 });
 
 test("fixed 941104 product samples create no checkout controls", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
   for (const kind of ["detail", "premium", "saju"]) {
     await page.goto(`/ko/samples/${kind}`);
     await expect(page.getByText("941104 결과 리포트 예시")).toBeVisible();
     await expect(page.getByText("결제·주문·저장은 발생하지 않습니다.")).toBeVisible();
     await expect(page.locator(".webtoon-story-panel").first()).toBeVisible();
     await expect(page.locator(".webtoon-story-character").first()).toBeVisible();
+    const characterImage = await page.locator(".webtoon-story-character").first().evaluate((image) => {
+      const element = image as HTMLImageElement;
+      return {
+        directAsset: !element.currentSrc.includes("/_next/image") && !element.currentSrc.includes("/_vinext/image"),
+        naturalWidth: element.naturalWidth,
+        renderedWidth: element.getBoundingClientRect().width,
+      };
+    });
+    expect(characterImage.directAsset).toBe(true);
+    expect(characterImage.naturalWidth).toBe(384);
+    expect(characterImage.renderedWidth).toBeLessThanOrEqual(characterImage.naturalWidth);
     await expect(page.locator(".webtoon-story-bubble").first()).toBeVisible();
     await expect(page.locator(".webtoon-character-voice").first()).toBeVisible();
     await expectConsecutiveCharacterVoicesToVary(page.locator(".webtoon-story-panel"));

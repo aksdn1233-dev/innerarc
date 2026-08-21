@@ -77,6 +77,7 @@ Last updated: 2026-08-01
 - [x] Character-led report scenes add a brief guide-specific spoken bridge and a dark mystical surround while preserving the original calculation and safety copy.
 - [x] Each guide owns a varied voice library keyed to the scene subject; consecutive appearances of the same guide do not repeat the same bridge line.
 - [x] Taeryeong's Korean guide voice consistently uses respectful honorific speech while retaining his structural, big-picture character.
+- [x] Character art is served directly at its native 384px source resolution and is never enlarged beyond that intrinsic width on mobile or desktop.
 - [x] Source-bound date-structure celebrity comparison and authoritative source links.
 - [x] Local allowlisted PNG/SVG share cards that omit sensitive inputs, support explicit one-file native sharing, disclose the selected-app privacy boundary, handle cancellation without fallback transfer, and retain a local download path without storage or upload.
 - [x] Deterministic accessory form/palette/material directions and music genre/sonic/use lanes with reality checks, bilingual parity, master-number cases, and no efficacy claims.

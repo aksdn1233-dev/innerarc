@@ -221,10 +221,12 @@ export function CharacterWebtoonPanel({
         <Image
           alt=""
           className="webtoon-story-character"
-          height={560}
-          sizes="(max-width: 680px) 82vw, 520px"
+          draggable={false}
+          height={384}
+          sizes="(max-width: 680px) 88vw, 384px"
           src={scene.assetPath}
-          width={560}
+          unoptimized
+          width={384}
         />
       </div>
       <div className="webtoon-story-narration">
