@@ -2,12 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { createShopPreview } from "@/core/lifestyle";
 import {
   localizeAccessoryDirection,
+  localizeAccessoryProduct,
   numerologyAccessoryDirections,
   sajuAccessoryDirections,
+  accessoryConceptProducts,
 } from "@/core/commerce/accessory-recommendations";
 import type { Locale } from "@/i18n/config";
 import type { ShopCopy } from "@/i18n/shop-copy";
@@ -23,6 +25,48 @@ export function ShopExperience({ locale, copy }: { locale: Locale; copy: ShopCop
   const directions = mode === "saju" ? sajuAccessoryDirections : numerologyAccessoryDirections;
   const selectedDirection = directions.find(({ id }) => id === selectedIds[mode]) ?? directions[0];
   const selected = localizeAccessoryDirection(selectedDirection, locale);
+  const allDirections = [...sajuAccessoryDirections, ...numerologyAccessoryDirections];
+
+  function renderCatalogGroup(source: "saju" | "numerology", title: string) {
+    const items = accessoryConceptProducts.filter((item) => item.source === source);
+    return (
+      <section className="shop-catalog-group" aria-labelledby={`${source}-catalog-title`}>
+        <header>
+          <h3 id={`${source}-catalog-title`}>{title}</h3>
+          <span>{items.length}</span>
+        </header>
+        <div className="shop-product-grid">
+          {items.map((product) => {
+            const item = localizeAccessoryProduct(product, locale);
+            const direction = allDirections.find(({ id }) => id === product.directionId);
+            if (!direction) return null;
+            const directionCopy = localizeAccessoryDirection(direction, locale);
+            const imageStyle = { "--slot-index": product.slot } as CSSProperties;
+            return (
+              <article className="shop-product-card" key={product.id}>
+                <div className="shop-product-image" style={imageStyle}>
+                  <Image src={direction.imageSrc} alt={`${item.name} · ${copy.conceptBadge}`} width={1000} height={1000} sizes="(max-width: 680px) 100vw, (max-width: 1080px) 50vw, 33vw" />
+                  <span>{copy.conceptBadge}</span>
+                </div>
+                <div className="shop-product-copy">
+                  <p className="shop-product-meta"><span>{directionCopy.keyLabel}</span><span>{item.kind}</span></p>
+                  <h4>{item.name}</h4>
+                  <p className="shop-product-price"><small>{copy.priceLabel}</small><strong>{item.priceRange}</strong></p>
+                  <dl>
+                    <div><dt>{copy.productDescriptionLabel}</dt><dd>{item.description}</dd></div>
+                    <div><dt>{copy.productDesignLabel}</dt><dd>{item.designDetails}</dd></div>
+                    <div><dt>{copy.productUseLabel}</dt><dd>{item.useScene}</dd></div>
+                    <div><dt>{copy.productCareLabel}</dt><dd>{item.careNote}</dd></div>
+                  </dl>
+                  <span className="shop-pending-purchase">{copy.pendingPurchase}</span>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+    );
+  }
 
   function selectMode(nextMode: "saju" | "numerology") {
     setMode(nextMode);
@@ -122,6 +166,16 @@ export function ShopExperience({ locale, copy }: { locale: Locale; copy: ShopCop
             <div><dt>{copy.shippingLabel}</dt><dd>{copy.shippingValue}</dd></div>
             <div><dt>{copy.returnLabel}</dt><dd>{copy.returnValue}</dd></div>
           </dl>
+        </section>
+
+        <section className="shop-full-catalog" aria-labelledby="shop-full-catalog-title">
+          <header>
+            <div><p className="eyebrow">COMPLETE CONCEPT CATALOG</p><h2 id="shop-full-catalog-title">{copy.catalogTitle}</h2></div>
+            <span>{copy.productCount}</span>
+            <p>{copy.catalogIntro}</p>
+          </header>
+          {renderCatalogGroup("saju", copy.sajuCatalogTitle)}
+          {renderCatalogGroup("numerology", copy.numerologyCatalogTitle)}
         </section>
 
         <section className="shop-categories" aria-labelledby="shop-category-title">

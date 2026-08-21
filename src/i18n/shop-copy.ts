@@ -41,6 +41,15 @@ export type ShopCopy = Readonly<{
   shippingValue: string;
   returnLabel: string;
   returnValue: string;
+  catalogTitle: string;
+  catalogIntro: string;
+  sajuCatalogTitle: string;
+  numerologyCatalogTitle: string;
+  productCount: string;
+  productDescriptionLabel: string;
+  productDesignLabel: string;
+  productUseLabel: string;
+  productCareLabel: string;
   nav: readonly [string, string, string, string, string];
 }>;
 
@@ -90,6 +99,15 @@ const ko: ShopCopy = {
   shippingValue: "착불 · 실제 택배사 운임 적용 · 제주·도서산간 추가 가능",
   returnLabel: "취소·반품",
   returnValue: "고객 선택 사양에 따라 제작을 시작한 뒤 단순 변심 청약철회는 제한될 수 있으며, 결제 전에 별도 고지와 동의를 받습니다. 하자·오배송·표시 내용 또는 계약과 다른 경우의 법정 교환·환불 권리는 제한하지 않습니다.",
+  catalogTitle: "24개 상품 콘셉트 전체 보기",
+  catalogIntro: "사진 속 후보를 각각 독립 상품으로 나눴습니다. 모든 상품은 이름만 다른 복제품이 아니라 형태·사용 장면·제작 확인사항·관리 주의가 서로 다릅니다.",
+  sajuCatalogTitle: "사주 오행 상품 15개",
+  numerologyCatalogTitle: "수비학 결과 상품 9개",
+  productCount: "총 24개",
+  productDescriptionLabel: "상품 설명",
+  productDesignLabel: "디자인·제작 방향",
+  productUseLabel: "추천 사용 장면",
+  productCareLabel: "관리·확인사항",
   nav: ["홈", "나", "관계", "질문", "성장"],
 };
 
@@ -139,6 +157,15 @@ const en: ShopCopy = {
   shippingValue: "Pay on delivery at the carrier's actual rate · remote-area surcharge may apply",
   returnLabel: "Cancellation and returns",
   returnValue: "Change-of-mind withdrawal may be restricted after production begins to the customer's selected specification, subject to a separate pre-purchase notice and consent. Statutory remedies for defects, wrong delivery, or an item that differs from its description or contract remain available.",
+  catalogTitle: "Browse all 24 product concepts",
+  catalogIntro: "Each photographed candidate is now a separate product concept. Names, forms, use settings, production checks, and care notes differ across the catalog.",
+  sajuCatalogTitle: "15 Saju phase products",
+  numerologyCatalogTitle: "9 Numerology result products",
+  productCount: "24 total",
+  productDescriptionLabel: "Product description",
+  productDesignLabel: "Design and production direction",
+  productUseLabel: "Suggested use",
+  productCareLabel: "Care and checks",
   nav: ["Home", "Me", "Relations", "Questions", "Growth"],
 };
 

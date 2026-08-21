@@ -72,6 +72,9 @@
 - [x] Eight local AI concept boards switch by Saju/Numerology result family without URL profile
   data; visible labels distinguish concepts from delivery photos, and indicative market ranges,
   one-to-one production, collect shipping, and statutory return boundaries are disclosed.
+- [x] The accessory catalog exposes 24 unique concept entries with complete Korean/English
+  descriptions, design directions, use settings, care checks, and per-entry indicative ranges;
+  every card remains visibly non-purchasable and concept-labelled.
 - [x] Future product contracts require complete disclosures, reject prohibited symbolic-outcome claims and tracking-bearing links, isolate sponsorship, and remain closed behind twelve evidence-backed gates plus explicit owner authorization.
 - [ ] Approve suppliers, provenance/material/allergy disclosures, catalog moderation, accessibility, inventory, fulfillment, returns/refunds, support, privacy, and consumer-law controls before opening the shop.
 - [ ] Validate localized prices, taxes, trial/renewal disclosure, purchase, restore, cancellation, refund-support, and AI unit economics with a real provider.

@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
+  accessoryConceptProducts,
   localizeAccessoryDirection,
+  localizeAccessoryProduct,
   numerologyAccessoryDirections,
   sajuAccessoryDirections,
 } from "@/core/commerce/accessory-recommendations";
@@ -36,6 +38,28 @@ describe("accessory recommendation directions", () => {
   it("assigns one pre-generated concept board to every result family", () => {
     const images = [...sajuAccessoryDirections, ...numerologyAccessoryDirections].map(({ imageSrc }) => imageSrc);
     expect(new Set(images).size).toBe(8);
+  });
+
+  it("expands the eight boards into 24 distinct, fully described product concepts", () => {
+    expect(accessoryConceptProducts).toHaveLength(24);
+    expect(accessoryConceptProducts.filter(({ source }) => source === "saju")).toHaveLength(15);
+    expect(accessoryConceptProducts.filter(({ source }) => source === "numerology")).toHaveLength(9);
+    expect(new Set(accessoryConceptProducts.map(({ id }) => id)).size).toBe(24);
+
+    for (const product of accessoryConceptProducts) {
+      expect(product.slot).toBeGreaterThanOrEqual(0);
+      expect(product.slot).toBeLessThanOrEqual(2);
+      for (const locale of ["ko", "en"] as const) {
+        const localized = localizeAccessoryProduct(product, locale);
+        expect(localized.name.length).toBeGreaterThan(0);
+        expect(localized.kind.length).toBeGreaterThan(0);
+        expect(localized.description.length).toBeGreaterThan(20);
+        expect(localized.designDetails.length).toBeGreaterThan(20);
+        expect(localized.useScene.length).toBeGreaterThan(10);
+        expect(localized.careNote.length).toBeGreaterThan(10);
+        expect(localized.priceRange).toMatch(/\d/);
+      }
+    }
   });
 
   it("discloses made-to-order stock, collect shipping, and lawful return boundaries", () => {

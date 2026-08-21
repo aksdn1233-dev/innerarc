@@ -842,3 +842,34 @@
   `eebeec00f6bee4da3fe5bc4e0aa96741e212e942`.
 - Status: Concept vending and operating disclosures decided; accessory checkout, SKU catalog,
   supplier commitment, and production schema remain held.
+
+## D-072 - Expand concept breadth through individually described product slots
+
+- Date: 2026-08-22
+- Decision: Treat the three photographed candidates in each of the eight approved concept
+  boards as separate catalog entries, producing 24 visible product concepts: 15 Saju phase
+  products and nine Numerology fact products. Give every entry its own name, type, description,
+  design/production direction, suggested use, care/pre-purchase check, and indicative price
+  range. Reuse the existing local concept board as a cropped presentation source and retain the
+  AI-concept label; do not imply that the crop is a delivered-item photograph.
+- Demand evidence: Direct product-owner feedback on the live v64 storefront said the catalog
+  felt too small and required complete per-product descriptions. Distribution remains the
+  existing result-to-shop links and public shop; no paid acquisition or affiliate placement is
+  added.
+- Economics: The catalog still spans the approved indicative 19,000–99,000 KRW market-reference
+  envelope. Existing 9,600/39,000 campaign evidence and digital checkout economics do not change.
+  Because material, maker labor, packaging, payment fee, VAT, collect-shipping handling, rework,
+  defect reserve, and supplier commitment remain unknown per item, the new cards are not SKUs,
+  do not state margin, and do not open checkout.
+- Safety and claims: Descriptions distinguish visual form, possible material direction, use,
+  and care. They do not claim luck, protection, healing, relationship, financial, diagnostic,
+  or predictive effects. Any metal, resin, glass, ceramic, textile, or leather-alternative
+  wording remains a direction pending physical sample and allergen/provenance review.
+- Success and guardrails: Require 24 unique stable IDs, 15/9 source split, four complete
+  description fields in both Korean and English, visible concept labels, keyboard-accessible
+  structure, mobile readability, no remote image request, and no added checkout control. Revert
+  the expanded grid if long-page performance materially regresses, descriptions imply approved
+  materials, product crops become misleading, or shop-to-reading navigation deteriorates.
+- Rollback reference: production v64, commit
+  `8abaa72c996b1f8b74298f9cb9458cd8c5ac3814`.
+- Status: Decided and additive; supplier-backed SKU activation remains held.

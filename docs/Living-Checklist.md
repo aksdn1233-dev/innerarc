@@ -97,6 +97,8 @@ Last updated: 2026-08-01
 - [x] Accessory storefront uses eight local AI concept boards in an in-page result-family
   selector, labels them as non-delivery concepts, shows marketplace-reference price ranges,
   and discloses one-to-one production, collect shipping, and lawful custom-order returns.
+- [x] Eight accessory boards expand into 24 independent concept cards—15 Saju and nine
+  Numerology—with complete bilingual product, design, use, care, and indicative-price copy.
 - [x] Owner console reserves a separate `accessory_*` payment-order list; checkout remains
   closed until approved SKUs, fulfillment evidence, shipping data controls, and unit
   economics are complete.

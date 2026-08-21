@@ -108,6 +108,10 @@ Status: Supabase account persistence connected; production deployment and remain
   surcharge before purchase. Do not publish a blanket `반품 불가`: any later approved SKU must
   capture a separate pre-purchase custom-production notice/consent and preserve statutory defect,
   wrong-delivery, and description/contract-mismatch remedies.
+- The 24-card expansion rollback reference is production v64 at commit
+  `8abaa72c996b1f8b74298f9cb9458cd8c5ac3814`. Revert the full-catalog section and its product
+  data together if a cropped board misrepresents the selected candidate, page weight causes a
+  material shop regression, or any description reads as an approved material or purchasable SKU.
 
 ## Incident priorities
 
