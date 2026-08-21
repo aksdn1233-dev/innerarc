@@ -32,6 +32,10 @@ Status: Supabase account persistence connected; production deployment and remain
 - Roll back application code to the last verified build before applying destructive database changes.
 - Database migrations must be forward-compatible or have a separately tested restoration plan. Never improvise a destructive down migration in production.
 - Re-run smoke, authorization, deletion, and canonical calculation checks after rollback.
+- A Sites vinext archive must retain `dist/server/index.js` from the archive root. Package
+  `dist` together with `.openai/hosting.json` from the repository root; never archive the
+  contents of `dist` as the archive root, which changes the entrypoint to unsupported
+  `server/index.js`.
 
 ### Saju recalculation and migration hold
 
