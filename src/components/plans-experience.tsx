@@ -5,6 +5,7 @@ import {
   type TossPaymentsWidgets,
 } from "@tosspayments/tosspayments-sdk";
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { captureConversionEvent } from "@/core/analytics";
 import { PaidReadingInputSchema, type PaidReadingInput } from "@/core/paid-reading";
@@ -189,11 +190,57 @@ const copy = {
     keepLinkCopied: "Copied",
     orderNumber: "Order number",
   },
+  ja: {
+    brand: "自分・関係・一年の流れを読む",
+    eyebrow: "代表リーディング",
+    title: "必要な深さだけ選べます",
+    intro: "会員登録なしの一回払いです。決済後はパソコンとスマートフォンで同じレポートを確認できます。",
+    unavailable: "現在、決済準備中です。加盟店審査、価格、運用ドメイン、法定表示の確認後に開始します。",
+    signin: "購入済みですか？注文番号と決済時の携帯電話番号でレポートを開けます。",
+    signinAction: "購入履歴を確認",
+    choose: "決済へ進む",
+    loading: "決済画面を開いています…",
+    pay: "支払う",
+    methods: { kakaopay: "KakaoPay", tosspay: "Toss Pay", card: "クレジット・デビットカード", virtual_account: "仮想口座" },
+    errors: {
+      missing_draft: "先に商品とリーディング情報を入力してください。",
+      invalid_depositor: "振込名義を2文字以上で入力してください。",
+      invalid_phone: "決済案内を受け取る韓国の携帯電話番号を確認してください。",
+      temporarily_unavailable: "現在、決済を一時停止しています。入力内容は保持されていますので、しばらくしてからお試しください。",
+      rate_limited: "短時間に決済リクエストが繰り返されました。しばらくしてからお試しください。",
+      order_failed: "注文を作成できませんでした。入力内容は保持されています。",
+      widget_failed: "決済手段を読み込めませんでした。通信状態を確認してください。",
+      payment_failed: "決済を完了できませんでした。承認状況を確認してください。",
+      price_changed: "価格が変更されました。新しい価格を確認してからもう一度お進みください。",
+    },
+    notice: "表示される決済手段と利用限度は、決済代行会社の審査・設定により異なります。",
+    terms: "返金はサポートメールで受け付け、受付日から7日以内に処理します。決済前に利用条件、返金方針、個人情報の取扱いをご確認ください。",
+    duration: "一回払い・自動更新なし",
+    depositorName: "振込名義",
+    depositorPlaceholder: "実際に振り込む方のお名前",
+    depositorHelp: "入金確認に使います。口座に表示される名前と同じ表記を入力してください。",
+    manualChoose: "振込先を確認",
+    manualTitle: "下記口座へ正確な金額をお振り込みください",
+    manualAmount: "振込金額",
+    manualDeadline: "振込期限",
+    manualStatus: "入金確認・レポートを見る",
+    manualNotice: "入金確認後にレポートが開きます。確認前は待機画面が表示されます。",
+    customerPhone: "携帯電話番号",
+    customerPhonePlaceholder: "010-1234-5678",
+    customerPhoneHelp: "決済案内と仮想口座の発行にのみ使います。住所は収集しません。",
+    keepLinkTitle: "このアドレスを先に保存してください",
+    keepLinkBody: "決済完了後、このアドレスでレポートを確認できます。別の端末で開く場合はコピーして保管してください。",
+    keepLinkCopy: "アドレスをコピー",
+    keepLinkCopied: "コピーしました",
+    orderNumber: "注文番号",
+  },
 } as const;
 
-function formatWon(amount: number | null, locale: Locale) {
-  if (amount === null) return locale === "ko" ? "가격 확정 전" : "Price pending";
-  return new Intl.NumberFormat(locale === "ko" ? "ko-KR" : "en-US", {
+type PlansLocale = Locale | "ja";
+
+function formatWon(amount: number | null, locale: PlansLocale) {
+  if (amount === null) return locale === "ko" ? "가격 확정 전" : locale === "ja" ? "価格未定" : "Price pending";
+  return new Intl.NumberFormat(locale === "ko" ? "ko-KR" : locale === "ja" ? "ja-JP" : "en-US", {
     style: "currency",
     currency: "KRW",
     maximumFractionDigits: 0,
@@ -208,7 +255,7 @@ export function PlansExperience({
   paymentProvider,
   initialProduct,
 }: {
-  locale: Locale;
+  locale: PlansLocale;
   products: readonly PublicProduct[];
   signedIn: boolean;
   paymentsEnabled: boolean;
@@ -217,7 +264,8 @@ export function PlansExperience({
   pricing: ProductPricingSnapshot;
 }) {
   const t = copy[locale];
-  const otherLocale = locale === "ko" ? "en" : "ko";
+  const systemLocale: Locale = locale === "ja" ? "en" : locale;
+  const routeLocale = locale === "ja" ? "en" : locale;
   const [session, setSession] = useState<InteractiveCheckoutSession | null>(null);
   const [loadingCode, setLoadingCode] = useState<PaymentProductCode | null>(null);
   const [ready, setReady] = useState(false);
@@ -327,7 +375,7 @@ export function PlansExperience({
     setReady(false);
     setSession(null);
     setLoadingCode(productCode);
-    captureConversionEvent("payment_start", locale, {
+    captureConversionEvent("payment_start", systemLocale, {
       productCode,
       provider: paymentProvider ?? "unknown",
     });
@@ -338,7 +386,7 @@ export function PlansExperience({
         body: JSON.stringify({
           productCode,
           expectedAmount: selectedProduct.amount,
-          locale,
+          locale: systemLocale,
           readingInput: selectedReadingInput,
           depositorName: paymentProvider === "manual_transfer"
             ? depositorName.trim()
@@ -350,7 +398,7 @@ export function PlansExperience({
       });
       const body: unknown = await response.json();
       if (!response.ok) {
-        captureConversionEvent("payment_fail", locale, {
+        captureConversionEvent("payment_fail", systemLocale, {
           provider: paymentProvider ?? "unknown",
           stage: "order",
         });
@@ -376,7 +424,7 @@ export function PlansExperience({
         setLoadingCode(null);
       }
     } catch {
-      captureConversionEvent("payment_fail", locale, {
+      captureConversionEvent("payment_fail", systemLocale, {
         provider: paymentProvider ?? "unknown",
         stage: "order",
       });
@@ -447,7 +495,7 @@ export function PlansExperience({
         });
         if (!response) return;
         if (response.code) {
-          captureConversionEvent("payment_fail", locale, {
+          captureConversionEvent("payment_fail", systemLocale, {
             provider: "portone",
             stage: "checkout",
           });
@@ -471,7 +519,7 @@ export function PlansExperience({
         customerEmail: session.customerEmail,
       });
     } catch {
-      captureConversionEvent("payment_fail", locale, {
+      captureConversionEvent("payment_fail", systemLocale, {
         provider: session.provider,
         stage: "checkout",
       });
@@ -488,22 +536,35 @@ export function PlansExperience({
           <strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong>
           <small>{t.brand}</small>
         </Link>
-        <Link className="locale-switch" href={`/${otherLocale}/plans`}>
-          {otherLocale === "ko" ? "한국어" : "English"}
-        </Link>
+        <nav className="plans-language-switcher" aria-label="Language">
+          {locale !== "ko" && <Link href="/ko/plans">한국어</Link>}
+          {locale !== "en" && <Link href="/en/plans">English</Link>}
+          {locale !== "ja" && <Link href="/ja/plans">日本語</Link>}
+        </nav>
       </header>
 
 
       <section className="plans-intro">
-        <p className="eyebrow">{t.eyebrow}</p>
-        <h1>{t.title}</h1>
-        <p>{t.intro}</p>
+        <div className="plans-intro-copy">
+          <p className="eyebrow">{t.eyebrow}</p>
+          <h1>{t.title}</h1>
+          <p>{t.intro}</p>
+          <div className="plans-trust-strip" aria-label={locale === "ko" ? "구매 조건" : locale === "ja" ? "購入条件" : "Purchase terms"}>
+            <span>{locale === "ko" ? "한 번만 결제" : locale === "ja" ? "一回払い" : "Pay once"}</span>
+            <span>{locale === "ko" ? "회원가입 불필요" : locale === "ja" ? "会員登録不要" : "No account needed"}</span>
+            <span>{locale === "ko" ? "선물·공유 가능" : locale === "ja" ? "ギフト・共有対応" : "Gift and share"}</span>
+          </div>
+        </div>
+        <div className="plans-guide" aria-hidden="true">
+          <span>{locale === "ko" ? "지금 필요한 만큼만, 제가 차분히 안내해 드릴게요." : locale === "ja" ? "今必要な深さだけ、落ち着いてご案内します。" : "Choose the depth you need. I will guide you through it."}</span>
+          <Image alt="" height={1280} priority src="/images/numerology-guides/gyeol-taeryeong.jpg" width={720} />
+        </div>
       </section>
 
       {!paymentsEnabled && <p className="plans-gate" role="status">{t.unavailable}</p>}
       {!signedIn && (
         <p className="plans-gate">
-          {t.signin} <Link href={`/${locale}/orders`}>{t.signinAction}</Link>
+          {t.signin} <Link href={`/${routeLocale}/orders`}>{t.signinAction}</Link>
         </p>
       )}
 
@@ -541,14 +602,17 @@ export function PlansExperience({
         </div>
       )}
 
-      <section className="plan-grid" aria-label={locale === "ko" ? "이용권" : "Access plans"}>
-        {products.map((product) => (
+      <section className="plan-grid" aria-label={locale === "ko" ? "이용권" : locale === "ja" ? "商品プラン" : "Access plans"}>
+        {products.map((product, index) => (
           <article
-            className={initialProduct === product.code ? "plan-card is-recommended" : "plan-card"}
+            className={`${initialProduct === product.code || (!initialProduct && product.code === "pro_30d") ? "plan-card is-recommended" : "plan-card"} plan-card-${index + 1}`}
             data-product={product.code}
             key={product.code}
             tabIndex={-1}
           >
+            {(initialProduct === product.code || (!initialProduct && product.code === "pro_30d")) && (
+              <span className="plan-recommendation">{locale === "ko" ? "가장 많이 선택" : locale === "ja" ? "一番人気" : "Most selected"}</span>
+            )}
             <p className="eyebrow">{product.tier}</p>
             <h2>{product.name}</h2>
             <div className="plan-price-stack">
@@ -574,6 +638,7 @@ export function PlansExperience({
                   ? t.manualChoose
                   : t.choose}
             </button>
+            <p className="plan-card-footnote">{locale === "ko" ? "결제 후 바로 열람 · 링크로 선물 가능" : locale === "ja" ? "決済後すぐ閲覧・ギフト共有対応" : "Open after payment · share as a gift"}</p>
           </article>
         ))}
       </section>
@@ -614,7 +679,7 @@ export function PlansExperience({
               <div id="payment-agreement" />
             </>
           ) : session.provider === "portone" ? (
-            <div className="payment-choice-grid" role="radiogroup" aria-label={locale === "ko" ? "결제수단 선택" : "Choose payment method"}>
+            <div className="payment-choice-grid" role="radiogroup" aria-label={locale === "ko" ? "결제수단 선택" : locale === "ja" ? "決済手段を選択" : "Choose payment method"}>
               {(Object.keys(t.methods) as PortOneMethod[]).map((method) => (
                 <button
                   aria-checked={portOneMethod === method}
@@ -637,7 +702,7 @@ export function PlansExperience({
                     <dt>{account.bankName}</dt>
                     <dd>
                       <strong>{account.accountNumber}</strong>
-                      <small>{locale === "ko" ? "예금주" : "Holder"} {account.accountHolder}</small>
+                      <small>{locale === "ko" ? "예금주" : locale === "ja" ? "口座名義" : "Holder"} {account.accountHolder}</small>
                     </dd>
                   </div>
                 ))}
@@ -669,27 +734,29 @@ export function PlansExperience({
       {!readingInput && (
         <p className="plans-gate">
           {t.errors.missing_draft}{" "}
-          <Link href={`/${locale}/fortune`}>
-            {locale === "ko" ? "사주 서비스로 가기" : "Open Saju services"}
+          <Link href={`/${routeLocale}/fortune`}>
+            {locale === "ko" ? "사주 서비스로 가기" : locale === "ja" ? "四柱推命サービスへ" : "Open Saju services"}
           </Link>
         </p>
       )}
       <p className="plans-notice payment-retry-notice">
         {locale === "ko"
           ? "결제창이 닫히거나 응답이 늦어져도 승인 여부를 확인하기 전 같은 주문을 다시 결제하지 마세요. 주문번호와 결제 휴대폰 번호로 구매 내역을 먼저 확인할 수 있습니다."
-          : "If the payment window closes or responds slowly, do not pay the same order again before checking its status. Use the order number and payment phone number to look up the purchase first."}{" "}
-        <Link href={`/${locale}/orders`}>
-          {locale === "ko" ? "결제 상태 확인" : "Check payment status"}
+          : locale === "ja"
+            ? "決済画面が閉じたり応答が遅れたりしても、承認状況を確認する前に同じ注文を再決済しないでください。注文番号と決済時の携帯電話番号で購入履歴を確認できます。"
+            : "If the payment window closes or responds slowly, do not pay the same order again before checking its status. Use the order number and payment phone number to look up the purchase first."}{" "}
+        <Link href={`/${routeLocale}/orders`}>
+          {locale === "ko" ? "결제 상태 확인" : locale === "ja" ? "決済状況を確認" : "Check payment status"}
         </Link>
       </p>
       <details className="plans-details">
-        <summary>{locale === "ko" ? "결제·환불 안내" : "Payment and refund details"}</summary>
+        <summary>{locale === "ko" ? "결제·환불 안내" : locale === "ja" ? "決済・返金について" : "Payment and refund details"}</summary>
         <p className="plans-notice">{t.notice}</p>
         <p className="plans-notice">
           {t.terms}{" "}
-          <Link href={`/${locale}/terms`}>{locale === "ko" ? "이용조건" : "Terms"}</Link>
+          <Link href={`/${routeLocale}/terms`}>{locale === "ko" ? "이용조건" : locale === "ja" ? "利用条件" : "Terms"}</Link>
           {" · "}
-          <Link href={`/${locale}/privacy`}>{locale === "ko" ? "개인정보" : "Privacy"}</Link>
+          <Link href={`/${routeLocale}/privacy`}>{locale === "ko" ? "개인정보" : locale === "ja" ? "個人情報" : "Privacy"}</Link>
         </p>
       </details>
     </main>

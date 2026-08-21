@@ -95,7 +95,7 @@ export function createSitemapDocument(
 ): MetadataRoute.Sitemap {
   const baseUrl = resolvePublicAppUrl(environment.NEXT_PUBLIC_APP_URL);
   const lastModified = new Date();
-  return (["ko", "en"] as const).flatMap((locale) =>
+  const establishedRoutes = (["ko", "en"] as const).flatMap((locale) =>
     PUBLIC_ROUTES.map((route) => ({
       url: new URL(`/${locale}${route}`, baseUrl).toString(),
       lastModified,
@@ -109,6 +109,23 @@ export function createSitemapDocument(
       },
     })),
   );
+  const japaneseRoutes = ["", "/reading", "/plans"] as const;
+  return [
+    ...establishedRoutes,
+    ...japaneseRoutes.map((route) => ({
+      url: new URL(`/ja${route}`, baseUrl).toString(),
+      lastModified,
+      changeFrequency: route === "" ? "weekly" as const : "monthly" as const,
+      priority: route === "" ? 0.9 : route === "/plans" ? 0.85 : 0.8,
+      alternates: {
+        languages: {
+          ko: new URL(`/ko${route === "/reading" ? "/reading" : route}`, baseUrl).toString(),
+          en: new URL(`/en${route === "/reading" ? "/reading" : route}`, baseUrl).toString(),
+          ja: new URL(`/ja${route}`, baseUrl).toString(),
+        },
+      },
+    })),
+  ];
 }
 
 function escapeXml(value: string): string {

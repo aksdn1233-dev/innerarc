@@ -67,6 +67,19 @@ Status: Supabase account persistence connected; production deployment and remain
   the opt-in writes before an explicit action, deletion/export omits the preference, or copy
   crosses the symbolic-reflection boundary. Push/email/SMS reminders are not part of this release.
 
+### Gift sharing and Japanese entry rollback
+
+- Pre-release rollback reference is production v61 at commit
+  `93e09be3527810461cdb324bf89957307da18e7c`.
+- Gift delivery has no migration or provider registration. Remove the report gift panel and
+  third-party intake selector if consent gating, report authorization, or recipient privacy
+  regresses; existing download/print and checkout remain intact.
+- Japanese entry is isolated to `/ja`, `/ja/reading`, and `/ja/plans`. Remove those routes and
+  sitemap entries together if checkout handoff or copy review fails. Do not widen report rule
+  locale types as an emergency fix.
+- Vitest 4 does not accept Jest's `--runInBand` option. Run `npm test` directly; an unknown
+  option is a runner invocation error, not a product-test failure.
+
 ## Incident priorities
 
 1. Immediate safety or cross-user data exposure.

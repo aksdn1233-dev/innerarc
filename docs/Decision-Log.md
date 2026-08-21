@@ -742,3 +742,31 @@
 - Revisit when: Demand evidence supports implementing one of the unavailable flow services,
   with success and safety guardrails defined before it becomes interactive.
 - Status: Decided.
+
+## D-069 - Add consent-gated gift delivery and a Japanese purchase entry
+
+- Date: 2026-08-21
+- Decision: Redesign the public product comparison with the supplied first-party guide art;
+  let a purchaser explicitly mark a reading as being for another person; require their
+  confirmation that the person consented; and expose user-initiated email, native device
+  sharing (including KakaoTalk when installed), and link copy on the protected report.
+  Add reviewed Japanese home, intake, and plan routes without widening deterministic report
+  rules until full Japanese report copy is separately reviewed.
+- Demand evidence: Direct product-owner request after reviewing the live plan and report
+  flows. Distribution is the public home/plan funnel and recipient-initiated email or mobile
+  share destination; the application does not collect a recipient address.
+- Economics: Existing 5,500/39,000/79,000 KRW one-time prices and historical 9,600/39,000
+  campaign evidence remain unchanged. Browser `mailto`, Clipboard, and Web Share add no
+  provider or fulfillment fee. A future Kakao SDK/server sender would require key, CSP,
+  privacy, provider-cost, and delivery review before activation.
+- Safety/claim boundary: Gift consent is explicit; share copy warns that an accessible link
+  exposes personal report content; numerology/tarot remain symbolic reflection rather than
+  prediction, diagnosis, treatment, or guaranteed outcomes.
+- Success and guardrails: Measure plan-to-intake and completed checkout with the existing
+  enumerated anonymous funnel only. Guard on consent visibility, no recipient PII collection,
+  no automatic transfer, authorization/entitlement preservation, Japanese route completion,
+  and zero new third-party browser requests. Revert the gift panel or `/ja` routes if any
+  unauthorized disclosure, broken checkout handoff, misleading language, or material
+  conversion regression is observed.
+- Rollback reference: `93e09be3527810461cdb324bf89957307da18e7c` (production v61).
+- Status: Decided and additive; no migration or payment configuration change.

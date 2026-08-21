@@ -70,6 +70,13 @@ Birth date, names, relationship details, journals, finances, and consultation qu
 - Share objects are derived, minimal, revocable, and omit full birth date and concern by default.
 - Guest share SVGs are generated locally from allowlisted share payloads. They contain no remote image request, analytics identifier, account ID, exact birth date, raw question, journal, or third-party profile label.
 - Guest share PNGs are derived in memory from the same validated SVG and are not uploaded, cached by InnerArc, or written to browser storage. Native file sharing runs only after a click, passes one PNG with a generic title and no text/URL, and lets the user choose the destination. Any selected operating-system or recipient app has its own privacy boundary; cancellation creates no fallback transfer.
+- Purchased-report gifting is separate from the minimal public share card. It is available
+  only on an already-authorized report, requires the sender to confirm the subject's consent,
+  and runs only after an explicit email, native-share, or copy action. InnerArc does not
+  collect the recipient's email address or Kakao identity. The selected mail/share app is a
+  separate privacy boundary, and an accessible report link can reveal the personal report;
+  the interface therefore tells the sender to share only with a trusted recipient. Existing
+  payment cancellation, entitlement, and report-authorization checks remain authoritative.
 - The install manifest is presentation metadata only. No service worker is registered in the MVP, so the product does not silently pre-cache reflection routes or sensitive browser state for offline reuse.
 - Open Graph and X preview metadata is static, public, and first-party. Its raster asset contains only product branding and abstract number/card motifs; no user result, input, identifier, question, journal, relationship data, tracking parameter, remote font, or third-party request is permitted.
 - Security headers keep scripts, network connections, frames, forms, workers, images, and fonts on the first-party origin except for user-initiated ordinary outbound source navigation. Future analytics, AI, payment, or monitoring origins require a documented CSP/privacy change.

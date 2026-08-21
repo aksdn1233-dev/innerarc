@@ -86,6 +86,11 @@ Last updated: 2026-08-01
 - [x] Current competitor-pattern review and strict feature-rating rubric with Keep/Improve/Hold/Remove decisions.
 - [ ] Account-backed private invitations after authenticated persistence is connected.
 - [ ] Licensed/source-refresh workflow for a larger celebrity dataset.
+- [x] Third-party gift intake requires an explicit consent confirmation; protected paid
+  reports expose user-initiated email, native app sharing, and copy only, with no recipient
+  address collection or automatic provider transfer.
+- [x] Japanese home, reading intake, and product comparison routes are public and linked;
+  full deterministic report-rule localization remains outside this additive entry release.
 
 ## Phase 6 - Reality Check
 

@@ -32,7 +32,7 @@ type Props = {
 
 type ReadingProductId = "comprehensive" | "premium_pdf";
 type FocusId = "work" | "relationships" | "health" | "growth" | "money";
-type IntakeError = Readonly<{ field: "birthDate" | "privacy"; message: string }>;
+type IntakeError = Readonly<{ field: "birthDate" | "privacy" | "giftConsent"; message: string }>;
 
 const concernExamples: Record<Locale, Record<FocusId, string>> = {
   ko: {
@@ -246,6 +246,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   const [intakeOpen, setIntakeOpen] = useState(false);
   const [intakeStep, setIntakeStep] = useState<1 | 2>(1);
   const [gender, setGender] = useState<"female" | "male" | "unstated">("unstated");
+  const [readingFor, setReadingFor] = useState<"self" | "gift">("self");
   const heroRef = useRef<HTMLElement>(null);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const heroAudioRef = useRef<HTMLAudioElement>(null);
@@ -389,6 +390,15 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
       setError({ field: "privacy", message: locale === "ko" ? "개인정보 사용 안내를 확인해 주세요." : "Please review the privacy notice." });
       return;
     }
+    if (readingFor === "gift" && form.get("giftConsent") !== "on") {
+      setError({
+        field: "giftConsent",
+        message: locale === "ko"
+          ? "당사자에게 정보 입력과 결과 전달 동의를 받았는지 확인해 주세요."
+          : "Confirm that the recipient agreed to the use of their details and delivery of the result.",
+      });
+      return;
+    }
 
     const concern = String(form.get("concern") ?? "").trim();
     const reportFocus = String(form.get("reportFocus") ?? "").trim();
@@ -433,6 +443,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
           <div className="home-header-actions">
             <a className="header-start-link" href="#onboarding">{locale === "ko" ? "리딩 시작하기" : "Start reading"}</a>
             <Link className="locale-switch" href={`/${otherLocale}`}>{otherLocale === "ko" ? "한국어" : "English"}</Link>
+            <Link className="locale-switch" href="/ja">日本語</Link>
           </div>
         </header>
 
@@ -731,6 +742,20 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
 
             <section className="intake-panel" aria-labelledby="intake-details-title">
               <header className="intake-panel-header"><div><h3 id="intake-details-title">{locale === "ko" ? "리딩에 필요한 정보" : "Details for your reading"}</h3><p>{locale === "ko" ? "필수와 선택 항목을 구분해 필요한 정보만 받습니다." : "Required and optional fields are clearly separated."}</p></div></header>
+              <fieldset className="field reading-recipient-picker">
+                <legend>{locale === "ko" ? "누구를 위한 리딩인가요?" : "Who is this reading for?"}</legend>
+                <div className="choice-row">
+                  <label className="choice"><input checked={readingFor === "self"} name="readingFor" onChange={() => setReadingFor("self")} type="radio" value="self" /><span>{locale === "ko" ? "나를 위한 리딩" : "For me"}</span></label>
+                  <label className="choice"><input checked={readingFor === "gift"} name="readingFor" onChange={() => setReadingFor("gift")} type="radio" value="gift" /><span>{locale === "ko" ? "다른 사람을 위한 선물 리딩" : "A gift for someone else"}</span></label>
+                </div>
+                {readingFor === "gift" && (
+                  <label className="check gift-intake-consent">
+                    <input aria-invalid={error?.field === "giftConsent"} name="giftConsent" required type="checkbox" />
+                    <span>{locale === "ko" ? "당사자에게 생년월일 등 정보를 입력하고 완성된 결과를 전달할 동의를 받았습니다." : "The recipient agreed to the use of their birth details and to receive the completed result."}</span>
+                  </label>
+                )}
+                {error?.field === "giftConsent" && <span className="field-error" role="alert">{error.message}</span>}
+              </fieldset>
               <div className="field field-premium">
                 <label htmlFor="birthDate">{locale === "ko" ? "2. 생년월일 (필수 · 양력)" : "2. Birth date (Required · Gregorian)"}</label>
                 <input id="birthDate" name="birthDate" type="date" max={maxBirthDate} min={MIN_BIRTH_DATE} required aria-invalid={error?.field === "birthDate"} aria-describedby="birthDate-help birthDate-error" />

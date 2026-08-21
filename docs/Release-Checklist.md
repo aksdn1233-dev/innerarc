@@ -21,6 +21,8 @@
 - [x] Monthly Reality Check reports capture the browser-local review month, revisit prior months without writes, disclose legacy UTC fallback, and preserve the stored source records.
 - [x] Focus, optional concern, depth, and AI consent produce a local contextual layer without changing canonical calculations or sending/storing/sharing the concern.
 - [ ] Independent Korean/English native-copy and semantic review.
+- [x] Japanese home/intake/plan entry copy, language links, metadata, sitemap entries, and
+  checkout draft handoff verified; full Japanese generated-report localization is not claimed.
 - [ ] Numerology/tarot editorial review and final rule freeze.
 
 ## Privacy and safety
@@ -30,6 +32,9 @@
   validated and included in device inspect/export/delete without server sync.
 - [x] Supabase owner RLS, authenticated-only grants, anonymous fail-closed probe, validated explicit sync/restore, account export, and atomic deletion migration.
 - [x] Share outputs omit dates, names, contact details, concerns, journals, and questions by construction.
+- [x] Purchased-report gifting is explicitly distinguished from minimal public share cards,
+  requires subject-consent confirmation, sends only on a user action, and stores no recipient
+  email or Kakao identity.
 - [x] Prompt-injection, high-risk-category, overclaim, and authorization adversarial baseline.
 - [x] Local secret scan reports no recognized credentials.
 - [x] Bilingual pre-release privacy/terms disclosures expose unresolved legal fields and are linked next to consent surfaces.
