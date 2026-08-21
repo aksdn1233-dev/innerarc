@@ -162,7 +162,7 @@ test("onboarding focus, concern, depth, and AI consent create a local context la
   await expect(page.locator(".share-card-preview")).not.toContainText(privateConcern);
 });
 
-test("result offers claim-free accessory and music directions with a closed shop", async ({ page }) => {
+test("result offers claim-free accessory and music directions with a concept-only shop", async ({ page }) => {
   await page.goto("/en/profile");
   await page.locator("#birthDate").fill("1994-11-04");
   await page.getByText("I have read the privacy notice.").click();
@@ -180,10 +180,12 @@ test("result offers claim-free accessory and music directions with a closed shop
     page.waitForURL("**/en/shop"),
     shopLink.click(),
   ]);
-  await expect(page.getByRole("status")).toHaveText("Opening later");
+  await expect(page.getByRole("status")).toHaveText("Shop in preparation · checkout opens after product approval");
   await expect(page.locator(".shop-category-grid article")).toHaveCount(3);
+  await expect(page.locator(".shop-product-card")).toHaveCount(24);
   await expect(page.getByText("Purchasing unavailable")).toHaveCount(3);
-  await expect(page.locator("main")).not.toContainText(/add to cart|checkout|\$\d|₩\d/i);
+  await expect(page.getByRole("button", { name: /add to cart|buy now|checkout/i })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: /add to cart|buy now|checkout/i })).toHaveCount(0);
   expect(page.url()).toBe(`${E2E_ORIGIN}/en/shop`);
 });
 

@@ -42,7 +42,7 @@ const copy = {
 const services = {
   ko: [
     ["원국", "내 사주 원국", "사주 네 기둥과 오행 분포를 계산 근거와 함께 봅니다.", "/saju", "5,500원", true],
-    ["상세", "상세 리딩", "반복되는 선택과 지금의 현실 질문을 더 깊게 정리합니다.", "/plans", "상세", true],
+    ["상세", "상세 리딩", "반복되는 선택과 지금의 현실 질문을 더 깊게 정리합니다.", "/plans", "39,000원", true],
     ["관계", "두 사람 궁합", "두 사람의 성향과 관계 패턴을 나란히 비교합니다.", "/compatibility", "무료", true],
     ["오늘", "오늘의 흐름", "원할 때 켜두면 현지 날짜에 맞춰 하루 한 번 새 성찰을 보여드려요.", "/daily-fortune", "무료", true],
     ["올해", "올해의 흐름", "한 해의 선택을 점검하는 성찰 메뉴를 준비하고 있어요.", "", "", false],
@@ -50,7 +50,7 @@ const services = {
   ],
   en: [
     ["Chart", "My Four Pillars", "See your pillars and element balance with calculation evidence.", "/saju", "₩5,500", true],
-    ["Deep", "Detailed reading", "Explore recurring choices and your current real-life question.", "/plans", "Detailed", true],
+    ["Deep", "Detailed reading", "Explore recurring choices and your current real-life question.", "/plans", "₩39,000", true],
     ["Match", "Two-person match", "Compare two people's traits and relationship patterns.", "/compatibility", "Free", true],
     ["Today", "Today's flow", "Turn it on when you want a new reflection for each local date.", "/daily-fortune", "Free", true],
     ["Year", "This year's flow", "A yearly choice-reflection experience is being prepared.", "", "", false],

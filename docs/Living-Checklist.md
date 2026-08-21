@@ -102,6 +102,12 @@ Last updated: 2026-08-01
 - [x] Owner console reserves a separate `accessory_*` payment-order list; checkout remains
   closed until approved SKUs, fulfillment evidence, shipping data controls, and unit
   economics are complete.
+- [x] Saju service-hub cards expose meaningful price or availability badges without
+  duplicating their category label; Korean and English detailed-reading prices are covered
+  by browser regression tests.
+- [x] Accessory-result browser coverage follows the current 24-concept catalog and checks
+  that no cart, buy-now, or checkout control appears before product approval; initial CSS
+  payload coverage records the current character-report and catalog expansion.
 
 ## Phase 6 - Reality Check
 
