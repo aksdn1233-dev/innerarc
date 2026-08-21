@@ -75,6 +75,7 @@ Last updated: 2026-08-01
 - [x] Paid Numerology, Saju, and compatibility results render as character-led webtoon scenes with backgrounds, effects, acting cuts, narration, and accessible HTML speech bubbles rather than border-card stacks.
 - [x] Report opening context sentences and decision-relevant terms use a restrained, darker weight without making the entire body bold.
 - [x] Character-led report scenes add a brief guide-specific spoken bridge and a dark mystical surround while preserving the original calculation and safety copy.
+- [x] Each guide owns a varied voice library keyed to the scene subject; consecutive appearances of the same guide do not repeat the same bridge line.
 - [x] Source-bound date-structure celebrity comparison and authoritative source links.
 - [x] Local allowlisted PNG/SVG share cards that omit sensitive inputs, support explicit one-file native sharing, disclose the selected-app privacy boundary, handle cancellation without fallback transfer, and retain a local download path without storage or upload.
 - [x] Deterministic accessory form/palette/material directions and music genre/sonic/use lanes with reality checks, bilingual parity, master-number cases, and no efficacy claims.

@@ -66,30 +66,113 @@ function storyTheme(title: ReactNode, tone: WebtoonTone): { theme: string; secti
 
 const characterVoices = {
   taeryeong: {
-    ko: "좋아. 먼저 큰 흐름부터 함께 짚어볼게.",
-    en: "All right. Let’s trace the larger pattern first.",
+    ko: [
+      (subject: string) => `좋아, ‘${subject}’부터 큰 흐름을 잡아볼게.`,
+      (subject: string) => `흩어진 신호를 모아서 ‘${subject}’의 구조부터 보자.`,
+      (subject: string) => `‘${subject}’, 여기서 전체 판이 어떻게 움직이는지 읽어볼게.`,
+      (subject: string) => `먼저 중심을 세우자. 이번 장면의 축은 ‘${subject}’야.`,
+      (subject: string) => `복잡해 보여도 괜찮아. ‘${subject}’의 큰 결부터 연결해볼게.`,
+    ],
+    en: [
+      (subject: string) => `All right. Let’s map the larger pattern behind “${subject}.”`,
+      (subject: string) => `I’ll gather the scattered signals and start with the structure of “${subject}.”`,
+      (subject: string) => `Let’s see how the whole board moves through “${subject}.”`,
+      (subject: string) => `First, set the center. This scene turns on “${subject}.”`,
+      (subject: string) => `It may look complex, but we can connect the larger thread of “${subject}.”`,
+    ],
   },
   yeonhui: {
-    ko: "이 장면은 마음의 결을 천천히 따라가 봐.",
-    en: "Take this scene slowly, and follow the emotional thread.",
+    ko: [
+      (subject: string) => `‘${subject}’에서는 말보다 마음이 먼저 움직인 순간을 봐줘.`,
+      (subject: string) => `천천히 읽어봐. ‘${subject}’ 안에 관계의 온도가 숨어 있어.`,
+      (subject: string) => `이 장면은 다정하게 볼수록 선명해져. ‘${subject}’의 감정을 따라가 보자.`,
+      (subject: string) => `누가 옳은지보다 ‘${subject}’에서 서로 무엇을 느꼈는지가 중요해.`,
+      (subject: string) => `마음을 조금 가까이 가져와 봐. ‘${subject}’의 진짜 신호가 들릴 거야.`,
+    ],
+    en: [
+      (subject: string) => `In “${subject},” notice the moment the heart moved before the words did.`,
+      (subject: string) => `Read slowly. The emotional temperature of “${subject}” is hidden here.`,
+      (subject: string) => `This scene gets clearer with gentleness. Follow the feeling in “${subject}.”`,
+      (subject: string) => `More than who was right, notice what each person felt in “${subject}.”`,
+      (subject: string) => `Come a little closer. The real signal in “${subject}” may become audible.`,
+    ],
   },
   sahyeon: {
-    ko: "서두르지 마. 근거를 따라가면 핵심이 보여.",
-    en: "Don’t rush. Follow the evidence and the core will appear.",
+    ko: [
+      (subject: string) => `서두르지 마. ‘${subject}’는 느낌보다 근거를 순서대로 확인해보자.`,
+      (subject: string) => `이제 ‘${subject}’를 숫자와 반복 패턴으로 좁혀볼게.`,
+      (subject: string) => `‘${subject}’의 사실과 해석을 분리하면 핵심이 정확히 보여.`,
+      (subject: string) => `판단은 나중이야. 먼저 ‘${subject}’에서 반복되는 증거부터 보자.`,
+      (subject: string) => `좋아, ‘${subject}’의 계산 근거를 하나씩 대조해볼게.`,
+    ],
+    en: [
+      (subject: string) => `Don’t rush. For “${subject},” check the evidence in order.`,
+      (subject: string) => `Now let’s narrow “${subject}” through numbers and recurring patterns.`,
+      (subject: string) => `Separate fact from interpretation and the core of “${subject}” becomes precise.`,
+      (subject: string) => `Judgment comes later. First, find the repeating evidence in “${subject}.”`,
+      (subject: string) => `Good. Let’s compare the calculation behind “${subject}” one step at a time.`,
+    ],
   },
   hwayeon: {
-    ko: "잠깐. 여기서는 멈춤 신호를 먼저 확인해.",
-    en: "Wait. Check the stop signals before moving on.",
+    ko: [
+      (subject: string) => `잠깐. ‘${subject}’에서는 멈춰야 할 신호부터 확인해.`,
+      (subject: string) => `여긴 가볍게 넘기면 안 돼. ‘${subject}’의 위험선을 분명히 보자.`,
+      (subject: string) => `‘${subject}’ 앞에서는 속도보다 경계가 먼저야.`,
+      (subject: string) => `단호하게 말할게. ‘${subject}’의 중단 기준을 미리 정해둬.`,
+      (subject: string) => `불편해도 봐야 해. ‘${subject}’에서 놓치면 안 될 경고야.`,
+    ],
+    en: [
+      (subject: string) => `Wait. In “${subject},” check the stop signals first.`,
+      (subject: string) => `Don’t skim this. Mark the risk line around “${subject}” clearly.`,
+      (subject: string) => `With “${subject},” boundaries come before speed.`,
+      (subject: string) => `I’ll be direct: decide the stop rule for “${subject}” in advance.`,
+      (subject: string) => `It may be uncomfortable, but this warning in “${subject}” matters.`,
+    ],
   },
   yundo: {
-    ko: "숨을 한번 고르고, 현실에서 가능한 균형을 찾아보자.",
-    en: "Take a breath, then find the balance that works in real life.",
+    ko: [
+      (subject: string) => `숨을 한번 고르고, ‘${subject}’에서 지킬 수 있는 균형을 찾아보자.`,
+      (subject: string) => `‘${subject}’는 무리해서 바꾸기보다 오래 이어갈 리듬이 중요해.`,
+      (subject: string) => `괜찮아. ‘${subject}’를 현실에서 가능한 크기로 천천히 맞춰보자.`,
+      (subject: string) => `몸과 마음이 함께 버틸 수 있게 ‘${subject}’의 속도를 조절해볼게.`,
+      (subject: string) => `‘${subject}’의 답은 극단보다 편안하게 지속되는 쪽에 있어.`,
+    ],
+    en: [
+      (subject: string) => `Take a breath and find a sustainable balance in “${subject}.”`,
+      (subject: string) => `For “${subject},” a lasting rhythm matters more than forcing change.`,
+      (subject: string) => `It’s all right. Let’s bring “${subject}” down to a workable size.`,
+      (subject: string) => `Let’s adjust the pace of “${subject}” so both body and mind can carry it.`,
+      (subject: string) => `The answer in “${subject}” is closer to sustainable ease than an extreme.`,
+    ],
   },
   hoyeon: {
-    ko: "끝까지 읽어봐. 다음 선택의 실마리가 여기 있어.",
-    en: "Read this through. Your next choice may become clearer here.",
+    ko: [
+      (subject: string) => `‘${subject}’를 끝까지 읽어봐. 다음 선택의 실마리가 보여.`,
+      (subject: string) => `아직 답을 닫지 마. ‘${subject}’에 새로운 가능성이 남아 있어.`,
+      (subject: string) => `‘${subject}’를 지나면 지금과 다른 방향이 조금 더 선명해질 거야.`,
+      (subject: string) => `직감이 머무는 곳을 봐. ‘${subject}’가 다음 문을 가리키고 있어.`,
+      (subject: string) => `마지막 빛은 작아도 충분해. ‘${subject}’에서 이어갈 길을 찾아보자.`,
+    ],
+    en: [
+      (subject: string) => `Read “${subject}” through. A clue for your next choice is here.`,
+      (subject: string) => `Don’t close the answer yet. “${subject}” still holds another possibility.`,
+      (subject: string) => `Beyond “${subject},” a different direction may become clearer.`,
+      (subject: string) => `Notice where intuition pauses. “${subject}” is pointing to the next door.`,
+      (subject: string) => `Even a small final light is enough. Find the path forward in “${subject}.”`,
+    ],
   },
 } as const;
+
+function stableVoiceIndex(seed: string, poolSize: number): number {
+  let hash = 0;
+  for (const character of seed) hash = (Math.imul(hash, 31) + (character.codePointAt(0) ?? 0)) >>> 0;
+  return hash % poolSize;
+}
+
+function compactSceneSubject(title: string): string {
+  const compact = title.replace(/\s+/g, " ").replace(/[.!?]+$/g, "").trim();
+  return compact.length > 28 ? `${compact.slice(0, 27)}…` : compact;
+}
 
 /** A real scene beat: art, character acting, narration and an HTML speech bubble. */
 export function CharacterWebtoonPanel({
@@ -120,7 +203,10 @@ export function CharacterWebtoonPanel({
     emotion: tone === "warn" ? "serious" : tone === "gold" ? "hopeful" : tone === "night" ? "focused" : "calm",
     emphasis: tone === "warn" ? "high" : "medium",
   });
-  const characterVoice = characterVoices[scene.character][/[가-힣]/.test(titleText) ? "ko" : "en"];
+  const voiceLocale = /[가-힣]/.test(titleText) ? "ko" : "en";
+  const voicePool = characterVoices[scene.character][voiceLocale];
+  const voiceSeed = `${scene.character}:${titleText}:${typeof badge === "string" ? badge : ""}:${tone}`;
+  const characterVoice = voicePool[stableVoiceIndex(voiceSeed, voicePool.length)](compactSceneSubject(titleText));
 
   return (
     <section

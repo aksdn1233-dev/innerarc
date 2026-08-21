@@ -1,4 +1,17 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Locator } from "@playwright/test";
+
+async function expectConsecutiveCharacterVoicesToVary(panels: Locator) {
+  const beats = await panels.evaluateAll((nodes) => nodes.map((node) => ({
+    character: node.getAttribute("data-character"),
+    voice: node.querySelector(".webtoon-character-voice")?.textContent,
+  })));
+
+  for (let index = 1; index < beats.length; index += 1) {
+    if (beats[index].character === beats[index - 1].character) {
+      expect(beats[index].voice).not.toBe(beats[index - 1].voice);
+    }
+  }
+}
 
 test("compatibility offers the five plain-language relationship choices", async ({ page }) => {
   await page.goto("/ko/compatibility");
@@ -20,6 +33,7 @@ test("family comparison keeps consent and renders all eight operating areas", as
   await expect(page.locator("#compatibility-result .webtoon-story-character")).toHaveCount(9);
   await expect(page.locator("#compatibility-result .webtoon-story-bubble")).toHaveCount(9);
   await expect(page.locator("#compatibility-result .webtoon-character-voice")).toHaveCount(9);
+  await expectConsecutiveCharacterVoicesToVary(page.locator("#compatibility-result .webtoon-story-panel"));
   await expect(page.locator("#compatibility-result .report-context-emphasis").first()).toBeVisible();
   await expect(page.locator("#compatibility-result .report-keyword-emphasis").first()).toBeVisible();
   await expect(page.locator("#compatibility-result")).toContainText("가족이라는 이유만으로");
@@ -34,6 +48,7 @@ test("fixed 941104 product samples create no checkout controls", async ({ page }
     await expect(page.locator(".webtoon-story-character").first()).toBeVisible();
     await expect(page.locator(".webtoon-story-bubble").first()).toBeVisible();
     await expect(page.locator(".webtoon-character-voice").first()).toBeVisible();
+    await expectConsecutiveCharacterVoicesToVary(page.locator(".webtoon-story-panel"));
     await expect(page.locator(".report-context-emphasis").first()).toBeVisible();
     await expect(page.getByRole("button", { name: /결제|구매/ })).toHaveCount(0);
   }
