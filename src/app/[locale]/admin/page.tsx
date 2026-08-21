@@ -77,6 +77,7 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
     paidOrders,
     gate,
     recentFailures,
+    accessoryOrders,
   ] = await Promise.all([
     admin
       .from("payment_orders")
@@ -103,6 +104,12 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
       .eq("status", "DONE"),
     readOperationsGate(admin),
     readRecentPaymentSetupEvents(admin, 10),
+    admin
+      .from("payment_orders")
+      .select("order_id,product_code,provider,amount,status,created_at")
+      .like("product_code", "accessory_%")
+      .order("created_at", { ascending: false })
+      .limit(50),
   ]);
   const revenue = (paidOrders.data ?? []).reduce((total, row) => total + (row.amount ?? 0), 0);
 
@@ -218,6 +225,27 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
             </div>
           ))}
         </div>
+      </section>
+      <section className="admin-orders accessory-admin-orders">
+        <h2>악세서리 결제 내역</h2>
+        <p className="plans-notice">
+          리딩 상품과 분리된 악세서리 주문만 표시됩니다. 상품 소재·가격·재고·배송 정책이
+          확정되어 결제가 열린 뒤에는 주문일로부터 30일 이내 발송 상태를 여기에서 관리합니다.
+        </p>
+        {(accessoryOrders.data ?? []).length === 0 ? (
+          <p className="empty-state">현재 악세서리 결제 주문이 없습니다.</p>
+        ) : (
+          <div className="admin-order-list">
+            {(accessoryOrders.data ?? []).map((order) => (
+              <div key={order.order_id}>
+                <code>{order.order_id}</code>
+                <span>{order.product_code}</span>
+                <strong>{new Intl.NumberFormat("ko-KR").format(order.amount)}원</strong>
+                <span>{order.status} · {new Date(order.created_at).toLocaleDateString("ko-KR")}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
       {(stuckReports ?? []).length > 0 && (
         <section className="admin-orders">

@@ -66,6 +66,9 @@
 - [x] Provider-neutral entitlement, checkout/cancel, idempotency, stale-event, and failure-fallback contracts.
 - [x] Payment plan/input switching, local no-order validation, bounded field/readiness/rate/widget/provider errors, isolated checkout browser regression, and a server-only production launch-approval gate.
 - [x] Future accessory shop categories exist in a `coming later` state with no product, price, inventory, cart, checkout, or affiliate capability.
+- [x] Accessory storefront foundation exposes Saju/Numerology recommendation directions,
+  symbolic-claim limits, 30-day made-to-order copy, and a separate owner-console order view
+  while retaining no product, price, inventory, address, cart, or checkout capability.
 - [x] Future product contracts require complete disclosures, reject prohibited symbolic-outcome claims and tracking-bearing links, isolate sponsorship, and remain closed behind twelve evidence-backed gates plus explicit owner authorization.
 - [ ] Approve suppliers, provenance/material/allergy disclosures, catalog moderation, accessibility, inventory, fulfillment, returns/refunds, support, privacy, and consumer-law controls before opening the shop.
 - [ ] Validate localized prices, taxes, trial/renewal disclosure, purchase, restore, cancellation, refund-support, and AI unit economics with a real provider.

@@ -14,17 +14,29 @@ export type ShopCopy = Readonly<{
   ethicsTitle: string;
   ethics: string;
   backToResult: string;
+  sajuTitle: string;
+  sajuIntro: string;
+  numerologyTitle: string;
+  numerologyIntro: string;
+  formLabel: string;
+  paletteLabel: string;
+  materialLabel: string;
+  useLabel: string;
+  deliveryTitle: string;
+  deliveryBody: string;
+  deliveryBoundary: string;
+  pendingPurchase: string;
   nav: readonly [string, string, string, string, string];
 }>;
 
 const ko: ShopCopy = {
   brandTagline: "나·관계·올해의 흐름 리딩",
-  eyebrow: "상점 미리보기",
-  headline: "상징보다 안전과 쓸모를\n먼저 확인하는 큐레이션",
-  intro: "결과에 맞춘 액세서리 카테고리를 준비하고 있습니다. 아직 상품을 판매하거나 결제를 받지 않습니다.",
-  status: "차후 오픈 예정",
-  categoriesTitle: "준비 중인 카테고리",
-  categoryIntro: "개별 상품이 아니라 형태·재료·사용 맥락을 검토하는 카테고리 구조입니다.",
+  eyebrow: "결 악세서리 상점",
+  headline: "사주와 수비학의 상징을\n일상에서 쓰는 형태로",
+  intro: "사주 오행과 수비학 계산 결과에 맞춘 악세서리 방향을 먼저 살펴보세요. 실제 상품은 소재·가격·재고·사진 검토가 끝난 항목부터 순차적으로 결제할 수 있게 엽니다.",
+  status: "상점 준비 중 · 결제는 상품 확정 후 오픈",
+  categoriesTitle: "세 가지 사용 방식",
+  categoryIntro: "추천은 구매 압박이 아니라 착용감과 쓰임을 먼저 확인하는 선택 가이드입니다.",
   unavailable: "현재 구매 불가",
   launchGateTitle: "열기 전에 반드시 확인할 것",
   launchGates: [
@@ -36,15 +48,27 @@ const ko: ShopCopy = {
   ethicsTitle: "상점 원칙",
   ethics: "어떤 물건도 행운·보호·치유·연애·재정 효과를 약속하지 않습니다. 구매 여부는 해석 결과나 안전 도움에 영향을 주지 않습니다.",
   backToResult: "내 결과에서 방향 보기",
+  sajuTitle: "사주 오행별 추천 방향",
+  sajuIntro: "원국에서 참고할 오행을 확인한 뒤 같은 글자의 방향을 보세요. 오행이 부족하다는 이유만으로 물건이 필요하다는 뜻은 아닙니다.",
+  numerologyTitle: "수비학 계산값별 추천 방향",
+  numerologyIntro: "라이프 패스·태도 수·개인 연도의 세 계산값을 착용·휴대·공간 포인트로 나눕니다.",
+  formLabel: "형태",
+  paletteLabel: "색 방향",
+  materialLabel: "소재 방향",
+  useLabel: "사용 확인",
+  deliveryTitle: "결제 상품은 주문 제작 후 30일 이내 발송 예정",
+  deliveryBody: "결제가 확인되면 선택한 디자인과 주문 정보를 기준으로 제작을 시작하고, 진행 상태는 악세서리 주문 내역으로 별도 관리합니다.",
+  deliveryBoundary: "‘기운을 담는다’는 표현은 사주·수비학 상징을 디자인에 반영한다는 제작 콘셉트입니다. 행운·보호·치유·성과 같은 효능을 보장하지 않습니다.",
+  pendingPurchase: "상품 정보 확정 후 결제 가능",
   nav: ["홈", "나", "관계", "질문", "성장"],
 };
 
 const en: ShopCopy = {
   brandTagline: "Personal pattern intelligence",
-  eyebrow: "Shop preview",
-  headline: "Curation that checks safety\nand usefulness before symbolism",
-  intro: "We are preparing accessory categories connected to reflection results. No products are sold and no payments are accepted yet.",
-  status: "Opening later",
+  eyebrow: "GYEOL accessory shop",
+  headline: "Turn Saju and numerology symbols\ninto useful everyday forms",
+  intro: "Explore accessory directions tied to Saju phases and numerology facts. Checkout opens only for items whose material, price, inventory, and imagery have been approved.",
+  status: "Shop in preparation · checkout opens after product approval",
   categoriesTitle: "Categories in preparation",
   categoryIntro: "This is a category architecture for reviewing form, material, and use—not a product catalog.",
   unavailable: "Purchasing unavailable",
@@ -58,6 +82,18 @@ const en: ShopCopy = {
   ethicsTitle: "Shop principle",
   ethics: "No object promises luck, protection, healing, romantic, or financial effects. Purchasing never changes your result or access to safety help.",
   backToResult: "See directions in my result",
+  sajuTitle: "Directions by Saju phase",
+  sajuIntro: "Find the phase referenced in your chart. A low phase count never means that you need to buy an object.",
+  numerologyTitle: "Directions by numerology fact",
+  numerologyIntro: "Life Path, Attitude, and Personal Year become wearable, carry, and space directions.",
+  formLabel: "Form",
+  paletteLabel: "Palette",
+  materialLabel: "Material direction",
+  useLabel: "Reality check",
+  deliveryTitle: "Paid items are made to order and scheduled to ship within 30 days",
+  deliveryBody: "Production begins after payment confirmation. Design choice and order progress are tracked separately as accessory orders.",
+  deliveryBoundary: "‘Holding energy’ means reflecting symbolic Saju or numerology motifs in the design. It does not guarantee luck, protection, healing, or performance.",
+  pendingPurchase: "Checkout opens after product approval",
   nav: ["Home", "Me", "Relations", "Questions", "Growth"],
 };
 

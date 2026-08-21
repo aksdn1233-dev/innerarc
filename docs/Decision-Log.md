@@ -770,3 +770,34 @@
   conversion regression is observed.
 - Rollback reference: `93e09be3527810461cdb324bf89957307da18e7c` (production v61).
 - Status: Decided and additive; no migration or payment configuration change.
+
+## D-070 - Open an accessory recommendation storefront before accessory checkout
+
+- Date: 2026-08-21
+- Decision: Replace the closed category preview with a public storefront foundation that
+  distinguishes five Saju phase directions from three deterministic Numerology fact
+  directions, links into it from both systems, discloses made-to-order shipment within 30
+  days after payment, and reserves an isolated administrator list for future
+  `accessory_*` payment orders. Keep prices, item photos, inventory, shipping-address
+  collection, and checkout controls closed until real products pass the existing twelve
+  commerce gates.
+- Demand evidence: Direct product-owner request to recommend accessories from Saju and
+  Numerology results, communicate a 30-day fulfillment window, accept future payment, and
+  separate those orders in the owner console.
+- Distribution and economics: Distribution is limited to existing result/Saju routes and
+  the first-party shop. Existing 5,500/39,000/79,000 KRW digital pricing and historical
+  9,600/39,000 campaign evidence remain untouched. Product COGS, packaging, domestic
+  postage, payment fees, returns, labor, VAT, and loss allowance are unknown, so no
+  accessory price or gross-margin claim is published and no payment can be created.
+- Safety and claims: “Holding energy” is disclosed as a symbolic design concept only.
+  Accessories do not promise luck, protection, healing, love, money, performance, or a
+  changed reading. Material, allergen, nickel, dimensions, care, origin, supplier, inventory,
+  returns, and consumer-law evidence remain launch gates.
+- Metrics and reversal: Existing allowlisted anonymous shop/result navigation may measure
+  demand without raw profile facts. Open checkout only after approved SKU evidence and a
+  unit-economics review. Revert the storefront or recommendation link if it creates purchase
+  confusion, unsafe material inference, outcome claims, or a material digital-reading funnel
+  regression.
+- Rollback reference: production v62, commit
+  `8db497064f423162407e825f2adf89ee82614120`.
+- Status: Storefront foundation decided; accessory checkout and production schema remain held.

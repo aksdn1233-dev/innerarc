@@ -136,6 +136,11 @@ export function SajuExperience({ locale }: { locale: Locale }) {
         {error && <p className="saju-error" role="alert">{error}</p>}
       </form>
 
+      <aside className="saju-shop-entry">
+        <div><p className="eyebrow">SAJU ACCESSORY</p><h2>{locale === "ko" ? "내 사주 오행에 맞는 악세서리 방향" : "Accessory directions for your Saju phases"}</h2><p>{locale === "ko" ? "오행별 형태·색·소재 방향을 먼저 비교해 보세요. 물건이 운이나 결과를 바꾸는 것은 아닙니다." : "Compare form, palette, and material directions by phase. An object does not change luck or outcomes."}</p></div>
+        <Link href={`/${locale}/shop#saju-accessory-title`}>{locale === "ko" ? "사주 추천 악세서리 보기" : "See Saju accessory directions"}</Link>
+      </aside>
+
       {chart && views && (
         <section aria-live="polite" className="saju-result" id="saju-result">
           {chart.termBoundaryWarning && (

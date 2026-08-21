@@ -2857,6 +2857,97 @@ summary {
   font-weight: 800;
 }
 
+.shop-shell {
+  --shop-night: #101426;
+  --shop-plum: #4c2947;
+  --shop-gold: #c99b4c;
+  --shop-cream: #fff9ec;
+}
+
+.shop-shell .topbar {
+  margin-top: 14px;
+  padding-inline: clamp(18px, 4vw, 36px);
+  border: 1px solid rgba(201, 155, 76, .28);
+  border-radius: 18px;
+  background: #101426;
+  color: var(--shop-cream);
+}
+
+.shop-shell .topbar small,
+.shop-shell .locale-switch { color: #dfbc7a; }
+
+.shop-intro {
+  position: relative;
+  max-width: none;
+  margin-top: 18px;
+  padding: clamp(58px, 9vw, 110px) clamp(24px, 6vw, 68px);
+  overflow: hidden;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 78% 20%, rgba(153, 83, 130, .44), transparent 28%),
+    radial-gradient(circle at 12% 90%, rgba(45, 92, 126, .34), transparent 35%),
+    linear-gradient(145deg, #0d132b, #2d203b 60%, #4d2945);
+  color: var(--shop-cream);
+}
+
+.shop-intro::after { position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(255,255,255,.45) 0 1px, transparent 1.5px); background-size: 62px 62px; content: ""; opacity: .15; pointer-events: none; }
+.shop-intro > * { position: relative; z-index: 1; }
+.shop-intro > p:not(.eyebrow) { color: rgba(255, 249, 236, .78); }
+.shop-intro .eyebrow { color: #e6c37f; }
+.shop-status { background: rgba(230, 195, 127, .14); color: #f0cf8f; border: 1px solid rgba(230, 195, 127, .34); }
+
+.shop-delivery-promise,
+.shop-recommendation-section {
+  max-width: 1080px;
+  margin: 28px auto 34px;
+  padding: clamp(26px, 5vw, 48px);
+  border-radius: 22px;
+}
+
+.shop-delivery-promise { display: grid; grid-template-columns: .9fr 1.1fr; gap: 28px; border: 1px solid rgba(201,155,76,.32); background: linear-gradient(135deg, #171b30, #3c2841); color: var(--shop-cream); box-shadow: 0 22px 60px rgba(20,17,35,.14); }
+.shop-delivery-promise h2 { margin: 6px 0 0; font: 700 clamp(1.45rem, 3vw, 2.1rem)/1.25 var(--display-font); }
+.shop-delivery-promise p { margin: 0; color: rgba(255,249,236,.8); line-height: 1.75; }
+.shop-delivery-promise small { display: block; margin-top: 14px; color: #e4c58b; line-height: 1.65; }
+
+.shop-recommendation-section { border: 1px solid #ded3c6; background: rgba(255,253,248,.94); }
+.shop-recommendation-section > header { max-width: 760px; }
+.shop-recommendation-section h2 { margin: 6px 0 10px; font: 700 clamp(1.7rem, 4vw, 2.6rem)/1.2 var(--display-font); letter-spacing: -.035em; }
+.shop-recommendation-section header > p:last-child { color: var(--muted); line-height: 1.7; }
+.shop-direction-grid { display: grid; gap: 14px; margin-top: 28px; }
+.shop-direction-grid.is-saju { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.shop-direction-grid.is-numerology { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.shop-direction-card { position: relative; display: flex; flex-direction: column; min-width: 0; padding: 22px; overflow: hidden; border: 1px solid #ded4c8; border-radius: 18px; background: linear-gradient(165deg, #fffdf8, #f3ebdf); }
+.shop-direction-card::before { display: block; width: 54px; height: 6px; margin-bottom: 20px; border-radius: 999px; background: #92714c; content: ""; }
+.shop-direction-card.saju-wood::before { background: #56785f; }
+.shop-direction-card.saju-fire::before { background: #a54f43; }
+.shop-direction-card.saju-earth::before { background: #a27b49; }
+.shop-direction-card.saju-metal::before { background: #7a808b; }
+.shop-direction-card.saju-water::before { background: #405f86; }
+.shop-direction-key { color: #815f35; font-size: .76rem; font-weight: 850; letter-spacing: .04em; }
+.shop-direction-card h3 { min-height: 3.4em; margin: 10px 0 18px; font: 750 1.08rem/1.45 var(--display-font); }
+.shop-direction-card dl { display: grid; gap: 12px; flex: 1; margin: 0; }
+.shop-direction-card dl div { padding-top: 10px; border-top: 1px solid rgba(120,103,87,.16); }
+.shop-direction-card dt { color: #876b4c; font-size: .7rem; font-weight: 850; }
+.shop-direction-card dd { margin: 4px 0 0; color: #56504b; font-size: .8rem; line-height: 1.55; }
+.shop-pending-purchase { display: flex; width: 100%; min-height: 46px; align-items: center; justify-content: center; margin-top: 20px; border: 1px solid #d1c2ae; border-radius: 12px; background: #ece4d7; color: #766a5c; font-size: .8rem; font-weight: 800; text-align: center; }
+
+.saju-shop-entry { display: flex; align-items: center; justify-content: space-between; gap: 24px; max-width: 860px; margin: 24px auto; padding: clamp(22px, 5vw, 34px); border: 1px solid rgba(201,155,76,.32); border-radius: 20px; background: linear-gradient(135deg, #161b32, #422842); color: #fff9ec; }
+.saju-shop-entry h2 { margin: 4px 0 8px; font: 750 clamp(1.3rem, 3vw, 1.75rem)/1.3 var(--display-font); }
+.saju-shop-entry p:not(.eyebrow) { margin: 0; color: rgba(255,249,236,.72); line-height: 1.65; }
+.saju-shop-entry a { flex: 0 0 auto; padding: 13px 17px; border-radius: 999px; background: linear-gradient(135deg, #e8c779, #b98334); color: #24180c; font-weight: 850; text-decoration: none; }
+
+@media (max-width: 980px) {
+  .shop-direction-grid.is-saju { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 680px) {
+  .shop-delivery-promise { grid-template-columns: 1fr; }
+  .shop-direction-grid.is-saju,
+  .shop-direction-grid.is-numerology { grid-template-columns: 1fr; }
+  .saju-shop-entry { align-items: stretch; flex-direction: column; }
+  .saju-shop-entry a { text-align: center; }
+}
+
 .question-intro h1 {
   margin: 0;
   font: 500 clamp(2.4rem, 6vw, 5rem)/1.04 Georgia, "Noto Serif KR", serif;
@@ -7533,8 +7624,22 @@ summary {
 }
 
 .cinema-cta-secondary {
-  border-color: rgba(220, 207, 161, 0.5);
-  color: #dccfa1;
+  border-color: rgba(245, 218, 151, 0.72);
+  background: linear-gradient(135deg, rgba(231, 201, 126, 0.96), rgba(177, 132, 57, 0.94));
+  color: #21180d;
+  box-shadow: 0 12px 32px rgba(8, 6, 16, 0.34), inset 0 1px rgba(255, 248, 216, 0.54);
+}
+
+.cinema-hero-actions .cinema-cta-secondary + .cinema-cta-secondary {
+  border-color: rgba(228, 194, 112, 0.62);
+  background: linear-gradient(135deg, rgba(200, 158, 75, 0.94), rgba(129, 91, 37, 0.96));
+  color: #fff6db;
+}
+
+.cinema-cta-secondary:hover,
+.cinema-cta-secondary:focus-visible {
+  background: linear-gradient(135deg, #f0cf7c, #b77f32);
+  filter: brightness(1.04);
 }
 
 .cinema-menu { background: #1f1d2b; }

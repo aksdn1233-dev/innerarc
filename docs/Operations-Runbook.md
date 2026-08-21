@@ -80,6 +80,23 @@ Status: Supabase account persistence connected; production deployment and remain
 - Vitest 4 does not accept Jest's `--runInBand` option. Run `npm test` directly; an unknown
   option is a runner invocation error, not a product-test failure.
 
+### Accessory storefront rollback and activation hold
+
+- Pre-storefront rollback reference is production v62 at commit
+  `8db497064f423162407e825f2adf89ee82614120`.
+- The current storefront has no migration, address collection, inventory mutation, or
+  accessory checkout. Revert the shop recommendation sections and Saju/result links together
+  if claims, materials, or purchase-state copy regress; digital reading checkout remains
+  independent.
+- Do not add an `accessory_*` product code to the payment catalog or database constraint until
+  the specific SKU has supplier/material/allergen/origin/dimensions/care imagery, inventory,
+  price/tax/shipping/returns/support evidence, and verified unit economics. Preserve a rollback
+  reference before the later payment or migration change.
+- A 30-day target begins only after verified payment for an approved SKU. The future order
+  workflow must record promised-by, production, packed, shipped, delivered, canceled, and
+  refunded states and alert the owner before the promise date; the public storefront alone is
+  not fulfillment evidence.
+
 ## Incident priorities
 
 1. Immediate safety or cross-user data exposure.

@@ -91,6 +91,12 @@ Last updated: 2026-08-01
   address collection or automatic provider transfer.
 - [x] Japanese home, reading intake, and product comparison routes are public and linked;
   full deterministic report-rule localization remains outside this additive entry release.
+- [x] Public accessory storefront separates five Saju phase directions from Life Path,
+  Attitude, and Personal Year directions, discloses symbolic limits, and states a 30-day
+  made-to-order shipment target without publishing invented products or prices.
+- [x] Owner console reserves a separate `accessory_*` payment-order list; checkout remains
+  closed until approved SKUs, fulfillment evidence, shipping data controls, and unit
+  economics are complete.
 
 ## Phase 6 - Reality Check
 
