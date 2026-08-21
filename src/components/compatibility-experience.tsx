@@ -18,7 +18,7 @@ import type { CompatibilityCopy } from "@/i18n/compatibility-copy";
 import { buildCompatibilityShare } from "@/core/share";
 import { ShareCardPanel } from "@/components/share-card-panel";
 import { focusAndScroll, scrollToElement } from "@/components/accessibility";
-import { CharacterWebtoonPanel as WebtoonPanel, WebtoonCue } from "@/components/webtoon";
+import { CharacterWebtoonPanel as WebtoonPanel, ReportEmphasis, WebtoonCue } from "@/components/webtoon";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
 
 type Props = { locale: Locale; copy: CompatibilityCopy };
@@ -157,14 +157,14 @@ export function CompatibilityExperience({ locale, copy }: Props) {
                 title={section.title}
                 tone={index % 2 === 0 ? "paper" : "night"}
               >
-                <p className="webtoon-body">{section.observation}</p>
+                <p className="webtoon-body"><ReportEmphasis>{section.observation}</ReportEmphasis></p>
                 <div className="compatibility-conditions">
                   <strong>{copy.practicalConditions}</strong>
-                  <ul>{section.practicalConditions.map((item) => <li key={item}>{item}</li>)}</ul>
+                  <ul>{section.practicalConditions.map((item) => <li key={item}><ReportEmphasis>{item}</ReportEmphasis></li>)}</ul>
                 </div>
                 <div className="compatibility-check">
                   <strong>{copy.realityCheck}</strong>
-                  <p>{section.realityCheck}</p>
+                  <p><ReportEmphasis>{section.realityCheck}</ReportEmphasis></p>
                 </div>
                 <details>
                   <summary>{copy.evidence}</summary>

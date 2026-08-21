@@ -7727,6 +7727,16 @@ summary {
   white-space: pre-wrap;
 }
 
+.report-context-emphasis {
+  color: #21192f;
+  font-weight: 700;
+}
+
+.report-keyword-emphasis {
+  color: #160f23;
+  font-weight: 800;
+}
+
 .webtoon-story-dialogue details {
   margin-top: 18px;
   border-top: 1px solid rgba(36, 31, 26, .16);

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { PaidReport } from "@/core/paid-reading";
 import type { Locale } from "@/i18n/config";
-import { CharacterWebtoonPanel as WebtoonPanel, WebtoonCue, WebtoonOrbs } from "@/components/webtoon";
+import { CharacterWebtoonPanel as WebtoonPanel, ReportEmphasis, WebtoonCue, WebtoonOrbs } from "@/components/webtoon";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
 
 type SampleKind = "detail" | "premium" | "saju";
@@ -72,14 +72,14 @@ export function ReportSampleExperience({
           title={section.title}
           tone={index % 2 === 0 ? "paper" : "night"}
         >
-          <div className="sample-report-body">{section.body}</div>
+          <div className="sample-report-body"><ReportEmphasis>{section.body}</ReportEmphasis></div>
         </WebtoonPanel>
       ))}
 
       <WebtoonPanel badge={ko ? "실천" : "Actions"} title={ko ? "결과를 현실에서 확인하는 방법" : "How to check this in real life"} tone="paper">
-        <ul>{report.actions.map((action) => <li key={action}>{action}</li>)}</ul>
-        {report.cautions.length > 0 && <ul>{report.cautions.map((caution) => <li key={caution}>{caution}</li>)}</ul>}
-        <p className="disclaimer">{report.disclaimer}</p>
+        <ul>{report.actions.map((action) => <li key={action}><ReportEmphasis>{action}</ReportEmphasis></li>)}</ul>
+        {report.cautions.length > 0 && <ul>{report.cautions.map((caution) => <li key={caution}><ReportEmphasis>{caution}</ReportEmphasis></li>)}</ul>}
+        <p className="disclaimer"><ReportEmphasis>{report.disclaimer}</ReportEmphasis></p>
         <Link className="primary-button" href={`/${locale}`}>{ko ? "홈으로" : "Home"}</Link>
       </WebtoonPanel>
     </main>

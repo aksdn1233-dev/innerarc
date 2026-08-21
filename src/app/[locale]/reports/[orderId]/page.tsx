@@ -6,7 +6,7 @@ import { MeteorTrails, NightHorizon } from "@/components/brand-visuals";
 import { PaymentStatusWaiting } from "@/components/payment-status-waiting";
 import { ReportActions } from "@/components/report-actions";
 import { ReviewRequestPanel } from "@/components/review-request-panel";
-import { CharacterWebtoonPanel as WebtoonPanel, WebtoonCta, WebtoonCue, WebtoonOrbs } from "@/components/webtoon";
+import { CharacterWebtoonPanel as WebtoonPanel, ReportEmphasis, WebtoonCta, WebtoonCue, WebtoonOrbs } from "@/components/webtoon";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
 import { toOwnReviewState } from "@/core/reviews";
 import { isLocale } from "@/i18n/config";
@@ -281,7 +281,7 @@ export default async function PurchasedReportPage({
             title={directSection.title}
             tone="gold"
           >
-            <p className="webtoon-body">{directSection.body}</p>
+            <p className="webtoon-body"><ReportEmphasis>{directSection.body}</ReportEmphasis></p>
             <WebtoonCue />
           </WebtoonPanel>
         )}
@@ -292,7 +292,7 @@ export default async function PurchasedReportPage({
             title={report.characterLabel}
             tone="paper"
           >
-            {characterLead && <p className="webtoon-body">{characterLead}</p>}
+            {characterLead && <p className="webtoon-body"><ReportEmphasis>{characterLead}</ReportEmphasis></p>}
           </WebtoonPanel>
         )}
 
@@ -312,7 +312,7 @@ export default async function PurchasedReportPage({
             {numberSection && (
               <details>
                 <summary>{locale === "ko" ? "계산 기준 보기" : "View the basis"}</summary>
-                <p className="webtoon-body">{numberSection.body}</p>
+                <p className="webtoon-body"><ReportEmphasis>{numberSection.body}</ReportEmphasis></p>
               </details>
             )}
           </WebtoonPanel>
@@ -325,7 +325,7 @@ export default async function PurchasedReportPage({
             title={section.title}
             tone={index % 2 === 0 ? "night" : "paper"}
           >
-            <p className="webtoon-body">{section.body}</p>
+            <p className="webtoon-body"><ReportEmphasis>{section.body}</ReportEmphasis></p>
           </WebtoonPanel>
         ))}
 
@@ -336,11 +336,11 @@ export default async function PurchasedReportPage({
             : (locale === "ko" ? "지금 해볼 일" : "Next actions")}
           tone="gold"
         >
-          <ol className="webtoon-steps">{report.actions.map((item) => <li key={item}>{item}</li>)}</ol>
+          <ol className="webtoon-steps">{report.actions.map((item) => <li key={item}><ReportEmphasis>{item}</ReportEmphasis></li>)}</ol>
           {premiumManualSection && (
             <div className="premium-manual">
               <h3>{premiumManualSection.title}</h3>
-              <p className="webtoon-body">{premiumManualSection.body}</p>
+              <p className="webtoon-body"><ReportEmphasis>{premiumManualSection.body}</ReportEmphasis></p>
             </div>
           )}
         </WebtoonPanel>
@@ -351,7 +351,7 @@ export default async function PurchasedReportPage({
             title={stopSection.title}
             tone="warn"
           >
-            <p className="webtoon-body">{stopSection.body}</p>
+            <p className="webtoon-body"><ReportEmphasis>{stopSection.body}</ReportEmphasis></p>
           </WebtoonPanel>
         )}
 
@@ -361,7 +361,7 @@ export default async function PurchasedReportPage({
             title={premiumStopSection.title}
             tone="warn"
           >
-            <p className="webtoon-body">{premiumStopSection.body}</p>
+            <p className="webtoon-body"><ReportEmphasis>{premiumStopSection.body}</ReportEmphasis></p>
           </WebtoonPanel>
         )}
 
@@ -378,7 +378,7 @@ export default async function PurchasedReportPage({
             >
               <details className="premium-progressive">
                 <summary>{locale === "ko" ? "내용 펼치기" : "Open checklist"}</summary>
-                <p className="webtoon-body">{section.body}</p>
+                <p className="webtoon-body"><ReportEmphasis>{section.body}</ReportEmphasis></p>
               </details>
             </WebtoonPanel>
           ) : (
@@ -388,7 +388,7 @@ export default async function PurchasedReportPage({
               title={section.title}
               tone={index % 2 === 0 ? "night" : "paper"}
             >
-              <p className="webtoon-body">{section.body}</p>
+              <p className="webtoon-body"><ReportEmphasis>{section.body}</ReportEmphasis></p>
             </WebtoonPanel>
           );
         })}
@@ -399,7 +399,7 @@ export default async function PurchasedReportPage({
             title={finalSection.title}
             tone="night"
           >
-            <p className="webtoon-body">{finalSection.body}</p>
+            <p className="webtoon-body"><ReportEmphasis>{finalSection.body}</ReportEmphasis></p>
           </WebtoonPanel>
         )}
 
@@ -409,7 +409,7 @@ export default async function PurchasedReportPage({
             title={locale === "ko" ? "이럴 때는 조심하세요" : "Situations to watch"}
             tone="warn"
           >
-            <ul>{report.cautions.map((item) => <li key={item}>{item}</li>)}</ul>
+            <ul>{report.cautions.map((item) => <li key={item}><ReportEmphasis>{item}</ReportEmphasis></li>)}</ul>
           </WebtoonPanel>
         )}
 
@@ -419,7 +419,7 @@ export default async function PurchasedReportPage({
             title={locale === "ko" ? "먼저 확인할 안전 기준" : "Safety check"}
             tone="warn"
           >
-            <ul>{report.cautions.map((item) => <li key={item}>{item}</li>)}</ul>
+            <ul>{report.cautions.map((item) => <li key={item}><ReportEmphasis>{item}</ReportEmphasis></li>)}</ul>
           </WebtoonPanel>
         )}
 

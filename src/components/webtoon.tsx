@@ -166,6 +166,29 @@ export function WebtoonMark({ children }: { children: ReactNode }) {
   return <mark className="webtoon-mark">{children}</mark>;
 }
 
+const reportKeywordPattern = /(핵심|우선|중요|주의|강점|위험|기회|선택|행동|관계|패턴|균형|경계|근거|확인|필요|권장|가능성|core|priority|important|caution|strength|risk|opportunity|choice|action|relationship|pattern|balance|boundary|evidence|check|need)/gi;
+
+function emphasizeReportKeywords(text: string, keyPrefix: string) {
+  return text.split(reportKeywordPattern).map((part, index) =>
+    index % 2 === 1 ? <strong className="report-keyword-emphasis" key={`${keyPrefix}-${index}`}>{part}</strong> : part,
+  );
+}
+
+/** Keeps report copy intact while giving its opening context and decision words visual weight. */
+export function ReportEmphasis({ children }: { children: string }) {
+  const opening = children.match(/^(\s*)([\s\S]{8,160}?[.!?])(?=\s|$)([\s\S]*)$/)
+    ?? children.match(/^(\s*)([^\r\n]{8,160})(?:\r?\n|$)([\s\S]*)$/);
+  if (!opening) return <>{emphasizeReportKeywords(children, "term")}</>;
+
+  return (
+    <>
+      {opening[1]}
+      <strong className="report-context-emphasis">{emphasizeReportKeywords(opening[2], "opening")}</strong>
+      {emphasizeReportKeywords(opening[3], "rest")}
+    </>
+  );
+}
+
 /*
  * The bar that stays on screen for the whole scroll. Only pages without the five-item
  * bottom navigation use it, because the two would sit on top of each other.
