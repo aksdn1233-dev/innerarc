@@ -19,6 +19,7 @@ test("family comparison keeps consent and renders all eight operating areas", as
   await expect(page.locator("#compatibility-result .compatibility-card")).toHaveCount(8);
   await expect(page.locator("#compatibility-result .webtoon-story-character")).toHaveCount(9);
   await expect(page.locator("#compatibility-result .webtoon-story-bubble")).toHaveCount(9);
+  await expect(page.locator("#compatibility-result .webtoon-character-voice")).toHaveCount(9);
   await expect(page.locator("#compatibility-result .report-context-emphasis").first()).toBeVisible();
   await expect(page.locator("#compatibility-result .report-keyword-emphasis").first()).toBeVisible();
   await expect(page.locator("#compatibility-result")).toContainText("가족이라는 이유만으로");
@@ -32,6 +33,7 @@ test("fixed 941104 product samples create no checkout controls", async ({ page }
     await expect(page.locator(".webtoon-story-panel").first()).toBeVisible();
     await expect(page.locator(".webtoon-story-character").first()).toBeVisible();
     await expect(page.locator(".webtoon-story-bubble").first()).toBeVisible();
+    await expect(page.locator(".webtoon-character-voice").first()).toBeVisible();
     await expect(page.locator(".report-context-emphasis").first()).toBeVisible();
     await expect(page.getByRole("button", { name: /결제|구매/ })).toHaveCount(0);
   }

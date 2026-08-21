@@ -64,6 +64,33 @@ function storyTheme(title: ReactNode, tone: WebtoonTone): { theme: string; secti
   return { theme: tone === "night" ? "decision" : "core", sectionType: tone === "night" ? "decision" : "summary" };
 }
 
+const characterVoices = {
+  taeryeong: {
+    ko: "좋아. 먼저 큰 흐름부터 함께 짚어볼게.",
+    en: "All right. Let’s trace the larger pattern first.",
+  },
+  yeonhui: {
+    ko: "이 장면은 마음의 결을 천천히 따라가 봐.",
+    en: "Take this scene slowly, and follow the emotional thread.",
+  },
+  sahyeon: {
+    ko: "서두르지 마. 근거를 따라가면 핵심이 보여.",
+    en: "Don’t rush. Follow the evidence and the core will appear.",
+  },
+  hwayeon: {
+    ko: "잠깐. 여기서는 멈춤 신호를 먼저 확인해.",
+    en: "Wait. Check the stop signals before moving on.",
+  },
+  yundo: {
+    ko: "숨을 한번 고르고, 현실에서 가능한 균형을 찾아보자.",
+    en: "Take a breath, then find the balance that works in real life.",
+  },
+  hoyeon: {
+    ko: "끝까지 읽어봐. 다음 선택의 실마리가 여기 있어.",
+    en: "Read this through. Your next choice may become clearer here.",
+  },
+} as const;
+
 /** A real scene beat: art, character acting, narration and an HTML speech bubble. */
 export function CharacterWebtoonPanel({
   badge,
@@ -93,6 +120,7 @@ export function CharacterWebtoonPanel({
     emotion: tone === "warn" ? "serious" : tone === "gold" ? "hopeful" : tone === "night" ? "focused" : "calm",
     emphasis: tone === "warn" ? "high" : "medium",
   });
+  const characterVoice = characterVoices[scene.character][/[가-힣]/.test(titleText) ? "ko" : "en"];
 
   return (
     <section
@@ -119,6 +147,7 @@ export function CharacterWebtoonPanel({
       </div>
       <div className="webtoon-story-bubble">
         <strong>{scene.characterNameKo}</strong>
+        <p className="webtoon-character-voice">“{characterVoice}”</p>
         {title != null && <h2>{title}</h2>}
         <div className="webtoon-story-dialogue">{children}</div>
       </div>

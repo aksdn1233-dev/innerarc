@@ -7573,6 +7573,26 @@ summary {
   background: #15131c;
   color: #28231d;
   overflow: hidden;
+  box-shadow: 0 0 90px rgba(79, 54, 122, .24);
+}
+
+.webtoon-shell,
+.webtoon-flow {
+  background:
+    radial-gradient(circle at 50% 8%, rgba(87, 57, 132, .32), transparent 28rem),
+    radial-gradient(circle at 14% 44%, rgba(32, 75, 113, .2), transparent 34rem),
+    linear-gradient(180deg, #070713, #0c0917 48%, #05050d);
+}
+
+.webtoon-story-panel::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 22%, transparent 18%, rgba(5, 4, 12, .18) 58%, rgba(5, 4, 12, .76) 100%),
+    linear-gradient(90deg, rgba(7, 5, 15, .5), transparent 22%, transparent 78%, rgba(7, 5, 15, .5));
+  content: "";
+  pointer-events: none;
 }
 
 .webtoon-story-art,
@@ -7600,6 +7620,12 @@ summary {
   object-fit: cover;
   opacity: .34;
   mix-blend-mode: screen;
+  animation: webtoon-mystic-drift 14s ease-in-out infinite alternate;
+}
+
+@keyframes webtoon-mystic-drift {
+  from { opacity: .25; transform: scale(1); }
+  to { opacity: .42; transform: scale(1.045) translate3d(0, -1%, 0); }
 }
 
 .webtoon-story-art::after {
@@ -7699,6 +7725,16 @@ summary {
   color: #f1c67b;
   font-size: .76rem;
   letter-spacing: .05em;
+}
+
+.webtoon-character-voice {
+  max-width: 34rem;
+  margin: 16px 0 0;
+  color: #5d416f;
+  font-size: clamp(1rem, 2.5vw, 1.16rem) !important;
+  font-weight: 750;
+  letter-spacing: -.018em;
+  line-height: 1.65 !important;
 }
 
 .webtoon-story-bubble h2 {
