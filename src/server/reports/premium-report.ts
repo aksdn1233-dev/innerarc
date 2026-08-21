@@ -4,7 +4,7 @@ import {
   calculateNumerologyProfile,
 } from "@/core/numerology";
 import type { PaidReadingInput, PaidReport } from "@/core/paid-reading";
-import { createIntegratedProfile } from "@/core/profile";
+import { createIntegratedProfile, describeIntegratedNumber } from "@/core/profile";
 import { describePersonalYear } from "@/core/profile/personal-year-theme";
 import { pickSharpInsights } from "@/core/profile/sharp-insights";
 import {
@@ -326,10 +326,14 @@ export function createPremiumPaidReport(
   const birthday = compoundDisplay(dayCompound, profile.birthday.value);
   const attitude = compoundDisplay(attitudeCompound, profile.attitude.value);
   const year = compoundDisplay(yearCompound, birthYear);
+  const lifeTheme = describeIntegratedNumber(profile.lifePath.value, locale);
+  const birthdayTheme = describeIntegratedNumber(profile.birthday.value, locale);
+  const attitudeTheme = describeIntegratedNumber(profile.attitude.value, locale);
+  const yearTheme = describeIntegratedNumber(birthYear, locale);
   const synthesis = localized(
     locale,
-    `생명수 ${life}의 성과·자원 운영 욕구가 중심을 잡고, 생일수 ${birthday}의 적응력과 기동성이 실행 방식을 빠르게 만듭니다. 태도수 ${attitude} 조합은 사람과 분위기의 미세한 신호를 먼저 읽게 하고, 출생연도수 ${year} 리듬은 책임·보호·완성도를 놓치지 않게 제동을 겁니다. 서로 다른 네 힘은 '크게 움직이되 사람과 책임을 놓치지 않는 방식'으로 합쳐질 때 가장 안정적입니다.`,
-    `Life Path ${life}, Birthday ${birthday}, Attitude ${attitude}, and Birth Year ${year} work as one system: scale and execution, adaptability, social sensing, and responsibility.`,
+    `네 축은 생명수 ${life}의 ${lifeTheme.drive}, 생일수 ${birthday}의 ${birthdayTheme.drive}, 태도수 ${attitude}의 ${attitudeTheme.drive}, 출생연도수 ${year}의 ${yearTheme.drive}입니다. 중심 동력: ${lifeTheme.strength}. 실행 강점: ${birthdayTheme.strength}. 첫인상과 접근 방식: ${attitudeTheme.strength}. 오래 반복되는 바탕: ${yearTheme.strength}. 네 숫자는 서로의 역할을 바꾸어 설명하지 않고 각자의 위치에서 함께 읽습니다.`,
+    `Life Path ${life} (${lifeTheme.drive}), Birthday ${birthday} (${birthdayTheme.drive}), Attitude ${attitude} (${attitudeTheme.drive}), and Birth Year ${year} (${yearTheme.drive}) work together without swapping their roles.`,
   );
   const hidden = localized(
     locale,

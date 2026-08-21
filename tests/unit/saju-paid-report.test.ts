@@ -50,5 +50,8 @@ describe("SAJU_5500 one-time report", () => {
 
     expect(report.summary).toContain("시주 미입력");
     expect(report.cautions).toContain("출생 시각이 없어 시주는 비워 두었습니다.");
+    expect(report.sections[2]?.body).toContain("시주: 산출하지 않음");
+    expect(report.sections[2]?.body).not.toContain("보정 시각:");
+    expect(report.sections[2]?.body).not.toContain("11:27");
   });
 });

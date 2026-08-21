@@ -8,9 +8,19 @@ export const relationshipTypes = [
   "cofounder",
   "manager_report",
   "parent_child",
+  "family",
 ] as const;
 
 export type RelationshipType = (typeof relationshipTypes)[number];
+
+/** Five plain-language choices for new comparisons; legacy types remain readable. */
+export const selectableRelationshipTypes = [
+  "romance",
+  "coworker",
+  "family",
+  "friendship",
+  "cofounder",
+] as const satisfies readonly RelationshipType[];
 
 export const compatibilitySectionIds = [
   "common_ground",

@@ -1,5 +1,36 @@
 # Decision Log
 
+## D-067 — Simplify compatibility choices and separate Numerology from Saju
+
+- Date: 2026-08-21
+- Decision: Show exactly five new compatibility choices — 애인, 직장 동료, 가족, 친구,
+  동업 — while retaining the former detailed relationship identifiers for historical drafts
+  and stored-report parsing. Add a family-specific operating overlay. Remove the automatic
+  Saju cross-reading paragraph from every Numerology paid report; Saju reports continue to
+  use only the deterministic versioned Saju engine and Numerology reports only the
+  deterministic Numerology engine. Unknown Saju birth time hides corrected-clock output and
+  leaves the hour pillar empty. Add fixed 1994-11-04 report-sample screens that create no
+  order, payment, or storage and are excluded from search indexing.
+- Demand evidence and distribution: The product owner directly requested the five contexts,
+  repeated the system-separation requirement, and asked to inspect every result screen using
+  1994-11-04. Distribution stays on the existing compatibility and reading routes plus
+  unlisted sample URLs; the main and free-pattern screens remain unchanged.
+- Unit economics: Product prices remain 5,500 / 39,000 / 79,000 KRW. The change adds no AI,
+  payment, messaging, storage, or fulfillment provider cost. The fixed samples can reduce
+  purchase uncertainty without exposing another person's data.
+- Safety and claims: Compatibility remains a symbolic reflection with no percentage, destiny,
+  loyalty, or stay/leave verdict. Family copy prioritizes consent, safety, observable behavior,
+  and fair responsibility. Numerology/Saju provenance is no longer blended.
+- Success and guardrails: Track compatibility form completion and product-page-to-checkout
+  movement only under existing analytics consent. Guardrails are five visible choices in both
+  languages, eight sections per result, no cross-system text in Numerology output, no corrected
+  time when time is unknown, and no payment or persistence from sample screens.
+- Reversal conditions: Revert the new public selector if completion falls materially or users
+  cannot identify their relationship; preserve the family type and legacy parser. Remove the
+  sample routes if they confuse visitors or materially reduce paid conversion. Never restore
+  cross-system content without a separately named opt-in product and explicit owner approval.
+- Status: Owner-authorized implementation.
+
 ## D-064 — Convert the free Saju chart into a 5,500 KRW one-time product
 
 - Date: 2026-08-21

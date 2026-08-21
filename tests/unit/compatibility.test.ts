@@ -4,6 +4,7 @@ import {
   compatibilitySectionIds,
   createCompatibilityInsight,
   relationshipTypes,
+  selectableRelationshipTypes,
 } from "@/core/compatibility";
 
 const personA = calculateNumerologyProfile({
@@ -18,6 +19,12 @@ const personB = calculateNumerologyProfile({
 });
 
 describe("two-person compatibility reflection", () => {
+  it("shows exactly the five owner-requested relationship choices", () => {
+    expect(selectableRelationshipTypes).toEqual([
+      "romance", "coworker", "family", "friendship", "cofounder",
+    ]);
+  });
+
   it.each(relationshipTypes)("returns all required sections for %s", (relationshipType) => {
     const result = createCompatibilityInsight({ personA, personB, relationshipType, locale: "en" });
     expect(result.sections.map((section) => section.id)).toEqual(compatibilitySectionIds);
@@ -41,6 +48,13 @@ describe("two-person compatibility reflection", () => {
     const en = createCompatibilityInsight({ personA, personB, relationshipType: "cofounder", locale: "en" });
     expect(ko.sections.map((section) => section.id)).toEqual(en.sections.map((section) => section.id));
     expect(ko.sections.map((section) => section.evidenceRefs)).toEqual(en.sections.map((section) => section.evidenceRefs));
+  });
+
+  it("gives family its own boundaries instead of treating every family as parent-child", () => {
+    const family = createCompatibilityInsight({ personA, personB, relationshipType: "family", locale: "ko" });
+    expect(family.relationshipLabel).toBe("가족");
+    expect(family.sections.find((section) => section.id === "money_responsibility")?.practicalConditions.join(" "))
+      .toContain("가족이라는 이유만으로");
   });
 
   it("works without either person's name and omits name-number evidence", () => {

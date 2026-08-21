@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import {
   createCompatibilityInsight,
-  relationshipTypes,
+  selectableRelationshipTypes,
   type CompatibilityInsight,
   type RelationshipType,
 } from "@/core/compatibility";
@@ -117,7 +117,7 @@ export function CompatibilityExperience({ locale, copy }: Props) {
           <div className="field compatibility-type">
             <label htmlFor="compatibility-type">{copy.relationshipType}</label>
             <select id="compatibility-type" name="relationshipType" defaultValue="romance">
-              {relationshipTypes.map((type) => <option key={type} value={type}>{copy.types[type]}</option>)}
+              {selectableRelationshipTypes.map((type) => <option key={type} value={type}>{copy.types[type]}</option>)}
             </select>
           </div>
 

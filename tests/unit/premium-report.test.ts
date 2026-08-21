@@ -67,10 +67,22 @@ describe("PREMIUM_79000 strict tier inheritance", () => {
     expect(synthesis).toContain("생일수 23/5");
     expect(synthesis).toContain("태도수 29/11/2");
     expect(synthesis).toContain("출생연도수 24/6");
-    expect(synthesis).toMatch(/성과|자원 운영/u);
-    expect(synthesis).toMatch(/적응력|기동성/u);
-    expect(synthesis).toMatch(/사람|분위기/u);
-    expect(synthesis).toMatch(/책임|보호/u);
+    expect(synthesis).toContain("성과와 자원 운영");
+    expect(synthesis).toContain("변화와 경험");
+    expect(synthesis).toContain("직관과 균형 감각");
+    expect(synthesis).toContain("책임과 돌봄");
+  });
+
+  it("keeps every number's meaning in the right position for 1994-11-04", () => {
+    const report = premium({ birthDate: "1994-11-04", concern: "" });
+    const synthesis = report.sections.find((section) =>
+      section.title === "네 숫자를 하나로 읽는 종합 해석")?.body ?? "";
+
+    expect(synthesis).toContain("생명수 11/2의 직관과 균형 감각");
+    expect(synthesis).toContain("생일수 4의 질서와 신뢰 가능한 구조");
+    expect(synthesis).toContain("태도수 15/6의 책임과 돌봄");
+    expect(synthesis).toContain("출생연도수 23/5의 변화와 경험");
+    expect(synthesis).not.toContain("생명수 11/2의 성과·자원 운영");
   });
 
   it("is complete without a question and becomes more focused when a question exists", () => {

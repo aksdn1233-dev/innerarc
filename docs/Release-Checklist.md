@@ -8,6 +8,8 @@
 - [x] Claim-free accessory/music directions and a visibly closed shop category preview.
 - [x] Optional Daily Flow is deterministic for the local date, visibly symbolic, free,
   bilingual, and separate from push/email/SMS promises.
+- [x] Public compatibility intake offers partner, coworker, family, friend, and business-partner contexts; each keeps consent, privacy, reality checks, and no fate score.
+- [x] Numerology and Saju reports use separate calculation and explanation pipelines; unknown Saju birth time never displays a fabricated corrected clock time.
 - [x] Saved relationship outcomes can inform the next reflection only after explicit use, with misses preserved and facts/ranking unchanged.
 - [x] A selected relationship environment becomes an editable one-time Reality Check draft without URL data, persistent fallback, implicit record creation, or sensitive profile transfer.
 - [x] Monthly Reality Check reports capture the browser-local review month, revisit prior months without writes, disclose legacy UTC fallback, and preserve the stored source records.

@@ -23,7 +23,8 @@ Version 0.18.2 provides a web-first, guest-first Korean/English application with
 - deterministic accessory and music-direction reflections with practical reality checks and no luck, healing, or performance claims;
 - a bilingual closed shop preview for future accessory categories, with no products, prices, cart, checkout, or affiliate tracking;
 - fail-closed future commerce contracts that require product disclosures, isolate sponsored placement, reject outcome claims, and cannot open the shop;
-- seven-type two-person compatibility reflection;
+- five plain-language two-person compatibility choices (partner, coworker, family, friend,
+  and business partner) over eight operating domains, with legacy detailed types kept readable;
 - source-bound public-birth-date celebrity comparison;
 - privacy-safe local PNG/SVG share cards with explicit native file sharing, cancellation handling, and a download fallback that adds no upload, tracking, or browser storage;
 - native Korean/English link-preview metadata and a first-party 1200×630 GYEOL social card with no personal result data or tracking dependency;

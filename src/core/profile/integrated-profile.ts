@@ -123,6 +123,16 @@ function theme(value: number): NumberTheme {
   return THEMES[value] ?? THEMES[9];
 }
 
+export function describeIntegratedNumber(value: number, locale: Locale) {
+  const selected = theme(value);
+  return {
+    label: text(selected.label, locale),
+    drive: text(selected.drive, locale),
+    strength: text(selected.strength, locale),
+    shadow: text(selected.shadow, locale),
+  } as const;
+}
+
 function evidence(id: string, value: number): string {
   return `${id}:${value}`;
 }

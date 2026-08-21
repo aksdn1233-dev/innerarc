@@ -54,9 +54,13 @@ export function createSajuChartReport(
       },
       {
         title: ko ? "계산·보정 근거" : "Calculation and corrections",
-        body: ko
-          ? `입력 시각: ${chart.time.wallClock || "입력 없음"}\n진태양시 보정: ${chart.time.longitudeCorrectionMinutes}분\n보정 시각: ${chart.time.correctedLocalTime}\n자시 기준: ${chart.time.midnightConvention}\n규칙 버전: ${chart.ruleVersion}`
-          : `Entered time: ${chart.time.wallClock || "not given"}\nTrue-solar correction: ${chart.time.longitudeCorrectionMinutes} min\nCorrected time: ${chart.time.correctedLocalTime}\nMidnight convention: ${chart.time.midnightConvention}\nRule version: ${chart.ruleVersion}`,
+        body: chart.time.wallClock
+          ? (ko
+              ? `입력 시각: ${chart.time.wallClock}\n진태양시 보정: ${chart.time.longitudeCorrectionMinutes}분\n보정 시각: ${chart.time.correctedLocalTime}\n자시 기준: ${chart.time.midnightConvention}\n규칙 버전: ${chart.ruleVersion}`
+              : `Entered time: ${chart.time.wallClock}\nTrue-solar correction: ${chart.time.longitudeCorrectionMinutes} min\nCorrected time: ${chart.time.correctedLocalTime}\nMidnight convention: ${chart.time.midnightConvention}\nRule version: ${chart.ruleVersion}`)
+          : (ko
+              ? `입력 시각: 입력 없음\n시주: 산출하지 않음\n시간 보정: 출생 시각이 없어 표시하지 않음\n규칙 버전: ${chart.ruleVersion}`
+              : `Entered time: not given\nHour pillar: not calculated\nTime correction: hidden because no birth time was supplied\nRule version: ${chart.ruleVersion}`),
       },
       {
         title: ko ? "억부 관점" : "Strength viewpoint",

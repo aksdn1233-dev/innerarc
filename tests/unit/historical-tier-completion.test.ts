@@ -41,7 +41,8 @@ describe("1100-2026 historical and tier completion", () => {
       companion: { name: "동반자", birthDate: "1992-03-17", relationshipType: "romance" },
     });
     expect(basic.sections.length).toBeLessThan(detail.sections.length);
-    expect(detail.sections.some((section) => section.body.includes("수비학 × 사주 교차분석"))).toBe(true);
+    expect(detail.sections.some((section) => section.body.includes("수비학 × 사주 교차분석"))).toBe(false);
+    expect(detail.sections.some((section) => section.body.includes("Four Pillars synthesis"))).toBe(false);
     expect(premium.sections.at(-1)?.body.match(/개인 질문 [12] 직접 답변/g)).toHaveLength(2);
     expect(premium.sections.at(-1)?.body).toContain("동반자 궁합");
     expect(premium.sections.at(-1)?.body).toContain(premium.paidPreview?.visible);
