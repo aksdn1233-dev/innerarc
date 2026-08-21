@@ -96,6 +96,14 @@ Status: Supabase account persistence connected; production deployment and remain
   workflow must record promised-by, production, packed, shipped, delivered, canceled, and
   refunded states and alert the owner before the promise date; the public storefront alone is
   not fulfillment evidence.
+- Current concept-vending rollback reference is production v63 at commit
+  `eebeec00f6bee4da3fe5bc4e0aa96741e212e942`. Remove the eight concept assets and selector
+  together if a visitor can mistake them for delivery-item photographs, if an indicative range
+  appears as a checkout price, or if result variables leak into a URL or persistent store.
+- `착불` does not remove the need to disclose the expected carrier basis and remote-area
+  surcharge before purchase. Do not publish a blanket `반품 불가`: any later approved SKU must
+  capture a separate pre-purchase custom-production notice/consent and preserve statutory defect,
+  wrong-delivery, and description/contract-mismatch remedies.
 
 ## Incident priorities
 

@@ -26,6 +26,21 @@ export type ShopCopy = Readonly<{
   deliveryBody: string;
   deliveryBoundary: string;
   pendingPurchase: string;
+  vendingTitle: string;
+  vendingIntro: string;
+  sajuMode: string;
+  numerologyMode: string;
+  variableLabel: string;
+  priceLabel: string;
+  priceBasis: string;
+  conceptBadge: string;
+  conceptNote: string;
+  stockLabel: string;
+  stockValue: string;
+  shippingLabel: string;
+  shippingValue: string;
+  returnLabel: string;
+  returnValue: string;
   nav: readonly [string, string, string, string, string];
 }>;
 
@@ -60,6 +75,21 @@ const ko: ShopCopy = {
   deliveryBody: "결제가 확인되면 선택한 디자인과 주문 정보를 기준으로 제작을 시작하고, 진행 상태는 악세서리 주문 내역으로 별도 관리합니다.",
   deliveryBoundary: "‘기운을 담는다’는 표현은 사주·수비학 상징을 디자인에 반영한다는 제작 콘셉트입니다. 행운·보호·치유·성과 같은 효능을 보장하지 않습니다.",
   pendingPurchase: "상품 정보 확정 후 결제 가능",
+  vendingTitle: "결과 변수를 고르면 콘셉트 슬롯이 바뀝니다",
+  vendingIntro: "사주 오행 또는 수비학 계산값을 선택하세요. 미리 만든 8개 AI 콘셉트 보드가 결과 계열에 맞춰 바뀌며, 각 보드 안에서 세 가지 제작 방향을 비교할 수 있습니다.",
+  sajuMode: "사주 오행",
+  numerologyMode: "수비학 계산값",
+  variableLabel: "결과 변수 선택",
+  priceLabel: "시세 참고 예상 제작가",
+  priceBasis: "2026년 8월 국내 핸드메이드 오픈마켓의 유사 키링·팔찌·펜던트·트레이 표본을 참고한 범위입니다. 소재·크기·도금·부자재 확정 후 실제 결제가는 달라질 수 있습니다.",
+  conceptBadge: "AI 콘셉트 이미지",
+  conceptNote: "실제 판매품 사진이 아닙니다. 최종 소재·치수·마감과 일치하는 실물 사진 및 고지 검토 후에만 결제를 엽니다.",
+  stockLabel: "재고",
+  stockValue: "완제품 재고 없음 · 1:1 주문 제작",
+  shippingLabel: "배송비",
+  shippingValue: "착불 · 실제 택배사 운임 적용 · 제주·도서산간 추가 가능",
+  returnLabel: "취소·반품",
+  returnValue: "고객 선택 사양에 따라 제작을 시작한 뒤 단순 변심 청약철회는 제한될 수 있으며, 결제 전에 별도 고지와 동의를 받습니다. 하자·오배송·표시 내용 또는 계약과 다른 경우의 법정 교환·환불 권리는 제한하지 않습니다.",
   nav: ["홈", "나", "관계", "질문", "성장"],
 };
 
@@ -94,6 +124,21 @@ const en: ShopCopy = {
   deliveryBody: "Production begins after payment confirmation. Design choice and order progress are tracked separately as accessory orders.",
   deliveryBoundary: "‘Holding energy’ means reflecting symbolic Saju or numerology motifs in the design. It does not guarantee luck, protection, healing, or performance.",
   pendingPurchase: "Checkout opens after product approval",
+  vendingTitle: "Choose a result variable to change the concept slot",
+  vendingIntro: "Choose a Saju phase or numerology fact. Eight pre-generated AI concept boards switch by result family, and each board compares three production directions.",
+  sajuMode: "Saju phase",
+  numerologyMode: "Numerology fact",
+  variableLabel: "Choose a result variable",
+  priceLabel: "Indicative market-based range",
+  priceBasis: "A reference range based on comparable handmade key charms, bracelets, pendants, and trays listed in Korean marketplaces in August 2026. The checkout price may change after materials, dimensions, plating, and findings are approved.",
+  conceptBadge: "AI concept image",
+  conceptNote: "This is not a photograph of the item that will be delivered. Checkout opens only after matching real-item images, materials, dimensions, finish, and disclosures are reviewed.",
+  stockLabel: "Inventory",
+  stockValue: "No finished-goods stock · made one-to-one after order",
+  shippingLabel: "Shipping fee",
+  shippingValue: "Pay on delivery at the carrier's actual rate · remote-area surcharge may apply",
+  returnLabel: "Cancellation and returns",
+  returnValue: "Change-of-mind withdrawal may be restricted after production begins to the customer's selected specification, subject to a separate pre-purchase notice and consent. Statutory remedies for defects, wrong delivery, or an item that differs from its description or contract remain available.",
   nav: ["Home", "Me", "Relations", "Questions", "Growth"],
 };
 

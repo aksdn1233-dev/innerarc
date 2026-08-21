@@ -1,4 +1,8 @@
+"use client";
+
+import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { createShopPreview } from "@/core/lifestyle";
 import {
   localizeAccessoryDirection,
@@ -11,6 +15,22 @@ import type { ShopCopy } from "@/i18n/shop-copy";
 export function ShopExperience({ locale, copy }: { locale: Locale; copy: ShopCopy }) {
   const preview = createShopPreview(locale);
   const otherLocale = locale === "ko" ? "en" : "ko";
+  const [mode, setMode] = useState<"saju" | "numerology">("saju");
+  const [selectedIds, setSelectedIds] = useState({
+    saju: sajuAccessoryDirections[0].id,
+    numerology: numerologyAccessoryDirections[0].id,
+  });
+  const directions = mode === "saju" ? sajuAccessoryDirections : numerologyAccessoryDirections;
+  const selectedDirection = directions.find(({ id }) => id === selectedIds[mode]) ?? directions[0];
+  const selected = localizeAccessoryDirection(selectedDirection, locale);
+
+  function selectMode(nextMode: "saju" | "numerology") {
+    setMode(nextMode);
+  }
+
+  function selectDirection(id: string) {
+    setSelectedIds((current) => ({ ...current, [mode]: id }));
+  }
 
   return (
     <>
@@ -37,24 +57,71 @@ export function ShopExperience({ locale, copy }: { locale: Locale; copy: ShopCop
           <div><p>{copy.deliveryBody}</p><small>{copy.deliveryBoundary}</small></div>
         </section>
 
-        <section className="shop-recommendation-section" aria-labelledby="saju-accessory-title">
-          <header><p className="eyebrow">SAJU · FIVE PHASES</p><h2 id="saju-accessory-title">{copy.sajuTitle}</h2><p>{copy.sajuIntro}</p></header>
-          <div className="shop-direction-grid is-saju">
-            {sajuAccessoryDirections.map((direction) => {
-              const item = localizeAccessoryDirection(direction, locale);
-              return <article className={`shop-direction-card ${direction.id}`} key={direction.id}><span className="shop-direction-key">{item.keyLabel}</span><h3>{item.title}</h3><dl><div><dt>{copy.formLabel}</dt><dd>{item.form}</dd></div><div><dt>{copy.paletteLabel}</dt><dd>{item.palette}</dd></div><div><dt>{copy.materialLabel}</dt><dd>{item.material}</dd></div><div><dt>{copy.useLabel}</dt><dd>{item.use}</dd></div></dl><span className="shop-pending-purchase">{copy.pendingPurchase}</span></article>;
-            })}
-          </div>
-        </section>
+        <section className="shop-vending-section" aria-labelledby="shop-vending-title">
+          <header>
+            <p className="eyebrow">RESULT-DRIVEN CONCEPT VENDING</p>
+            <h2 id="shop-vending-title">{copy.vendingTitle}</h2>
+            <p>{copy.vendingIntro}</p>
+          </header>
 
-        <section className="shop-recommendation-section" aria-labelledby="numerology-accessory-title">
-          <header><p className="eyebrow">NUMEROLOGY · THREE FACTS</p><h2 id="numerology-accessory-title">{copy.numerologyTitle}</h2><p>{copy.numerologyIntro}</p></header>
-          <div className="shop-direction-grid is-numerology">
-            {numerologyAccessoryDirections.map((direction, index) => {
-              const item = localizeAccessoryDirection(direction, locale);
-              return <article className="shop-direction-card" key={direction.id}><span className="shop-direction-key">0{index + 1} · {item.keyLabel}</span><h3>{item.title}</h3><dl><div><dt>{copy.formLabel}</dt><dd>{item.form}</dd></div><div><dt>{copy.paletteLabel}</dt><dd>{item.palette}</dd></div><div><dt>{copy.materialLabel}</dt><dd>{item.material}</dd></div><div><dt>{copy.useLabel}</dt><dd>{item.use}</dd></div></dl><span className="shop-pending-purchase">{copy.pendingPurchase}</span></article>;
-            })}
+          <div className="shop-mode-switch" aria-label={copy.variableLabel}>
+            <button type="button" aria-pressed={mode === "saju"} onClick={() => selectMode("saju")}>{copy.sajuMode}</button>
+            <button type="button" aria-pressed={mode === "numerology"} onClick={() => selectMode("numerology")}>{copy.numerologyMode}</button>
           </div>
+
+          <div className="shop-vending-machine">
+            <div className="shop-vending-controls">
+              <strong>{copy.variableLabel}</strong>
+              <div className="shop-variable-buttons">
+                {directions.map((direction) => {
+                  const item = localizeAccessoryDirection(direction, locale);
+                  return (
+                    <button
+                      type="button"
+                      aria-pressed={direction.id === selectedDirection.id}
+                      onClick={() => selectDirection(direction.id)}
+                      key={direction.id}
+                    >
+                      {item.keyLabel}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <article className="shop-vending-result" aria-live="polite" key={selectedDirection.id}>
+              <div className="shop-concept-image">
+                <Image
+                  src={selectedDirection.imageSrc}
+                  alt={selected.imageAlt}
+                  width={1000}
+                  height={1000}
+                  sizes="(max-width: 760px) 100vw, 52vw"
+                />
+                <span>{copy.conceptBadge}</span>
+              </div>
+              <div className="shop-vending-copy">
+                <p className="shop-direction-key">{selected.keyLabel}</p>
+                <h3>{selected.title}</h3>
+                <p className="shop-market-price"><small>{copy.priceLabel}</small><strong>{selected.priceRange}</strong></p>
+                <p className="shop-price-basis">{copy.priceBasis}</p>
+                <dl>
+                  <div><dt>{copy.formLabel}</dt><dd>{selected.form}</dd></div>
+                  <div><dt>{copy.paletteLabel}</dt><dd>{selected.palette}</dd></div>
+                  <div><dt>{copy.materialLabel}</dt><dd>{selected.material}</dd></div>
+                  <div><dt>{copy.useLabel}</dt><dd>{selected.use}</dd></div>
+                </dl>
+                <p className="shop-concept-note">{copy.conceptNote}</p>
+                <span className="shop-pending-purchase">{copy.pendingPurchase}</span>
+              </div>
+            </article>
+          </div>
+
+          <dl className="shop-order-terms">
+            <div><dt>{copy.stockLabel}</dt><dd>{copy.stockValue}</dd></div>
+            <div><dt>{copy.shippingLabel}</dt><dd>{copy.shippingValue}</dd></div>
+            <div><dt>{copy.returnLabel}</dt><dd>{copy.returnValue}</dd></div>
+          </dl>
         </section>
 
         <section className="shop-categories" aria-labelledby="shop-category-title">

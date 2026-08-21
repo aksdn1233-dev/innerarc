@@ -69,6 +69,9 @@
 - [x] Accessory storefront foundation exposes Saju/Numerology recommendation directions,
   symbolic-claim limits, 30-day made-to-order copy, and a separate owner-console order view
   while retaining no product, price, inventory, address, cart, or checkout capability.
+- [x] Eight local AI concept boards switch by Saju/Numerology result family without URL profile
+  data; visible labels distinguish concepts from delivery photos, and indicative market ranges,
+  one-to-one production, collect shipping, and statutory return boundaries are disclosed.
 - [x] Future product contracts require complete disclosures, reject prohibited symbolic-outcome claims and tracking-bearing links, isolate sponsorship, and remain closed behind twelve evidence-backed gates plus explicit owner authorization.
 - [ ] Approve suppliers, provenance/material/allergy disclosures, catalog moderation, accessibility, inventory, fulfillment, returns/refunds, support, privacy, and consumer-law controls before opening the shop.
 - [ ] Validate localized prices, taxes, trial/renewal disclosure, purchase, restore, cancellation, refund-support, and AI unit economics with a real provider.

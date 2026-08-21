@@ -801,3 +801,44 @@
 - Rollback reference: production v62, commit
   `8db497064f423162407e825f2adf89ee82614120`.
 - Status: Storefront foundation decided; accessory checkout and production schema remain held.
+
+## D-071 - Pre-generate result-family accessory concepts without selling an unverified SKU
+
+- Date: 2026-08-22
+- Decision: Add eight first-party AI concept boards covering five Saju phase families and
+  three Numerology fact families, and let the visitor switch them in a vending-machine-style
+  selector without putting personal calculation facts in the URL. Mark every image as an AI
+  concept rather than a delivered-item photograph. Show current marketplace-reference price
+  ranges, no finished-goods inventory, one-to-one made-to-order production, collect-on-delivery
+  shipping, and the statutory return boundary. Keep checkout closed until a matching real item
+  passes all product and fulfillment gates.
+- Demand evidence: The product owner directly requested a varied pre-generated AI image system
+  that responds to Saju/Numerology variables, market-referenced pricing, one-to-one production,
+  collect shipping, and a no-return operating policy. Distribution remains the existing public
+  result links and `/[locale]/shop`; no new ad network, affiliate link, or recipient transfer is
+  added.
+- Price and economics evidence: August 2026 Korean handmade-marketplace samples place small
+  key/carry items around 6,900–35,000 KRW, common bracelets and pendants around 19,000–69,300
+  KRW, some Saju five-phase bracelets around 38,250 KRW, and highly customized silver work
+  around 99,000 KRW. The UI therefore publishes category-dependent indicative ranges of
+  19,000–99,000 KRW, not a checkout price. Existing digital 9,600/39,000 campaign evidence and
+  current digital pricing are unchanged. Product COGS, maker labor, packaging, payment fees,
+  VAT, failed delivery, collect-shipping handling, rework, and defect/refund reserves remain
+  unknown, so accessory gross margin and payment activation remain blocked.
+- Consumer and claim boundary: A blanket `반품 불가` statement is not published. Korean
+  electronic-commerce rules generally allow withdrawal and permit a custom-production
+  exception only under its conditions and prior measures. The store states that change-of-mind
+  withdrawal may be restricted after customer-specific production begins with a separate
+  pre-purchase notice and consent, while defects, wrong delivery, or divergence from the
+  description/contract retain statutory remedies. Concept art makes no luck, healing,
+  protection, relationship, financial, or predictive claim.
+- Success and guardrails: Measure only existing anonymous allowlisted shop navigation. Guard on
+  eight unique local concept assets, visible concept labeling, deterministic in-page switching,
+  no profile data in URLs/storage, no exact price or buy control, legal-rights copy, keyboard
+  operation, mobile layout, and zero remote image request. Revert this selector if visitors
+  confuse concept art with delivered goods, price ranges create a material mismatch, any
+  material safety inference appears, or the reading funnel materially regresses.
+- Rollback reference: production v63, commit
+  `eebeec00f6bee4da3fe5bc4e0aa96741e212e942`.
+- Status: Concept vending and operating disclosures decided; accessory checkout, SKU catalog,
+  supplier commitment, and production schema remain held.
