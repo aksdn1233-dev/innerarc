@@ -15,6 +15,10 @@ const openGraphImage = {
   ...socialImageSize,
 };
 
+// Public ownership proof issued for mygyeol.kr by Naver Search Advisor.
+const naverSiteVerification =
+  process.env.NAVER_SITE_VERIFICATION ?? "7e543b74b6a17ebc6418e21aaf86beffd07b9614";
+
 export const metadata: Metadata = {
   metadataBase: resolvePublicAppUrl(process.env.NEXT_PUBLIC_APP_URL),
   title: "결 GYEOL | 사주·수비학으로 보는 나·관계·운세",
@@ -37,9 +41,7 @@ export const metadata: Metadata = {
     ...(process.env.GOOGLE_SITE_VERIFICATION
       ? { google: process.env.GOOGLE_SITE_VERIFICATION }
       : {}),
-    ...(process.env.NAVER_SITE_VERIFICATION
-      ? { other: { "naver-site-verification": process.env.NAVER_SITE_VERIFICATION } }
-      : {}),
+    other: { "naver-site-verification": naverSiteVerification },
   },
   manifest: "/manifest.webmanifest",
   openGraph: {

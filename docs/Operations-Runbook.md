@@ -130,6 +130,10 @@ Status: Supabase account persistence connected; production deployment and remain
   conversion, route metadata, structured data, and image sitemap together if focus/scroll fails,
   a product view becomes misleading, private URLs enter discovery documents, or search copy
   crosses the symbolic-reflection and non-purchasable concept boundaries.
+- Naver Search Advisor issued the public `mygyeol.kr` ownership-verification meta value on
+  2026-08-22. It is rendered server-side in the root document head and may be replaced through
+  `NAVER_SITE_VERIFICATION` if Naver rotates it. Verify the live source before completing portal
+  ownership, then submit `/sitemap.xml` and `/image-sitemap.xml`; no private route may be added.
 
 ## Incident priorities
 

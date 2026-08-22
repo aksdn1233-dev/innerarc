@@ -42,6 +42,10 @@ for (const expected of cases) {
       "content",
       expected.description,
     );
+    await expect(page.locator('meta[name="naver-site-verification"]')).toHaveAttribute(
+      "content",
+      "7e543b74b6a17ebc6418e21aaf86beffd07b9614",
+    );
 
     const canonicalOrigin = resolvePublicAppUrl(process.env.NEXT_PUBLIC_APP_URL).origin;
     const openGraphImage = await page.locator('meta[property="og:image"]').getAttribute("content");
