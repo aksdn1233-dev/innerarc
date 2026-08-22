@@ -102,10 +102,12 @@ test("generated onboarding context has no serious accessibility violation", asyn
   await page.goto("/en/profile");
   await page.locator("#birthDate").fill("1994-11-04");
   // Focus, concern and depth are folded away on the free page; open them first.
-  await page.getByText("Tell it what you want to know, and it fits closer (optional)").click();
-  await page.getByText("Relationships", { exact: true }).click();
+  const optionalIntake = page.locator("details.optional-intake");
+  await optionalIntake.locator("summary").click();
+  await expect(optionalIntake).toHaveAttribute("open", "");
+  await optionalIntake.locator('input[name="interest"][value="relationships"]').check({ force: true });
   await page.locator("#concern").fill("How can I observe a recurring relationship pattern?");
-  await page.getByText("Deep", { exact: true }).click();
+  await optionalIntake.locator('input[name="depth"][value="deep"]').check({ force: true });
   await page.locator('input[name="privacyRequired"]').check();
   await page.getByRole("button", { name: "Show my core pattern" }).click();
   await expect(page.locator(".onboarding-context-card")).toBeVisible();

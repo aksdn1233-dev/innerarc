@@ -78,6 +78,8 @@
 - [x] Accessory cards no longer show neighboring products from a shared board; every concept
   has Korean/English multi-angle detail views, selection checks, truthful AI-concept disclosure,
   accessible related-product navigation, and no cart or checkout control.
+- [x] Shop birthday curation is local-only Numerology, deterministic, bilingual, reload-cleared,
+  URL-clean, accessible, performance-bounded, and explicit that Saju requires its separate flow.
 - [x] Future product contracts require complete disclosures, reject prohibited symbolic-outcome claims and tracking-bearing links, isolate sponsorship, and remain closed behind twelve evidence-backed gates plus explicit owner authorization.
 - [ ] Approve suppliers, provenance/material/allergy disclosures, catalog moderation, accessibility, inventory, fulfillment, returns/refunds, support, privacy, and consumer-law controls before opening the shop.
 - [ ] Validate localized prices, taxes, trial/renewal disclosure, purchase, restore, cancellation, refund-support, and AI unit economics with a real provider.

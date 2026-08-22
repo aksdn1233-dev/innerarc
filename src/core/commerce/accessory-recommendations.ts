@@ -1,4 +1,6 @@
 import type { Locale } from "@/i18n/config";
+import { isAcceptedBirthDate } from "@/core/birth-range";
+import { calculateNumerologyProfile, NUMEROLOGY_RULE_VERSION } from "@/core/numerology";
 
 type Localized = Readonly<{ ko: string; en: string }>;
 
@@ -28,6 +30,13 @@ export type AccessoryConceptProduct = Readonly<{
   useScene: Localized;
   careNote: Localized;
   priceRange: Localized;
+}>;
+
+export type AccessoryBirthRecommendation = Readonly<{
+  fact: "lifePath" | "attitude" | "personalYear";
+  value: number;
+  product: AccessoryConceptProduct;
+  ruleVersion: typeof NUMEROLOGY_RULE_VERSION;
 }>;
 
 export const accessoryDetailBoards: Readonly<Record<string, `/images/accessory-shop/details/${string}.jpg`>> = {
@@ -139,4 +148,24 @@ export function getAccessoryConceptProduct(productId: string) {
 export function getAccessoryDirection(directionId: string) {
   return [...sajuAccessoryDirections, ...numerologyAccessoryDirections]
     .find(({ id }) => id === directionId);
+}
+
+export function recommendAccessoryProductsByBirthDate(
+  birthDate: string,
+  calendarYear: number,
+): readonly AccessoryBirthRecommendation[] {
+  if (!isAcceptedBirthDate(birthDate)) throw new Error("UNSUPPORTED_BIRTH_DATE");
+  const profile = calculateNumerologyProfile({ birthDate, personalYear: calendarYear });
+  const facts = [
+    { fact: "lifePath" as const, value: profile.lifePath.value, directionId: "numerology-life-path" },
+    { fact: "attitude" as const, value: profile.attitude.value, directionId: "numerology-attitude" },
+    { fact: "personalYear" as const, value: profile.personalYear.value, directionId: "numerology-personal-year" },
+  ];
+
+  return facts.map(({ fact, value, directionId }) => {
+    const candidates = accessoryConceptProducts.filter((product) => product.directionId === directionId);
+    const product = candidates[(Math.max(1, value) - 1) % candidates.length];
+    if (!product) throw new Error(`ACCESSORY_RECOMMENDATION_MISSING:${directionId}`);
+    return { fact, value, product, ruleVersion: NUMEROLOGY_RULE_VERSION };
+  });
 }

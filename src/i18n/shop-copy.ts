@@ -6,6 +6,17 @@ export type ShopCopy = Readonly<{
   headline: string;
   intro: string;
   status: string;
+  recommendationEyebrow: string;
+  recommendationTitle: string;
+  recommendationIntro: string;
+  recommendationDateLabel: string;
+  recommendationSubmit: string;
+  recommendationPrivacy: string;
+  recommendationError: string;
+  recommendationPrimary: string;
+  recommendationSupporting: string;
+  recommendationFactLabels: Readonly<Record<"lifePath" | "attitude" | "personalYear", string>>;
+  recommendationBoundary: string;
   categoriesTitle: string;
   categoryIntro: string;
   unavailable: string;
@@ -59,6 +70,17 @@ const ko: ShopCopy = {
   headline: "사주와 수비학의 상징을\n일상에서 쓰는 형태로",
   intro: "사주 오행과 수비학 계산 결과에 맞춘 악세서리 방향을 먼저 살펴보세요. 실제 상품은 소재·가격·재고·사진 검토가 끝난 항목부터 순차적으로 결제할 수 있게 엽니다.",
   status: "상점 준비 중 · 결제는 상품 확정 후 오픈",
+  recommendationEyebrow: "BIRTHDAY CURATION",
+  recommendationTitle: "생년월일로 먼저 보는 나의 상품 셀렉션",
+  recommendationIntro: "양력 생년월일을 입력하면 수비학의 라이프 패스·태도 수·개인 연도를 계산해 24개 콘셉트 중 세 가지를 골라드립니다.",
+  recommendationDateLabel: "생년월일 (양력)",
+  recommendationSubmit: "내 상품 추천 보기",
+  recommendationPrivacy: "입력값은 이 화면 안에서만 계산하며 저장하거나 전송하지 않습니다.",
+  recommendationError: "올바른 양력 생년월일을 입력해 주세요.",
+  recommendationPrimary: "가장 먼저 볼 상품",
+  recommendationSupporting: "함께 비교할 상품",
+  recommendationFactLabels: { lifePath: "라이프 패스", attitude: "태도 수", personalYear: "올해 개인 연도" },
+  recommendationBoundary: "이 추천은 수비학 상징을 상품 형태와 연결한 선택 가이드입니다. 사주 추천은 출생 시간 등 별도 정보가 필요한 사주 화면에서 확인하며, 물건의 효능이나 결과를 보장하지 않습니다.",
   categoriesTitle: "세 가지 사용 방식",
   categoryIntro: "추천은 구매 압박이 아니라 착용감과 쓰임을 먼저 확인하는 선택 가이드입니다.",
   unavailable: "현재 구매 불가",
@@ -117,6 +139,17 @@ const en: ShopCopy = {
   headline: "Turn Saju and numerology symbols\ninto useful everyday forms",
   intro: "Explore accessory directions tied to Saju phases and numerology facts. Checkout opens only for items whose material, price, inventory, and imagery have been approved.",
   status: "Shop in preparation · checkout opens after product approval",
+  recommendationEyebrow: "BIRTHDAY CURATION",
+  recommendationTitle: "Start with a product edit from your birth date",
+  recommendationIntro: "Enter a Gregorian birth date to calculate Life Path, Attitude, and Personal Year, then review three concepts selected from the 24-item collection.",
+  recommendationDateLabel: "Birth date (Gregorian)",
+  recommendationSubmit: "Show my product edit",
+  recommendationPrivacy: "The date is calculated only in this screen and is not saved or transmitted.",
+  recommendationError: "Enter a valid Gregorian birth date.",
+  recommendationPrimary: "Review first",
+  recommendationSupporting: "Compare alongside it",
+  recommendationFactLabels: { lifePath: "Life Path", attitude: "Attitude", personalYear: "Personal Year" },
+  recommendationBoundary: "This is a numerology-symbol selection guide. Saju recommendations require separate chart inputs such as birth time and remain in the Saju flow. No object or recommendation guarantees an outcome or effect.",
   categoriesTitle: "Categories in preparation",
   categoryIntro: "This is a category architecture for reviewing form, material, and use—not a product catalog.",
   unavailable: "Purchasing unavailable",

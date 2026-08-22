@@ -906,3 +906,36 @@
 - Rollback reference: production v66, commit
   `e6f47aa0e41e1da10eae2679c4592aa73957911b`.
 - Status: Detail browsing decided and additive; supplier-backed SKU activation remains held.
+
+## D-074 - Add local birth-date curation and a warmer editorial shop palette
+
+- Date: 2026-08-22
+- Decision: Place a birth-date curation form in the first shop viewport. Calculate Life Path,
+  Attitude, and current Personal Year locally with the existing deterministic Numerology engine,
+  then map each fact to one of the three already approved concepts in its result family. Show one
+  primary and two supporting product links. Do not infer a Saju result from birth date alone;
+  explain that Saju remains a separate chart flow with additional inputs. Refresh the shop with
+  a wine, coral, apricot, sage, teal, champagne, ivory, and rose editorial palette inspired by
+  premium color systems without claiming licensed Pantone matching or adding false urgency.
+- Demand and distribution: Direct owner feedback on production v67 asked for birthday-only
+  product recommendation at the top and a more purchase-oriented, harmonized color system.
+  Distribution remains the existing first-party home, result links, and public shop; no ads,
+  affiliate placement, retargeting, or external personalization provider is added.
+- Economics: This changes discovery only. The existing 19,000–99,000 KRW indicative accessory
+  ranges and 9,600/39,000 KRW digital economics are unchanged. Supplier, material, labor,
+  packaging, fees, tax, collect-shipping handling, rework, defects, and margin are still unknown,
+  so the recommendation does not create an order, discount, scarcity message, or checkout.
+- Privacy and safety: The raw birth date stays in component memory, is not persisted, transmitted,
+  placed in a URL, or written to analytics. Output shows only three derived numbers and public
+  product concepts. Copy identifies the recommendation as symbolic selection guidance, separates
+  Saju and Numerology, and makes no efficacy, prediction, luck, protection, healing, relationship,
+  or financial claim.
+- Success, guardrails, and reversal: Require deterministic 1994-11-04 coverage, three stable
+  recommendations, Korean/English labels, reload-cleared state, no URL mutation, keyboard and
+  mobile usability, WCAG contrast, and unchanged page-weight budgets. Evaluate only allowlisted
+  anonymous shop navigation and detail-entry counts. Revert the curation and route-scoped palette
+  together if visitors read it as Saju, birth dates persist or leave the page, accessibility or
+  performance regresses, or visual emphasis obscures the concept/checkout-closed disclosures.
+- Rollback reference: production v67, commit
+  `e84f50e74929d84fbb7dfa15814f2a0ae2152419`.
+- Status: Decided and additive; accessory checkout remains held.

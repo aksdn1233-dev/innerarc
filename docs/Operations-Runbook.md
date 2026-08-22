@@ -120,6 +120,11 @@ Status: Supabase account persistence connected; production deployment and remain
 - This repository does not define a `test:unit` package script. Use `pnpm test` for the Vitest
   unit/integration suite; `pnpm test:unit` is an invocation error rather than a product-test
   failure.
+- The pre-curation rollback reference is production v67 at commit
+  `e84f50e74929d84fbb7dfa15814f2a0ae2152419`. Remove the birth-date form, derived recommendation
+  panel, and route-scoped shop palette together if the raw date enters a URL, storage, analytics,
+  or a request; if recommendations drift for identical date/year inputs; if the UI implies a
+  Saju calculation; or if contrast, mobile layout, disclosure visibility, or payload budgets fail.
 
 ## Incident priorities
 

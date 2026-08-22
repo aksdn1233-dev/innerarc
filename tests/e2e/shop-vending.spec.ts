@@ -28,6 +28,23 @@ test("accessory concept vending switches locally without leaking result variable
   expect(new URL(page.url()).search).toBe("");
 });
 
+test("birth date curation recommends three products without persisting or changing the URL", async ({ page }) => {
+  await page.goto("/ko/shop");
+  await page.getByLabel("생년월일 (양력)").fill("1994-11-04");
+  await page.getByRole("button", { name: "내 상품 추천 보기" }).click();
+
+  const edit = page.locator(".shop-personal-edit");
+  await expect(edit.locator("article")).toHaveCount(3);
+  await expect(edit.getByText("시그니처 모듈 팔찌", { exact: true })).toBeVisible();
+  await expect(edit.getByText("컬러 블록 카드 참", { exact: true })).toBeVisible();
+  await expect(edit.getByText("사이클 라인 트레이", { exact: true })).toBeVisible();
+  await expect(edit.getByText(/수비학 상징을 상품 형태와 연결한 선택 가이드/)).toBeVisible();
+  expect(new URL(page.url()).search).toBe("");
+
+  await page.reload();
+  await expect(page.locator(".shop-personal-edit")).toHaveCount(0);
+});
+
 test("each concept has an ecommerce-style detail page with three product-specific viewpoints", async ({ page }) => {
   await page.goto("/ko/shop/wood-leaf-pendant");
 

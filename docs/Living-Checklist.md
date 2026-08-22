@@ -111,6 +111,9 @@ Last updated: 2026-08-01
 - [x] All 24 accessory cards show only their own product concept and link to bilingual
   marketplace-style detail pages with three labelled viewpoints, practical selection guidance,
   concept-versus-real-item disclosure, related candidates, mobile coverage, and no checkout.
+- [x] Shop first-viewport birth-date curation uses the deterministic Numerology engine only,
+  returns three concept links, clears on reload, and never persists, transmits, or URL-encodes
+  the input; Saju remains explicitly separate.
 
 ## Phase 6 - Reality Check
 

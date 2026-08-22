@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
+import { currentMaxBirthDate, MIN_BIRTH_DATE } from "@/core/birth-range";
 import { createShopPreview } from "@/core/lifestyle";
 import {
   localizeAccessoryDirection,
@@ -11,9 +12,12 @@ import {
   sajuAccessoryDirections,
   accessoryConceptProducts,
   accessoryDetailBoards,
+  recommendAccessoryProductsByBirthDate,
+  type AccessoryBirthRecommendation,
 } from "@/core/commerce/accessory-recommendations";
 import type { Locale } from "@/i18n/config";
 import type { ShopCopy } from "@/i18n/shop-copy";
+import "./shop-refresh.css";
 
 export function ShopExperience({ locale, copy }: { locale: Locale; copy: ShopCopy }) {
   const preview = createShopPreview(locale);
@@ -23,6 +27,9 @@ export function ShopExperience({ locale, copy }: { locale: Locale; copy: ShopCop
     saju: sajuAccessoryDirections[0].id,
     numerology: numerologyAccessoryDirections[0].id,
   });
+  const [birthDate, setBirthDate] = useState("");
+  const [birthRecommendations, setBirthRecommendations] = useState<readonly AccessoryBirthRecommendation[]>([]);
+  const [birthRecommendationError, setBirthRecommendationError] = useState("");
   const directions = mode === "saju" ? sajuAccessoryDirections : numerologyAccessoryDirections;
   const selectedDirection = directions.find(({ id }) => id === selectedIds[mode]) ?? directions[0];
   const selected = localizeAccessoryDirection(selectedDirection, locale);
@@ -92,6 +99,18 @@ export function ShopExperience({ locale, copy }: { locale: Locale; copy: ShopCop
     setSelectedIds((current) => ({ ...current, [mode]: id }));
   }
 
+  function submitBirthRecommendation(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    try {
+      const recommendations = recommendAccessoryProductsByBirthDate(birthDate, new Date().getFullYear());
+      setBirthRecommendations(recommendations);
+      setBirthRecommendationError("");
+    } catch {
+      setBirthRecommendations([]);
+      setBirthRecommendationError(copy.recommendationError);
+    }
+  }
+
   return (
     <>
       <main className="shell shop-shell" id="main-content" tabIndex={-1}>
@@ -106,11 +125,81 @@ export function ShopExperience({ locale, copy }: { locale: Locale; copy: ShopCop
         </header>
 
         <section className="shop-intro">
-          <p className="eyebrow">{copy.eyebrow}</p>
-          <h1>{copy.headline}</h1>
-          <p>{copy.intro}</p>
-          <span className="shop-status" role="status">{copy.status}</span>
+          <div className="shop-intro-copy">
+            <p className="eyebrow">{copy.eyebrow}</p>
+            <h1>{copy.headline}</h1>
+            <p>{copy.intro}</p>
+            <span className="shop-status" role="status">{copy.status}</span>
+          </div>
+          <form className="shop-birth-recommender" onSubmit={submitBirthRecommendation}>
+            <p className="eyebrow">{copy.recommendationEyebrow}</p>
+            <h2>{copy.recommendationTitle}</h2>
+            <p>{copy.recommendationIntro}</p>
+            <label htmlFor="shop-birth-date">{copy.recommendationDateLabel}</label>
+            <div>
+              <input
+                id="shop-birth-date"
+                name="birthDate"
+                type="date"
+                min={MIN_BIRTH_DATE}
+                max={currentMaxBirthDate()}
+                value={birthDate}
+                onChange={(event) => setBirthDate(event.target.value)}
+                autoComplete="bday"
+                aria-describedby="shop-birth-privacy shop-birth-error"
+                required
+              />
+              <button type="submit">{copy.recommendationSubmit}</button>
+            </div>
+            <small id="shop-birth-privacy">{copy.recommendationPrivacy}</small>
+            <span id="shop-birth-error" className="shop-birth-error" role="alert">{birthRecommendationError}</span>
+          </form>
         </section>
+
+        {birthRecommendations.length > 0 ? (
+          <section className="shop-personal-edit" aria-live="polite" aria-labelledby="shop-personal-edit-title">
+            <header>
+              <div>
+                <p className="eyebrow">CURATED FOR YOUR NUMBERS</p>
+                <h2 id="shop-personal-edit-title">{copy.recommendationPrimary}</h2>
+              </div>
+              <p>{copy.recommendationBoundary}</p>
+            </header>
+            <div className="shop-personal-edit-grid">
+              {birthRecommendations.map((recommendation, index) => {
+                const item = localizeAccessoryProduct(recommendation.product, locale);
+                return (
+                  <article className={index === 0 ? "is-primary" : undefined} key={recommendation.fact}>
+                    <div className="shop-personal-edit-image">
+                      <Image
+                        src={accessoryDetailBoards[recommendation.product.directionId]}
+                        alt={`${item.name} · ${copy.conceptBadge}`}
+                        fill
+                        sizes="(max-width: 720px) 100vw, 33vw"
+                        style={{
+                          width: "300%",
+                          height: "300%",
+                          maxWidth: "none",
+                          left: `-${recommendation.product.slot * 100}%`,
+                          top: 0,
+                        }}
+                      />
+                    </div>
+                    <div className="shop-personal-edit-copy">
+                      <p>{index === 0 ? copy.recommendationPrimary : copy.recommendationSupporting}</p>
+                      <span>{copy.recommendationFactLabels[recommendation.fact]} {recommendation.value}</span>
+                      <h3>{item.name}</h3>
+                      <small>{item.kind} · {item.priceRange}</small>
+                      <Link href={`/${locale}/shop/${recommendation.product.id}`}>
+                        {locale === "ko" ? "추천 상품 상세보기" : "View recommended concept"}
+                      </Link>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+        ) : null}
 
         <section className="shop-delivery-promise" aria-labelledby="shop-delivery-title">
           <div><p className="eyebrow">MADE TO ORDER · 30 DAYS</p><h2 id="shop-delivery-title">{copy.deliveryTitle}</h2></div>

@@ -7,6 +7,7 @@ import {
   localizeAccessoryDirection,
   localizeAccessoryProduct,
   numerologyAccessoryDirections,
+  recommendAccessoryProductsByBirthDate,
   sajuAccessoryDirections,
 } from "@/core/commerce/accessory-recommendations";
 import { shopCopy } from "@/i18n/shop-copy";
@@ -51,6 +52,16 @@ describe("accessory recommendation directions", () => {
       expect(getAccessoryConceptProduct(product.id)?.id).toBe(product.id);
       expect(getAccessoryDirection(product.directionId)?.id).toBe(product.directionId);
     }
+  });
+
+  it("selects three deterministic numerology products from only a birth date", () => {
+    const recommendations = recommendAccessoryProductsByBirthDate("1994-11-04", 2026);
+    expect(recommendations.map(({ fact, value, product }) => ({ fact, value, productId: product.id }))).toEqual([
+      { fact: "lifePath", value: 11, productId: "life-modular-bracelet" },
+      { fact: "attitude", value: 6, productId: "attitude-color-card-charm" },
+      { fact: "personalYear", value: 7, productId: "year-cycle-tray" },
+    ]);
+    expect(() => recommendAccessoryProductsByBirthDate("1994-02-30", 2026)).toThrow("UNSUPPORTED_BIRTH_DATE");
   });
 
   it("expands the eight boards into 24 distinct, fully described product concepts", () => {

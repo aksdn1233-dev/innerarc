@@ -84,6 +84,11 @@ Birth date, names, relationship details, journals, finances, and consultation qu
   physical-order launch requires purpose-limited address/recipient fields, retention and
   deletion rules, owner-console masking, provider disclosure, and tested account/guest order
   isolation before collection begins.
+- The optional shop birth-date curator runs the existing Numerology calculation entirely in
+  current component memory. It sends no request, writes no browser storage or URL parameter,
+  emits no analytics property, and disappears on reload. Only the three derived public number
+  labels and their concept-product matches render; the raw birth date is never included in a
+  product link. It does not calculate or imply a Saju chart.
 - The install manifest is presentation metadata only. No service worker is registered in the MVP, so the product does not silently pre-cache reflection routes or sensitive browser state for offline reuse.
 - Open Graph and X preview metadata is static, public, and first-party. Its raster asset contains only product branding and abstract number/card motifs; no user result, input, identifier, question, journal, relationship data, tracking parameter, remote font, or third-party request is permitted.
 - Security headers keep scripts, network connections, frames, forms, workers, images, and fonts on the first-party origin except for user-initiated ordinary outbound source navigation. Future analytics, AI, payment, or monitoring origins require a documented CSP/privacy change.
