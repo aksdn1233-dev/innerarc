@@ -1,5 +1,5 @@
 import type { PaidReadingInput, PaidReport } from "@/core/paid-reading";
-import { buildSajuChart, readViewpoints } from "@/core/saju";
+import { buildSajuChart, buildSajuLifeNarrative, readViewpoints } from "@/core/saju";
 
 function joinPillar(stem: string, branch: string): string {
   return `${stem}${branch}`;
@@ -17,6 +17,13 @@ export function createSajuChartReport(
     midnightConvention: input.midnightConvention ?? "야자시",
   });
   const views = readViewpoints(chart);
+  const lifeNarrative = buildSajuLifeNarrative(
+    chart,
+    views.strength,
+    views.structure,
+    input.locale,
+    input.name,
+  );
   const pillars = [
     chart.hour ? joinPillar(chart.hour.stem, chart.hour.branch) : (ko ? "시주 미입력" : "Hour not provided"),
     joinPillar(chart.day.stem, chart.day.branch),
@@ -37,9 +44,10 @@ export function createSajuChartReport(
     createdAt: input.createdAt,
     concern: "",
     summary: ko
-      ? `${pillars.join(" · ")}로 세운 원국입니다. 계산 근거와 세 가지 전통 관점을 함께 확인하세요.`
-      : `This chart is built as ${pillars.join(" · ")}. Review the calculation evidence and three traditional viewpoints together.`,
+      ? `${pillars.join(" · ")}로 세운 원국입니다. 웹툰 장면을 따라 어린 시절의 역할, 가족의 기대, 관계와 일의 반복 패턴을 실제 기억과 대조해 보세요.`
+      : `This chart is built as ${pillars.join(" · ")}. Follow the webtoon scenes through early roles, family expectations, relationships, and work patterns, then compare them with lived experience.`,
     sections: [
+      ...lifeNarrative.map(({ title, body }) => ({ title, body })),
       {
         title: ko ? "원국 네 기둥" : "The four pillars",
         body: ko
@@ -86,10 +94,11 @@ export function createSajuChartReport(
       : "Four Pillars is a traditional symbolic reflection tool. It does not guarantee the future or replace medical, legal, or investment judgment.",
     tierLabel: ko ? "사주 원국 · 5,500원 · 1회" : "Four Pillars chart · ₩5,500 · one time",
     characterLabel: ko ? "결 사주 원국" : "GYEOL Four Pillars",
-    contentVersion: "saju-chart-report-1.0.0",
+    contentVersion: "saju-chart-report-1.1.0",
     contentReferences: [
       `saju-rule:${chart.ruleVersion}`,
       `saju-midnight:${chart.time.midnightConvention}`,
+      "saju-life-narrative:1.0.0",
       "product:SAJU_5500",
     ],
   };

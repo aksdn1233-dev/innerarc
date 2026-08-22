@@ -43,6 +43,7 @@ export function SajuExperience({ locale, price }: { locale: Locale; price: numbe
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const birthTime = String(form.get("birthTime") ?? "");
+    const readingName = String(form.get("readingName") ?? "").trim();
     const submittedBirthDate = String(form.get("birthDate") ?? "");
     if (form.get("privacyRequired") !== "on") {
       setChart(null);
@@ -71,7 +72,7 @@ export function SajuExperience({ locale, price }: { locale: Locale; price: numbe
         readingKind: "saju_chart" as const,
         birthDate: submittedBirthDate,
         birthTime: birthTime || undefined,
-        name: "",
+        name: readingName,
         focusId: "growth" as const,
         concern: "",
         gender: form.get("sex") === "male" ? "male" as const : "female" as const,
@@ -103,6 +104,12 @@ export function SajuExperience({ locale, price }: { locale: Locale; price: numbe
           <label htmlFor="saju-birthDate">{t.birthDate}</label>
           <input id="saju-birthDate" name="birthDate" required type="date" max={maxBirthDate} min={MIN_BIRTH_DATE} />
           <small>{t.solarOnly}</small>
+        </div>
+
+        <div className="saju-field">
+          <label htmlFor="saju-readingName">{t.readingName}</label>
+          <input autoComplete="name" id="saju-readingName" maxLength={80} name="readingName" type="text" />
+          <small>{t.readingNameOptional}</small>
         </div>
 
         <div className="saju-field">

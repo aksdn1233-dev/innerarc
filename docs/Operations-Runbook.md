@@ -51,6 +51,12 @@ Status: Supabase account persistence connected; production deployment and remain
 - Current engine/policy rollback reference: `saju-core-1.1.0` /
   `kr-standard-1.0.0`; the prior UI-compatible engine identifier was
   `jachyeong-1.0.0` in repository history.
+- Long-form life-context prose is an interpretation/presentation layer only. Its pre-change
+  rollback reference is production v71 at commit
+  `16b37ce087f776ac0cf5b169b5f43ff22fb1db0b`. Disable `life-narrative.ts` and remove the
+  optional report-name field together if prose is mistaken for verified biography, mobile report
+  completion materially drops, or report generation fails; never roll back or rewrite canonical
+  pillars or historical stored reports for a prose incident.
 
 ### Character webtoon rollback
 

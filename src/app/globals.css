@@ -9807,7 +9807,8 @@ summary {
 }
 
 .saju-field input[type="date"],
-.saju-field input[type="time"] {
+.saju-field input[type="time"],
+.saju-field input[type="text"] {
   width: 100%;
   min-height: 46px;
   padding: 0 12px;

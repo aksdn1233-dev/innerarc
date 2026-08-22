@@ -10,6 +10,9 @@
   bilingual, and separate from push/email/SMS promises.
 - [x] Public compatibility intake offers partner, coworker, family, friend, and business-partner contexts; each keeps consent, privacy, reality checks, and no fate score.
 - [x] Numerology and Saju reports use separate calculation and explanation pipelines; unknown Saju birth time never displays a fabricated corrected clock time.
+- [x] Saju report dialogue uses long-form, evidence-bound life-context sentences inside the
+  existing webtoon scenes; childhood and family claims stay hypothetical and investment or
+  guaranteed-outcome claims are refused.
 - [x] All report-result chapters use supplied character assets as full illustrated scenes with HTML dialogue; mobile overflow and reduced-motion behavior are covered.
 - [x] Key context and decision terms are consistently emphasized across Numerology, Saju, and compatibility report bodies.
 - [x] Report immersion includes guide-specific voice lines, dark vignette gradients, and reduced-motion-safe atmospheric effects.

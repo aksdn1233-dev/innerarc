@@ -4,11 +4,14 @@ test("the Four Pillars chart moves into the current one-time checkout", async ({
   await expect(page.getByRole("heading", { level: 1 })).toContainText("사주 원국");
 
   await page.locator("#saju-birthDate").fill("1994-11-04");
+  await page.locator("#saju-readingName").fill("결이");
   await page.locator("#saju-birthTime").fill("09:30");
   await page.getByRole("checkbox").check();
   await page.getByRole("button", { name: /원 결제로 원국 받기/ }).click();
 
   await expect(page).toHaveURL(/\/ko\/plans\?product=plus_30d$/);
+  const draft = await page.evaluate(() => JSON.parse(sessionStorage.getItem("innerarc.checkoutDraft.v1") ?? "null"));
+  expect(draft.name).toBe("결이");
   const product = page.locator('[data-product="plus_30d"]');
   await expect(product).toContainText("사주 원국");
   await expect(product).toContainText(/₩1,500|₩5,500/);

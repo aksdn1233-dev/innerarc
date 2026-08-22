@@ -120,6 +120,14 @@ Last updated: 2026-08-22
   viewer; public Saju, fortune, Numerology, relationship, shop, and product pages expose unique
   metadata, canonical locale links, structured data, and page/image sitemaps while private routes
   remain excluded.
+- [x] Saju reports keep the full character-webtoon format while adding connected sentence-form
+  scenes for childhood, possible family expectations, coping, friends, relationships, work,
+  money habits, recovery, and long-term orientation; each scene names its calculated basis.
+- [x] Saju life-context wording stays tentative, preserves lived-experience priority, refuses
+  invented hour stories, and does not reproduce guaranteed wealth, investment, location, color,
+  direction, health, relationship, or fixed-life claims from the supplied reference screenshots.
+- [x] The optional Saju report name/nickname remains current checkout input, is length-bounded,
+  and falls back to a neutral second-person address when omitted.
 
 ## Phase 6 - Reality Check
 

@@ -14,6 +14,8 @@ export const sajuCopy = {
 
     birthDate: "생년월일 (양력)",
     solarOnly: "음력으로 알고 계시면 양력으로 변환한 날짜를 넣어주세요.",
+    readingName: "리포트에서 불러드릴 이름 (선택)",
+    readingNameOptional: "실명 대신 별명도 괜찮습니다. 비워두면 ‘당신’으로 안내합니다.",
     birthTime: "태어난 시각 (선택)",
     timeOptional:
       "모르시면 비워두세요. 시주는 만들지 않고 비워둡니다. 모르는 시각을 채워 넣으면 그건 계산이 아니라 지어내는 것입니다.",
@@ -96,6 +98,8 @@ export const sajuCopy = {
 
     birthDate: "Birth date (solar)",
     solarOnly: "If you know a lunar date, convert it to the solar calendar first.",
+    readingName: "Name used in the report (optional)",
+    readingNameOptional: "A nickname is fine. Leave it blank and the report will address you as ‘you.’",
     birthTime: "Birth time (optional)",
     timeOptional:
       "Leave it blank if you do not know it. The hour pillar is then left out rather than filled in — a time you do not know is not a calculation, it is an invention.",
