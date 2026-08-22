@@ -26,7 +26,7 @@ import { sajuCopy } from "@/i18n/saju-copy";
  * site that hid the chart would be asking to be trusted about arithmetic anyone can
  * verify, which is the opposite of the argument this product makes.
  */
-export function SajuExperience({ locale }: { locale: Locale }) {
+export function SajuExperience({ locale, price }: { locale: Locale; price: number }) {
   // Bounded here rather than in the module so a long-lived tab still refuses tomorrow.
   const maxBirthDate = currentMaxBirthDate();
   const t = sajuCopy[locale];
@@ -35,6 +35,9 @@ export function SajuExperience({ locale }: { locale: Locale }) {
   const [views, setViews] = useState<SajuViewpoints | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [openViewpoint, setOpenViewpoint] = useState<string | null>(null);
+  const submitLabel = locale === "ko"
+    ? `${price.toLocaleString("ko-KR")}원 결제로 원국 받기`
+    : `Get the chart for ${new Intl.NumberFormat("en-US", { style: "currency", currency: "KRW", maximumFractionDigits: 0 }).format(price)}`;
 
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -132,7 +135,7 @@ export function SajuExperience({ locale }: { locale: Locale }) {
           <span>{t.privacyRequired}</span>
         </label>
 
-        <button className="saju-submit" type="submit">{t.submit}</button>
+        <button className="saju-submit" type="submit">{submitLabel}</button>
         {error && <p className="saju-error" role="alert">{error}</p>}
       </form>
 

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SajuServiceHub } from "@/components/saju-service-hub";
 import { isLocale } from "@/i18n/config";
+import { resolveProductPricing } from "@/core/product-prices";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -24,5 +25,5 @@ export default async function FortunePage({ params }: { params: Promise<{ locale
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
 
-  return <SajuServiceHub locale={locale} />;
+  return <SajuServiceHub locale={locale} pricing={resolveProductPricing()} />;
 }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SajuExperience } from "@/components/saju-experience";
 import { isLocale } from "@/i18n/config";
+import { resolveProductPricing } from "@/core/product-prices";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -27,5 +28,5 @@ export default async function SajuPage({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  return <SajuExperience locale={locale} />;
+  return <SajuExperience locale={locale} price={resolveProductPricing().prices.plus_30d} />;
 }

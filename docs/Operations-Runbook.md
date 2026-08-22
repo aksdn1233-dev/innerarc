@@ -143,3 +143,20 @@ Status: Supabase account persistence connected; production deployment and remain
 4. Availability, latency, cost, and visual regressions.
 
 The final runbook must add named on-call, legal/privacy, security, payment-support, and crisis-escalation owners plus provider dashboards and contact paths. Track the assignments in [Operational Ownership](Operational-Ownership.md), vendor gates in [Provider Selection](Provider-Selection.md), and unresolved launch fields in [Legal Review Packet](Legal-Review-Packet.md).
+
+## Three-day campaign watch
+
+- Campaign window: 2026-08-23 00:00–2026-08-26 00:00 Asia/Seoul. The code clock, not an
+  environment price override, opens and closes it.
+- Check `/api/health`, all three plan amounts, one order/provider amount sample, provider
+  rejection counts, duplicate-order contacts, refund requests, and report finalization.
+- The referral coupon is unavailable during the 1,500 KRW window and becomes valid afterward
+  only on the 39,000/79,000 KRW products using the issuing checkout phone.
+- On amount mismatch, coupon abuse, or material payment/report errors, pause new sales through
+  the existing operations gate and roll back to `1714d1412e7c417a0c7466eac9d889b1fe662bac`.
+- `pnpm build:sites` refreshes the Sites artifact but not Next's `.next` directory. Run
+  `pnpm build` before the production-server E2E wrapper; otherwise a newly added route can
+  correctly exist in Sites output while the local Next E2E server still returns its prior 404.
+- The modal is intentionally limited to the localized home entry and dismissed for the browser
+  session. Event/FAQ utility links remain available on direct service landings without blocking
+  form controls.

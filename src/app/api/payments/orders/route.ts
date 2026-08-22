@@ -19,6 +19,7 @@ import {
 } from "@/server/payments/gate";
 import { hashCustomerPhone, issueOrderTicket } from "@/server/order-pass";
 import { checkCheckoutLimit, tooManyRequests } from "@/server/request-limit";
+import { REFERRAL_COUPON_DISCOUNT_KRW, validateReferralCoupon } from "@/server/referral-coupon";
 
 const bodySchema = z.object({
   productCode: z.enum(purchasablePaymentProductCodes),
@@ -27,6 +28,7 @@ const bodySchema = z.object({
   readingInput: PaidReadingInputSchema,
   depositorName: z.string().trim().min(2).max(80).optional(),
   customerPhone: z.string().trim().regex(/^01[016789]-?\d{3,4}-?\d{4}$/).optional(),
+  couponCode: z.string().trim().min(20).max(300).optional(),
 }).strict();
 
 export async function POST(request: Request) {
@@ -60,7 +62,13 @@ export async function POST(request: Request) {
   }
 
   const product = readiness.config.products[parsed.data.productCode];
-  if (parsed.data.expectedAmount !== product.amount) {
+  const couponApplied = Boolean(parsed.data.couponCode) && Boolean(parsed.data.customerPhone) &&
+    validateReferralCoupon({ code: parsed.data.couponCode!, customerPhone: parsed.data.customerPhone!, productCode: product.code, now: new Date() });
+  if (parsed.data.couponCode && !couponApplied) {
+    return NextResponse.json({ error: "INVALID_COUPON" }, { status: 400 });
+  }
+  const chargeAmount = product.amount - (couponApplied ? REFERRAL_COUPON_DISCOUNT_KRW : 0);
+  if (parsed.data.expectedAmount !== chargeAmount) {
     return NextResponse.json({ error: "PRICE_CHANGED" }, { status: 409 });
   }
   if (
@@ -88,6 +96,16 @@ export async function POST(request: Request) {
     : null;
   const limit = await checkCheckoutLimit(admin, phoneHash, new Date());
   if (!limit.allowed) return tooManyRequests(limit);
+  if (couponApplied && phoneHash) {
+    const { data: previous } = await admin.from("payment_orders")
+      .select("status")
+      .eq("customer_phone_hash", phoneHash)
+      .in("amount", [34_000, 74_000])
+      .limit(10);
+    if ((previous ?? []).some((row) => !["CANCELED", "ABORTED", "EXPIRED"].includes(String(row.status)))) {
+      return NextResponse.json({ error: "COUPON_ALREADY_USED" }, { status: 409 });
+    }
+  }
 
   const depositDeadline = readiness.config.provider === "manual_transfer"
     ? new Date(Date.now() + readiness.config.depositWindowHours * 60 * 60 * 1_000)
@@ -102,7 +120,7 @@ export async function POST(request: Request) {
     guest_access_token_hash: guestAccessTokenHash,
     product_code: product.code,
     provider: readiness.config.provider,
-    amount: product.amount,
+    amount: chargeAmount,
     currency: "KRW",
     status: readiness.config.provider === "manual_transfer"
       ? "WAITING_FOR_DEPOSIT"
@@ -158,7 +176,7 @@ export async function POST(request: Request) {
       provider: "manual_transfer",
       orderId,
       orderName: product.names[locale],
-      amount: product.amount,
+      amount: chargeAmount,
       currency: "KRW",
       bankAccounts: readiness.config.bankAccounts,
       depositorName: parsed.data.depositorName,
@@ -183,7 +201,7 @@ export async function POST(request: Request) {
         orderId,
         productCode: product.code,
         orderName: product.names[locale],
-        amount: product.amount,
+        amount: chargeAmount,
         customerPhone: parsed.data.customerPhone!.replaceAll("-", ""),
         customerEmail: auth.user?.email ?? undefined,
         openPayTypes: readiness.config.openPayTypes,
@@ -208,7 +226,7 @@ export async function POST(request: Request) {
         provider: "payapp",
         orderId,
         orderName: product.names[locale],
-        amount: product.amount,
+        amount: chargeAmount,
         currency: "KRW",
         payUrl: payApp.payUrl,
         reportUrl: reportUrl.toString(),
@@ -237,7 +255,7 @@ export async function POST(request: Request) {
       provider: "portone",
       paymentId: orderId,
       orderName: product.names[locale],
-      amount: product.amount,
+      amount: chargeAmount,
       currency: "KRW",
       storeId: readiness.config.storeId,
       channelKey: readiness.config.channelKey,
@@ -255,7 +273,7 @@ export async function POST(request: Request) {
     provider: "toss",
     orderId,
     orderName: product.names[locale],
-    amount: product.amount,
+    amount: chargeAmount,
     currency: "KRW",
     clientKey: readiness.config.clientKey,
     customerKey: deriveTossCustomerKey(

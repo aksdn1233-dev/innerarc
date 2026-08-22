@@ -7704,13 +7704,17 @@ summary {
 @media (min-width: 900px) {
   .cinema-hero-copy { margin-top: 0; padding-top: clamp(96px, 14vh, 190px); }
   .cinema-hero-actions {
-    max-width: 460px;
+    width: min(760px, calc(100% - 48px));
+    max-width: 760px;
     flex-direction: row;
+    flex-wrap: wrap;
     align-self: center;
     gap: 14px;
   }
   .cinema-hero-actions .cinema-cta,
   .cinema-hero-actions .cinema-cta-secondary { flex: 1; }
+  .cinema-hero-actions .cinema-cta { flex-basis: 100%; }
+  .cinema-hero-actions .cinema-cta-secondary { flex-basis: calc(50% - 7px); white-space: nowrap; }
   .cinema-note { flex-basis: 100%; }
 }
 
@@ -7850,6 +7854,124 @@ summary {
     display: flex;
     flex: 0 0 auto;
   }
+}
+
+/* Three-day event chrome. Kept outside page-specific layouts so the event is visible
+   from every public entry point without changing the established home composition. */
+.campaign-utility-nav {
+  position: fixed;
+  z-index: 70;
+  top: calc(10px + env(safe-area-inset-top));
+  right: 14px;
+  display: flex;
+  gap: 6px;
+  padding: 5px;
+  border: 1px solid rgb(225 193 112 / 45%);
+  border-radius: 999px;
+  background: rgb(20 18 29 / 82%);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 20%);
+  backdrop-filter: blur(16px);
+}
+
+.campaign-utility-nav a {
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: #f6dfaa;
+  font-size: .72rem;
+  font-weight: 750;
+  letter-spacing: .04em;
+  text-decoration: none;
+}
+
+.campaign-utility-nav a:hover { background: rgb(246 223 170 / 12%); }
+
+.campaign-modal-backdrop {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgb(10 8 16 / 62%);
+  backdrop-filter: blur(10px);
+}
+
+.campaign-modal {
+  position: relative;
+  width: min(100%, 520px);
+  padding: clamp(28px, 5vw, 48px);
+  border: 1px solid rgb(232 198 119 / 55%);
+  border-radius: 30px;
+  color: #f7f0e2;
+  background:
+    radial-gradient(circle at 80% 5%, rgb(177 126 67 / 30%), transparent 35%),
+    linear-gradient(145deg, #2b2438, #15131f 68%);
+  box-shadow: 0 30px 100px rgb(0 0 0 / 55%), inset 0 1px rgb(255 255 255 / 8%);
+}
+
+.campaign-modal h2 { margin: 8px 0 14px; color: #fff8e9; font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1.02; }
+.campaign-modal p { color: #d8cfbf; line-height: 1.75; }
+.campaign-modal small { display: block; margin-top: 18px; color: #a9a093; }
+.campaign-modal-close { position: absolute; top: 14px; right: 16px; width: 38px; height: 38px; border: 0; border-radius: 50%; color: #fff; background: rgb(255 255 255 / 8%); font-size: 1.5rem; cursor: pointer; }
+.campaign-modal-actions, .event-hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+
+.plans-campaign-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 20px 0 26px;
+  padding: 16px 20px;
+  border: 1px solid #d5b66b;
+  border-radius: 18px;
+  color: #3b2c13;
+  background: linear-gradient(100deg, #f8e4a8, #fff5d8);
+}
+.plans-campaign-banner a { color: inherit; font-weight: 800; }
+
+.event-shell { min-height: 100vh; color: #ece6dc; background: #16131f; }
+.event-topbar { display: flex; align-items: center; justify-content: space-between; width: min(1120px, calc(100% - 36px)); margin: 0 auto; padding: 30px 0; }
+.event-topbar .brand, .event-topbar nav a, .event-footer a { color: #f5dfad; }
+.event-topbar nav { display: flex; gap: 18px; font-size: .8rem; }
+.event-hero { width: min(1120px, calc(100% - 36px)); margin: 0 auto; padding: clamp(70px, 11vw, 150px) 0 90px; }
+.event-hero h1 { max-width: 900px; margin: 12px 0 22px; color: #fff8e9; font-size: clamp(3.2rem, 10vw, 7.6rem); line-height: .93; letter-spacing: -.065em; }
+.event-hero > p:not(.eyebrow) { max-width: 650px; color: #bbb2a7; font-size: clamp(1rem, 2vw, 1.3rem); line-height: 1.75; }
+.event-countdown-copy { display: flex; flex-wrap: wrap; gap: 12px 22px; margin-top: 28px; color: #f0d18a; }
+.event-countdown-copy strong { letter-spacing: .08em; }
+.service-share { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.service-share span { min-height: 1em; color: #baa982; font-size: .78rem; }
+.service-share.is-compact { margin-top: 20px; }
+.campaign-share-link { padding: 0; border: 0; color: #efd493; background: transparent; font: inherit; font-weight: 800; text-decoration: underline; cursor: pointer; }
+.event-offer-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; width: min(1120px, calc(100% - 36px)); margin: 0 auto; }
+.event-offer-grid article { position: relative; min-height: 390px; padding: clamp(30px, 5vw, 54px); overflow: hidden; border: 1px solid rgb(232 198 119 / 25%); border-radius: 28px; background: linear-gradient(145deg, #2a2335, #1b1725); }
+.event-offer-grid article > span { position: absolute; top: 16px; right: 22px; color: rgb(239 212 147 / 18%); font-size: 6rem; font-weight: 900; }
+.event-offer-grid h2 { max-width: 430px; margin: 30px 0 16px; color: #fff8e9; font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.02; }
+.event-offer-grid article > p:not(.eyebrow) { max-width: 500px; color: #bbb2a7; line-height: 1.8; }
+.event-offer-grid article > a { display: inline-block; margin-top: 20px; color: #efd493; font-weight: 800; }
+.referral-invite { position: relative; z-index: 1; margin-top: 22px; }
+.referral-invite > label { display: block; margin-bottom: 8px; color: #e8ddcc; font-size: .82rem; font-weight: 800; }
+.referral-invite > div { display: flex; gap: 8px; }
+.referral-invite input { min-width: 0; flex: 1; padding: 12px 14px; border: 1px solid rgb(255 255 255 / 16%); border-radius: 12px; color: #fff; background: rgb(0 0 0 / 18%); }
+.referral-invite .primary-button { white-space: nowrap; }
+.referral-invite > small { display: block; margin-top: 10px; color: #948b81; line-height: 1.55; }
+.referral-coupon { display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; padding: 14px; border: 1px solid rgb(239 212 147 / 35%); border-radius: 14px; background: rgb(239 212 147 / 7%); }
+.referral-coupon span { grid-column: 1 / -1; color: #d4c5ab; font-size: .75rem; }
+.referral-coupon code { overflow: hidden; color: #ffe3a1; font-size: .72rem; text-overflow: ellipsis; white-space: nowrap; }
+.referral-coupon button { border: 0; color: #ffe3a1; background: transparent; font-weight: 800; cursor: pointer; }
+.event-faq { width: min(860px, calc(100% - 36px)); margin: 110px auto 0; padding-bottom: 100px; }
+.event-faq h2 { margin: 10px 0 30px; color: #fff8e9; font-size: clamp(2.3rem, 6vw, 4.2rem); }
+.event-faq details { border-top: 1px solid rgb(255 255 255 / 12%); }
+.event-faq details:last-child { border-bottom: 1px solid rgb(255 255 255 / 12%); }
+.event-faq summary { padding: 23px 4px; color: #f3eadb; font-weight: 800; cursor: pointer; }
+.event-faq details p { margin: 0; padding: 0 4px 24px; color: #aaa196; line-height: 1.75; }
+.event-footer { display: flex; justify-content: center; gap: 22px; padding: 36px 20px 52px; border-top: 1px solid rgb(255 255 255 / 8%); font-size: .82rem; }
+
+@media (max-width: 720px) {
+  .campaign-utility-nav { right: 12px; }
+  .event-offer-grid { grid-template-columns: 1fr; }
+  .event-topbar { padding-top: 74px; }
+  .plans-campaign-banner { align-items: flex-start; flex-direction: column; }
+  .referral-invite > div { align-items: stretch; flex-direction: column; }
 }
 
 .sample-report-shell {

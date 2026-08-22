@@ -18,6 +18,15 @@ export const RETIRED_EVENT_PRODUCT_PRICES_KRW = {
   premium_pdf: 39_000,
 } as const;
 
+export const THREE_DAY_EVENT_PRODUCT_PRICES_KRW = {
+  plus_30d: 1_500,
+  pro_30d: 1_500,
+  premium_pdf: 1_500,
+} as const;
+
+export const THREE_DAY_EVENT_START = "2026-08-22T15:00:00.000Z";
+export const THREE_DAY_EVENT_END = "2026-08-25T15:00:00.000Z";
+
 export const PURCHASABLE_PRODUCT_CODES = ["plus_30d", "pro_30d", "premium_pdf"] as const;
 
 export type ProductPriceCode = keyof typeof STANDARD_PRODUCT_PRICES_KRW;
@@ -26,27 +35,41 @@ export type ProductPriceSet = Readonly<Record<ProductPriceCode, number>>;
 export type ProductPricingSnapshot = Readonly<{
   prices: ProductPriceSet;
   regularPrices: ProductPriceSet;
+  campaign: null | Readonly<{
+    code: "three_day_1500";
+    startsAt: string;
+    endsAt: string;
+  }>;
 }>;
 
-/**
- * Resolves the amount shown and charged. There is one price list and no clock: what a
- * visitor sees is what every visitor sees, today and tomorrow. It takes no date because
- * there is no longer anything for a date to change.
- */
-export function resolveProductPricing(): ProductPricingSnapshot {
+/** Resolves the single server-authoritative amount shown, ordered, and charged. */
+export function resolveProductPricing(now: Date = new Date()): ProductPricingSnapshot {
+  const startsAt = new Date(THREE_DAY_EVENT_START);
+  const endsAt = new Date(THREE_DAY_EVENT_END);
+  const campaignActive = now >= startsAt && now < endsAt;
   return {
-    prices: STANDARD_PRODUCT_PRICES_KRW,
+    prices: campaignActive
+      ? THREE_DAY_EVENT_PRODUCT_PRICES_KRW
+      : STANDARD_PRODUCT_PRICES_KRW,
     regularPrices: STANDARD_PRODUCT_PRICES_KRW,
+    campaign: campaignActive
+      ? {
+          code: "three_day_1500",
+          startsAt: THREE_DAY_EVENT_START,
+          endsAt: THREE_DAY_EVENT_END,
+        }
+      : null,
   };
 }
 
 /**
- * Every amount a charge for this product may legitimately carry: the current price, plus
- * the retired event price so an order taken during the event still verifies.
+ * Every amount a charge for this product may legitimately carry, including bounded and
+ * retired campaigns so historical provider callbacks still verify.
  */
 export function knownScheduledPrices(productCode: ProductPriceCode): readonly number[] {
   return [...new Set([
     STANDARD_PRODUCT_PRICES_KRW[productCode],
     RETIRED_EVENT_PRODUCT_PRICES_KRW[productCode],
+    THREE_DAY_EVENT_PRODUCT_PRICES_KRW[productCode],
   ])];
 }

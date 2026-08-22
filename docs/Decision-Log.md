@@ -1,5 +1,19 @@
 # Decision Log
 
+## D-076 — Make the home promise concrete and preserve CTA hierarchy
+
+- Date: 2026-08-22
+- Decision: Replace the abstract home hook with a concrete reflection promise about repeated
+  choices in relationships, work, and money. On desktop, keep the primary action on its own row
+  and place the two secondary actions below it so Korean labels do not wrap into uneven buttons.
+- Evidence and scope: The checked-in desktop capture showed three competing actions compressed at
+  the bottom of the cinematic hero. The change affects copy and responsive layout only; character
+  art, calculations, prices, consent, checkout, analytics, and safety claims stay unchanged.
+- Success and guardrails: Evaluate the existing consent-gated primary/secondary CTA events by
+  viewport, and require no clipped or wrapped labels at the desktop breakpoint. Revert if the new
+  promise is read as a guaranteed prediction or if the primary action loses visual priority.
+- Status: Implemented and locally regression-tested; a post-change browser capture remains pending.
+
 ## D-068 — Replace report-card stacks with actual character webtoon scenes
 
 - Date: 2026-08-21
@@ -974,3 +988,37 @@
 - Rollback reference: production v68, commit
   `811801afb105b6e084b2cc838654a35813f77724`.
 - Status: Decided and additive; accessory checkout remains held.
+
+## D-076 - Run a three-day 1,500 KRW digital-reading campaign and referral coupon
+
+- Date: 2026-08-23
+- Decision: From 2026-08-23 00:00 through 2026-08-26 00:00 Korea time, charge
+  1,500 KRW for each digital reading. One server clock controls display, order creation,
+  and provider amount verification; stale tabs fail with `PRICE_CHANGED`. Show a once-per-session
+  home-entry modal, small Event/FAQ links, and a bilingual event page. A friend-share action issues a
+  signed, phone-bound 5,000 KRW coupon usable once after the campaign and before 2026-09-26 Korea
+  time on a 39,000 KRW+ reading. It cannot stack with the campaign.
+- Demand and distribution: Direct owner instruction requested the price, popup, event/FAQ page,
+  service/result sharing, and friend coupon. Distribution is first-party entry chrome, the event
+  page, native device sharing, and existing protected-report email/native/copy controls. No paid
+  media, contact upload, automatic message, or fabricated endorsement is added.
+- Economics: The normal 5,500/39,000/79,000 KRW prices become 1,500 KRW (-73%/-96%/-98%) for
+  72 hours. This is below the historical 9,600/39,000 KRW campaign reference and is an acquisition
+  experiment, not a sustainable list price. Exact provider fee, generation, support, VAT, refund,
+  and chargeback costs remain unknown; payment readiness and the sales-pause control stay mandatory.
+  The coupon leaves 34,000 or 74,000 KRW gross receipts and is barred from the 5,500 KRW product.
+- Privacy, safety, and abuse: Coupon issuance handles a Korean mobile number transiently, derives
+  an HMAC, returns a signed bearer code, and stores no raw number or recipient contact. InnerArc
+  never sends the invitation. Checkout binds the code to the issuing phone and rejects a second
+  non-cancelled discounted order. Protected-report sharing retains subject consent. Copy preserves
+  the symbolic-reflection boundary and makes no prediction, diagnosis, treatment, or outcome claim.
+- Success and guardrails: Review anonymous event visits, checkout starts/completions, provider
+  failures, support contacts, refunds/chargebacks, and receipts by product. Pause sales if provider
+  rejection, duplicate-order contacts, refunds, or report-finalization failures materially rise.
+  Prices reverse automatically. Remove coupon issuance if abuse, phone-binding failure,
+  accessibility regression, or negative net economics appears.
+- Performance evidence: the additive global chrome raises the measured first-party ceiling to
+  40 resources and 175.7 KB decoded CSS. Guardrails are recorded at 40 resources and below
+  180 KB CSS; reverse the chrome if either bound is exceeded.
+- Rollback reference: `1714d1412e7c417a0c7466eac9d889b1fe662bac`.
+- Status: Decided as a bounded, reversible acquisition experiment.

@@ -57,6 +57,7 @@ const PUBLIC_ROUTES = [
   "/question",
   "/reality-check",
   "/plans",
+  "/events",
   "/shop",
   "/support",
   "/privacy",

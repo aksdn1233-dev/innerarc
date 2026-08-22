@@ -6,6 +6,7 @@ import { useState } from "react";
 import { NumerologyGuideRoster } from "@/components/numerology-guide-roster";
 import { getNumerologyGuide, type NumerologyGuideId } from "@/core/numerology-guides";
 import type { Locale } from "@/i18n/config";
+import type { ProductPricingSnapshot } from "@/core/product-prices";
 import styles from "./saju-service-hub.module.css";
 
 const copy = {
@@ -67,11 +68,14 @@ const serviceGuideIds: readonly NumerologyGuideId[] = [
   "yundo",
 ];
 
-export function SajuServiceHub({ locale }: { locale: Locale }) {
+export function SajuServiceHub({ locale, pricing }: { locale: Locale; pricing: ProductPricingSnapshot }) {
   const t = copy[locale];
   const otherLocale = locale === "ko" ? "en" : "ko";
   const navHrefs = ["", "/fortune", "/saju", "/me"];
   const [selectedGuideId, setSelectedGuideId] = useState<NumerologyGuideId>("taeryeong");
+  const formatPrice = (amount: number) => locale === "ko"
+    ? `${amount.toLocaleString("ko-KR")}원`
+    : new Intl.NumberFormat("en-US", { style: "currency", currency: "KRW", maximumFractionDigits: 0 }).format(amount);
 
   return (
     <main className={styles.page} id="main-content" tabIndex={-1}>
@@ -98,7 +102,7 @@ export function SajuServiceHub({ locale }: { locale: Locale }) {
 
         <Link className={styles.profileCard} href={`/${locale}/saju`}>
           <span className={styles.profileCopy}>
-            <small>{t.start}</small>
+            <small>{locale === "ko" ? `1회 ${formatPrice(pricing.prices.plus_30d)}` : `${formatPrice(pricing.prices.plus_30d)} once`}</small>
             <strong>{t.profileTitle}</strong>
             <span>{t.profileBody}</span>
           </span>
@@ -113,10 +117,15 @@ export function SajuServiceHub({ locale }: { locale: Locale }) {
           <div className={styles.grid}>
             {services[locale].map(([eyebrow, title, body, href, badge, ready], index) => {
               const guide = getNumerologyGuide(serviceGuideIds[index]);
+              const currentBadge = index === 0
+                ? formatPrice(pricing.prices.plus_30d)
+                : index === 1
+                  ? formatPrice(pricing.prices.pro_30d)
+                  : badge;
               const content = (
                 <>
                   <span className={styles.serviceMeta}>
-                    <small>{eyebrow}{badge ? ` · ${badge}` : ""}</small>
+                    <small>{eyebrow}{currentBadge ? ` · ${currentBadge}` : ""}</small>
                     <strong>{title}</strong>
                     <span>{body}</span>
                   </span>

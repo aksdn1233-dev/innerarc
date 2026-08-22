@@ -4,7 +4,6 @@ import {
   knownScheduledPrices,
   PURCHASABLE_PRODUCT_CODES,
   resolveProductPricing,
-  STANDARD_PRODUCT_PRICES_KRW,
 } from "../../core/product-prices";
 
 export const paymentProductCodes = ["plus_30d", "pro_30d", "premium_pdf"] as const;
@@ -119,13 +118,17 @@ const bankAccountsSchema = z.array(z.object({
   accountHolder: accountHolderSchema,
 }).strict()).min(1).max(5);
 
-function buildProducts(comprehensivePrice: number, premiumPdfPrice: number) {
+function buildProducts(
+  chartPrice: number,
+  comprehensivePrice: number,
+  premiumPdfPrice: number,
+) {
   return {
     plus_30d: {
       code: "plus_30d",
       tier: "plus",
       durationDays: 30,
-      amount: STANDARD_PRODUCT_PRICES_KRW.plus_30d,
+      amount: chartPrice,
       names: { ko: "사주 원국", en: "Four Pillars chart" },
     },
     pro_30d: {
@@ -163,8 +166,9 @@ export type CatalogPriceCheck =
  */
 export function inspectCatalogPrices(
   environment: Readonly<Record<string, string | undefined>> = process.env,
+  now: Date = new Date(),
 ): CatalogPriceCheck {
-  const pricing = resolveProductPricing();
+  const pricing = resolveProductPricing(now);
   const comprehensiveVariable = environment.INNERARC_COMPREHENSIVE_PRICE_KRW?.trim()
     ? "INNERARC_COMPREHENSIVE_PRICE_KRW"
     : "INNERARC_PRO_30D_PRICE_KRW";
@@ -231,7 +235,7 @@ export function inspectPaymentReadiness(
     return { enabled: false, reason: "INVALID" };
   }
 
-  const catalogPrices = inspectCatalogPrices(environment);
+  const catalogPrices = inspectCatalogPrices(environment, now);
   if (!catalogPrices.ok) return { enabled: false, reason: "INVALID" };
 
   if (provider === "payapp") {
@@ -264,6 +268,7 @@ export function inspectPaymentReadiness(
         ...parsed.data,
         openPayTypes: parsedMethods.data.join(","),
         products: buildProducts(
+          resolveProductPricing(now).prices.plus_30d,
           catalogPrices.comprehensivePrice,
           catalogPrices.premiumPdfPrice,
         ),
@@ -312,6 +317,7 @@ export function inspectPaymentReadiness(
         bankAccounts,
         ...parsed.data,
         products: buildProducts(
+          resolveProductPricing(now).prices.plus_30d,
           catalogPrices.comprehensivePrice,
           catalogPrices.premiumPdfPrice,
         ),
@@ -346,6 +352,7 @@ export function inspectPaymentReadiness(
         provider: "portone",
         ...parsed.data,
         products: buildProducts(
+          resolveProductPricing(now).prices.plus_30d,
           catalogPrices.comprehensivePrice,
           catalogPrices.premiumPdfPrice,
         ),
@@ -387,6 +394,7 @@ export function inspectPaymentReadiness(
       methodVariantKey: parsed.data.methodVariantKey,
       agreementVariantKey: parsed.data.agreementVariantKey,
       products: buildProducts(
+        resolveProductPricing(now).prices.plus_30d,
         catalogPrices.comprehensivePrice,
         catalogPrices.premiumPdfPrice,
       ),

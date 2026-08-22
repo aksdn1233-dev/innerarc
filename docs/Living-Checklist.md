@@ -11,6 +11,8 @@ Last updated: 2026-08-22
 
 ## Phase 1 - Product foundation
 
+- [x] Home hook states the concrete repeated-choice problem and desktop CTA layout preserves one primary action plus two secondary actions without changing safety or payment boundaries.
+- [ ] Capture and visually approve the post-change home at desktop and mobile sizes in an available browser runtime.
 - [x] Next.js/TypeScript structure, design tokens, mobile-first UI, and Korean/English routing.
 - [x] Guest onboarding, first result, consent schema, log masking, CI, unit, browser, and accessibility infrastructure.
 - [x] Security headers, explicit HTTPS-only production switch, manifest, icons, focus management, reduced motion, and minimum touch targets.
@@ -165,3 +167,13 @@ Last updated: 2026-08-22
   examples, concise method explanation, distinct two-product copy, inline intake
   errors, safe-area checkout bar hidden over the form, and privacy-safe ten-event
   funnel interface verified at 320/375/390/430 px.
+- [x] Three-day 1,500 KRW schedule uses one server clock across catalog, checkout,
+  provider amount, popup, and event page; normal prices return automatically at
+  2026-08-26 00:00 Korea time and stale tabs fail closed.
+- [x] Event/FAQ routes are bilingual and globally linked during the campaign; service and
+  protected-report sharing remain explicit user actions with protected-report consent.
+- [x] Friend coupons are signed, phone-bound without raw-phone persistence, limited to one
+  non-cancelled discounted checkout, barred from campaign stacking and the 5,500 KRW product,
+  and expire automatically.
+- [x] Campaign chrome keeps the first-party initial resource ceiling at 40 and shared decoded
+  CSS below 180 KB; the mobile utility links remain at the top so they cannot cover form inputs.

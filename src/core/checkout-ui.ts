@@ -8,6 +8,7 @@ export type CheckoutErrorCode =
   | "missing_draft"
   | "invalid_depositor"
   | "invalid_phone"
+  | "invalid_coupon"
   | "temporarily_unavailable"
   | "rate_limited"
   | "order_failed"
@@ -30,6 +31,7 @@ export function checkoutErrorFromResponse(status: number, body: unknown): Checko
     ? String((body as { error?: unknown }).error ?? "")
     : "";
   if (status === 429) return "rate_limited";
+  if (code === "INVALID_COUPON" || code === "COUPON_ALREADY_USED") return "invalid_coupon";
   if (status === 409 || code === "PRICE_CHANGED") return "price_changed";
   if (
     status === 503 ||

@@ -19,12 +19,11 @@ const payAppEnvironment = {
   ADMIN_EMAILS: "owner@example.com",
 } as const;
 
-// A fixed clock so the readiness checks that still depend on time stay deterministic.
-// Pricing no longer reads it — there is one price list and no schedule.
+// A fixed clock outside the current campaign keeps standard-price diagnostics deterministic.
 const FIXED_NOW = new Date("2026-08-01T00:00:00.000Z");
 
 function inspectCatalogPrices(environment: Readonly<Record<string, string | undefined>>) {
-  return inspectCatalogPricesAtRuntime(environment);
+  return inspectCatalogPricesAtRuntime(environment, FIXED_NOW);
 }
 
 function inspectPaymentReadiness(

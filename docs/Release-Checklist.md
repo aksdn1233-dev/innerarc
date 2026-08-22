@@ -97,3 +97,9 @@
 - [ ] Assign support, incident, data-request, and safety-escalation owners.
 - [ ] Approve final store screenshots, copy, and review notes after brand, legal, native-language, and platform review.
 - [ ] Obtain explicit user authorization for staging and production deployment.
+- [x] Direct owner authorization in the 2026-08-23 campaign request includes production
+  deployment after implementation and verification.
+- [x] Three products render and order at 1,500 KRW only inside the scheduled server window;
+  normal prices, stale-tab rejection, coupon non-stacking, and automatic expiry are tested.
+- [x] Entry popup is once per session, Event/FAQ links remain keyboard accessible, result/service
+  sharing is user initiated, and the event page carries privacy and symbolic-reflection limits.
