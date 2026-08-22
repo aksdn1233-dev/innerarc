@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, type CSSProperties } from "react";
+import { useState } from "react";
 import { createShopPreview } from "@/core/lifestyle";
 import {
   localizeAccessoryDirection,
@@ -10,6 +10,7 @@ import {
   numerologyAccessoryDirections,
   sajuAccessoryDirections,
   accessoryConceptProducts,
+  accessoryDetailBoards,
 } from "@/core/commerce/accessory-recommendations";
 import type { Locale } from "@/i18n/config";
 import type { ShopCopy } from "@/i18n/shop-copy";
@@ -41,11 +42,23 @@ export function ShopExperience({ locale, copy }: { locale: Locale; copy: ShopCop
             const direction = allDirections.find(({ id }) => id === product.directionId);
             if (!direction) return null;
             const directionCopy = localizeAccessoryDirection(direction, locale);
-            const imageStyle = { "--slot-index": product.slot } as CSSProperties;
             return (
               <article className="shop-product-card" key={product.id}>
-                <div className="shop-product-image" style={imageStyle}>
-                  <Image src={direction.imageSrc} alt={`${item.name} · ${copy.conceptBadge}`} width={1000} height={1000} sizes="(max-width: 680px) 100vw, (max-width: 1080px) 50vw, 33vw" />
+                <div className="shop-product-image">
+                  <Image
+                    src={accessoryDetailBoards[product.directionId]}
+                    alt={`${item.name} · ${copy.conceptBadge}`}
+                    fill
+                    loading="lazy"
+                    sizes="(max-width: 720px) 100vw, (max-width: 980px) 50vw, 33vw"
+                    style={{
+                      width: "300%",
+                      height: "300%",
+                      maxWidth: "none",
+                      left: `-${product.slot * 100}%`,
+                      top: 0,
+                    }}
+                  />
                   <span>{copy.conceptBadge}</span>
                 </div>
                 <div className="shop-product-copy">
@@ -59,6 +72,9 @@ export function ShopExperience({ locale, copy }: { locale: Locale; copy: ShopCop
                     <div><dt>{copy.productCareLabel}</dt><dd>{item.careNote}</dd></div>
                   </dl>
                   <span className="shop-pending-purchase">{copy.pendingPurchase}</span>
+                  <Link className="shop-detail-link" href={`/${locale}/shop/${product.id}`}>
+                    {locale === "ko" ? "상품 상세보기" : "View product details"}
+                  </Link>
                 </div>
               </article>
             );

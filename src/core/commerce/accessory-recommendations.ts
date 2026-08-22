@@ -30,6 +30,17 @@ export type AccessoryConceptProduct = Readonly<{
   priceRange: Localized;
 }>;
 
+export const accessoryDetailBoards: Readonly<Record<string, `/images/accessory-shop/details/${string}.jpg`>> = {
+  "saju-wood": "/images/accessory-shop/details/saju-wood.jpg",
+  "saju-fire": "/images/accessory-shop/details/saju-fire.jpg",
+  "saju-earth": "/images/accessory-shop/details/saju-earth.jpg",
+  "saju-metal": "/images/accessory-shop/details/saju-metal.jpg",
+  "saju-water": "/images/accessory-shop/details/saju-water.jpg",
+  "numerology-life-path": "/images/accessory-shop/details/numerology-life-path.jpg",
+  "numerology-attitude": "/images/accessory-shop/details/numerology-attitude.jpg",
+  "numerology-personal-year": "/images/accessory-shop/details/numerology-personal-year.jpg",
+} as const;
+
 const l = (ko: string, en: string): Localized => ({ ko, en });
 
 export const sajuAccessoryDirections: readonly AccessoryDirection[] = [
@@ -119,4 +130,13 @@ export function localizeAccessoryProduct(item: AccessoryConceptProduct, locale: 
     careNote: item.careNote[locale],
     priceRange: item.priceRange[locale],
   };
+}
+
+export function getAccessoryConceptProduct(productId: string) {
+  return accessoryConceptProducts.find(({ id }) => id === productId);
+}
+
+export function getAccessoryDirection(directionId: string) {
+  return [...sajuAccessoryDirections, ...numerologyAccessoryDirections]
+    .find(({ id }) => id === directionId);
 }

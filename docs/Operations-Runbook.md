@@ -112,6 +112,14 @@ Status: Supabase account persistence connected; production deployment and remain
   `8abaa72c996b1f8b74298f9cb9458cd8c5ac3814`. Revert the full-catalog section and its product
   data together if a cropped board misrepresents the selected candidate, page weight causes a
   material shop regression, or any description reads as an approved material or purchasable SKU.
+- The pre-detail rollback reference is production v66 at commit
+  `e6f47aa0e41e1da10eae2679c4592aa73957911b`. Remove the multi-angle boards, product-detail
+  routes, detail links, and sitemap entries together if viewpoint identity drifts, a visitor
+  mistakes an AI concept for manufactured inventory, image payload becomes materially harmful,
+  or any detail route exposes a cart, purchase, or checkout control.
+- This repository does not define a `test:unit` package script. Use `pnpm test` for the Vitest
+  unit/integration suite; `pnpm test:unit` is an invocation error rather than a product-test
+  failure.
 
 ## Incident priorities
 

@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { accessoryConceptProducts } from "@/core/commerce/accessory-recommendations";
 import { resolvePublicAppUrl } from "@/core/site-url";
 
 const AI_CRAWLERS = [
@@ -51,6 +52,7 @@ const PUBLIC_ROUTES = [
   "/question",
   "/reality-check",
   "/plans",
+  "/shop",
   "/support",
   "/privacy",
   "/terms",
@@ -110,8 +112,23 @@ export function createSitemapDocument(
     })),
   );
   const japaneseRoutes = ["", "/reading", "/plans"] as const;
+  const accessoryProductRoutes = (["ko", "en"] as const).flatMap((locale) =>
+    accessoryConceptProducts.map(({ id }) => ({
+      url: new URL(`/${locale}/shop/${id}`, baseUrl).toString(),
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.65,
+      alternates: {
+        languages: {
+          ko: new URL(`/ko/shop/${id}`, baseUrl).toString(),
+          en: new URL(`/en/shop/${id}`, baseUrl).toString(),
+        },
+      },
+    })),
+  );
   return [
     ...establishedRoutes,
+    ...accessoryProductRoutes,
     ...japaneseRoutes.map((route) => ({
       url: new URL(`/ja${route}`, baseUrl).toString(),
       lastModified,

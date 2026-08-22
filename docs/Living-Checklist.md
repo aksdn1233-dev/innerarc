@@ -108,6 +108,9 @@ Last updated: 2026-08-01
 - [x] Accessory-result browser coverage follows the current 24-concept catalog and checks
   that no cart, buy-now, or checkout control appears before product approval; initial CSS
   payload coverage records the current character-report and catalog expansion.
+- [x] All 24 accessory cards show only their own product concept and link to bilingual
+  marketplace-style detail pages with three labelled viewpoints, practical selection guidance,
+  concept-versus-real-item disclosure, related candidates, mobile coverage, and no checkout.
 
 ## Phase 6 - Reality Check
 

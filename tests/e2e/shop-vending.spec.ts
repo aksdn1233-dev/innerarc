@@ -21,7 +21,32 @@ test("accessory concept vending switches locally without leaking result variable
   await expect(page.getByText(/하자·오배송·표시 내용 또는 계약과 다른 경우/)).toBeVisible();
   await expect(page.locator(".shop-product-card")).toHaveCount(24);
   await expect(page.locator(".shop-product-card dt")).toHaveCount(96);
+  await expect(page.getByRole("link", { name: "상품 상세보기" })).toHaveCount(24);
+  await expect(page.locator(".shop-product-card").first().getByRole("img", { name: /솔잎 결 펜던트/ })).toBeVisible();
   await expect(page.getByRole("heading", { name: "사주 오행 상품 15개" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "수비학 결과 상품 9개" })).toBeVisible();
   expect(new URL(page.url()).search).toBe("");
+});
+
+test("each concept has an ecommerce-style detail page with three product-specific viewpoints", async ({ page }) => {
+  await page.goto("/ko/shop/wood-leaf-pendant");
+
+  await expect(page.getByRole("heading", { level: 1, name: "솔잎 결 펜던트" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "여러 시점에서 형태 확인하기" })).toBeVisible();
+  await expect(page.locator(".shop-detail-gallery figure")).toHaveCount(3);
+  await expect(page.getByText("정면 콘셉트", { exact: true })).toBeVisible();
+  await expect(page.getByText("사선 콘셉트", { exact: true })).toBeVisible();
+  await expect(page.getByText("측면·뒷면 구조 콘셉트", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "이 상품을 선택하기 전에" })).toBeVisible();
+  await expect(page.getByText(/실제 판매품 사진이 아니며/)).toBeVisible();
+  await expect(page.getByRole("button", { name: /결제|구매|장바구니/ })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "전체 상품으로 돌아가기" })).toHaveAttribute("href", "/ko/shop");
+});
+
+test("English product details preserve route and concept-only truth", async ({ page }) => {
+  await page.goto("/en/shop/metal-precision-brooch");
+  await expect(page.getByRole("heading", { level: 1, name: "Precision Square Brooch" })).toBeVisible();
+  await expect(page.locator(".shop-detail-gallery figure")).toHaveCount(3);
+  await expect(page.getByText(/They are not photographs of a delivered item/)).toBeVisible();
+  await expect(page.getByRole("button", { name: /checkout|buy|cart/i })).toHaveCount(0);
 });

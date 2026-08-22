@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   accessoryConceptProducts,
+  accessoryDetailBoards,
+  getAccessoryConceptProduct,
+  getAccessoryDirection,
   localizeAccessoryDirection,
   localizeAccessoryProduct,
   numerologyAccessoryDirections,
@@ -38,6 +41,16 @@ describe("accessory recommendation directions", () => {
   it("assigns one pre-generated concept board to every result family", () => {
     const images = [...sajuAccessoryDirections, ...numerologyAccessoryDirections].map(({ imageSrc }) => imageSrc);
     expect(new Set(images).size).toBe(8);
+  });
+
+  it("maps every product to a separate multi-angle detail board and stable detail route", () => {
+    expect(Object.keys(accessoryDetailBoards)).toHaveLength(8);
+    expect(new Set(Object.values(accessoryDetailBoards)).size).toBe(8);
+    for (const product of accessoryConceptProducts) {
+      expect(accessoryDetailBoards[product.directionId]).toMatch(/^\/images\/accessory-shop\/details\/[a-z-]+\.jpg$/);
+      expect(getAccessoryConceptProduct(product.id)?.id).toBe(product.id);
+      expect(getAccessoryDirection(product.directionId)?.id).toBe(product.directionId);
+    }
   });
 
   it("expands the eight boards into 24 distinct, fully described product concepts", () => {

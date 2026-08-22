@@ -3030,8 +3030,7 @@ summary {
 
 .shop-product-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 20px; }
 .shop-product-card { min-width: 0; overflow: hidden; border: 1px solid #d8cdbf; border-radius: 20px; background: #fffdf9; box-shadow: 0 12px 32px rgba(35, 28, 21, .08); }
-.shop-product-image { position: relative; aspect-ratio: .8; overflow: hidden; background: #15192a; }
-.shop-product-image img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: calc(var(--slot-index) * 50%) center; transform: scale(1.15); }
+.shop-product-image { position: relative; aspect-ratio: 1; overflow: hidden; background-color: #15192a; }
 .shop-product-image > span { position: absolute; left: 12px; bottom: 12px; padding: 7px 9px; border: 1px solid rgba(255,255,255,.24); border-radius: 999px; background: rgba(12,15,27,.86); color: #fff8eb; font-size: .66rem; font-weight: 850; }
 .shop-product-copy { display: flex; flex-direction: column; padding: 21px; }
 .shop-product-meta { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
@@ -3044,6 +3043,8 @@ summary {
 .shop-product-copy dl div { padding-top: 11px; border-top: 1px solid #e4dbcf; }
 .shop-product-copy dt { color: #72532f; font-size: .69rem; font-weight: 900; }
 .shop-product-copy dd { margin: 5px 0 0; color: #514b45; font-size: .78rem; line-height: 1.62; }
+.shop-detail-link { display: flex; min-height: 48px; align-items: center; justify-content: center; margin-top: 14px; border-radius: 12px; background: #1a2035; color: #fff8eb; font-size: .82rem; font-weight: 850; text-decoration: none; }
+.shop-detail-link:hover, .shop-detail-link:focus-visible { background: #303955; outline: 3px solid rgba(191,146,72,.35); outline-offset: 2px; }
 
 .saju-shop-entry { display: flex; align-items: center; justify-content: space-between; gap: 24px; max-width: 860px; margin: 24px auto; padding: clamp(22px, 5vw, 34px); border: 1px solid rgba(201,155,76,.32); border-radius: 20px; background: linear-gradient(135deg, #161b32, #422842); color: #fff9ec; }
 .saju-shop-entry h2 { margin: 4px 0 8px; font: 750 clamp(1.3rem, 3vw, 1.75rem)/1.3 var(--display-font); }

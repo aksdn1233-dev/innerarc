@@ -21,6 +21,7 @@ const routes = [
   "/ko/celebrity",
   "/ko/reality-check",
   "/ko/shop",
+  "/ko/shop/wood-leaf-pendant",
   "/en",
   "/en/profile",
   "/en/daily-fortune",
@@ -33,6 +34,7 @@ const routes = [
   "/en/celebrity",
   "/en/reality-check",
   "/en/shop",
+  "/en/shop/metal-precision-brooch",
 ] as const;
 
 for (const route of routes) {

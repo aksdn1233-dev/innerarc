@@ -873,3 +873,36 @@
 - Rollback reference: production v64, commit
   `8abaa72c996b1f8b74298f9cb9458cd8c5ac3814`.
 - Status: Decided and additive; supplier-backed SKU activation remains held.
+
+## D-073 - Separate product imagery and add concept-only detail pages
+
+- Date: 2026-08-22
+- Decision: Replace each catalog card's ambiguous crop of a three-product family board with
+  a product-specific first view, then add one stable Korean/English detail route per concept.
+  Each route shows front, three-quarter, and side/back construction concepts, the complete
+  description, selection criteria, care checks, related candidates, and made-to-order
+  boundaries. All new images remain explicitly labelled AI concepts rather than delivered-item
+  photographs, and checkout remains closed.
+- Demand evidence: Direct owner feedback on the deployed shop identified that one card image
+  could be mistaken for another product and requested marketplace-style detail pages with
+  multiple angles and written guidance for product selection. Distribution remains the public
+  first-party shop and product-detail URLs; no advertising, affiliate, or external image host is
+  added.
+- Economics: Detail pages retain the existing indicative 19,000–99,000 KRW reference ranges.
+  Existing 9,600/39,000 campaign evidence and digital prices are unchanged. Supplier, material,
+  labor, packaging, payment fee, VAT, collect-shipping handling, rework, defect reserve, and
+  gross-margin evidence remain incomplete, so the detail routes cannot create an accessory
+  order or present a checkout control.
+- Safety and claim boundary: Multiple-angle images describe shape and possible construction
+  only. They do not establish actual material, dimensions, finish, safety, provenance, or
+  efficacy, and make no luck, protection, healing, relationship, financial, diagnostic, or
+  predictive claim. The first purchase-status surface states that real-item photography and
+  disclosures are required before checkout opens.
+- Success and guardrails: Require 24 unique detail URLs in each supported language, three
+  labelled viewpoints per product, one product identity per catalog card, accessible navigation,
+  mobile layout, first-party images, no profile data, and no cart/buy/checkout control. Revert
+  the detail imagery and routes if product identity drifts between angles, users mistake concepts
+  for manufactured goods, shop payload materially regresses, or purchase controls appear early.
+- Rollback reference: production v66, commit
+  `e6f47aa0e41e1da10eae2679c4592aa73957911b`.
+- Status: Detail browsing decided and additive; supplier-backed SKU activation remains held.
