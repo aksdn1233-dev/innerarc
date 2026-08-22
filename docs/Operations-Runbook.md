@@ -125,6 +125,11 @@ Status: Supabase account persistence connected; production deployment and remain
   panel, and route-scoped shop palette together if the raw date enters a URL, storage, analytics,
   or a request; if recommendations drift for identical date/year inputs; if the UI implies a
   Saju calculation; or if contrast, mobile layout, disclosure visibility, or payload budgets fail.
+- The pre-zoom/search-discovery rollback reference is production v68 at commit
+  `811801afb105b6e084b2cc838654a35813f77724`. Revert the product media viewer, semantic image
+  conversion, route metadata, structured data, and image sitemap together if focus/scroll fails,
+  a product view becomes misleading, private URLs enter discovery documents, or search copy
+  crosses the symbolic-reflection and non-purchasable concept boundaries.
 
 ## Incident priorities
 

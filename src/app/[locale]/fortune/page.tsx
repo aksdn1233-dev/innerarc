@@ -6,8 +6,18 @@ import { isLocale } from "@/i18n/config";
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   return locale === "en"
-    ? { title: "Saju services | GYEOL", description: "Explore a free Four Pillars chart and InnerArc reflection services in one place." }
-    : { title: "사주 서비스 | 결 GYEOL", description: "무료 사주 원국과 InnerArc의 성찰 서비스를 한곳에서 살펴보세요." };
+    ? {
+        title: "Saju & Fortune Reflection Services | GYEOL",
+        description: "Compare a free Four Pillars chart with separate Saju reflection services. Symbolic guidance, not guaranteed fortune prediction.",
+        keywords: ["Saju", "fortune reflection", "Four Pillars", "birth chart"],
+        alternates: { canonical: "/en/fortune", languages: { ko: "/ko/fortune", en: "/en/fortune" } },
+      }
+    : {
+        title: "사주·운세 리딩 안내 | 결 GYEOL",
+        description: "무료 사주 원국과 사주 리딩 상품을 비교해 보세요. 운명을 단정하지 않고 계산 근거와 성찰 질문을 함께 제공합니다.",
+        keywords: ["사주", "운세", "사주 리딩", "사주 풀이", "무료 사주"],
+        alternates: { canonical: "/ko/fortune", languages: { ko: "/ko/fortune", en: "/en/fortune" } },
+      };
 }
 
 export default async function FortunePage({ params }: { params: Promise<{ locale: string }> }) {

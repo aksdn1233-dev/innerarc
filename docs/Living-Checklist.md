@@ -1,6 +1,6 @@
 # Living Checklist
 
-Last updated: 2026-08-01
+Last updated: 2026-08-22
 
 ## Phase 0 - Workspace and baseline
 
@@ -114,6 +114,10 @@ Last updated: 2026-08-01
 - [x] Shop first-viewport birth-date curation uses the deterministic Numerology engine only,
   returns three concept links, clears on reload, and never persists, transmits, or URL-encodes
   the input; Saju remains explicitly separate.
+- [x] Product-detail viewpoints use semantic first-party images and an accessible 100–300%
+  viewer; public Saju, fortune, Numerology, relationship, shop, and product pages expose unique
+  metadata, canonical locale links, structured data, and page/image sitemaps while private routes
+  remain excluded.
 
 ## Phase 6 - Reality Check
 

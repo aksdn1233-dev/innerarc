@@ -33,6 +33,17 @@ export async function generateMetadata({ params }: { params: Promise<ProductPage
   return {
     title,
     description,
+    keywords: locale === "ko"
+      ? [item.name, item.kind, "사주 악세서리", "수비학 악세서리", "AI 상품 콘셉트"]
+      : [item.name, item.kind, "Saju accessory", "numerology accessory", "AI product concept"],
+    alternates: {
+      canonical: `/${locale}/shop/${product.id}`,
+      languages: {
+        ko: `/ko/shop/${product.id}`,
+        en: `/en/shop/${product.id}`,
+      },
+    },
+    robots: { index: true, follow: true },
     openGraph: {
       title,
       description,
@@ -48,5 +59,40 @@ export default async function AccessoryProductPage({ params }: { params: Promise
   if (!isLocale(locale)) notFound();
   const product = getAccessoryConceptProduct(productId);
   if (!product) notFound();
-  return <AccessoryProductDetail locale={locale} product={product} />;
+  const item = localizeAccessoryProduct(product, locale);
+  const baseUrl = resolvePublicAppUrl(process.env.NEXT_PUBLIC_APP_URL);
+  const pageUrl = new URL(`/${locale}/shop/${product.id}`, baseUrl).toString();
+  const shopUrl = new URL(`/${locale}/shop`, baseUrl).toString();
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `${pageUrl}#webpage`,
+        url: pageUrl,
+        name: item.name,
+        description: item.description,
+        inLanguage: locale === "ko" ? "ko-KR" : "en-US",
+        image: new URL(accessoryDetailBoards[product.directionId], baseUrl).toString(),
+        breadcrumb: { "@id": `${pageUrl}#breadcrumb` },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${pageUrl}#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: locale === "ko" ? "악세서리 상점" : "Accessory shop", item: shopUrl },
+          { "@type": "ListItem", position: 2, name: item.name, item: pageUrl },
+        ],
+      },
+    ],
+  };
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replaceAll("<", "\\u003c") }}
+      />
+      <AccessoryProductDetail locale={locale} product={product} />
+    </>
+  );
 }

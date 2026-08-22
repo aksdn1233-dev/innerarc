@@ -3,7 +3,11 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { isPrivatePath, robotsTagFor } from "@/core/security/headers";
 import { crossOriginRefused, isSameOriginRequest } from "@/server/same-origin";
-import { createRobotsDocument } from "@/core/site-documents";
+import {
+  createImageSitemapXml,
+  createRobotsDocument,
+  createSitemapDocument,
+} from "@/core/site-documents";
 
 function post(headers: Record<string, string>): Request {
   return new Request("https://gyeol.example/api/admin/settings", {
@@ -122,5 +126,32 @@ describe("robots.txt", () => {
     expect(catchAll).toBeDefined();
     expect(catchAll?.disallow).not.toBe("/");
     expect(catchAll?.disallow).toEqual(expect.arrayContaining(["/ko/reports/", "/ko/admin"]));
+  });
+
+  it("publishes both page and image sitemap locations", () => {
+    const sitemap = createRobotsDocument({ NEXT_PUBLIC_APP_URL: "https://gyeol.example" }).sitemap;
+    expect(sitemap).toEqual([
+      "https://gyeol.example/sitemap.xml",
+      "https://gyeol.example/image-sitemap.xml",
+    ]);
+  });
+});
+
+describe("search discovery documents", () => {
+  const environment = { NEXT_PUBLIC_APP_URL: "https://gyeol.example" };
+
+  it("includes the public Saju route and excludes private result routes", () => {
+    const urls = createSitemapDocument(environment).map(({ url }) => url);
+    expect(urls).toContain("https://gyeol.example/ko/saju");
+    expect(urls).toContain("https://gyeol.example/en/saju");
+    expect(urls.some((url) => url.includes("/reports/"))).toBe(false);
+  });
+
+  it("maps each localized product page to first-party concept imagery", () => {
+    const xml = createImageSitemapXml(environment);
+    expect(xml).toContain('xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"');
+    expect(xml).toContain("https://gyeol.example/ko/shop/wood-leaf-pendant");
+    expect(xml).toContain("https://gyeol.example/images/accessory-shop/details/saju-wood.jpg");
+    expect(xml).not.toMatch(/https:\/\/(?!gyeol\.example)/);
   });
 });

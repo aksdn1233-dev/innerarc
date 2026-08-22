@@ -1,5 +1,8 @@
+"use client";
+
+import Image from "next/image";
 import Link from "next/link";
-import type { CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import {
   accessoryConceptProducts,
   accessoryDetailBoards,
@@ -20,6 +23,12 @@ const detailCopy = {
     unavailable: "현재는 콘셉트 검토 단계이며 결제할 수 없습니다",
     galleryTitle: "여러 시점에서 형태 확인하기",
     galleryBody: "정면만으로 판단하기 어려운 두께·연결부·뒷면 구조를 함께 비교해 보세요.",
+    zoomHint: "이미지를 눌러 크게 보기",
+    zoomTitle: "상품 콘셉트 확대 보기",
+    zoomIn: "확대",
+    zoomOut: "축소",
+    zoomReset: "원래 크기",
+    zoomClose: "확대 보기 닫기",
     views: ["정면 콘셉트", "사선 콘셉트", "측면·뒷면 구조 콘셉트"],
     viewDescriptions: ["전체 비율과 중심 장식을 확인하는 시점", "곡면과 입체감을 확인하는 시점", "두께·잠금·연결 구조를 확인하는 시점"],
     overview: "상품 콘셉트 설명",
@@ -46,6 +55,12 @@ const detailCopy = {
     unavailable: "Concept review only · purchasing is not available",
     galleryTitle: "Review the form from multiple viewpoints",
     galleryBody: "Compare thickness, findings, and back construction that a front view alone cannot show.",
+    zoomHint: "Select an image to enlarge",
+    zoomTitle: "Enlarged product concept",
+    zoomIn: "Zoom in",
+    zoomOut: "Zoom out",
+    zoomReset: "Reset zoom",
+    zoomClose: "Close enlarged view",
     views: ["Front concept", "Three-quarter concept", "Side or back construction concept"],
     viewDescriptions: ["Review overall proportion and the focal element", "Review curvature and volume", "Review thickness, closure, and connection structure"],
     overview: "Product concept",
@@ -106,17 +121,86 @@ function choosingGuidance(kind: string, locale: Locale) {
   };
 }
 
-function frameStyle(board: string, slot: number, row: number): CSSProperties {
+type SpriteStyle = CSSProperties & {
+  "--sprite-x": string;
+  "--sprite-y": string;
+};
+
+function frameStyle(slot: number, row: number): SpriteStyle {
   return {
-    backgroundImage: `url("${board}")`,
-    backgroundPosition: `${slot * 50}% ${row * 50}%`,
+    "--sprite-x": `${slot * -100}%`,
+    "--sprite-y": `${row * -100}%`,
   };
+}
+
+function ProductConceptImage({
+  board,
+  slot,
+  row,
+  alt,
+  priority = false,
+}: {
+  board: string;
+  slot: number;
+  row: number;
+  alt: string;
+  priority?: boolean;
+}) {
+  return (
+    <span className="shop-product-sprite" style={frameStyle(slot, row)}>
+      <Image
+        src={board}
+        alt={alt}
+        width={1254}
+        height={1254}
+        sizes="(max-width: 820px) 92vw, 540px"
+        priority={priority}
+        unoptimized
+      />
+    </span>
+  );
 }
 
 export function AccessoryProductDetail({ locale, product }: { locale: Locale; product: AccessoryConceptProduct }) {
   const t = detailCopy[locale];
   const common = shopCopy[locale];
   const item = localizeAccessoryProduct(product, locale);
+  const [activeView, setActiveView] = useState<number | null>(null);
+  const [zoom, setZoom] = useState(1);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const openerRef = useRef<HTMLButtonElement | null>(null);
+
+  function openZoom(row: number, opener: HTMLButtonElement) {
+    openerRef.current = opener;
+    setZoom(1);
+    setActiveView(row);
+  }
+
+  function closeZoom() {
+    setActiveView(null);
+    setZoom(1);
+    window.requestAnimationFrame(() => openerRef.current?.focus());
+  }
+
+  useEffect(() => {
+    if (activeView === null) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setActiveView(null);
+        setZoom(1);
+        window.requestAnimationFrame(() => openerRef.current?.focus());
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [activeView]);
+
   const direction = getAccessoryDirection(product.directionId);
   if (!direction) return null;
   const directionCopy = localizeAccessoryDirection(direction, locale);
@@ -136,9 +220,16 @@ export function AccessoryProductDetail({ locale, product }: { locale: Locale; pr
       </nav>
 
       <section className="shop-detail-hero" aria-labelledby="product-title">
-        <div className="shop-detail-primary-image" style={frameStyle(board, product.slot, 0)} role="img" aria-label={`${item.name} · ${t.views[0]}`}>
+        <button
+          type="button"
+          className="shop-detail-primary-image"
+          aria-label={`${item.name} · ${t.views[0]} · ${t.zoomHint}`}
+          onClick={(event) => openZoom(0, event.currentTarget)}
+        >
+          <ProductConceptImage board={board} slot={product.slot} row={0} alt={`${item.name} · ${t.views[0]}`} priority />
           <span>{common.conceptBadge}</span>
-        </div>
+          <small>{t.zoomHint}</small>
+        </button>
         <div className="shop-detail-summary">
           <p className="eyebrow">{t.concept} · {directionCopy.keyLabel}</p>
           <h1 id="product-title">{item.name}</h1>
@@ -155,7 +246,15 @@ export function AccessoryProductDetail({ locale, product }: { locale: Locale; pr
         <div>
           {t.views.map((label, row) => (
             <figure key={label}>
-              <div className="shop-detail-angle" style={frameStyle(board, product.slot, row)} role="img" aria-label={`${item.name} · ${label}`} />
+              <button
+                type="button"
+                className="shop-detail-angle"
+                aria-label={`${item.name} · ${label} · ${t.zoomHint}`}
+                onClick={(event) => openZoom(row, event.currentTarget)}
+              >
+                <ProductConceptImage board={board} slot={product.slot} row={row} alt={`${item.name} · ${label}`} />
+                <span>{t.zoomHint}</span>
+              </button>
               <figcaption><strong>{label}</strong><span>{t.viewDescriptions[row]}</span></figcaption>
             </figure>
           ))}
@@ -196,7 +295,9 @@ export function AccessoryProductDetail({ locale, product }: { locale: Locale; pr
             const relatedItem = localizeAccessoryProduct(candidate, locale);
             return (
               <article key={candidate.id}>
-                <div className="shop-related-image" style={frameStyle(board, candidate.slot, 0)} role="img" aria-label={`${relatedItem.name} · ${common.conceptBadge}`} />
+                <div className="shop-related-image">
+                  <ProductConceptImage board={board} slot={candidate.slot} row={0} alt={`${relatedItem.name} · ${common.conceptBadge}`} />
+                </div>
                 <p>{relatedItem.kind}</p><h3>{relatedItem.name}</h3><strong>{relatedItem.priceRange}</strong>
                 <Link href={`/${locale}/shop/${candidate.id}`}>{t.detail}</Link>
               </article>
@@ -204,6 +305,55 @@ export function AccessoryProductDetail({ locale, product }: { locale: Locale; pr
           })}
         </div>
       </section>
+
+      {activeView !== null ? (
+        <div className="shop-zoom-backdrop" onMouseDown={(event) => {
+          if (event.currentTarget === event.target) closeZoom();
+        }}>
+          <section
+            className="shop-zoom-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="shop-zoom-title"
+          >
+            <header>
+              <div>
+                <p>{item.name}</p>
+                <h2 id="shop-zoom-title">{t.zoomTitle}</h2>
+              </div>
+              <button ref={closeButtonRef} type="button" onClick={closeZoom} aria-label={t.zoomClose}>×</button>
+            </header>
+            <nav aria-label={locale === "ko" ? "확대할 시점 선택" : "Choose a viewpoint"}>
+              {t.views.map((label, row) => (
+                <button
+                  type="button"
+                  key={label}
+                  aria-pressed={activeView === row}
+                  onClick={() => { setActiveView(row); setZoom(1); }}
+                >
+                  {label}
+                </button>
+              ))}
+            </nav>
+            <div className="shop-zoom-stage" aria-live="polite">
+              <div className="shop-zoom-canvas" style={{ width: `${zoom * 100}%` }}>
+                <ProductConceptImage
+                  board={board}
+                  slot={product.slot}
+                  row={activeView}
+                  alt={`${item.name} · ${t.views[activeView]} · ${Math.round(zoom * 100)}%`}
+                />
+              </div>
+            </div>
+            <footer>
+              <button type="button" onClick={() => setZoom((value) => Math.max(1, value - 0.5))} disabled={zoom <= 1} aria-label={t.zoomOut}>−</button>
+              <output aria-label={locale === "ko" ? "현재 확대율" : "Current zoom"}>{Math.round(zoom * 100)}%</output>
+              <button type="button" onClick={() => setZoom((value) => Math.min(3, value + 0.5))} disabled={zoom >= 3} aria-label={t.zoomIn}>＋</button>
+              <button type="button" onClick={() => setZoom(1)} disabled={zoom === 1}>{t.zoomReset}</button>
+            </footer>
+          </section>
+        </div>
+      ) : null}
     </main>
   );
 }

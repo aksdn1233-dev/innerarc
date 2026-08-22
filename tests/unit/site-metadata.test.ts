@@ -15,11 +15,11 @@ describe("site sharing metadata", () => {
     const en = getLocalizedSiteMetadata("en");
     const combined = [ko.title, ko.description, en.title, en.description].join(" ");
 
-    expect(ko.title).toContain("나·관계·올해의 흐름");
-    expect(en.title).toContain("Self, Relationships & Yearly Flow");
+    expect(ko.title).toContain("사주·수비학");
+    expect(en.title).toContain("Saju, Numerology");
     expect(ko.openGraphLocale).toBe("ko_KR");
     expect(en.openGraphLocale).toBe("en_US");
-    expect(combined).not.toMatch(/타로·신점|수비학|premium tarot/i);
+    expect(combined).not.toMatch(/타로·신점|premium tarot/i);
     expect(combined).not.toMatch(/정확도|정확히 예측|반드시|보장|accuracy|predicts? exactly|guaranteed/i);
   });
 

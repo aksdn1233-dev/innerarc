@@ -939,3 +939,38 @@
 - Rollback reference: production v67, commit
   `e84f50e74929d84fbb7dfa15814f2a0ae2152419`.
 - Status: Decided and additive; accessory checkout remains held.
+
+## D-075 - Add product-image zoom and search discovery foundations
+
+- Date: 2026-08-22
+- Decision: Make every product-detail viewpoint an accessible zoom trigger with a modal
+  viewer, viewpoint switching, 100–300% controls, reset, focus return, and Escape dismissal.
+  Replace CSS-only product artwork with semantic first-party images. Add unique Korean/English
+  search metadata for Saju, fortune, daily flow, Numerology, relationships, shop, and product
+  routes; publish canonical/hreflang signals, WebSite/WebPage/Breadcrumb structured data, the
+  missing public Saju sitemap entries, and a separate first-party image sitemap. Keep private
+  reports, orders, profiles, payments, and administration excluded from crawling.
+- Demand evidence and distribution: Direct owner feedback on production v68 required detailed
+  product enlargement and discoverability for Saju, destiny-number, and fortune searches across
+  Naver, Google, and other portals. Distribution is organic first-party search discovery only;
+  no paid placement, backlinks, review fabrication, search-volume claim, ranking guarantee, or
+  user-level tracking is introduced. Portal ownership verification and sitemap submission remain
+  operator-account actions because repository code cannot prove account ownership.
+- Economics: This changes product inspection and organic discovery only. The existing
+  19,000–99,000 KRW indicative accessory ranges and 9,600/39,000 KRW digital economics are
+  unchanged. No SKU, inventory, checkout, provider, fulfillment, tax, shipping, return, or
+  margin assumption is added, and accessory checkout remains closed.
+- Safety and claims: Search copy explicitly separates Saju and Numerology and describes readings
+  as symbolic reflection rather than scientific prediction, diagnosis, guaranteed destiny, or
+  guaranteed fortune. Product structured data describes a web page and concept imagery; it does
+  not publish an Offer, availability, rating, review, or manufactured-product claim.
+- Success, guardrails, and reversal: Require keyboard/mobile zoom, focus restoration, reduced
+  motion, visible AI-concept labels, semantic image alt text, canonical locale URLs, page and image
+  sitemaps, index/follow only on public routes, and no private URL or personal input in discovery
+  documents. Track only allowlisted anonymous search landing and public route counts after consent.
+  Revert if zoom traps focus or scroll, product identity drifts, metadata promises prediction or
+  sale, private routes enter a sitemap, page weight materially regresses, or portals report
+  structured-data violations.
+- Rollback reference: production v68, commit
+  `811801afb105b6e084b2cc838654a35813f77724`.
+- Status: Decided and additive; accessory checkout remains held.

@@ -80,6 +80,9 @@
   accessible related-product navigation, and no cart or checkout control.
 - [x] Shop birthday curation is local-only Numerology, deterministic, bilingual, reload-cleared,
   URL-clean, accessible, performance-bounded, and explicit that Saju requires its separate flow.
+- [x] Product detail images support keyboard/mobile enlargement and semantic image discovery;
+  public reading/shop routes publish unique bilingual metadata, canonicals, structured data,
+  public Saju sitemap entries, and an image sitemap without exposing private report/order routes.
 - [x] Future product contracts require complete disclosures, reject prohibited symbolic-outcome claims and tracking-bearing links, isolate sponsorship, and remain closed behind twelve evidence-backed gates plus explicit owner authorization.
 - [ ] Approve suppliers, provenance/material/allergy disclosures, catalog moderation, accessibility, inventory, fulfillment, returns/refunds, support, privacy, and consumer-law controls before opening the shop.
 - [ ] Validate localized prices, taxes, trial/renewal disclosure, purchase, restore, cancellation, refund-support, and AI unit economics with a real provider.

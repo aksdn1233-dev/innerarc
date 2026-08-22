@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { HomeExperience } from "@/components/home-experience";
 import { resolveProductPricing } from "@/core/product-prices";
@@ -8,6 +9,17 @@ import type { PublicReview } from "@/core/reviews";
 import { DEFAULT_ADMIN_PAGE_CONTENT } from "@/server/admin-content";
 import { readStoredPageContent } from "@/server/admin-storage";
 import { countPublicReviews, listPublicReviews } from "@/server/reviews";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isLocale(locale)) return {};
+  return {
+    alternates: {
+      canonical: `/${locale}`,
+      languages: { ko: "/ko", en: "/en" },
+    },
+  };
+}
 
 export default async function LocaleHome({
   params,

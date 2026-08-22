@@ -1,5 +1,9 @@
 import type { MetadataRoute } from "next";
-import { accessoryConceptProducts } from "@/core/commerce/accessory-recommendations";
+import {
+  accessoryConceptProducts,
+  accessoryDetailBoards,
+  localizeAccessoryProduct,
+} from "@/core/commerce/accessory-recommendations";
 import { resolvePublicAppUrl } from "@/core/site-url";
 
 const AI_CRAWLERS = [
@@ -44,6 +48,7 @@ const PRIVATE_PATHS = [
 
 const PUBLIC_ROUTES = [
   "",
+  "/saju",
   "/fortune",
   "/daily-fortune",
   "/profile",
@@ -67,7 +72,10 @@ export function createRobotsDocument(
       ...AI_CRAWLERS.map((userAgent) => ({ userAgent, disallow: "/" })),
       { userAgent: "*", disallow: [...PRIVATE_PATHS] },
     ],
-    sitemap: new URL("/sitemap.xml", baseUrl).toString(),
+    sitemap: [
+      new URL("/sitemap.xml", baseUrl).toString(),
+      new URL("/image-sitemap.xml", baseUrl).toString(),
+    ],
     host: baseUrl.origin,
   };
 }
@@ -200,6 +208,39 @@ export function serializeSitemap(document: MetadataRoute.Sitemap): string {
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">',
+    ...entries,
+    "</urlset>",
+    "",
+  ].join("\n");
+}
+
+export function createImageSitemapXml(
+  environment: Readonly<Record<string, string | undefined>> = process.env,
+): string {
+  const baseUrl = resolvePublicAppUrl(environment.NEXT_PUBLIC_APP_URL);
+  const entries = (["ko", "en"] as const).flatMap((locale) =>
+    accessoryConceptProducts.map((product) => {
+      const item = localizeAccessoryProduct(product, locale);
+      const pageUrl = new URL(`/${locale}/shop/${product.id}`, baseUrl).toString();
+      const imageUrl = new URL(accessoryDetailBoards[product.directionId], baseUrl).toString();
+      const caption = locale === "ko"
+        ? `${item.name}의 정면·사선·측면 AI 상품 콘셉트 이미지`
+        : `AI product concept views of ${item.name}: front, three-quarter, and side`;
+      return [
+        "  <url>",
+        `    <loc>${escapeXml(pageUrl)}</loc>`,
+        "    <image:image>",
+        `      <image:loc>${escapeXml(imageUrl)}</image:loc>`,
+        `      <image:caption>${escapeXml(caption)}</image:caption>`,
+        `      <image:title>${escapeXml(item.name)}</image:title>`,
+        "    </image:image>",
+        "  </url>",
+      ].join("\n");
+    }),
+  );
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">',
     ...entries,
     "</urlset>",
     "",

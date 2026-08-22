@@ -9,16 +9,16 @@ export interface LocalizedSiteMetadata {
 
 const SITE_METADATA: Readonly<Record<Locale, LocalizedSiteMetadata>> = {
   ko: {
-    title: "결 GYEOL | 나·관계·올해의 흐름 리딩",
+    title: "결 GYEOL | 사주·수비학으로 보는 나·관계·운세",
     description:
-      "생년월일을 바탕으로 나의 성향과 학업·직업·연애, 가까운 사람과의 관계, 올해의 흐름을 알기 쉽게 정리하는 개인 리딩 서비스.",
+      "생년월일 기반 사주와 수비학을 서로 분리해 성향·관계·운세의 흐름을 정리하는 상징적 자기 성찰 리딩 서비스.",
     openGraphLocale: "ko_KR",
     alternateOpenGraphLocale: "en_US",
   },
   en: {
-    title: "GYEOL | Self, Relationships & Yearly Flow",
+    title: "GYEOL | Saju, Numerology & Daily Flow",
     description:
-      "A personal reading that makes your traits, study, work, love, close relationships, and the year ahead easier to understand.",
+      "Separate Saju and Numerology experiences for symbolic reflection on personality, relationships, and daily or yearly flow.",
     openGraphLocale: "en_US",
     alternateOpenGraphLocale: "ko_KR",
   },

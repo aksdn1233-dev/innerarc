@@ -54,6 +54,15 @@ test("each concept has an ecommerce-style detail page with three product-specifi
   await expect(page.getByText("정면 콘셉트", { exact: true })).toBeVisible();
   await expect(page.getByText("사선 콘셉트", { exact: true })).toBeVisible();
   await expect(page.getByText("측면·뒷면 구조 콘셉트", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: /솔잎 결 펜던트 · 정면 콘셉트 · 이미지를 눌러 크게 보기/ }).first().click();
+  const zoomDialog = page.getByRole("dialog", { name: "상품 콘셉트 확대 보기" });
+  await expect(zoomDialog).toBeVisible();
+  await zoomDialog.getByRole("button", { name: "확대", exact: true }).click();
+  await expect(zoomDialog.getByLabel("현재 확대율")).toHaveText("150%");
+  await zoomDialog.getByRole("button", { name: "측면·뒷면 구조 콘셉트" }).click();
+  await expect(zoomDialog.getByRole("button", { name: "측면·뒷면 구조 콘셉트" })).toHaveAttribute("aria-pressed", "true");
+  await page.keyboard.press("Escape");
+  await expect(zoomDialog).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "이 상품을 선택하기 전에" })).toBeVisible();
   await expect(page.getByText(/실제 판매품 사진이 아니며/)).toBeVisible();
   await expect(page.getByRole("button", { name: /결제|구매|장바구니/ })).toHaveCount(0);
