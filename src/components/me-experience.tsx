@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRef, useState, type FormEvent } from "react";
+import { buildGyeolContinuity, type GyeolContinuityAction } from "@/core/continuity/gyeol-continuity";
 import {
   clearAllDeviceData,
   exportDeviceData,
@@ -61,11 +62,22 @@ export function MeExperience({
   notificationPreferences,
   adminAccess,
 }: Props) {
+  const latestReadyReport = reports.find((report) => report.status === "ready");
   const timeZoneInput = useRef<HTMLInputElement>(null);
   const [privacyRequired, setPrivacyRequired] = useState(false);
   const [consents, setConsents] = useState(emptyConsents);
   const [acceptedAt, setAcceptedAt] = useState<string | null>(null);
   const [counts, setCounts] = useState<DeviceDataCounts>(emptyCounts);
+  const [continuity, setContinuity] = useState<readonly GyeolContinuityAction[]>(() =>
+    buildGyeolContinuity({
+      locale,
+      paidReportCount: reports.length,
+      latestPaidReportHref: latestReadyReport ? `/${locale}/reports/${encodeURIComponent(latestReadyReport.orderId)}` : undefined,
+      realityCheckCount: 0,
+      tarotReadingCount: 0,
+      dailyFlowEnabled: false,
+    }),
+  );
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const otherLocale = locale === "ko" ? "en" : "ko";
@@ -89,7 +101,16 @@ export function MeExperience({
         rawJournalRetention: preferences.consents.rawJournalRetention,
       });
     }
-    setCounts(inspectDeviceData(window.localStorage));
+    const inspected = inspectDeviceData(window.localStorage);
+    setCounts(inspected);
+    setContinuity(buildGyeolContinuity({
+      locale,
+      paidReportCount: reports.length,
+      latestPaidReportHref: latestReadyReport ? `/${locale}/reports/${encodeURIComponent(latestReadyReport.orderId)}` : undefined,
+      realityCheckCount: inspected.realityChecks,
+      tarotReadingCount: inspected.tarotReadings,
+      dailyFlowEnabled: inspected.dailyFortune > 0,
+    }));
     setError("");
     setMessage("");
   }
@@ -140,6 +161,14 @@ export function MeExperience({
     if (!window.confirm(copy.deleteConfirm)) return;
     clearAllDeviceData(window.localStorage);
     setCounts(emptyCounts);
+    setContinuity(buildGyeolContinuity({
+      locale,
+      paidReportCount: reports.length,
+      latestPaidReportHref: latestReadyReport ? `/${locale}/reports/${encodeURIComponent(latestReadyReport.orderId)}` : undefined,
+      realityCheckCount: 0,
+      tarotReadingCount: 0,
+      dailyFlowEnabled: false,
+    }));
     setPrivacyRequired(false);
     setConsents(emptyConsents);
     setAcceptedAt(null);
@@ -206,6 +235,36 @@ export function MeExperience({
               initialPreferences={notificationPreferences}
             />
           )}
+
+          <article className="status-card" aria-labelledby="continuity-title">
+            <p className="eyebrow">CONTINUE MY STORY</p>
+            <h2 id="continuity-title">{locale === "ko" ? "내 이야기 이어가기" : "Continue my story"}</h2>
+            <p>
+              {locale === "ko"
+                ? "새 운명을 만들어내지 않고, 내가 이미 저장하거나 구매한 기록에서 이어갈 지점만 보여줘요."
+                : "No new fate is invented here. These choices continue only from records you saved or purchased."}
+            </p>
+            <div className="account-report-list">
+              {continuity.map((action) => (
+                <div key={action.kind}>
+                  <div><strong>{action.title}</strong><p className="privacy-note">{action.description}</p></div>
+                  <Link className="secondary-button" href={action.href}>
+                    {locale === "ko" ? "이어보기" : "Continue"}
+                  </Link>
+                </div>
+              ))}
+            </div>
+            <div className="history-actions">
+              <button type="button" onClick={inspectSavedData}>
+                {locale === "ko" ? "이 기기의 저장 기록 확인" : "Check this device's saved records"}
+              </button>
+            </div>
+            <p className="history-warning">
+              {locale === "ko"
+                ? "버튼을 누를 때만 이 브라우저의 유효한 저장 기록을 읽으며, 다른 결 서비스의 고객 정보와 합치지 않습니다."
+                : "Saved records are read only when you press the button and are never merged with customer data from another GYEOL product."}
+            </p>
+          </article>
 
           <form className="form-card me-preferences" onSubmit={savePreferences} noValidate>
             <h2>{copy.preferencesTitle}</h2>
