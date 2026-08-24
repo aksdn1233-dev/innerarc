@@ -6,10 +6,10 @@ import {
 import handler from "vinext/server/app-router-entry";
 
 interface WorkerEnv {
-  ASSETS: {
+  ASSETS?: {
     fetch(request: Request): Promise<Response>;
   };
-  IMAGES: {
+  IMAGES?: {
     input(stream: ReadableStream): {
       transform(options: Record<string, unknown>): {
         output(options: { format: string; quality: number }): Promise<{
@@ -30,13 +30,29 @@ const worker = {
     const url = new URL(request.url);
 
     if (url.pathname === "/_vinext/image") {
+      const assets = env.ASSETS;
+      const images = env.IMAGES;
+      // Sites and local Vite previews do not always expose the optional Cloudflare
+      // Images/ASSETS bindings. The optimized-image endpoint must still return the
+      // original same-origin asset instead of throwing and replacing the report with
+      // a "Cannot read properties of undefined" error.
+      if (!assets || !images) {
+        const source = url.searchParams.get("url");
+        if (!source || !source.startsWith("/") || source.startsWith("//")) {
+          return new Response("Invalid image source", { status: 400 });
+        }
+        const assetUrl = new URL(source, request.url);
+        return assets
+          ? assets.fetch(new Request(assetUrl, request))
+          : Response.redirect(assetUrl, 307);
+      }
       const allowedWidths = [...DEFAULT_DEVICE_SIZES, ...DEFAULT_IMAGE_SIZES];
       return handleImageOptimization(
         request,
         {
-          fetchAsset: (path) => env.ASSETS.fetch(new Request(new URL(path, request.url))),
+          fetchAsset: (path) => assets.fetch(new Request(new URL(path, request.url))),
           transformImage: async (body, { width, format, quality }) => {
-            const transformed = env.IMAGES
+            const transformed = images
               .input(body)
               .transform(width > 0 ? { width } : {})
               .output({ format, quality });

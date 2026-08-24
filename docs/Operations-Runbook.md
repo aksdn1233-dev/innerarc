@@ -36,6 +36,9 @@ Status: Supabase account persistence connected; production deployment and remain
   `dist` together with `.openai/hosting.json` from the repository root; never archive the
   contents of `dist` as the archive root, which changes the entrypoint to unsupported
   `server/index.js`.
+- Before publishing, smoke-test `/_vinext/image` once with Sites image bindings and once without
+  them. The no-binding path must redirect only to a same-origin source asset;
+  remote and protocol-relative source URLs must return 400 instead of reaching a network fetch.
 
 ### Saju recalculation and migration hold
 

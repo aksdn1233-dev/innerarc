@@ -36,6 +36,8 @@ Last updated: 2026-08-22
   selector with theme/section/emotion fallback, recent-pose avoidance, and path validation.
 - [x] Numerology dialogue remains selectable HTML over character/background layers, keeps a
   text-only failure path, and is overflow-checked at 320/360/375/390/430 px.
+- [x] The vinext image route falls back to same-origin source assets when optional Sites image
+  bindings are unavailable, rejects remote/protocol-relative sources, and has a regression test.
 - [ ] Complete enlarged human review of all 192 cuts for fingers, eyes, glasses, ornaments,
   props, and transparent-edge defects before treating every pose as editorially approved.
 
