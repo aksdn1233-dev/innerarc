@@ -18,6 +18,7 @@ import { AccountSyncPanel } from "@/components/account-sync-panel";
 import {
   AccountReportsPanel,
   type AccountReportSummary,
+  type DailyNotification,
   type NotificationPreferences,
 } from "@/components/account-reports-panel";
 
@@ -28,6 +29,7 @@ type Props = {
   accountSyncConfigured: boolean;
   reports: readonly AccountReportSummary[];
   notificationPreferences: NotificationPreferences;
+  dailyNotifications: readonly DailyNotification[];
   adminAccess: boolean;
 };
 type OptionalConsentKey =
@@ -60,6 +62,7 @@ export function MeExperience({
   accountSyncConfigured,
   reports,
   notificationPreferences,
+  dailyNotifications,
   adminAccess,
 }: Props) {
   const latestReadyReport = reports.find((report) => report.status === "ready");
@@ -233,6 +236,7 @@ export function MeExperience({
               locale={locale}
               reports={reports}
               initialPreferences={notificationPreferences}
+              dailyNotifications={dailyNotifications}
             />
           )}
 

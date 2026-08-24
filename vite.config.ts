@@ -27,6 +27,9 @@ export default defineConfig({
         // leaving the binding out here would silently remove it from the deployed
         // Worker and break every optimized image on the live site.
         images: { binding: "IMAGES" },
+        // 00:00 UTC is 09:00 in Korea. The handler only creates consented,
+        // owner-scoped in-site notifications and is idempotent per account/day.
+        triggers: { crons: ["0 0 * * *"] },
       },
     }),
   ],

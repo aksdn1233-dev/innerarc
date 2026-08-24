@@ -6,6 +6,7 @@ import { MeteorTrails, NightHorizon } from "@/components/brand-visuals";
 import { PaymentStatusWaiting } from "@/components/payment-status-waiting";
 import { ReportActions } from "@/components/report-actions";
 import { ReviewRequestPanel } from "@/components/review-request-panel";
+import { AcquisitionSurveyPanel } from "@/components/acquisition-survey-panel";
 import { CharacterWebtoonPanel as WebtoonPanel, ReportEmphasis, WebtoonCta, WebtoonCue, WebtoonOrbs } from "@/components/webtoon";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
 import { toOwnReviewState } from "@/core/reviews";
@@ -14,6 +15,7 @@ import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import { requireSupabaseUser } from "@/lib/supabase/auth";
 import { getAuthorizedStoredReport } from "@/server/reports/access";
 import { findReviewByOrderId } from "@/server/reviews";
+import { findAcquisitionSurveyByOrderId } from "@/server/acquisition-surveys";
 
 export const dynamic = "force-dynamic";
 
@@ -106,7 +108,10 @@ export default async function PurchasedReportPage({
   // The reader has a completed reading open, which is the only moment asking for
   // feedback is fair. A missing review table (migration not yet applied) simply hides
   // the panel rather than failing the page the buyer paid for.
-  const existingReview = await findReviewByOrderId(admin, orderId);
+  const [existingReview, existingAcquisitionSurvey] = await Promise.all([
+    findReviewByOrderId(admin, orderId),
+    findAcquisitionSurveyByOrderId(admin, orderId),
+  ]);
   const downloadParams = new URLSearchParams();
   if (query.access) downloadParams.set("access", query.access);
   if (query.proof) downloadParams.set("proof", query.proof);
@@ -451,6 +456,16 @@ export default async function PurchasedReportPage({
               locale={locale}
               downloadUrl={`/api/reports/${orderId}/download${accessQuery}`}
             />
+            {existingAcquisitionSurvey.available && (
+              <AcquisitionSurveyPanel
+                access={query.access}
+                initialSource={existingAcquisitionSurvey.data?.source ?? null}
+                locale={locale}
+                orderId={orderId}
+                proof={query.proof}
+                ticket={query.t}
+              />
+            )}
             {existingReview.available && (
               <ReviewRequestPanel
                 access={query.access}

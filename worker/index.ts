@@ -4,6 +4,7 @@ import {
   handleImageOptimization,
 } from "vinext/server/image-optimization";
 import handler from "vinext/server/app-router-entry";
+import { runDailyNotificationBatch } from "../src/server/daily-notifications";
 
 interface WorkerEnv {
   ASSETS?: {
@@ -18,6 +19,9 @@ interface WorkerEnv {
       };
     };
   };
+  NEXT_PUBLIC_SUPABASE_URL?: string;
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?: string;
+  SUPABASE_SERVICE_ROLE_KEY?: string;
 }
 
 interface WorkerContext {
@@ -64,6 +68,14 @@ const worker = {
     }
 
     return handler.fetch(request, env, context);
+  },
+  scheduled(controller: { scheduledTime: number }, env: WorkerEnv, context: WorkerContext) {
+    const runtimeEnvironment = {
+      NEXT_PUBLIC_SUPABASE_URL: env.NEXT_PUBLIC_SUPABASE_URL,
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+      SUPABASE_SERVICE_ROLE_KEY: env.SUPABASE_SERVICE_ROLE_KEY,
+    };
+    context.waitUntil(runDailyNotificationBatch(runtimeEnvironment, new Date(controller.scheduledTime)));
   },
 };
 

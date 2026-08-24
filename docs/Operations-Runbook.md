@@ -72,13 +72,19 @@ Status: Supabase account persistence connected; production deployment and remain
 
 ### Daily Flow rollback
 
-- Daily Flow is additive and has no migration, provider, payment, or account dependency.
-  Revert its `/daily-fortune` route and return the Today service card to unavailable.
+- Device-only Daily Flow remains independent. The account morning inbox uses migration
+  `20260825000100_daily_notifications_and_acquisition_surveys.sql` and the `0 0 * * *` Worker
+  trigger. Disable that trigger first during a schedule, duplication, consent, or database incident;
+  existing inbox rows remain owner-readable/exportable/deletable.
 - Preserve device-data cleanup support for `innerarc:daily-fortune:v1` for at least one
   release after removing the UI so existing users can still export or delete the preference.
 - Stop the feature immediately if device-local date rollover is wrong, same-day output drifts,
-  the opt-in writes before an explicit action, deletion/export omits the preference, or copy
-  crosses the symbolic-reflection boundary. Push/email/SMS reminders are not part of this release.
+  the opt-in writes before an explicit action, a payment creates consent, deletion/export omits
+  notification data, or copy crosses the symbolic-reflection boundary. Email/push/SMS delivery is
+  not active until a provider and its bounce/suppression/privacy runbook are approved.
+- Pre-change rollback reference is production v73 at commit
+  `efd788b6d0f2949ea02300c1a401ff513a67672b`. Revert the UI and cron together, but keep the
+  additive tables during rollback so users can export or delete already-created rows.
 
 ### Gift sharing and Japanese entry rollback
 

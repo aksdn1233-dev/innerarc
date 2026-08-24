@@ -137,13 +137,16 @@ Last updated: 2026-08-22
 - [x] Browser-local review months, newest-first prior-month navigation, disclosed UTC fallback for legacy records, and no-write month switching.
 - [x] Retry idempotency, export/delete, versioned safe browser adapter, and session-only default.
 - [x] Explicitly synchronized Reality Check records can be restored from durable owner-scoped server storage.
-- [ ] Authenticated reminders and automatic server-backed report scheduling.
+- [x] Purpose-specific account consent, 09:00 Korea-time idempotent Daily Flow inbox generation,
+  independent on/off controls, and consent-preserving paid-order re-enable behavior.
 
 ## Phase 7 - Release foundation
 
-- [x] Optional free Daily Flow with explicit device-only opt-in, month/day minimization,
-  same-day deterministic output, next-local-date refresh, device export/deletion, bilingual
-  copy, character art, mobile coverage, and no background notification/provider request.
+- [x] Optional free Daily Flow preserves device-only viewing while adding a separate owner-scoped
+  morning-inbox opt-in with month/day minimization, export/deletion, bilingual copy, character art,
+  and no external email/push/SMS provider request.
+- [x] Authorized completed reports end with a fixed-choice acquisition survey; values are bounded,
+  stored once per order, aggregated in the allowlisted console, and excluded from public reviews.
 
 - [x] Free/Plus/Pro entitlement and quota policy.
 - [x] Provider-neutral checkout/cancel and retry-safe subscription ledger.

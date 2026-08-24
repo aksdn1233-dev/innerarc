@@ -6,8 +6,8 @@
 - [x] No unsupported scientific, diagnostic, probability, fate, or prediction claim in tested output.
 - [x] Free first value and deterministic entitlement policies.
 - [x] Claim-free accessory/music directions and a visibly closed shop category preview.
-- [x] Optional Daily Flow is deterministic for the local date, visibly symbolic, free,
-  bilingual, and separate from push/email/SMS promises.
+- [x] Optional Daily Flow is deterministic, visibly symbolic and free; account-backed 09:00 inbox
+  delivery requires separate consent, is idempotent per owner/day, and makes no push/email/SMS promise.
 - [x] Public compatibility intake offers partner, coworker, family, friend, and business-partner contexts; each keeps consent, privacy, reality checks, and no fate score.
 - [x] Numerology and Saju reports use separate calculation and explanation pipelines; unknown Saju birth time never displays a fabricated corrected clock time.
 - [x] Saju report dialogue uses long-form, evidence-bound life-context sentences inside the
@@ -35,6 +35,10 @@
 - [x] Local owner-scope, export, all-data/third-party deletion, retry, and cross-owner denial tests.
 - [x] Daily Flow view-only leaves storage untouched; explicit month/day persistence is
   validated and included in device inspect/export/delete without server sync.
+- [x] Account morning notifications store month/day only after purpose-specific consent, expose
+  independent on/off and paid-auto controls, and are included in account export/deletion.
+- [x] Report acquisition responses require completed-report proof, accept a fixed bounded source,
+  and are visible only through the allowlisted administrator console.
 - [x] Supabase owner RLS, authenticated-only grants, anonymous fail-closed probe, validated explicit sync/restore, account export, and atomic deletion migration.
 - [x] Share outputs omit dates, names, contact details, concerns, journals, and questions by construction.
 - [x] Purchased-report gifting is explicitly distinguished from minimal public share cards,

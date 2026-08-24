@@ -3,6 +3,7 @@ import type { PaidReport } from "@/core/paid-reading";
 import type { Locale } from "@/i18n/config";
 import { CharacterWebtoonPanel as WebtoonPanel, ReportEmphasis, WebtoonCue, WebtoonOrbs } from "@/components/webtoon";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
+import { AcquisitionSurveyPanel } from "@/components/acquisition-survey-panel";
 
 type SampleKind = "detail" | "premium" | "saju";
 
@@ -82,6 +83,7 @@ export function ReportSampleExperience({
         <p className="disclaimer"><ReportEmphasis>{report.disclaimer}</ReportEmphasis></p>
         <Link className="primary-button" href={`/${locale}`}>{ko ? "홈으로" : "Home"}</Link>
       </WebtoonPanel>
+      <AcquisitionSurveyPanel locale={locale} preview />
     </main>
   );
 }

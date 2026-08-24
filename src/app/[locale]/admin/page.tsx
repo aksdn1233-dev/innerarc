@@ -8,6 +8,7 @@ import { AdminOperationsPanel } from "@/components/admin-operations-panel";
 import { AdminPaymentReadinessPanel } from "@/components/admin-payment-readiness-panel";
 import { AdminReviewList } from "@/components/admin-review-list";
 import { AdminTrafficPanel } from "@/components/admin-traffic-panel";
+import { AdminAcquisitionPanel } from "@/components/admin-acquisition-panel";
 import { summarizeOrders, type OrderRow } from "@/server/admin-metrics";
 import { isLocale } from "@/i18n/config";
 import { resolveSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -20,6 +21,7 @@ import {
 } from "@/server/operational-metrics";
 import { listOperationalMetrics, readStoredPageContent } from "@/server/admin-storage";
 import { listReviewsForModeration } from "@/server/reviews";
+import { listAcquisitionSurveys, summarizeAcquisitionSources } from "@/server/acquisition-surveys";
 import {
   DEFAULT_OPERATIONS_GATE,
   readOperationsGate,
@@ -133,10 +135,11 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
       day: "2-digit",
     }).format(day);
   });
-  const [operationalRows, storedPageContent, moderationQueue] = await Promise.all([
+  const [operationalRows, storedPageContent, moderationQueue, acquisitionSurveys] = await Promise.all([
     listOperationalMetrics(admin, metricDates),
     readStoredPageContent(admin),
     listReviewsForModeration(admin, 30),
+    listAcquisitionSurveys(admin, 200),
   ]);
   const awaitingReviewApproval = moderationQueue.data.filter(
     (review) => review.status === "pending" && review.public_consent,
@@ -191,6 +194,11 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
         available={operationalRows.available}
         days={METRIC_DAYS}
         metrics={operationalMetrics}
+      />
+      <AdminAcquisitionPanel
+        available={acquisitionSurveys.available}
+        recent={acquisitionSurveys.data}
+        summary={summarizeAcquisitionSources(acquisitionSurveys.data)}
       />
       <AdminPaymentReadinessPanel
         recentFailures={recentFailures}

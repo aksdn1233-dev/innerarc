@@ -18,11 +18,13 @@ Birth date, names, relationship details, journals, finances, and consultation qu
 - Deterministic calculation does not require AI consent.
 - Current preview holds guest input in browser memory only.
 - Daily Flow uses birth month and day rather than a full birth date. “View today” keeps those
-  values in page memory only. The separate explicit daily-update action stores a versioned
-  month/day preference on the device; it is validated, included in device inspect/export/delete,
-  excluded from account sync, URLs, analytics, logs, and providers, and can be disabled on the
-  same page. The result is recomputed from the device-local date when the page opens; there is
-  no background schedule, push token, email, SMS, or external notification request.
+  values in page memory only. Device-only updates remain a separate local opt-in with device
+  inspect/export/delete. A signed-in person may separately consent to account-backed 09:00 Korea
+  time notifications; that stores month/day, locale, time zone, consent time and switches in an
+  owner-scoped table and creates at most one owner-scoped inbox row per date. Withdrawing consent
+  deletes the account month/day and stops the schedule. A completed payment can re-enable the
+  daily switch only when this prior consent still exists; payment never creates or substitutes
+  consent. No push token, SMS, or external email request is made in the current provider-off release.
 - Onboarding focus and depth are stable non-sensitive choice IDs. The optional current concern is normalized and bounded but remains sensitive untrusted text in current-page memory. It may be shown back to the user with a “your words” label, but it is excluded from calculation evidence, URLs, share cards, browser storage, analytics, logs, and the disabled provider boundary.
 - Checking AI-personalization consent in the provider-neutral preview authorizes no hidden transfer. The UI states that no approved provider is connected and the result remains local and rule-based; declining the checkbox does not reduce deterministic output.
 - Personal romantic-discovery insights use only the user’s profile; they do not require or infer a third person’s birth date or identity.
@@ -46,12 +48,18 @@ Birth date, names, relationship details, journals, finances, and consultation qu
   friend. InnerArc never sends the invitation; the user chooses the destination in the device
   share menu. Checkout requires the same phone and rejects a second non-cancelled discounted
   order. The older pair-based referral migration remains an inactive draft.
+- The report-end acquisition question accepts one enumerated source and at most 80 characters only
+  for “other.” It requires the same completed-report proof as feedback, stores no raw referrer,
+  search query, contact, IP address, or device identifier, and is visible only in aggregate/recent
+  form to the allowlisted operator. Account-linked answers are included in export and deletion.
 
 ## Connected account controls
 
 - Supabase Auth/PostgreSQL runs in Singapore. Email authentication creates a session but does not upload device records.
 - Explicit sync validates local preferences, tarot history, and Reality Checks before owner-scoped upserts. Restore validates server records again before writing device storage.
-- Authenticated account export is versioned JSON. Atomic deletion removes profiles, consent receipts, tarot readings, and Reality Checks while retaining the auth identity and minimal data-rights request metadata.
+- Authenticated account export is versioned JSON. Atomic deletion removes profiles, consent receipts,
+  tarot readings, Reality Checks, notification preferences/deliveries, and account-linked acquisition
+  answers while retaining the auth identity and minimal data-rights request metadata.
 - All account tables use `auth.uid()` owner policies, authenticated-only grants, and no anonymous table privileges.
 - The versioned Saju schema is an inactive foundation. If enabled after staging review, it
   stores multiple people per owner, sensitive birth/time/relationship data, immutable

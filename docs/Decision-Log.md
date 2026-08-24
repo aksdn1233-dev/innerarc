@@ -1055,3 +1055,38 @@
 - Rollback reference: production v71, commit
   `16b37ce087f776ac0cf5b169b5f43ff22fb1db0b`.
 - Status: Decided as additive presentation and interpretation; no calculation or migration change.
+
+## D-078 - Add consented 09:00 Daily Flow inbox and report-source survey
+
+- Date: 2026-08-25
+- Decision: Generate one deterministic Daily Flow item at 09:00 Korea time for each signed-in
+  account that separately consented to storing birth month/day for notifications. Keep independent
+  in-site, daily-flow, caution, email, and paid-auto switches. A completed payment may re-enable the
+  daily in-site switch only when that prior purpose-specific consent and birth month/day still exist;
+  payment itself never creates consent. Add one short, fixed-choice acquisition-source question at
+  the end of an authorized completed report and aggregate its answers in the allowlisted console.
+- Demand evidence and distribution: The owner directly requested morning delivery, paid-customer
+  automation, user on/off controls, a Higgsfield-like report-end survey, and administrator visibility.
+  Distribution is limited to the owner-scoped My Page inbox and the already-authorized report. No
+  contact upload, recipient message, raw referrer, search query, URL tracking, push token, SMS, or
+  external ad platform is introduced.
+- Economics: The 9,600/39,000 KRW unit-economics reference and current product prices are unchanged.
+  Deterministic generation and Supabase rows add no model cost; scheduler/database operations and any
+  future email provider's per-send, bounce, support, and suppression costs must be measured before
+  email delivery is activated. Paid acquisition is not justified by a self-reported source count.
+- Privacy and safety: Birth month/day, locale, time zone, consent time, switches, and seven recent
+  inbox items are owner-scoped, exportable, and deleted by account deletion. Withdrawing the daily
+  consent deletes the stored month/day and stops future generation. Survey values are enumerated,
+  bounded, tied to proof of a completed report, excluded from public review copy, and visible only to
+  the operator; account deletion removes account-linked answers. Every message retains the symbolic
+  reflection and no-guarantee boundary.
+- Success, guardrails, and reversal: Measure consent completion, daily on/off rate, idempotent inbox
+  writes, failed jobs, seven-day inbox return, survey completion, and source distribution. Guardrails
+  are zero writes without consent, one item per owner/day, no payment-created consent, no remote send
+  without a configured provider, owner isolation, complete export/deletion, and mobile/keyboard
+  usability. Disable the cron and daily switch if schedule/date drift, duplication, unauthorized
+  access, deletion/export gaps, notification fatigue, or support complaints appear; hide the survey
+  if completion harms report closing or spam/identifying text escapes the fixed schema.
+- Rollback reference: production v73, commit
+  `efd788b6d0f2949ea02300c1a401ff513a67672b`.
+- Status: Decided as additive and reversible; email delivery remains off until a reviewed provider is connected.
