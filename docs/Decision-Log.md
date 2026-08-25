@@ -1,5 +1,34 @@
 # Decision Log
 
+## D-077 — Refuse declared AI crawlers at robots and edge layers
+
+- Date: 2026-08-25
+- Decision: Keep conventional Googlebot and Naver Yeti discovery for public marketing pages,
+  but disallow published AI training, answer-engine, user-fetch, dataset, and generic extraction
+  agents in `robots.txt`. Refuse those same identifiable user agents with HTTP 403 at the Worker
+  before application routing, static assets, or image optimization. Allow `/robots.txt` itself so
+  compliant crawlers can read the refusal. Remove the prior `FacebookBot` refusal because normal
+  social-link previews are part of the existing user-initiated sharing feature.
+- Demand evidence and distribution: The product owner explicitly requested that AI crawlers not
+  collect the site. The deliberate cost is exclusion from ChatGPT, Claude, Perplexity, and similar
+  answer-engine discovery; ordinary Naver and Google Search distribution remains in scope.
+- Unit economics and cost: Reading prices and the 1,500 KRW campaign clock do not change. The edge
+  check uses no paid provider and adds one bounded substring scan per request. Monitor Worker request
+  volume because a refused request still reaches the deployed Worker unless a separately managed WAF
+  blocks it earlier.
+- Security boundary: `robots.txt` is advisory and HTTP user agents can be omitted or spoofed. This
+  control reliably signals compliant operators and denies declared agents, but cannot guarantee that
+  a hostile scraper impersonating a normal browser will be identified. Purchased reports, accounts,
+  orders, payments, and administrator routes continue to require their existing authorization and
+  carry response-level `noindex` controls.
+- Success and guardrails: Every listed agent is present in the generated refusal file and receives
+  403 for HTML, API, and image paths; `/robots.txt`, Googlebot, Yeti, browsers, and social previews
+  remain reachable. Review operator tokens quarterly and after a crawler-policy change.
+- Reversal conditions: Revert the edge match while preserving private-route authorization if a false
+  positive blocks customers, payment callbacks, conventional search, or link sharing. Pre-change
+  production rollback reference: v73 at `efd788b6d0f2949ea02300c1a401ff513a67672b`.
+- Status: Owner-authorized; implemented and regression-tested locally.
+
 ## D-076 — Make the home promise concrete and preserve CTA hierarchy
 
 - Date: 2026-08-22

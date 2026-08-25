@@ -9,6 +9,11 @@ Scope: repository source, configuration, local production bundle, and automated 
 - Recognized-secret scan: no API-key, cloud-access-key, private-key, Google API-key, or GitHub-token pattern found outside ignored build/dependency artifacts.
 - Environment handling: `.env.local` is ignored and contains only local flags plus Supabase's public URL/publishable key. Database credentials and service-role secrets are absent from the repository and browser bundle.
 - Security headers: content-type sniffing, referrer, frame, permissions, cross-origin resource, and CSP controls are tested.
+- AI crawler controls: published AI/model, answer-engine, user-fetch, dataset, and extraction tokens
+  are refused in `robots.txt` and by a Worker-level 403 before pages, APIs, static art, or image
+  optimization. Ordinary Googlebot, Naver Yeti, browsers, and social link previews remain outside
+  the refusal. User-agent identity is spoofable, so this is not a substitute for authorization on
+  private reports or a future managed-bot/WAF control.
 - HTTPS-only behavior: HSTS and `upgrade-insecure-requests` activate only when `APP_HTTPS_ONLY=true`, preventing local HTTP bundles from breaking while keeping production intent explicit.
 - Privacy boundaries: no third-party browser requests in the tested guest flows; share cards render locally; analytics are no-op without separate consent and a configured sink.
 - Authorization/idempotency: owner mismatch fails closed, and reused request IDs with different payloads are rejected.

@@ -59,6 +59,9 @@
 - [x] Vinext/Cloudflare Workers production artifact build verified locally; deployment was intentionally not performed.
 - [x] Full production/development dependency audit reports zero known vulnerabilities.
 - [x] CSP/security headers, opt-in HTTPS-only enforcement, feature flags, rate limits, and rollback runbook.
+- [x] AI crawler refusal is emitted in `robots.txt` and enforced with edge 403 responses for pages,
+  APIs, and assets; Googlebot, Naver Yeti, browsers, social previews, and the refusal file itself remain
+  reachable, with spoofable-user-agent limits and rollback documented.
 - [x] Chromium and WebKit are included in CI browser coverage.
 - [x] GitHub CI uses Node 24-based official actions and Corepack-pinned pnpm 11.9.0 with no advisory, deprecation, warning, or check-annotation markers in the verified run.
 - [x] Exact-process E2E runner refuses occupied port 3000 and terminates only its repository-scoped server.

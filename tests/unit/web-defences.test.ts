@@ -2,6 +2,11 @@ import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { isPrivatePath, robotsTagFor } from "@/core/security/headers";
+import {
+  AI_CRAWLER_ROBOTS_AGENTS,
+  isAICrawlerUserAgent,
+  shouldBlockAICrawlerRequest,
+} from "@/core/security/crawlers";
 import { crossOriginRefused, isSameOriginRequest } from "@/server/same-origin";
 import {
   createImageSitemapXml,
@@ -115,7 +120,7 @@ describe("robots.txt", () => {
     const refused = new Set(
       rules.filter((rule) => rule.disallow === "/").map((rule) => rule.userAgent),
     );
-    for (const agent of ["GPTBot", "ClaudeBot", "Google-Extended", "PerplexityBot", "CCBot", "Bytespider"]) {
+    for (const agent of AI_CRAWLER_ROBOTS_AGENTS) {
       expect(refused.has(agent), `${agent} is not refused`).toBe(true);
     }
   });
@@ -134,6 +139,43 @@ describe("robots.txt", () => {
       "https://gyeol.example/sitemap.xml",
       "https://gyeol.example/image-sitemap.xml",
     ]);
+  });
+});
+
+describe("edge AI crawler enforcement", () => {
+  it("matches published versioned user-agent strings without case sensitivity", () => {
+    for (const agent of [
+      "Mozilla/5.0; compatible; GPTBot/1.4",
+      "Mozilla/5.0; compatible; OAI-SearchBot/1.4",
+      "Mozilla/5.0; compatible; ChatGPT-User/1.0",
+      "ClaudeBot/1.0",
+      "Claude-SearchBot/1.0",
+      "perplexity-user/1.0",
+      "CCBot/2.0",
+      "GoogleOther-Image/1.0",
+    ]) {
+      expect(isAICrawlerUserAgent(agent), `${agent} was not recognized`).toBe(true);
+    }
+  });
+
+  it("does not mistake ordinary browsers or conventional search crawlers for AI bots", () => {
+    for (const agent of [
+      "Mozilla/5.0 AppleWebKit/537.36 Chrome/140.0 Safari/537.36",
+      "Googlebot/2.1 (+http://www.google.com/bot.html)",
+      "Yeti/1.1 (+http://help.naver.com/robots/)",
+      "facebookexternalhit/1.1",
+    ]) {
+      expect(isAICrawlerUserAgent(agent), `${agent} was blocked`).toBe(false);
+    }
+  });
+
+  it("allows the refusal file itself but blocks all other resources", () => {
+    expect(shouldBlockAICrawlerRequest(new Request("https://gyeol.example/robots.txt", {
+      headers: { "user-agent": "GPTBot/1.4" },
+    }))).toBe(false);
+    expect(shouldBlockAICrawlerRequest(new Request("https://gyeol.example/ko", {
+      headers: { "user-agent": "GPTBot/1.4" },
+    }))).toBe(true);
   });
 });
 

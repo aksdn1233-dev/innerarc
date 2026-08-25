@@ -5,6 +5,10 @@ import {
 } from "vinext/server/image-optimization";
 import handler from "vinext/server/app-router-entry";
 import { runDailyNotificationBatch } from "../src/server/daily-notifications";
+import {
+  aiCrawlerRefused,
+  shouldBlockAICrawlerRequest,
+} from "../src/core/security/crawlers";
 
 interface WorkerEnv {
   ASSETS?: {
@@ -32,6 +36,11 @@ interface WorkerContext {
 const worker = {
   async fetch(request: Request, env: WorkerEnv, context: WorkerContext): Promise<Response> {
     const url = new URL(request.url);
+
+    // Enforce the robots refusal at the edge as well. This runs before the app,
+    // static assets, and image optimizer, so a declared AI crawler receives no
+    // page text or first-party artwork even if it ignores robots.txt.
+    if (shouldBlockAICrawlerRequest(request)) return aiCrawlerRefused();
 
     if (url.pathname === "/_vinext/image") {
       const assets = env.ASSETS;

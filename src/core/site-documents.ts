@@ -1,35 +1,11 @@
 import type { MetadataRoute } from "next";
+import { AI_CRAWLER_ROBOTS_AGENTS } from "@/core/security/crawlers";
 import {
   accessoryConceptProducts,
   accessoryDetailBoards,
   localizeAccessoryProduct,
 } from "@/core/commerce/accessory-recommendations";
 import { resolvePublicAppUrl } from "@/core/site-url";
-
-const AI_CRAWLERS = [
-  "GPTBot",
-  "OAI-SearchBot",
-  "ChatGPT-User",
-  "ClaudeBot",
-  "Claude-Web",
-  "anthropic-ai",
-  "Google-Extended",
-  "PerplexityBot",
-  "Perplexity-User",
-  "CCBot",
-  "Bytespider",
-  "Amazonbot",
-  "Applebot-Extended",
-  "meta-externalagent",
-  "FacebookBot",
-  "Diffbot",
-  "cohere-ai",
-  "Omgilibot",
-  "Timpibot",
-  "ImagesiftBot",
-  "AI2Bot",
-  "Scrapy",
-] as const;
 
 const PRIVATE_PATHS = [
   "/api/",
@@ -70,7 +46,7 @@ export function createRobotsDocument(
   const baseUrl = resolvePublicAppUrl(environment.NEXT_PUBLIC_APP_URL);
   return {
     rules: [
-      ...AI_CRAWLERS.map((userAgent) => ({ userAgent, disallow: "/" })),
+      ...AI_CRAWLER_ROBOTS_AGENTS.map((userAgent) => ({ userAgent, disallow: "/" })),
       { userAgent: "*", disallow: [...PRIVATE_PATHS] },
     ],
     sitemap: [

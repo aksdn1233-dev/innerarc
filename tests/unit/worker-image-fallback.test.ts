@@ -52,4 +52,38 @@ describe("Worker image fallback", () => {
     }
     expect(handlerFetch).not.toHaveBeenCalled();
   });
+
+  it("refuses declared AI crawlers before pages or assets are served", async () => {
+    for (const [path, userAgent] of [
+      ["/ko", "Mozilla/5.0 (compatible; GPTBot/1.4; +https://openai.com/gptbot)"],
+      ["/images/character.png", "Claude-SearchBot/1.0"],
+      ["/api/health", "Perplexity-User/1.0"],
+    ]) {
+      const response = await worker.fetch(
+        new Request(`https://example.test${path}`, { headers: { "user-agent": userAgent } }),
+        {},
+        context,
+      );
+
+      expect(response.status).toBe(403);
+      expect(response.headers.get("cache-control")).toContain("no-store");
+      expect(response.headers.get("x-robots-tag")).toContain("noindex");
+    }
+    expect(handlerFetch).not.toHaveBeenCalled();
+    expect(optimize).not.toHaveBeenCalled();
+  });
+
+  it("lets bots read robots.txt and preserves conventional Google and Naver discovery", async () => {
+    handlerFetch.mockResolvedValue(new Response("robots or public page", { status: 200 }));
+
+    for (const request of [
+      new Request("https://example.test/robots.txt", { headers: { "user-agent": "GPTBot/1.4" } }),
+      new Request("https://example.test/ko", { headers: { "user-agent": "Googlebot/2.1" } }),
+      new Request("https://example.test/ko", { headers: { "user-agent": "Yeti/1.1" } }),
+    ]) {
+      const response = await worker.fetch(request, {}, context);
+      expect(response.status).toBe(200);
+    }
+    expect(handlerFetch).toHaveBeenCalledTimes(3);
+  });
 });

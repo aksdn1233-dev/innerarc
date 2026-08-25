@@ -159,6 +159,25 @@ Status: Supabase account persistence connected; production deployment and remain
 
 The final runbook must add named on-call, legal/privacy, security, payment-support, and crisis-escalation owners plus provider dashboards and contact paths. Track the assignments in [Operational Ownership](Operational-Ownership.md), vendor gates in [Provider Selection](Provider-Selection.md), and unresolved launch fields in [Legal Review Packet](Legal-Review-Packet.md).
 
+## AI crawler refusal operations
+
+- Check `/robots.txt` after every deployment and confirm GPTBot, OAI-SearchBot, ChatGPT-User,
+  ClaudeBot, Claude-SearchBot, Claude-User, Google-Extended, PerplexityBot, Perplexity-User, and
+  CCBot each have `Disallow: /`.
+- Probe one public page and one first-party image with a declared AI user agent; both must return
+  403 with `Cache-Control: private, no-store` and an `X-Robots-Tag` containing `noindex`. The same
+  public page must remain reachable to Googlebot, Naver Yeti, a normal browser, and social previews.
+- Review official crawler documentation quarterly and after any operator notice. Add renamed tokens
+  with a failing test first. Do not block Googlebot or Yeti while conventional search acquisition is
+  in scope, and do not rely on `Google-Extended` as an HTTP user agent because Google documents it as
+  a robots-only control token.
+- Treat unexpected sustained scraper traffic as an availability/security incident. User-agent rules
+  cannot identify a hostile client that impersonates a browser; escalate to rate limits or a managed
+  WAF/bot rule only with measured false-positive impact on checkout, callbacks, search, and sharing.
+- Roll back the edge matcher to production v73 commit
+  `efd788b6d0f2949ea02300c1a401ff513a67672b` if customers, payment callbacks, ordinary search, or
+  social previews are refused. Keep private-route authorization and response-level `noindex` intact.
+
 ## Three-day campaign watch
 
 - Campaign window: 2026-08-23 00:00–2026-08-26 00:00 Asia/Seoul. The code clock, not an
