@@ -123,7 +123,7 @@ export function ReviewRequestPanel({ locale, orderId, access, proof, ticket, exi
   // from the report they can always reopen.
   if (saved) {
     return (
-      <section className="review-panel review-panel-saved" aria-labelledby="review-panel-title">
+      <section className="review-panel review-panel-saved" id="review-panel" aria-labelledby="review-panel-title">
         <p className="eyebrow">{t.eyebrow}</p>
         <h2 id="review-panel-title">
           {phase === "done" ? t.doneTitle : t.alreadyTitle}
@@ -150,7 +150,7 @@ export function ReviewRequestPanel({ locale, orderId, access, proof, ticket, exi
 
   if (phase === "collapsed") {
     return (
-      <section className="review-panel review-panel-invite" aria-labelledby="review-panel-title">
+      <section className="review-panel review-panel-invite" id="review-panel" aria-labelledby="review-panel-title">
         <p className="eyebrow">{t.eyebrow}</p>
         <h2 id="review-panel-title">{t.title}</h2>
         <p>{t.intro}</p>
@@ -162,7 +162,7 @@ export function ReviewRequestPanel({ locale, orderId, access, proof, ticket, exi
   }
 
   return (
-    <section className="review-panel" aria-labelledby="review-panel-title">
+    <section className="review-panel" id="review-panel" aria-labelledby="review-panel-title">
       <p className="eyebrow">{t.eyebrow}</p>
       <h2 id="review-panel-title">{t.title}</h2>
       <p>{t.intro}</p>

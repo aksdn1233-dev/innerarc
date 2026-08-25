@@ -48,10 +48,16 @@ Birth date, names, relationship details, journals, finances, and consultation qu
   friend. InnerArc never sends the invitation; the user chooses the destination in the device
   share menu. Checkout requires the same phone and rejects a second non-cancelled discounted
   order. The older pair-based referral migration remains an inactive draft.
-- The report-end acquisition question accepts one enumerated source and at most 80 characters only
-  for “other.” It requires the same completed-report proof as feedback, stores no raw referrer,
-  search query, contact, IP address, or device identifier, and is visible only in aggregate/recent
-  form to the allowlisted operator. Account-linked answers are included in export and deletion.
+- The report-end experience survey accepts one enumerated source, a source detail of at most 40
+  characters only for “other,” a 1–5 usefulness choice, fixed return-intent and desired-follow-up
+  choices, and a fixed preferred rhythm. It requires the same completed-report proof as feedback.
+  The fixed retention answers use a versioned compact envelope inside the existing bounded survey
+  field, so no contact, raw referrer, search query, IP address, device identifier, or new profile
+  field is collected. Legacy source-only answers remain readable. Answers are visible only in
+  aggregate/recent form to the allowlisted operator and are decoded into the account export;
+  account deletion continues to remove account-linked answers. The preferred rhythm is research,
+  not notification consent, and never changes notification settings. Detailed feedback and any
+  public-review permission stay in the existing separately consented review flow.
 
 ## Connected account controls
 

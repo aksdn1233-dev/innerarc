@@ -33,6 +33,8 @@ Version 0.18.2 provides a web-first, guest-first Korean/English application with
 - optional Supabase email sign-in with explicit owner-scoped upload/restore, account export, and atomic server-record deletion;
 - a fail-closed PayApp hosted checkout with virtual-account deposit notifications plus PortOne/Toss fallbacks, server-owned 9,600/39,000 KRW active products, guest or optional-account purchase, verified payment callbacks, post-payment reports, downloads, My Page storage, notification preferences, and an allowlisted admin console;
 - a per-condition payment readiness report in that console that names the variable closing checkout without ever showing its value, records the payment company's own rejection wording, and lets the owner grant the launch approval without a redeploy;
+- a completed-report experience survey that measures acquisition source, usefulness, return intent,
+  desired follow-up, and preferred rhythm, then offers a separate consent-controlled detailed review;
 - route-level and root error boundaries, a bounded settings read, and a secret-free `/api/health` endpoint so page changes cannot silently take the storefront down;
 - a temporarily retired Core product retained only for historical-order and stored-report compatibility;
 - bilingual pre-release privacy and terms pages that surface unresolved launch-review fields;

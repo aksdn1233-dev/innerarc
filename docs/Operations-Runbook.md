@@ -193,6 +193,13 @@ The final runbook must add named on-call, legal/privacy, security, payment-suppo
   two other verification jobs were competing for the same local CPU. Stop only the repository-owned
   preview before the full Vitest suite, require a clean rerun, then restart the preview before the
   deployment build; do not weaken the five-second test guard to hide local resource contention.
+- Under zsh, quote route paths containing bracket segments and do not use its read-only `status`
+  variable in verification loops. Apply one patch operation per target file. These command-shape
+  failures are tooling errors rather than product evidence; correct the invocation and rerun the
+  exact check instead of weakening or skipping it.
+- Wait for the retained Vinext server to print its Local URL before probing it, and request that
+  exact hostname. A development server may bind `localhost` over IPv6 while an immediate
+  `127.0.0.1` probe refuses; a successful retry on the printed URL is the required evidence.
 
 ## Three-day campaign watch
 

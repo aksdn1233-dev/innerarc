@@ -58,6 +58,9 @@
 ## Performance budgets
 
 - Initial localized route: fewer than 40 resource requests and no unapproved cross-origin request.
+- Report experience survey: fixed-choice schema rejection, compact-envelope round trip and 80-character
+  ceiling, legacy source-row decoding, completed-report authorization, same-origin write, readable
+  account export, allowlisted administration, and a separate detailed-review publication consent.
 - HTML response body: under 250 KB.
 - Initial JavaScript: under 350 KB transferred and 1.05 MB decoded; all resources: under 450 KB transferred and 1.2 MB decoded.
 - Initial CSS: under 120 KB decoded.

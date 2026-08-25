@@ -1,7 +1,13 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { AcquisitionSource, AcquisitionSurveyInput } from "@/core/acquisition-survey";
+import {
+  decodeAcquisitionSurvey,
+  encodeAcquisitionSurvey,
+  type AcquisitionSource,
+  type AcquisitionSurveyAnswers,
+  type AcquisitionSurveyInput,
+} from "@/core/acquisition-survey";
 
-export type StoredAcquisitionSurvey = Readonly<{
+type StoredAcquisitionSurveyRow = Readonly<{
   id: string;
   order_id: string;
   owner_user_id?: string | null;
@@ -9,6 +15,8 @@ export type StoredAcquisitionSurvey = Readonly<{
   detail: string;
   created_at: string;
 }>;
+
+export type StoredAcquisitionSurvey = Omit<StoredAcquisitionSurveyRow, "detail"> & AcquisitionSurveyAnswers;
 
 export type AcquisitionSurveyQuery<T> = Readonly<{ available: boolean; data: T }>;
 
@@ -22,7 +30,8 @@ export async function findAcquisitionSurveyByOrderId(
     .eq("order_id", orderId)
     .maybeSingle();
   if (error) return { available: false, data: null };
-  return { available: true, data: (data as StoredAcquisitionSurvey | null) ?? null };
+  const row = data as StoredAcquisitionSurveyRow | null;
+  return { available: true, data: row ? normalizeAcquisitionSurvey(row) : null };
 }
 
 export async function saveAcquisitionSurvey(
@@ -35,7 +44,7 @@ export async function saveAcquisitionSurvey(
     order_id: orderId,
     owner_user_id: ownerUserId ?? null,
     source: survey.source,
-    detail: survey.detail,
+    detail: encodeAcquisitionSurvey(survey),
     updated_at: new Date().toISOString(),
   }, { onConflict: "order_id" });
   return { ok: !error };
@@ -51,7 +60,20 @@ export async function listAcquisitionSurveys(
     .order("created_at", { ascending: false })
     .limit(limit);
   if (error) return { available: false, data: [] };
-  return { available: true, data: (data ?? []) as StoredAcquisitionSurvey[] };
+  return {
+    available: true,
+    data: ((data ?? []) as StoredAcquisitionSurveyRow[]).map(normalizeAcquisitionSurvey),
+  };
+}
+
+function normalizeAcquisitionSurvey(row: StoredAcquisitionSurveyRow): StoredAcquisitionSurvey {
+  return {
+    id: row.id,
+    order_id: row.order_id,
+    owner_user_id: row.owner_user_id,
+    created_at: row.created_at,
+    ...decodeAcquisitionSurvey(row.source, row.detail),
+  };
 }
 
 export function summarizeAcquisitionSources(rows: readonly StoredAcquisitionSurvey[]) {

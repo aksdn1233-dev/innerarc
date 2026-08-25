@@ -28,6 +28,11 @@ Scope: repository source, configuration, local production bundle, and automated 
   referral coupons are HMAC-signed, time/product/phone bound, non-stackable, and raw phone
   numbers are neither persisted nor returned. Redemption checks prior non-cancelled discounted
   orders before provider creation. Add database-level uniqueness if this becomes permanent.
+- Report experience survey: every write is same-origin and requires completed-report proof; all
+  retention fields are fixed choices, the optional source detail is 40 characters without the
+  envelope delimiter, legacy rows fail open as source-only answers, and only the allowlisted
+  operator can see recent responses. Preference research cannot enable notifications, while
+  detailed review publication keeps its separate opt-in, moderation, and withdrawal controls.
 
 ## Dependency decisions
 

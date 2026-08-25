@@ -10497,6 +10497,40 @@ summary {
 .acquisition-detail { display: grid; gap: 0.4rem; margin-top: 0.8rem; }
 .acquisition-detail span { color: rgba(255, 255, 255, 0.74); font-size: 0.78rem; font-weight: 750; }
 .acquisition-detail input { min-height: 3rem; border: 1px solid rgba(255,255,255,.17); border-radius: .9rem; padding: 0 .9rem; color: #fff; background: rgba(255,255,255,.07); }
+.acquisition-question-stack { display: grid; gap: 1.6rem; margin-top: 1.45rem; }
+.acquisition-question { min-width: 0; margin: 0; padding: 0; border: 0; }
+.acquisition-question legend { max-width: 42rem; padding: 0; color: #fff; font-size: 0.95rem; font-weight: 800; line-height: 1.5; }
+.acquisition-choice-grid.is-compact { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 0.75rem; }
+.acquisition-choice-grid.is-compact button { min-height: 3.75rem; }
+.acquisition-score-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.55rem; margin-top: 0.75rem; }
+.acquisition-score-grid button {
+  min-width: 0;
+  min-height: 5.2rem;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 0.35rem;
+  padding: 0.65rem 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  color: rgba(255, 255, 255, 0.74);
+  background: rgba(255, 255, 255, 0.055);
+  text-align: center;
+}
+.acquisition-score-grid button b { color: #e8c477; font-size: 1.15rem; }
+.acquisition-score-grid button span { font-size: 0.7rem; line-height: 1.3; }
+.acquisition-score-grid button.is-selected { border-color: #e8c477; color: #fff; background: linear-gradient(145deg, rgba(227, 183, 91, 0.22), rgba(177, 118, 214, 0.16)); }
+.acquisition-summary { display: grid; gap: 0; overflow: hidden; margin: 1.35rem 0 0; border: 1px solid rgba(255,255,255,.12); border-radius: 1rem; }
+.acquisition-summary div { display: grid; grid-template-columns: minmax(7rem, .8fr) minmax(0, 1.5fr); gap: 1rem; padding: .8rem 1rem; border-bottom: 1px solid rgba(255,255,255,.09); }
+.acquisition-summary div:last-child { border-bottom: 0; }
+.acquisition-summary dt { color: rgba(255,255,255,.58); font-size: .75rem; font-weight: 750; }
+.acquisition-summary dd { margin: 0; color: #fff; font-size: .83rem; font-weight: 750; }
+.acquisition-actions { display: flex; gap: .65rem; margin-top: 1rem; }
+.acquisition-actions .acquisition-submit { flex: 1; width: auto; margin-top: 0; }
+.acquisition-back { min-width: 5.4rem; min-height: 3.2rem; padding: 0 1rem; border: 1px solid rgba(255,255,255,.18); border-radius: .95rem; color: #fff; background: rgba(255,255,255,.06); font-weight: 800; }
+.acquisition-done-actions { margin-top: 1.2rem; }
+.acquisition-done-actions p { color: rgba(255,255,255,.72); line-height: 1.65; }
+.acquisition-review-link { display: inline-flex; min-height: 3rem; align-items: center; justify-content: center; padding: 0 1.1rem; border: 1px solid rgba(232,196,119,.5); border-radius: .9rem; color: #201506; background: linear-gradient(110deg, #f0d598, #dca95c); font-weight: 850; text-decoration: none; }
 .acquisition-submit {
   width: 100%;
   min-height: 3.2rem;
@@ -10513,6 +10547,17 @@ summary {
 .admin-section-heading { display: flex; justify-content: space-between; gap: 1rem; align-items: end; }
 .admin-section-heading h2, .admin-section-heading p { margin: 0; }
 .admin-section-heading > strong { font-size: 1.4rem; color: #86652e; }
+.admin-acquisition-kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; margin-top: 1rem; }
+.admin-acquisition-kpis article { display: grid; gap: .25rem; padding: 1rem; border: 1px solid rgba(133,101,46,.14); border-radius: 1rem; background: rgba(255,250,238,.7); }
+.admin-acquisition-kpis span { color: #765f3a; font-size: .75rem; font-weight: 800; }
+.admin-acquisition-kpis strong { color: #2a2032; font-size: 1.35rem; }
+.admin-acquisition-kpis small { color: #756c79; line-height: 1.45; }
+.admin-acquisition-breakdowns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; margin-top: 1rem; }
+.admin-acquisition-breakdowns section { padding: 1rem; border-radius: 1rem; background: rgba(87,63,105,.055); }
+.admin-acquisition-breakdowns h3, .admin-acquisition-subtitle { margin: 0 0 .75rem; font-size: .92rem; }
+.admin-acquisition-breakdowns p { display: flex; justify-content: space-between; gap: .75rem; margin: .55rem 0; color: #5f5665; font-size: .8rem; }
+.admin-acquisition-breakdowns strong { color: #2d2531; }
+.admin-acquisition-subtitle { margin-top: 1.25rem; }
 .admin-acquisition-bars { display: grid; gap: 0.7rem; margin-top: 1rem; }
 .admin-acquisition-bars > div { display: grid; grid-template-columns: minmax(6rem, .8fr) minmax(8rem, 2fr) auto; gap: .75rem; align-items: center; }
 .admin-acquisition-bars span { font-size: .83rem; font-weight: 750; }
@@ -10523,6 +10568,9 @@ summary {
 
 @media (max-width: 560px) {
   .acquisition-choice-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .acquisition-score-grid { grid-template-columns: repeat(5, minmax(3rem, 1fr)); overflow-x: auto; padding-bottom: .35rem; }
+  .acquisition-summary div { grid-template-columns: 1fr; gap: .25rem; }
+  .admin-acquisition-kpis, .admin-acquisition-breakdowns { grid-template-columns: 1fr; }
   .admin-acquisition-bars > div { grid-template-columns: 1fr auto; }
   .admin-acquisition-bars > div > div { grid-column: 1 / -1; grid-row: 2; }
 }

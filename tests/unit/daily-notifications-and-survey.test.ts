@@ -3,6 +3,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   ACQUISITION_SOURCES,
   AcquisitionSurveySchema,
+  decodeAcquisitionSurvey,
+  encodeAcquisitionSurvey,
 } from "@/core/acquisition-survey";
 import { createDailyFortune } from "@/core/daily-fortune";
 
@@ -63,24 +65,58 @@ describe("daily morning notifications", () => {
 });
 
 describe("acquisition survey", () => {
-  it("accepts only the fixed source list and bounds the optional detail", () => {
+  const completeSurvey = {
+    source: "naver_search" as const,
+    detail: "",
+    satisfactionScore: 5 as const,
+    returnIntent: "very_likely" as const,
+    desiredFollowUp: "monthly_report" as const,
+    preferredCadence: "monthly" as const,
+  };
+
+  it("accepts only fixed experience choices and bounds the optional source detail", () => {
     for (const source of ACQUISITION_SOURCES.filter((item) => item !== "other")) {
-      expect(AcquisitionSurveySchema.parse({ source }).source).toBe(source);
+      expect(AcquisitionSurveySchema.parse({ ...completeSurvey, source }).source).toBe(source);
     }
-    expect(() => AcquisitionSurveySchema.parse({ source: "podcast" })).toThrow();
-    expect(() => AcquisitionSurveySchema.parse({ source: "other", detail: "" })).toThrow();
-    expect(() => AcquisitionSurveySchema.parse({ source: "other", detail: "가".repeat(81) })).toThrow();
+    expect(() => AcquisitionSurveySchema.parse({ ...completeSurvey, source: "podcast" })).toThrow();
+    expect(() => AcquisitionSurveySchema.parse({ ...completeSurvey, source: "other", detail: "" })).toThrow();
+    expect(() => AcquisitionSurveySchema.parse({ ...completeSurvey, source: "other", detail: "가".repeat(41) })).toThrow();
+    expect(() => AcquisitionSurveySchema.parse({ ...completeSurvey, satisfactionScore: 6 })).toThrow();
+    expect(() => AcquisitionSurveySchema.parse({ ...completeSurvey, returnIntent: "always" })).toThrow();
+    expect(() => AcquisitionSurveySchema.parse({ ...completeSurvey, desiredFollowUp: "investment_tip" })).toThrow();
+  });
+
+  it("round-trips a compact retention envelope inside the existing 80-character field", () => {
+    const input = { ...completeSurvey, source: "other" as const, detail: "사주 카페 게시글" };
+    const encoded = encodeAcquisitionSurvey(input);
+    expect(encoded.length).toBeLessThanOrEqual(80);
+    expect(decodeAcquisitionSurvey(input.source, encoded)).toEqual(input);
+    expect(decodeAcquisitionSurvey("friend", "지인 단체방")).toMatchObject({
+      source: "friend",
+      detail: "지인 단체방",
+      satisfactionScore: null,
+      returnIntent: null,
+    });
   });
 
   it("keeps storage behind completed-report proof and the admin view behind its allowlist", async () => {
     const route = await readFile("src/app/api/surveys/acquisition/route.ts", "utf8");
     const reportPage = await readFile("src/app/[locale]/reports/[orderId]/page.tsx", "utf8");
     const adminPage = await readFile("src/app/[locale]/admin/page.tsx", "utf8");
+    const panel = await readFile("src/components/acquisition-survey-panel.tsx", "utf8");
+    const storage = await readFile("src/server/acquisition-surveys.ts", "utf8");
+    const accountExport = await readFile("src/app/api/account/export/route.ts", "utf8");
     expect(route).toContain("authorizeReviewForOrder");
     expect(route).toContain("isSameOriginRequest");
     expect(reportPage).toContain("AcquisitionSurveyPanel");
     expect(adminPage).toContain("isAdminEmail");
     expect(adminPage).toContain("AdminAcquisitionPanel");
+    expect(panel).toContain("고객 경험 설문");
+    expect(panel).toContain("이용 후기 남기기");
+    expect(panel).not.toMatch(/api\/account\/notifications|daily_flow_enabled/);
+    expect(storage).toContain("encodeAcquisitionSurvey");
+    expect(storage).toContain("decodeAcquisitionSurvey");
+    expect(accountExport).toContain("decodeAcquisitionSurvey");
   });
 
   it("records consent boundaries, paid re-enable rules, export and deletion in the migration", async () => {

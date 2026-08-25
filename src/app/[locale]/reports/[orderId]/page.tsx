@@ -459,7 +459,7 @@ export default async function PurchasedReportPage({
             {existingAcquisitionSurvey.available && (
               <AcquisitionSurveyPanel
                 access={query.access}
-                initialSource={existingAcquisitionSurvey.data?.source ?? null}
+                initialSurvey={existingAcquisitionSurvey.data}
                 locale={locale}
                 orderId={orderId}
                 proof={query.proof}

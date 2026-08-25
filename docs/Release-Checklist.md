@@ -37,8 +37,9 @@
   validated and included in device inspect/export/delete without server sync.
 - [x] Account morning notifications store month/day only after purpose-specific consent, expose
   independent on/off and paid-auto controls, and are included in account export/deletion.
-- [x] Report acquisition responses require completed-report proof, accept a fixed bounded source,
-  and are visible only through the allowlisted administrator console.
+- [x] Report experience responses require completed-report proof, accept bounded source/usefulness/
+  return/follow-up/rhythm choices, preserve legacy answers and account export/deletion, do not alter
+  notification consent, and are visible only through the allowlisted administrator console.
 - [x] Supabase owner RLS, authenticated-only grants, anonymous fail-closed probe, validated explicit sync/restore, account export, and atomic deletion migration.
 - [x] Share outputs omit dates, names, contact details, concerns, journals, and questions by construction.
 - [x] Purchased-report gifting is explicitly distinguished from minimal public share cards,

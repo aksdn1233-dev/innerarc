@@ -145,7 +145,9 @@ Last updated: 2026-08-22
 - [x] Optional free Daily Flow preserves device-only viewing while adding a separate owner-scoped
   morning-inbox opt-in with month/day minimization, export/deletion, bilingual copy, character art,
   and no external email/push/SMS provider request.
-- [x] Authorized completed reports end with a fixed-choice acquisition survey; values are bounded,
+- [x] Authorized completed reports end with a four-step acquisition and retention survey covering
+  usefulness, return intent, desired follow-up, and preferred rhythm; values remain bounded,
+  legacy source answers stay readable, the detailed review/publication consent remains separate,
   stored once per order, aggregated in the allowlisted console, and excluded from public reviews.
 
 - [x] Free/Plus/Pro entitlement and quota policy.

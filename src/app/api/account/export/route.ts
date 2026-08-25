@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { decodeAcquisitionSurvey, isAcquisitionSource } from "@/core/acquisition-survey";
 import { requireSupabaseUser } from "@/lib/supabase/auth";
 import { resolveSupabaseAdminClient } from "@/lib/supabase/admin";
 
@@ -28,14 +29,18 @@ export async function GET() {
     if (orderIds.length) {
       const surveys = await admin.from("report_acquisition_surveys").select("*").in("order_id", orderIds);
       if (surveys.error) return NextResponse.json({ error: "EXPORT_FAILED" }, { status: 500 });
-      acquisitionSurveys = surveys.data ?? [];
+      acquisitionSurveys = (surveys.data ?? []).map((row) => {
+        if (!isAcquisitionSource(row.source) || typeof row.detail !== "string") return row;
+        const answers = decodeAcquisitionSurvey(row.source, row.detail);
+        return { ...row, ...answers };
+      });
     }
   }
 
   const exportedAt = new Date().toISOString();
   const body = JSON.stringify({
     product: "InnerArc",
-    schemaVersion: "account-export-1.1.0",
+    schemaVersion: "account-export-1.2.0",
     scope: "authenticated_account",
     exportedAt,
     ownerUserId: auth.user.id,

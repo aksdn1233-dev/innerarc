@@ -1148,3 +1148,40 @@
 - Rollback reference: production v73, commit
   `efd788b6d0f2949ea02300c1a401ff513a67672b`.
 - Status: Decided as additive and reversible; email delivery remains off until a reviewed provider is connected.
+
+## D-079 - Expand the report-end survey into bounded retention evidence
+
+- Date: 2026-08-25
+- Decision: Replace the one-question report-source card with a four-step completed-report survey:
+  discovery source, 1–5 usefulness plus return intent, desired follow-up plus preferred rhythm, and
+  a final answer review. Keep every retention answer fixed-choice. Store them in a versioned compact
+  envelope inside the existing 80-character survey field, preserve legacy source-only rows, and
+  decode the answers for the allowlisted console and account export. After submission, lead into the
+  existing detailed-feedback form; public-review consent, moderation, and withdrawal remain separate.
+- Demand evidence and distribution: The owner directly requested more questions aimed at long-term
+  customer retention plus an easier path to reviews and feedback. The survey appears only after an
+  authorized completed report and its fixed public sample; results appear only in the existing
+  allowlisted console. No ad network, remote-message provider, contact upload, automatic outreach,
+  public testimonial, or new acquisition claim is introduced.
+- Economics: The 9,600/39,000 KRW unit-economics reference, current product prices, payment fees,
+  fulfillment, refunds, support, and campaign rules are unchanged. Fixed-choice collection and local
+  aggregation add no provider or generation charge. Completion, return-intent, and desired-feature
+  signals are directional research, not proof of paid demand; no pricing or paid acquisition decision
+  may rely on them without purchase, refund, support, and repeat-use evidence.
+- Privacy, safety, and claim boundary: The survey stores no contact, raw referrer, search query, IP,
+  device ID, report text, birth date, or free-form life story. “Preferred rhythm” never changes the
+  independently consented notification settings. Account-linked answers remain exportable/deletable.
+  A detailed review stays private unless the customer separately consents to publication, after which
+  it still requires operator moderation and supports withdrawal. Survey answers do not alter any
+  symbolic calculation or support a prediction, diagnosis, treatment, or guaranteed outcome claim.
+- Success, guardrails, and reversal: Measure step completion, usefulness distribution, positive and
+  negative return intent, requested follow-up mix, detailed-review starts/submissions, report-exit
+  rate, support complaints, and seven-/thirty-day observed return separately. Guardrails are no write
+  without completed-report proof, an envelope no longer than 80 characters, readable legacy rows,
+  no notification-setting mutation, exact export/deletion, keyboard/mobile usability, and no public
+  review without live consent plus approval. Revert to the one-question card if the expanded survey
+  materially raises report exits, produces misleading retention claims, harms accessibility, breaks
+  legacy decoding, or weakens review consent controls.
+- Rollback reference: production v75, commit
+  `6a746b434b3e3c5b68dafe12b5ab259139a409db`.
+- Status: Decided as additive and reversible; no payment, provider, or database migration change.
