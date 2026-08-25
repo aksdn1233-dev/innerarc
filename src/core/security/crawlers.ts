@@ -62,7 +62,7 @@ export function shouldBlockAICrawlerRequest(request: Request): boolean {
 }
 
 export function aiCrawlerRefused(): Response {
-  return new Response("AI crawler access denied", {
+  return new Response("Automated crawler access denied", {
     status: 403,
     headers: {
       "Cache-Control": "private, no-store, max-age=0",

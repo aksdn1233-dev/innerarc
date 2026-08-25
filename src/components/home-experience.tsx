@@ -101,7 +101,7 @@ const copy = {
     primary: "내 패턴 확인하기",
     heroNote: "생년월일 기반 · 1회 결제 · 자동 갱신 없음",
     heroHook: "관계·일·돈에서 반복되는 선택의 이유를 확인하세요",
-    freeCta: "먼저 무료로 확인",
+    freeCta: "무료 패턴 보기",
     sajuHubCta: "사주 서비스로 이동",
     sajuTitle: "사주도 무료로 세워드립니다",
     sajuBody:
@@ -159,7 +159,7 @@ const copy = {
     primary: "See my patterns",
     heroNote: "Birth-date based · One-time payment · No auto-renewal",
     heroHook: "See why the same choices repeat in relationships, work, and money",
-    freeCta: "Try it free first",
+    freeCta: "View free pattern",
     sajuHubCta: "Open Saju services",
     sajuTitle: "Your Four Pillars chart, also free",
     sajuBody:
@@ -611,11 +611,11 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             {/* Numerology has its own named menu. `/profile` remains a compatible historical
                 route, while new visitors enter through the product-shaped URL. */}
             <Link
-              className="cinema-cta-secondary"
+              className="cinema-cta-secondary cinema-cta-free"
               href={`/${locale}/numerology`}
               onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "hero_free" })}
             >
-              {t.freeCta}
+              <span>{t.freeCta}</span>
             </Link>
             <Link
               className="cinema-cta-secondary"

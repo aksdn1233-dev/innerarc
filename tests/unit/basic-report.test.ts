@@ -56,7 +56,7 @@ describe("BASIC_19000 complete report", () => {
     ]);
     expect(whole).toMatch(/사람과 시장.*변화/u);
     expect(whole).toMatch(/아이디어.*구조/u);
-    expect(whole).toMatch(/AI.*웹 서비스.*플랫폼.*콘텐츠.*마케팅/u);
+    expect(whole).toMatch(/자동화 기술.*웹 서비스.*플랫폼.*콘텐츠.*마케팅/u);
     expect(whole).toMatch(/여러 프로젝트.*동시에/u);
     expect(whole).toMatch(/완성되기 직전.*새/u);
     expect(whole).toMatch(/증명되지 않은 가능성.*실제 역량/u);

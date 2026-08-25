@@ -7672,6 +7672,33 @@ summary {
   text-decoration: none;
 }
 
+/* The free entry is the first decision on the opening screen. Keep its label on an
+   opaque surface so neither the moving portrait nor the dark veil can wash it out. */
+.cinema-cta-secondary.cinema-cta-free {
+  position: relative;
+  z-index: 2;
+  border: 2px solid #f4d993;
+  background: linear-gradient(180deg, #f6dc99 0%, #d9aa4d 100%);
+  color: #201506;
+  box-shadow: 0 14px 34px rgba(6, 4, 12, 0.52), inset 0 1px 0 #fff4d1;
+  opacity: 1;
+  text-shadow: none;
+  isolation: isolate;
+}
+
+.cinema-cta-secondary.cinema-cta-free > span {
+  position: relative;
+  z-index: 1;
+  color: inherit;
+  opacity: 1;
+}
+
+.cinema-cta-secondary.cinema-cta-free:hover,
+.cinema-cta-secondary.cinema-cta-free:focus-visible {
+  background: linear-gradient(180deg, #ffe7a8 0%, #e4b756 100%);
+  filter: none;
+}
+
 .cinema-cta {
   border: 1px solid #cfe0ff;
   background: linear-gradient(180deg, #e8f0ff 0%, #cddcfa 100%);

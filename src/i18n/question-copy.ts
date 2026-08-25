@@ -123,7 +123,7 @@ const ko: QuestionCopy = {
 const en: QuestionCopy = {
   eyebrow: "Question tarot",
   headline: "Look for what to verify,\nnot a fixed answer",
-  intro: "Cards are randomly drawn; AI does not choose a convenient card. Place the symbolism beside real-world conditions.",
+  intro: "Cards are randomly drawn; the interpretation system does not choose a convenient card. Place the symbolism beside real-world conditions.",
   roomLabel: "A place to lay out the cards",
   roomPrompt: "Set the question down for a moment. Notice what each card brings into view.",
   questionLabel: "What would you like to examine?",

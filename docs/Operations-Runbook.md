@@ -178,6 +178,22 @@ The final runbook must add named on-call, legal/privacy, security, payment-suppo
   `efd788b6d0f2949ea02300c1a401ff513a67672b` if customers, payment callbacks, ordinary search, or
   social previews are refused. Keep private-route authorization and response-level `noindex` intact.
 
+### Customer-language guard
+
+- Run the customer-facing string regression whenever adding a report chapter, consent surface,
+  metadata field, image alternative, sitemap caption, shop disclosure, or provider error.
+- Internal provider identifiers and crawler tokens may retain their protocol names; never rename
+  database consent fields or security modules merely to change display copy.
+- Plain-language replacements must still disclose external processing and automatically generated
+  imagery. Treat any wording that implies a generated concept is a delivered-item photograph, or
+  that combines personalization with model-training consent, as a release blocker.
+- The first audit failed on one Korean method sentence. That failure is now a permanent regression
+  case rather than a justified exception.
+- The first full-suite rerun timed out in three calculation-heavy tests while the Vinext preview and
+  two other verification jobs were competing for the same local CPU. Stop only the repository-owned
+  preview before the full Vitest suite, require a clean rerun, then restart the preview before the
+  deployment build; do not weaken the five-second test guard to hide local resource contention.
+
 ## Three-day campaign watch
 
 - Campaign window: 2026-08-23 00:00–2026-08-26 00:00 Asia/Seoul. The code clock, not an

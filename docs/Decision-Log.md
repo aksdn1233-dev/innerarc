@@ -1,5 +1,34 @@
 # Decision Log
 
+## D-078 — Keep technical provider labels out of the customer experience
+
+- Date: 2026-08-25
+- Decision: Remove the literal `AI`/`인공지능` label from every displayable application string,
+  report sentence, metadata description, image alternative, sitemap caption, and crawler refusal
+  body. Describe the same facts in plain language: `외부 맞춤 처리`, `정해진 계산 규칙`, and
+  `자동 생성 콘셉트`. Keep internal provider names, consent field identifiers, safety modules,
+  tests, and crawler tokens unchanged. Strengthen the home `무료 패턴 보기` action with a fully
+  opaque gold surface, dark text, and an isolated foreground label.
+- Demand evidence and distribution: The owner reported that the free-pattern label washed into the
+  moving background and explicitly required the technical label to disappear across every customer
+  function. Routes, prices, search destinations, and acquisition channels do not change.
+- Unit economics and cost: Reading prices and payment behavior are unchanged. The copy and CSS change
+  adds no provider, storage, generation, payment, or fulfillment cost.
+- Safety, consent, and truthfulness: The product does not hide external processing or generated-image
+  provenance. Required notices now say that data may go to an external personalization provider and
+  that shop imagery is automatically generated and not a delivery-item photograph. Separate consent,
+  model-training choice, deterministic fact boundaries, and disabled-provider behavior remain intact.
+- Success and guardrails: A source-string regression test rejects the prohibited customer label; the
+  home test requires the exact free-pattern label, dedicated class, foreground span, opaque gradient,
+  and no text shadow. Preserve readable 4.5:1 text contrast, keyboard focus, social/search metadata,
+  report detail, and product-image truthfulness.
+- Reversal conditions: Revert the CSS if the gold button loses contrast or hierarchy. Revert wording
+  only if legal review requires a specific provider term, and replace it with a plainly explained,
+  separately consented notice rather than silently removing disclosure. Pre-change production rollback
+  reference: v74 at `5aa009668bc3c732ffcdcfd46f590d4fc7222250`.
+- Status: Owner-authorized; implemented with a regression test after the first scan found and removed
+  one remaining Korean method sentence.
+
 ## D-077 — Refuse declared AI crawlers at robots and edge layers
 
 - Date: 2026-08-25

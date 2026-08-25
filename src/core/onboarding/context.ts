@@ -282,12 +282,12 @@ export function createOnboardingReflectionContext(
       requestMade: false,
       message: consentSelected
         ? text(n(
-            "AI 개인화 사용에 동의했지만 승인된 외부 AI가 연결되지 않아 요청은 전송되지 않았습니다. 현재 결과는 로컬 규칙 기반입니다.",
-            "You allowed AI personalization, but no approved external AI is connected. No provider request was made; this result remains local and rule-based.",
+            "외부 맞춤 해석 사용에 동의했지만 승인된 제공자가 연결되지 않아 요청은 전송되지 않았습니다. 현재 결과는 로컬 규칙 기반입니다.",
+            "You allowed external personalization, but no approved provider is connected. No provider request was made; this result remains local and rule-based.",
           ), locale)
         : text(n(
-            "AI 개인화가 꺼져 있으며 외부 AI 요청은 없었습니다. 결정론적 계산과 로컬 규칙 기반 결과는 그대로 제공됩니다.",
-            "AI personalization is off and no external AI request was made. Deterministic calculations and the local rule-based result remain fully available.",
+            "외부 맞춤 해석이 꺼져 있으며 외부 요청은 없었습니다. 결정론적 계산과 로컬 규칙 기반 결과는 그대로 제공됩니다.",
+            "External personalization is off and no provider request was made. Deterministic calculations and the local rule-based result remain fully available.",
           ), locale),
     },
     uncertainty: text(n(

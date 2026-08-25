@@ -56,7 +56,7 @@ describe("DETAIL_39000 exact 1994-11-04 regression", () => {
     expect(report.sections.at(-1)?.title).toBe("최종 결론");
 
     expect(whole).toMatch(/사람.*시장|시장.*사람/u);
-    expect(whole).toMatch(/AI.*웹\s*서비스.*플랫폼.*마케팅.*콘텐츠.*자동화/u);
+    expect(whole).toMatch(/자동화 기술.*웹\s*서비스.*플랫폼.*마케팅.*콘텐츠/u);
     expect(whole).toMatch(/직감[\s\S]*근거|근거[\s\S]*직감/u);
     expect(whole).toMatch(/검증하지 않은.*판단|증명하지 않은 미래/u);
     expect(whole).toMatch(/다음 아이디어|현재.*완료/u);

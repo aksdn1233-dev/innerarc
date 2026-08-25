@@ -147,7 +147,7 @@ const en: RelationshipCopy = {
   uncertainOutcomes: "Uncertain or partial",
   notRelevantOutcomes: "Not relevant",
   savedLearnings: "Checks you recorded for next time",
-  outcomePrivacy: "Saved history is not read until you press the button. Loaded context stays on this device and is not sent to an external AI provider.",
+  outcomePrivacy: "Saved history is not read until you press the button. Loaded context stays on this device and is not sent to an external personalization provider.",
   contextRule: "Context rule",
   evidence: "Calculated evidence used",
   reset: "Try different details",

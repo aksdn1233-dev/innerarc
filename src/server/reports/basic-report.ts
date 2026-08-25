@@ -83,8 +83,8 @@ const EXACT_COMBINATIONS: Readonly<Record<string, ExactCombinationContent>> = {
         "You often detect discomfort and expectation before people state it directly, which is useful for finding customer problems and reading content response.",
       ),
       n(
-        "아이디어를 떠올리는 데서 끝나지 않고 화면, 절차, 서비스 흐름처럼 다른 사람이 사용할 수 있는 구조로 바꿀 수 있습니다. AI·웹 서비스·플랫폼·콘텐츠·마케팅처럼 사람의 필요를 시스템으로 번역하는 일이 잘 맞습니다.",
-        "You can turn an idea into a screen, process, or service flow that another person can use. AI, web services, platforms, content, marketing, and system-based work are plausible directions.",
+        "아이디어를 떠올리는 데서 끝나지 않고 화면, 절차, 서비스 흐름처럼 다른 사람이 사용할 수 있는 구조로 바꿀 수 있습니다. 자동화 기술·웹 서비스·플랫폼·콘텐츠·마케팅처럼 사람의 필요를 시스템으로 번역하는 일이 잘 맞습니다.",
+        "You can turn an idea into a screen, process, or service flow that another person can use. Automation, web services, platforms, content, marketing, and system-based work are plausible directions.",
       ),
       n(
         "새로운 도구를 배우는 속도와 사람에게 설명하는 능력이 함께 있습니다. 기술만 아는 역할보다 기술과 사용자의 언어 사이를 연결할 때 장점이 더 분명해집니다.",
@@ -106,8 +106,8 @@ const EXACT_COMBINATIONS: Readonly<Record<string, ExactCombinationContent>> = {
       ),
     ],
     career: n(
-      "직업과 사업에서는 AI, 웹 서비스, 플랫폼, 콘텐츠, 마케팅, 교육처럼 사람의 필요를 읽어 구조화하는 방향이 잘 맞습니다. 다만 여러 기능과 상품을 한꺼번에 넓히기보다 실제 고객 한 명이 돈을 내고 반복해서 사용할 한 가지 흐름을 먼저 완성해야 강점이 매출과 성과로 연결됩니다.",
-      "Work that translates human needs into systems—AI, web services, platforms, content, marketing, or education—fits this combination. The strength turns into results only after one paying-customer use case is completed before expanding features.",
+      "직업과 사업에서는 자동화 기술, 웹 서비스, 플랫폼, 콘텐츠, 마케팅, 교육처럼 사람의 필요를 읽어 구조화하는 방향이 잘 맞습니다. 다만 여러 기능과 상품을 한꺼번에 넓히기보다 실제 고객 한 명이 돈을 내고 반복해서 사용할 한 가지 흐름을 먼저 완성해야 강점이 매출과 성과로 연결됩니다.",
+      "Work that translates human needs into systems—automation, web services, platforms, content, marketing, or education—fits this combination. The strength turns into results only after one paying-customer use case is completed before expanding features.",
     ),
     money: n(
       "돈은 벌 기회보다 확장 시점에서 새기 쉽습니다. 가능성이 보이면 다음 기능·프로젝트·사람에게 자금을 미리 나누는 경향이 있어, 첫 흐름이 검증되기 전에 운영비가 분산될 수 있습니다. 매출이 반복되기 전에는 고정비와 외주 범위를 늘리지 않는 보존 규칙이 필요합니다.",

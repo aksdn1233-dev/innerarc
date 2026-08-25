@@ -38,7 +38,7 @@ const worker = {
     const url = new URL(request.url);
 
     // Enforce the robots refusal at the edge as well. This runs before the app,
-    // static assets, and image optimizer, so a declared AI crawler receives no
+    // static assets, and image optimizer, so a declared automated crawler receives no
     // page text or first-party artwork even if it ignores robots.txt.
     if (shouldBlockAICrawlerRequest(request)) return aiCrawlerRefused();
 

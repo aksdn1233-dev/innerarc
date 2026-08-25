@@ -18,7 +18,7 @@ import "./accessory-product-detail.css";
 const detailCopy = {
   ko: {
     shop: "악세서리 상점",
-    concept: "AI 상품 콘셉트 상세",
+    concept: "자동 생성 상품 콘셉트 상세",
     price: "시세 참고 예상 제작가",
     unavailable: "현재는 콘셉트 검토 단계이며 결제할 수 없습니다",
     galleryTitle: "여러 시점에서 형태 확인하기",
@@ -41,7 +41,7 @@ const detailCopy = {
     compare: "다른 후보와 비교할 기준",
     confirm: "제작 확정 전에 확인할 것",
     conceptNoticeTitle: "이미지와 실제 제작품의 차이",
-    conceptNotice: "화면의 이미지는 형태 선택을 돕기 위한 AI 콘셉트입니다. 실제 판매품 사진이 아니며, 소재·색·치수·마감·잠금 구조는 실물 샘플과 고지 검토 후 달라질 수 있습니다. 실물과 일치하는 사진이 준비되기 전에는 결제를 열지 않습니다.",
+    conceptNotice: "화면의 이미지는 형태 선택을 돕기 위한 자동 생성 콘셉트입니다. 실제 판매품 사진이 아니며, 소재·색·치수·마감·잠금 구조는 실물 샘플과 고지 검토 후 달라질 수 있습니다. 실물과 일치하는 사진이 준비되기 전에는 결제를 열지 않습니다.",
     related: "같은 결과 계열의 다른 후보",
     back: "전체 상품으로 돌아가기",
     detail: "상세보기",
@@ -50,7 +50,7 @@ const detailCopy = {
   },
   en: {
     shop: "Accessory shop",
-    concept: "AI product-concept detail",
+    concept: "Generated product-concept detail",
     price: "Indicative market-based range",
     unavailable: "Concept review only · purchasing is not available",
     galleryTitle: "Review the form from multiple viewpoints",
@@ -73,7 +73,7 @@ const detailCopy = {
     compare: "Compare against other candidates",
     confirm: "Confirm before production approval",
     conceptNoticeTitle: "Concept image versus a produced item",
-    conceptNotice: "These images are AI concepts intended to help with form selection. They are not photographs of a delivered item. Material, color, dimensions, finish, closure, and construction may change after physical sampling and disclosure review. Checkout stays closed until matching real-item photographs are ready.",
+    conceptNotice: "These are generated concepts intended to help with form selection. They are not photographs of a delivered item. Material, color, dimensions, finish, closure, and construction may change after physical sampling and disclosure review. Checkout stays closed until matching real-item photographs are ready.",
     related: "Other candidates in the same result family",
     back: "Back to all products",
     detail: "View details",

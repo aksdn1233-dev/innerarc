@@ -23,7 +23,7 @@ export const evidenceCopy = {
     ],
     methodTitle: "해석이 만들어지는 순서",
     methodSteps: [
-      ["1", "생년월일에서 핵심 숫자를 계산합니다. 이 단계에 AI는 관여하지 않습니다."],
+      ["1", "생년월일에서 핵심 숫자를 정해진 계산 규칙으로 산출합니다."],
       ["2", "선택한 관심 영역과 질문을 계산 결과와 연결합니다."],
       ["3", "계산된 사실, 전통적 상징, 해석, 한계를 구분해 문서로 정리합니다."],
     ],
@@ -70,7 +70,7 @@ export const evidenceCopy = {
     ],
     methodTitle: "How the reading is built",
     methodSteps: [
-      ["1", "Core numbers are calculated from your birth date. No AI is involved in this step."],
+      ["1", "Core numbers are calculated from your birth date using fixed calculation rules."],
       ["2", "Your chosen area and question are connected to those calculated numbers."],
       ["3", "Calculated facts, traditional symbolism, interpretation, and limits are kept visibly separate."],
     ],

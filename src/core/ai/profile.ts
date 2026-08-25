@@ -86,8 +86,8 @@ export function createFallbackInterpretation(
     ],
     personalized_inference: [
       ko
-        ? "외부 AI 연결 없이 제공되는 기본 해석이라 개인 맥락 추론을 제한했습니다."
-        : "This offline fallback limits personal inference because no external AI is connected.",
+        ? "외부 맞춤 처리 없이 제공되는 기본 해석이라 개인 맥락 추론을 제한했습니다."
+        : "This offline fallback limits personal inference because no external personalization provider is connected.",
     ],
     strengths: [ko ? "자신의 선택을 언어화하는 계기" : "A prompt to articulate your choices"],
     risks: [ko ? "상징을 사실이나 예측으로 받아들이는 것" : "Treating symbolism as fact or prediction"],

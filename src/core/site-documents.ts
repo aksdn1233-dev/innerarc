@@ -201,8 +201,8 @@ export function createImageSitemapXml(
       const pageUrl = new URL(`/${locale}/shop/${product.id}`, baseUrl).toString();
       const imageUrl = new URL(accessoryDetailBoards[product.directionId], baseUrl).toString();
       const caption = locale === "ko"
-        ? `${item.name}의 정면·사선·측면 AI 상품 콘셉트 이미지`
-        : `AI product concept views of ${item.name}: front, three-quarter, and side`;
+        ? `${item.name}의 정면·사선·측면 자동 생성 상품 콘셉트 이미지`
+        : `Generated product concept views of ${item.name}: front, three-quarter, and side`;
       return [
         "  <url>",
         `    <loc>${escapeXml(pageUrl)}</loc>`,
