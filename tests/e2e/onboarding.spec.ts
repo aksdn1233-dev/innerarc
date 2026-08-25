@@ -18,7 +18,7 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   })).toBeAttached();
   // The owner reduced the home screen to the film and two named route actions.
   await expect(page.getByRole("button", { name: "내 패턴 확인하기" })).toHaveCount(0);
-  await expect(page.getByRole("link", { name: "먼저 무료로 확인" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "무료 패턴 보기" })).toBeVisible();
   await expect(page.getByRole("link", { name: "사주 서비스로 이동" })).toBeVisible();
 
   // The home page is the opening screen and nothing else — everything that used to sit
@@ -71,7 +71,7 @@ test("mobile home has no overflow and the sticky payment bar yields to the form"
     await page.goto("/ko");
     await expect(page.getByRole("heading", { level: 1, name: "왜 나는 같은 선택을 반복할까요?" })).toBeAttached();
     await expect(page.getByRole("button", { name: "내 패턴 확인하기" })).toHaveCount(0);
-    await expect(page.getByRole("link", { name: "먼저 무료로 확인" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "무료 패턴 보기" })).toBeVisible();
     await expect(page.getByRole("link", { name: "사주 서비스로 이동" })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
 
@@ -94,7 +94,7 @@ test("English page keeps the same calculated core meaning", async ({ page }) => 
   // Same as the Korean opening screen: the heading is in the document, not on it.
   await expect(page.getByRole("heading", { level: 1, name: "Why do I keep making the same choices?" })).toBeAttached();
   await expect(page.getByRole("button", { name: "See my patterns" })).toHaveCount(0);
-  await expect(page.getByRole("link", { name: "Try it free first" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "View free pattern" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Open Saju services" })).toBeVisible();
   await page.goto("/en/profile");
   await expect(page).toHaveURL(`${E2E_ORIGIN}/en/profile`);

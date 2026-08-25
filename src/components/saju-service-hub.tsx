@@ -15,6 +15,10 @@ const copy = {
     label: "나를 읽는 작은 시작",
     title: "오늘, 무엇이 가장 궁금하세요?",
     intro: "생년월일로 원국을 세우고, 지금 필요한 성찰 메뉴를 골라보세요.",
+    edition: "GYEOL · FOUR PILLARS EDITION",
+    orbitLabel: "오행의 균형",
+    evidence: ["계산 근거 공개", "모르는 시각은 비움", "한·영 리포트"],
+    guideCue: "지금 곁에 선 해석자",
     start: "1회 5,500원",
     profileTitle: "먼저 내 사주 원국 만들기",
     profileBody: "네 기둥과 오행, 십신의 계산 근거까지 확인할 수 있어요.",
@@ -29,6 +33,10 @@ const copy = {
     label: "A small start to understanding yourself",
     title: "What are you most curious about today?",
     intro: "Build your Four Pillars chart, then choose the reflection that fits this moment.",
+    edition: "GYEOL · FOUR PILLARS EDITION",
+    orbitLabel: "Five-phase balance",
+    evidence: ["Visible derivation", "Unknown time stays blank", "Korean · English"],
+    guideCue: "Your guide for this visit",
     start: "₩5,500 once",
     profileTitle: "Create my Four Pillars chart",
     profileBody: "See the calculation evidence behind the pillars, elements, and Ten Gods.",
@@ -73,6 +81,7 @@ export function SajuServiceHub({ locale, pricing }: { locale: Locale; pricing: P
   const otherLocale = locale === "ko" ? "en" : "ko";
   const navHrefs = ["", "/fortune", "/saju", "/me"];
   const [selectedGuideId, setSelectedGuideId] = useState<NumerologyGuideId>("taeryeong");
+  const selectedGuide = getNumerologyGuide(selectedGuideId);
   const formatPrice = (amount: number) => locale === "ko"
     ? `${amount.toLocaleString("ko-KR")}원`
     : new Intl.NumberFormat("en-US", { style: "currency", currency: "KRW", maximumFractionDigits: 0 }).format(amount);
@@ -88,9 +97,41 @@ export function SajuServiceHub({ locale, pricing }: { locale: Locale; pricing: P
         </header>
 
         <section className={styles.hero} aria-labelledby="fortune-title">
-          <p>{t.label}</p>
-          <h1 id="fortune-title">{t.title}</h1>
-          <span>{t.intro}</span>
+          <div className={styles.heroCopy}>
+            <span className={styles.edition}>{t.edition}</span>
+            <p>{t.label}</p>
+            <h1 id="fortune-title">{t.title}</h1>
+            <span className={styles.intro}>{t.intro}</span>
+            <ul className={styles.evidence} aria-label={locale === "ko" ? "사주 서비스 원칙" : "Saju service principles"}>
+              {t.evidence.map((item) => <li key={item}>{item}</li>)}
+            </ul>
+          </div>
+          <div className={styles.orbitStage}>
+            <span className={`${styles.glow} ${styles.glowOne}`} aria-hidden="true" />
+            <span className={`${styles.glow} ${styles.glowTwo}`} aria-hidden="true" />
+            <div className={styles.orbit} aria-hidden="true">
+              <span className={styles.orbitRing} />
+              <span className={styles.orbitCore}>{locale === "ko" ? "결" : "G"}</span>
+              {(["목", "화", "토", "금", "수"] as const).map((phase, index) => (
+                <span className={styles.phase} data-phase={index} key={phase}>{locale === "ko" ? phase : ["W", "F", "E", "M", "W"][index]}</span>
+              ))}
+            </div>
+            <Image
+              alt={selectedGuide.imageAlt[locale]}
+              className={styles.heroCharacter}
+              height={384}
+              priority
+              sizes="(max-width: 720px) 62vw, 330px"
+              src={selectedGuide.image}
+              width={384}
+            />
+            <div className={styles.guideCaption}>
+              <small>{t.guideCue}</small>
+              <strong>{selectedGuide.name[locale]}</strong>
+              <span>{selectedGuide.role[locale]}</span>
+            </div>
+            <span className={styles.orbitLabel}>{t.orbitLabel}</span>
+          </div>
         </section>
 
         <NumerologyGuideRoster
@@ -124,6 +165,7 @@ export function SajuServiceHub({ locale, pricing }: { locale: Locale; pricing: P
                   : badge;
               const content = (
                 <>
+                  <span className={styles.chapter} aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
                   <span className={styles.serviceMeta}>
                     <small>{eyebrow}{currentBadge ? ` · ${currentBadge}` : ""}</small>
                     <strong>{title}</strong>

@@ -12,6 +12,7 @@ import {
 import { MIN_BIRTH_DATE, currentMaxBirthDate, isAcceptedBirthDate } from "@/core/birth-range";
 import type { Locale } from "@/i18n/config";
 import { sajuCopy } from "@/i18n/saju-copy";
+import "./saju-experience.module.css";
 
 /**
  * The free rung of the 사주 menu.
@@ -93,13 +94,31 @@ export function SajuExperience({ locale, price }: { locale: Locale; price: numbe
 
   return (
     <main className="saju-page">
-      <header className="saju-head">
-        <p className="eyebrow">{t.eyebrow}</p>
-        <h1>{t.title}</h1>
-        <p className="saju-intro">{t.intro}</p>
-      </header>
+      <section className="saju-portal" aria-labelledby="saju-title">
+        <header className="saju-head">
+          <span className="saju-edition">GYEOL · FOUR PILLARS</span>
+          <p className="eyebrow">{t.eyebrow}</p>
+          <h1 id="saju-title">{t.title}</h1>
+          <p className="saju-intro">{t.intro}</p>
+        </header>
+        <div className="saju-portal-visual" aria-hidden="true">
+          <span className="saju-portal-ring" />
+          <span className="saju-portal-core">{locale === "ko" ? "원국" : "CHART"}</span>
+          <span data-phase="wood">{locale === "ko" ? "목" : "WOOD"}</span>
+          <span data-phase="fire">{locale === "ko" ? "화" : "FIRE"}</span>
+          <span data-phase="earth">{locale === "ko" ? "토" : "EARTH"}</span>
+          <span data-phase="metal">{locale === "ko" ? "금" : "METAL"}</span>
+          <span data-phase="water">{locale === "ko" ? "수" : "WATER"}</span>
+        </div>
+      </section>
 
+      <div className="saju-intake-layout">
       <form className="saju-form" onSubmit={submit} noValidate>
+        <div className="saju-form-head">
+          <span>{locale === "ko" ? "01 · 원국 정보" : "01 · CHART DETAILS"}</span>
+          <h2>{locale === "ko" ? "기억나는 만큼만 알려주세요" : "Share only what you remember"}</h2>
+          <p>{locale === "ko" ? "모르는 태어난 시각은 추측하지 않고 비워둡니다." : "An unknown birth time stays blank rather than being guessed."}</p>
+        </div>
         <div className="saju-field">
           <label htmlFor="saju-birthDate">{t.birthDate}</label>
           <input id="saju-birthDate" name="birthDate" required type="date" max={maxBirthDate} min={MIN_BIRTH_DATE} />
@@ -150,6 +169,7 @@ export function SajuExperience({ locale, price }: { locale: Locale; price: numbe
         <div><p className="eyebrow">SAJU ACCESSORY</p><h2>{locale === "ko" ? "내 사주 오행에 맞는 악세서리 방향" : "Accessory directions for your Saju phases"}</h2><p>{locale === "ko" ? "오행별 형태·색·소재 방향을 먼저 비교해 보세요. 물건이 운이나 결과를 바꾸는 것은 아닙니다." : "Compare form, palette, and material directions by phase. An object does not change luck or outcomes."}</p></div>
         <Link href={`/${locale}/shop#saju-accessory-title`}>{locale === "ko" ? "사주 추천 악세서리 보기" : "See Saju accessory directions"}</Link>
       </aside>
+      </div>
 
       {chart && views && (
         <section aria-live="polite" className="saju-result" id="saju-result">

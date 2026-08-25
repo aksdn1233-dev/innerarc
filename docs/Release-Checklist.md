@@ -119,3 +119,9 @@
   normal prices, stale-tab rejection, coupon non-stacking, and automatic expiry are tested.
 - [x] Entry popup is once per session, Event/FAQ links remain keyboard accessible, result/service
   sharing is user initiated, and the event page carries privacy and symbolic-reflection limits.
+- [x] Saju hub/intake redesign preserves bilingual headings, implemented route truth, live prices,
+  consent, checkout draft handoff, unknown-time behavior, supplied character assets, minimum touch
+  targets, reduced-motion support, and route-scoped CSS rather than increasing every page payload.
+- [x] Final Saju journey release evidence: 728 unit tests, typecheck, lint with no errors,
+  127-page production build, Sites artifact build, and 205 of 214 browser cases passed; the
+  remaining nine are existing environment-gated skips rather than product failures.

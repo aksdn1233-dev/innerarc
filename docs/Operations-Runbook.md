@@ -61,6 +61,14 @@ Status: Supabase account persistence connected; production deployment and remain
   completion materially drops, or report generation fails; never roll back or rewrite canonical
   pillars or historical stored reports for a prose incident.
 
+### Saju journey presentation rollback
+
+- The pre-redesign rollback reference is production v76 at commit
+  `c80b59579c6b161b0c8b7d1becfcc4a9e1d4e80a`. Revert the `/fortune` hub module, the route-scoped
+  Saju intake module, and their markup together if service selection, mobile reading, checkout
+  handoff, accessibility, or initial payload budgets regress. Do not alter calculation, consent,
+  price, entitlement, or historical report code as part of a presentation rollback.
+
 ### Character webtoon rollback
 
 - Current pre-character rollback reference: commit `86d9630`.
@@ -197,6 +205,12 @@ The final runbook must add named on-call, legal/privacy, security, payment-suppo
   variable in verification loops. Apply one patch operation per target file. These command-shape
   failures are tooling errors rather than product evidence; correct the invocation and rerun the
   exact check instead of weakening or skipping it.
+- Under zsh, do not name a loop variable `path`: it is tied to `PATH` and removes command lookup
+  while the loop runs. Use `route_name` and `status_code` for HTTP route probes, then rerun every
+  intended route after correcting the tooling-only failure.
+- The final 2026-08-25 Saju journey run left the unrelated process already occupying port 3000
+  untouched, selected validated port 3005, and passed 205 of 214 browser cases with two workers;
+  nine existing environment-gated skips remained and no browser case failed.
 - Wait for the retained Vinext server to print its Local URL before probing it, and request that
   exact hostname. A development server may bind `localhost` over IPv6 while an immediate
   `127.0.0.1` probe refuses; a successful retry on the printed URL is the required evidence.

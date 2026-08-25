@@ -1185,3 +1185,38 @@
 - Rollback reference: production v75, commit
   `6a746b434b3e3c5b68dafe12b5ab259139a409db`.
 - Status: Decided as additive and reversible; no payment, provider, or database migration change.
+
+## D-080 - Give the Saju hub and intake one expressive editorial journey
+
+- Date: 2026-08-25
+- Decision: Replace the narrow generic service-card landing with a wide, editorial Saju threshold
+  built from deep tonal layers, a five-phase orbit, supplied guide characters, visible evidence
+  cues, and numbered service chapters. Carry the same atmosphere into the chart intake while
+  keeping the form, consent, deterministic validation, checkout draft, prices, and routes intact.
+  Keep motion brief and decorative, honor reduced-motion, retain 44-pixel targets, and load the
+  additional style only on the Saju routes.
+- Demand evidence and distribution: The owner directly reported that entering Saju lacked a
+  memorable design element and requested research-led production improvement. Distribution stays
+  inside the existing home → `/fortune` → `/saju` first-party journey; no new campaign, ad channel,
+  notification, external image host, or tracking surface is added. Google Design's expressive UI
+  research supports deliberate color, shape, size, motion, and containment for attention and
+  grouping, while Apple HIG supports clear hierarchy, distinguishable controls, 44-point targets,
+  and purpose-led motion with a reduced-motion alternative.
+- Economics: Current 5,500/39,000 KRW prices, the historical 9,600/39,000 KRW unit-economics
+  reference, payment fees, refunds, and support assumptions are unchanged. Existing first-party
+  character assets and CSS add no provider, generation, licensing, or fulfillment cost. Success
+  must be evidenced by chart-CTA starts and completions rather than visual preference alone.
+- Privacy, safety, and claim boundary: No new input, storage, cookie, analytics property, provider,
+  migration, or calculation is introduced. The orbit is an editorial five-phase motif, not a
+  scientific instrument. Visible copy continues to state symbolic reflection limits, shows
+  calculation evidence, and refuses to invent an unknown birth time or guarantee an outcome.
+- Success, guardrails, and reversal: Measure `/fortune` → `/saju` starts, valid checkout handoff,
+  mobile completion, route errors, CSS/total payload, keyboard use, and reduced-motion behavior.
+  Guardrails are unchanged bilingual route/price truth, zero calculation or draft drift, no broken
+  supplied art, 44-pixel controls, first-party-only requests, green route builds, and no global CSS
+  budget increase. Revert both presentation modules to production v76 if completion materially
+  falls, mobile content is obscured, interaction or payment flow changes, route errors appear, or
+  payload/accessibility budgets fail.
+- Rollback reference: production v76, commit
+  `c80b59579c6b161b0c8b7d1becfcc4a9e1d4e80a`.
+- Status: Decided as a route-scoped, reversible presentation change; no business or data change.

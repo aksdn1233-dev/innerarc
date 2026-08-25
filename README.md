@@ -14,6 +14,9 @@ Version 0.18.2 provides a web-first, guest-first Korean/English application with
 - a deterministic, policy-versioned Gregorian Saju core with canonical Four Pillars
   evidence, explicit late-Zi/time/solar-term assumptions, stable relationship rule IDs,
   golden boundary fixtures, and fail-closed lunar/leap-month inputs pending validation;
+- a route-scoped Saju journey that connects its service hub and chart intake through the
+  same editorial five-phase atmosphere, supplied guide characters, visible evidence cues,
+  optional motion, and 44-pixel-or-larger primary controls without changing calculations;
 - a context-aware first result that uses stable focus/depth choices and optional page-memory-only concern text without changing calculations, storage, sharing, analytics, or provider state;
 - an eight-domain integrated profile and explanatory career exploration;
 - a 78-card auditable tarot engine with seeded or manual draws;

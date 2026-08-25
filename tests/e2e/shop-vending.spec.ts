@@ -5,7 +5,7 @@ test("accessory concept vending switches locally without leaking result variable
 
   const result = page.locator(".shop-vending-result");
   await expect(result.getByRole("img")).toHaveAttribute("src", /saju-wood\.jpg/);
-  await expect(result.getByText("AI 콘셉트 이미지", { exact: true })).toBeVisible();
+  await expect(result.getByText("자동 생성 콘셉트 이미지", { exact: true })).toBeVisible();
 
   await page.getByRole("button", { name: "금(金)" }).click();
   await expect(result.getByRole("img")).toHaveAttribute("src", /saju-metal\.jpg/);

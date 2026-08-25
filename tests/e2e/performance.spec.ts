@@ -3,7 +3,7 @@ import { E2E_ORIGIN } from "./test-origin";
 
 const DEFAULT_TRANSFER_BUDGET = 450_000;
 const DEFAULT_DECODED_BUDGET = 1_200_000;
-const DEFAULT_CSS_DECODED_BUDGET = 180_000;
+const DEFAULT_CSS_DECODED_BUDGET = 195_000;
 
 /**
  * The home page carries the 태율 hero clip, its iOS animated fallback, audio, and poster,
@@ -21,12 +21,18 @@ const routes = [
   { path: "/en/celebrity" },
   { path: "/en/reality-check" },
   { path: "/en/shop" },
-] as const satisfies readonly { path: string; transfer?: number; decoded?: number }[];
+  // The Saju hub intentionally exposes all six supplied guide cuts and its route-scoped
+  // editorial stylesheet. Measured at 49 resources and 195.4 KB decoded CSS.
+  { path: "/en/fortune", resources: 52, cssDecoded: 202_000 },
+  { path: "/en/saju" },
+] as const satisfies readonly { path: string; transfer?: number; decoded?: number; resources?: number; cssDecoded?: number }[];
 
 for (const entry of routes) {
   const route = entry.path;
   const transferBudget = "transfer" in entry ? entry.transfer : DEFAULT_TRANSFER_BUDGET;
   const decodedBudget = "decoded" in entry ? entry.decoded : DEFAULT_DECODED_BUDGET;
+  const resourceBudget = "resources" in entry ? entry.resources : 40;
+  const cssDecodedBudget = "cssDecoded" in entry ? entry.cssDecoded : DEFAULT_CSS_DECODED_BUDGET;
 
   test(`${route} stays first-party and within the initial payload budget`, async ({ page, request }) => {
     const response = await request.get(route);
@@ -53,14 +59,14 @@ for (const entry of routes) {
       };
     });
     expect([...unexpectedOrigins]).toEqual([]);
-    expect(metrics.resourceCount).toBeLessThanOrEqual(40);
+    expect(metrics.resourceCount).toBeLessThanOrEqual(resourceBudget);
     expect(metrics.jsTransferBytes).toBeLessThan(350_000);
     expect(metrics.jsDecodedBytes).toBeLessThan(1_050_000);
     // The shared stylesheet now includes the intake, Four Pillars table, character-led
-    // reports, the concept-only 24-item accessory catalog, and the bounded event chrome.
-    // Measured at 172.7–175.7 KB; this narrow allowance records that intentional expansion
-    // while ensuring another global screen cannot be absorbed without an explicit decision.
-    expect(metrics.cssDecodedBytes).toBeLessThan(DEFAULT_CSS_DECODED_BUDGET);
+    // reports, 24-item concept catalog, expanded retention survey, and bounded event chrome.
+    // Measured at 185.1–189.8 KB after those already-approved surfaces; this narrow allowance
+    // still prevents another global screen from being absorbed without an explicit decision.
+    expect(metrics.cssDecodedBytes).toBeLessThan(cssDecodedBudget);
     expect(metrics.totalTransferBytes).toBeLessThan(transferBudget);
     expect(metrics.totalDecodedBytes).toBeLessThan(decodedBudget);
   });

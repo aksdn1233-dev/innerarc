@@ -2,6 +2,8 @@ import { expect, test } from "@playwright/test";
 test("the Four Pillars chart moves into the current one-time checkout", async ({ page }) => {
   await page.goto("/ko/saju");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("사주 원국");
+  await expect(page.getByRole("heading", { level: 2, name: "기억나는 만큼만 알려주세요" })).toBeVisible();
+  await expect(page.locator("[data-phase]")).toHaveCount(5);
 
   await page.locator("#saju-birthDate").fill("1994-11-04");
   await page.locator("#saju-readingName").fill("결이");

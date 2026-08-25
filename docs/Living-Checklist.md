@@ -109,6 +109,9 @@ Last updated: 2026-08-22
 - [x] Saju service-hub cards expose meaningful price or availability badges without
   duplicating their category label; Korean and English detailed-reading prices are covered
   by browser regression tests.
+- [x] Saju hub and chart intake share a route-scoped editorial five-phase system with supplied
+  guide art, explicit calculation-evidence cues, 44px controls, horizontal keyboard-accessible
+  guide browsing, and motion disabled under the reduced-motion preference.
 - [x] Accessory-result browser coverage follows the current 24-concept catalog and checks
   that no cart, buy-now, or checkout control appears before product approval; initial CSS
   payload coverage records the current character-report and catalog expansion.
@@ -149,6 +152,9 @@ Last updated: 2026-08-22
   usefulness, return intent, desired follow-up, and preferred rhythm; values remain bounded,
   legacy source answers stay readable, the detailed review/publication consent remains separate,
   stored once per order, aggregated in the allowlisted console, and excluded from public reviews.
+- [x] The Saju hub and intake share one bilingual editorial visual system with supplied guides,
+  calculation-evidence cues, 44px controls, reduced-motion behavior, mobile overflow protection,
+  and clean desktop/mobile accessibility and full-browser regression evidence.
 
 - [x] Free/Plus/Pro entitlement and quota policy.
 - [x] Provider-neutral checkout/cancel and retry-safe subscription ledger.
