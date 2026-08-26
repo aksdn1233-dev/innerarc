@@ -19,7 +19,7 @@ const payAppEnvironment = {
   ADMIN_EMAILS: "owner@example.com",
 } as const;
 
-// A fixed clock outside the current campaign keeps standard-price diagnostics deterministic.
+// A fixed clock keeps standard-price diagnostics deterministic.
 const FIXED_NOW = new Date("2026-08-01T00:00:00.000Z");
 
 function inspectCatalogPrices(environment: Readonly<Record<string, string | undefined>>) {

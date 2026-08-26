@@ -125,3 +125,6 @@
 - [x] Final Saju journey release evidence: 728 unit tests, typecheck, lint with no errors,
   127-page production build, Sites artifact build, and 205 of 214 browser cases passed; the
   remaining nine are existing environment-gated skips rather than product failures.
+- [x] Three-day campaign withdrawal removes its price branch, popup, utility links, plan banner,
+  urgency copy, and public 1,500 KRW claims while preserving historical payment verification and
+  existing friend-coupon entitlements; 728 unit and 205 browser cases pass with zero failures.

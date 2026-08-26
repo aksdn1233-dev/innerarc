@@ -161,7 +161,7 @@ export type CatalogPriceCheck =
  * Active prices belong to the code catalog in `core/product-prices`. A deployment
  * price variable is an optional assertion *about* the scheduled catalog rather than
  * a source for it. Known event and standard values are accepted so the clock can end
- * a campaign without an environment edit; any unknown amount still closes checkout.
+ * a centrally resolved price without an environment edit; any unknown amount still closes checkout.
  * The amount shown, ordered, and charged always comes from the active code schedule.
  */
 export function inspectCatalogPrices(

@@ -11,7 +11,7 @@ describe("referral coupon", () => {
     expect(issueReferralCoupon("01012345678", environment)).toBe(code);
   });
 
-  it("opens after the campaign, only for eligible products and the issuing phone", () => {
+  it("opens in its own validity window only for eligible products and the issuing phone", () => {
     const code = issueReferralCoupon("010-1234-5678", environment)!;
     const base = { code, customerPhone: "01012345678", productCode: "pro_30d" as const };
     expect(validateReferralCoupon({ ...base, now: new Date("2026-08-25T15:00:00.000Z") }, environment)).toBe(true);

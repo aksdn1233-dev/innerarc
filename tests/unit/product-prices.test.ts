@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
   STANDARD_PRODUCT_PRICES_KRW,
-  THREE_DAY_EVENT_PRODUCT_PRICES_KRW,
   knownScheduledPrices,
   resolveProductPricing,
 } from "@/core/product-prices";
@@ -15,11 +14,11 @@ describe("product pricing", () => {
     });
   });
 
-  it("charges 1,500 won for every paid reading during the three-day campaign", () => {
+  it("keeps standard prices during the former three-day window after withdrawal", () => {
     const pricing = resolveProductPricing(new Date("2026-08-23T00:00:00.000Z"));
-    expect(pricing.prices).toEqual(THREE_DAY_EVENT_PRODUCT_PRICES_KRW);
+    expect(pricing.prices).toEqual(STANDARD_PRODUCT_PRICES_KRW);
     expect(pricing.regularPrices).toEqual(STANDARD_PRODUCT_PRICES_KRW);
-    expect(pricing.campaign?.code).toBe("three_day_1500");
+    expect(pricing.campaign).toBeNull();
   });
 
   // An order authorised during the event carries the amount charged then. Verification

@@ -18,14 +18,12 @@ export const RETIRED_EVENT_PRODUCT_PRICES_KRW = {
   premium_pdf: 39_000,
 } as const;
 
-export const THREE_DAY_EVENT_PRODUCT_PRICES_KRW = {
+/** Historical amounts retained only for provider callback and order verification. */
+export const RETIRED_THREE_DAY_EVENT_PRODUCT_PRICES_KRW = {
   plus_30d: 1_500,
   pro_30d: 1_500,
   premium_pdf: 1_500,
 } as const;
-
-export const THREE_DAY_EVENT_START = "2026-08-22T15:00:00.000Z";
-export const THREE_DAY_EVENT_END = "2026-08-25T15:00:00.000Z";
 
 export const PURCHASABLE_PRODUCT_CODES = ["plus_30d", "pro_30d", "premium_pdf"] as const;
 
@@ -43,22 +41,12 @@ export type ProductPricingSnapshot = Readonly<{
 }>;
 
 /** Resolves the single server-authoritative amount shown, ordered, and charged. */
-export function resolveProductPricing(now: Date = new Date()): ProductPricingSnapshot {
-  const startsAt = new Date(THREE_DAY_EVENT_START);
-  const endsAt = new Date(THREE_DAY_EVENT_END);
-  const campaignActive = now >= startsAt && now < endsAt;
+export function resolveProductPricing(_now: Date = new Date()): ProductPricingSnapshot {
+  void _now;
   return {
-    prices: campaignActive
-      ? THREE_DAY_EVENT_PRODUCT_PRICES_KRW
-      : STANDARD_PRODUCT_PRICES_KRW,
+    prices: STANDARD_PRODUCT_PRICES_KRW,
     regularPrices: STANDARD_PRODUCT_PRICES_KRW,
-    campaign: campaignActive
-      ? {
-          code: "three_day_1500",
-          startsAt: THREE_DAY_EVENT_START,
-          endsAt: THREE_DAY_EVENT_END,
-        }
-      : null,
+    campaign: null,
   };
 }
 
@@ -70,6 +58,6 @@ export function knownScheduledPrices(productCode: ProductPriceCode): readonly nu
   return [...new Set([
     STANDARD_PRODUCT_PRICES_KRW[productCode],
     RETIRED_EVENT_PRODUCT_PRICES_KRW[productCode],
-    THREE_DAY_EVENT_PRODUCT_PRICES_KRW[productCode],
+    RETIRED_THREE_DAY_EVENT_PRODUCT_PRICES_KRW[productCode],
   ])];
 }

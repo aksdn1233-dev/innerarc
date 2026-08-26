@@ -24,8 +24,9 @@ Scope: repository source, configuration, local production bundle, and automated 
   “view today” leaves storage untouched, and calculation makes no network, AI, account,
   analytics, notification, or payment request.
 - AI boundary: user context is delimited as untrusted data; structured output, canonical facts, high-risk routing, prompt-injection normalization, and overclaim screening are tested.
-- Campaign/referral boundary: display and charge amounts share the scheduled server catalog;
-  referral coupons are HMAC-signed, time/product/phone bound, non-stackable, and raw phone
+- Retired-campaign/referral boundary: display and charge amounts share the standard server catalog;
+  former campaign amounts are historical-verification-only, while referral coupons are HMAC-signed,
+  time/product/phone bound, non-stackable, and raw phone
   numbers are neither persisted nor returned. Redemption checks prior non-cancelled discounted
   orders before provider creation. Add database-level uniqueness if this becomes permanent.
 - Report experience survey: every write is same-origin and requires completed-report proof; all

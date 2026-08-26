@@ -1,9 +1,9 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
-import { THREE_DAY_EVENT_END } from "@/core/product-prices";
 import { hashCustomerPhone } from "@/server/order-pass";
 import type { PaymentProductCode } from "@/server/payments/config";
 
 export const REFERRAL_COUPON_DISCOUNT_KRW = 5_000;
+export const REFERRAL_COUPON_STARTS_AT = "2026-08-25T15:00:00.000Z";
 export const REFERRAL_COUPON_EXPIRES_AT = "2026-09-25T15:00:00.000Z";
 
 type EnvironmentLike = Readonly<Record<string, string | undefined>>;
@@ -32,7 +32,7 @@ export function validateReferralCoupon(input: Readonly<{
   productCode: PaymentProductCode;
   now: Date;
 }>, environment: EnvironmentLike = process.env): boolean {
-  if (input.now < new Date(THREE_DAY_EVENT_END) || input.now >= new Date(REFERRAL_COUPON_EXPIRES_AT)) return false;
+  if (input.now < new Date(REFERRAL_COUPON_STARTS_AT) || input.now >= new Date(REFERRAL_COUPON_EXPIRES_AT)) return false;
   if (input.productCode !== "pro_30d" && input.productCode !== "premium_pdf") return false;
   const match = /^GY5-([A-Za-z0-9_-]+)\.([A-Za-z0-9_-]{22})$/.exec(input.code.trim());
   if (!match) return false;

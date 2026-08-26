@@ -114,7 +114,6 @@ export default async function PlansPage({
       signedIn={Boolean(auth.user)}
       paymentsEnabled={enabled}
       paymentProvider={paymentProvider}
-      pricing={pricing}
     />
   );
 }

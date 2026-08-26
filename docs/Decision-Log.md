@@ -1220,3 +1220,30 @@
 - Rollback reference: production v76, commit
   `c80b59579c6b161b0c8b7d1becfcc4a9e1d4e80a`.
 - Status: Decided as a route-scoped, reversible presentation change; no business or data change.
+
+## D-081 - Withdraw the three-day 1,500 KRW campaign completely
+
+- Date: 2026-08-26
+- Decision: Remove the scheduled 1,500 KRW pricing branch, home popup, global campaign links,
+  plan banner, discounted-price labels, and three-day campaign copy. The server catalog now always
+  resolves to 5,500/39,000/79,000 KRW. Keep the former 1,500 KRW amounts only in the provider
+  verification allowlist so already-authorized orders and callbacks remain valid.
+- Demand and distribution: The owner explicitly ordered the three-day promotion withdrawn in full.
+  No replacement promotion, automatic message, paid distribution, or urgency copy is introduced.
+  The separate phone-bound friend invitation benefit remains available on its own neutral page;
+  issued coupon rights and the existing expiry are preserved.
+- Economics: Gross list receipts return to 5,500/39,000/79,000 KRW rather than the unsustainable
+  1,500 KRW acquisition price. Provider, generation, refund, support, VAT, and chargeback costs are
+  unchanged and remain unverified in production. The existing 5,000 KRW invitation coupon still
+  applies only once to 39,000 KRW or 79,000 KRW products and never to the 5,500 KRW product.
+- Privacy, safety, and claim risk: No new data, tracking, migration, payment provider, or claim is
+  added. Coupon phone hashing and recipient-controlled sharing remain unchanged. The Saju and
+  Numerology boundary continues to describe symbolic reflection rather than prediction or advice.
+- Success, guardrails, and reversal: Require zero public three-day/1,500 KRW promotion copy, zero
+  campaign chrome, standard price parity across catalog/order/provider paths, preserved historical
+  payment verification, green bilingual browser tests, and no regression to referral validation.
+  If an old authorized order stops verifying, restore only its retired amount allowlist; do not
+  restore public campaign pricing or presentation without a new explicit owner decision.
+- Rollback reference: production v77, commit
+  `c5a26910e378756a504f266e2dfabd827a6678bf`.
+- Status: Withdrawn immediately; historical payment evidence and separate coupon entitlements remain.

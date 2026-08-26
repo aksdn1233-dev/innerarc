@@ -9,7 +9,6 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { captureConversionEvent } from "@/core/analytics";
 import { PaidReadingInputSchema, type PaidReadingInput } from "@/core/paid-reading";
-import type { ProductPricingSnapshot } from "@/core/product-prices";
 import {
   checkoutErrorFromResponse,
   selectCheckoutReadingInput,
@@ -113,13 +112,13 @@ const copy = {
       missing_draft: "먼저 상품과 리딩 정보를 입력해 주세요.",
       invalid_depositor: "실제 입금 내역에 표시될 입금자명을 두 글자 이상 입력해 주세요.",
       invalid_phone: "결제 안내를 받을 국내 휴대폰 번호를 확인해 주세요.",
-      invalid_coupon: "쿠폰 번호, 결제 휴대폰 번호, 사용 기간을 확인해 주세요. 쿠폰은 행사 종료 후 39,000원 이상 리딩에 1회 사용할 수 있습니다.",
+      invalid_coupon: "쿠폰 번호, 결제 휴대폰 번호, 사용 기간을 확인해 주세요. 쿠폰은 39,000원 이상 리딩에 1회 사용할 수 있습니다.",
       temporarily_unavailable: "현재 결제를 잠시 멈춘 상태입니다. 입력 내용은 그대로 있으니 잠시 후 다시 확인해 주세요.",
       rate_limited: "짧은 시간에 결제 요청이 반복되었습니다. 잠시 후 다시 시도해 주세요.",
       order_failed: "주문을 만들지 못했습니다. 입력 내용을 유지했으니 잠시 후 다시 시도해 주세요.",
       widget_failed: "결제수단 화면을 불러오지 못했습니다. 네트워크 상태를 확인한 뒤 다시 시도해 주세요.",
       payment_failed: "결제 요청을 완료하지 못했습니다. 승인 여부를 확인한 뒤 다시 시도해 주세요.",
-      price_changed: "행사 시간이 끝나 가격이 변경되었습니다. 새 가격을 확인한 뒤 다시 결제해 주세요.",
+      price_changed: "가격이 변경되었습니다. 현재 금액을 확인한 뒤 다시 결제해 주세요.",
     },
     notice: "결제수단 노출 여부와 한도는 페이앱 판매자 설정 및 각 결제수단 심사 결과에 따라 달라집니다.",
     terms: "환불은 고객지원 이메일로 접수하며 접수일로부터 7일 이내 처리합니다. 결제 전에 이용조건·환불정책·개인정보 처리 안내를 확인해 주세요.",
@@ -163,13 +162,13 @@ const copy = {
       missing_draft: "Choose a product and enter the reading information first.",
       invalid_depositor: "Enter at least two characters matching the depositor name on the transfer.",
       invalid_phone: "Check the Korean mobile number used for payment instructions.",
-      invalid_coupon: "Check the coupon, checkout mobile number, and validity period. It is used once on a reading of ₩39,000 or more after the campaign.",
+      invalid_coupon: "Check the coupon, checkout mobile number, and validity period. It can be used once on a reading of ₩39,000 or more.",
       temporarily_unavailable: "Checkout is temporarily paused. Your reading details are still here; please try again shortly.",
       rate_limited: "Too many checkout attempts were made in a short time. Please wait and try again.",
       order_failed: "The order could not be created. Your input is still here; please try again shortly.",
       widget_failed: "Payment methods could not be loaded. Check your connection and try again.",
       payment_failed: "The payment request did not finish. Check whether it was approved before trying again.",
-      price_changed: "The event price has ended. Review the updated price and try checkout again.",
+      price_changed: "The price has changed. Review the current amount and try checkout again.",
     },
     notice: "Available methods and limits depend on PayApp merchant settings and payment-method review.",
     terms: "Refund requests are accepted by support email and processed within seven days after receipt. Review the terms, refund policy, and privacy notice before payment.",
@@ -257,7 +256,6 @@ export function PlansExperience({
   paymentsEnabled,
   paymentProvider,
   initialProduct,
-  pricing,
 }: {
   locale: PlansLocale;
   products: readonly PublicProduct[];
@@ -265,7 +263,6 @@ export function PlansExperience({
   paymentsEnabled: boolean;
   paymentProvider: "toss" | "portone" | "manual_transfer" | "payapp" | null;
   initialProduct: PaymentProductCode | null;
-  pricing: ProductPricingSnapshot;
 }) {
   const t = copy[locale];
   const systemLocale: Locale = locale === "ja" ? "en" : locale;
@@ -390,7 +387,7 @@ export function PlansExperience({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           productCode,
-          expectedAmount: selectedProduct.amount - (!pricing.campaign && couponCode.trim() ? 5_000 : 0),
+          expectedAmount: selectedProduct.amount - (couponCode.trim() ? 5_000 : 0),
           locale: systemLocale,
           readingInput: selectedReadingInput,
           depositorName: paymentProvider === "manual_transfer"
@@ -567,13 +564,6 @@ export function PlansExperience({
         </div>
       </section>
 
-      {pricing.campaign && (
-        <aside className="plans-campaign-banner">
-          <strong>{locale === "ko" ? "3일간 전 상품 1,500원" : locale === "ja" ? "3日間・全商品1,500ウォン" : "Three days: every reading ₩1,500"}</strong>
-          <Link href={`/${routeLocale}/events`}>{locale === "ko" ? "이벤트·FAQ 보기" : locale === "ja" ? "イベントを見る" : "Event details & FAQ"}</Link>
-        </aside>
-      )}
-
       {!paymentsEnabled && <p className="plans-gate" role="status">{t.unavailable}</p>}
       {!signedIn && (
         <p className="plans-gate">
@@ -615,7 +605,7 @@ export function PlansExperience({
         </div>
       )}
 
-      {paymentsEnabled && !pricing.campaign && (
+      {paymentsEnabled && (
         <div className="manual-depositor-field">
           <label htmlFor="referral-coupon">{locale === "ko" ? "친구 초대 쿠폰 (선택)" : locale === "ja" ? "友達紹介クーポン（任意）" : "Referral coupon (optional)"}</label>
           <input id="referral-coupon" maxLength={300} onChange={(event) => setCouponCode(event.target.value)} placeholder="GY5-…" value={couponCode} />
@@ -637,13 +627,7 @@ export function PlansExperience({
             <p className="eyebrow">{product.tier}</p>
             <h2>{product.name}</h2>
             <div className="plan-price-stack">
-              {pricing.campaign && product.regularAmount !== product.amount && (
-                <del>{formatWon(product.regularAmount, locale)}</del>
-              )}
               <strong className="plan-price">{formatWon(product.amount, locale)}</strong>
-              {pricing.campaign && (
-                <span>{locale === "ko" ? "3일 한정 이벤트가" : locale === "ja" ? "3日限定価格" : "Three-day campaign price"}</span>
-              )}
             </div>
             <small>{t.duration}</small>
             <ul>{product.features.map((feature) => <li key={feature}>{feature}</li>)}</ul>

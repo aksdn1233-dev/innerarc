@@ -9,8 +9,6 @@ import {
 import { resolvePublicAppUrl } from "@/core/site-url";
 import { isLocale, locales } from "@/i18n/config";
 import { getLocalizedSiteMetadata } from "@/i18n/site-metadata";
-import { CampaignChrome } from "@/components/campaign-chrome";
-import { resolveProductPricing } from "@/core/product-prices";
 
 const openGraphImage = {
   url: socialImagePath,
@@ -68,7 +66,6 @@ export default async function LocaleLayout({
   const baseUrl = resolvePublicAppUrl(process.env.NEXT_PUBLIC_APP_URL);
   const homeUrl = new URL(`/${locale}`, baseUrl).toString();
   const copy = getLocalizedSiteMetadata(locale);
-  const campaign = resolveProductPricing().campaign;
   const structuredData = {
     "@context": "https://schema.org",
     "@graph": [
@@ -97,7 +94,6 @@ export default async function LocaleLayout({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replaceAll("<", "\\u003c") }}
       />
-      {campaign && <CampaignChrome endsAt={campaign.endsAt} locale={locale} />}
       {children}
     </div>
   );

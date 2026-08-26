@@ -215,19 +215,19 @@ The final runbook must add named on-call, legal/privacy, security, payment-suppo
   exact hostname. A development server may bind `localhost` over IPv6 while an immediate
   `127.0.0.1` probe refuses; a successful retry on the printed URL is the required evidence.
 
-## Three-day campaign watch
+## Retired three-day campaign guard
 
-- Campaign window: 2026-08-23 00:00–2026-08-26 00:00 Asia/Seoul. The code clock, not an
-  environment price override, opens and closes it.
-- Check `/api/health`, all three plan amounts, one order/provider amount sample, provider
-  rejection counts, duplicate-order contacts, refund requests, and report finalization.
-- The referral coupon is unavailable during the 1,500 KRW window and becomes valid afterward
-  only on the 39,000/79,000 KRW products using the issuing checkout phone.
-- On amount mismatch, coupon abuse, or material payment/report errors, pause new sales through
-  the existing operations gate and roll back to `1714d1412e7c417a0c7466eac9d889b1fe662bac`.
+- The 2026-08-23–2026-08-26 1,500 KRW campaign is withdrawn. The current catalog, order request,
+  and provider amount must always resolve to 5,500/39,000/79,000 KRW.
+- Keep 1,500 KRW in historical amount verification only. If a former authorized order fails,
+  restore that verification allowlist rather than any campaign clock, popup, banner, or public copy.
+- The separate friend coupon remains valid only on the 39,000/79,000 KRW products using the
+  issuing checkout phone and its existing expiry. Monitor abuse, duplicate use, and support contacts.
+- On a current amount mismatch or material payment/report error, pause new sales through the
+  existing operations gate and roll back to production v77 commit
+  `c5a26910e378756a504f266e2dfabd827a6678bf` while keeping the campaign withdrawn manually.
 - `pnpm build:sites` refreshes the Sites artifact but not Next's `.next` directory. Run
   `pnpm build` before the production-server E2E wrapper; otherwise a newly added route can
   correctly exist in Sites output while the local Next E2E server still returns its prior 404.
-- The modal is intentionally limited to the localized home entry and dismissed for the browser
-  session. Event/FAQ utility links remain available on direct service landings without blocking
-  form controls.
+- A release is blocked if three-day campaign copy, popup chrome, utility links, discount labels,
+  or a current 1,500 KRW catalog/order/provider amount reappears.

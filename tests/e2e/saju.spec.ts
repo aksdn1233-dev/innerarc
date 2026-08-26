@@ -16,7 +16,7 @@ test("the Four Pillars chart moves into the current one-time checkout", async ({
   expect(draft.name).toBe("결이");
   const product = page.locator('[data-product="plus_30d"]');
   await expect(product).toContainText("사주 원국");
-  await expect(product).toContainText(/₩1,500|₩5,500/);
+  await expect(product).toContainText("₩5,500");
   await expect(product).toContainText("이메일로 보관하기");
 });
 
@@ -47,7 +47,7 @@ test("the English page shows the Korean chart with an English derivation", async
   await page.locator("#saju-birthDate").fill("1994-11-04");
   await page.locator("#saju-birthTime").fill("09:30");
   await page.getByRole("checkbox").check();
-  await page.getByRole("button", { name: /Get the chart for ₩(1,500|5,500)/ }).click();
+  await page.getByRole("button", { name: "Get the chart for ₩5,500" }).click();
   await expect(page).toHaveURL(/\/en\/plans\?product=plus_30d$/);
   await expect(page.locator('[data-product="plus_30d"]')).toContainText("Four Pillars chart");
 });

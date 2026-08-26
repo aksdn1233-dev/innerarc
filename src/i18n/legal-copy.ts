@@ -268,7 +268,7 @@ const termsEn: LegalPageCopy = {
     {
       title: "Reading products and payment",
       bullets: [
-        "Current products are the Detailed reading and Premium in-depth reading. The former Core reading is temporarily unavailable. Each available product is a one-time, non-renewing purchase, and any active campaign and final amount are shown again before checkout.",
+        "Current products are the Four Pillars chart, Detailed reading, and Premium in-depth reading. Each is a one-time, non-renewing purchase, and the final amount and included scope are shown again before checkout.",
         "Reports open and download after verified payment. Signed-in purchases are also saved in My Page; guest customers must retain the private access link and downloaded file.",
         "KakaoPay, Toss Pay, cards, mobile, bank transfer, and virtual accounts appear only when enabled for the PayApp merchant account and approved for the applicable method.",
         "Virtual-account reports open only after the deposit is verified through the payment-provider API.",

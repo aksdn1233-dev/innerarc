@@ -405,40 +405,6 @@
   }
 }
 
-.campaign-notice {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin: 14px auto 0;
-  padding: 11px 18px;
-  border: 1px solid rgba(177, 123, 47, 0.32);
-  border-radius: 14px;
-  background: #fff7e7;
-  color: #493619;
-  line-height: 1.45;
-  text-align: center;
-}
-
-.campaign-notice strong {
-  flex: 0 0 auto;
-  color: #875d1f;
-}
-
-.campaign-notice span {
-  font-size: 0.92rem;
-}
-
-/* The home header floats over the hero. Padding belongs to the conditional shell
-   class so the notice margin cannot collapse and move the header along with it. */
-.home-shell.has-campaign {
-  padding-top: 108px;
-}
-
-.home-shell.has-campaign > .campaign-notice {
-  margin-top: 0;
-}
-
 .plan-price-stack {
   display: flex;
   flex-direction: column;
@@ -6539,17 +6505,6 @@ summary {
   }
 }
 
-@media (max-width: 620px) {
-  .campaign-notice {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 2px;
-    margin-inline: 0;
-    padding: 10px 14px;
-    text-align: left;
-  }
-}
-
 /*
  * Phone reading rhythm. Cards keep a visible inset on desktop, but on a narrow screen
  * a large inset pushes their text far past the bare headings above them, which is what
@@ -7883,78 +7838,7 @@ summary {
   }
 }
 
-/* Three-day event chrome. Kept outside page-specific layouts so the event is visible
-   from every public entry point without changing the established home composition. */
-.campaign-utility-nav {
-  position: fixed;
-  z-index: 70;
-  top: calc(10px + env(safe-area-inset-top));
-  right: 14px;
-  display: flex;
-  gap: 6px;
-  padding: 5px;
-  border: 1px solid rgb(225 193 112 / 45%);
-  border-radius: 999px;
-  background: rgb(20 18 29 / 82%);
-  box-shadow: 0 10px 30px rgb(0 0 0 / 20%);
-  backdrop-filter: blur(16px);
-}
-
-.campaign-utility-nav a {
-  padding: 6px 10px;
-  border-radius: 999px;
-  color: #f6dfaa;
-  font-size: .72rem;
-  font-weight: 750;
-  letter-spacing: .04em;
-  text-decoration: none;
-}
-
-.campaign-utility-nav a:hover { background: rgb(246 223 170 / 12%); }
-
-.campaign-modal-backdrop {
-  position: fixed;
-  z-index: 100;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  padding: 20px;
-  background: rgb(10 8 16 / 62%);
-  backdrop-filter: blur(10px);
-}
-
-.campaign-modal {
-  position: relative;
-  width: min(100%, 520px);
-  padding: clamp(28px, 5vw, 48px);
-  border: 1px solid rgb(232 198 119 / 55%);
-  border-radius: 30px;
-  color: #f7f0e2;
-  background:
-    radial-gradient(circle at 80% 5%, rgb(177 126 67 / 30%), transparent 35%),
-    linear-gradient(145deg, #2b2438, #15131f 68%);
-  box-shadow: 0 30px 100px rgb(0 0 0 / 55%), inset 0 1px rgb(255 255 255 / 8%);
-}
-
-.campaign-modal h2 { margin: 8px 0 14px; color: #fff8e9; font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1.02; }
-.campaign-modal p { color: #d8cfbf; line-height: 1.75; }
-.campaign-modal small { display: block; margin-top: 18px; color: #a9a093; }
-.campaign-modal-close { position: absolute; top: 14px; right: 16px; width: 38px; height: 38px; border: 0; border-radius: 50%; color: #fff; background: rgb(255 255 255 / 8%); font-size: 1.5rem; cursor: pointer; }
-.campaign-modal-actions, .event-hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
-
-.plans-campaign-banner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin: 20px 0 26px;
-  padding: 16px 20px;
-  border: 1px solid #d5b66b;
-  border-radius: 18px;
-  color: #3b2c13;
-  background: linear-gradient(100deg, #f8e4a8, #fff5d8);
-}
-.plans-campaign-banner a { color: inherit; font-weight: 800; }
+.event-hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
 
 .event-shell { min-height: 100vh; color: #ece6dc; background: #16131f; }
 .event-topbar { display: flex; align-items: center; justify-content: space-between; width: min(1120px, calc(100% - 36px)); margin: 0 auto; padding: 30px 0; }
@@ -7963,13 +7847,11 @@ summary {
 .event-hero { width: min(1120px, calc(100% - 36px)); margin: 0 auto; padding: clamp(70px, 11vw, 150px) 0 90px; }
 .event-hero h1 { max-width: 900px; margin: 12px 0 22px; color: #fff8e9; font-size: clamp(3.2rem, 10vw, 7.6rem); line-height: .93; letter-spacing: -.065em; }
 .event-hero > p:not(.eyebrow) { max-width: 650px; color: #bbb2a7; font-size: clamp(1rem, 2vw, 1.3rem); line-height: 1.75; }
-.event-countdown-copy { display: flex; flex-wrap: wrap; gap: 12px 22px; margin-top: 28px; color: #f0d18a; }
-.event-countdown-copy strong { letter-spacing: .08em; }
 .service-share { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
 .service-share span { min-height: 1em; color: #baa982; font-size: .78rem; }
 .service-share.is-compact { margin-top: 20px; }
 .campaign-share-link { padding: 0; border: 0; color: #efd493; background: transparent; font: inherit; font-weight: 800; text-decoration: underline; cursor: pointer; }
-.event-offer-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; width: min(1120px, calc(100% - 36px)); margin: 0 auto; }
+.event-offer-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; width: min(1120px, calc(100% - 36px)); margin: 0 auto; }
 .event-offer-grid article { position: relative; min-height: 390px; padding: clamp(30px, 5vw, 54px); overflow: hidden; border: 1px solid rgb(232 198 119 / 25%); border-radius: 28px; background: linear-gradient(145deg, #2a2335, #1b1725); }
 .event-offer-grid article > span { position: absolute; top: 16px; right: 22px; color: rgb(239 212 147 / 18%); font-size: 6rem; font-weight: 900; }
 .event-offer-grid h2 { max-width: 430px; margin: 30px 0 16px; color: #fff8e9; font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.02; }
@@ -7994,10 +7876,8 @@ summary {
 .event-footer { display: flex; justify-content: center; gap: 22px; padding: 36px 20px 52px; border-top: 1px solid rgb(255 255 255 / 8%); font-size: .82rem; }
 
 @media (max-width: 720px) {
-  .campaign-utility-nav { right: 12px; }
   .event-offer-grid { grid-template-columns: 1fr; }
   .event-topbar { padding-top: 74px; }
-  .plans-campaign-banner { align-items: flex-start; flex-direction: column; }
   .referral-invite > div { align-items: stretch; flex-direction: column; }
 }
 

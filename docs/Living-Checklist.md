@@ -204,3 +204,6 @@ Last updated: 2026-08-22
   and expire automatically.
 - [x] Campaign chrome keeps the first-party initial resource ceiling at 40 and shared decoded
   CSS below 180 KB; the mobile utility links remain at the top so they cannot cover form inputs.
+- [x] The three-day 1,500 KRW campaign is fully withdrawn from pricing and public presentation;
+  5,500/39,000/79,000 KRW are authoritative while retired amounts remain verification-only for
+  historical orders and the separate friend coupon keeps its issued rights.
