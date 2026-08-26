@@ -5,6 +5,7 @@ import {
   socialImagePath,
   socialImageSize,
 } from "@/app/social-image";
+import { BRAND_SEARCH_ALIASES } from "@/core/brand-links";
 import { resolvePublicAppUrl } from "@/core/site-url";
 import "./globals.css";
 
@@ -21,11 +22,12 @@ const naverSiteVerification =
 
 export const metadata: Metadata = {
   metadataBase: resolvePublicAppUrl(process.env.NEXT_PUBLIC_APP_URL),
-  title: "결 GYEOL | 사주·수비학으로 보는 나·관계·운세",
+  title: "결 GYEOL (MY GYEOL) | 사주·수비학으로 보는 나·관계·운세",
   description:
-    "생년월일 기반 사주와 수비학을 서로 분리해 성향·관계·운세의 흐름을 정리하는 상징적 자기 성찰 리딩 서비스.",
-  applicationName: "결 GYEOL",
+    "MY GYEOL(마이결)은 생년월일 기반 사주와 수비학을 서로 분리해 성향·관계·운세의 흐름을 정리하는 상징적 자기 성찰 리딩 서비스입니다.",
+  applicationName: "결 GYEOL · MY GYEOL",
   keywords: [
+    ...BRAND_SEARCH_ALIASES,
     "사주",
     "무료 사주",
     "운세",
@@ -46,8 +48,8 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
   openGraph: {
     type: "website",
-    siteName: "결 GYEOL",
-    title: "결 GYEOL | 사주·수비학으로 보는 나·관계·운세",
+    siteName: "결 GYEOL · MY GYEOL",
+    title: "결 GYEOL (MY GYEOL) | 사주·수비학으로 보는 나·관계·운세",
     description:
       "사주와 수비학을 분리해 나의 성향, 관계, 오늘과 올해의 흐름을 상징적으로 살펴보세요.",
     locale: "en_US",
@@ -56,7 +58,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "결 GYEOL | 사주·수비학으로 보는 나·관계·운세",
+    title: "결 GYEOL (MY GYEOL) | 사주·수비학으로 보는 나·관계·운세",
     description:
       "사주와 수비학을 분리해 나의 성향, 관계, 오늘과 올해의 흐름을 상징적으로 살펴보세요.",
     images: [openGraphImage],

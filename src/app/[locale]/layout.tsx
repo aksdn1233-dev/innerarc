@@ -6,6 +6,7 @@ import {
   socialImagePath,
   socialImageSize,
 } from "@/app/social-image";
+import { BRAND_SEARCH_ALIASES, OFFICIAL_NAVER_BLOG_URL } from "@/core/brand-links";
 import { resolvePublicAppUrl } from "@/core/site-url";
 import { isLocale, locales } from "@/i18n/config";
 import { getLocalizedSiteMetadata } from "@/i18n/site-metadata";
@@ -34,11 +35,11 @@ export async function generateMetadata({
     title: copy.title,
     description: copy.description,
     keywords: locale === "ko"
-      ? ["사주", "무료 사주", "운세", "오늘의 운세", "운명수", "수비학", "궁합", "관계 리딩"]
-      : ["Saju", "Four Pillars", "numerology", "daily flow", "relationship reading"],
+      ? [...BRAND_SEARCH_ALIASES, "사주", "무료 사주", "운세", "오늘의 운세", "운명수", "수비학", "궁합", "관계 리딩"]
+      : [...BRAND_SEARCH_ALIASES, "Saju", "Four Pillars", "numerology", "daily flow", "relationship reading"],
     openGraph: {
       type: "website",
-      siteName: "결 GYEOL",
+      siteName: "결 GYEOL · MY GYEOL",
       title: copy.title,
       description: copy.description,
       locale: copy.openGraphLocale,
@@ -73,14 +74,16 @@ export default async function LocaleLayout({
         "@type": "Organization",
         "@id": `${baseUrl.origin}/#organization`,
         name: "결 GYEOL",
+        alternateName: BRAND_SEARCH_ALIASES,
         url: baseUrl.origin,
         logo: new URL("/icon.png", baseUrl).toString(),
+        sameAs: [OFFICIAL_NAVER_BLOG_URL],
       },
       {
         "@type": "WebSite",
         "@id": `${baseUrl.origin}/#website`,
         name: "결 GYEOL",
-        alternateName: locale === "ko" ? "결" : "GYEOL",
+        alternateName: BRAND_SEARCH_ALIASES,
         url: homeUrl,
         description: copy.description,
         inLanguage: locale === "ko" ? "ko-KR" : "en-US",

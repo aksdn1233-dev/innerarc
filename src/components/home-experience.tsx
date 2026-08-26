@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { MeteorTrails, NightHorizon, SceneDivider } from "@/components/brand-visuals";
 import { ReviewEvidenceSection } from "@/components/review-evidence-section";
 import { captureConversionEvent } from "@/core/analytics";
+import { OFFICIAL_NAVER_BLOG_URL } from "@/core/brand-links";
 import type { ProductPricingSnapshot } from "@/core/product-prices";
 import type { PublicReview } from "@/core/reviews";
 import { MIN_BIRTH_DATE, currentMaxBirthDate, isAcceptedBirthDate } from "@/core/birth-range";
@@ -814,7 +815,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
 
         <footer className="home-footer">
           <div><strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong><p>{locale === "ko" ? "나의 성향과 관계, 올해의 흐름을 읽는 리딩" : "Readings for your tendencies, relationships, and year ahead"}</p></div>
-          <nav aria-label={locale === "ko" ? "법률 안내" : "Legal"}><Link href={`/${locale}/terms`}>{locale === "ko" ? "이용조건" : "Terms"}</Link><Link href={`/${locale}/privacy`}>{locale === "ko" ? "개인정보" : "Privacy"}</Link><Link href={`/${locale}/orders`}>{locale === "ko" ? "구매 내역" : "Find a purchase"}</Link><Link href={`/${locale}/support`}>{locale === "ko" ? "고객 문의" : "Support"}</Link></nav>
+          <nav aria-label={locale === "ko" ? "공식 채널 및 법률 안내" : "Official channels and legal"}><a href={OFFICIAL_NAVER_BLOG_URL} rel="me noopener noreferrer" target="_blank">{locale === "ko" ? "MY GYEOL 공식 블로그" : "MY GYEOL official blog"}</a><Link href={`/${locale}/terms`}>{locale === "ko" ? "이용조건" : "Terms"}</Link><Link href={`/${locale}/privacy`}>{locale === "ko" ? "개인정보" : "Privacy"}</Link><Link href={`/${locale}/orders`}>{locale === "ko" ? "구매 내역" : "Find a purchase"}</Link><Link href={`/${locale}/support`}>{locale === "ko" ? "고객 문의" : "Support"}</Link></nav>
           <small>{locale === "ko" ? "별루프 · 대표 박서준 · 사업자등록번호 482-12-03629 · 부산광역시 북구" : "Byeolloof · Busan, Republic of Korea"}</small>
         </footer>
           </>

@@ -7,6 +7,7 @@ import {
   socialImagePath,
   socialImageSize,
 } from "@/app/social-image";
+import { BRAND_SEARCH_ALIASES, OFFICIAL_NAVER_BLOG_URL } from "@/core/brand-links";
 import { getLocalizedSiteMetadata } from "@/i18n/site-metadata";
 
 describe("site sharing metadata", () => {
@@ -17,10 +18,24 @@ describe("site sharing metadata", () => {
 
     expect(ko.title).toContain("사주·수비학");
     expect(en.title).toContain("Saju, Numerology");
+    expect(ko.title).toContain("MY GYEOL");
+    expect(en.title).toContain("MY GYEOL");
     expect(ko.openGraphLocale).toBe("ko_KR");
     expect(en.openGraphLocale).toBe("en_US");
     expect(combined).not.toMatch(/타로·신점|premium tarot/i);
     expect(combined).not.toMatch(/정확도|정확히 예측|반드시|보장|accuracy|predicts? exactly|guaranteed/i);
+  });
+
+  it("connects the MY GYEOL search aliases to the official Naver blog", async () => {
+    expect(BRAND_SEARCH_ALIASES).toContain("MY GYEOL");
+    expect(OFFICIAL_NAVER_BLOG_URL).toBe("https://blog.naver.com/qkrehgus5886");
+
+    const localeLayout = await readFile(join("src", "app", "[locale]", "layout.tsx"), "utf8");
+    const homeExperience = await readFile(join("src", "components", "home-experience.tsx"), "utf8");
+
+    expect(localeLayout).toContain("sameAs: [OFFICIAL_NAVER_BLOG_URL]");
+    expect(localeLayout).toContain("alternateName: BRAND_SEARCH_ALIASES");
+    expect(homeExperience).toContain("MY GYEOL 공식 블로그");
   });
 
   it("ships one bounded first-party PNG with explicit accessible metadata", async () => {
