@@ -214,6 +214,10 @@ The final runbook must add named on-call, legal/privacy, security, payment-suppo
 - Wait for the retained Vinext server to print its Local URL before probing it, and request that
   exact hostname. A development server may bind `localhost` over IPv6 while an immediate
   `127.0.0.1` probe refuses; a successful retry on the printed URL is the required evidence.
+- Turbopack rejects a detached deployment worktree when its `node_modules` is a symlink outside
+  that worktree's filesystem root. Run the Next production build in the normal checkout, and use
+  the verified Vinext build for exact-commit Sites packaging; alternatively install real local
+  dependencies inside the detached worktree rather than weakening the filesystem-root check.
 
 ## Retired three-day campaign guard
 
