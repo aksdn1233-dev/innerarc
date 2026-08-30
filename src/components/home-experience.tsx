@@ -35,6 +35,8 @@ type ReadingProductId = "comprehensive" | "premium_pdf";
 type FocusId = "work" | "relationships" | "health" | "growth" | "money";
 type IntakeError = Readonly<{ field: "birthDate" | "privacy" | "giftConsent"; message: string }>;
 
+const CAMPAIGN_DISMISS_KEY = "gyeol.campaign.one-week-extension-1500.dismissed.v1";
+
 const concernExamples: Record<Locale, Record<FocusId, string>> = {
   ko: {
     work: "예: 지금 회사를 계속 다니는 게 맞을까요, 이직 준비를 시작해야 할까요?",
@@ -248,6 +250,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   const [intakeStep, setIntakeStep] = useState<1 | 2>(1);
   const [gender, setGender] = useState<"female" | "male" | "unstated">("unstated");
   const [readingFor, setReadingFor] = useState<"self" | "gift">("self");
+  const [campaignOpen, setCampaignOpen] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const heroAudioRef = useRef<HTMLAudioElement>(null);
@@ -269,8 +272,36 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
     return {
       ...product,
       price: formatWon(pricing.prices[productCode], locale),
+      regularPrice: formatWon(pricing.regularPrices[productCode], locale),
     };
   });
+
+  const campaignEndLabel = pricing.campaign
+    ? new Intl.DateTimeFormat(locale === "ko" ? "ko-KR" : "en-US", {
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        timeZone: "Asia/Seoul",
+      }).format(new Date(pricing.campaign.endsAt))
+    : "";
+
+  useEffect(() => {
+    if (showEverything || !pricing.campaign) return;
+    const frame = window.requestAnimationFrame(() => {
+      try {
+        setCampaignOpen(window.sessionStorage.getItem(CAMPAIGN_DISMISS_KEY) !== "1");
+      } catch {
+        setCampaignOpen(false);
+      }
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [pricing.campaign, showEverything]);
+
+  function closeCampaign() {
+    setCampaignOpen(false);
+    try { window.sessionStorage.setItem(CAMPAIGN_DISMISS_KEY, "1"); } catch { /* session-only fallback */ }
+  }
 
   useEffect(() => {
     if (!trackedRef.current.has("landing")) {
@@ -435,6 +466,31 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
 
   return (
     <>
+      {campaignOpen && pricing.campaign && (
+        <div className="campaign-modal-backdrop" role="presentation" onKeyDown={(event) => {
+          if (event.key === "Escape") closeCampaign();
+        }} onMouseDown={(event) => {
+          if (event.target === event.currentTarget) closeCampaign();
+        }}>
+          <section aria-labelledby="campaign-modal-title" aria-modal="true" className="campaign-modal" role="dialog">
+            <button autoFocus aria-label={locale === "ko" ? "팝업 닫기" : "Close"} className="campaign-modal-close" onClick={closeCampaign} type="button">×</button>
+            <p className="eyebrow">ONE WEEK EXTENSION</p>
+            <h2 id="campaign-modal-title">{locale === "ko" ? "정상가 최대 79,000원, 지금은 1,500원" : "Regular price up to ₩79,000, now ₩1,500"}</h2>
+            <p>{locale === "ko"
+              ? `요청이 많아 할인 기간을 단 일주일 연장했습니다. 모든 디지털 리딩은 ${campaignEndLabel}까지 1회 1,500원입니다.`
+              : `The discount has been extended for one week. Every digital reading is ₩1,500 until ${campaignEndLabel} KST.`}</p>
+            <div className="campaign-prize-callout">
+              <strong>{locale === "ko" ? "후기·공유 이벤트 진행 중" : "Review & share event"}</strong>
+              <span>{locale === "ko" ? "후기 작성자 중 1명을 추첨해 신세계상품권 15만원 상당 제공" : "One reviewer will be drawn for a Shinsegae gift certificate worth ₩150,000"}</span>
+            </div>
+            <div className="campaign-modal-actions">
+              <Link className="primary-button" href={`/${locale}/reading`} prefetch={false} onClick={closeCampaign}>{locale === "ko" ? "1,500원 리딩 보기" : "See ₩1,500 readings"}</Link>
+              <Link className="secondary-button" href={`/${locale}/events#review-event`} prefetch={false} onClick={closeCampaign}>{locale === "ko" ? "후기 이벤트 보기" : "See review event"}</Link>
+            </div>
+            <small>{locale === "ko" ? "액세서리 제외 · 친구 초대 쿠폰과 중복 적용 불가 · 상세 조건은 이벤트 페이지에서 확인" : "Accessories excluded · referral coupons do not stack · see event terms for details"}</small>
+          </section>
+        </div>
+      )}
       <main className="shell home-shell" id="main-content" tabIndex={-1}>
         {/* Over the opening screen the header is chrome, not content: it goes transparent
             and hands its links to a panel, so nothing competes with the title. */}
@@ -692,7 +748,9 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                 <small>{product.badge}</small>
                 <h3>{product.name}</h3>
                 <div className="campaign-price-row">
+                  {pricing.campaign && <del>{product.regularPrice}</del>}
                   <strong>{product.price}</strong>
+                  {pricing.campaign && <span>{locale === "ko" ? "1주일 연장 할인가" : "One-week extension"}</span>}
                 </div>
                 <p>{product.description}</p>
                 <button type="button" onClick={() => chooseProduct(product.id, "product_card")}>{product.button} · {product.price}</button>

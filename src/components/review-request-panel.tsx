@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { ServiceShare } from "@/components/service-share";
+import { resolveProductPricing } from "@/core/product-prices";
 import {
   CHANGED_ACTIONS,
   isAllowedDisplayName,
@@ -35,10 +37,12 @@ export function ReviewRequestPanel({ locale, orderId, access, proof, ticket, exi
   const [error, setError] = useState<string | null>(null);
   const [changedAction, setChangedAction] = useState<ChangedAction>("considering");
   const [publicConsent, setPublicConsent] = useState(false);
+  const [campaignEntryConsent, setCampaignEntryConsent] = useState(false);
   const [displayName, setDisplayName] = useState("");
   const [saved, setSaved] = useState<OwnReviewState | null>(existing);
   const [consentBusy, setConsentBusy] = useState(false);
   const [consentNote, setConsentNote] = useState<string | null>(null);
+  const campaignActive = Boolean(resolveProductPricing().campaign);
 
   const proofBody = {
     orderId,
@@ -78,6 +82,7 @@ export function ReviewRequestPanel({ locale, orderId, access, proof, ticket, exi
             publicConsent,
             displayName: displayName.trim(),
             hideProductContext: form.get("hideProductContext") === "on",
+            campaignEntryConsent: campaignActive && campaignEntryConsent,
           },
         }),
       });
@@ -87,6 +92,7 @@ export function ReviewRequestPanel({ locale, orderId, access, proof, ticket, exi
         publicConsent,
         displayName: displayName.trim(),
         hideProductContext: form.get("hideProductContext") === "on",
+        campaignEntryConsent: campaignActive && campaignEntryConsent,
         submittedAt: new Date().toISOString(),
       });
       setPhase("done");
@@ -132,6 +138,13 @@ export function ReviewRequestPanel({ locale, orderId, access, proof, ticket, exi
           <span className={`review-status is-${saved.status}`}>{t[STATUS_KEY[saved.status]]}</span>
           {saved.publicConsent ? t.donePublic : t.donePrivate}
         </p>
+        {saved.campaignEntryConsent && (
+          <div className="review-campaign-status" role="status">
+            <strong>{t.campaignEntered}</strong>
+            <span>{t.campaignPrize}</span>
+          </div>
+        )}
+        <ServiceShare compact locale={locale} url={`/${locale}/events`} />
         <div className="review-consent-actions">
           <button
             className="secondary-button"
@@ -154,6 +167,12 @@ export function ReviewRequestPanel({ locale, orderId, access, proof, ticket, exi
         <p className="eyebrow">{t.eyebrow}</p>
         <h2 id="review-panel-title">{t.title}</h2>
         <p>{t.intro}</p>
+        {campaignActive && (
+          <div className="review-campaign-invite">
+            <strong>{t.campaignPrize}</strong>
+            <span>{locale === "ko" ? "후기 제출 시 별도 동의하면 자동 응모됩니다." : "Opt in when submitting your review to enter."}</span>
+          </div>
+        )}
         <button className="secondary-button" onClick={() => setPhase("form")} type="button">
           {t.open}
         </button>
@@ -245,6 +264,23 @@ export function ReviewRequestPanel({ locale, orderId, access, proof, ticket, exi
             </div>
           )}
         </fieldset>
+
+        {campaignActive && (
+          <fieldset className="review-consent review-campaign-consent">
+            <legend>{t.campaignTitle}</legend>
+            <p><strong>{t.campaignPrize}</strong></p>
+            <label className="check">
+              <input
+                checked={campaignEntryConsent}
+                onChange={(event) => setCampaignEntryConsent(event.target.checked)}
+                type="checkbox"
+              />
+              <span>{t.campaignLabel}</span>
+            </label>
+            <small>{t.campaignHelp}</small>
+            <ServiceShare compact locale={locale} url={`/${locale}/events`} />
+          </fieldset>
+        )}
 
         <p className="review-privacy-note">{t.privacyNote}</p>
         {error && <p className="field-error" role="alert">{error}</p>}

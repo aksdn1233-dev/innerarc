@@ -9,8 +9,8 @@ export const STANDARD_PRODUCT_PRICES_KRW = {
  *
  * These are kept for one reason: a payment placed while the event was live was authorised
  * at these amounts, and verification checks a charge against the amounts this code knows.
- * Dropping them would make those historical orders fail to verify. Nothing reads this to
- * decide a price — `resolveProductPricing` no longer has a discounted branch.
+ * Dropping them would make those historical orders fail to verify. They never decide the
+ * active price; only the bounded schedule in `resolveProductPricing` can do that.
  */
 export const RETIRED_EVENT_PRODUCT_PRICES_KRW = {
   plus_30d: 19_000,
@@ -18,12 +18,20 @@ export const RETIRED_EVENT_PRODUCT_PRICES_KRW = {
   premium_pdf: 39_000,
 } as const;
 
-/** Historical amounts retained only for provider callback and order verification. */
-export const RETIRED_THREE_DAY_EVENT_PRODUCT_PRICES_KRW = {
+/**
+ * The 1,500 KRW amounts were first used by the retired three-day event and are reused
+ * by the owner-authorized one-week extension. Keeping one set also preserves historical
+ * callback verification without inventing a second identical amount source.
+ */
+export const CAMPAIGN_1500_PRODUCT_PRICES_KRW = {
   plus_30d: 1_500,
   pro_30d: 1_500,
   premium_pdf: 1_500,
 } as const;
+
+export const ONE_WEEK_EXTENSION_START = "2026-08-30T07:50:00.000Z";
+export const ONE_WEEK_EXTENSION_END = "2026-09-06T07:50:00.000Z";
+export const ONE_WEEK_REVIEW_DRAW_AT = "2026-09-08T09:00:00.000Z";
 
 export const PURCHASABLE_PRODUCT_CODES = ["plus_30d", "pro_30d", "premium_pdf"] as const;
 
@@ -34,19 +42,29 @@ export type ProductPricingSnapshot = Readonly<{
   prices: ProductPriceSet;
   regularPrices: ProductPriceSet;
   campaign: null | Readonly<{
-    code: "three_day_1500";
+    code: "one_week_extension_1500";
     startsAt: string;
     endsAt: string;
   }>;
 }>;
 
 /** Resolves the single server-authoritative amount shown, ordered, and charged. */
-export function resolveProductPricing(_now: Date = new Date()): ProductPricingSnapshot {
-  void _now;
+export function resolveProductPricing(now: Date = new Date()): ProductPricingSnapshot {
+  const startsAt = new Date(ONE_WEEK_EXTENSION_START);
+  const endsAt = new Date(ONE_WEEK_EXTENSION_END);
+  const campaignActive = now >= startsAt && now < endsAt;
   return {
-    prices: STANDARD_PRODUCT_PRICES_KRW,
+    prices: campaignActive
+      ? CAMPAIGN_1500_PRODUCT_PRICES_KRW
+      : STANDARD_PRODUCT_PRICES_KRW,
     regularPrices: STANDARD_PRODUCT_PRICES_KRW,
-    campaign: null,
+    campaign: campaignActive
+      ? {
+          code: "one_week_extension_1500",
+          startsAt: ONE_WEEK_EXTENSION_START,
+          endsAt: ONE_WEEK_EXTENSION_END,
+        }
+      : null,
   };
 }
 
@@ -58,6 +76,6 @@ export function knownScheduledPrices(productCode: ProductPriceCode): readonly nu
   return [...new Set([
     STANDARD_PRODUCT_PRICES_KRW[productCode],
     RETIRED_EVENT_PRODUCT_PRICES_KRW[productCode],
-    RETIRED_THREE_DAY_EVENT_PRODUCT_PRICES_KRW[productCode],
+    CAMPAIGN_1500_PRODUCT_PRICES_KRW[productCode],
   ])];
 }

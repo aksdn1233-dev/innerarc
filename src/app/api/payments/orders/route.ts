@@ -3,6 +3,7 @@ import { crossOriginRefused, isSameOriginRequest } from "@/server/same-origin";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { resolvePublicAppUrl } from "@/core/site-url";
+import { resolveProductPricing } from "@/core/product-prices";
 import { isLocale } from "@/i18n/config";
 import { PaidReadingInputSchema } from "@/core/paid-reading";
 import { resolveSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -52,8 +53,10 @@ export async function POST(request: Request) {
   }
   // The incident pause switch can be changed without a rebuild. Payment readiness is
   // otherwise determined directly by provider, credentials, database, and catalog.
+  const now = new Date();
+  const pricing = resolveProductPricing(now);
   const gate = await readOperationsGate(admin);
-  const readiness = inspectPaymentReadiness(process.env, undefined);
+  const readiness = inspectPaymentReadiness(process.env, undefined, now);
   if (!readiness.enabled) {
     return NextResponse.json({ error: "PAYMENTS_UNAVAILABLE" }, { status: 503 });
   }
@@ -62,8 +65,11 @@ export async function POST(request: Request) {
   }
 
   const product = readiness.config.products[parsed.data.productCode];
+  if (pricing.campaign && parsed.data.couponCode) {
+    return NextResponse.json({ error: "INVALID_COUPON" }, { status: 400 });
+  }
   const couponApplied = Boolean(parsed.data.couponCode) && Boolean(parsed.data.customerPhone) &&
-    validateReferralCoupon({ code: parsed.data.couponCode!, customerPhone: parsed.data.customerPhone!, productCode: product.code, now: new Date() });
+    validateReferralCoupon({ code: parsed.data.couponCode!, customerPhone: parsed.data.customerPhone!, productCode: product.code, now });
   if (parsed.data.couponCode && !couponApplied) {
     return NextResponse.json({ error: "INVALID_COUPON" }, { status: 400 });
   }
@@ -94,7 +100,7 @@ export async function POST(request: Request) {
   const phoneHash = parsed.data.customerPhone
     ? hashCustomerPhone(parsed.data.customerPhone)
     : null;
-  const limit = await checkCheckoutLimit(admin, phoneHash, new Date());
+  const limit = await checkCheckoutLimit(admin, phoneHash, now);
   if (!limit.allowed) return tooManyRequests(limit);
   if (couponApplied && phoneHash) {
     const { data: previous } = await admin.from("payment_orders")

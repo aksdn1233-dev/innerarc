@@ -1247,3 +1247,33 @@
 - Rollback reference: production v77, commit
   `c5a26910e378756a504f266e2dfabd827a6678bf`.
 - Status: Withdrawn immediately; historical payment evidence and separate coupon entitlements remain.
+
+## D-082 - Run one exact-week 1,500 KRW extension with a separately consented review draw
+
+- Date: 2026-08-30
+- Decision: Run all three digital readings at 1,500 KRW from 2026-08-30 16:50 through
+  2026-09-06 16:50 Asia/Seoul, then restore 5,500/39,000/79,000 KRW automatically. Show
+  normal and campaign prices, a once-per-session home-entry notice, and persistent Event/Review/FAQ
+  links. Add an optional review-draw consent separate from public-review consent. Draw one eligible
+  reviewer for a Shinsegae gift certificate worth 150,000 KRW; sharing stays explicit and untracked.
+- Demand and distribution: The owner directly requested a one-week extension and Instagram
+  creative after the former campaign was withdrawn. Distribution is first-party site surfaces,
+  user-initiated sharing, and an owner-posted Instagram asset. The request is demand evidence for
+  the campaign, not evidence for normal-price willingness, repeat purchase, or retention.
+- Economics: This is below the former 9,600/39,000 KRW promotion and the current normal catalog.
+  One hundred 1,500 KRW orders equal the 150,000 KRW prize at gross revenue before provider fees,
+  VAT, refunds, support, chargebacks, and displaced normal-price revenue. No profitability claim is
+  permitted; real provider and fulfilment costs remain a measurement gap.
+- Privacy, safety, and claims: The new consent stores campaign code, consent flag, and timestamp on
+  the existing operator-only review. It collects no new contact, birth, report, recipient, or share
+  result. Public-review publication remains a separate opt-in plus moderation. Promotion text names
+  the exact window, normal comparison prices, exclusions, one winner, prize value, draw timing, and
+  non-stacking rule. Symbolic-reflection and no-guarantee boundaries remain unchanged.
+- Success, guardrails, and reversal: Measure verified non-refunded orders, checkout completion,
+  report readiness, eligible reviews, and consented aggregate acquisition. Require zero amount
+  mismatch, coupon stacking, negative charge, privacy incident, or misleading-promotion complaint.
+  Pause sales on any payment mismatch or report-delivery failure. Automatic expiry ends the price;
+  rollback to pre-campaign commit `a39e80a` removes presentation and current pricing while preserving
+  historical payment verification, valid entries, coupon rights, and the prize obligation.
+- Detailed operating and draw rules: `docs/Campaign-2026-08-30.md`.
+- Status: Owner-authorized for production deployment.

@@ -47,7 +47,7 @@ test("the English page shows the Korean chart with an English derivation", async
   await page.locator("#saju-birthDate").fill("1994-11-04");
   await page.locator("#saju-birthTime").fill("09:30");
   await page.getByRole("checkbox").check();
-  await page.getByRole("button", { name: "Get the chart for ₩5,500" }).click();
+  await page.getByRole("button", { name: "Get the chart for ₩1,500" }).click();
   await expect(page).toHaveURL(/\/en\/plans\?product=plus_30d$/);
   await expect(page.locator('[data-product="plus_30d"]')).toContainText("Four Pillars chart");
 });

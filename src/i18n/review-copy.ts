@@ -87,6 +87,11 @@ export const reviewCopy = {
     hideContextHelp: "선택하시면 공개 화면에는 2·3·4번 답변만 표시됩니다.",
     privacyNote:
       "생년월일, 입력하신 고민 내용, 결제 정보, 리포트 본문은 후기에 포함되지 않으며 공개 화면에도 나타나지 않습니다.",
+    campaignTitle: "후기 이벤트 응모 (선택)",
+    campaignLabel: "이 후기를 1주일 연장 이벤트 추첨 대상으로 등록하는 데 동의합니다.",
+    campaignHelp: "행사 기간에 동의하고 제출한 후기만 응모됩니다. 공개 동의와는 별개이며, 주문당 1회 응모할 수 있습니다. 공유 성공 여부는 추적하거나 저장하지 않습니다.",
+    campaignPrize: "추첨 1명 · 신세계상품권 15만원 상당",
+    campaignEntered: "후기 이벤트 응모가 완료되었습니다.",
     submit: "후기 보내기",
     sending: "보내는 중…",
     doneTitle: "후기가 접수되었습니다.",
@@ -131,6 +136,11 @@ export const reviewCopy = {
     hideContextHelp: "With this on, only answers 2, 3, and 4 appear publicly.",
     privacyNote:
       "Your birth date, the concern you typed, payment details, and the report itself are not part of a review and never appear publicly.",
+    campaignTitle: "Prize draw entry (optional)",
+    campaignLabel: "I agree to enter this review in the one-week extension prize draw.",
+    campaignHelp: "Only reviews submitted with this consent during the campaign are eligible. This is separate from public-review consent and limited to one entry per order. Share completion is not tracked or stored.",
+    campaignPrize: "One winner · Shinsegae gift certificate worth ₩150,000",
+    campaignEntered: "Your prize-draw entry is recorded.",
     submit: "Send feedback",
     sending: "Sending…",
     doneTitle: "Your feedback was received.",

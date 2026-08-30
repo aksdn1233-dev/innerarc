@@ -207,3 +207,9 @@ Last updated: 2026-08-22
 - [x] The three-day 1,500 KRW campaign is fully withdrawn from pricing and public presentation;
   5,500/39,000/79,000 KRW are authoritative while retired amounts remain verification-only for
   historical orders and the separate friend coupon keeps its issued rights.
+- [x] The owner-authorized one-week extension reuses 1,500 KRW only from 2026-08-30 16:50 through
+  2026-09-06 16:50 KST, shows every normal-price comparison and exclusion, blocks coupon stacking
+  in both UI and server order creation, and returns to 5,500/39,000/79,000 KRW automatically.
+- [x] The review draw uses a separate optional consent, one entry per verified order, operator-only
+  campaign metadata without new contact/report/birth/share-result collection, one disclosed winner
+  and prize, a documented draw/claim process, and an independently moderated public-review consent.

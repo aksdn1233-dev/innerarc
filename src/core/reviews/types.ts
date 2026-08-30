@@ -31,6 +31,7 @@ export type ReviewSubmission = ReviewAnswers & Readonly<{
   publicConsent: boolean;
   displayName: string;
   hideProductContext: boolean;
+  campaignEntryConsent: boolean;
 }>;
 
 /** The stored shape. Mirrors the columns of public.product_reviews. */
@@ -79,5 +80,6 @@ export type OwnReviewState = Readonly<{
   publicConsent: boolean;
   displayName: string;
   hideProductContext: boolean;
+  campaignEntryConsent: boolean;
   submittedAt: string;
 }>;

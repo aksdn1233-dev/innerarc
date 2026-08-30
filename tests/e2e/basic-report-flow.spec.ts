@@ -15,7 +15,7 @@ test("the retired Core product is absent and Detailed becomes the default", asyn
   await expect(page.locator(".editorial-product:not(.is-free)")).toHaveCount(2);
   await expect(
     page.locator(".editorial-product:not(.is-free)").first().locator(".campaign-price-row strong"),
-  ).toContainText("39,000");
+  ).toContainText("1,500");
 
   await page.locator("#birthDate").fill("1994-11-04");
   await page.locator('input[name="privacyRequired"]').check();

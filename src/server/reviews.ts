@@ -1,6 +1,8 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import {
   isReviewProductCode,
+  buildCampaignEntryReceipt,
+  preserveCampaignReceipt,
   normalizeDisplayName,
   resolveReviewType,
   toPublicReviews,
@@ -10,6 +12,7 @@ import {
   type ReviewType,
   type StoredReviewRow,
 } from "@/core/reviews";
+import { resolveProductPricing } from "@/core/product-prices";
 import { getAuthorizedStoredReport } from "@/server/reports/access";
 
 const REVIEW_COLUMNS =
@@ -124,6 +127,9 @@ export async function saveReview(
   if (!existing.available) return { ok: false, reason: "UNAVAILABLE" };
   if (existing.data) return { ok: false, reason: "ALREADY_REVIEWED" };
 
+  const now = new Date();
+  const campaign = resolveProductPricing(now).campaign;
+  const campaignEntryConsent = Boolean(campaign && input.submission.campaignEntryConsent);
   const { error } = await admin.from("product_reviews").insert({
     order_id: input.authorization.orderId,
     review_type: input.authorization.reviewType,
@@ -136,6 +142,9 @@ export async function saveReview(
     public_consent: input.submission.publicConsent,
     display_name: normalizeDisplayName(input.submission.displayName),
     hide_product_context: input.submission.hideProductContext,
+    admin_note: campaignEntryConsent
+      ? buildCampaignEntryReceipt(campaign!.code, now)
+      : "",
     status: "pending",
   });
   if (error) {
@@ -260,12 +269,20 @@ export async function moderateReview(
   input: Readonly<{ status: ReviewStatus; reviewType?: ReviewType; adminNote?: string }>,
 ): Promise<boolean> {
   const now = new Date().toISOString();
+  const { data: existing, error: existingError } = await admin
+    .from("product_reviews")
+    .select("admin_note")
+    .eq("id", id)
+    .maybeSingle();
+  if (existingError) return false;
   const { error } = await admin
     .from("product_reviews")
     .update({
       status: input.status,
       ...(input.reviewType ? { review_type: input.reviewType } : {}),
-      ...(input.adminNote === undefined ? {} : { admin_note: input.adminNote }),
+      ...(input.adminNote === undefined
+        ? {}
+        : { admin_note: preserveCampaignReceipt(String(existing?.admin_note ?? ""), input.adminNote) }),
       approved_at: input.status === "approved" ? now : null,
       updated_at: now,
     })

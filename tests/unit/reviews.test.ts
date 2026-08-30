@@ -2,8 +2,12 @@ import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 import {
   ReviewSubmissionSchema,
+  buildCampaignEntryReceipt,
   isAllowedDisplayName,
   normalizeDisplayName,
+  operatorNoteWithoutCampaignReceipt,
+  preserveCampaignReceipt,
+  readCampaignEntryReceipt,
   publishedMonth,
   resolveReviewType,
   summarizeReviewOutcomes,
@@ -131,6 +135,22 @@ describe("the reviewer's own view of their submission", () => {
     expect(own.publicConsent).toBe(true);
     expect(JSON.stringify(own)).not.toContain(storedReview.wanted_to_understand);
   });
+
+  it("shows a separately consented campaign receipt without exposing it publicly", () => {
+    const marker = buildCampaignEntryReceipt(
+      "one_week_extension_1500",
+      new Date("2026-08-30T08:00:00.000Z"),
+    );
+    const entered = { ...storedReview, admin_note: `${marker}\noperator note` };
+    expect(toOwnReviewState(entered).campaignEntryConsent).toBe(true);
+    expect(JSON.stringify(toPublicReview(entered))).not.toContain("campaign-entry");
+    expect(readCampaignEntryReceipt(entered.admin_note)).toEqual({
+      code: "one_week_extension_1500",
+      enteredAt: "2026-08-30T08:00:00.000Z",
+    });
+    expect(operatorNoteWithoutCampaignReceipt(entered.admin_note)).toBe("operator note");
+    expect(preserveCampaignReceipt(entered.admin_note, "new note")).toBe(`${marker}\nnew note`);
+  });
 });
 
 describe("an anonymous display name stays anonymous", () => {
@@ -164,6 +184,17 @@ describe("what the submission form will accept", () => {
     expect(parsed.publicConsent).toBe(false);
     expect(parsed.hideProductContext).toBe(false);
     expect(parsed.displayName).toBe("");
+    expect(parsed.campaignEntryConsent).toBe(false);
+  });
+
+  it("keeps prize-draw consent independent from publication consent", () => {
+    const parsed = ReviewSubmissionSchema.parse({
+      ...valid,
+      publicConsent: false,
+      campaignEntryConsent: true,
+    });
+    expect(parsed.publicConsent).toBe(false);
+    expect(parsed.campaignEntryConsent).toBe(true);
   });
 
   it("refuses a review type chosen by whoever is filling in the form", () => {
@@ -319,6 +350,12 @@ describe("the review migration stays out of payment territory", () => {
     // Locked to the service role like every other operator-only table.
     expect(migration).toContain("enable row level security");
     expect(migration).toContain("revoke all on table public.product_reviews from public, anon, authenticated");
+  });
+
+  it("records campaign consent in the existing operator-only review without a migration", async () => {
+    const repository = withoutComments(await readFile("src/server/reviews.ts", "utf8"));
+    expect(repository).toContain("buildCampaignEntryReceipt");
+    expect(repository).not.toMatch(/customer_phone|email|birth_date|shipping_address|recipient/);
   });
 
   it("collects no birth date, concern text, or payment field", async () => {

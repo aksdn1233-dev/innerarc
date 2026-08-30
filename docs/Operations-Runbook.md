@@ -219,19 +219,31 @@ The final runbook must add named on-call, legal/privacy, security, payment-suppo
   the verified Vinext build for exact-commit Sites packaging; alternatively install real local
   dependencies inside the detached worktree rather than weakening the filesystem-root check.
 
-## Retired three-day campaign guard
+## Active one-week extension guard and review draw
 
-- The 2026-08-23–2026-08-26 1,500 KRW campaign is withdrawn. The current catalog, order request,
-  and provider amount must always resolve to 5,500/39,000/79,000 KRW.
-- Keep 1,500 KRW in historical amount verification only. If a former authorized order fails,
-  restore that verification allowlist rather than any campaign clock, popup, banner, or public copy.
-- The separate friend coupon remains valid only on the 39,000/79,000 KRW products using the
-  issuing checkout phone and its existing expiry. Monitor abuse, duplicate use, and support contacts.
-- On a current amount mismatch or material payment/report error, pause new sales through the
-  existing operations gate and roll back to production v77 commit
-  `c5a26910e378756a504f266e2dfabd827a6678bf` while keeping the campaign withdrawn manually.
+- From 2026-08-30 16:50 until 2026-09-06 16:50 Asia/Seoul, the current catalog, order request,
+  and provider amount must all resolve to 1,500 KRW for each digital reading. At the exact ending
+  instant they must all resolve to 5,500/39,000/79,000 KRW without an environment edit.
+- Keep 1,500 KRW in historical amount verification after expiry. If a former authorized order
+  fails, restore only its verification allowlist, not an expired campaign clock or public claim.
+- Campaign checkout must not render the referral-coupon field. The order API must refuse any coupon
+  submitted from a stale or forged client before discount arithmetic. After expiry the existing
+  coupon remains valid only on the 39,000/79,000 KRW products under its phone/expiry controls.
+- Review entries use a versioned server-authored receipt in the existing operator-only audit note,
+  so no campaign migration is required. If review reads or writes become unavailable, do not claim
+  that entries can be received; pause the draw CTA or roll back while preserving accepted entries.
+- On a current amount mismatch, negative/staked discount attempt, material payment/report error,
+  or privacy incident, pause new sales through the operations gate and roll back to pre-campaign
+  commit `a39e80a`. Existing accepted payment verification, valid entries, issued coupon rights,
+  and the prize obligation survive an early pause.
+- On 2026-09-08 18:00 KST, parse only valid `one_week_extension_1500` receipts whose timestamp
+  fall inside the event window and whose order remains completed and non-refunded. Sort stable IDs,
+  select one with a cryptographically secure random draw, and record eligible count, chosen review
+  ID, masked order number, timestamp, and operator. Publish only the masked order number. Verify a
+  claim through report ownership; request fulfilment details separately; redraw after seven days if
+  unclaimed. See `docs/Campaign-2026-08-30.md`.
 - `pnpm build:sites` refreshes the Sites artifact but not Next's `.next` directory. Run
   `pnpm build` before the production-server E2E wrapper; otherwise a newly added route can
   correctly exist in Sites output while the local Next E2E server still returns its prior 404.
-- A release is blocked if three-day campaign copy, popup chrome, utility links, discount labels,
-  or a current 1,500 KRW catalog/order/provider amount reappears.
+- A release is blocked if dates, normal-price comparisons, exclusions, winner/prize details, consent
+  boundaries, catalog/order/provider amounts, or automatic expiry disagree.

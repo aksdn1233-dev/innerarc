@@ -1,0 +1,149 @@
+/* One-week extension chrome and event additions. This file is removable as one unit
+   after the draw/claim window without touching the permanent report or checkout skin. */
+.campaign-utility-nav {
+  position: fixed;
+  z-index: 70;
+  top: calc(10px + env(safe-area-inset-top));
+  right: 18px;
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  border: 1px solid rgb(240 207 130 / 28%);
+  border-radius: 999px;
+  background: rgb(17 15 25 / 82%);
+  box-shadow: 0 12px 38px rgb(0 0 0 / 24%);
+  backdrop-filter: blur(16px);
+}
+
+.campaign-utility-nav a {
+  min-height: 36px;
+  padding: 8px 11px;
+  border-radius: 999px;
+  color: #f6dfaa;
+  font-size: .74rem;
+  font-weight: 850;
+  line-height: 20px;
+  text-decoration: none;
+}
+
+.campaign-utility-nav a:hover,
+.campaign-utility-nav a:focus-visible { background: rgb(246 223 170 / 12%); }
+
+.campaign-modal-backdrop {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: max(18px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom));
+  overflow-y: auto;
+  background: rgb(4 7 14 / 74%);
+  backdrop-filter: blur(10px);
+}
+
+.campaign-modal {
+  position: relative;
+  width: min(100%, 590px);
+  padding: clamp(28px, 5vw, 48px);
+  border: 1px solid rgb(235 196 113 / 34%);
+  border-radius: 28px;
+  color: #f3ede2;
+  background:
+    radial-gradient(circle at 88% 4%, rgb(219 179 96 / 22%), transparent 33%),
+    linear-gradient(145deg, #1f192a, #0d111b 68%);
+  box-shadow: 0 30px 100px rgb(0 0 0 / 60%), inset 0 1px rgb(255 255 255 / 8%);
+}
+
+.campaign-modal h2 { margin: 8px 0 14px; color: #fff8e9; font-size: clamp(2rem, 6vw, 3.25rem); line-height: 1.03; letter-spacing: -.045em; }
+.campaign-modal > p:not(.eyebrow) { color: #d8cfbf; line-height: 1.75; }
+.campaign-modal > small { display: block; margin-top: 18px; color: #aaa194; line-height: 1.55; }
+.campaign-modal-close { position: absolute; top: 14px; right: 16px; width: 42px; height: 42px; border: 0; border-radius: 50%; color: #fff; background: rgb(255 255 255 / 9%); font-size: 1.5rem; cursor: pointer; }
+.campaign-modal-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+.campaign-modal-actions .secondary-button { color: #f8e8c1; border-color: rgb(248 232 193 / 38%); background: transparent; }
+
+.campaign-prize-callout {
+  display: grid;
+  gap: 5px;
+  margin-top: 20px;
+  padding: 16px 18px;
+  border: 1px solid rgb(236 196 110 / 28%);
+  border-radius: 16px;
+  background: rgb(236 196 110 / 8%);
+}
+
+.campaign-prize-callout strong { color: #f3d899; }
+.campaign-prize-callout span { color: #c9bdad; font-size: .88rem; line-height: 1.55; }
+
+.plans-campaign-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  max-width: 1180px;
+  margin: 24px auto;
+  padding: 18px 22px;
+  border: 1px solid #d5ad55;
+  border-radius: 18px;
+  color: #3b2c13;
+  background: linear-gradient(100deg, #f2d994, #fff7de);
+}
+
+.plans-campaign-banner > span { display: grid; gap: 3px; }
+.plans-campaign-banner small { color: #725a2a; }
+.plans-campaign-banner a { color: inherit; font-weight: 850; }
+
+.event-countdown-copy { display: flex; flex-wrap: wrap; gap: 12px 22px; margin-top: 28px; color: #f0d18a; }
+.event-countdown-copy strong { letter-spacing: .08em; }
+.event-offer-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.event-offer-grid article { min-height: 460px; }
+.event-card-actions { position: relative; z-index: 1; display: grid; justify-items: start; gap: 10px; margin-top: 22px; }
+.event-card-actions > a { color: #efd493; font-weight: 800; }
+
+.event-terms {
+  width: min(860px, calc(100% - 36px));
+  margin: 100px auto 0;
+  padding: clamp(28px, 5vw, 50px);
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 26px;
+  background: rgb(255 255 255 / 3%);
+}
+
+.event-terms h2 { margin: 10px 0 24px; color: #fff8e9; font-size: clamp(2rem, 5vw, 3.5rem); }
+.event-terms ul { display: grid; gap: 12px; margin: 0; padding-left: 1.2rem; color: #bbb2a7; line-height: 1.7; }
+
+.review-campaign-invite,
+.review-campaign-status {
+  display: grid;
+  gap: 4px;
+  margin: 18px 0;
+  padding: 15px 17px;
+  border: 1px solid rgb(168 116 50 / 26%);
+  border-radius: 14px;
+  background: linear-gradient(120deg, rgb(231 199 129 / 14%), rgb(131 77 96 / 8%));
+}
+
+.review-campaign-invite strong,
+.review-campaign-status strong { color: #74501f; }
+.review-campaign-invite span,
+.review-campaign-status span { color: #71675c; font-size: .84rem; line-height: 1.55; }
+.review-campaign-consent { border-color: rgb(168 116 50 / 32%); background: rgb(231 199 129 / 8%); }
+.review-campaign-consent > p { margin: 0 0 10px; color: #74501f; }
+
+@media (max-width: 980px) {
+  .event-offer-grid { grid-template-columns: 1fr; }
+  .event-offer-grid article { min-height: 0; }
+}
+
+@media (max-width: 720px) {
+  .campaign-utility-nav { right: 10px; }
+  .campaign-modal-backdrop { align-items: end; padding: 10px; }
+  .campaign-modal { max-height: calc(100svh - 20px); padding: 28px 22px 24px; overflow-y: auto; border-radius: 24px; }
+  .campaign-modal-actions { display: grid; }
+  .campaign-modal-actions a { justify-content: center; width: 100%; }
+  .plans-campaign-banner { align-items: flex-start; flex-direction: column; }
+  .event-topbar { padding-top: 80px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .campaign-modal-backdrop { scroll-behavior: auto; }
+}

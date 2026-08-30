@@ -128,3 +128,9 @@
 - [x] Three-day campaign withdrawal removes its price branch, popup, utility links, plan banner,
   urgency copy, and public 1,500 KRW claims while preserving historical payment verification and
   existing friend-coupon entitlements; 728 unit and 205 browser cases pass with zero failures.
+- [x] The one-week owner-authorized extension uses one exact seven-day server clock across display,
+  order, provider amount, popup, event terms, and automatic expiry; campaign checkout rejects friend
+  coupons and retains stale-price refusal rather than stacking or creating a negative charge.
+- [x] The 150,000 KRW Shinsegae review draw states one winner, entry and draw times, exclusions,
+  claim method, and redraw rule; prize entry consent is separate from review submission/publication,
+  and adds no contact detail or external-share tracking.

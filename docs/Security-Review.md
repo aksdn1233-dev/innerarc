@@ -24,11 +24,17 @@ Scope: repository source, configuration, local production bundle, and automated 
   “view today” leaves storage untouched, and calculation makes no network, AI, account,
   analytics, notification, or payment request.
 - AI boundary: user context is delimited as untrusted data; structured output, canonical facts, high-risk routing, prompt-injection normalization, and overclaim screening are tested.
-- Retired-campaign/referral boundary: display and charge amounts share the standard server catalog;
-  former campaign amounts are historical-verification-only, while referral coupons are HMAC-signed,
-  time/product/phone bound, non-stackable, and raw phone
-  numbers are neither persisted nor returned. Redemption checks prior non-cancelled discounted
-  orders before provider creation. Add database-level uniqueness if this becomes permanent.
+- Campaign/referral boundary: display, order, and provider charge amounts share one exact-week
+  server schedule, then return automatically to the standard catalog. Former 1,500 KRW amounts
+  remain valid for historical verification. Referral coupons are HMAC-signed, time/product/phone
+  bound, and raw phone numbers are neither persisted nor returned. Campaign checkout hides the
+  coupon field and the order API independently rejects any stale or forged stacking attempt before
+  amount arithmetic, preventing a negative charge. Add database-level uniqueness if referral
+  issuance becomes permanent.
+- Review-draw consent is separate from feedback submission and public-review consent. A versioned
+  server-authored receipt in the existing service-role-only review audit note carries campaign code
+  and timestamp; it adds no contact, birth, report, recipient, or external-share result. Moderation
+  updates preserve the receipt while keeping the operator note editable.
 - Report experience survey: every write is same-origin and requires completed-report proof; all
   retention fields are fixed choices, the optional source detail is 40 characters without the
   envelope delimiter, legacy rows fail open as source-only answers, and only the allowlisted

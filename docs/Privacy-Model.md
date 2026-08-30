@@ -133,3 +133,14 @@ Account/profile until deletion; raw journal only for the selected period; masked
 Prompt injection seeking other users’ context, insecure object references, sensitive client analytics, staff browsing, over-broad exports, duplicate writes, backup residue, and relationship-data disclosure. Each needs automated authorization/deletion tests before release.
 
 Browser storage adds shared-device exposure, quota/corruption, and stale-retention risks. The persistent adapter validates strict shapes, field limits, real dates, timestamp order, and duplicate record/request IDs on every load; it discards the entire invalid payload safely, never stores consent merely because a checkbox was displayed, and provides a one-action clear control. The separate session handoff additionally enforces source/locale/context allowlists, one-time consumption, and a 30-minute maximum lifetime.
+## Time-bounded review prize draw
+
+- Product feedback, consent to publish a review, and consent to enter the 2026-08-30 prize draw are
+  three separate decisions. None is inferred from another.
+- A draw entry stores a versioned server-authored campaign code and opt-in timestamp in the existing
+  operator-only review audit note alongside existing review/order identifiers. It adds no contact,
+  birth date, concern, report text, recipient, external share target, or share-completion signal.
+- The event page announces a masked order number. Contact and fulfilment details are requested only
+  from the verified winner after a separate notice and consent, then retained under the approved
+  fulfilment/legal schedule. Draw evidence is deleted or minimized after the claim/dispute period,
+  subject to qualified legal review.

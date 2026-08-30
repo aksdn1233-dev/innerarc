@@ -9,6 +9,7 @@ import {
   type ReviewType,
   type StoredReviewRow,
 } from "./types";
+import { readCampaignEntryReceipt } from "./campaign-entry";
 
 export const REVIEW_TEXT_MAX = 600;
 export const REVIEW_TEXT_MIN = 5;
@@ -52,6 +53,8 @@ export const ReviewSubmissionSchema = z.object({
     message: "DISPLAY_NAME_NOT_ALLOWED",
   }).default(""),
   hideProductContext: z.boolean().default(false),
+  // Prize-draw participation is independent from review submission and publication.
+  campaignEntryConsent: z.boolean().default(false),
 }).strict();
 
 export type ParsedReviewSubmission = z.infer<typeof ReviewSubmissionSchema>;
@@ -126,6 +129,7 @@ export function toOwnReviewState(row: StoredReviewRow): OwnReviewState {
     publicConsent: row.public_consent,
     displayName: normalizeDisplayName(row.display_name),
     hideProductContext: row.hide_product_context,
+    campaignEntryConsent: readCampaignEntryReceipt(row.admin_note) !== null,
     submittedAt: row.created_at,
   };
 }

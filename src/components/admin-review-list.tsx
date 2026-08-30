@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import type { StoredReviewRow } from "@/core/reviews";
+import {
+  operatorNoteWithoutCampaignReceipt,
+  readCampaignEntryReceipt,
+  type StoredReviewRow,
+} from "@/core/reviews";
 import { changedActionLabels, reviewTypeLabels } from "@/i18n/review-copy";
 
 const STATUS_LABEL: Record<string, string> = {
@@ -26,7 +30,7 @@ export function AdminReviewList({
 }) {
   const [busyId, setBusyId] = useState<string | null>(null);
   const [notes, setNotes] = useState<Record<string, string>>(
-    Object.fromEntries(reviews.map((review) => [review.id, review.admin_note])),
+    Object.fromEntries(reviews.map((review) => [review.id, operatorNoteWithoutCampaignReceipt(review.admin_note)])),
   );
   const [result, setResult] = useState<Record<string, string>>({});
   const [statuses, setStatuses] = useState<Record<string, string>>(
@@ -83,6 +87,7 @@ export function AdminReviewList({
     <div className="admin-review-list">
       {reviews.map((review) => {
         const status = statuses[review.id] ?? review.status;
+        const campaignEntry = readCampaignEntryReceipt(review.admin_note);
         return (
           <article className="admin-review" key={review.id}>
             <header>
@@ -96,6 +101,7 @@ export function AdminReviewList({
               {review.public_consent ? "공개 동의함" : "공개 미동의 — 승인해도 표시되지 않음"}
               {review.hide_product_context && " · 상품·1번 답변 비공개 요청"}
               {review.product_code && ` · ${PRODUCT_LABEL[review.product_code] ?? review.product_code}`}
+              {campaignEntry && ` · 1주일 연장 이벤트 응모 (${new Date(campaignEntry.enteredAt).toLocaleString("ko-KR")})`}
               {review.order_id && <> · 주문 <code>{review.order_id}</code></>}
               {" · 표시 이름 "}
               <code>{review.display_name || "익명"}</code>

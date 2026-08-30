@@ -23,5 +23,5 @@ export default async function JapanesePlansPage({ searchParams }: { searchParams
     { code: "premium_pdf" as const, tier: "プレミアム", name: "プレミアム深層リーディング", amount: readiness.enabled ? readiness.config.products.premium_pdf.amount : pricing.prices.premium_pdf, regularAmount: pricing.regularPrices.premium_pdf, features: ["詳細リーディングの全分析", "質問がなくても完結する総合レポート", "隠れた動機と失敗の根", "3つの可能性シナリオ", "6段階の実行と中止基準", "閲覧・ダウンロード・ギフト共有"] },
   ];
   const initialProduct = query.product === "plus_30d" || query.product === "pro_30d" || query.product === "premium_pdf" ? query.product : null;
-  return <PlansExperience locale="ja" products={products} initialProduct={initialProduct} signedIn={Boolean(auth.user)} paymentsEnabled={enabled} paymentProvider={readiness.enabled ? readiness.config.provider : null} />;
+  return <PlansExperience locale="ja" products={products} initialProduct={initialProduct} signedIn={Boolean(auth.user)} paymentsEnabled={enabled} paymentProvider={readiness.enabled ? readiness.config.provider : null} pricing={pricing} />;
 }
