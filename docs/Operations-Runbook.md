@@ -44,9 +44,10 @@ Status: Supabase account persistence connected; production deployment and remain
    `ADMIN_EMAILS` value. Do not move that allowlist into public configuration or source code.
 5. A successful email request is authentication evidence only. Verify a non-allowlisted session
    still cannot open the console or any administrator API before closing the incident.
-6. Supabase's built-in SMTP is development-only and refuses recipients outside the project team.
-   Configure a reviewed custom SMTP provider for the owner address; do not invite the address into
-   the Supabase organization as a delivery workaround. Keep SMTP credentials out of source and logs.
+6. Supabase's built-in SMTP is low-rate and refuses recipients outside the project team. The current
+   owner address is a verified team address; configure reviewed custom SMTP before adding a non-team
+   administrator or requiring production delivery guarantees. Do not invite an address into the
+   organization only as a delivery workaround. Keep SMTP credentials out of source and logs.
 
 ## Technical rollback
 

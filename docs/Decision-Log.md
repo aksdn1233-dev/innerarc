@@ -1421,11 +1421,12 @@
   green authorization, runtime-config, type, lint, build, and live-health checks. Production review
   found and corrected a stale `http://127.0.0.1:3000/auth/callback` Site URL and added the exact
   `https://mygyeol.kr/auth/callback` redirect target. It also confirmed that Supabase custom SMTP is
-  disabled: the built-in sender refuses non-team addresses and is not a production delivery path.
-  A reviewed custom SMTP provider and sender-domain controls are therefore required before the
-  configured Naver owner address can receive a magic link. Do not grant Supabase organization access
-  merely to bypass this mail restriction, and do not restore a browser hardcode. Roll back to Cloudflare version
+  disabled. The owner corrected the administrator identity to the existing Supabase team address,
+  and a live OTP request for that address returned HTTP 200. The built-in sender remains a low-rate,
+  best-effort operational dependency; use reviewed custom SMTP before adding non-team administrators
+  or requiring stronger delivery guarantees. Do not grant Supabase organization access merely to
+  bypass mail restrictions, and do not restore a browser hardcode. Roll back to Cloudflare version
   `1133d6db-4000-4136-be9d-1b4be1205219` if the release regresses authentication or any unrelated
   payment/report path. No migration or data rewrite is involved.
-- Status: Application and callback configuration released; production email delivery is blocked on
-  a reviewed custom SMTP credential and sender configuration.
+- Status: Released with the server allowlist corrected to the owner-confirmed team address, exact
+  production callback configuration, and a successful live magic-link request.
