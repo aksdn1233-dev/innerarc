@@ -44,7 +44,7 @@ const copy = {
     disclaimer: "오늘의 흐름은 수비학 상징을 활용한 자기 성찰 도구입니다. 미래를 예측하거나 결과를 보장하지 않으며 의료·법률·금융 등 전문가의 조언을 대신하지 않습니다.",
   },
   en: {
-    brand: "GYEOL Daily Flow",
+    brand: "태령당 Daily Flow",
     back: "Saju menu",
     eyebrow: "Once a day · Free",
     title: "Pause for a short reflection on today's choices",

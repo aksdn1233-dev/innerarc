@@ -20,6 +20,9 @@ describe("privacy-minimized operational metrics", () => {
   it("summarizes the requested landing-to-payment funnel", () => {
     const result = summarizeOperationalMetrics([
       row("landing_view", 20),
+      { ...row("journey_view", 12), dimension: "route:home:source:seenthis" },
+      { ...row("journey_view", 5), dimension: "route:numerology:source:seenthis" },
+      { ...row("journey_view", 2), dimension: "route:plans:source:naver_blog" },
       row("primary_cta_click", 10),
       row("form_start", 8),
       row("form_complete", 4),
@@ -31,6 +34,15 @@ describe("privacy-minimized operational metrics", () => {
     expect(result.pageViews).toBe(20);
     expect(result.formCompletionRate).toBe(50);
     expect(result.checkoutCompletionRate).toBe(75);
+    expect(result.routeViews).toEqual([
+      { key: "home", count: 12 },
+      { key: "numerology", count: 5 },
+      { key: "plans", count: 2 },
+    ]);
+    expect(result.sourceViews).toEqual([
+      { key: "seenthis", count: 17 },
+      { key: "naver_blog", count: 2 },
+    ]);
     expect(result.daily).toEqual([
       { date: "2026-08-01", pageViews: 0, formStarts: 0, payments: 0 },
       { date: "2026-08-02", pageViews: 20, formStarts: 8, payments: 3 },
@@ -42,6 +54,8 @@ describe("privacy-minimized operational metrics", () => {
       .toBe("productCode:pro_30d");
     expect(metricDimension({ question: "private", birthDate: "1994-11-04" }))
       .toBe("all");
+    expect(metricDimension({ route: "home", source: "seenthis", rawUrl: "private" }))
+      .toBe("route:home:source:seenthis");
   });
 
   it("never divides by zero", () => {

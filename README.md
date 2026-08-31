@@ -1,6 +1,6 @@
-# InnerArc
+# 태령당
 
-InnerArc is an AI self-discovery and personal pattern intelligence platform. It combines deterministic numerology, auditable tarot symbolism, user context, and later outcome reviews. It does **not** claim scientific prediction: symbolic systems are prompts for reflection, and personal relevance is checked against lived experience.
+태령당 is a personal pattern intelligence platform. It combines deterministic numerology, auditable Saju/tarot symbolism, explicit Reality Checks, real-life evidence, and conservative confidence revision. It does **not** claim scientific prediction: symbolic systems are hypotheses for reflection, and personal relevance is checked against lived experience.
 
 ## Current scope
 
@@ -30,7 +30,7 @@ Version 0.18.2 provides a web-first, guest-first Korean/English application with
   and business partner) over eight operating domains, with legacy detailed types kept readable;
 - source-bound public-birth-date celebrity comparison;
 - privacy-safe local PNG/SVG share cards with explicit native file sharing, cancellation handling, and a download fallback that adds no upload, tracking, or browser storage;
-- native Korean/English link-preview metadata and a first-party 1200×630 GYEOL social card with no personal result data or tracking dependency;
+- native Korean/English link-preview metadata and a first-party 1200×630 태령당 social card with no personal result data or tracking dependency;
 - the Reality Check Loop, browser-local review-month capture, and read-only navigation across current and prior monthly pattern reports;
 - a guest privacy center for independent consent, language/time-zone preferences, validated device export, and complete local deletion;
 - optional Supabase email sign-in with explicit owner-scoped upload/restore, account export, and atomic server-record deletion;
@@ -83,20 +83,14 @@ then asks the live site whether its database and home page still answer, failing
 if they do not. It needs two repository secrets, `CLOUDFLARE_API_TOKEN` and
 `CLOUDFLARE_ACCOUNT_ID`.
 
-**The Worker is called `gyeol`, and `vite.config.ts` has to say so.** The name is
-otherwise derived from the package and comes out `innerarc` — a different, empty Worker in
-the same account that holds only a `mygyeol.kr/.innerarc-discard/*` route. Deploying there
-succeeds, changes nothing a visitor can see, and still passes a health check, because the
-old build answering the domain is perfectly healthy. That is why the workflow's last step
-requires the live HTML to reference the stylesheet the build just produced: it is the only
-check that separates *deployed* from *serving*.
+**The Worker is called `innerarc`, and `vite.config.ts` has to say so.** The custom domain
+route is attached to that Worker. A hand-run deploy must use the generated configuration in
+`dist/server/wrangler.json`, preserve dashboard variables, and confirm that live HTML references
+the stylesheet from the build just uploaded. That final check separates *deployed* from *serving*.
 
-**A deploy cannot reach visitors until `mygyeol.kr` is delegated to Cloudflare.** The zone
-exists in the account with the `mygyeol.kr/*` → `gyeol` route already configured, but its
-status is `pending`: the domain's nameservers still point at `hosting.co.kr`, so that route
-is inert and the domain is answered by an older deployment elsewhere. Pointing the
-registrar's nameservers at the two Cloudflare assigns for the zone activates the route, and
-the build already sitting on `gyeol` becomes the live site.
+`mygyeol.kr` is delegated to Cloudflare and its active custom-domain route serves `innerarc`.
+If deployment succeeds but the domain does not change, re-check the active zone, custom-domain
+route, and live stylesheet fingerprint before changing DNS or deploying another Worker.
 
 Two things make a hand-run deploy dangerous, and both are handled in that workflow:
 
@@ -107,6 +101,10 @@ Two things make a hand-run deploy dangerous, and both are handled in that workfl
 - **A deploy replaces the Worker's bindings** with whatever the generated config declares.
   `worker/index.ts` uses `env.IMAGES`, so `vite.config.ts` declares that binding; without
   it every optimized image on the live site breaks.
+- **Discovery routes run at request time.** `vite.config.ts` therefore declares the public
+  `NEXT_PUBLIC_APP_URL=https://mygyeol.kr` Worker variable as well as the build workflow value.
+  Without both, canonical metadata can look correct while the dynamic sitemap quietly emits a
+  loopback origin.
 
 To check what is actually live, request the site and look for something the build
 introduced rather than reading a deployment dashboard. The reasoning is in

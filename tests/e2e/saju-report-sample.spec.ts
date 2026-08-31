@@ -17,6 +17,17 @@ test("the 941104 Saju sample reads as long-form character webtoon dialogue", asy
   await expect(storyPanels.first().locator(".webtoon-story-character")).toBeVisible();
   const coreBubble = page.getByRole("heading", { name: "원국이 먼저 보여주는 당신의 중심" }).locator("..");
   await expect(coreBubble).toContainText("큰 나무처럼");
+  const keySentences = page.locator(".report-key-sentence");
+  await expect(keySentences).toHaveCount(11);
+  await expect(keySentences.first()).toContainText("당신의 강점은 더 오래 버티는 데 있지 않고");
+  const keyStyle = await keySentences.first().evaluate((element) => {
+    const style = getComputedStyle(element);
+    return { fontSize: Number.parseFloat(style.fontSize), fontWeight: Number(style.fontWeight) };
+  });
+  const bodySize = await coreBubble.locator(".sample-report-body").evaluate((element) =>
+    Number.parseFloat(getComputedStyle(element).fontSize));
+  expect(keyStyle.fontWeight).toBeGreaterThanOrEqual(700);
+  expect(keyStyle.fontSize).toBeGreaterThan(bodySize);
 
   const overflows = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1);
   expect(overflows).toBe(false);

@@ -37,7 +37,7 @@ test("local PNG and SVG downloads are portable and side-effect free", async ({ p
   const pngPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download PNG" }).click();
   const pngDownload = await pngPromise;
-  expect(pngDownload.suggestedFilename()).toBe("innerarc-core_profile.png");
+  expect(pngDownload.suggestedFilename()).toBe("taeryeongdang-core_profile.png");
   const png = await downloadBytes(pngDownload);
   expect(png.subarray(0, 8)).toEqual(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
   expect(png.readUInt32BE(16)).toBe(1080);
@@ -47,7 +47,7 @@ test("local PNG and SVG downloads are portable and side-effect free", async ({ p
   const svgPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download SVG" }).click();
   const svgDownload = await svgPromise;
-  expect(svgDownload.suggestedFilename()).toBe("innerarc-core_profile.svg");
+  expect(svgDownload.suggestedFilename()).toBe("taeryeongdang-core_profile.svg");
   expect((await downloadBytes(svgDownload)).toString("utf8")).toContain(
     '<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350"',
   );
@@ -107,8 +107,8 @@ test("native sharing receives one generic PNG and duplicate clicks are locked", 
   expect(envelope).toMatchObject({
     calls: 1,
     keys: ["files", "title"],
-    title: "InnerArc",
-    name: "innerarc-core_profile.png",
+    title: "태령당",
+    name: "taeryeongdang-core_profile.png",
     type: "image/png",
     signature: [137, 80, 78, 71, 13, 10, 26, 10],
   });
@@ -130,7 +130,7 @@ test("unsupported sharing downloads once while cancellation downloads nothing", 
 
   const fallbackDownload = page.waitForEvent("download");
   await page.getByRole("button", { name: "Share image" }).click();
-  expect((await fallbackDownload).suggestedFilename()).toBe("innerarc-core_profile.png");
+  expect((await fallbackDownload).suggestedFilename()).toBe("taeryeongdang-core_profile.png");
   await expect(page.getByRole("status")).toHaveText(
     "File sharing is unavailable on this device, so the PNG was downloaded.",
   );
@@ -150,7 +150,7 @@ test("unsupported sharing downloads once while cancellation downloads nothing", 
   });
   const capabilityFailureDownload = page.waitForEvent("download");
   await page.getByRole("button", { name: "Share image" }).click();
-  expect((await capabilityFailureDownload).suggestedFilename()).toBe("innerarc-core_profile.png");
+  expect((await capabilityFailureDownload).suggestedFilename()).toBe("taeryeongdang-core_profile.png");
   await expect(page.getByRole("status")).toHaveText(
     "File sharing is unavailable on this device, so the PNG was downloaded.",
   );

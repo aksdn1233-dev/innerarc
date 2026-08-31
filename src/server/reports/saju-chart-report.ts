@@ -47,7 +47,7 @@ export function createSajuChartReport(
       ? `${pillars.join(" · ")}로 세운 원국입니다. 웹툰 장면을 따라 어린 시절의 역할, 가족의 기대, 관계와 일의 반복 패턴을 실제 기억과 대조해 보세요.`
       : `This chart is built as ${pillars.join(" · ")}. Follow the webtoon scenes through early roles, family expectations, relationships, and work patterns, then compare them with lived experience.`,
     sections: [
-      ...lifeNarrative.map(({ title, body }) => ({ title, body })),
+      ...lifeNarrative.map(({ title, keySentence, body }) => ({ title, keySentence, body })),
       {
         title: ko ? "원국 네 기둥" : "The four pillars",
         body: ko
@@ -93,12 +93,12 @@ export function createSajuChartReport(
       ? "사주는 전통 상징에 따른 자기 성찰 도구입니다. 미래를 보장하거나 의료·법률·투자 판단을 대신하지 않습니다."
       : "Four Pillars is a traditional symbolic reflection tool. It does not guarantee the future or replace medical, legal, or investment judgment.",
     tierLabel: ko ? "사주 원국 · 5,500원 · 1회" : "Four Pillars chart · ₩5,500 · one time",
-    characterLabel: ko ? "결 사주 원국" : "GYEOL Four Pillars",
-    contentVersion: "saju-chart-report-1.1.0",
+    characterLabel: ko ? "태령당 사주 원국" : "태령당 Four Pillars",
+    contentVersion: "saju-chart-report-1.2.0",
     contentReferences: [
       `saju-rule:${chart.ruleVersion}`,
       `saju-midnight:${chart.time.midnightConvention}`,
-      "saju-life-narrative:1.0.0",
+      "saju-life-narrative:1.1.0",
       "product:SAJU_5500",
     ],
   };

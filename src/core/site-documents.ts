@@ -6,6 +6,7 @@ import {
   localizeAccessoryProduct,
 } from "@/core/commerce/accessory-recommendations";
 import { resolvePublicAppUrl } from "@/core/site-url";
+import { brandNameKo, brandProductDescriptor } from "@/core/brand";
 
 const PRIVATE_PATHS = [
   "/api/",
@@ -60,9 +61,9 @@ export function createRobotsDocument(
 export function createManifestDocument(): MetadataRoute.Manifest {
   return {
     id: "/",
-    name: "결 GYEOL — 나·관계·올해의 흐름 리딩",
-    short_name: "결 GYEOL",
-    description: "나의 성향과 관계, 올해의 흐름을 알기 쉽게 정리하는 개인 리딩.",
+    name: `${brandNameKo} — ${brandProductDescriptor}`,
+    short_name: brandNameKo,
+    description: "상징 분석을 실제 삶의 피드백과 결과로 검증하는 개인 패턴 분석 시스템.",
     start_url: "/ko",
     scope: "/",
     display: "standalone",

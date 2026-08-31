@@ -186,7 +186,7 @@ Last updated: 2026-08-22
 - [x] Supabase Singapore auth/database project, three applied migrations, public-key runtime configuration, anonymous fail-closed probe, and account-boundary browser regression.
 - [x] PayApp hosted-checkout adapter, verified callback/order/report/revocation foundation, field-specific checkout errors, atomic plan/input switching, and direct readiness without a redundant launch-approval gate.
 - [x] Payment-independent localized free core result and deterministic guest access to the approved Free-tier reflection routes.
-- [x] Bounded system typography, compressed first-party hero artwork, GYEOL social metadata, and current performance/metadata regression.
+- [x] Bounded system typography, compressed first-party hero artwork, 태령당 social metadata, and current performance/metadata regression.
 - [ ] Approve PayApp production operation and run real low-value approval, cancellation, virtual-account, receipt/recovery, and refund-support exercises.
 - [ ] Verify staging auth, migrations, payments, monitoring, deletion, backup/restore, and incident response.
 - [ ] Complete legal, privacy, age, crisis-escalation, editorial, localization, accessibility, brand, pricing, tax/refund, store-asset, and deployment approvals.
@@ -213,3 +213,9 @@ Last updated: 2026-08-22
 - [x] The review draw uses a separate optional consent, one entry per verified order, operator-only
   campaign metadata without new contact/report/birth/share-result collection, one disclosed winner
   and prize, a documented draw/claim process, and an independently moderated public-review consent.
+- [x] Cloudflare unique-network visitors are never presented as people; the owner console separates
+  allowlisted route/source aggregates from bots, release checks, localhost, and administrator routes.
+- [x] Journey attribution stores no raw referrer, URL, query, UTM text, IP, browser identifier,
+  name, birth input, question, order, or report content, and it retains no server-side visitor ID.
+- [ ] Collect at least 30 non-internal home entries per source before diagnosing a percentage-based
+  journey drop-off; until then report counts, automation evidence, and uncertainty only.

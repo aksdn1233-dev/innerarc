@@ -18,7 +18,7 @@ export function ReferralInvite({ locale, eventUrl }: { locale: Locale; eventUrl:
       setCoupon(body.couponCode);
       setStatus("ready");
       const shareUrl = `${eventUrl}?ref=friend`;
-      if (navigator.share) await navigator.share({ title: ko ? "결 GYEOL 친구 초대" : "GYEOL friend invitation", text: ko ? "결에서 나와 관계의 패턴을 함께 살펴보자." : "Explore personal and relationship patterns together on GYEOL.", url: shareUrl });
+      if (navigator.share) await navigator.share({ title: ko ? "태령당 친구 초대" : "태령당 friend invitation", text: ko ? "태령당에서 나와 관계의 패턴을 함께 살펴보자." : "Explore personal and relationship patterns together on 태령당.", url: shareUrl });
       else await navigator.clipboard.writeText(shareUrl);
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") { setStatus(coupon ? "ready" : "idle"); return; }

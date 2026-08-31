@@ -1,5 +1,6 @@
 export const OPERATIONAL_EVENT_NAMES = [
   "landing_view",
+  "journey_view",
   "primary_cta_click",
   "sample_section_view",
   "product_view",
@@ -32,6 +33,8 @@ export type OperationalMetrics = Readonly<{
   paymentStarts: number;
   paymentSuccesses: number;
   paymentFailures: number;
+  routeViews: readonly Readonly<{ key: string; count: number }>[];
+  sourceViews: readonly Readonly<{ key: string; count: number }>[];
   formCompletionRate: number;
   checkoutCompletionRate: number;
   daily: readonly Readonly<{ date: string; pageViews: number; formStarts: number; payments: number }>[];
@@ -45,6 +48,20 @@ function sum(rows: readonly OperationalMetricRow[], name: OperationalEventName) 
 
 function percent(part: number, whole: number) {
   return whole > 0 ? Math.round((part / whole) * 1_000) / 10 : 0;
+}
+
+function journeyBreakdown(rows: readonly OperationalMetricRow[], segment: "route" | "source") {
+  const values = new Map<string, number>();
+  for (const row of rows) {
+    if (row.event_name !== "journey_view") continue;
+    const match = /^route:([a-z0-9_]+):source:([a-z0-9_]+)$/.exec(row.dimension);
+    if (!match) continue;
+    const key = segment === "route" ? match[1] : match[2];
+    values.set(key, (values.get(key) ?? 0) + Number(row.count || 0));
+  }
+  return [...values.entries()]
+    .map(([key, count]) => ({ key, count }))
+    .sort((a, b) => b.count - a.count || a.key.localeCompare(b.key));
 }
 
 export function summarizeOperationalMetrics(
@@ -76,6 +93,8 @@ export function summarizeOperationalMetrics(
     paymentStarts,
     paymentSuccesses,
     paymentFailures: sum(rows, "payment_fail"),
+    routeViews: journeyBreakdown(rows, "route"),
+    sourceViews: journeyBreakdown(rows, "source"),
     formCompletionRate: percent(formCompletes, formStarts),
     checkoutCompletionRate: percent(paymentSuccesses, paymentStarts),
     daily: [...byDate.values()],
@@ -85,6 +104,14 @@ export function summarizeOperationalMetrics(
 export function metricDimension(
   properties: Readonly<Record<string, unknown>>,
 ): string {
+  const route = properties.route;
+  const source = properties.source;
+  if (
+    typeof route === "string" && /^[a-z0-9_]{1,40}$/.test(route) &&
+    typeof source === "string" && /^[a-z0-9_]{1,40}$/.test(source)
+  ) {
+    return `route:${route}:source:${source}`;
+  }
   for (const key of ["productCode", "provider", "location", "stage"] as const) {
     const value = properties[key];
     if (typeof value === "string" && /^[a-z0-9_-]{1,40}$/.test(value)) {

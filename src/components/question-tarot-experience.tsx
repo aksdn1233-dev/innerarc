@@ -211,7 +211,7 @@ export function QuestionTarotExperience({ locale, copy }: Props) {
     const url = URL.createObjectURL(new Blob([content], { type: "application/json" }));
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = `innerarc-tarot-history-${new Date().toISOString().slice(0, 10)}.json`;
+    anchor.download = `taeryeongdang-tarot-history-${new Date().toISOString().slice(0, 10)}.json`;
     anchor.click();
     URL.revokeObjectURL(url);
   }
@@ -224,7 +224,7 @@ export function QuestionTarotExperience({ locale, copy }: Props) {
       <main className="shell question-shell" id="main-content" tabIndex={-1}>
         <header className="topbar">
           <Link className="brand" href={`/${locale}`}>
-            <strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong>
+            <strong>태령당</strong>
             <small>{copy.eyebrow}</small>
           </Link>
           <Link className="locale-switch" href={`/${otherLocale}/question`}>

@@ -112,7 +112,7 @@ test("English page keeps the same calculated core meaning", async ({ page }) => 
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download SVG" }).click();
   const download = await downloadPromise;
-  expect(download.suggestedFilename()).toBe("innerarc-core_profile.svg");
+  expect(download.suggestedFilename()).toBe("taeryeongdang-core_profile.svg");
 });
 
 test("onboarding focus, concern, depth, and AI consent create a local context layer", async ({ page }) => {
@@ -458,6 +458,7 @@ test("celebrity comparison uses sourced birth-date structures without identity p
 
 test("Reality Check preserves a choice and reviews personal relevance without default persistence", async ({ page }) => {
   await page.goto("/en/reality-check");
+  await page.waitForLoadState("networkidle");
   await page.locator("#reality-question").fill("What should I verify before committing?");
   await page.locator("#reality-state").fill("I feel excited and rushed.");
   await page.locator("#reality-interpretation").fill("Check consistent behavior before deciding.");
@@ -589,7 +590,7 @@ test("guest privacy center saves explicitly, exports, and deletes all device dat
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export all JSON" }).click();
   const download = await downloadPromise;
-  expect(download.suggestedFilename()).toMatch(/^innerarc-device-data-\d{4}-\d{2}-\d{2}\.json$/);
+  expect(download.suggestedFilename()).toMatch(/^taeryeongdang-device-data-\d{4}-\d{2}-\d{2}\.json$/);
 
   page.once("dialog", (dialog) => dialog.accept());
   await page.getByRole("button", { name: "Delete all device data" }).click();
@@ -607,7 +608,7 @@ test("privacy, terms, and support publish contacts while disclosing unresolved l
   await page.getByRole("link", { name: "Read the privacy information" }).click();
   await expect(page.getByText("Pre-operation notice · transfer details and legal review pending")).toBeVisible();
   await expect(page.getByText("Supabase handles the authentication email", { exact: false })).toBeVisible();
-  await expect(page.getByText("For payment, InnerArc retains the order ID", { exact: false })).toBeVisible();
+  await expect(page.getByText("태령당 retains the order ID", { exact: false })).toBeVisible();
   await expect(page.getByText("Support and privacy email: qkrehgus5886@naver.com")).toBeVisible();
   await page.getByRole("link", { name: "Terms of use" }).click();
   await expect(page.getByText("Pre-release terms · mail-order registration details pending")).toBeVisible();

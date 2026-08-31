@@ -54,6 +54,12 @@ export type PaidReport = Readonly<{
   sections: readonly Readonly<{
     title: string;
     body: string;
+    /**
+     * Optional editorial takeaway rendered as a distinct visual sentence before the
+     * section body. It stays optional so reports stored before this field existed remain
+     * readable without migration or regeneration.
+     */
+    keySentence?: string;
   }>[];
   actions: readonly string[];
   cautions: readonly string[];

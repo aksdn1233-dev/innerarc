@@ -18,9 +18,10 @@ function quotedStrings(source: string): string[] {
 }
 
 describe("customer-facing language", () => {
-  it("keeps the requested technology label out of displayable source strings", async () => {
+  it("keeps the technology label out of marketing copy while allowing required legal disclosures", async () => {
     const offenders: string[] = [];
     for (const path of [...await sourceFiles("src"), "worker/index.ts"]) {
+      if (["src/i18n/legal-copy.ts", "src/components/content-protection-notice.tsx"].includes(path)) continue;
       const source = await readFile(path, "utf8");
       for (const value of quotedStrings(source)) {
         if (/\bAI\b|인공지능/.test(value)) offenders.push(`${path}: ${value.slice(0, 100)}`);

@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<ProductPage
   const product = getAccessoryConceptProduct(productId);
   if (!product) return {};
   const item = localizeAccessoryProduct(product, locale);
-  const title = locale === "ko" ? `${item.name} 상세보기 | 결 GYEOL` : `${item.name} details | GYEOL`;
+  const title = locale === "ko" ? `${item.name} 상세보기 | 태령당` : `${item.name} details | 태령당`;
   const description = locale === "ko"
     ? `${item.description} 정면·사선·측면 콘셉트와 선택 전 확인사항을 살펴보세요.`
     : `${item.description} Review front, three-quarter, and construction concepts plus selection checks.`;

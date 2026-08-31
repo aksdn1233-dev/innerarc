@@ -56,11 +56,24 @@ Scope: repository source, configuration, local production bundle, and automated 
 
 ## Remaining production work
 
+## Traffic-quality controls
+
+- The analytics ingestion route rejects cross-origin requests, validates event time and a strict
+  schema, discards declared bot/crawler, headless, curl, node, release-check, and service-review
+  user agents, and stores only allowlisted aggregate dimensions.
+- User-agent filtering reduces obvious automation but cannot prove humanity; a hostile scanner can
+  impersonate a normal browser. Cloudflare unique-network and visit-start metrics therefore remain
+  operational signals rather than people counts.
+- Internal production verification browsers must set the documented first-party opt-out marker
+  before public-route QA. Release probes should retain a named verification user agent so server
+  filtering is independently enforceable.
+
 - Supabase DPA/transfer, retention, encryption, key rotation, administrative audit, and paid-plan recovery evidence.
 - Real email magic-link, cross-account owner-isolation, session-revocation, and cookie threat exercises in a non-production staging account.
 - Database backup/restore, deletion residue, and disaster-recovery exercises. RLS, authenticated grants, migrations, and atomic primary-store deletion are implemented.
 - Payment webhook, replay, refund, subscription-state, and tax/invoice verification.
 - Redacted monitoring and incident alerting, independent penetration testing, and abuse/rate-limit tuning under realistic load.
+- Personal Pattern Intelligence P0 adds owner-scoped RLS, RPC-only writes, exact report ownership checks, idempotency keys, pagination ceilings, append-only confidence revisions, optional database-backed account/IP limits, minimized abuse events, and report/export provenance foundations. These controls are not active in production until migration, secrets, staging isolation tests, retention automation, and WAF tuning are verified.
 - Current locale-aware crisis resources and qualified legal/privacy/age-policy review.
 - The inactive Saju tables have owner RLS for profile CRUD and read-only owner policies for
   immutable artifacts; service-role-only calculation/audit writes and cost events. They have

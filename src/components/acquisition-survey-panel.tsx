@@ -84,7 +84,7 @@ export function AcquisitionSurveyPanel({
   const [error, setError] = useState("");
 
   const title = step === 1
-    ? (ko ? "결을 어디에서 처음 알게 되셨나요?" : "Where did you first hear about GYEOL?")
+    ? (ko ? "태령당을 어디에서 처음 알게 되셨나요?" : "Where did you first hear about 태령당?")
     : step === 2
       ? (ko ? "이번 리포트는 얼마나 도움이 됐나요?" : "How useful was this report?")
       : step === 3
@@ -222,7 +222,7 @@ export function AcquisitionSurveyPanel({
                 </div>
               </fieldset>
               <fieldset className="acquisition-question">
-                <legend>{ko ? "2. 필요한 순간에 결을 다시 이용할 의향이 있나요?" : "2. Would you use GYEOL again when you need it?"}</legend>
+                <legend>{ko ? "2. 필요한 순간에 태령당을 다시 이용할 의향이 있나요?" : "2. Would you use 태령당 again when you need it?"}</legend>
                 <div className="acquisition-choice-grid is-compact" role="radiogroup">
                   {RETURN_INTENTS.map((intent) => (
                     <button aria-checked={returnIntent === intent} className={returnIntent === intent ? "is-selected" : ""} key={intent} onClick={() => setReturnIntent(intent)} role="radio" type="button">

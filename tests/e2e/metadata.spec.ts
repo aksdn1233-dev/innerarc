@@ -4,16 +4,16 @@ import { resolvePublicAppUrl } from "../../src/core/site-url";
 const cases = [
   {
     locale: "ko",
-    title: "결 GYEOL (MY GYEOL) | 사주·수비학으로 보는 나·관계·운세",
+    title: "태령당 | 실제 삶으로 검증하는 개인 패턴 분석",
     description:
-      "MY GYEOL(마이결)은 생년월일 기반 사주와 수비학을 서로 분리해 성향·관계·운세의 흐름을 정리하는 상징적 자기 성찰 리딩 서비스입니다.",
+      "생년월일 기반 상징 분석을 가설로 제시하고, Reality Check와 실제 삶의 기록으로 시간이 갈수록 나를 더 정확하게 이해하는 개인 패턴 분석 시스템입니다.",
     openGraphLocale: "ko_KR",
   },
   {
     locale: "en",
-    title: "MY GYEOL | Saju, Numerology & Daily Flow",
+    title: "태령당 | Personal Pattern Intelligence",
     description:
-      "MY GYEOL offers separate Saju and Numerology experiences for symbolic reflection on personality, relationships, and daily or yearly flow.",
+      "A personal pattern intelligence system that keeps deterministic symbolic analysis separate from lived-experience feedback, evidence, and uncertainty.",
     openGraphLocale: "en_US",
   },
 ] as const;
@@ -69,7 +69,7 @@ for (const expected of cases) {
 
     await expect(page.locator('meta[property="og:image:alt"]')).toHaveAttribute(
       "content",
-      /GYEOL/,
+      /태령당/,
     );
     await expect(page.locator('meta[property="og:image:type"]')).toHaveAttribute("content", "image/png");
     await expect(page.locator('meta[property="og:image:width"]')).toHaveAttribute("content", "1200");

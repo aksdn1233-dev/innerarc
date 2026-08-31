@@ -76,6 +76,18 @@ Birth date, names, relationship details, journals, finances, and consultation qu
 
 ## Planned controls
 
+### First-party journey aggregates
+
+- The operational journey marker reduces the current route and acquisition source to closed public
+  categories before transmission. It does not transmit or store the raw referrer, URL, query string,
+  UTM value, IP address, device identifier, server-side session, name, birth input, question, order,
+  report, or share recipient.
+- A route is emitted at most once per browser-tab session. The temporary tab values stay on the
+  device and are never included in the request. localhost, administrator routes, declared
+  automation, and operator-marked browsers are excluded.
+- These counters are service-integrity aggregates, not visitor profiles or unique-person counts.
+  They must not be joined to accounts, orders, reports, surveys, or marketing contacts.
+
 - Independent staging verification of cross-account isolation, session revocation, administrative access, backup aging, and restore.
 - Encryption in transit and at rest; application-level encryption considered for raw journals.
 - Separate secret manager and database; no secrets in client bundles.
@@ -127,6 +139,8 @@ Birth date, names, relationship details, journals, finances, and consultation qu
 ## Retention proposal
 
 Account/profile until deletion; raw journal only for the selected period; masked security logs 30–90 days; consent/audit evidence per legal requirement; deleted data removed from primary storage promptly and aged out of backups under a documented schedule. Final periods require jurisdiction and counsel review.
+
+Pattern Profile, hypotheses, Reality Checks, evidence events, outcomes, confidence revisions, graph links, and owner-scoped provenance records are created only by explicit signed-in actions. Account export includes these collections with row ceilings; all-data deletion removes them through the latest atomic function. Security abuse events contain pseudonymous references and no user content; their exact 30–90 day schedule and incident-hold exceptions remain a production/legal gate.
 
 ## Threats
 

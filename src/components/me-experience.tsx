@@ -155,7 +155,7 @@ export function MeExperience({
     const url = URL.createObjectURL(new Blob([content], { type: "application/json" }));
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = `innerarc-device-data-${new Date().toISOString().slice(0, 10)}.json`;
+    anchor.download = `taeryeongdang-device-data-${new Date().toISOString().slice(0, 10)}.json`;
     anchor.click();
     URL.revokeObjectURL(url);
   }
@@ -192,7 +192,7 @@ export function MeExperience({
       <main className="shell me-shell" id="main-content" tabIndex={-1}>
         <header className="topbar">
           <Link className="brand" href={`/${locale}`}>
-            <strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong>
+            <strong>태령당</strong>
             <small>{copy.brandTagline}</small>
           </Link>
           <Link className="locale-switch" href={`/${otherLocale}/me`}>
@@ -266,7 +266,7 @@ export function MeExperience({
             <p className="history-warning">
               {locale === "ko"
                 ? "버튼을 누를 때만 이 브라우저의 유효한 저장 기록을 읽으며, 다른 결 서비스의 고객 정보와 합치지 않습니다."
-                : "Saved records are read only when you press the button and are never merged with customer data from another GYEOL product."}
+                : "Saved records are read only when you press the button and are never merged with customer data from another 태령당 product."}
             </p>
           </article>
 

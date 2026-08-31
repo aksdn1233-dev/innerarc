@@ -20,6 +20,10 @@ export default defineConfig({
         // prevent accidental deploys to a detached worker.
         name: "innerarc",
         routes: [{ pattern: "mygyeol.kr", custom_domain: true }],
+        // Dynamic discovery routes execute after compilation, so a build-time shell
+        // variable alone is insufficient. Keep the public origin in the Worker runtime
+        // too; it is public configuration, not a secret.
+        vars: { NEXT_PUBLIC_APP_URL: "https://mygyeol.kr" },
         // Keep workers.dev enabled as the rollout fallback host.
         workers_dev: true,
         // `worker/index.ts` calls `env.IMAGES` to serve /_vinext/image. A deploy

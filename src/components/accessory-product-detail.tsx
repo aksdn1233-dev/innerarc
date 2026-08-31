@@ -211,7 +211,7 @@ export function AccessoryProductDetail({ locale, product }: { locale: Locale; pr
   return (
     <main className="shop-detail-shell" id="main-content" tabIndex={-1}>
       <header className="shop-detail-topbar">
-        <Link href={`/${locale}`}><strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong></Link>
+        <Link href={`/${locale}`}><strong>태령당</strong></Link>
         <Link href={`/${locale}/shop`}>← {t.shop}</Link>
       </header>
 

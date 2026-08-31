@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 test("the report closes with a bounded, mobile-safe retention survey", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/ko/samples/saju");
-  const survey = page.getByRole("region", { name: "결을 어디에서 처음 알게 되셨나요?" });
+  const survey = page.getByRole("region", { name: "태령당을 어디에서 처음 알게 되셨나요?" });
   await survey.scrollIntoViewIfNeeded();
   await expect(survey).toBeVisible();
   await expect(survey.getByRole("radio")).toHaveCount(9);

@@ -42,7 +42,7 @@ export async function generateMetadata({
   const title = `${label} · 941104 ${ko ? "결과 예시" : "sample"}`;
   const description = ko
     ? "1994년 11월 4일 기준으로 실제 계산한 결 상품 결과 예시입니다."
-    : "A GYEOL product sample calculated for 1994-11-04.";
+    : "A 태령당 product sample calculated for 1994-11-04.";
   return {
     title,
     description,

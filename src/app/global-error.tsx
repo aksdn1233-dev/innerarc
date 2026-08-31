@@ -28,7 +28,7 @@ export default function GlobalError({
         }}
       >
         <main style={{ maxWidth: "34rem", textAlign: "center" }}>
-          <p style={{ letterSpacing: "0.12em", fontSize: "0.8rem", opacity: 0.7 }}>결 GYEOL</p>
+          <p style={{ letterSpacing: "0.12em", fontSize: "0.8rem", opacity: 0.7 }}>태령당</p>
           <h1 style={{ fontSize: "1.5rem", margin: "0.5rem 0 1rem" }}>
             화면을 불러오지 못했습니다
           </h1>

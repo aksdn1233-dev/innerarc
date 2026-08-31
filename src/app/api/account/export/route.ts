@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { decodeAcquisitionSurvey, isAcquisitionSource } from "@/core/acquisition-survey";
 import { requireSupabaseUser } from "@/lib/supabase/auth";
 import { resolveSupabaseAdminClient } from "@/lib/supabase/admin";
+import { createReportProvenance } from "@/server/report-provenance";
 
 export async function GET() {
   const auth = await requireSupabaseUser();
@@ -37,29 +38,80 @@ export async function GET() {
     }
   }
 
+  const optionalPatternTables = [
+    "pattern_profiles",
+    "pattern_hypotheses",
+    "pattern_reality_checks",
+    "evidence_events",
+    "evidence_hypothesis_links",
+    "confidence_revisions",
+    "pattern_graph_edges",
+    "report_provenance",
+    "export_provenance",
+  ] as const;
+  const patternData: Record<string, unknown[]> = {};
+  let patternMigrationPending = false;
+  for (const table of optionalPatternTables) {
+    const result = await auth.client.from(table).select("*").eq("owner_user_id", auth.user.id).limit(500);
+    if (result.error) {
+      if (["42P01", "PGRST205"].includes(result.error.code ?? "")) {
+        patternMigrationPending = true;
+        patternData[table] = [];
+        continue;
+      }
+      return NextResponse.json({ error: "EXPORT_FAILED" }, { status: 500 });
+    }
+    patternData[table] = result.data ?? [];
+  }
+
   const exportedAt = new Date().toISOString();
+  const exportData = {
+    profile: profile.data,
+    consentReceipts: consents.data ?? [],
+    tarotReadings: tarot.data ?? [],
+    realityChecks: reality.data ?? [],
+    dataRightsRequests: dataRights.data ?? [],
+    notificationPreferences: preferences.data,
+    dailyNotificationDeliveries: deliveries.data ?? [],
+    reportAcquisitionSurveys: acquisitionSurveys,
+    patternProfiles: patternData.pattern_profiles,
+    patternHypotheses: patternData.pattern_hypotheses,
+    patternRealityChecks: patternData.pattern_reality_checks,
+    evidenceEvents: patternData.evidence_events,
+    evidenceHypothesisLinks: patternData.evidence_hypothesis_links,
+    confidenceRevisions: patternData.confidence_revisions,
+    patternGraphEdges: patternData.pattern_graph_edges,
+    reportProvenance: patternData.report_provenance,
+    exportProvenance: patternData.export_provenance,
+  };
+  const provenance = createReportProvenance({
+    reportId: `account-export-${exportedAt.slice(0, 10)}`,
+    ownerScope: auth.user.id,
+    content: JSON.stringify(exportData),
+  });
+  if (admin && provenance) {
+    await admin.from("export_provenance").insert({
+      export_id: provenance.exportId,
+      owner_user_id: auth.user.id,
+      export_type: "account_json",
+      content_fingerprint: provenance.contentFingerprint,
+    });
+  }
   const body = JSON.stringify({
-    product: "InnerArc",
-    schemaVersion: "account-export-1.2.0",
+    product: "태령당",
+    schemaVersion: "account-export-1.3.0",
     scope: "authenticated_account",
     exportedAt,
     ownerUserId: auth.user.id,
-    data: {
-      profile: profile.data,
-      consentReceipts: consents.data ?? [],
-      tarotReadings: tarot.data ?? [],
-      realityChecks: reality.data ?? [],
-      dataRightsRequests: dataRights.data ?? [],
-      notificationPreferences: preferences.data,
-      dailyNotificationDeliveries: deliveries.data ?? [],
-      reportAcquisitionSurveys: acquisitionSurveys,
-    },
+    patternMigrationPending,
+    artifactProvenance: provenance,
+    data: exportData,
   }, null, 2);
 
   return new NextResponse(body, {
     headers: {
       "content-type": "application/json; charset=utf-8",
-      "content-disposition": `attachment; filename="innerarc-account-export-${exportedAt.slice(0, 10)}.json"`,
+      "content-disposition": `attachment; filename="taeryeongdang-account-export-${exportedAt.slice(0, 10)}.json"`,
       "cache-control": "no-store",
     },
   });

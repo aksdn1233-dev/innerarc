@@ -244,5 +244,5 @@ export function clearTarotHistory(storage: TarotHistoryStorage): void {
 }
 
 export function exportTarotHistory(records: SavedTarotReading[], exportedAt: string): string {
-  return JSON.stringify({ product: "InnerArc", schemaVersion: 1, exportedAt, data: { tarotReadings: records } }, null, 2);
+  return JSON.stringify({ product: "태령당", schemaVersion: 1, exportedAt, data: { tarotReadings: records } }, null, 2);
 }

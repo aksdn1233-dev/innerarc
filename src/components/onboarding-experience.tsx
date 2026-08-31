@@ -146,7 +146,7 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
       <main className="shell profile-shell" id="main-content" tabIndex={-1}>
         <header className="topbar">
           <Link className="brand" href={`/${locale}`}>
-            <strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong>
+            <strong>태령당</strong>
             <small>{d.brandTagline}</small>
           </Link>
           <Link className="locale-switch" href={`/${otherLocale}/${routeName}`}>

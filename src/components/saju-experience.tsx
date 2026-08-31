@@ -96,7 +96,7 @@ export function SajuExperience({ locale, price }: { locale: Locale; price: numbe
     <main className="saju-page">
       <section className="saju-portal" aria-labelledby="saju-title">
         <header className="saju-head">
-          <span className="saju-edition">GYEOL · FOUR PILLARS</span>
+          <span className="saju-edition">태령당 · FOUR PILLARS</span>
           <p className="eyebrow">{t.eyebrow}</p>
           <h1 id="saju-title">{t.title}</h1>
           <p className="saju-intro">{t.intro}</p>

@@ -104,6 +104,7 @@ test("relationship-to-Reality-Check prefill has no serious accessibility violati
 
 test("generated onboarding context has no serious accessibility violation", async ({ page }) => {
   await page.goto("/en/profile");
+  await page.waitForLoadState("networkidle");
   await page.locator("#birthDate").fill("1994-11-04");
   // Focus, concern and depth are folded away on the free page; open them first.
   const optionalIntake = page.locator("details.optional-intake");

@@ -14,8 +14,8 @@ export function ReportActions({
 
   const text = locale === "ko"
     ? {
-        subject: "결 GYEOL 리딩을 선물로 보냅니다",
-        body: "당신을 위해 준비한 결 GYEOL 리딩입니다. 아래 주소에서 확인해 주세요.",
+        subject: "태령당 리딩을 선물로 보냅니다",
+        body: "당신을 위해 준비한 태령당 리딩입니다. 아래 주소에서 확인해 주세요.",
         giftTitle: "이 리딩을 다른 사람에게 선물하기",
         giftBody: "받는 분의 동의를 확인한 뒤 이메일이나 휴대폰 공유창으로 전달할 수 있습니다. 링크를 받은 사람은 리포트의 개인 내용을 볼 수 있으니 신뢰하는 사람에게만 보내 주세요.",
         consent: "받는 분에게 생년월일 등 정보를 입력하고 결과를 전달할 동의를 받았습니다.",
@@ -27,8 +27,8 @@ export function ReportActions({
         failed: "공유하지 못했습니다. 링크 복사를 이용해 주세요.",
       }
     : {
-        subject: "A GYEOL reading for you",
-        body: "I prepared this GYEOL reading for you. Open it at the address below.",
+        subject: "A 태령당 reading for you",
+        body: "I prepared this 태령당 reading for you. Open it at the address below.",
         giftTitle: "Gift this reading to someone else",
         giftBody: "Confirm the recipient's consent, then send it by email or your device's share menu. Anyone with an accessible link may see the personal report, so share only with someone you trust.",
         consent: "I have the recipient's consent to enter their birth details and send them this result.",

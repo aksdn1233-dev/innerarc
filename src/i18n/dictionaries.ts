@@ -82,7 +82,7 @@ export type Dictionary = {
 };
 
 const ko: Dictionary = {
-  brandTagline: "GYEOL",
+  brandTagline: "태령당",
   nav: ["홈", "나", "관계", "질문", "성장"],
   // Side line above the headline: names the frame most visitors arrive with, without
   // claiming to beat it.

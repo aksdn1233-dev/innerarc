@@ -539,7 +539,7 @@ export function PlansExperience({
     <main className="shell plans-shell" id="main-content" tabIndex={-1}>
       <header className="topbar">
         <Link className="brand" href={`/${locale}`}>
-          <strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong>
+            <strong>태령당</strong>
           <small>{t.brand}</small>
         </Link>
         <nav className="plans-language-switcher" aria-label="Language">

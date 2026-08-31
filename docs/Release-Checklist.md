@@ -66,6 +66,11 @@
 - [x] Customer-visible source strings, reports, metadata, alternative text, and crawler refusal copy
   contain no `AI`/`인공지능` label; generated imagery and external personalization remain truthfully
   described in plain language, and the home free-pattern action has a dedicated contrast regression.
+- [x] Route/source journey events use closed categorical schemas, raw URL/referrer/query/UTM/PII
+  values fail closed, and declared automation plus localhost/admin routes are excluded.
+- [ ] After deployment, mark the operator browser as internal, verify one synthetic allowlisted
+  source/route marker reaches the owner console, and confirm no raw campaign or personal value is
+  present in storage or responses.
 - [x] Chromium and WebKit are included in CI browser coverage.
 - [x] GitHub CI uses Node 24-based official actions and Corepack-pinned pnpm 11.9.0 with no advisory, deprecation, warning, or check-annotation markers in the verified run.
 - [x] Exact-process E2E runner refuses occupied port 3000 and terminates only its repository-scoped server.
@@ -75,6 +80,9 @@
 - [x] Versioned deterministic Saju facts, explicit late-Zi/time/term/luck policies, golden fixtures, serialization invariant, and AI fact guard pass locally.
 - [ ] Korean lunar/leap-month conversion passes KASI plus independent implementation fixtures; current typed rejection is not launch support.
 - [ ] Saju chart-version migration, recalculation diff/invalidation, RLS, two-account isolation, export, deletion, and rollback pass in staging.
+- [ ] Apply `20260830000100_personal_pattern_intelligence_p0.sql` in staging before application rollout; validate owner RLS, RPC-only writes, idempotency, confidence history, graph links, account export/deletion, and a two-account IDOR matrix.
+- [ ] Configure separate 32+ character `PROVENANCE_HMAC_SECRET` and `ABUSE_HASH_SECRET` values; verify that neither is browser-visible and that missing values do not break report delivery.
+- [ ] Verify report/account export provenance, no semantic canary text, security-event minimization, 30–90 day retention automation, and evidence-manifest integrity before describing these controls as operational.
 - [ ] Paid Saju generation retry/compensation and Saju-specific E2E flows pass before a Saju SKU is enabled.
 
 ## Commerce
@@ -109,7 +117,9 @@
 - [x] Local pre-provider operations and rollback runbook.
 - [x] Draft Korean/English store copy and fifteen synthetic-data mobile screenshots regenerated after the tarot reading-room change, technically verified, and key home/tarot/relationship/shop views visually inspected.
 - [ ] Brand/trademark/domain clearance.
-- [ ] Set `NEXT_PUBLIC_APP_URL` to the approved path-free HTTPS production origin and revalidate external link unfurls after hosting authorization.
+- [x] Set `NEXT_PUBLIC_APP_URL` to the approved path-free HTTPS production origin during artifact
+  compilation; CI and the live release check reject loopback sitemap URLs, and external metadata is
+  revalidated after deployment.
 - [ ] Assign support, incident, data-request, and safety-escalation owners.
 - [ ] Approve final store screenshots, copy, and review notes after brand, legal, native-language, and platform review.
 - [ ] Obtain explicit user authorization for staging and production deployment.

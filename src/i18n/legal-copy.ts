@@ -1,4 +1,5 @@
 import type { Locale } from "./config";
+import { brandNameKo } from "@/core/brand";
 
 export type LegalSection = Readonly<{
   title: string;
@@ -36,8 +37,8 @@ const privacyKo: LegalPageCopy = {
   ...sharedKo,
   status: "운영 전 안내 · 국외이전 세부사항 및 법률 검토 필요",
   title: "개인정보 처리 안내",
-  intro: "InnerArc 운영자와 현재 기능, 계정·결제 처리 범위를 설명합니다. 개인정보 권리행사는 아래 고객지원 이메일로 접수할 수 있으며, 위탁·국외이전 세부사항은 실제 계약 확인 후 최종 갱신합니다.",
-  lastUpdated: "2026-08-02",
+  intro: `${brandNameKo} 운영자와 현재 기능, 계정·결제·개인 패턴 기록 처리 범위를 설명합니다. 개인정보 권리행사는 아래 고객지원 이메일로 접수할 수 있으며, 위탁·국외이전 세부사항은 실제 계약 확인 후 최종 갱신합니다.`,
+  lastUpdated: "2026-08-30",
   sections: [
     {
       title: "개인정보처리자",
@@ -55,7 +56,8 @@ const privacyKo: LegalPageCopy = {
       bullets: [
         "게스트의 생년월일, 선택 입력 이름, 관심사와 고민은 현재 분석을 위해 브라우저 메모리에서 사용되며 사용자가 저장을 선택하지 않으면 새로고침 시 사라집니다.",
         "이메일 로그인을 선택하면 Supabase가 인증 이메일, 계정 식별자와 세션 정보를 처리합니다. 사용자가 명시적으로 동기화한 환경설정·타로 기록·Reality Check 기록만 계정에 저장됩니다.",
-        "결제 시 주문번호, 상품코드, 결제금액, 통화, 결제수단, 결제상태와 이용권 만료일을 보관합니다. 결제 안내에 필요한 휴대폰 번호와 카드번호·계좌 비밀번호·휴대폰 인증정보는 InnerArc 서버에 저장하지 않고 결제대행사 페이앱이 처리합니다.",
+        `결제 시 주문번호, 상품코드, 결제금액, 통화, 결제수단, 결제상태와 이용권 만료일을 보관합니다. 결제 안내에 필요한 휴대폰 번호와 카드번호·계좌 비밀번호·휴대폰 인증정보는 ${brandNameKo} 서버에 저장하지 않고 결제대행사 페이앱이 처리합니다.`,
+        "로그인 사용자가 명시적으로 Reality Check나 실제 삶의 사건을 저장하면 패턴 프로필·가설·응답·근거 사건·결과·신뢰도 변경 이력과 연결 관계가 계정별로 저장됩니다. 원문은 입력 목적에 필요한 범위로 제한합니다.",
         "서비스 운영을 위해 날짜·언어·화면 동작 종류별 조회·버튼·입력·결제 합계만 저장합니다. 이 집계에는 이름, 생년월일, 질문, 휴대폰 번호, IP 주소, 계정·세션 식별자를 넣지 않으며 개인별 이용기록이나 고유 방문자 수를 만들지 않습니다.",
       ],
     },
@@ -78,7 +80,13 @@ const privacyKo: LegalPageCopy = {
     {
       title: "처리위탁과 국외이전 예정",
       paragraphs: [
-        "인증·데이터 저장에는 Supabase, 결제 요청·승인·가상계좌 입금 통보에는 페이앱 운영사 (주)유디아이디와 구매자가 선택한 결제수단 사업자가 사용됩니다. 국외이전 여부, 이전 항목·시점·방법·보유기간과 거부 방법은 각 계약과 실제 데이터 흐름을 확인해 최종 방침에 공개합니다.",
+        "인증·데이터 저장에는 Supabase, 결제 요청·승인·가상계좌 입금 통보에는 페이앱 운영사 (주)유디아이디와 구매자가 선택한 결제수단 사업자가 사용됩니다. AI 제공자는 기본적으로 비활성화되어 있으며, OpenAI 또는 NVIDIA를 실제 활성화하기 전 전송 항목·지역·보유·재학습 조건과 계약을 확인해 방침에 공개해야 합니다.",
+      ],
+    },
+    {
+      title: "부정 이용 방지와 보안 기록",
+      paragraphs: [
+        "민감한 패턴 기록 API에는 계정·IP 기준 요청 제한과 반복 접근 기록 기반을 적용할 수 있습니다. 보안 기록은 원문 대신 사건 유형, 시각, 가명 처리된 계정·IP 참조, 화면·자원 종류, 요청 수, 브라우저 요약과 조치만 남기며 30~90일 범위의 최종 보유기간은 법률·운영 검토 후 확정합니다.",
       ],
     },
     {
@@ -102,8 +110,8 @@ const privacyEn: LegalPageCopy = {
   ...sharedEn,
   status: "Pre-operation notice · transfer details and legal review pending",
   title: "Privacy information",
-  intro: "This notice identifies the InnerArc operator and describes current account and payment data flows. Privacy requests may be submitted to the support email below. Processor and international-transfer details will be finalized against the operating contracts.",
-  lastUpdated: "2026-08-02",
+  intro: `This notice identifies the ${brandNameKo} operator and describes current account, payment, and personal-pattern data flows. Privacy requests may be submitted to the support email below. Processor and international-transfer details will be finalized against the operating contracts.`,
+  lastUpdated: "2026-08-30",
   sections: [
     {
       title: "Controller",
@@ -121,8 +129,9 @@ const privacyEn: LegalPageCopy = {
       bullets: [
         "A guest's birth date, optional name, interests, and concern are used in browser memory for the current analysis and disappear on refresh unless the person explicitly saves them.",
         "If email sign-in is selected, Supabase handles the authentication email, account identifier, and session. Only preferences, tarot records, and Reality Check records explicitly synchronized by the person are stored with the account.",
-        "For payment, InnerArc retains the order ID, product code, amount, currency, method, status, and access expiry. PayApp handles the mobile number needed for payment instructions as well as card, bank, and mobile-authentication data; InnerArc does not store those values.",
-        "For service operations, InnerArc stores only daily totals by language and interaction type for page views, buttons, form steps, and payments. These totals exclude names, birth dates, questions, phone numbers, IP addresses, account IDs, and session IDs and do not create individual histories or unique-visitor counts.",
+        `${brandNameKo} retains the order ID, product code, amount, currency, method, status, and access expiry. PayApp handles payment-instruction phone and payment credentials; ${brandNameKo} does not store those credential values.`,
+        "When a signed-in person explicitly saves a Reality Check or life event, account-scoped pattern profiles, hypotheses, responses, evidence events, outcomes, confidence revisions, and graph links are stored.",
+        `For ordinary service analytics, ${brandNameKo} stores only daily totals by language and interaction type. These totals exclude names, birth dates, questions, phone numbers, IP addresses, account IDs, and session IDs.`,
       ],
     },
     {
@@ -144,7 +153,13 @@ const privacyEn: LegalPageCopy = {
     {
       title: "Processors and intended international transfers",
       paragraphs: [
-        "Supabase supports authentication and storage. PayApp operator UDID Co., Ltd. and the customer-selected payment-method operator process checkout, approval, and virtual-account deposit notifications. International-transfer details will be finalized against signed contracts and verified data flows.",
+        "Supabase supports authentication and storage. PayApp operator UDID Co., Ltd. and the selected payment-method operator process payments. AI providers are disabled by default; OpenAI or NVIDIA must not be enabled until transferred fields, region, retention, training use, and contracts are verified and disclosed.",
+      ],
+    },
+    {
+      title: "Abuse prevention and security records",
+      paragraphs: [
+        "Sensitive pattern APIs can apply account- and IP-scoped request limits. Security records are designed to omit user content and retain only event type, time, pseudonymous account and IP references, endpoint or resource type, request count, user-agent summary, and action. A final retention period within the proposed 30–90 day range remains subject to legal and operational review.",
       ],
     },
     {
@@ -167,9 +182,9 @@ const privacyEn: LegalPageCopy = {
 const termsKo: LegalPageCopy = {
   ...sharedKo,
   status: "운영 전 이용조건 · 통신판매 신고정보 최종 확인 필요",
-  title: "InnerArc 이용조건",
+  title: `${brandNameKo} 이용조건`,
   intro: "현재 제품 경계와 자동 갱신 없는 1회성 리딩 상품의 유료 결제·전달·환불 원칙을 설명합니다. 환불은 고객지원 이메일로 접수하며, 통신판매 신고정보는 운영 개시 전에 최종 갱신합니다.",
-  lastUpdated: "2026-07-30",
+  lastUpdated: "2026-08-30",
   sections: [
     {
       title: "판매자 정보",
@@ -186,7 +201,7 @@ const termsKo: LegalPageCopy = {
     {
       title: "서비스의 성격",
       paragraphs: [
-        "InnerArc는 생년월일의 흐름과 타로 상징을 자기성찰 질문으로 제공합니다. 미래, 관계 성공, 성격의 본질, 질병, 법률 결과, 투자 수익을 보장하거나 과학적으로 예측하지 않습니다.",
+        "태령당은 생년월일의 흐름과 타로 상징을 자기성찰 가설로 제공합니다. 미래, 관계 성공, 성격의 본질, 질병, 법률 결과, 투자 수익을 보장하거나 과학적으로 예측하지 않습니다.",
       ],
     },
     {
@@ -201,6 +216,12 @@ const termsKo: LegalPageCopy = {
         "정확한 정보를 입력하고 계정과 기기를 보호해야 합니다.",
         "타인의 정보를 허락 없이 공개·보관·괴롭힘·평가 목적으로 사용하면 안 됩니다.",
         "불법행위, 안전장치 우회, 서비스 방해, 대량 자동화 오용은 금지됩니다.",
+      ],
+    },
+    {
+      title: "콘텐츠와 시스템의 허용 범위",
+      paragraphs: [
+        "개인적 열람과 본인이 구매한 결과의 합리적인 보관·내보내기는 허용됩니다. 무단 대량 수집, 자동 크롤링, 재배포, 데이터셋 구축, AI 학습·미세조정·RAG 수집, 모델 평가자료 제작, 상업적 색인, 서비스 구조·규칙·프롬프트 추출과 경쟁 파생 서비스 제작은 금지됩니다. 침해 예방·조사와 증거보존을 위한 기술적 보호조치를 적용·운영할 수 있으며, 확인된 위반에는 이용 제한과 가능한 법적 조치를 진행할 수 있습니다.",
       ],
     },
     {
@@ -230,9 +251,9 @@ const termsKo: LegalPageCopy = {
 const termsEn: LegalPageCopy = {
   ...sharedEn,
   status: "Pre-release terms · mail-order registration details pending",
-  title: "InnerArc terms of use",
+  title: `${brandNameKo} terms of use`,
   intro: "These terms explain current product boundaries and the intended one-time readings. Refund requests are accepted by support email. Mail-order registration details will be finalized before operation.",
-  lastUpdated: "2026-07-30",
+  lastUpdated: "2026-08-30",
   sections: [
     {
       title: "Seller",
@@ -248,7 +269,7 @@ const termsEn: LegalPageCopy = {
     {
       title: "Nature of the service",
       paragraphs: [
-        "InnerArc uses birth-date themes and tarot symbols as prompts for self-reflection. It does not guarantee or scientifically predict the future, relationship success, identity, illness, legal outcomes, or investment returns.",
+        `${brandNameKo} uses birth-date themes and tarot symbols as self-reflection hypotheses. It does not guarantee or scientifically predict the future, relationship success, identity, illness, legal outcomes, or investment returns.`,
       ],
     },
     {
@@ -263,6 +284,12 @@ const termsEn: LegalPageCopy = {
         "Provide accurate inputs and protect your account and device.",
         "Do not disclose, retain, harass, or evaluate another person using their information without permission.",
         "Illegal conduct, safety bypass, disruption, and abusive automation are prohibited.",
+      ],
+    },
+    {
+      title: "Permitted use of content and systems",
+      paragraphs: [
+        "Personal viewing and reasonable retention or export of your purchased results are permitted. Unauthorized bulk collection, crawling, redistribution, dataset construction, AI training or fine-tuning, RAG ingestion, model-evaluation datasets, commercial indexing, extraction of service structure, rules, or prompts, and competing derivative services are prohibited. Technical safeguards may be applied for prevention, investigation, and evidence preservation; confirmed violations may result in access restrictions and available legal action.",
       ],
     },
     {

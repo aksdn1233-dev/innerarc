@@ -135,7 +135,7 @@ const ko: ShopCopy = {
 
 const en: ShopCopy = {
   brandTagline: "Personal pattern intelligence",
-  eyebrow: "GYEOL accessory shop",
+  eyebrow: "태령당 accessory shop",
   headline: "Turn Saju and numerology symbols\ninto useful everyday forms",
   intro: "Explore accessory directions tied to Saju phases and numerology facts. Checkout opens only for items whose material, price, inventory, and imagery have been approved.",
   status: "Shop in preparation · checkout opens after product approval",

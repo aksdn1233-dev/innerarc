@@ -75,8 +75,8 @@ export function NumerologyGuideRoster({ locale, selectedGuideId, onSelect, surfa
       <header className="numerology-guide-heading">
         <p className="eyebrow">
           {isSaju
-            ? (ko ? "결 사주 서비스 해석자" : "GYEOL Saju service guides")
-            : (ko ? "결 수비학 해석자" : "GYEOL numerology guides")}
+            ? (ko ? "태령당 사주 서비스 해석자" : "태령당 Saju service guides")
+            : (ko ? "태령당 수비학 해석자" : "태령당 numerology guides")}
         </p>
         <h2 id="numerology-guide-title">{ko ? "지금 필요한 관점의 해석자를 고르세요" : "Choose the perspective you need now"}</h2>
         <p>

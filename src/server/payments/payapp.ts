@@ -75,7 +75,7 @@ export async function requestPayAppPayment(input: {
     goodname: input.orderName,
     price: String(input.amount),
     recvphone: input.customerPhone,
-    memo: `결 GYEOL 주문 ${input.orderId}`,
+    memo: `태령당 주문 ${input.orderId}`,
     reqaddr: "0",
     feedbackurl: input.feedbackUrl,
     var1: input.orderId,

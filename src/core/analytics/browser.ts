@@ -10,6 +10,7 @@ import type { Locale } from "@/i18n/config";
 type ConversionEventName = Extract<
   SafeAnalyticsEvent["name"],
   | "landing_view"
+  | "journey_view"
   | "primary_cta_click"
   | "sample_section_view"
   | "product_view"
@@ -27,6 +28,7 @@ type ConversionEventProperties<Name extends ConversionEventName> = Extract<
 >["properties"];
 
 const SESSION_KEY = "gyeol.analytics.session.v1";
+export const INTERNAL_TRAFFIC_KEY = "gyeol.analytics.internal.v1";
 
 function randomId() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
@@ -61,6 +63,12 @@ export function captureConversionEvent<Name extends ConversionEventName>(
   properties: ConversionEventProperties<Name>,
 ) {
   if (typeof window === "undefined") return false;
+  try {
+    if (window.location?.hostname === "localhost" || window.location?.hostname === "127.0.0.1") return false;
+    if (window.localStorage.getItem(INTERNAL_TRAFFIC_KEY) === "1") return false;
+  } catch {
+    // Storage is optional. Server-side bot filtering remains the fallback.
+  }
   const candidate = {
     schemaVersion: ANALYTICS_SCHEMA_VERSION,
     eventId: randomId(),

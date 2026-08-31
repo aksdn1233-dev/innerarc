@@ -8,6 +8,9 @@ import {
   socialImageSize,
 } from "@/app/social-image";
 import { BRAND_SEARCH_ALIASES, OFFICIAL_NAVER_BLOG_URL } from "@/core/brand-links";
+import { brandNameKo } from "@/core/brand";
+import { ContentProtectionNotice } from "@/components/content-protection-notice";
+import { JourneyAnalytics } from "@/components/journey-analytics";
 import { resolveProductPricing } from "@/core/product-prices";
 import { resolvePublicAppUrl } from "@/core/site-url";
 import { isLocale, locales } from "@/i18n/config";
@@ -37,11 +40,27 @@ export async function generateMetadata({
     title: copy.title,
     description: copy.description,
     keywords: locale === "ko"
-      ? [...BRAND_SEARCH_ALIASES, "사주", "무료 사주", "운세", "오늘의 운세", "운명수", "수비학", "궁합", "관계 리딩"]
+      ? [
+          ...BRAND_SEARCH_ALIASES,
+          "나의 성향",
+          "나의 결",
+          "나의 특징",
+          "나의 장점",
+          "타고난 성향",
+          "타고난 기세",
+          "사주",
+          "무료 사주",
+          "운세",
+          "오늘의 운세",
+          "운명수",
+          "수비학",
+          "궁합",
+          "관계 리딩",
+        ]
       : [...BRAND_SEARCH_ALIASES, "Saju", "Four Pillars", "numerology", "daily flow", "relationship reading"],
     openGraph: {
       type: "website",
-      siteName: "결 GYEOL · MY GYEOL",
+      siteName: brandNameKo,
       title: copy.title,
       description: copy.description,
       locale: copy.openGraphLocale,
@@ -76,7 +95,7 @@ export default async function LocaleLayout({
       {
         "@type": "Organization",
         "@id": `${baseUrl.origin}/#organization`,
-        name: "결 GYEOL",
+        name: brandNameKo,
         alternateName: BRAND_SEARCH_ALIASES,
         url: baseUrl.origin,
         logo: new URL("/icon.png", baseUrl).toString(),
@@ -85,7 +104,7 @@ export default async function LocaleLayout({
       {
         "@type": "WebSite",
         "@id": `${baseUrl.origin}/#website`,
-        name: "결 GYEOL",
+        name: brandNameKo,
         alternateName: BRAND_SEARCH_ALIASES,
         url: homeUrl,
         description: copy.description,
@@ -100,6 +119,7 @@ export default async function LocaleLayout({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replaceAll("<", "\\u003c") }}
       />
+      <JourneyAnalytics locale={locale} />
       {campaign && (
         <nav className="campaign-utility-nav" aria-label={locale === "ko" ? "행사, 후기와 도움말" : "Campaign, reviews and help"}>
           <Link href={`/${locale}/events`} prefetch={false}>{locale === "ko" ? "이벤트" : "Events"}</Link>
@@ -108,6 +128,7 @@ export default async function LocaleLayout({
         </nav>
       )}
       {children}
+      <ContentProtectionNotice locale={locale} />
     </div>
   );
 }

@@ -1,5 +1,83 @@
 # Decision Log
 
+## D-080 — Lead Korean search discovery with the language customers actually use
+
+- Date: 2026-08-30
+- Decision: Replace the Korean home search title and summary that led with implementation
+  categories with a concise customer-language promise: natural tendencies, `나의 결`, personal
+  traits, strengths, inborn momentum, recurring choices, and the year's flow. Keep Saju and
+  Numerology technically separate inside their dedicated product routes and calculation evidence,
+  but remove `수비학` from the Korean home title, description, social preview, and introductory
+  method paragraph. Add the owner's exact discovery phrases as bounded metadata aliases and use
+  them in coherent sentences instead of a visible keyword list.
+- Demand evidence and distribution: The owner explicitly asked to improve Naver discovery for
+  `나의 성향`, `나의 결`, `나의 특징`, and `장점`, and asked that public acquisition copy describe
+  the service as reading natural momentum, tendencies, and flow rather than leading with
+  Numerology terminology. Live Naver evidence on 2026-08-30 showed the domain already indexed for
+  `MY GYEOL`, while its result title and snippet still used the old category-first wording. The
+  change is limited to first-party organic metadata, the existing Naver blog, and existing public
+  home/reading copy; it buys no rankings, ads, links, or fabricated engagement.
+- Unit economics and costs: The current digital prices and the one-week 1,500 KRW campaign are
+  unchanged. This adds no model, search, advertising, payment, storage, or fulfillment cost and
+  therefore does not change the existing 9,600/39,000 KRW economics outside the active campaign.
+- Safety, truth, and privacy: The copy promises neither prediction nor a guaranteed search rank or
+  life outcome. It continues to describe a personal reflection report, preserves deterministic
+  calculation evidence and the visible symbolic-tool boundary inside the dedicated routes, and
+  adds no tracking, personal input, contact data, or search-query capture.
+- Success and guardrails: The Korean home title must contain the new discovery promise and omit
+  `수비학`; its description must naturally contain both `타고난 기세와 성향` and
+  `나의 결, 특징과 장점`. English metadata and route-specific technical truth stay unchanged.
+  Measure only consented aggregate search landings and do not infer ranking improvement from raw
+  requests. Naver can take days or weeks to recrawl, so deployment is success evidence, not ranking.
+- Reversal conditions: Revert the acquisition wording if it obscures that the underlying result is
+  symbolic reflection, causes dedicated Saju and Numerology routes to be conflated, produces a
+  portal quality warning, or materially reduces qualified organic landings after a sufficient
+  recrawl window. Rollback reference: production commit `019bddc`.
+
+## D-079 — Expand the Saju report and give every interpretive scene one explicit takeaway
+
+- Date: 2026-08-26
+- Decision: Expand each of the eleven Korean Saju life-narrative scenes from one dense
+  paragraph into at least three paragraphs that separate structural reading, possible
+  real-life expressions, and an observable check or action. Add an optional
+  `keySentence` to the stored report section contract and render it above the body with a
+  larger display face, heavier weight, accent rule, and distinct background in both the
+  web report and downloaded HTML. Keep the field optional so previously stored reports
+  remain readable without recalculation or migration. Mirror the structure and boundary
+  in English. Distinguish visible wealth symbols from wealth symbols in hidden stems
+  instead of collapsing both into one count.
+- Demand evidence and distribution: The owner reviewed a real 1995-11-22 Saju result and
+  said the paid report felt too short and its important sentences were not visually
+  prominent. The change applies only to newly generated Saju chart reports, their fixed
+  public sample, purchased-report page, and private download; acquisition routes,
+  checkout, email, sharing, and other report products do not change.
+- Unit economics and cost: The one-time Saju price remains 5,500 KRW. The longer text is
+  deterministic local composition and the emphasis is HTML/CSS, so provider,
+  generation, storage-request, payment, and fulfillment cost per report remain 0 KRW
+  beyond the existing database payload. No external personalization provider is enabled.
+- Safety, claims, and privacy: New text keeps calculated facts separate from conditional
+  reflection, uses lived experience as the deciding evidence, and retains medical,
+  legal, investment, relationship-outcome, and guaranteed-future boundaries. It adds no
+  input, analytics field, URL value, account sync, or external transmission. Hidden-stem
+  wealth language explicitly refuses to turn a symbolic count into a wealth or return
+  forecast.
+- Success and guardrails: Every new Saju report must have eleven unique key sentences,
+  at least three paragraphs per narrative scene, and more than 7,000 Korean body
+  characters across the eleven scenes. Desktop and mobile browser tests require all
+  eleven emphasis blocks, font weight of at least 700, a font size larger than the body,
+  and no horizontal overflow. The first browser run exposed an equal-size cascade bug;
+  the fixed selector and the failing assertion remain as regression coverage. Existing
+  input validation, calculation versions, section order, unknown-time behavior, claim
+  rejection, typecheck, and production build must continue to pass.
+- Reversal conditions: Revert the expanded narrative, optional section field, and all
+  emphasis renderers together if mobile scanning becomes materially slower, downloaded
+  reports lose readability, the longer copy repeats itself without adding a checkable
+  distinction, any sentence reads as verified biography or guaranteed outcome, or old
+  stored reports fail to render. Pre-change rollback reference: production commit
+  `c5a26910e378756a504f266e2dfabd827a6678bf`.
+- Status: Owner-requested; implemented locally with unit, type, production-build, and
+  desktop/mobile browser regression evidence. Deployment was not requested or performed.
+
 ## D-078 — Keep technical provider labels out of the customer experience
 
 - Date: 2026-08-25
@@ -1277,3 +1355,39 @@
   historical payment verification, valid entries, coupon rights, and the prize obligation.
 - Detailed operating and draw rules: `docs/Campaign-2026-08-30.md`.
 - Status: Owner-authorized for production deployment.
+# D-TAERYEONGDANG-P0 — Brand and Personal Pattern Intelligence foundation
+
+- Date: 2026-08-30
+- Decision: Use `태령당` as the approved Korean public name and `Personal Pattern Intelligence` as a descriptor. Keep `mygyeol.kr`, deployment identifiers, storage keys, and legacy search aliases for compatibility until a separately verified domain cutover.
+- Decision: Add owner-scoped Pattern Profiles, hypotheses, report Reality Checks, life-event evidence, outcomes, append-only confidence revisions, relational graph edges, and provenance/security foundations in one forward-only migration. Deterministic engines remain authoritative; the learning layer changes only how hypotheses are weighted.
+- Safety: P0 confidence is a bounded, human-readable heuristic with sparse-evidence caps. It is not probability or scientific certainty. Report-derived writes re-read and authorize the stored report on the server.
+- Rollback: Remove or disable the additive UI and APIs first; preserve new tables and user history. Do not drop or rewrite recorded evidence during an application rollback.
+
+## D-083 - Separate network traffic from privacy-minimized journey evidence
+
+- Date: 2026-08-30
+- Decision: Do not report Cloudflare unique-network counts as people. Add an allowlisted,
+  first-party `journey_view` aggregate for route and source categories, exclude declared automation,
+  localhost, and administrator routes, and show the resulting route/source counts in the owner
+  console with an explicit non-person warning. Keep raw referrers, URLs, queries, IPs, identifiers,
+  and reading inputs out of storage.
+- Demand and distribution: The owner challenged a reported 110 visitors and asked where real users
+  left. The current 24-hour evidence isolates only zero to one external-browser candidate, so no
+  conversion claim or broad home redesign is justified. Existing Naver Blog, SeenThis, Disquiet,
+  Instagram, direct, and search distribution can now be compared using bounded categories.
+- Economics: No price, entitlement, payment provider, fulfilment, or content-generation cost
+  changes. The current 1,500 KRW campaign and 39,000/79,000 KRW normal economics remain unchanged.
+  Incremental cost is limited to tiny first-party aggregate marker objects and admin rendering.
+- Success, guardrails, and reversal: Require no PII/raw URL storage, no third-party analytics,
+  known automation exclusion, green schema/route/admin tests, and no reading/payment interruption.
+  Wait for at least 30 external home entries per source before treating a percentage as directional.
+  Disable the journey component or sink if privacy, route, performance, or false-exclusion issues
+  appear. Diagnostic evidence and thresholds are in
+  `docs/Traffic-Funnel-Diagnostic-2026-08-30.md`.
+- Rollback reference: Cloudflare production version
+  `76b0a10f-2fa3-4318-9893-975eb25d11bb`; repository base
+  `019bddc565a3d55c51c1c5e92496c8c606623cb8`. The application change is additive and needs no
+  data migration or destructive rollback.
+- Status: Released to production as Cloudflare version
+  `1133d6db-4000-4136-be9d-1b4be1205219` with live health, schema, bot-filter, home-action, and
+  console-error verification.

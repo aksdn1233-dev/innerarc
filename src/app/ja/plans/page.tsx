@@ -7,7 +7,7 @@ import { inspectPaymentReadiness } from "@/server/payments/config";
 import { readOperationsGate } from "@/server/payments/gate";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "リーディング商品 | 結 GYEOL", description: "必要な深さに合わせて選べる一回払いのパーソナルリーディング。" };
+export const metadata: Metadata = { title: "リーディング商品 | 태령당", description: "必要な深さに合わせて選べる一回払いのパーソナルリーディング。" };
 
 export default async function JapanesePlansPage({ searchParams }: { searchParams: Promise<{ product?: string }> }) {
   const query = await searchParams;

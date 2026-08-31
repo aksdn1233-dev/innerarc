@@ -6,6 +6,7 @@ import {
   socialImageSize,
 } from "@/app/social-image";
 import { BRAND_SEARCH_ALIASES } from "@/core/brand-links";
+import { brandNameKo } from "@/core/brand";
 import { resolvePublicAppUrl } from "@/core/site-url";
 import "./globals.css";
 
@@ -22,10 +23,10 @@ const naverSiteVerification =
 
 export const metadata: Metadata = {
   metadataBase: resolvePublicAppUrl(process.env.NEXT_PUBLIC_APP_URL),
-  title: "결 GYEOL (MY GYEOL) | 사주·수비학으로 보는 나·관계·운세",
+  title: `${brandNameKo} | 실제 삶으로 검증하는 개인 패턴 분석`,
   description:
-    "MY GYEOL(마이결)은 생년월일 기반 사주와 수비학을 서로 분리해 성향·관계·운세의 흐름을 정리하는 상징적 자기 성찰 리딩 서비스입니다.",
-  applicationName: "결 GYEOL · MY GYEOL",
+    "결정론적 상징 분석을 가설로 제시하고 Reality Check와 실제 삶의 기록으로 개인 패턴을 검증합니다.",
+  applicationName: brandNameKo,
   keywords: [
     ...BRAND_SEARCH_ALIASES,
     "사주",
@@ -36,6 +37,12 @@ export const metadata: Metadata = {
     "수비학",
     "궁합",
     "관계 리딩",
+    "나의 성향",
+    "나의 결",
+    "나의 특징",
+    "나의 장점",
+    "타고난 성향",
+    "타고난 기세",
     "Saju",
     "Numerology",
   ],
@@ -48,19 +55,19 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
   openGraph: {
     type: "website",
-    siteName: "결 GYEOL · MY GYEOL",
-    title: "결 GYEOL (MY GYEOL) | 사주·수비학으로 보는 나·관계·운세",
+    siteName: brandNameKo,
+    title: `${brandNameKo} | 실제 삶으로 검증하는 개인 패턴 분석`,
     description:
-      "사주와 수비학을 분리해 나의 성향, 관계, 오늘과 올해의 흐름을 상징적으로 살펴보세요.",
+      "상징 분석을 가설로 보고, 실제 경험과 결과를 기록해 나만의 패턴을 검증해 보세요.",
     locale: "en_US",
     alternateLocale: ["ko_KR"],
     images: [openGraphImage],
   },
   twitter: {
     card: "summary_large_image",
-    title: "결 GYEOL (MY GYEOL) | 사주·수비학으로 보는 나·관계·운세",
+    title: `${brandNameKo} | 실제 삶으로 검증하는 개인 패턴 분석`,
     description:
-      "사주와 수비학을 분리해 나의 성향, 관계, 오늘과 올해의 흐름을 상징적으로 살펴보세요.",
+      "상징 분석을 가설로 보고, 실제 경험과 결과를 기록해 나만의 패턴을 검증해 보세요.",
     images: [openGraphImage],
   },
 };

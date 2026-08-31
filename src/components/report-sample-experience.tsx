@@ -37,7 +37,7 @@ export function ReportSampleExperience({
     <main className={`shell paid-report-shell webtoon-shell sample-report-shell sample-${kind}`} id="main-content">
       <WebtoonReveal />
       <header className="sample-report-head">
-        <Link className="brand" href={`/${locale}`}><strong>{ko ? "결 GYEOL" : "GYEOL"}</strong></Link>
+        <Link className="brand" href={`/${locale}`}><strong>태령당</strong></Link>
         <p className="eyebrow">{ko ? "941104 결과 리포트 예시" : "1994-11-04 report sample"}</p>
         <h1>{report.title}</h1>
         <p>{report.tierLabel}</p>
@@ -73,6 +73,9 @@ export function ReportSampleExperience({
           title={section.title}
           tone={index % 2 === 0 ? "paper" : "night"}
         >
+          {section.keySentence && (
+            <p className="report-key-sentence"><strong>{section.keySentence}</strong></p>
+          )}
           <div className="sample-report-body"><ReportEmphasis>{section.body}</ReportEmphasis></div>
         </WebtoonPanel>
       ))}

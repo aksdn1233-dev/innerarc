@@ -10,6 +10,32 @@ const common = {
   locale: z.enum(["ko", "en"]),
 };
 
+export const JOURNEY_ROUTES = [
+  "home",
+  "fortune",
+  "saju",
+  "numerology",
+  "reading",
+  "plans",
+  "events",
+  "sample_saju",
+  "report",
+  "shop",
+  "other",
+] as const;
+
+export const JOURNEY_SOURCES = [
+  "direct",
+  "naver_blog",
+  "naver_search",
+  "google_search",
+  "instagram",
+  "disquiet",
+  "seenthis",
+  "other_campaign",
+  "other_referral",
+] as const;
+
 const event = <Name extends string, Shape extends z.ZodRawShape>(name: Name, shape: Shape) =>
   z.object({
     ...common,
@@ -19,6 +45,10 @@ const event = <Name extends string, Shape extends z.ZodRawShape>(name: Name, sha
 
 export const SafeAnalyticsEventSchema = z.discriminatedUnion("name", [
   event("landing_view", {}),
+  event("journey_view", {
+    route: z.enum(JOURNEY_ROUTES),
+    source: z.enum(JOURNEY_SOURCES),
+  }),
   // `hero_free`, `product_free` and `saju_crosslink` are the free-reading entry points.
   // They are additional values on an existing property, not a new event or a new
   // property, so a consumer written against the older set still parses every event it

@@ -44,7 +44,7 @@ export function SceneBackground({ scene }: { scene: WebtoonScene }) {
 export function CharacterLayer({ scene, priority }: { scene: WebtoonScene; priority: boolean }) {
   return (
     <div className={styles.characterLayer}>
-      <span aria-hidden="true" className={styles.characterFallback}>GYEOL</span>
+      <span aria-hidden="true" className={styles.characterFallback}>태령당</span>
       <Image
         alt={scene.altText}
         className={styles.character}
@@ -135,9 +135,9 @@ export function NumerologyWebtoonReading({ locale, result, context, archetype, s
   ];
 
   return (
-    <section aria-label={ko ? "캐릭터와 함께 보는 수비학 결과" : "Numerology result with GYEOL characters"} className={styles.reading}>
+    <section aria-label={ko ? "캐릭터와 함께 보는 수비학 결과" : "Numerology result with 태령당 characters"} className={styles.reading}>
       <header className={styles.heading}>
-        <p>{ko ? "결 수비학 웹툰 리딩" : "GYEOL numerology webtoon reading"}</p>
+        <p>{ko ? "태령당 수비학 웹툰 리딩" : "태령당 numerology webtoon reading"}</p>
         <h2>{ko ? "계산 결과를 장면별로 살펴보세요" : "Walk through your calculation, scene by scene"}</h2>
         <span>{ko ? "대사는 이미지가 아닌 웹 텍스트이며, 숫자 계산값은 캐릭터 선택과 무관합니다." : "Dialogue is selectable web text. Characters never change your calculated numbers."}</span>
       </header>

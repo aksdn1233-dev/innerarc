@@ -51,7 +51,7 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
     return (
       <main className="shell admin-shell" id="main-content">
         <header className="topbar">
-          <Link className="brand" href={`/${locale}`}><strong>결 GYEOL</strong><small>관리자</small></Link>
+          <Link className="brand" href={`/${locale}`}><strong>태령당</strong><small>관리자</small></Link>
         </header>
         <section className="admin-hero">
           <p className="eyebrow">OWNER CONSOLE</p>
@@ -166,7 +166,7 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
   return (
     <main className="shell admin-shell" id="main-content">
       <header className="topbar">
-        <Link className="brand" href={`/${locale}`}><strong>결 GYEOL</strong><small>관리자</small></Link>
+        <Link className="brand" href={`/${locale}`}><strong>태령당</strong><small>관리자</small></Link>
         <Link href={`/${locale}/orders`}>주문조회</Link>
       </header>
       <section className="admin-hero">

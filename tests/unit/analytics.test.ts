@@ -61,6 +61,7 @@ describe("privacy-minimized analytics", () => {
   it("allowlists the conversion funnel without accepting personal reading input", () => {
     const events = [
       { name: "landing_view", properties: {} },
+      { name: "journey_view", properties: { route: "home", source: "seenthis" } },
       { name: "primary_cta_click", properties: { location: "hero" } },
       { name: "sample_section_view", properties: {} },
       { name: "product_view", properties: { productCode: "pro_30d" } },
@@ -127,7 +128,10 @@ describe("privacy-minimized analytics", () => {
 describe("the conversion beacon leaves the page's network quiet", () => {
   type BeaconCall = Readonly<{ url: string; type: string; body: string }>;
 
-  async function captureWithStubbedBrowser(sendBeaconResult: boolean | null) {
+  async function captureWithStubbedBrowser(
+    sendBeaconResult: boolean | null,
+    options: Readonly<{ hostname?: string; internal?: boolean }> = {},
+  ) {
     const beacons: BeaconCall[] = [];
     const fetches: string[] = [];
     const dispatched: string[] = [];
@@ -146,6 +150,10 @@ describe("the conversion beacon leaves the page's network quiet", () => {
     };
 
     stub("window", {
+      location: { hostname: options.hostname ?? "mygyeol.kr" },
+      localStorage: {
+        getItem: (key: string) => key === "gyeol.analytics.internal.v1" && options.internal ? "1" : null,
+      },
       sessionStorage: {
         getItem: (key: string) => store.get(key) ?? null,
         setItem: (key: string, value: string) => void store.set(key, value),
@@ -199,5 +207,14 @@ describe("the conversion beacon leaves the page's network quiet", () => {
     const result = await captureWithStubbedBrowser(false);
     expect(result.beacons).toHaveLength(1);
     expect(result.fetches).toEqual(["/api/analytics/events"]);
+  });
+
+  it("does not count localhost or an operator-marked production browser", async () => {
+    const localhost = await captureWithStubbedBrowser(true, { hostname: "localhost" });
+    const internal = await captureWithStubbedBrowser(true, { internal: true });
+    expect(localhost.accepted).toBe(false);
+    expect(internal.accepted).toBe(false);
+    expect(localhost.beacons).toEqual([]);
+    expect(internal.beacons).toEqual([]);
   });
 });

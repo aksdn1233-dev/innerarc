@@ -157,6 +157,21 @@ Status: Supabase account persistence connected; production deployment and remain
   2026-08-22. It is rendered server-side in the root document head and may be replaced through
   `NAVER_SITE_VERIFICATION` if Naver rotates it. Verify the live source before completing portal
   ownership, then submit `/sitemap.xml` and `/image-sitemap.xml`; no private route may be added.
+- Production discovery URLs are compiled into the artifact. Build locally with
+  `NEXT_PUBLIC_APP_URL=https://mygyeol.kr pnpm build:sites`; setting the value only in the Worker
+  dashboard is too late for generated sitemap, canonical, Open Graph, and JSON-LD documents. After
+  every deploy, require `/sitemap.xml` to contain `https://mygyeol.kr/` and reject any occurrence of
+  `localhost` or `127.0.0.1`. The 2026-08-30 direct deploy exposed this failure and was immediately
+  rebuilt rather than submitted to a portal.
+
+## Personal Pattern Intelligence P0 rollout hold
+
+- `20260830000100_personal_pattern_intelligence_p0.sql` is forward-only and additive, but it replaces `delete_account_data`; apply it in staging first and compare the complete function body with the latest notification/survey version before production.
+- Deploy order is migration → two-account/RLS/RPC verification → app. The app fails softly when new tables are absent, but feedback and evidence writes remain unavailable until the migration is present.
+- Test one owner and one attacker account against every pattern read/write, a foreign paid-report order/section, duplicate client request IDs, pagination ceilings, report/account export, all-data deletion, and third-party deletion.
+- Configure `ABUSE_HASH_SECRET` and `PROVENANCE_HMAC_SECRET` separately. Never log either secret or raw IP. Rotate by accepting old provenance for investigations while issuing only the new version.
+- Roll back application UI/API code first if pattern persistence causes errors. Keep additive tables and recorded user history in place. Do not reverse a production migration by dropping user records; prepare a separately reviewed archive/export and restoration plan.
+- P0 confidence is a transparent bounded heuristic, not probability. Disable new feedback writes if history rows diverge from hypothesis counters, and reconstruct only from preserved checks/events after an audited repair.
 
 ## Incident priorities
 
@@ -247,3 +262,23 @@ The final runbook must add named on-call, legal/privacy, security, payment-suppo
   correctly exist in Sites output while the local Next E2E server still returns its prior 404.
 - A release is blocked if dates, normal-price comparisons, exclusions, winner/prize details, consent
   boundaries, catalog/order/provider amounts, or automatic expiry disagree.
+
+## Traffic and journey interpretation
+
+- Never call Cloudflare `unique visitors`, request totals, or `sum.visits` people. First subtract
+  infrastructure checks, vulnerability probes, declared crawlers, release agents, and known
+  operator browsing. Use `requestSource: eyeball` for Cloudflare path/user-agent diagnostics.
+- Treat the owner-console journey counters as aggregate route entries, not unique people. Compare
+  only like-for-like time windows and sources. Do not inspect or record IPs, personal inputs, raw
+  referrers, queries, or individual browsing histories.
+- For production browser verification, use the named `GYEOL release verification` user agent or
+  open a public route once with `internal_preview=1`; that first-party marker sets
+  `gyeol.analytics.internal.v1=1` for later QA in the same browser. Never include the marker in a
+  public campaign link. localhost and administrator routes are excluded automatically.
+- Do not diagnose percentage drop-off below 30 non-internal home entries per source. With smaller
+  samples, report exact counts and uncertainty. At sufficient volume, examine home → free/Saju or
+  reading → form start → form complete → plans → payment start → payment success. Payment/report
+  errors override the sample threshold and trigger the payment incident procedure immediately.
+- If known bots appear in the owner console, add a failing user-agent test before expanding the
+  bounded server filter. If real customer browsers are excluded, remove the overbroad matcher and
+  roll back the journey component without changing payment or historical aggregates.

@@ -7,9 +7,12 @@ import { PaymentStatusWaiting } from "@/components/payment-status-waiting";
 import { ReportActions } from "@/components/report-actions";
 import { ReviewRequestPanel } from "@/components/review-request-panel";
 import { AcquisitionSurveyPanel } from "@/components/acquisition-survey-panel";
+import { ReportRealityCheck } from "@/components/pattern-intelligence/report-reality-check";
+import { EvidenceEventCapture } from "@/components/pattern-intelligence/evidence-event-capture";
 import { CharacterWebtoonPanel as WebtoonPanel, ReportEmphasis, WebtoonCta, WebtoonCue, WebtoonOrbs } from "@/components/webtoon";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
 import { toOwnReviewState } from "@/core/reviews";
+import { brandNameForLocale } from "@/core/brand";
 import { isLocale } from "@/i18n/config";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import { requireSupabaseUser } from "@/lib/supabase/auth";
@@ -218,6 +221,12 @@ export default async function PurchasedReportPage({
     : [];
   const chapterBadge = (index: number) =>
     locale === "ko" ? `제 ${index + 1} 장` : `Chapter ${String(index + 1).padStart(2, "0")}`;
+  const patternPersistenceEnabled = stored.owner_user_id === auth.user?.id;
+  const deterministicBasis = report.calculationBasis
+    ? `${locale === "ko" ? "결정론적 수비학 계산" : "Deterministic numerology calculation"} · ${report.contentVersion ?? "stored-report"}`
+    : (locale === "ko" ? "저장된 리포트의 계산 근거" : "Stored report calculation basis");
+  const traditionalBasis = `${locale === "ko" ? "전통 상징 해석 계층" : "Traditional symbolic interpretation layer"} · ${report.sectionPlan ?? "legacy"}`;
+  const patternSections = report.sections.map((section, index) => ({ index, title: section.title }));
   return (
     <>
       <main
@@ -239,7 +248,7 @@ export default async function PurchasedReportPage({
 
           <div className="cinema-hero-copy webtoon-cover-copy">
             <Link className="brand webtoon-cover-brand" href={`/${locale}`}>
-              <strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong>
+              <strong>{brandNameForLocale(locale)}</strong>
             </Link>
             <p className="cinema-kicker">
               {report.tierLabel ?? (locale === "ko" ? "구매 리포트" : "Purchased report")}
@@ -330,7 +339,19 @@ export default async function PurchasedReportPage({
             title={section.title}
             tone={index % 2 === 0 ? "night" : "paper"}
           >
+            {section.keySentence && (
+              <p className="report-key-sentence"><strong>{section.keySentence}</strong></p>
+            )}
             <p className="webtoon-body"><ReportEmphasis>{section.body}</ReportEmphasis></p>
+            <ReportRealityCheck
+              deterministicBasis={deterministicBasis}
+              locale={locale}
+              orderId={orderId}
+              personalized={Boolean(report.concern)}
+              sectionIndex={report.sections.indexOf(section)}
+              signedIn={patternPersistenceEnabled}
+              traditionalBasis={traditionalBasis}
+            />
           </WebtoonPanel>
         ))}
 
@@ -452,6 +473,12 @@ export default async function PurchasedReportPage({
         <section className="webtoon-panel webtoon-paper webtoon-outro" data-webtoon-panel="">
           <div className="webtoon-inner">
             <p className="disclaimer">{report.disclaimer}</p>
+            <EvidenceEventCapture
+              locale={locale}
+              orderId={orderId}
+              sections={patternSections}
+              signedIn={patternPersistenceEnabled}
+            />
             <ReportActions
               locale={locale}
               downloadUrl={`/api/reports/${orderId}/download${accessQuery}`}

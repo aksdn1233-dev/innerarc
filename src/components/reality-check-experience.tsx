@@ -276,7 +276,7 @@ export function RealityCheckExperience({ locale, copy }: Props) {
     const url = URL.createObjectURL(new Blob([content], { type: "application/json" }));
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = `innerarc-reality-check-${today ?? localIsoDate()}.json`;
+    anchor.download = `taeryeongdang-reality-check-${today ?? localIsoDate()}.json`;
     anchor.click();
     URL.revokeObjectURL(url);
   }
@@ -290,7 +290,7 @@ export function RealityCheckExperience({ locale, copy }: Props) {
       <main className="shell reality-shell" id="main-content" tabIndex={-1}>
         <header className="topbar">
           <Link className="brand" href={`/${locale}`}>
-            <strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong>
+            <strong>태령당</strong>
             <small>{copy.brandTagline}</small>
           </Link>
           <Link className="locale-switch" href={`/${otherLocale}/reality-check`}>

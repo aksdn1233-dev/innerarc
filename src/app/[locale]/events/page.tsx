@@ -17,8 +17,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   if (!isLocale(locale)) return {};
   return {
-    title: locale === "ko" ? "일주일 연장 · 모든 디지털 리딩 1,500원 | 결 GYEOL" : "One-week extension · every digital reading ₩1,500 | GYEOL",
-    description: locale === "ko" ? "정상가 최대 79,000원의 결 GYEOL 디지털 리딩을 단 일주일 1,500원에. 후기 작성자 추첨 이벤트도 확인하세요." : "Every GYEOL digital reading is ₩1,500 for one extended week, with a review prize draw.",
+    title: locale === "ko" ? "일주일 연장 · 모든 디지털 리딩 1,500원 | 태령당" : "One-week extension · every digital reading ₩1,500 | 태령당",
+    description: locale === "ko" ? "정상가 최대 79,000원의 태령당 디지털 리딩을 단 일주일 1,500원에. 후기 작성자 추첨 이벤트도 확인하세요." : "Every 태령당 digital reading is ₩1,500 for one extended week, with a review prize draw.",
   };
 }
 
@@ -51,7 +51,7 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
     ["Is every product really ₩1,500?", "The Four Pillars chart (regular ₩5,500), Detailed reading (regular ₩39,000), and Premium in-depth reading (regular ₩79,000) each cost ₩1,500 during the campaign. Accessories and physical products are excluded."],
     ["When does it end?", `The campaign ends automatically at ${endLabel}. The regular price shown at checkout applies afterward.`],
     ["How do I enter the review draw?", "At the bottom of a completed paid report, submit Reading Feedback and separately opt in to the prize draw. Entry is limited to one per order and public-review consent is not required."],
-    ["Must I share to enter?", "The share button lets you send the event yourself. GYEOL does not track or store whether an external app completed a share, so eligibility is based on review submission and separate draw consent."],
+    ["Must I share to enter?", "The share button lets you send the event yourself. 태령당 does not track or store whether an external app completed a share, so eligibility is based on review submission and separate draw consent."],
     ["How is the winner announced?", `After ${drawLabel}, a masked order number will be posted on this page. The winner has seven days to contact support and prove access to that report; otherwise the draw is repeated.`],
     ["Can I combine the referral coupon?", "No. The ₩1,500 campaign does not stack with the ₩5,000 referral coupon. A coupon issued during the campaign can be used later on an eligible regular-price reading."],
     ["Does a reading guarantee the future?", "No. Numerology and Saju are symbolic reflection tools, not scientific prediction, diagnosis, treatment, or professional advice."],
@@ -60,7 +60,7 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
   return (
     <main className="shell event-shell" id="main-content">
       <header className="event-topbar">
-        <Link className="brand" href={`/${locale}`}><strong>{ko ? "결 GYEOL" : "GYEOL"}</strong><small>{ko ? "홈으로" : "Home"}</small></Link>
+        <Link className="brand" href={`/${locale}`}><strong>태령당</strong><small>{ko ? "홈으로" : "Home"}</small></Link>
         <nav aria-label={ko ? "이벤트 페이지" : "Event page"}><a href="#discount">{ko ? "할인" : "Discount"}</a><a href="#review-event">{ko ? "후기 이벤트" : "Review event"}</a><a href="#faq">FAQ</a></nav>
       </header>
 

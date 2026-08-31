@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Locale } from "@/i18n/config";
 import type { LegalPageCopy } from "@/i18n/legal-copy";
+import { brandNameForLocale } from "@/core/brand";
 
 export function LegalDocument({ locale, copy, kind }: { locale: Locale; copy: LegalPageCopy; kind: "privacy" | "terms" }) {
   const otherLocale = locale === "ko" ? "en" : "ko";
@@ -8,7 +9,7 @@ export function LegalDocument({ locale, copy, kind }: { locale: Locale; copy: Le
     <main className="shell legal-shell" id="main-content" tabIndex={-1}>
       <header className="topbar">
         <Link className="brand" href={`/${locale}`}>
-          <strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong>
+          <strong>{brandNameForLocale(locale)}</strong>
           <small>{copy.brandTagline}</small>
         </Link>
         <Link className="locale-switch" href={`/${otherLocale}/${kind}`}>

@@ -5,6 +5,7 @@ import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import { crossOriginRefused, isSameOriginRequest } from "@/server/same-origin";
 import { metricDimension, OPERATIONAL_EVENT_NAMES } from "@/server/operational-metrics";
 import { recordOperationalMetric } from "@/server/admin-storage";
+import { isOperationalAutomationUserAgent } from "@/core/analytics/traffic-attribution";
 
 const bodySchema = z.object({
   occurredAt: z.string().datetime({ offset: true }),
@@ -15,6 +16,9 @@ const bodySchema = z.object({
 
 export async function POST(request: Request) {
   if (!isSameOriginRequest(request)) return crossOriginRefused();
+  if (isOperationalAutomationUserAgent(request.headers.get("user-agent"))) {
+    return new NextResponse(null, { status: 204 });
+  }
   const parsed = bodySchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "INVALID_EVENT" }, { status: 400 });
 

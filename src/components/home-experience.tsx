@@ -99,7 +99,7 @@ const copy = {
     navLabel: "홈페이지 탐색",
     nav: [["#questions", "질문 고르기"], ["#preview", "리포트 예시"], ["#products", "가격"], ["#evidence", "후기"], ["#method", "리딩 방식"]],
     heroKicker: "사주명리와는 다른, 현실 선택 중심의 리딩",
-    heroTitle: "왜 나는 같은 선택을 반복할까요?",
+    heroTitle: "나의 결은 어떤 특징과 장점을 가지고 있을까요?",
     heroBody: "타고난 성향과 반복되는 관계·일·돈의 패턴을 살펴보고, 올해 어떤 선택에 힘을 주어야 할지 정리해드립니다.",
     primary: "내 패턴 확인하기",
     heroNote: "생년월일 기반 · 1회 결제 · 자동 갱신 없음",
@@ -135,7 +135,7 @@ const copy = {
       ["일·돈", "능력보다 역할의 경계가 불분명할 때 손해가 커지므로, 책임과 권한을 함께 정하는 것이 중요합니다."],
     ],
     methodTitle: "어떻게 리딩하나요?",
-    methodBody: "입력한 생년월일의 수비학적 수치를 계산하고, 성향·관계·일·돈·올해의 흐름을 서로 연결해 해석합니다. 결과는 미래를 단정하는 예언이 아니라, 반복되는 패턴과 현실적인 선택 기준을 정리한 개인 리포트입니다.",
+    methodBody: "입력한 생년월일의 고유 수치를 계산해 타고난 기세와 성향, 나의 특징과 장점을 살펴보고 관계·일·돈·올해의 흐름을 서로 연결합니다. 결과는 미래를 단정하는 예언이 아니라, 반복되는 패턴과 현실적인 선택 기준을 정리한 개인 리포트입니다.",
     methodPoints: ["생년월일 기반 계산", "질문 영역을 반영한 개인화", "결제 후 비회원 열람 가능"],
     productsTitle: "필요한 깊이만 고르세요",
     productsBody: "한 영역만 볼지, 여러 영역을 연결해 볼지.",
@@ -495,7 +495,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
         {/* Over the opening screen the header is chrome, not content: it goes transparent
             and hands its links to a panel, so nothing competes with the title. */}
         <header className="topbar home-topbar is-over-cinema">
-          <Link className="brand" href={`/${locale}`}><strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong><small>{d.brandTagline}</small></Link>
+          <Link className="brand" href={`/${locale}`}><strong>태령당</strong><small>{d.brandTagline}</small></Link>
           <nav className="home-nav" aria-label={t.navLabel}>{t.nav.map(([href, label]) => <a href={href} key={href}>{label}</a>)}</nav>
           <div className="home-header-actions">
             <a className="header-start-link" href="#onboarding">{locale === "ko" ? "리딩 시작하기" : "Start reading"}</a>
@@ -872,8 +872,8 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
         </section>
 
         <footer className="home-footer">
-          <div><strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong><p>{locale === "ko" ? "나의 성향과 관계, 올해의 흐름을 읽는 리딩" : "Readings for your tendencies, relationships, and year ahead"}</p></div>
-          <nav aria-label={locale === "ko" ? "공식 채널 및 법률 안내" : "Official channels and legal"}><a href={OFFICIAL_NAVER_BLOG_URL} rel="me noopener noreferrer" target="_blank">{locale === "ko" ? "MY GYEOL 공식 블로그" : "MY GYEOL official blog"}</a><Link href={`/${locale}/terms`}>{locale === "ko" ? "이용조건" : "Terms"}</Link><Link href={`/${locale}/privacy`}>{locale === "ko" ? "개인정보" : "Privacy"}</Link><Link href={`/${locale}/orders`}>{locale === "ko" ? "구매 내역" : "Find a purchase"}</Link><Link href={`/${locale}/support`}>{locale === "ko" ? "고객 문의" : "Support"}</Link></nav>
+          <div><strong>태령당</strong><p>{locale === "ko" ? "실제 삶으로 검증하는 개인 패턴 분석" : "Personal Pattern Intelligence verified through lived experience"}</p></div>
+          <nav aria-label={locale === "ko" ? "공식 채널 및 법률 안내" : "Official channels and legal"}><a href={OFFICIAL_NAVER_BLOG_URL} rel="me noopener noreferrer" target="_blank">{locale === "ko" ? "태령당 공식 블로그" : "태령당 official blog"}</a><Link href={`/${locale}/terms`}>{locale === "ko" ? "이용조건" : "Terms"}</Link><Link href={`/${locale}/privacy`}>{locale === "ko" ? "개인정보" : "Privacy"}</Link><Link href={`/${locale}/orders`}>{locale === "ko" ? "구매 내역" : "Find a purchase"}</Link><Link href={`/${locale}/support`}>{locale === "ko" ? "고객 문의" : "Support"}</Link></nav>
           <small>{locale === "ko" ? "별루프 · 대표 박서준 · 사업자등록번호 482-12-03629 · 부산광역시 북구" : "Byeolloof · Busan, Republic of Korea"}</small>
         </footer>
           </>

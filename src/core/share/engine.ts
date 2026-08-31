@@ -20,7 +20,7 @@ function base(locale: Locale) {
   return {
     schemaVersion: SHARE_CARD_SCHEMA_VERSION,
     locale,
-    brand: "InnerArc" as const,
+    brand: "태령당" as const,
     contextLabel: locale === "ko"
       ? "과학적 진단이나 미래 예측이 아닌 자기성찰용 상징 구조"
       : "Symbolic structure for reflection—not diagnosis or future prediction",
@@ -143,7 +143,7 @@ export function renderShareCardSvg(candidate: ShareCardPayload): string {
     `<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350">`,
     `<rect width="1080" height="1350" rx="44" fill="#F7F1E7"/>`,
     `<circle cx="904" cy="172" r="94" fill="#DDE5D7"/>`,
-    `<text x="84" y="100" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#526453">InnerArc</text>`,
+    `<text x="84" y="100" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#526453">태령당</text>`,
     textLines([payload.eyebrow.toUpperCase()], 84, 190, 22, 28, 700),
     textLines(title, 84, 270, 58, 68, 600),
     textLines(subtitle, 84, 500, 29, 40),

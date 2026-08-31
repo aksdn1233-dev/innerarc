@@ -37,7 +37,13 @@ jobs:
           node-version: 24
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
-      - run: pnpm build:sites
+      - name: Build the production artifact
+        run: pnpm build:sites
+        env:
+          # This value is consumed while the sitemap, canonical, Open Graph, and JSON-LD
+          # documents are compiled. A dashboard-only Worker variable arrives too late and
+          # silently leaves loopback URLs in the deployed discovery documents.
+          NEXT_PUBLIC_APP_URL: https://mygyeol.kr
 
       # `--keep-vars` is not optional. Without it Wrangler deletes every variable on the
       # Worker before applying the ones in the config, and the generated config carries
@@ -74,9 +80,17 @@ jobs:
 
           home_status="$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 https://mygyeol.kr/ko)"
           image_status="$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 'https://mygyeol.kr/_vinext/image?url=%2Ficon.png&w=64&q=75')"
+          sitemap="$(curl -fsS --max-time 20 https://mygyeol.kr/sitemap.xml)"
           echo "home=${home_status} image=${image_status}"
           [ "${home_status}" = "200" ] || { echo "::error::the Korean home page did not return 200"; exit 1; }
           [ "${image_status}" = "200" ] || { echo "::error::image optimization is broken — the IMAGES binding may be missing"; exit 1; }
+          case "${sitemap}" in
+            *'<loc>https://mygyeol.kr/'*) ;;
+            *) echo "::error::the sitemap does not use the production origin"; exit 1 ;;
+          esac
+          case "${sitemap}" in
+            *'localhost'*|*'127.0.0.1'*) echo "::error::the production sitemap contains a loopback origin"; exit 1 ;;
+          esac
 
       # Everything above passes just as happily when the deploy landed somewhere the
       # domain does not point at: a healthy *old* build answers all of it. This is the

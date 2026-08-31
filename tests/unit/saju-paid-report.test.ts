@@ -50,9 +50,20 @@ describe("SAJU_5500 one-time report", () => {
     expect(section("가까운 관계에서 반복되는 장면")).toContain("일지 상관");
     expect(section("돈과 자원을 다루는 습관")).toContain("수익을 사주로 예측할 수는 없으며");
     expect(section("계산·보정 근거")).toContain("saju-core-1.1.0");
+    const narrativeSections = report.sections.filter((item) => item.keySentence);
+    expect(narrativeSections).toHaveLength(11);
+    expect(new Set(narrativeSections.map((item) => item.keySentence)).size).toBe(11);
+    for (const item of narrativeSections) {
+      expect(item.keySentence?.length, item.title).toBeGreaterThan(20);
+      expect(item.body.split(/\n{2,}/u).length, item.title).toBeGreaterThanOrEqual(3);
+    }
+    // Eleven distinct three-paragraph scenes should remain a substantial reading even
+    // when a particular chart produces shorter conditional branches.
+    expect(narrativeSections.reduce((total, item) => total + item.body.length, 0))
+      .toBeGreaterThan(7_000);
     expect(report.sections.map((section) => section.body).join(" ")).not.toMatch(/반드시|확실히|틀림없이|운명이 정해/);
-    expect(report.contentVersion).toBe("saju-chart-report-1.1.0");
-    expect(report.contentReferences).toContain("saju-life-narrative:1.0.0");
+    expect(report.contentVersion).toBe("saju-chart-report-1.2.0");
+    expect(report.contentReferences).toContain("saju-life-narrative:1.1.0");
     expect(report.contentReferences).toContain("product:SAJU_5500");
   });
 
@@ -100,6 +111,8 @@ describe("SAJU_5500 one-time report", () => {
     expect(report.customerName).toBe("결이");
     expect(report.sections.find((section) => section.title === "원국이 먼저 보여주는 당신의 중심")?.body)
       .toMatch(/^결이님의 일간/);
+    expect(report.sections.find((section) => section.title === "원국이 먼저 보여주는 당신의 중심")?.keySentence)
+      .toMatch(/^결이님의 강점/);
     expect(report.sections.find((section) => section.title === "가족이 기대했을 수 있는 모습")?.body)
       .toContain("결이님이");
   });

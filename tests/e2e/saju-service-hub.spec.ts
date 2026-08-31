@@ -16,7 +16,7 @@ test("the Saju service hub exposes real routes and labels unfinished services", 
   await page.goto("/ko/fortune");
 
   await expect(page.getByRole("heading", { level: 1, name: "오늘, 무엇이 가장 궁금하세요?" })).toBeVisible();
-  await expect(page.locator("main")).toContainText("GYEOL · FOUR PILLARS EDITION");
+  await expect(page.locator("main")).toContainText("태령당 · FOUR PILLARS EDITION");
   await expect(page.locator("main")).toContainText("계산 근거 공개");
   await expect(page.locator("main")).toContainText("지금 곁에 선 해석자");
   await expect(page.locator("[data-phase]")).toHaveCount(5);

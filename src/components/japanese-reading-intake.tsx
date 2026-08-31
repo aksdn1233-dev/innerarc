@@ -37,7 +37,7 @@ export function JapaneseReadingIntake() {
   return (
     <main className="japanese-entry-shell" id="main-content">
       <header className="japanese-entry-topbar">
-        <Link href="/ja"><strong>結 GYEOL</strong></Link>
+        <Link href="/ja"><strong>태령당</strong></Link>
         <nav aria-label="Language"><Link href="/ko/reading">한국어</Link><Link href="/en/reading">English</Link></nav>
       </header>
       <section className="japanese-reading-hero">
