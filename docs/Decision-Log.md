@@ -1418,9 +1418,14 @@
   authorization controls remain intact.
 - Success, guardrails, and reversal: Require a blank production field, a successful link request for
   the configured owner, continued denial for non-allowlisted sessions, no client email literal, and
-  green authorization, runtime-config, type, lint, build, and live-health checks. If delivery or callback routing
-  fails, investigate Supabase public configuration, rate limits, redirect allowlisting, and the
-  server environment; do not restore a browser hardcode. Roll back to Cloudflare version
+  green authorization, runtime-config, type, lint, build, and live-health checks. Production review
+  found and corrected a stale `http://127.0.0.1:3000/auth/callback` Site URL and added the exact
+  `https://mygyeol.kr/auth/callback` redirect target. It also confirmed that Supabase custom SMTP is
+  disabled: the built-in sender refuses non-team addresses and is not a production delivery path.
+  A reviewed custom SMTP provider and sender-domain controls are therefore required before the
+  configured Naver owner address can receive a magic link. Do not grant Supabase organization access
+  merely to bypass this mail restriction, and do not restore a browser hardcode. Roll back to Cloudflare version
   `1133d6db-4000-4136-be9d-1b4be1205219` if the release regresses authentication or any unrelated
   payment/report path. No migration or data rewrite is involved.
-- Status: Owner-authorized implementation and production verification in progress.
+- Status: Application and callback configuration released; production email delivery is blocked on
+  a reviewed custom SMTP credential and sender configuration.

@@ -118,6 +118,7 @@ describe("administrator sign-in boundary", () => {
 
     expect(loginSource).toContain("client.auth.signInWithOtp");
     expect(loginSource).toContain("getBrowserSupabaseClient(supabaseConfig)");
+    expect(loginSource).toContain("`${window.location.origin}/auth/callback?next=${next}`");
     expect(loginSource).not.toContain("OWNER_EMAIL");
     expect(loginSource).not.toContain("ADMIN_EMAILS");
     expect(loginSource).not.toMatch(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/iu);

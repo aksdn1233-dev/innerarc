@@ -37,11 +37,16 @@ Status: Supabase account persistence connected; production deployment and remain
    status. The page exposes only the closed operational categories `configuration`, `rate_limited`,
    or `provider`; never expose the provider's raw message, email, or configured allowlist.
 3. Confirm the production origin and `/auth/callback` are accepted redirect targets and that the
-   callback returns to the locale-specific administrator route.
+   callback returns to the locale-specific administrator route. The production baseline is Site URL
+   `https://mygyeol.kr` plus exact redirect URL `https://mygyeol.kr/auth/callback`; never leave a
+   localhost Site URL in the production project.
 4. Confirm the authenticated address matches one normalized entry in the server-side
    `ADMIN_EMAILS` value. Do not move that allowlist into public configuration or source code.
 5. A successful email request is authentication evidence only. Verify a non-allowlisted session
    still cannot open the console or any administrator API before closing the incident.
+6. Supabase's built-in SMTP is development-only and refuses recipients outside the project team.
+   Configure a reviewed custom SMTP provider for the owner address; do not invite the address into
+   the Supabase organization as a delivery workaround. Keep SMTP credentials out of source and logs.
 
 ## Technical rollback
 

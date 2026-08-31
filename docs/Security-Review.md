@@ -24,6 +24,10 @@ Scope: repository source, configuration, local production bundle, and automated 
   secret file. Supabase magic-link authentication only proves mailbox control; the console and every
   administrator API continue to require the server-side `ADMIN_EMAILS` allowlist, and private routes
   remain noindex. A source regression test prevents reintroducing either failure.
+- Administrator mail delivery: the production Supabase Site URL and exact callback allowlist now
+  point to `mygyeol.kr`; the prior localhost URL was removed. Custom SMTP remains disabled, so the
+  built-in development sender cannot deliver to a non-team Naver address. This is an explicit open
+  production blocker, not a reason to broaden Supabase organization membership or expose credentials.
 - The temporary database password used for migration setup was rotated after the remote migration/lint checks and is not stored by the project.
 - Device privacy center: corrupt local records are excluded from counts/exports, no read writes data implicitly, and one explicit action removes preference, tarot-history, Reality Check, and Daily Flow keys.
 - Daily Flow: month/day persistence requires an explicit button, malformed values fail closed,

@@ -45,6 +45,9 @@
   receives only validated browser-safe Supabase configuration from the live request environment,
   and remains separate from the server-only `ADMIN_EMAILS` authorization enforced by the console
   and administrator APIs.
+- [ ] Production administrator magic-link delivery uses reviewed custom SMTP with authenticated
+  sender-domain controls; the Site URL is `https://mygyeol.kr` and the exact callback allowlist
+  contains `https://mygyeol.kr/auth/callback`.
 - [x] Share outputs omit dates, names, contact details, concerns, journals, and questions by construction.
 - [x] Purchased-report gifting is explicitly distinguished from minimal public share cards,
   requires subject-consent confirmation, sends only on a user action, and stores no recipient
