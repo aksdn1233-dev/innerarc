@@ -26,6 +26,31 @@ test("compatibility offers the five plain-language relationship choices", async 
   ]);
 });
 
+test("compatibility intake keeps the action label centered and the privacy flow readable", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/ko/compatibility");
+
+  await expect(page.getByRole("heading", { name: "두 사람의 결을 나란히 놓아보세요" })).toBeVisible();
+  await expect(page.getByText("입력 정보는 이 화면에 머뭅니다")).toBeVisible();
+
+  const alignment = await page.getByRole("button", { name: "관계 패턴 비교" }).evaluate((button) => {
+    const label = button.querySelector("span");
+    if (!label) return null;
+    const buttonRect = button.getBoundingClientRect();
+    const labelRect = label.getBoundingClientRect();
+    return {
+      horizontal: Math.abs((buttonRect.left + buttonRect.width / 2) - (labelRect.left + labelRect.width / 2)),
+      vertical: Math.abs((buttonRect.top + buttonRect.height / 2) - (labelRect.top + labelRect.height / 2)),
+      minHeight: buttonRect.height,
+    };
+  });
+
+  expect(alignment).not.toBeNull();
+  expect(alignment!.horizontal).toBeLessThan(2);
+  expect(alignment!.vertical).toBeLessThan(2);
+  expect(alignment!.minHeight).toBeGreaterThanOrEqual(44);
+});
+
 test("family comparison keeps consent and renders all eight operating areas", async ({ page }) => {
   await page.goto("/ko/compatibility");
   await page.locator("#compatibility-birth-a").fill("1994-11-04");

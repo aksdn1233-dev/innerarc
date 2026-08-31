@@ -158,3 +158,8 @@
   130-page production build. The targeted campaign browser suite could not launch because the host
   lacks its pinned Chromium and WebKit binaries; this is an environment exception, not a passed
   browser result. Production HTML, catalog prices, and health must therefore be checked after deploy.
+- [x] Compatibility intake refinement preserves the five relationship choices, consent, guest
+  memory-only processing, and bilingual safety boundary; 760 unit cases, typecheck, lint with zero
+  errors, and the 130-page build pass. Its new alignment regression is committed, while the missing
+  local pinned Chromium binary is explicitly replaced by direct in-app-browser visual, DOM,
+  interaction, 54-pixel button, exact label-centering, and horizontal-overflow checks before release.

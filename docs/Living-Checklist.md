@@ -222,5 +222,8 @@ Last updated: 2026-08-22
   browser-side allowlist, receives its validated public authentication configuration from the live
   request environment, and leaves console/API authorization exclusively to the server-side
   `ADMIN_EMAILS` check after mailbox authentication.
+- [x] Compatibility intake uses a full-width atmospheric layout, distinct two-person fields,
+  relationship-context help, in-memory privacy disclosure, required private-use consent, responsive
+  stacking, and explicitly centered 44-pixel-or-larger action labels without changing calculations.
 - [ ] Collect at least 30 non-internal home entries per source before diagnosing a percentage-based
   journey drop-off; until then report counts, automation evidence, and uncertainty only.

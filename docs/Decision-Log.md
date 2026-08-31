@@ -1355,6 +1355,40 @@
   historical payment verification, valid entries, coupon rights, and the prize obligation.
 - Detailed operating and draw rules: `docs/Campaign-2026-08-30.md`.
 - Status: Owner-authorized for production deployment.
+
+## D-086 - Refine the compatibility intake without changing its privacy boundary
+
+- Date: 2026-08-31
+- Decision: Replace the narrow plain compatibility form with a full-width, atmospheric two-person
+  intake that separates person A, person B, relationship context, private-use consent, and the
+  submit action into a clear visual sequence. Explicitly center the label inside shared primary,
+  secondary, and text-button controls while preserving minimum touch targets. Keep the existing
+  deterministic calculation, five public relationship choices, result structure, and in-memory-only
+  guest behavior unchanged.
+- Demand and distribution: The owner directly reported weak visual impact and asked for a more
+  polished compatibility personal-information screen plus button-label alignment. The change is
+  confined to the first-party Korean and English compatibility route; it adds no promotion channel,
+  notification, crawler surface, or third-party distribution. This is usability evidence, not proof
+  of conversion, retention, or willingness to pay.
+- Economics and costs: No 1,500/39,000/79,000 KRW price, entitlement, payment-provider amount,
+  fulfilment, generation cost, or support workflow changes. CSS and localized copy add no recurring
+  provider cost.
+- Privacy, safety, and claims: Birth dates and optional names remain in current browser memory and
+  are not saved by this guest comparison. The required private-use consent remains before analysis;
+  the screen continues to avoid compatibility scores, fate verdicts, diagnoses, guarantees, or
+  professional-advice substitution. Korean and English disclose the same boundary.
+- Success, guardrails, and reversal: Require a full-width intake with no horizontal overflow,
+  explicit privacy notice, 44-pixel-or-larger controls, exact horizontal and vertical centering of
+  the submit label, keyboard focus, responsive single-column fallback, unchanged five-choice
+  behavior, and green unit/type/lint/build checks. The repository has no Prettier dependency or
+  formatting script, so the attempted formatter check is a documented tool-availability exception;
+  `git diff --check`, ESLint, TypeScript, tests, and build remain authoritative. The pinned local
+  Playwright browser binary is also absent; the committed browser regression is retained for CI and
+  direct in-app-browser DOM, alignment, overflow, interaction, and screenshot checks substitute for
+  this local run. Roll back to repository `4f86d78bdca6dd45d0417e022388412ed696a248` and Cloudflare
+  version `7461556b-d535-43c1-b34a-eda9fc62a828` if the release regresses entry, consent, calculation,
+  or unrelated routes. No migration or data rewrite is involved.
+- Status: Implementation verified locally; production deployment pending.
 # D-TAERYEONGDANG-P0 — Brand and Personal Pattern Intelligence foundation
 
 - Date: 2026-08-30

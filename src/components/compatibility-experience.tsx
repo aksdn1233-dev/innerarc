@@ -83,15 +83,31 @@ export function CompatibilityExperience({ locale, copy }: Props) {
         </header>
 
         <section className="compatibility-intro">
-          <p className="eyebrow">{copy.eyebrow}</p>
-          <h1>{copy.headline}</h1>
-          <p>{copy.intro}</p>
+          <div className="compatibility-intro-copy">
+            <p className="eyebrow">{copy.eyebrow}</p>
+            <h1>{copy.headline}</h1>
+            <p>{copy.intro}</p>
+          </div>
+          <div className="compatibility-orbit" aria-hidden="true">
+            <span className="compatibility-orbit-glow" />
+            <span className="compatibility-orbit-person compatibility-orbit-a">A</span>
+            <span className="compatibility-orbit-line" />
+            <span className="compatibility-orbit-person compatibility-orbit-b">B</span>
+            <span className="compatibility-orbit-word">GYEOL</span>
+          </div>
         </section>
 
         <form className="compatibility-form" id="compatibility-form" onSubmit={submit} noValidate>
+          <header className="compatibility-form-heading">
+            <p>{copy.formEyebrow}</p>
+            <h2>{copy.formTitle}</h2>
+            <span>{copy.formIntro}</span>
+          </header>
+
           <div className="person-grid">
             <fieldset>
-              <legend>{copy.personA}</legend>
+              <legend><span>01</span>{copy.personA}</legend>
+              <p className="compatibility-person-help">{copy.personAHelp}</p>
               <div className="field">
                 <label htmlFor="compatibility-birth-a">{copy.birthDate}</label>
                 <input id="compatibility-birth-a" name="birthDateA" type="date" required />
@@ -102,7 +118,8 @@ export function CompatibilityExperience({ locale, copy }: Props) {
               </div>
             </fieldset>
             <fieldset>
-              <legend>{copy.personB}</legend>
+              <legend><span>02</span>{copy.personB}</legend>
+              <p className="compatibility-person-help">{copy.personBHelp}</p>
               <div className="field">
                 <label htmlFor="compatibility-birth-b">{copy.birthDate}</label>
                 <input id="compatibility-birth-b" name="birthDateB" type="date" required />
@@ -114,19 +131,34 @@ export function CompatibilityExperience({ locale, copy }: Props) {
             </fieldset>
           </div>
 
-          <div className="field compatibility-type">
-            <label htmlFor="compatibility-type">{copy.relationshipType}</label>
-            <select id="compatibility-type" name="relationshipType" defaultValue="romance">
-              {selectableRelationshipTypes.map((type) => <option key={type} value={type}>{copy.types[type]}</option>)}
-            </select>
+          <div className="compatibility-lower-grid">
+            <div className="field compatibility-type">
+              <label htmlFor="compatibility-type">{copy.relationshipType}</label>
+              <span className="compatibility-field-help" id="compatibility-type-help">{copy.relationshipHelp}</span>
+              <div className="compatibility-select-wrap">
+                <select id="compatibility-type" name="relationshipType" defaultValue="romance" aria-describedby="compatibility-type-help">
+                  {selectableRelationshipTypes.map((type) => <option key={type} value={type}>{copy.types[type]}</option>)}
+                </select>
+              </div>
+            </div>
+
+            <div className="compatibility-privacy-card">
+              <span className="compatibility-privacy-mark" aria-hidden="true">✓</span>
+              <div>
+                <strong>{copy.privacyTitle}</strong>
+                <p className="privacy-note">{copy.privacyHelp}</p>
+              </div>
+            </div>
           </div>
 
-          <label className="check">
+          <label className="check compatibility-consent">
             <input type="checkbox" name="thirdPartyConsent" required />
             <span>{copy.thirdPartyConsent}</span>
           </label>
-          <p className="privacy-note">{copy.privacyHelp}</p>
-          <button className="primary-button" type="submit">{copy.submit}</button>
+          <div className="compatibility-submit-row">
+            <button className="primary-button" type="submit"><span>{copy.submit}</span><span aria-hidden="true">→</span></button>
+            <small>{copy.submitNote}</small>
+          </div>
           {error && <span className="error compatibility-error" role="alert">{error}</span>}
         </form>
 
