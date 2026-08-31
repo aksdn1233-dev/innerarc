@@ -163,3 +163,6 @@
   errors, and the 130-page build pass. Its new alignment regression is committed, while the missing
   local pinned Chromium binary is explicitly replaced by direct in-app-browser visual, DOM,
   interaction, 54-pixel button, exact label-centering, and horizontal-overflow checks before release.
+- [x] Simple-is-best compatibility follow-up removes orbit/glow/grid/gradient decoration and nested
+  person cards while preserving the form order, privacy statement, five relationship choices,
+  consent, centered controls, responsive layout, and eight-section result behavior.

@@ -1388,7 +1388,32 @@
   this local run. Roll back to repository `4f86d78bdca6dd45d0417e022388412ed696a248` and Cloudflare
   version `7461556b-d535-43c1-b34a-eda9fc62a828` if the release regresses entry, consent, calculation,
   or unrelated routes. No migration or data rewrite is involved.
-- Status: Implementation verified locally; production deployment pending.
+- Status: Released as Sites version 85 and Cloudflare version
+  `e5a54071-0bea-4384-8a30-e46d1fd39fac`, then visually simplified by D-087 at the owner's request.
+
+## D-087 - Apply a simple-is-best compatibility intake
+
+- Date: 2026-08-31
+- Decision: Remove the decorative orbit, glow, grid, badge, arrow, multi-colour strip, nested
+  person-card surfaces, and gradient-heavy treatment introduced in D-086. Keep one quiet dark
+  introduction, one white intake surface, thin dividers, plain fields, one solid primary action,
+  and the same information order. The privacy statement remains visible without a decorative icon.
+- Demand and distribution: The owner explicitly rejected the added visual complexity and requested
+  “simple is best.” This is direct design-direction evidence for the first-party compatibility route,
+  not proof of conversion, retention, or willingness to pay. No channel, promotion, or indexing
+  change is introduced.
+- Economics and costs: No price, product, entitlement, payment-provider amount, fulfilment,
+  generation, or support-cost change. Removing CSS decoration has no new recurring cost.
+- Privacy, safety, and claims: The birth dates and optional names remain guest-memory-only. Required
+  private-use consent, five relationship contexts, deterministic comparison, bilingual disclosure,
+  and the no-score/no-fate/no-guarantee boundary remain unchanged.
+- Success, guardrails, and reversal: Require zero decorative orbit elements, unrounded person
+  sections separated by simple dividers, no horizontal overflow, 44-pixel-or-larger controls, exact
+  button-label centering, responsive single-column stacking, and unchanged eight-section results.
+  Roll back to repository `5f5add3e804b80e574cea2427e0cdb576f09cb85` and Cloudflare version
+  `e5a54071-0bea-4384-8a30-e46d1fd39fac` if the simpler hierarchy harms readability, consent, or
+  result entry. No migration or data rewrite is involved.
+- Status: Implementation and local browser review complete; production deployment pending.
 # D-TAERYEONGDANG-P0 — Brand and Personal Pattern Intelligence foundation
 
 - Date: 2026-08-30

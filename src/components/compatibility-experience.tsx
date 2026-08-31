@@ -88,13 +88,6 @@ export function CompatibilityExperience({ locale, copy }: Props) {
             <h1>{copy.headline}</h1>
             <p>{copy.intro}</p>
           </div>
-          <div className="compatibility-orbit" aria-hidden="true">
-            <span className="compatibility-orbit-glow" />
-            <span className="compatibility-orbit-person compatibility-orbit-a">A</span>
-            <span className="compatibility-orbit-line" />
-            <span className="compatibility-orbit-person compatibility-orbit-b">B</span>
-            <span className="compatibility-orbit-word">GYEOL</span>
-          </div>
         </section>
 
         <form className="compatibility-form" id="compatibility-form" onSubmit={submit} noValidate>
@@ -143,7 +136,6 @@ export function CompatibilityExperience({ locale, copy }: Props) {
             </div>
 
             <div className="compatibility-privacy-card">
-              <span className="compatibility-privacy-mark" aria-hidden="true">✓</span>
               <div>
                 <strong>{copy.privacyTitle}</strong>
                 <p className="privacy-note">{copy.privacyHelp}</p>
@@ -156,7 +148,7 @@ export function CompatibilityExperience({ locale, copy }: Props) {
             <span>{copy.thirdPartyConsent}</span>
           </label>
           <div className="compatibility-submit-row">
-            <button className="primary-button" type="submit"><span>{copy.submit}</span><span aria-hidden="true">→</span></button>
+            <button className="primary-button" type="submit"><span>{copy.submit}</span></button>
             <small>{copy.submitNote}</small>
           </div>
           {error && <span className="error compatibility-error" role="alert">{error}</span>}

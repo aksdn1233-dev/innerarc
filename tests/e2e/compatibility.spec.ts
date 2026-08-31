@@ -32,6 +32,12 @@ test("compatibility intake keeps the action label centered and the privacy flow 
 
   await expect(page.getByRole("heading", { name: "두 사람의 결을 나란히 놓아보세요" })).toBeVisible();
   await expect(page.getByText("입력 정보는 이 화면에 머뭅니다")).toBeVisible();
+  await expect(page.locator(".compatibility-orbit")).toHaveCount(0);
+
+  const personCardRadius = await page.locator(".person-grid fieldset").first().evaluate((fieldset) =>
+    getComputedStyle(fieldset).borderRadius,
+  );
+  expect(personCardRadius).toBe("0px");
 
   const alignment = await page.getByRole("button", { name: "관계 패턴 비교" }).evaluate((button) => {
     const label = button.querySelector("span");
