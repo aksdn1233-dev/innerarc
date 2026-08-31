@@ -31,8 +31,10 @@ Status: Supabase account persistence connected; production deployment and remain
 
 1. Confirm the production login form is blank and sends the entered normalized email to Supabase;
    an owner address or client-side allowlist must never appear in the browser bundle.
-2. Confirm the two public Supabase values are present without printing them, then check provider
-   email rate limits and delivery status. Keep the user-facing error generic.
+2. Confirm the two public Supabase values are present without printing them and that the dynamic
+   login page passes the validated browser-safe pair from the live request environment; a direct
+   build must not rely on a local `.env` file. Then check provider email rate limits and delivery
+   status. Keep the user-facing error generic.
 3. Confirm the production origin and `/auth/callback` are accepted redirect targets and that the
    callback returns to the locale-specific administrator route.
 4. Confirm the authenticated address matches one normalized entry in the server-side

@@ -1397,12 +1397,17 @@
 - Date: 2026-08-31
 - Decision: Remove the stale client-bundled owner email and browser-side equality check from the
   administrator login form. Accept a well-formed email for Supabase magic-link authentication,
-  leave the field blank by default, and continue to authorize the console and every administrator
-  API only through the server-side `ADMIN_EMAILS` allowlist after the callback.
+  leave the field blank by default, and serialize the validated public Supabase URL/publishable key
+  from the request-time Cloudflare environment rather than assuming a local build-time environment.
+  Continue to authorize the console and every administrator API only through the server-side
+  `ADMIN_EMAILS` allowlist after the callback.
 - Demand and distribution: The owner reported an administrator-authentication failure while trying
   to inspect first-party journey aggregates. Production evidence reproduced an immediate refusal
-  before any Supabase request because the browser still expected an obsolete Gmail address. This
-  repair restores owner operations; it does not add a marketing surface or broaden distribution.
+  before any Supabase request because the browser still expected an obsolete Gmail address. The
+  first live repair then exposed a second fail-closed condition: direct builds retained the runtime
+  Cloudflare values for server/database work but had no compiled browser values for magic-link
+  creation. The request-time public-config handoff repairs both causes without exposing a secret.
+  This restores owner operations; it does not add a marketing surface or broaden distribution.
 - Economics: No catalog amount, entitlement, payment provider, fulfilment, or generation cost
   changes. The existing 1,500 KRW campaign and normal 5,500/39,000/79,000 KRW verification rules
   remain unchanged. Incremental cost is limited to an owner-requested authentication email.
@@ -1413,7 +1418,7 @@
   authorization controls remain intact.
 - Success, guardrails, and reversal: Require a blank production field, a successful link request for
   the configured owner, continued denial for non-allowlisted sessions, no client email literal, and
-  green authorization, type, lint, build, and live-health checks. If delivery or callback routing
+  green authorization, runtime-config, type, lint, build, and live-health checks. If delivery or callback routing
   fails, investigate Supabase public configuration, rate limits, redirect allowlisting, and the
   server environment; do not restore a browser hardcode. Roll back to Cloudflare version
   `1133d6db-4000-4136-be9d-1b4be1205219` if the release regresses authentication or any unrelated

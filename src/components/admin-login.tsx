@@ -3,19 +3,26 @@
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
+import type { SupabasePublicConfig } from "@/lib/supabase/config";
 import type { Locale } from "@/i18n/config";
 
 // The owner console is the only account surface left, so it needs its own way in.
 // Authentication proves mailbox ownership here. Authorization remains a server-only
 // decision after the callback, so the browser never embeds or filters administrator identities.
-export function AdminLogin({ locale }: { locale: Locale }) {
+export function AdminLogin({
+  locale,
+  supabaseConfig,
+}: {
+  locale: Locale;
+  supabaseConfig: SupabasePublicConfig | null;
+}) {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "failed">("idle");
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const email = String(new FormData(event.currentTarget).get("email") ?? "").trim().toLowerCase();
     setStatus("sending");
-    const client = getBrowserSupabaseClient();
+    const client = getBrowserSupabaseClient(supabaseConfig);
     if (!client) {
       setStatus("failed");
       return;

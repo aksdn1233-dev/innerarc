@@ -218,7 +218,8 @@ Last updated: 2026-08-22
 - [x] Journey attribution stores no raw referrer, URL, query, UTM text, IP, browser identifier,
   name, birth input, question, order, or report content, and it retains no server-side visitor ID.
 - [x] Administrator magic-link login keeps the email field blank, embeds no owner address or
-  browser-side allowlist, and leaves console/API authorization exclusively to the server-side
+  browser-side allowlist, receives its validated public authentication configuration from the live
+  request environment, and leaves console/API authorization exclusively to the server-side
   `ADMIN_EMAILS` check after mailbox authentication.
 - [ ] Collect at least 30 non-internal home entries per source before diagnosing a percentage-based
   journey drop-off; until then report counts, automation evidence, and uncertainty only.
