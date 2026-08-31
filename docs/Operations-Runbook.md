@@ -34,7 +34,8 @@ Status: Supabase account persistence connected; production deployment and remain
 2. Confirm the two public Supabase values are present without printing them and that the dynamic
    login page passes the validated browser-safe pair from the live request environment; a direct
    build must not rely on a local `.env` file. Then check provider email rate limits and delivery
-   status. Keep the user-facing error generic.
+   status. The page exposes only the closed operational categories `configuration`, `rate_limited`,
+   or `provider`; never expose the provider's raw message, email, or configured allowlist.
 3. Confirm the production origin and `/auth/callback` are accepted redirect targets and that the
    callback returns to the locale-specific administrator route.
 4. Confirm the authenticated address matches one normalized entry in the server-side

@@ -122,6 +122,9 @@ describe("administrator sign-in boundary", () => {
     expect(loginSource).not.toContain("ADMIN_EMAILS");
     expect(loginSource).not.toMatch(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/iu);
     expect(loginSource).not.toMatch(/email\s*!==|email\s*===/u);
+    expect(loginSource).toContain('"configuration" | "rate_limited" | "provider" | null');
+    expect(loginSource).toContain("data-admin-auth-failure={failureReason}");
+    expect(loginSource).not.toContain("error.message");
     expect(loginPageSource).toContain("getSupabasePublicConfig()");
     expect(loginPageSource).toContain("supabaseConfig={supabaseConfig}");
     expect(adminPageSource).toContain("isAdminEmail(auth.user.email)");

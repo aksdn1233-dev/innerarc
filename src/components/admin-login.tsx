@@ -17,13 +17,18 @@ export function AdminLogin({
   supabaseConfig: SupabasePublicConfig | null;
 }) {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "failed">("idle");
+  const [failureReason, setFailureReason] = useState<
+    "configuration" | "rate_limited" | "provider" | null
+  >(null);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const email = String(new FormData(event.currentTarget).get("email") ?? "").trim().toLowerCase();
+    setFailureReason(null);
     setStatus("sending");
     const client = getBrowserSupabaseClient(supabaseConfig);
     if (!client) {
+      setFailureReason("configuration");
       setStatus("failed");
       return;
     }
@@ -37,7 +42,12 @@ export function AdminLogin({
         emailRedirectTo: `${window.location.origin}/auth/callback?next=${next}`,
       },
     });
-    setStatus(error ? "failed" : "sent");
+    if (error) {
+      setFailureReason(error.status === 429 ? "rate_limited" : "provider");
+      setStatus("failed");
+      return;
+    }
+    setStatus("sent");
   }
 
   if (status === "sent") {
@@ -84,8 +94,10 @@ export function AdminLogin({
 
       <div aria-live="polite">
         {status === "failed" && (
-          <p className="error" role="alert">
-            링크를 보내지 못했습니다. 이메일 주소를 확인하고 잠시 후 다시 시도해 주세요.
+          <p className="error" data-admin-auth-failure={failureReason} role="alert">
+            {failureReason === "rate_limited"
+              ? "요청이 잠시 몰렸습니다. 60초 뒤 다시 시도해 주세요."
+              : "링크를 보내지 못했습니다. 잠시 후 다시 시도해 주세요."}
           </p>
         )}
       </div>
