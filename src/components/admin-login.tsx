@@ -5,21 +5,15 @@ import { useState, type FormEvent } from "react";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
 import type { Locale } from "@/i18n/config";
 
-const OWNER_EMAIL = "aksdn1233@gmail.com";
-
 // The owner console is the only account surface left, so it needs its own way in.
-// The result never says whether an address is an administrator: any well-formed
-// address gets the same reply, and only ADMIN_EMAILS can actually open the console.
+// Authentication proves mailbox ownership here. Authorization remains a server-only
+// decision after the callback, so the browser never embeds or filters administrator identities.
 export function AdminLogin({ locale }: { locale: Locale }) {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "failed">("idle");
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const email = String(new FormData(event.currentTarget).get("email") ?? "").trim().toLowerCase();
-    if (email !== OWNER_EMAIL) {
-      setStatus("failed");
-      return;
-    }
     setStatus("sending");
     const client = getBrowserSupabaseClient();
     if (!client) {
@@ -30,16 +24,13 @@ export function AdminLogin({ locale }: { locale: Locale }) {
     const { error } = await client.auth.signInWithOtp({
       email,
       options: {
-        // The only accepted address is the server-authorized owner address. Allowing
-        // its first request to create the Supabase identity avoids a manual account
-        // provisioning step while the email link still proves mailbox ownership.
+        // Account creation is also used by the optional account-sync surface. It grants
+        // no console access; the callback target is checked against the server allowlist.
         shouldCreateUser: true,
         emailRedirectTo: `${window.location.origin}/auth/callback?next=${next}`,
       },
     });
-    // Reported as sent either way, so this page cannot be used to discover which
-    // addresses exist or which of them administer the site.
-    setStatus(error && error.status === 429 ? "failed" : "sent");
+    setStatus(error ? "failed" : "sent");
   }
 
   if (status === "sent") {
@@ -70,10 +61,12 @@ export function AdminLogin({ locale }: { locale: Locale }) {
           <label htmlFor="admin-email">이메일</label>
           <input
             autoComplete="email"
-            defaultValue={OWNER_EMAIL}
+            autoCapitalize="none"
             id="admin-email"
+            inputMode="email"
             name="email"
             required
+            spellCheck={false}
             type="email"
           />
         </div>

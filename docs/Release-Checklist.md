@@ -41,6 +41,9 @@
   return/follow-up/rhythm choices, preserve legacy answers and account export/deletion, do not alter
   notification consent, and are visible only through the allowlisted administrator console.
 - [x] Supabase owner RLS, authenticated-only grants, anonymous fail-closed probe, validated explicit sync/restore, account export, and atomic deletion migration.
+- [x] Administrator login embeds no owner identity or client-side allowlist; mailbox authentication
+  remains separate from the server-only `ADMIN_EMAILS` authorization enforced by the console and
+  administrator APIs.
 - [x] Share outputs omit dates, names, contact details, concerns, journals, and questions by construction.
 - [x] Purchased-report gifting is explicitly distinguished from minimal public share cards,
   requires subject-consent confirmation, sends only on a user action, and stores no recipient

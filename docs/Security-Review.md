@@ -18,6 +18,10 @@ Scope: repository source, configuration, local production bundle, and automated 
 - Privacy boundaries: no third-party browser requests in the tested guest flows; share cards render locally; analytics are no-op without separate consent and a configured sink.
 - Authorization/idempotency: owner mismatch fails closed, and reused request IDs with different payloads are rejected.
 - Supabase boundary: anonymous table access returns 401; account tables use owner RLS and authenticated-only grants; server deletion executes atomically and keeps only request metadata/counts.
+- Administrator authentication: the public login bundle contains no owner email or client-side
+  allowlist. Supabase magic-link authentication only proves mailbox control; the console and every
+  administrator API continue to require the server-side `ADMIN_EMAILS` allowlist, and private routes
+  remain noindex. A source regression test prevents reintroducing a bundled administrator identity.
 - The temporary database password used for migration setup was rotated after the remote migration/lint checks and is not stored by the project.
 - Device privacy center: corrupt local records are excluded from counts/exports, no read writes data implicitly, and one explicit action removes preference, tarot-history, Reality Check, and Daily Flow keys.
 - Daily Flow: month/day persistence requires an explicit button, malformed values fail closed,

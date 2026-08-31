@@ -1391,3 +1391,31 @@
 - Status: Released to production as Cloudflare version
   `1133d6db-4000-4136-be9d-1b4be1205219` with live health, schema, bot-filter, home-action, and
   console-error verification.
+
+## D-084 - Keep administrator identity and authorization server-side
+
+- Date: 2026-08-31
+- Decision: Remove the stale client-bundled owner email and browser-side equality check from the
+  administrator login form. Accept a well-formed email for Supabase magic-link authentication,
+  leave the field blank by default, and continue to authorize the console and every administrator
+  API only through the server-side `ADMIN_EMAILS` allowlist after the callback.
+- Demand and distribution: The owner reported an administrator-authentication failure while trying
+  to inspect first-party journey aggregates. Production evidence reproduced an immediate refusal
+  before any Supabase request because the browser still expected an obsolete Gmail address. This
+  repair restores owner operations; it does not add a marketing surface or broaden distribution.
+- Economics: No catalog amount, entitlement, payment provider, fulfilment, or generation cost
+  changes. The existing 1,500 KRW campaign and normal 5,500/39,000/79,000 KRW verification rules
+  remain unchanged. Incremental cost is limited to an owner-requested authentication email.
+- Privacy and security: The browser no longer discloses an administrator identity. A magic link
+  proves control of an email address but grants no administrator authority by itself; a missing or
+  non-allowlisted server identity still redirects or fails closed. Generic failure copy does not
+  reveal the configured allowlist, and existing same-origin, session-cookie, noindex, and API
+  authorization controls remain intact.
+- Success, guardrails, and reversal: Require a blank production field, a successful link request for
+  the configured owner, continued denial for non-allowlisted sessions, no client email literal, and
+  green authorization, type, lint, build, and live-health checks. If delivery or callback routing
+  fails, investigate Supabase public configuration, rate limits, redirect allowlisting, and the
+  server environment; do not restore a browser hardcode. Roll back to Cloudflare version
+  `1133d6db-4000-4136-be9d-1b4be1205219` if the release regresses authentication or any unrelated
+  payment/report path. No migration or data rewrite is involved.
+- Status: Owner-authorized implementation and production verification in progress.

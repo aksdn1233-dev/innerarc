@@ -110,6 +110,20 @@ describe("keeping private pages out of indexes", () => {
   });
 });
 
+describe("administrator sign-in boundary", () => {
+  it("keeps administrator identity and authorization out of the browser bundle", async () => {
+    const loginSource = await readFile("src/components/admin-login.tsx", "utf8");
+    const adminPageSource = await readFile("src/app/[locale]/admin/page.tsx", "utf8");
+
+    expect(loginSource).toContain("client.auth.signInWithOtp");
+    expect(loginSource).not.toContain("OWNER_EMAIL");
+    expect(loginSource).not.toContain("ADMIN_EMAILS");
+    expect(loginSource).not.toMatch(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/iu);
+    expect(loginSource).not.toMatch(/email\s*!==|email\s*===/u);
+    expect(adminPageSource).toContain("isAdminEmail(auth.user.email)");
+  });
+});
+
 describe("robots.txt", () => {
   const rules = createRobotsDocument().rules as {
     userAgent?: string;
