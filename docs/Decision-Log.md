@@ -1413,7 +1413,9 @@
   Roll back to repository `5f5add3e804b80e574cea2427e0cdb576f09cb85` and Cloudflare version
   `e5a54071-0bea-4384-8a30-e46d1fd39fac` if the simpler hierarchy harms readability, consent, or
   result entry. No migration or data rewrite is involved.
-- Status: Implementation and local browser review complete; production deployment pending.
+- Status: Released as Sites version 86 and verified on the production compatibility route on
+  2026-08-31. The released screen has no decorative orbit, no horizontal overflow, and retains
+  the existing intake, consent, relationship-selection, and result flow.
 # D-TAERYEONGDANG-P0 — Brand and Personal Pattern Intelligence foundation
 
 - Date: 2026-08-30
