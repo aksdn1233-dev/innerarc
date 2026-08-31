@@ -36,12 +36,13 @@ Scope: repository source, configuration, local production bundle, and automated 
   analytics, notification, or payment request.
 - AI boundary: user context is delimited as untrusted data; structured output, canonical facts, high-risk routing, prompt-injection normalization, and overclaim screening are tested.
 - Campaign/referral boundary: display, order, and provider charge amounts share one exact-week
-  server schedule, then return automatically to the standard catalog. Former 1,500 KRW amounts
-  remain valid for historical verification. Referral coupons are HMAC-signed, time/product/phone
-  bound, and raw phone numbers are neither persisted nor returned. Campaign checkout hides the
-  coupon field and the order API independently rejects any stale or forged stacking attempt before
-  amount arithmetic, preventing a negative charge. Add database-level uniqueness if referral
-  issuance becomes permanent.
+  server schedule, then return automatically to the standard catalog. Four Pillars and Detailed
+  are 1,500 KRW; Premium is excluded and remains 79,000 KRW. Former Premium 1,500 KRW amounts remain
+  valid only for historical verification. Referral coupons are HMAC-signed, time/product/phone
+  bound, and raw phone numbers are neither persisted nor returned. The order API rejects a coupon
+  on either discounted product before amount arithmetic while preserving valid coupon use on the
+  non-discounted Premium product, preventing stacking and negative charges. Add database-level
+  uniqueness if referral issuance becomes permanent.
 - Review-draw consent is separate from feedback submission and public-review consent. A versioned
   server-authored receipt in the existing service-role-only review audit note carries campaign code
   and timestamp; it adds no contact, birth, report, recipient, or external-share result. Moderation

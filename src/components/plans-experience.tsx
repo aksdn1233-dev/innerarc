@@ -113,7 +113,7 @@ const copy = {
       missing_draft: "먼저 상품과 리딩 정보를 입력해 주세요.",
       invalid_depositor: "실제 입금 내역에 표시될 입금자명을 두 글자 이상 입력해 주세요.",
       invalid_phone: "결제 안내를 받을 국내 휴대폰 번호를 확인해 주세요.",
-      invalid_coupon: "쿠폰 번호, 결제 휴대폰 번호, 사용 기간을 확인해 주세요. 1,500원 행사와 쿠폰은 중복되지 않으며, 쿠폰은 행사 종료 뒤 39,000원 이상 리딩에 사용할 수 있습니다.",
+      invalid_coupon: "쿠폰 번호, 결제 휴대폰 번호, 사용 기간을 확인해 주세요. 1,500원 할인 상품에는 중복 적용되지 않으며, 행사 중에는 프리미엄 심층 리딩에만 사용할 수 있습니다.",
       temporarily_unavailable: "현재 결제를 잠시 멈춘 상태입니다. 입력 내용은 그대로 있으니 잠시 후 다시 확인해 주세요.",
       rate_limited: "짧은 시간에 결제 요청이 반복되었습니다. 잠시 후 다시 시도해 주세요.",
       order_failed: "주문을 만들지 못했습니다. 입력 내용을 유지했으니 잠시 후 다시 시도해 주세요.",
@@ -163,7 +163,7 @@ const copy = {
       missing_draft: "Choose a product and enter the reading information first.",
       invalid_depositor: "Enter at least two characters matching the depositor name on the transfer.",
       invalid_phone: "Check the Korean mobile number used for payment instructions.",
-      invalid_coupon: "Check the coupon, checkout mobile number, and validity period. It does not stack with the ₩1,500 campaign and can be used later on a reading of ₩39,000 or more.",
+      invalid_coupon: "Check the coupon, checkout mobile number, and validity period. It does not stack with a ₩1,500 price and applies only to the Premium reading during the campaign.",
       temporarily_unavailable: "Checkout is temporarily paused. Your reading details are still here; please try again shortly.",
       rate_limited: "Too many checkout attempts were made in a short time. Please wait and try again.",
       order_failed: "The order could not be created. Your input is still here; please try again shortly.",
@@ -208,7 +208,7 @@ const copy = {
       missing_draft: "先に商品とリーディング情報を入力してください。",
       invalid_depositor: "振込名義を2文字以上で入力してください。",
       invalid_phone: "決済案内を受け取る韓国の携帯電話番号を確認してください。",
-      invalid_coupon: "クーポン番号、決済時の携帯電話番号、有効期間をご確認ください。",
+      invalid_coupon: "クーポン番号、決済時の携帯電話番号、有効期間をご確認ください。1,500ウォンの割引商品とは併用できず、イベント期間中はプレミアム詳細リーディングにのみ使用できます。",
       temporarily_unavailable: "現在、決済を一時停止しています。入力内容は保持されていますので、しばらくしてからお試しください。",
       rate_limited: "短時間に決済リクエストが繰り返されました。しばらくしてからお試しください。",
       order_failed: "注文を作成できませんでした。入力内容は保持されています。",
@@ -354,6 +354,10 @@ export function PlansExperience({
       setError("temporarily_unavailable");
       return;
     }
+    const campaignDiscounted = Boolean(
+      pricing.campaign && selectedProduct.regularAmount !== null &&
+      selectedProduct.amount < selectedProduct.regularAmount,
+    );
     if (paymentProvider === "manual_transfer" && depositorName.trim().length < 2) {
       setError("invalid_depositor");
       return;
@@ -390,7 +394,7 @@ export function PlansExperience({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           productCode,
-          expectedAmount: selectedProduct.amount - (!pricing.campaign && couponCode.trim() ? 5_000 : 0),
+          expectedAmount: selectedProduct.amount - (!campaignDiscounted && couponCode.trim() ? 5_000 : 0),
           locale: systemLocale,
           readingInput: selectedReadingInput,
           depositorName: paymentProvider === "manual_transfer"
@@ -569,7 +573,7 @@ export function PlansExperience({
 
       {pricing.campaign && (
         <aside className="plans-campaign-banner">
-          <span><strong>{locale === "ko" ? "단 일주일 연장 · 전 상품 1,500원" : locale === "ja" ? "1週間延長・全商品1,500ウォン" : "One-week extension · every reading ₩1,500"}</strong><small>{locale === "ko" ? "정상가 최대 79,000원 · 9월 6일 오후 4:50 종료" : locale === "ja" ? "通常価格最大79,000ウォン・9月6日16:50終了" : "Regular price up to ₩79,000 · ends Sep 6 at 4:50 PM KST"}</small></span>
+          <span><strong>{locale === "ko" ? "사주 원국·상세 리딩 · 1,500원" : locale === "ja" ? "四柱原局・詳細リーディング・1,500ウォン" : "Four Pillars & Detailed readings · ₩1,500"}</strong><small>{locale === "ko" ? "프리미엄 심층 리딩 79,000원은 행사 제외 · 9월 6일 오후 4:50 종료" : locale === "ja" ? "プレミアム詳細リーディング79,000ウォンは対象外・9月6日16:50終了" : "₩79,000 Premium reading excluded · ends Sep 6 at 4:50 PM KST"}</small></span>
           <Link href={`/${routeLocale}/events`}>{locale === "ko" ? "후기 이벤트·FAQ 보기" : locale === "ja" ? "イベント・FAQを見る" : "Review event & FAQ"}</Link>
         </aside>
       )}
@@ -615,11 +619,11 @@ export function PlansExperience({
         </div>
       )}
 
-      {paymentsEnabled && !pricing.campaign && (
+      {paymentsEnabled && (
         <div className="manual-depositor-field">
           <label htmlFor="referral-coupon">{locale === "ko" ? "친구 초대 쿠폰 (선택)" : locale === "ja" ? "友達紹介クーポン（任意）" : "Referral coupon (optional)"}</label>
           <input id="referral-coupon" maxLength={300} onChange={(event) => setCouponCode(event.target.value)} placeholder="GY5-…" value={couponCode} />
-          <small>{locale === "ko" ? "발급받은 휴대폰 번호와 같은 번호로 결제해야 하며, 39,000원 이상 리딩에 1회 적용됩니다." : "Use the same mobile number used to issue the coupon. Valid once on readings of ₩39,000 or more."}</small>
+          <small>{locale === "ko" ? "발급받은 휴대폰 번호와 같은 번호로 결제해야 합니다. 행사 기간에는 할인이 적용되지 않은 프리미엄 심층 리딩에만 사용할 수 있습니다." : locale === "ja" ? "発行時と同じ携帯電話番号が必要です。イベント期間中は割引対象外のプレミアム詳細リーディングにのみ使用できます。" : "Use the same mobile number used to issue the coupon. During the campaign it applies only to the non-discounted Premium reading."}</small>
         </div>
       )}
 
@@ -641,7 +645,7 @@ export function PlansExperience({
                 <del>{formatWon(product.regularAmount, locale)}</del>
               )}
               <strong className="plan-price">{formatWon(product.amount, locale)}</strong>
-              {pricing.campaign && (
+              {pricing.campaign && product.regularAmount !== product.amount && (
                 <span>{locale === "ko" ? "1주일 연장 할인가" : locale === "ja" ? "1週間延長価格" : "One-week extension price"}</span>
               )}
             </div>

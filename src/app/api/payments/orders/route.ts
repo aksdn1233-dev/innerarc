@@ -3,7 +3,7 @@ import { crossOriginRefused, isSameOriginRequest } from "@/server/same-origin";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { resolvePublicAppUrl } from "@/core/site-url";
-import { resolveProductPricing } from "@/core/product-prices";
+import { isCampaignDiscountedProduct, resolveProductPricing } from "@/core/product-prices";
 import { isLocale } from "@/i18n/config";
 import { PaidReadingInputSchema } from "@/core/paid-reading";
 import { resolveSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -65,7 +65,7 @@ export async function POST(request: Request) {
   }
 
   const product = readiness.config.products[parsed.data.productCode];
-  if (pricing.campaign && parsed.data.couponCode) {
+  if (isCampaignDiscountedProduct(pricing, parsed.data.productCode) && parsed.data.couponCode) {
     return NextResponse.json({ error: "INVALID_COUPON" }, { status: 400 });
   }
   const couponApplied = Boolean(parsed.data.couponCode) && Boolean(parsed.data.customerPhone) &&

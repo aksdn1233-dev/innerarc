@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
-  CAMPAIGN_1500_PRODUCT_PRICES_KRW,
+  ONE_WEEK_EXTENSION_PRODUCT_PRICES_KRW,
   ONE_WEEK_EXTENSION_END,
   ONE_WEEK_EXTENSION_START,
   STANDARD_PRODUCT_PRICES_KRW,
+  isCampaignDiscountedProduct,
   knownScheduledPrices,
   resolveProductPricing,
 } from "@/core/product-prices";
@@ -17,10 +18,14 @@ describe("product pricing", () => {
     });
   });
 
-  it("charges 1,500 won for every paid reading for exactly one extended week", () => {
+  it("discounts only Four Pillars and Detailed readings for exactly one extended week", () => {
     const pricing = resolveProductPricing(new Date(ONE_WEEK_EXTENSION_START));
-    expect(pricing.prices).toEqual(CAMPAIGN_1500_PRODUCT_PRICES_KRW);
+    expect(pricing.prices).toEqual(ONE_WEEK_EXTENSION_PRODUCT_PRICES_KRW);
+    expect(pricing.prices).toEqual({ plus_30d: 1_500, pro_30d: 1_500, premium_pdf: 79_000 });
     expect(pricing.regularPrices).toEqual(STANDARD_PRODUCT_PRICES_KRW);
+    expect(isCampaignDiscountedProduct(pricing, "plus_30d")).toBe(true);
+    expect(isCampaignDiscountedProduct(pricing, "pro_30d")).toBe(true);
+    expect(isCampaignDiscountedProduct(pricing, "premium_pdf")).toBe(false);
     expect(pricing.campaign).toEqual({
       code: "one_week_extension_1500",
       startsAt: ONE_WEEK_EXTENSION_START,

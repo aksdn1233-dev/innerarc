@@ -259,20 +259,23 @@ The final runbook must add named on-call, legal/privacy, security, payment-suppo
 ## Active one-week extension guard and review draw
 
 - From 2026-08-30 16:50 until 2026-09-06 16:50 Asia/Seoul, the current catalog, order request,
-  and provider amount must all resolve to 1,500 KRW for each digital reading. At the exact ending
-  instant they must all resolve to 5,500/39,000/79,000 KRW without an environment edit.
+  and provider amount must resolve to 1,500 KRW for Four Pillars and Detailed, and 79,000 KRW for
+  Premium. At the exact ending instant they must resolve to 5,500/39,000/79,000 KRW without an
+  environment edit.
 - Keep 1,500 KRW in historical amount verification after expiry. If a former authorized order
   fails, restore only its verification allowlist, not an expired campaign clock or public claim.
-- Campaign checkout must not render the referral-coupon field. The order API must refuse any coupon
-  submitted from a stale or forged client before discount arithmetic. After expiry the existing
-  coupon remains valid only on the 39,000/79,000 KRW products under its phone/expiry controls.
+- Campaign checkout may render the referral-coupon field because Premium is not discounted. The
+  order API must refuse a coupon for either 1,500 KRW product before discount arithmetic, while a
+  valid coupon may apply to Premium under the existing phone/product/signature/expiry controls.
+  After expiry the same coupon rules apply to the 39,000/79,000 KRW products.
 - Review entries use a versioned server-authored receipt in the existing operator-only audit note,
   so no campaign migration is required. If review reads or writes become unavailable, do not claim
   that entries can be received; pause the draw CTA or roll back while preserving accepted entries.
-- On a current amount mismatch, negative/staked discount attempt, material payment/report error,
+- On a current amount mismatch, negative/stacked discount attempt, material payment/report error,
   or privacy incident, pause new sales through the operations gate and roll back to pre-campaign
-  commit `a39e80a`. Existing accepted payment verification, valid entries, issued coupon rights,
-  and the prize obligation survive an early pause.
+  Cloudflare version `ca5d819d-b23f-46de-b08b-836a8f874268` for the premium-exclusion change, or
+  pre-campaign commit `a39e80a` for a full campaign withdrawal. Existing accepted payment
+  verification, valid entries, issued coupon rights, and the prize obligation survive an early pause.
 - On 2026-09-08 18:00 KST, parse only valid `one_week_extension_1500` receipts whose timestamp
   fall inside the event window and whose order remains completed and non-refunded. Sort stable IDs,
   select one with a cryptographically secure random draw, and record eligible count, chosen review

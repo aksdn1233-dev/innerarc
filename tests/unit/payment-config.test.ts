@@ -126,6 +126,20 @@ describe("payment readiness", () => {
     }, "production").enabled).toBe(true);
   });
 
+  it("keeps Premium at 79,000 won while the other two readings use the live campaign price", () => {
+    const readiness = inspectPaymentReadinessAtRuntime(
+      validPayAppEnvironment,
+      "development",
+      new Date("2026-08-31T00:00:00.000Z"),
+    );
+    expect(readiness.enabled).toBe(true);
+    if (readiness.enabled) {
+      expect(readiness.config.products.plus_30d.amount).toBe(1_500);
+      expect(readiness.config.products.pro_30d.amount).toBe(1_500);
+      expect(readiness.config.products.premium_pdf.amount).toBe(79_000);
+    }
+  });
+
   it("derives a non-identifying Toss customer key within the provider length limit", () => {
     const first = deriveTossCustomerKey("user@example.com", "s".repeat(32));
     const second = deriveTossCustomerKey("user@example.com", "s".repeat(32));

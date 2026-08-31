@@ -11,10 +11,10 @@ export function ServiceShare({ locale, url, compact = false }: { locale: Locale;
     : eventShare ? "태령당 one-week extension" : "태령당 readings";
   const message = locale === "ko"
     ? eventShare
-      ? "9월 6일 오후 4시 50분까지 모든 디지털 리딩 1,500원. 후기 작성자 중 1명을 추첨해 신세계상품권 15만원 상당을 드려요."
+      ? "9월 6일 오후 4시 50분까지 사주 원국·상세 리딩 1,500원. 프리미엄 심층 리딩 79,000원은 행사 제외이며, 후기 작성자 중 1명을 추첨해 신세계상품권 15만원 상당을 드려요."
       : "생년월일로 나의 패턴을 살펴보고 실제 삶으로 검증하는 태령당 리딩을 같이 봐요."
     : eventShare
-      ? "Every digital reading is ₩1,500 until Sep 6 at 4:50 PM KST, with one ₩150,000 review prize."
+      ? "Four Pillars and Detailed readings are ₩1,500 until Sep 6 at 4:50 PM KST. The ₩79,000 Premium reading is excluded, with one ₩150,000 review prize."
       : "Explore and reality-check your patterns with 태령당.";
 
   async function share() {

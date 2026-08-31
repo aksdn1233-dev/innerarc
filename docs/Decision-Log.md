@@ -1430,3 +1430,34 @@
   payment/report path. No migration or data rewrite is involved.
 - Status: Released with the server allowlist corrected to the owner-confirmed team address, exact
   production callback configuration, and a successful live magic-link request.
+
+## D-085 - Exclude the 79,000 KRW Premium reading from the one-week 1,500 KRW discount
+
+- Date: 2026-08-31
+- Decision: Keep Four Pillars at 1,500 KRW and Detailed at 1,500 KRW for the existing exact campaign
+  window, but return Premium immediately to its 79,000 KRW list price. Mark Premium as excluded on
+  the home notice, event terms, share text, and pricing page. Display, order creation, and provider
+  amount all use the same product-scoped schedule. Preserve 1,500 KRW as historical verification
+  evidence for Premium orders already authorized before this change.
+- Demand and distribution: The owner explicitly removed the 79,000 KRW tier from the discount.
+  Existing first-party home/event/pricing surfaces and owner-controlled campaign posts are the only
+  distribution in scope; all current public claims must stop saying “all readings.” This instruction
+  is direct operating evidence, not evidence of willingness to pay, retention, or campaign lift.
+- Economics and costs: Four Pillars remains 5,500→1,500 KRW (-72.7%) and Detailed remains
+  39,000→1,500 KRW (-96.2%); Premium remains 79,000 KRW and no longer sacrifices 77,500 KRW per
+  sale. A valid 5,000 KRW referral coupon may still apply to non-discounted Premium, yielding
+  74,000 KRW, while it cannot stack with either 1,500 KRW price. Payment-provider fees, VAT,
+  refunds, support, chargebacks, and prize fulfilment remain unverified cost inputs; no profitability
+  or conversion claim is introduced.
+- Privacy, safety, and claims: No migration, new personal data, provider, entitlement, or reading
+  claim is added. Existing review-draw entries and separately consented receipt evidence remain
+  valid, including entries created before the price correction. Saju and Numerology remain symbolic
+  reflection tools rather than prediction, diagnosis, treatment, guaranteed outcomes, or advice.
+- Success, guardrails, and reversal: Require 1,500/1,500/79,000 KRW parity across home, event,
+  catalog, order, and provider paths; no Premium campaign badge or crossed-out price; no discounted
+  coupon stacking; valid Premium coupon use; preserved historical 1,500 KRW Premium verification;
+  automatic expiry; green tests and live health. Pause sales on any amount mismatch. Roll back this
+  change to repository `2ab4edd` and Cloudflare version
+  `ca5d819d-b23f-46de-b08b-836a8f874268`; a full campaign withdrawal still uses D-082's separate
+  pre-campaign reference. The change is reversible and requires no data rewrite.
+- Status: Owner-authorized for production deployment.

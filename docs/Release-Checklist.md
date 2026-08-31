@@ -133,8 +133,9 @@
 - [ ] Obtain explicit user authorization for staging and production deployment.
 - [x] Direct owner authorization in the 2026-08-23 campaign request includes production
   deployment after implementation and verification.
-- [x] Three products render and order at 1,500 KRW only inside the scheduled server window;
-  normal prices, stale-tab rejection, coupon non-stacking, and automatic expiry are tested.
+- [x] Four Pillars and Detailed render and order at 1,500 KRW only inside the scheduled server
+  window; Premium remains 79,000 KRW, historical Premium 1,500 KRW charges remain verifiable,
+  stale-tab rejection, product-scoped coupon non-stacking, and automatic expiry are tested.
 - [x] Entry popup is once per session, Event/FAQ links remain keyboard accessible, result/service
   sharing is user initiated, and the event page carries privacy and symbolic-reflection limits.
 - [x] Saju hub/intake redesign preserves bilingual headings, implemented route truth, live prices,
@@ -147,8 +148,13 @@
   urgency copy, and public 1,500 KRW claims while preserving historical payment verification and
   existing friend-coupon entitlements; 728 unit and 205 browser cases pass with zero failures.
 - [x] The one-week owner-authorized extension uses one exact seven-day server clock across display,
-  order, provider amount, popup, event terms, and automatic expiry; campaign checkout rejects friend
-  coupons and retains stale-price refusal rather than stacking or creating a negative charge.
+  order, provider amount, popup, event terms, and automatic expiry; discounted-product checkout
+  rejects friend coupons while non-discounted Premium preserves valid coupon rights, and stale-price
+  refusal prevents stacking or a negative charge.
 - [x] The 150,000 KRW Shinsegae review draw states one winner, entry and draw times, exclusions,
   claim method, and redraw rule; prize entry consent is separate from review submission/publication,
   and adds no contact detail or external-share tracking.
+- [x] Premium-exclusion release passes 760 unit cases, typecheck, lint with zero errors, and the
+  130-page production build. The targeted campaign browser suite could not launch because the host
+  lacks its pinned Chromium and WebKit binaries; this is an environment exception, not a passed
+  browser result. Production HTML, catalog prices, and health must therefore be checked after deploy.

@@ -35,14 +35,16 @@ Status: Hypothesis, not approved launch pricing.
 ## 2026-08-30 one-week owner-authorized extension
 
 - Exact window: 2026-08-30 16:50 through 2026-09-06 16:50 Asia/Seoul.
-- Four Pillars 5,500 → 1,500 KRW; Detailed 39,000 → 1,500 KRW; Premium 79,000 →
-  1,500 KRW. Accessories and physical products are excluded.
+- Four Pillars 5,500 → 1,500 KRW; Detailed 39,000 → 1,500 KRW. Premium is excluded and remains
+  79,000 KRW. Accessories and physical products are also excluded.
 - This is an acquisition experiment below the former 9,600/39,000 KRW promotional anchors, not a
   permanent-price decision. One 150,000 KRW prize requires 100 event orders merely to match its
   nominal value in gross revenue before payment fees, VAT, refunds, support, and displaced revenue.
-- Coupon stacking is refused in UI and order API. Display, order, and provider amount share one
-  clock and return to normal automatically. Detailed economics, prize rules, metrics, and reversal
-  conditions are in `Campaign-2026-08-30.md`.
+- Coupon stacking is refused for the two discounted products in UI and the order API. The existing
+  coupon remains usable on non-discounted Premium when its phone, product, signature, and expiry
+  controls pass. Display, order, and provider amount share one clock and return to normal
+  automatically. Detailed economics, prize rules, metrics, and reversal conditions are in
+  `Campaign-2026-08-30.md`.
 
 ## Referral draft — not launched
 

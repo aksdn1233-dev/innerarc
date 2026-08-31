@@ -18,15 +18,21 @@ export const RETIRED_EVENT_PRODUCT_PRICES_KRW = {
   premium_pdf: 39_000,
 } as const;
 
-/**
- * The 1,500 KRW amounts were first used by the retired three-day event and are reused
- * by the owner-authorized one-week extension. Keeping one set also preserves historical
- * callback verification without inventing a second identical amount source.
- */
-export const CAMPAIGN_1500_PRODUCT_PRICES_KRW = {
+/** Historical 1,500 KRW charges remain verification evidence for already-created orders. */
+export const HISTORICAL_1500_PRODUCT_PRICES_KRW = {
   plus_30d: 1_500,
   pro_30d: 1_500,
   premium_pdf: 1_500,
+} as const;
+
+/**
+ * Owner-authorized prices for the one-week extension. Premium remains at its 79,000 KRW
+ * list price and is deliberately outside the 1,500 KRW discount.
+ */
+export const ONE_WEEK_EXTENSION_PRODUCT_PRICES_KRW = {
+  plus_30d: 1_500,
+  pro_30d: 1_500,
+  premium_pdf: 79_000,
 } as const;
 
 export const ONE_WEEK_EXTENSION_START = "2026-08-30T07:50:00.000Z";
@@ -55,7 +61,7 @@ export function resolveProductPricing(now: Date = new Date()): ProductPricingSna
   const campaignActive = now >= startsAt && now < endsAt;
   return {
     prices: campaignActive
-      ? CAMPAIGN_1500_PRODUCT_PRICES_KRW
+      ? ONE_WEEK_EXTENSION_PRODUCT_PRICES_KRW
       : STANDARD_PRODUCT_PRICES_KRW,
     regularPrices: STANDARD_PRODUCT_PRICES_KRW,
     campaign: campaignActive
@@ -68,6 +74,16 @@ export function resolveProductPricing(now: Date = new Date()): ProductPricingSna
   };
 }
 
+/** True only when this product, not merely some product, is discounted by the live campaign. */
+export function isCampaignDiscountedProduct(
+  pricing: ProductPricingSnapshot,
+  productCode: ProductPriceCode,
+): boolean {
+  return Boolean(
+    pricing.campaign && pricing.prices[productCode] < pricing.regularPrices[productCode],
+  );
+}
+
 /**
  * Every amount a charge for this product may legitimately carry, including bounded and
  * retired campaigns so historical provider callbacks still verify.
@@ -76,6 +92,7 @@ export function knownScheduledPrices(productCode: ProductPriceCode): readonly nu
   return [...new Set([
     STANDARD_PRODUCT_PRICES_KRW[productCode],
     RETIRED_EVENT_PRODUCT_PRICES_KRW[productCode],
-    CAMPAIGN_1500_PRODUCT_PRICES_KRW[productCode],
+    HISTORICAL_1500_PRODUCT_PRICES_KRW[productCode],
+    ONE_WEEK_EXTENSION_PRODUCT_PRICES_KRW[productCode],
   ])];
 }

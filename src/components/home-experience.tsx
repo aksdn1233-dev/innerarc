@@ -273,6 +273,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
       ...product,
       price: formatWon(pricing.prices[productCode], locale),
       regularPrice: formatWon(pricing.regularPrices[productCode], locale),
+      campaignDiscounted: pricing.prices[productCode] < pricing.regularPrices[productCode],
     };
   });
 
@@ -475,10 +476,10 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
           <section aria-labelledby="campaign-modal-title" aria-modal="true" className="campaign-modal" role="dialog">
             <button autoFocus aria-label={locale === "ko" ? "팝업 닫기" : "Close"} className="campaign-modal-close" onClick={closeCampaign} type="button">×</button>
             <p className="eyebrow">ONE WEEK EXTENSION</p>
-            <h2 id="campaign-modal-title">{locale === "ko" ? "정상가 최대 79,000원, 지금은 1,500원" : "Regular price up to ₩79,000, now ₩1,500"}</h2>
+            <h2 id="campaign-modal-title">{locale === "ko" ? "사주 원국·상세 리딩, 지금 1,500원" : "Four Pillars and Detailed readings, now ₩1,500"}</h2>
             <p>{locale === "ko"
-              ? `요청이 많아 할인 기간을 단 일주일 연장했습니다. 모든 디지털 리딩은 ${campaignEndLabel}까지 1회 1,500원입니다.`
-              : `The discount has been extended for one week. Every digital reading is ₩1,500 until ${campaignEndLabel} KST.`}</p>
+              ? `요청이 많아 할인 기간을 단 일주일 연장했습니다. 사주 원국과 상세 리딩은 ${campaignEndLabel}까지 1회 1,500원이며, 프리미엄 심층 리딩 79,000원은 행사에서 제외됩니다.`
+              : `The discount has been extended for one week. Four Pillars and Detailed readings are ₩1,500 until ${campaignEndLabel} KST; the ₩79,000 Premium reading is excluded.`}</p>
             <div className="campaign-prize-callout">
               <strong>{locale === "ko" ? "후기·공유 이벤트 진행 중" : "Review & share event"}</strong>
               <span>{locale === "ko" ? "후기 작성자 중 1명을 추첨해 신세계상품권 15만원 상당 제공" : "One reviewer will be drawn for a Shinsegae gift certificate worth ₩150,000"}</span>
@@ -748,9 +749,9 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                 <small>{product.badge}</small>
                 <h3>{product.name}</h3>
                 <div className="campaign-price-row">
-                  {pricing.campaign && <del>{product.regularPrice}</del>}
+                  {product.campaignDiscounted && <del>{product.regularPrice}</del>}
                   <strong>{product.price}</strong>
-                  {pricing.campaign && <span>{locale === "ko" ? "1주일 연장 할인가" : "One-week extension"}</span>}
+                  {product.campaignDiscounted && <span>{locale === "ko" ? "1주일 연장 할인가" : "One-week extension"}</span>}
                 </div>
                 <p>{product.description}</p>
                 <button type="button" onClick={() => chooseProduct(product.id, "product_card")}>{product.button} · {product.price}</button>
