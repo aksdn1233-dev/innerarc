@@ -1,6 +1,21 @@
 import { expect, test } from "@playwright/test";
 import { E2E_ORIGIN } from "./test-origin";
 
+/**
+ * Closes the campaign dialog if it happens to be open.
+ *
+ * It is only opened once the closing section of the home page is reached, and nothing
+ * below scrolls that far, so this is a guard rather than a step: it must stay correct if
+ * the trigger is ever moved back up the page, and must cost nothing when no campaign is
+ * running at all.
+ */
+async function dismissCampaign(page: import("@playwright/test").Page): Promise<void> {
+  const backdrop = page.locator(".campaign-modal-backdrop");
+  if (await backdrop.count() === 0) return;
+  await page.getByRole("button", { name: "팝업 닫기" }).click();
+  await expect(backdrop).toHaveCount(0);
+}
+
 function localMonthOffset(offset: number): string {
   const date = new Date();
   date.setDate(15);
@@ -21,16 +36,40 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await expect(page.getByRole("link", { name: "무료 패턴 보기" })).toBeVisible();
   await expect(page.getByRole("link", { name: "사주 서비스로 이동" })).toBeVisible();
 
-  // The home page is the opening screen and nothing else — everything that used to sit
-  // under it now lives at /reading, so scrolling the home page finds nothing.
-  await expect(page.locator(".report-preview")).toHaveCount(0);
+  // The intake form still lives at /reading, not here.
   await expect(page.locator("#onboarding")).toHaveCount(0);
 
+  // What the opening screen hands over to: what the service is, the four steps, the
+  // five questions, and the chapter list of a real generated report. Every header link
+  // on this page must reach one of them.
+  await expect(page.locator(".cinema-hook")).toContainText("생년월일로 관계·일·돈에서 반복되는 나의 패턴을 읽습니다.");
+  await expect(page.locator("#guide .journey-steps li")).toHaveCount(4);
+  await expect(page.locator("#questions .entry-question")).toHaveCount(5);
+  await expect(page.locator("#preview .report-outline-list li")).toHaveCount(6);
+  await expect(page.locator("#preview .report-outline-list li.is-locked")).toHaveCount(4);
+  await expect(page.locator(".home-footer")).toContainText("사업자등록번호");
+
+  for (const [label, target] of [
+    ["이용 방법", "guide"],
+    ["질문 고르기", "questions"],
+    ["리포트 예시", "preview"],
+  ] as const) {
+    const href = await page.locator(`.home-nav a:has-text("${label}")`).getAttribute("href");
+    expect(href).toBe(`#${target}`);
+    await expect(page.locator(`#${target}`)).toHaveCount(1);
+  }
+  await expect(page.locator('.home-nav a:has-text("가격")')).toHaveAttribute("href", "/ko/reading#products");
+  await expect(page.locator('.home-nav a:has-text("후기")')).toHaveAttribute("href", "/ko/reading#evidence");
+  await expect(page.locator(".header-start-link")).toHaveAttribute("href", "/ko/reading#onboarding");
+
+  // Choosing a question carries it into the free reading rather than into a form.
+  await dismissCampaign(page);
+  await page.locator('#questions .entry-question:has-text("돈·사업")').click();
+  await page.waitForURL("**/ko/numerology?focus=money");
+
   await page.goto("/ko/reading");
-  await expect(page.locator(".report-preview")).toContainText(
-    "실제 후기가 아닌 리포트 구성 예시입니다.",
-  );
-  await expect(page.locator(".preview-reading")).toHaveCount(3);
+  await expect(page.locator(".report-outline")).toContainText("실제 생성한 상세 리딩입니다");
+  await expect(page.locator(".preview-reading")).toHaveCount(0);
   await expect(page.locator(".question-bubble")).toHaveCount(0);
   await expect(page.locator(".reading-method-points span")).toHaveCount(3);
   await expect(page.getByRole("button", { name: /상세 리딩 받기/ })).toBeVisible();
@@ -66,7 +105,7 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
 });
 
 test("mobile home has no overflow and the sticky payment bar yields to the form", async ({ page }) => {
-  for (const width of [320, 375, 390, 430]) {
+  for (const width of [320, 360, 375, 390, 430]) {
     await page.setViewportSize({ width, height: 844 });
     await page.goto("/ko");
     await expect(page.getByRole("heading", { level: 1, name: "왜 나는 같은 선택을 반복할까요?" })).toBeAttached();
@@ -75,8 +114,10 @@ test("mobile home has no overflow and the sticky payment bar yields to the form"
     await expect(page.getByRole("link", { name: "사주 서비스로 이동" })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
 
-    // Nothing under the opening screen, so nothing for a sticky bar to sit over.
+    // The sticky purchase bar belongs to the page that sells; the home page guides.
     await expect(page.locator(".mobile-purchase-bar")).toHaveCount(0);
+    await expect(page.locator("#guide .journey-steps li")).toHaveCount(4);
+    await expect(page.locator("#preview .report-outline-list li")).toHaveCount(6);
 
     await page.goto("/ko/reading");
     await expect(page.locator(".mobile-purchase-bar")).toHaveCount(0);
@@ -86,6 +127,26 @@ test("mobile home has no overflow and the sticky payment bar yields to the form"
     await page.locator("#onboarding").scrollIntoViewIfNeeded();
     await expect(page.locator(".mobile-purchase-bar")).toHaveCount(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
+
+    // The free reading is the middle of the funnel and the page most visitors reach
+    // from a phone, so it is measured at the same widths.
+    await page.goto("/ko/numerology");
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
+
+    // No standalone control a thumb has to hit may be under 44px on these pages. Links
+    // set inline inside a sentence are excluded, as WCAG's target-size rule excludes
+    // them: making one 44px tall would break the paragraph it belongs to.
+    for (const route of ["/ko", "/ko/reading"]) {
+      await page.goto(route);
+      const undersized = await page.evaluate(() => [...document.querySelectorAll("main a, main button")]
+        .filter((element) => getComputedStyle(element).display !== "inline")
+        .filter((element) => {
+          const box = element.getBoundingClientRect();
+          return box.width > 0 && box.height > 0 && (box.height < 44 || box.width < 44);
+        })
+        .map((element) => `${element.tagName}:${(element.textContent ?? "").trim().slice(0, 20)}`));
+      expect(undersized).toEqual([]);
+    }
   }
 });
 
@@ -96,6 +157,9 @@ test("English page keeps the same calculated core meaning", async ({ page }) => 
   await expect(page.getByRole("button", { name: "See my patterns" })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "View free pattern" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Open Saju services" })).toBeVisible();
+  await expect(page.locator(".cinema-hook")).toContainText("patterns that repeat in relationships, work, and money");
+  await expect(page.locator("#guide .journey-steps li")).toHaveCount(4);
+  await expect(page.locator("#preview .report-outline-list li")).toHaveCount(6);
   await page.goto("/en/profile");
   await expect(page).toHaveURL(`${E2E_ORIGIN}/en/profile`);
   await page.locator("#birthDate").fill("1994-11-04");
@@ -104,8 +168,12 @@ test("English page keeps the same calculated core meaning", async ({ page }) => 
   await expect(page.getByText("Core archetype · Justice")).toBeVisible();
   await expect(page.locator(".number-tile").first()).toContainText("11");
   await page.getByText("Open the eight-domain deep profile").click();
-  await expect(page.locator(".domain-card")).toHaveCount(8);
-  await expect(page.locator(".career-grid article")).toHaveCount(3);
+  // The free reading opens the first three of the eight calculated domains and the
+  // first of the three career directions, and names the rest rather than dropping them.
+  await expect(page.locator(".domain-card")).toHaveCount(3);
+  await expect(page.locator(".career-grid article")).toHaveCount(1);
+  await expect(page.locator(".free-tier-remainder").first())
+    .toContainText("Domains that continue in the detailed reading");
   await expect(page.locator(".deep-profile")).not.toContainText("%");
   await page.getByText("Privacy-safe share card", { exact: true }).click();
   await expect(page.locator(".share-card-preview")).toBeVisible();
@@ -624,4 +692,49 @@ test("privacy, terms, and support publish contacts while disclosing unresolved l
   await page.goto("/en/plans");
   await expect(page.getByText("Payments remain closed until merchant review", { exact: false })).toBeVisible();
   await expect(page.getByRole("button", { name: "Pay now" }).first()).toBeDisabled();
+});
+
+test("the whole funnel connects: question, free result, paid teaser, intake", async ({ page }) => {
+  // Every step below used to be reachable only by typing a URL. The home page had no
+  // link to the page that sells, and the free result's purchase button pointed at an
+  // anchor that had been removed, so this walks the path a real visitor takes.
+  await page.goto("/ko");
+  await dismissCampaign(page);
+  await page.locator('#questions .entry-question:has-text("연애·관계")').click();
+  await page.waitForURL("**/ko/numerology?focus=relationships");
+
+  // The chosen question arrives already selected, so nobody answers it twice.
+  await expect(page.locator('input[name="interest"][value="relationships"]')).toBeChecked();
+
+  await page.locator("#birthDate").fill("1994-11-04");
+  await page.locator('input[name="privacyRequired"]').check();
+  await page.getByRole("button", { name: "내 핵심 패턴 보기" }).click();
+
+  const teaser = page.locator(".paid-preview");
+  await expect(teaser).toBeVisible();
+  await expect(teaser.locator(".paid-preview-bridge")).toContainText("관계에서 반복되는 부분");
+  await expect(teaser.locator(".paid-preview-locks li")).toHaveCount(6);
+  const cta = teaser.getByRole("link", { name: "내 관계 흐름 자세히 보기" });
+  await expect(cta).toHaveAttribute("href", "/ko/reading?focus=relationships#onboarding");
+
+  await Promise.all([page.waitForURL("**/ko/reading**"), cta.click()]);
+  await expect(page.locator("#onboarding")).toBeVisible();
+  await expect(page.locator('#onboarding input[name="interest"][value="relationships"]')).toBeChecked();
+});
+
+test("first-visit guidance appears once and can be reopened", async ({ page }) => {
+  await page.goto("/ko");
+  await dismissCampaign(page);
+  const cue = page.getByRole("button", { name: "처음이세요? 이용 방법 먼저 보기" });
+  await expect(cue).toBeVisible();
+  await cue.click();
+  await expect(page.locator("#guide")).toBeInViewport();
+
+  // A returning visit is not nudged again, but the guide itself never goes away and the
+  // header still names it, so it can be reopened at any time.
+  await page.goto("/ko");
+  await dismissCampaign(page);
+  await expect(page.getByRole("button", { name: "처음이세요? 이용 방법 먼저 보기" })).toHaveCount(0);
+  await expect(page.locator("#guide .journey-steps li")).toHaveCount(4);
+  await expect(page.locator('.home-nav a:has-text("이용 방법")')).toHaveAttribute("href", "#guide");
 });

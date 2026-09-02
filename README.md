@@ -126,4 +126,7 @@ introduced rather than reading a deployment dashboard. The reasoning is in
 - Crisis contacts are shown as region-labelled options with official sources; language is never treated as the user's location.
 - A web-app manifest is included, but a service worker is deliberately absent until sensitive offline caching receives privacy review.
 
+Interface and funnel rules, including the checklist that a "simplification" has to pass, are in
+[Home funnel and interface design rules](docs/Home-Funnel-Design-Rules.md).
+
 Read [Continuation State](docs/Continuation-State.md) first when resuming the project. The strict keep/improve/hold assessment is in [Feature Audit](docs/Feature-Audit.md). Operational boundaries are in [Operations Runbook](docs/Operations-Runbook.md), crisis behavior is in [Crisis Response Protocol](docs/Crisis-Response-Protocol.md), and the local security baseline is in [Security Review](docs/Security-Review.md).

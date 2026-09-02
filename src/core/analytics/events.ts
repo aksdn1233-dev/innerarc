@@ -24,6 +24,31 @@ export const JOURNEY_ROUTES = [
   "other",
 ] as const;
 
+/**
+ * The real-life concerns a reading can be centred on. Five are offered as entry points
+ * on the home page; leadership is reachable only inside the free reading's own focus
+ * list. They are categories, never the sentence the visitor wrote — the free-text
+ * question stays on the device.
+ */
+export const CONCERN_CATEGORIES = [
+  "work",
+  "relationships",
+  "health",
+  "growth",
+  "money",
+  "leadership",
+] as const;
+
+/** Where in the product a funnel step was reached, so a step can be attributed. */
+export const FUNNEL_SURFACES = [
+  "home",
+  "reading",
+  "numerology",
+  "profile",
+  "fortune",
+  "other",
+] as const;
+
 export const JOURNEY_SOURCES = [
   "direct",
   "naver_blog",
@@ -62,6 +87,19 @@ export const SafeAnalyticsEventSchema = z.discriminatedUnion("name", [
     productCode: z.enum(["plus_30d", "pro_30d", "premium_pdf"]),
     location: z.enum(["product_card", "form"]),
   }),
+  // The free reading is the middle of the funnel and used to emit nothing at all, so a
+  // visitor who left between the free result and checkout was invisible. These carry a
+  // concern category and a surface — never a birth date, a name, or the written question.
+  event("concern_selected", {
+    concern: z.enum(CONCERN_CATEGORIES),
+    surface: z.enum(FUNNEL_SURFACES),
+  }),
+  event("free_start", { surface: z.enum(FUNNEL_SURFACES) }),
+  event("birth_input_complete", { surface: z.enum(FUNNEL_SURFACES) }),
+  event("free_result_view", { concern: z.enum(CONCERN_CATEGORIES) }),
+  event("paid_teaser_view", { concern: z.enum(CONCERN_CATEGORIES) }),
+  event("paid_teaser_click", { concern: z.enum(CONCERN_CATEGORIES) }),
+  event("report_view", { productCode: z.enum(["plus_30d", "pro_30d", "premium_pdf"]) }),
   event("form_start", {}),
   event("form_complete", { productCode: z.enum(["plus_30d", "pro_30d", "premium_pdf"]) }),
   event("payment_start", {

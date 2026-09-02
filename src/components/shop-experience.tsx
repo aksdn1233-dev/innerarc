@@ -311,7 +311,7 @@ export function ShopExperience({ locale, copy }: { locale: Locale; copy: ShopCop
           <aside>
             <h2>{copy.ethicsTitle}</h2>
             <p>{copy.ethics}</p>
-            <Link href={`/${locale}#onboarding`}>{copy.backToResult}</Link>
+            <Link href={`/${locale}/reading#onboarding`}>{copy.backToResult}</Link>
           </aside>
         </section>
       </main>

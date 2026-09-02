@@ -1,33 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ReportSampleExperience } from "@/components/report-sample-experience";
-import type { PaidReadingInput } from "@/core/paid-reading";
 import { isLocale } from "@/i18n/config";
-import { createPaidReport } from "@/server/reports/paid-report";
-
-const sampleKinds = ["detail", "premium", "saju"] as const;
-type SampleKind = (typeof sampleKinds)[number];
-
-function isSampleKind(value: string): value is SampleKind {
-  return sampleKinds.includes(value as SampleKind);
-}
-
-function sampleReport(kind: SampleKind, locale: "ko" | "en") {
-  const base: PaidReadingInput = {
-    version: 1,
-    locale,
-    productCode: kind === "premium" ? "premium_pdf" : kind === "detail" ? "pro_30d" : "plus_30d",
-    readingKind: kind === "saju" ? "saju_chart" : "numerology",
-    birthDate: "1994-11-04",
-    name: "",
-    focusId: "growth",
-    concern: "",
-    gender: "female",
-    midnightConvention: "야자시",
-    createdAt: "2026-08-21T00:00:00.000Z",
-  };
-  return createPaidReport(`sample941104${kind}`, base);
-}
+import { getSampleReport, isSampleReportKind } from "@/server/reports/sample-report";
 
 export async function generateMetadata({
   params,
@@ -58,6 +33,6 @@ export default async function SampleReportPage({
   params: Promise<{ locale: string; kind: string }>;
 }) {
   const { locale, kind } = await params;
-  if (!isLocale(locale) || !isSampleKind(kind)) notFound();
-  return <ReportSampleExperience locale={locale} kind={kind} report={sampleReport(kind, locale)} />;
+  if (!isLocale(locale) || !isSampleReportKind(kind)) notFound();
+  return <ReportSampleExperience locale={locale} kind={kind} report={getSampleReport(kind, locale)} />;
 }

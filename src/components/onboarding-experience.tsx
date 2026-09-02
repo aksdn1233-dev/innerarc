@@ -22,6 +22,8 @@ import { WebtoonReveal } from "@/components/webtoon-reveal";
 import { NumerologyWebtoonReading } from "@/components/numerology-webtoon-reading";
 import { MIN_BIRTH_DATE, currentMaxBirthDate, isAcceptedBirthDate } from "@/core/birth-range";
 import { createPaidContentPreview } from "@/core/report-preview";
+import { createPaidTeaser } from "@/core/paid-teaser";
+import { captureConversionEvent } from "@/core/analytics";
 import type { OnboardingFocusId } from "@/core/onboarding";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
@@ -30,23 +32,52 @@ type Props = {
   locale: Locale;
   dictionary: Dictionary;
   routeName?: "profile" | "numerology";
+  /**
+   * The concern the visitor already chose on the home page, resolved on the server from
+   * the query string. Reading it here rather than in an effect keeps the first paint
+   * correct — including in a background tab, where an animation frame never runs.
+   */
+  initialFocusId?: OnboardingFocusId;
 };
+
+/**
+ * How much of the free reading is opened before the paid one begins.
+ *
+ * The free result exists to show that the reading recognises the reader, not to be the
+ * reading. It opens the first three domains and the first career direction and names the
+ * rest, so nothing is hidden without being told and the paid tiers have something left
+ * to be. The engines still calculate every domain: only what is rendered changes.
+ */
+const FREE_DOMAIN_COUNT = 3;
+const FREE_CAREER_COUNT = 1;
+const FREE_STRENGTH_COUNT = 2;
 
 function evidence(calculation: NumberCalculation): string {
   const reductions = calculation.steps.map((step) => step.output);
   return [`${calculation.expression} = ${calculation.initialTotal}`, ...reductions.map(String)].join(" → ");
 }
 
-export function OnboardingExperience({ locale, dictionary: d, routeName = "profile" }: Props) {
+export function OnboardingExperience({ locale, dictionary: d, routeName = "profile", initialFocusId }: Props) {
   // Bounded here rather than in the module so a long-lived tab still refuses tomorrow.
   const maxBirthDate = currentMaxBirthDate();
   const [result, setResult] = useState<NumerologyProfile | null>(null);
   const [context, setContext] = useState<OnboardingReflectionContext | null>(null);
   const [error, setError] = useState("");
-  const [selectedFocus, setSelectedFocus] = useState<OnboardingFocusId>(d.interests[0]?.value ?? "work");
+  const [selectedFocus, setSelectedFocus] = useState<OnboardingFocusId>(
+    initialFocusId ?? d.interests[0]?.value ?? "work",
+  );
   const deepProfileRef = useRef<HTMLDetailsElement>(null);
   const guideVideoRef = useRef<HTMLVideoElement>(null);
   const guideAudioRef = useRef<HTMLAudioElement>(null);
+  const teaserRef = useRef<HTMLElement>(null);
+  const trackedRef = useRef(new Set<string>());
+  const surface = routeName === "numerology" ? "numerology" as const : "profile" as const;
+
+  function trackFreeStart() {
+    if (trackedRef.current.has("free_start")) return;
+    trackedRef.current.add("free_start");
+    captureConversionEvent("free_start", locale, { surface });
+  }
 
   useEffect(() => {
     const video = guideVideoRef.current;
@@ -67,6 +98,7 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
   const integratedProfile = result ? createIntegratedProfile(result, locale) : null;
   const lifestyle = result ? createLifestyleRecommendations(result, locale) : null;
   const paidPreview = result ? createPaidContentPreview(result, locale) : null;
+  const paidTeaser = context ? createPaidTeaser(context.focusId, locale) : null;
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -103,6 +135,8 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
       });
       setResult(next);
       setContext(nextContext);
+      captureConversionEvent("birth_input_complete", locale, { surface });
+      captureConversionEvent("free_result_view", locale, { concern: nextContext.focusId });
       focusAndScroll("#result");
     } catch (caught) {
       setResult(null);
@@ -114,6 +148,20 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
           : d.invalidDate);
     }
   }
+
+  // Whether the paid offer was ever actually seen is the difference between "they did
+  // not want it" and "they never reached it", and the funnel could not tell them apart.
+  useEffect(() => {
+    const teaser = teaserRef.current;
+    if (!teaser || !context) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry?.isIntersecting || trackedRef.current.has("paid_teaser_view")) return;
+      trackedRef.current.add("paid_teaser_view");
+      captureConversionEvent("paid_teaser_view", locale, { concern: context.focusId });
+    }, { threshold: 0.4 });
+    observer.observe(teaser);
+    return () => observer.disconnect();
+  }, [context, locale]);
 
   function openDeepProfile() {
     if (!deepProfileRef.current) return;
@@ -213,7 +261,7 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
 
         <section className="form-section cinema-intake" id="onboarding" aria-labelledby="onboarding-title">
           <div className="cinema-intake-art" aria-hidden="true" />
-          <form className="form-card" onSubmit={submit} noValidate>
+          <form className="form-card" onFocusCapture={trackFreeStart} onSubmit={submit} noValidate>
             <p className="eyebrow">01 — {d.eyebrow}</p>
             <h2 id="onboarding-title">{d.start}</h2>
 
@@ -373,15 +421,32 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
                 <code className="rule-version">{d.ruleVersion}: {context.ruleVersion}</code>
               </section>
 
-              {paidPreview && (
-                <section className="paid-preview" aria-labelledby="paid-preview-title">
+              {/* The teaser used to say "choose a detailed reading" and point at
+                  /{locale}#onboarding — a section that had been moved to /reading, so
+                  the one purchase action on the free result led to an empty page. It now
+                  names what the paid reading adds for the question this visitor actually
+                  chose, and goes to the intake form. */}
+              {paidPreview && paidTeaser && (
+                <section className="paid-preview" aria-labelledby="paid-preview-title" ref={teaserRef}>
                   <p className="eyebrow">{locale === "ko" ? "실제 상세 리딩 미리보기" : "Real detailed-reading preview"}</p>
                   <h3 id="paid-preview-title">{paidPreview.unlockedSectionTitle}</h3>
                   <p>{paidPreview.visible}</p>
-                  <div className="paid-preview-locks">
-                    {paidPreview.lockedTopics.map((topic) => <span key={topic}>LOCKED · {topic}</span>)}
-                  </div>
-                  <Link className="primary-button" href={`/${locale}#onboarding`}>{locale === "ko" ? "상세 리딩 선택하기" : "Choose a detailed reading"}</Link>
+                  <p className="paid-preview-bridge">{paidTeaser.bridge}</p>
+                  <ul className="paid-preview-locks">
+                    {paidTeaser.lockedTopics.map((topic) => <li key={topic}>{topic}</li>)}
+                  </ul>
+                  <Link
+                    className="primary-button"
+                    href={`/${locale}/reading?focus=${paidTeaser.focusId}#onboarding`}
+                    onClick={() => captureConversionEvent("paid_teaser_click", locale, { concern: paidTeaser.focusId })}
+                  >
+                    {paidTeaser.cta}
+                  </Link>
+                  <small className="paid-preview-boundary">
+                    {locale === "ko"
+                      ? "결과를 보장하는 예측이 아니라, 반복되는 패턴과 확인할 기준을 정리한 리포트입니다."
+                      : "A report of recurring patterns and things to check — not a guaranteed prediction."}
+                  </small>
                 </section>
               )}
 
@@ -402,7 +467,7 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
               <div className="insight-grid">
                 <section className="insight">
                   <h3>{d.strengths}</h3>
-                  <ul>{profile.strengths.map((item) => <li key={item}>{item}</li>)}</ul>
+                  <ul>{profile.strengths.slice(0, FREE_STRENGTH_COUNT).map((item) => <li key={item}>{item}</li>)}</ul>
                 </section>
                 <section className="insight">
                   <h3>{d.risks}</h3>
@@ -512,7 +577,7 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
                 <p className="deep-profile-intro">{d.integratedIntro}</p>
                 <p className="summary">{integratedProfile.summary}</p>
                 <div className="domain-grid">
-                  {integratedProfile.domains.map((domain) => (
+                  {integratedProfile.domains.slice(0, FREE_DOMAIN_COUNT).map((domain) => (
                     <article className="domain-card" key={domain.id}>
                       <h3>{domain.title}</h3>
                       <div className="domain-facts">
@@ -525,11 +590,19 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
                     </article>
                   ))}
                 </div>
+                {/* The remaining domains are named rather than removed, so the free
+                    result stays honest about what it is not showing. */}
+                {integratedProfile.domains.length > FREE_DOMAIN_COUNT && (
+                  <p className="free-tier-remainder">
+                    <strong>{locale === "ko" ? "상세 리딩에서 이어지는 영역" : "Domains that continue in the detailed reading"}</strong>
+                    <span>{integratedProfile.domains.slice(FREE_DOMAIN_COUNT).map((domain) => domain.title).join(" · ")}</span>
+                  </p>
+                )}
 
                 <section className="career-details">
                   <h3>{d.careerDetails}</h3>
                   <div className="career-grid">
-                    {integratedProfile.careerRecommendations.map((role) => (
+                    {integratedProfile.careerRecommendations.slice(0, FREE_CAREER_COUNT).map((role) => (
                       <article key={role.roleId}>
                         <span className="career-rank">{role.rank}</span>
                         <h4>{role.title}</h4>
@@ -543,6 +616,12 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
                       </article>
                     ))}
                   </div>
+                  {integratedProfile.careerRecommendations.length > FREE_CAREER_COUNT && (
+                    <p className="free-tier-remainder">
+                      <strong>{locale === "ko" ? "상세 리딩에서 이어지는 직무군" : "Roles that continue in the detailed reading"}</strong>
+                      <span>{integratedProfile.careerRecommendations.slice(FREE_CAREER_COUNT).map((role) => role.title).join(" · ")}</span>
+                    </p>
+                  )}
                 </section>
 
                 <p className="disclaimer">{integratedProfile.uncertainty}</p>

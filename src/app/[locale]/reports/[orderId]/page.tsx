@@ -5,6 +5,7 @@ import { ORDER_PASS_COOKIE, readOrderPass, readOrderTicket } from "@/server/orde
 import { MeteorTrails, NightHorizon } from "@/components/brand-visuals";
 import { PaymentStatusWaiting } from "@/components/payment-status-waiting";
 import { ReportActions } from "@/components/report-actions";
+import { ReportViewBeacon } from "@/components/report-view-beacon";
 import { ReviewRequestPanel } from "@/components/review-request-panel";
 import { AcquisitionSurveyPanel } from "@/components/acquisition-survey-panel";
 import { ReportRealityCheck } from "@/components/pattern-intelligence/report-reality-check";
@@ -233,6 +234,7 @@ export default async function PurchasedReportPage({
         className={`shell paid-report-shell webtoon-shell${basicV2 ? " basic-report-shell" : ""}${detailV2 ? " detail-report-shell" : ""}${premiumV2 ? " premium-report-shell" : ""}`}
         id="main-content"
       >
+        <ReportViewBeacon locale={locale} productCode={report.productCode} />
         <WebtoonReveal />
 
         {/* The cover is a full screen of art with the title over it, opening the way the

@@ -1,0 +1,154 @@
+# Home funnel and interface design rules
+
+Last updated: 2026-09-02
+
+These are permanent product rules, not notes on one change. Read them before touching the
+home page, `/{locale}/reading`, the free reading, the paid teaser, or anything described as
+"simplifying" a surface.
+
+## 1. The design rule
+
+태령당 must not use generic AI-generated SaaS aesthetics. Minimalism must never remove
+information required for comprehension, trust, navigation, or purchase. Guidance should be
+progressive, contextual, optional, and human-designed.
+
+In practice, for any element added to a customer-facing page:
+
+- **Text before a card.** A sentence, a rule, and a number carry a sequence better than a
+  container does. Containers are for things that are genuinely separable and clickable.
+- **Sequence before dashboard.** The order of the page is the guidance. A page that has to
+  explain its own layout has the wrong layout.
+- **One strong action before several competing ones.** A screen with three equally weighted
+  buttons has no primary action.
+- **Contextual guidance before permanent explanation.** Say it where it is needed, once.
+
+Do not introduce: card-inside-card layouts, purple/blue gradients, glow or glassmorphism,
+floating pills, badge rows, decorative charts, fake chat bubbles, onboarding modals on
+arrival, or animation that carries no information. Every new element must answer *yes* to at
+least one of:
+
+1. Does it help the customer understand what the service does?
+2. Does it help the customer know what to do next?
+3. Does it demonstrate what they will receive?
+4. Does it reduce uncertainty before purchase?
+5. Does it improve a measurable step of the funnel?
+
+## 2. The regression this file exists to prevent
+
+Removing explanatory sections to simplify visual design can create a conversion and
+navigation regression. Future simplification work must test information architecture and
+funnel continuity, not only visual cleanliness.
+
+What happened, concretely (found 2026-09-02, introduced over the preceding simplification
+passes):
+
+- `/{locale}` was reduced to the opening film plus two route buttons. Its `<h1>` was set to
+  `visually-hidden`, so the page contained no visible sentence saying what the service does.
+- The header on that page kept five navigation links and a "리딩 시작하기" button pointing at
+  `#questions`, `#preview`, `#products`, `#evidence`, `#method`, and `#onboarding` — every
+  one of which had moved to `/{locale}/reading`. All six did nothing.
+- The home page had no link to `/{locale}/reading` at all, so the page holding the prices,
+  the reviews, the method and the intake form was reachable only from the campaign popup.
+- The free reading's single purchase action linked to `/{locale}#onboarding`, landing a
+  visitor who had just decided to buy on a page with nothing on it.
+- The home page rendered no footer, so terms, privacy, order lookup, support and the
+  business registration number were absent from the site's most-visited page.
+- No analytics event fired anywhere between "start the free reading" and "arrive at
+  checkout", so the drop-off could not be located even in principle.
+
+The visual simplification itself was not the mistake. Shipping it without checking that the
+navigation still had destinations, that the funnel still had a path, and that the funnel was
+still measurable, was.
+
+## 3. Regression checklist for any home, funnel, or "simplification" change
+
+Run this before merging. It is cheap; every line below corresponds to a defect that has
+actually shipped.
+
+**Navigation**
+
+- [ ] Every in-page anchor rendered on a surface has a matching `id` **on that same
+      surface**, at every viewport width.
+- [ ] Every cross-route link resolves to a route that exists and to an anchor that route
+      renders.
+- [ ] No source file links to `/{locale}#…`. The home page does not own those anchors.
+- [ ] The page that explains and sells the product is reachable from the home page by a
+      link, not only from a campaign popup.
+
+**Information the customer needs**
+
+- [ ] The landing page answers, in visible text, within one screen: what is this, what can
+      it tell me, what do I do first.
+- [ ] Terms, privacy, order lookup, support and the business registration details are
+      reachable from every customer-facing page.
+- [ ] Anything removed from a free surface is *named* where it used to be, not silently
+      dropped.
+
+**Funnel continuity**
+
+- [ ] Walk the whole path in a browser: home → choose a question → free result → paid
+      teaser → intake → checkout. Every step must be reachable by clicking only.
+- [ ] The concern chosen at the start is still selected at the end, and is resolved on the
+      server (a background tab never runs `requestAnimationFrame`).
+- [ ] The purchase action on the free result names what the paid reading adds for *that*
+      concern.
+
+**Proof before payment**
+
+- [ ] The report preview is built from `getSampleReport` / `buildReportOutline`, so its
+      chapter titles are the ones the generator will deliver. Never hand-write a preview.
+
+**Measurement**
+
+- [ ] `landing_view → concern_selected → free_start → birth_input_complete →
+      free_result_view → paid_teaser_view → paid_teaser_click → product_view →
+      product_select → payment_start → payment_success → report_view` all fire from real
+      components, verified in a browser, not merely declared in a schema.
+- [ ] Events carry only closed-set categories (concern, surface, tier, locale). No birth
+      date, name, written question, or report content.
+
+**Mobile and accessibility**
+
+- [ ] 320 / 360 / 375 / 390 / 430 px: no horizontal overflow, no clipped Korean text, no
+      tap target under 44 px, and nothing positioned over content the visitor needs —
+      including promotional chrome, which belongs in the flow.
+- [ ] Keyboard reachable, reduced motion respected, axe clean on the changed routes.
+
+## 4. When promotional chrome is allowed to interrupt
+
+- **No dialog on arrival.** The campaign offer opens only once the reader reaches the
+  closing section of the home page — after the opening screen, the four steps, the
+  questions and the report outline. A discount for a product nobody has explained yet is
+  not persuasion, it is an obstacle, and it must never open over the question list.
+- **Nothing floats over content.** The campaign link row is `position: static` at the top
+  of the page. It was `fixed`, which made it follow the reader down every page and sit on
+  headings and body text; `absolute` stopped the following but landed it on the page's own
+  header links, which axe reports as obscured targets. In the flow it overlaps nothing.
+- Both remain dismissible and session-scoped, and both disappear with the campaign.
+
+## 5. Guidance rules
+
+First-visit guidance is a nudge, never a gate.
+
+- The guide itself stays on the page for everyone; only the one-line cue pointing at it is
+  first-visit-only (`gyeol.guide.seen.v1` in `localStorage`).
+- Never a modal on arrival, never a forced sequence, never a blocked interaction, never a
+  second interruption for a returning visitor.
+- A browser that refuses storage must degrade to showing the cue again — never to breaking.
+- The reopen path ("이용 방법") stays in the header navigation and the guide keeps its own
+  heading, so it is findable without the cue.
+
+## 6. Free / detailed / premium
+
+Each tier has a job, and the difference between them is never merely length.
+
+| Tier | The question it answers |
+| --- | --- |
+| Free | 나는 어떤 사람인가? |
+| 상세 리딩 | 내가 지금 고민하는 문제는 왜 반복되고 어떻게 읽어야 하는가? |
+| 프리미엄 | 여러 영역이 어떻게 연결되어 있고, 지금 무엇을 점검해야 하는가? |
+
+The free reading renders the opening slice of what the engine calculates
+(`FREE_DOMAIN_COUNT`, `FREE_CAREER_COUNT`, `FREE_STRENGTH_COUNT` in
+`src/components/onboarding-experience.tsx`) and names the remainder. The engines keep
+calculating everything: only what is rendered is limited, so the paid reports are unaffected.
