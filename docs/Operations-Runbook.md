@@ -2,10 +2,11 @@
 
 Status: Supabase account persistence connected; production deployment and remaining service owners are unassigned.
 
-## Deployment is blocked without two Cloudflare secrets
+## Deployment needs two Cloudflare secrets (added 2026-09-02)
 
-Checked 2026-09-02: `aksdn1233-dev/innerarc` has **zero** GitHub Actions secrets — none at
-repository level and none in the `Production` or `Preview` environments. `deploy.yml` passes
+Between 2026-08-30 and 2026-09-02 `aksdn1233-dev/innerarc` had **zero** GitHub Actions
+secrets — none at repository level and none in the `Production` or `Preview` environments.
+They have since been added; this stays here because it is how the failure looks. `deploy.yml` passes
 `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` through as empty strings, so
 `wrangler deploy` stops with "In a non-interactive environment, it's necessary to set a
 CLOUDFLARE_API_TOKEN environment variable".

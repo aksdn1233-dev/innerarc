@@ -4,14 +4,27 @@ Last updated: 2026-08-02 (mobile trust and checkout-conversion refinement)<br>
 Current version: 0.20.1
 Overall progress: 97% (web MVP code 100%; production deployment and payment path 98%; native app not started)
 
-## 2026-09-02 — Production deployment is blocked on missing Cloudflare secrets
+## 2026-09-02 — Deployment restored, and the image binding it exposed
 
-- The repository has no GitHub Actions secrets at all: `CLOUDFLARE_API_TOKEN` and
-  `CLOUDFLARE_ACCOUNT_ID` are absent from the repository and from both environments, so
-  `wrangler deploy` has failed on every Deploy run since 2026-08-30.
-- `mygyeol.kr` is therefore still serving the build before the funnel repair, dead home
-  navigation included. The fix is in `main` and verified; it is not live.
-- Restoring it needs only the two secrets and a Deploy re-run — see
+- The owner added `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`, and the funnel
+  repair is live on mygyeol.kr (`index-DlbI30MT.css`, worker version
+  `8267ec22-0caf-4938-8c9e-f5bd36abd3fa`).
+- The first successful deploy in days then reached the live check for the first time and
+  failed it on `image=307`. `worker/index.ts` reads `env.IMAGES` *and* `env.ASSETS`, and
+  falls back to redirecting to the unoptimized original if either is missing.
+  `vite.config.ts` named only the images binding, so the generated config carried
+  `assets.directory` without `assets.binding` and every image on the live site has been
+  served full size. Both bindings are now declared, with a regression test.
+- Not caused by the funnel work: `vite.config.ts`, `worker/`, and `build/` are untouched
+  by it. It had simply never been checked, because the check runs after a deploy that
+  succeeds, and none had.
+
+## 2026-09-02 — Production deployment was blocked on missing Cloudflare secrets
+
+- The repository had no GitHub Actions secrets at all, so `wrangler deploy` failed on
+  every Deploy run from 2026-08-30 until the owner added them on 2026-09-02. For those
+  days `mygyeol.kr` kept serving an older build while `main` moved ahead.
+- Kept as the worked example of why a green CI run is not a deployment. See
   [Operations Runbook](Operations-Runbook.md).
 
 ## 2026-09-02 — Home page reconnected to the funnel
