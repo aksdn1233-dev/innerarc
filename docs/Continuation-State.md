@@ -4,6 +4,16 @@ Last updated: 2026-08-02 (mobile trust and checkout-conversion refinement)<br>
 Current version: 0.20.1
 Overall progress: 97% (web MVP code 100%; production deployment and payment path 98%; native app not started)
 
+## 2026-09-02 — Production deployment is blocked on missing Cloudflare secrets
+
+- The repository has no GitHub Actions secrets at all: `CLOUDFLARE_API_TOKEN` and
+  `CLOUDFLARE_ACCOUNT_ID` are absent from the repository and from both environments, so
+  `wrangler deploy` has failed on every Deploy run since 2026-08-30.
+- `mygyeol.kr` is therefore still serving the build before the funnel repair, dead home
+  navigation included. The fix is in `main` and verified; it is not live.
+- Restoring it needs only the two secrets and a Deploy re-run — see
+  [Operations Runbook](Operations-Runbook.md).
+
 ## 2026-09-02 — Home page reconnected to the funnel
 
 - The home page kept its opening film and gained, below it, only what the funnel needs: one

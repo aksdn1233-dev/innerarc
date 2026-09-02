@@ -2,6 +2,31 @@
 
 Status: Supabase account persistence connected; production deployment and remaining service owners are unassigned.
 
+## Deployment is blocked without two Cloudflare secrets
+
+Checked 2026-09-02: `aksdn1233-dev/innerarc` has **zero** GitHub Actions secrets — none at
+repository level and none in the `Production` or `Preview` environments. `deploy.yml` passes
+`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` through as empty strings, so
+`wrangler deploy` stops with "In a non-interactive environment, it's necessary to set a
+CLOUDFLARE_API_TOKEN environment variable".
+
+This is why `main` has been ahead of what mygyeol.kr serves: every Deploy run since
+2026-08-30 has failed at that step, and CI failing separately meant later runs were skipped
+before they even got there. A green CI run is not a deployment.
+
+To restore it, the account owner adds both secrets — Settings → Secrets and variables →
+Actions — and then re-runs Deploy (it accepts `workflow_dispatch`, so no new commit is
+needed):
+
+- `CLOUDFLARE_API_TOKEN` — a token for the account that owns the `innerarc` Worker, with
+  *Workers Scripts: Edit*. `vite.config.ts` also declares an Images binding and a custom
+  domain route for `mygyeol.kr`, so the token must be allowed to update those.
+- `CLOUDFLARE_ACCOUNT_ID` — the account the Worker lives in.
+
+Confirm afterwards by requesting the live site and checking it references the stylesheet the
+build produced, exactly as the workflow's last step does. Deployed and serving are different
+claims.
+
 ## Release gate
 
 1. Install from the frozen pnpm lockfile and run lint, strict typecheck, all unit/integration tests, production build, Chromium accessibility/performance/user-flow tests, and mobile flows.
