@@ -14,6 +14,15 @@ const ROUTE_LABELS: Readonly<Record<string, string>> = {
   other: "기타",
 };
 
+const CONCERN_LABELS: Readonly<Record<string, string>> = {
+  relationships: "관계·연애",
+  work: "일·진로",
+  money: "돈·사업",
+  growth: "나 자신",
+  health: "건강·생활",
+  leadership: "리더십",
+};
+
 const SOURCE_LABELS: Readonly<Record<string, string>> = {
   direct: "직접 방문",
   naver_blog: "네이버 블로그",
@@ -46,10 +55,17 @@ export function AdminTrafficPanel({
       <div className="admin-stat-grid">
         <article><strong>{metrics.pageViews}</strong><span>페이지 조회</span></article>
         <article><strong>{metrics.ctaClicks}</strong><span>주요 버튼 클릭</span></article>
+        <article><strong>{metrics.concernSelections}</strong><span>질문 선택</span></article>
+        <article><strong>{metrics.freeStarts}</strong><span>무료 리딩 시작</span></article>
+        <article><strong>{metrics.birthInputCompletes}</strong><span>생년월일 입력</span></article>
+        <article><strong>{metrics.freeResultViews}</strong><span>무료 결과 열람</span></article>
+        <article><strong>{metrics.paidTeaserViews}</strong><span>상세 안내 노출</span></article>
+        <article><strong>{metrics.paidTeaserClicks}</strong><span>상세 안내 클릭</span></article>
         <article><strong>{metrics.formStarts}</strong><span>입력 시작</span></article>
         <article><strong>{metrics.formCompletes}</strong><span>입력 완료</span></article>
         <article><strong>{metrics.paymentStarts}</strong><span>결제 시작</span></article>
         <article><strong>{metrics.paymentSuccesses}</strong><span>결제 성공</span></article>
+        <article><strong>{metrics.reportViews}</strong><span>리포트 열람</span></article>
         <article><strong>{metrics.formCompletionRate}%</strong><span>입력 완료율</span></article>
         <article><strong>{metrics.checkoutCompletionRate}%</strong><span>결제 완료율</span></article>
       </div>
@@ -63,6 +79,21 @@ export function AdminTrafficPanel({
               {metrics.routeViews.map((entry) => (
                 <div key={entry.key}>
                   <span>{ROUTE_LABELS[entry.key] ?? entry.key}</span>
+                  <strong>{entry.count}회</strong>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+        <section>
+          <h3>질문별 무료 결과</h3>
+          {metrics.concernViews.length === 0 ? (
+            <p className="admin-empty">새 집계가 시작된 뒤 질문별 수치가 표시됩니다.</p>
+          ) : (
+            <div className="admin-order-list">
+              {metrics.concernViews.map((entry) => (
+                <div key={entry.key}>
+                  <span>{CONCERN_LABELS[entry.key] ?? entry.key}</span>
                   <strong>{entry.count}회</strong>
                 </div>
               ))}

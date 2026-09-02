@@ -72,8 +72,10 @@ describe("advertising claims stay defensible", () => {
   });
 
   it("presents no invented customer testimonial", () => {
-    // The situations block is labelled as situations, not quotes from buyers.
-    expect(homepage).toMatch(/실제 후기가 아닌 리포트 구성 예시/);
+    // The three invented "report format examples" were replaced by the chapter list of
+    // a report the production generator actually produced, so the page now states the
+    // birth date it was calculated from instead of disclaiming an invented sample.
+    expect(homepage).toMatch(/실제 생성한 상세\s*\n?\s*리딩입니다|실제 생성한 상세 리딩입니다/);
     expect(homepage).not.toMatch(/후기\s*[:：]/);
     expect(homepage).not.toMatch(/(님|씨)\s*·\s*\d/);
   });

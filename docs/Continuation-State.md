@@ -4,6 +4,42 @@ Last updated: 2026-08-02 (mobile trust and checkout-conversion refinement)<br>
 Current version: 0.20.1
 Overall progress: 97% (web MVP code 100%; production deployment and payment path 98%; native app not started)
 
+## 2026-09-02 — Home page reconnected to the funnel
+
+- The home page kept its opening film and gained, below it, only what the funnel needs: one
+  sentence naming what the service reads and from what, a four-step sequence on a hairline
+  rule, the five real-life questions as entry points, the chapter list of a generated report,
+  one action into `/{locale}/reading`, and the existing footer.
+- Repaired navigation: the six header links and the free result's purchase action pointed at
+  `#questions`, `#preview`, `#products`, `#evidence`, `#method` and `#onboarding`, all of
+  which had moved to `/{locale}/reading`. Same-page anchors now exist on the page that
+  renders them; the rest name their route. `shop-experience` had the same dead link.
+- The report preview is `buildReportOutline(getSampleReport("detail", locale))`, so its
+  chapter titles and opening paragraphs come from the production generator and cannot drift
+  from what is delivered. It replaced three invented example sentences.
+- The paid teaser is concern-specific (`src/core/paid-teaser.ts`): a bridge sentence, six
+  named subjects, and a CTA in the reader's own words per concern, with a regression test
+  rejecting outcome, medical, legal, and investment claim wording.
+- The free reading renders the opening slice of what the engines calculate — three of eight
+  domains, one of three career directions, two strengths — and names the remainder. The
+  engines are unchanged; only rendering is limited.
+- Seven analytics events were added (`concern_selected`, `free_start`,
+  `birth_input_complete`, `free_result_view`, `paid_teaser_view`, `paid_teaser_click`,
+  `report_view`), all carrying closed-set categories only. The administrator traffic panel
+  shows them and breaks free results down by concern.
+- The concern chosen on one page is resolved on the server (`resolveConcernHandoff`) rather
+  than in an effect, because `requestAnimationFrame` never runs in a background tab.
+- The campaign dialog no longer opens on arrival: it waits until the reader reaches the
+  closing section of the home page, so the first screen is the service, not a discount.
+  The campaign link row moved from `position: fixed` to static, so it no longer covers
+  headings and body text on every page.
+- `campaign.spec.ts` asserted `#referral-coupon`, which only renders when a payment
+  provider is configured — so it failed every default run, and therefore CI, and therefore
+  every automatic deploy. The assertion moved to `payments.spec.ts`, which runs with the
+  provider shell. The full suite is green in the CI configuration again.
+- Permanent design and regression rules recorded in `docs/Home-Funnel-Design-Rules.md`, with
+  pointers from `README.md` and `AGENTS.md`.
+
 ## 2026-08-21 — Independent numerology menu
 
 - Added `/{locale}/numerology` as the named public entry for the existing deterministic

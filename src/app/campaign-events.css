@@ -1,11 +1,17 @@
 /* One-week extension chrome and event additions. This file is removable as one unit
    after the draw/claim window without touching the permanent report or checkout skin. */
+/* In the flow, not floating. Fixed made it follow the reader down every page and sit on
+   top of headings and body text wherever they stopped; absolute stopped the following
+   but still landed it on the page's own header links, which axe reports as obscured
+   targets. A static row above the header overlaps nothing at all, and the links are
+   still the first thing at the top of every page. */
 .campaign-utility-nav {
-  position: fixed;
+  position: static;
   z-index: 70;
-  top: calc(10px + env(safe-area-inset-top));
-  right: 18px;
   display: flex;
+  width: max-content;
+  max-width: calc(100% - 36px);
+  margin: calc(10px + env(safe-area-inset-top)) 18px 0 auto;
   gap: 2px;
   padding: 4px;
   border: 1px solid rgb(240 207 130 / 28%);
@@ -135,13 +141,13 @@
 }
 
 @media (max-width: 720px) {
-  .campaign-utility-nav { right: 10px; }
+  .campaign-utility-nav { margin-right: 10px; }
   .campaign-modal-backdrop { align-items: end; padding: 10px; }
   .campaign-modal { max-height: calc(100svh - 20px); padding: 28px 22px 24px; overflow-y: auto; border-radius: 24px; }
   .campaign-modal-actions { display: grid; }
   .campaign-modal-actions a { justify-content: center; width: 100%; }
   .plans-campaign-banner { align-items: flex-start; flex-direction: column; }
-  .event-topbar { padding-top: 80px; }
+  .event-topbar { padding-top: 30px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

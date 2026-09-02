@@ -83,8 +83,20 @@ test("fixed 941104 product samples create no checkout controls", async ({ page }
     await expect(page.getByText("941104 결과 리포트 예시")).toBeVisible();
     await expect(page.getByText("결제·주문·저장은 발생하지 않습니다.")).toBeVisible();
     await expect(page.locator(".webtoon-story-panel").first()).toBeVisible();
-    await expect(page.locator(".webtoon-story-character").first()).toBeVisible();
-    const characterImage = await page.locator(".webtoon-story-character").first().evaluate((image) => {
+    const character = page.locator(".webtoon-story-character").first();
+    await expect(character).toBeVisible();
+    // Visible is not decoded. On a loaded runner the element is laid out before its
+    // bitmap arrives, and naturalWidth reads 0 until it does, which failed this
+    // assertion three retries running in CI while passing everywhere else.
+    await character.evaluate((image) => {
+      const element = image as HTMLImageElement;
+      if (element.complete && element.naturalWidth > 0) return undefined;
+      return new Promise<void>((resolve, reject) => {
+        element.addEventListener("load", () => resolve(), { once: true });
+        element.addEventListener("error", () => reject(new Error("character image failed to load")), { once: true });
+      });
+    });
+    const characterImage = await character.evaluate((image) => {
       const element = image as HTMLImageElement;
       return {
         directAsset: !element.currentSrc.includes("/_next/image") && !element.currentSrc.includes("/_vinext/image"),

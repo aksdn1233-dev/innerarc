@@ -10,6 +10,8 @@ type AxeViolation = {
 
 const routes = [
   "/ko",
+  "/ko/reading",
+  "/ko/numerology",
   "/ko/profile",
   "/ko/daily-fortune",
   "/ko/fortune",
@@ -25,6 +27,7 @@ const routes = [
   "/ko/shop",
   "/ko/shop/wood-leaf-pendant",
   "/en",
+  "/en/reading",
   "/en/profile",
   "/en/daily-fortune",
   "/en/fortune",

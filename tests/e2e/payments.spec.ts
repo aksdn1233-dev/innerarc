@@ -47,6 +47,9 @@ test("checkout validates locally and switches product and report input together"
   await page.goto("/en/plans?product=pro_30d");
   await expect(page.locator('[data-product="plus_30d"]')).toContainText("Four Pillars chart");
   await expect(page.locator("#customer-phone")).toBeVisible();
+  // Moved here from campaign.spec.ts: the referral field is part of the checkout shell,
+  // so it only renders when a provider is configured.
+  await expect(page.locator("#referral-coupon")).toBeVisible();
   const premium = page.locator('[data-product="premium_pdf"]');
   await expect(premium.getByRole("button", { name: "Pay now" })).toBeEnabled();
   await premium.getByRole("button", { name: "Pay now" }).click();

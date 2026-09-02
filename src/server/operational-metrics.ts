@@ -5,6 +5,13 @@ export const OPERATIONAL_EVENT_NAMES = [
   "sample_section_view",
   "product_view",
   "product_select",
+  "concern_selected",
+  "free_start",
+  "birth_input_complete",
+  "free_result_view",
+  "paid_teaser_view",
+  "paid_teaser_click",
+  "report_view",
   "form_start",
   "form_complete",
   "payment_start",
@@ -25,6 +32,15 @@ export type OperationalMetricRow = Readonly<{
 export type OperationalMetrics = Readonly<{
   pageViews: number;
   ctaClicks: number;
+  concernSelections: number;
+  freeStarts: number;
+  birthInputCompletes: number;
+  freeResultViews: number;
+  paidTeaserViews: number;
+  paidTeaserClicks: number;
+  reportViews: number;
+  /** Concern category totals, so a step loss can be read per real-life question. */
+  concernViews: readonly Readonly<{ key: string; count: number }>[];
   sampleViews: number;
   productViews: number;
   productSelections: number;
@@ -48,6 +64,20 @@ function sum(rows: readonly OperationalMetricRow[], name: OperationalEventName) 
 
 function percent(part: number, whole: number) {
   return whole > 0 ? Math.round((part / whole) * 1_000) / 10 : 0;
+}
+
+function concernBreakdown(rows: readonly OperationalMetricRow[]) {
+  const values = new Map<string, number>();
+  for (const row of rows) {
+    if (row.event_name !== "free_result_view") continue;
+    const match = /^concern:([a-z0-9_]+)$/.exec(row.dimension);
+    if (!match) continue;
+    const key = match[1]!;
+    values.set(key, (values.get(key) ?? 0) + Number(row.count || 0));
+  }
+  return [...values.entries()]
+    .map(([key, count]) => ({ key, count }))
+    .sort((a, b) => b.count - a.count || a.key.localeCompare(b.key));
 }
 
 function journeyBreakdown(rows: readonly OperationalMetricRow[], segment: "route" | "source") {
@@ -85,6 +115,14 @@ export function summarizeOperationalMetrics(
   return {
     pageViews: sum(rows, "landing_view"),
     ctaClicks: sum(rows, "primary_cta_click"),
+    concernSelections: sum(rows, "concern_selected"),
+    freeStarts: sum(rows, "free_start"),
+    birthInputCompletes: sum(rows, "birth_input_complete"),
+    freeResultViews: sum(rows, "free_result_view"),
+    paidTeaserViews: sum(rows, "paid_teaser_view"),
+    paidTeaserClicks: sum(rows, "paid_teaser_click"),
+    reportViews: sum(rows, "report_view"),
+    concernViews: concernBreakdown(rows),
     sampleViews: sum(rows, "sample_section_view"),
     productViews: sum(rows, "product_view"),
     productSelections: sum(rows, "product_select"),
@@ -112,7 +150,7 @@ export function metricDimension(
   ) {
     return `route:${route}:source:${source}`;
   }
-  for (const key of ["productCode", "provider", "location", "stage"] as const) {
+  for (const key of ["concern", "surface", "productCode", "provider", "location", "stage"] as const) {
     const value = properties[key];
     if (typeof value === "string" && /^[a-z0-9_-]{1,40}$/.test(value)) {
       return `${key}:${value}`;

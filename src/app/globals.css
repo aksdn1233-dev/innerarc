@@ -394,7 +394,6 @@
     font-size: 2.25rem;
   }
 
-  .report-preview,
   .pattern-fields,
   .pass-summary,
   .home-form-section,
@@ -1615,17 +1614,63 @@ summary {
   background: linear-gradient(135deg, #f4efe2, #e5eee6);
 }
 
-.paid-preview-locks {
-  display: grid;
-  gap: .55rem;
-  margin: 1.25rem 0;
+.paid-preview-bridge {
+  margin: 1.1rem 0 0;
+  font-weight: 700;
 }
 
-.paid-preview-locks span {
-  padding: .75rem 1rem;
-  border-radius: .75rem;
-  background: rgb(255 255 255 / 62%);
-  font-weight: 700;
+/* A list of what the paid reading covers, written as a list. The previous version
+   stamped each line with the word LOCKED inside its own rounded tile; the reader
+   already knows this part is not free, and the tiles said nothing the words did not. */
+.paid-preview-locks {
+  display: grid;
+  gap: .5rem;
+  margin: .9rem 0 1.35rem;
+  padding: 0;
+  list-style: none;
+}
+
+.paid-preview-locks li {
+  position: relative;
+  padding-left: 1.1rem;
+  color: color-mix(in srgb, var(--ink, #17211b) 76%, transparent);
+  line-height: 1.6;
+  word-break: keep-all;
+}
+
+.paid-preview-locks li::before {
+  position: absolute;
+  left: 0;
+  color: var(--clay);
+  content: "·";
+  font-weight: 800;
+}
+
+.paid-preview-boundary {
+  display: block;
+  margin-top: 1rem;
+  color: var(--muted);
+  font-size: .84rem;
+  line-height: 1.7;
+}
+
+/* What the free result is not showing, named. Type on the page, not a locked card. */
+.free-tier-remainder {
+  display: grid;
+  gap: 6px;
+  margin: 18px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: .9rem;
+  line-height: 1.7;
+  word-break: keep-all;
+}
+
+.free-tier-remainder strong {
+  color: var(--ink);
+  font-size: .86rem;
+  letter-spacing: .01em;
 }
 
 .companion-intake {
@@ -4377,7 +4422,6 @@ summary {
   letter-spacing: 0.18em;
 }
 
-.report-preview,
 .about-gyeol,
 .pattern-fields,
 .pass-summary,
@@ -4397,19 +4441,6 @@ summary {
   font: 700 clamp(2rem, 4.6vw, 4.1rem)/1.18 var(--display-font);
   letter-spacing: -0.045em;
   word-break: keep-all;
-}
-
-.report-preview {
-  display: grid;
-  grid-template-columns: minmax(0, 0.86fr) minmax(360px, 1.14fr);
-  gap: clamp(38px, 8vw, 110px);
-  align-items: end;
-  margin-top: 0;
-  padding-inline: clamp(24px, 7vw, 90px);
-  border-radius: 0 0 30px 30px;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(209, 171, 111, 0.13), transparent 17rem),
-    #fbf6ed;
 }
 
 .report-preview-disclosure {
@@ -4434,59 +4465,6 @@ summary {
   color: #684b31;
   font-size: 0.78rem;
   font-weight: 800;
-}
-
-.preview-case-grid {
-  display: grid;
-  gap: 12px;
-}
-
-.preview-reading {
-  position: relative;
-  padding: clamp(22px, 3.4vw, 34px);
-  border-top: 1px solid #9b7651;
-  border-bottom: 1px solid var(--line);
-  background: rgba(255, 253, 248, 0.52);
-}
-
-.preview-reading::before {
-  content: "“";
-  position: absolute;
-  top: 8px;
-  right: 24px;
-  color: rgba(155, 118, 81, 0.2);
-  font: 700 6rem/1 var(--display-font);
-}
-
-.preview-reading > p {
-  position: relative;
-  max-width: 48rem;
-  margin: 10px 0 0;
-  font: 700 clamp(1rem, 1.7vw, 1.24rem)/1.7 var(--display-font);
-}
-
-.preview-reading ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 26px 0 18px;
-  padding: 0;
-  list-style: none;
-}
-
-.preview-reading li {
-  padding: 8px 11px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  color: var(--sage-dark);
-  font-size: 0.76rem;
-  font-weight: 700;
-}
-
-.preview-reading small {
-  color: var(--muted);
-  font-weight: 800;
-  letter-spacing: 0.02em;
 }
 
 .preview-cta {
@@ -5457,7 +5435,6 @@ summary {
     display: none;
   }
 
-  .report-preview,
   .about-gyeol {
     grid-template-columns: 1fr;
   }
@@ -5690,7 +5667,6 @@ summary {
     margin: 0 auto;
   }
 
-  .report-preview,
   .about-gyeol,
   .pattern-fields,
   .trust-section {
@@ -5752,10 +5728,6 @@ summary {
   .secondary-link {
     width: 100%;
     justify-content: center;
-  }
-
-  .preview-reading {
-    padding-inline: 20px;
   }
 
   .home-form-section .form-card > h3 {
@@ -6304,59 +6276,11 @@ summary {
   50% { transform: translate3d(0, -10px, 0); }
 }
 
-.report-preview {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  gap: clamp(32px, 6vw, 80px);
-  padding: clamp(78px, 9vw, 118px) clamp(34px, 7vw, 92px);
-}
-
-.report-preview::before,
-.report-preview::after {
-  position: absolute;
-  z-index: 0;
-  top: clamp(38px, 7vw, 82px);
-  bottom: clamp(38px, 7vw, 82px);
-  width: clamp(30px, 4.5vw, 58px);
-  border-top: 1px solid rgba(155, 118, 81, 0.46);
-  border-bottom: 1px solid rgba(155, 118, 81, 0.46);
-  background:
-    linear-gradient(45deg, transparent 43%, rgba(155, 118, 81, 0.72) 44% 49%, transparent 50%) 0 0 / 24px 24px,
-    linear-gradient(-45deg, transparent 43%, rgba(155, 118, 81, 0.72) 44% 49%, transparent 50%) 0 0 / 24px 24px;
-  content: none;
-  opacity: 0.18;
-  pointer-events: none;
-  mask-image: linear-gradient(transparent, #000 12%, #000 88%, transparent);
-}
-
-.report-preview::before {
-  left: 12px;
-}
-
-.report-preview::after {
-  right: 12px;
-  transform: scaleX(-1);
-}
-
-.report-preview > * {
-  position: relative;
-  z-index: 1;
-}
-
-.report-preview .section-heading h2,
 .pattern-fields .section-heading h2,
 .product-section-heading h2,
 .form-section-heading h2,
 .trust-section .section-heading h2 {
   letter-spacing: -0.045em;
-}
-
-.preview-reading {
-  min-height: 0;
-  border-radius: 18px;
-  background: #fffdf8;
-  box-shadow: none;
 }
 
 .pattern-fields {
@@ -6601,25 +6525,6 @@ summary {
 
   .home-hero h1 {
     font-size: clamp(2.75rem, 13vw, 4.2rem);
-  }
-
-  .report-preview {
-    padding-inline: 28px;
-  }
-
-  .report-preview::before,
-  .report-preview::after {
-    width: 24px;
-    background-size: 18px 18px;
-    opacity: 0.12;
-  }
-
-  .report-preview::before {
-    left: 2px;
-  }
-
-  .report-preview::after {
-    right: 2px;
   }
 
   .question-bubble {
@@ -7994,11 +7899,6 @@ summary {
   background: transparent;
 }
 
-.home-shell .home-topbar.is-over-cinema .cinema-menu-button {
-  border-color: rgba(220, 207, 161, 0.42);
-  background: rgba(31, 29, 43, 0.55);
-}
-
 /* Copy and actions were both pushed by `margin-top: auto`, which split them to opposite
    ends and left a dead band between. They belong together, low on the screen. */
 .cinema-hero-copy { margin-top: auto; padding-bottom: 6px; }
@@ -8030,11 +7930,6 @@ summary {
   .home-shell .home-topbar.is-over-cinema .home-nav,
   .home-shell .home-topbar.is-over-cinema .home-header-actions {
     display: none;
-  }
-
-  .home-shell .home-topbar.is-over-cinema .cinema-menu-button {
-    display: flex;
-    flex: 0 0 auto;
   }
 }
 
@@ -9628,20 +9523,6 @@ summary {
   text-shadow: 0 2px 18px rgba(12, 10, 20, 0.9);
 }
 
-/* The sound control sat on top of the second button. It belongs with the other chrome,
-   under the header, where it overlaps nothing. */
-
-/* The three bars were being collapsed by the header's own button rules, so the control
-   rendered as an empty outline. Stated again with the specificity to win. */
-.home-shell .home-topbar.is-over-cinema .cinema-menu-button span {
-  display: block;
-  width: 18px;
-  height: 2px;
-  flex: 0 0 auto;
-  border-radius: 2px;
-  background: #f7f1e7;
-}
-
 @media (min-width: 900px) {
   .cinema-sound-toggle { top: calc(96px + env(safe-area-inset-top)); bottom: auto; }
 }
@@ -10750,12 +10631,201 @@ summary {
   line-height: 1.65;
 }
 .content-protection-notice p { margin: 0; }
-.content-protection-notice nav { display: flex; flex-wrap: wrap; gap: 1rem; }
-.content-protection-notice a { color: inherit; font-weight: 750; }
+.content-protection-notice nav { display: flex; flex-wrap: wrap; align-items: center; gap: 0 1rem; }
+/* These are the terms and privacy links on every page. They were a 20px-high row of
+   text, which is not a target a thumb can hit. */
+.content-protection-notice a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  color: inherit;
+  font-weight: 750;
+}
 
 @media (max-width: 640px) {
   .evidence-event-capture form { grid-template-columns: 1fr; }
   .evidence-event-capture .evidence-description,
   .evidence-event-capture button,
   .evidence-event-capture form > p { grid-column: auto; }
+}
+
+/* ── Home journey: guide, report outline, closing action ────────────────────
+   The home page below the opening screen is a sequence, not a second grid of
+   panels. Everything here is type on paper plus one hairline rule; the only
+   boxes are the question buttons that already existed. */
+
+.journey-guide,
+.report-outline,
+.home-close {
+  scroll-margin-top: 24px;
+  padding: clamp(52px, 7vw, 88px) clamp(22px, 6vw, 44px);
+}
+
+.journey-guide .section-heading h2,
+.report-outline .section-heading h2,
+.home-close h2 {
+  margin: 0;
+  font: 700 clamp(1.6rem, 3.4vw, 2.7rem)/1.24 var(--display-font);
+  letter-spacing: -0.04em;
+  word-break: keep-all;
+}
+
+.journey-guide .section-heading > p,
+.report-outline .section-heading > p,
+.home-close > p {
+  max-width: 44rem;
+  margin: 16px 0 0;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.journey-steps,
+.report-outline-list {
+  margin: 34px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.journey-steps li,
+.report-outline-list li {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 16px;
+}
+
+.journey-step-index,
+.report-outline-index {
+  color: var(--clay);
+  font-size: 0.79rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+}
+
+.journey-steps strong,
+.report-outline-list strong {
+  display: block;
+  font-size: clamp(1rem, 1.5vw, 1.16rem);
+  line-height: 1.45;
+  word-break: keep-all;
+}
+
+.journey-steps p,
+.report-outline-list p {
+  margin: 9px 0 0;
+  color: var(--muted);
+  font-size: 0.93rem;
+  line-height: 1.75;
+  word-break: keep-all;
+}
+
+/* One continuous hairline down the left margin. It is the whole of the "visual
+   direction" this page needs: no arrow, no progress bar, no animation. */
+.journey-steps {
+  position: relative;
+  padding-left: 22px;
+}
+
+.journey-steps::before {
+  position: absolute;
+  top: 8px;
+  bottom: 14px;
+  left: 0;
+  width: 1px;
+  background: linear-gradient(var(--line), rgba(215, 203, 182, 0.2));
+  content: "";
+}
+
+.journey-steps li { padding-bottom: 28px; }
+.journey-steps li:last-child { padding-bottom: 0; }
+.journey-step-index { padding-top: 2px; }
+
+.journey-guide-action {
+  min-height: 44px;
+  margin-top: 30px;
+  padding: 0 22px;
+  border: 1px solid var(--ink-v4, #07111f);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.journey-guide-action:hover,
+.journey-guide-action:focus-visible {
+  background: var(--ink-v4, #07111f);
+  color: var(--ivory-v4, #f7f1e7);
+}
+
+/* One line under the hero buttons, shown once. It is a text link, not a badge,
+   a tooltip, or a card. */
+.cinema-guide-cue {
+  align-self: flex-start;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: rgba(247, 241, 231, 0.82);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.88rem;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
+.cinema-guide-cue:hover,
+.cinema-guide-cue:focus-visible { color: #f2cc8c; }
+
+.report-outline-list { border-top: 1px solid var(--line); }
+
+.report-outline-list li {
+  padding: 22px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+/* A locked chapter states its title and that it opens after payment. It is not
+   blurred, greyed into illegibility, or dressed with a padlock. */
+.report-outline-list li.is-locked .report-outline-index,
+.report-outline-list li.is-locked strong {
+  color: var(--muted);
+}
+
+.report-outline-more {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  align-items: baseline;
+  margin: 22px 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.report-outline-more a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  color: inherit;
+  font-weight: 700;
+  text-underline-offset: 5px;
+}
+
+.home-close {
+  border-top: 1px solid var(--line);
+}
+
+.home-close > p { margin-bottom: 26px; }
+
+.home-close .primary-button {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+}
+
+.home-close small {
+  display: block;
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 0.86rem;
 }

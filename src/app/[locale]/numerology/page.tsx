@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { OnboardingExperience } from "@/components/onboarding-experience";
 import { dictionaries } from "@/i18n/dictionaries";
 import { isLocale } from "@/i18n/config";
+import { resolveConcernHandoff } from "@/core/concern-handoff";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -33,16 +34,19 @@ export const revalidate = 0;
  */
 export default async function NumerologyPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ focus?: string }>;
 }) {
-  const { locale } = await params;
+  const [{ locale }, query] = await Promise.all([params, searchParams]);
   if (!isLocale(locale)) notFound();
   return (
     <OnboardingExperience
       locale={locale}
       dictionary={dictionaries[locale]}
       routeName="numerology"
+      initialFocusId={resolveConcernHandoff(query.focus)}
     />
   );
 }

@@ -9,6 +9,8 @@ import { OFFICIAL_NAVER_BLOG_URL } from "@/core/brand-links";
 import type { ProductPricingSnapshot } from "@/core/product-prices";
 import type { PublicReview } from "@/core/reviews";
 import { MIN_BIRTH_DATE, currentMaxBirthDate, isAcceptedBirthDate } from "@/core/birth-range";
+import { scrollToElement } from "@/components/accessibility";
+import type { ReportOutline } from "@/core/report-outline";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 import type { AdminPageContent } from "@/server/admin-content";
@@ -29,6 +31,17 @@ type Props = {
    * form live.
    */
   showEverything?: boolean;
+  /**
+   * The chapter list of a report the production generator actually produced. Null only
+   * when the caller has no reason to show it; the section is skipped rather than faked.
+   */
+  reportOutline?: ReportOutline | null;
+  /**
+   * The concern chosen earlier in the journey, resolved on the server so the intake
+   * opens on it at first paint rather than after an animation frame that a background
+   * tab never runs.
+   */
+  initialFocusId?: FocusId;
 };
 
 type ReadingProductId = "comprehensive" | "premium_pdf";
@@ -36,6 +49,12 @@ type FocusId = "work" | "relationships" | "health" | "growth" | "money";
 type IntakeError = Readonly<{ field: "birthDate" | "privacy" | "giftConsent"; message: string }>;
 
 const CAMPAIGN_DISMISS_KEY = "gyeol.campaign.one-week-extension-1500.dismissed.v1";
+/**
+ * Set once the first-time guidance has been seen. It only removes a one-line cue: the
+ * guide itself stays on the page for everyone, so a returning visitor loses nothing but
+ * the nudge, and a browser that refuses storage simply shows the cue again.
+ */
+const GUIDE_SEEN_KEY = "gyeol.guide.seen.v1";
 
 const concernExamples: Record<Locale, Record<FocusId, string>> = {
   ko: {
@@ -98,6 +117,27 @@ const copy = {
   ko: {
     navLabel: "홈페이지 탐색",
     nav: [["#questions", "질문 고르기"], ["#preview", "리포트 예시"], ["#products", "가격"], ["#evidence", "후기"], ["#method", "리딩 방식"]],
+    homeNav: [["#guide", "이용 방법"], ["#questions", "질문 고르기"], ["#preview", "리포트 예시"], ["/reading#products", "가격"], ["/reading#evidence", "후기"]],
+    homeLead: "생년월일로 관계·일·돈에서 반복되는 나의 패턴을 읽습니다.",
+    guideCue: "처음이세요? 이용 방법 먼저 보기",
+    guideEyebrow: "이용 방법",
+    guideTitle: "네 단계면 결과까지 갑니다",
+    guideSteps: [
+      ["지금 가장 걸리는 질문을 고릅니다", "다섯 가지 중 하나면 됩니다. 고른 질문이 리딩의 중심이 됩니다."],
+      ["생년월일을 넣습니다", "양력 생년월일 하나로 계산이 시작됩니다. 회원가입은 없습니다."],
+      ["무료 결과에서 기본 패턴을 봅니다", "핵심 숫자, 성향 두 가지, 걸리기 쉬운 지점 두 가지를 결제 없이 확인합니다."],
+      ["고른 질문으로 이어서 봅니다", "관계·일·돈처럼 실제 상황으로 들어가는 부분은 상세 리딩에서 이어집니다."],
+    ],
+    guideStepAction: "질문 고르기",
+    outlineEyebrow: "상세 리딩 목차",
+    outlineTitle: "결제 전에 무엇을 받는지 먼저 보세요",
+    outlineBody: "1994년 11월 4일로 실제 생성한 상세 리딩입니다. 앞부분은 그대로 보여드리고, 나머지는 장 제목까지만 보여드립니다.",
+    outlineLocked: "결제 후 열람",
+    outlineMore: (count: number) => `외 ${count}개 장이 이어집니다.`,
+    outlineSample: "예시 리포트 전체 보기",
+    homeCloseTitle: "가격과 후기를 확인하고 시작하세요",
+    homeCloseBody: "무료 결과를 먼저 보셔도 되고, 바로 상세 리딩으로 가셔도 됩니다.",
+    homeCloseCta: "상세 리딩 보기",
     heroKicker: "사주명리와는 다른, 현실 선택 중심의 리딩",
     heroTitle: "나의 결은 어떤 특징과 장점을 가지고 있을까요?",
     heroBody: "타고난 성향과 반복되는 관계·일·돈의 패턴을 살펴보고, 올해 어떤 선택에 힘을 주어야 할지 정리해드립니다.",
@@ -115,10 +155,10 @@ const copy = {
     entryTitle: "요즘 마음에 걸리는 질문을 골라보세요",
     entryBody: "고른 질문이 리딩의 중심이 됩니다.",
     entryQuestions: [
-      ["relationships", "왜 늘 비슷한 사람에게 마음이 갈까요?", "관계"],
+      ["relationships", "왜 늘 비슷한 사람에게 마음이 갈까요?", "연애·관계"],
       ["work", "지금 이 일, 계속 가는 게 맞을까요?", "일·진로"],
-      ["money", "돈 앞에서 나는 어떤 결정을 반복하나요?", "돈"],
-      ["growth", "무엇이 나를 자꾸 멈춰 세우나요?", "성장"],
+      ["money", "지금 하는 일이 돈이 될까요?", "돈·사업"],
+      ["growth", "무엇이 나를 자꾸 멈춰 세우나요?", "나 자신"],
       ["health", "내 하루는 어디에서 무너지나요?", "건강·생활"],
     ],
     freeCardBadge: "무료",
@@ -126,14 +166,6 @@ const copy = {
     freeCardPrice: "0원",
     freeCardBody: "생년월일만으로 바로 확인. 결제도, 계정도 없이.",
     freeCardButton: "무료로 시작하기",
-    sampleEyebrow: "리포트 구성 예시",
-    sampleTitle: "내 일상에 연결되는 방식으로 정리합니다",
-    sampleBody: "실제 후기가 아닌 리포트 구성 예시입니다.",
-    sampleCases: [
-      ["성향", "혼자 해결하는 힘은 강하지만, 도움을 늦게 요청해 책임이 한꺼번에 몰릴 수 있습니다."],
-      ["관계", "상대의 반응을 오래 확인하다가 표현 시기를 놓치는 패턴이 반복될 수 있습니다."],
-      ["일·돈", "능력보다 역할의 경계가 불분명할 때 손해가 커지므로, 책임과 권한을 함께 정하는 것이 중요합니다."],
-    ],
     methodTitle: "어떻게 리딩하나요?",
     methodBody: "입력한 생년월일의 고유 수치를 계산해 타고난 기세와 성향, 나의 특징과 장점을 살펴보고 관계·일·돈·올해의 흐름을 서로 연결합니다. 결과는 미래를 단정하는 예언이 아니라, 반복되는 패턴과 현실적인 선택 기준을 정리한 개인 리포트입니다.",
     methodPoints: ["생년월일 기반 계산", "질문 영역을 반영한 개인화", "결제 후 비회원 열람 가능"],
@@ -156,6 +188,27 @@ const copy = {
   en: {
     navLabel: "Home navigation",
     nav: [["#questions", "Pick a question"], ["#preview", "Report examples"], ["#products", "Pricing"], ["#evidence", "Reviews"], ["#method", "Method"]],
+    homeNav: [["#guide", "How it works"], ["#questions", "Pick a question"], ["#preview", "Report examples"], ["/reading#products", "Pricing"], ["/reading#evidence", "Reviews"]],
+    homeLead: "A birth date, read for the patterns that repeat in relationships, work, and money.",
+    guideCue: "First time here? See how it works",
+    guideEyebrow: "How it works",
+    guideTitle: "Four steps to a result",
+    guideSteps: [
+      ["Pick the question on your mind", "One of five is enough. Your choice becomes the centre of the reading."],
+      ["Enter your birth date", "One Gregorian date starts the calculation. There is no account to create."],
+      ["Read the free result", "Core numbers, two tendencies, and two friction points — before any payment."],
+      ["Continue with the question you chose", "Relationships, work, money: the part that enters your real situation continues in the detailed reading."],
+    ],
+    guideStepAction: "Pick a question",
+    outlineEyebrow: "Detailed reading contents",
+    outlineTitle: "See what you receive before you pay",
+    outlineBody: "A detailed reading generated for 1994-11-04. The opening chapters are shown as written; the rest are listed by title.",
+    outlineLocked: "Opens after payment",
+    outlineMore: (count: number) => `${count} more chapters follow.`,
+    outlineSample: "Read the full sample report",
+    homeCloseTitle: "Check the prices and reviews, then begin",
+    homeCloseBody: "See the free result first, or go straight to the detailed reading.",
+    homeCloseCta: "See the detailed reading",
     heroKicker: "A different kind of reading, centered on real-life choices",
     heroTitle: "Why do I keep making the same choices?",
     heroBody: "Explore your natural tendencies and recurring patterns in relationships, work, and money—then clarify where to place your energy this year.",
@@ -175,8 +228,8 @@ const copy = {
     entryQuestions: [
       ["relationships", "Why am I drawn to the same kind of person?", "Relationships"],
       ["work", "Is staying in this work still the right call?", "Work"],
-      ["money", "What decision do I keep repeating about money?", "Money"],
-      ["growth", "What keeps stopping me short?", "Growth"],
+      ["money", "Will the work I am doing actually pay?", "Money & business"],
+      ["growth", "What keeps stopping me short?", "Myself"],
       ["health", "Where does my day fall apart?", "Daily life"],
     ],
     freeCardBadge: "Free",
@@ -184,14 +237,6 @@ const copy = {
     freeCardPrice: "₩0",
     freeCardBody: "Your birth date alone, shown immediately. No payment, no account.",
     freeCardButton: "Start free",
-    sampleEyebrow: "Report format examples",
-    sampleTitle: "Patterns connected to real, everyday choices",
-    sampleBody: "These are report format examples, not customer testimonials.",
-    sampleCases: [
-      ["Tendencies", "You handle things independently, but asking for help too late can cause responsibility to pile up all at once."],
-      ["Relationships", "Waiting too long to read the other person's response can make you miss the right moment to express yourself."],
-      ["Work & money", "Unclear role boundaries can cost more than a lack of ability, so responsibility and authority need to be agreed together."],
-    ],
     methodTitle: "How does the reading work?",
     methodBody: "We calculate numerological values from your birth date, then connect tendencies, relationships, work, money, and the year ahead. This is not a prediction that fixes your future. It is a personal report that organizes recurring patterns and practical criteria for your choices.",
     methodPoints: ["Birth-date based calculation", "Personalized around your chosen area", "Open after payment without an account"],
@@ -234,11 +279,11 @@ function isValidGregorianDate(value: string) {
     && date.getUTCDate() === day;
 }
 
-export function HomeExperience({ locale, dictionary: d, pricing, pageContent, reviews, reviewCount, showEverything = false }: Props) {
+export function HomeExperience({ locale, dictionary: d, pricing, pageContent, reviews, reviewCount, showEverything = false, reportOutline = null, initialFocusId }: Props) {
   // Bounded here rather than in the module so a long-lived tab still refuses tomorrow.
   const maxBirthDate = currentMaxBirthDate();
   const [selectedProduct, setSelectedProduct] = useState<ReadingProductId>("comprehensive");
-  const [focusId, setFocusId] = useState<FocusId>("relationships");
+  const [focusId, setFocusId] = useState<FocusId>(initialFocusId ?? "relationships");
   const [error, setError] = useState<IntakeError | null>(null);
   const [intakeVisible, setIntakeVisible] = useState(false);
   // The opening screen already carries the same action at thumb height. Showing the
@@ -251,7 +296,13 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   const [gender, setGender] = useState<"female" | "male" | "unstated">("unstated");
   const [readingFor, setReadingFor] = useState<"self" | "gift">("self");
   const [campaignOpen, setCampaignOpen] = useState(false);
+  // Only a one-line cue depends on this. It starts false so the server and the first
+  // client render agree, and a browser that refuses storage simply keeps showing it.
+  const [showGuideCue, setShowGuideCue] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
+  const guideRef = useRef<HTMLElement>(null);
+  const closeRef = useRef<HTMLElement>(null);
+  const campaignShownRef = useRef(false);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
   const heroAudioRef = useRef<HTMLAudioElement>(null);
   const trackedRef = useRef(new Set<string>());
@@ -287,17 +338,76 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
       }).format(new Date(pricing.campaign.endsAt))
     : "";
 
+  /**
+   * When the campaign offer is allowed to interrupt.
+   *
+   * It used to open on load, so the first thing a new visitor saw was a discount for a
+   * product nobody had told them about yet. It now waits until they have read the
+   * opening screen, the four steps, the questions and the report outline and have
+   * reached the closing section — at which point the price is the thing they are
+   * actually deciding about. It is still dismissible and still session-scoped, and it
+   * never opens over the question list, which is the one thing on this page that has to
+   * stay clickable.
+   */
   useEffect(() => {
-    if (showEverything || !pricing.campaign) return;
-    const frame = window.requestAnimationFrame(() => {
-      try {
-        setCampaignOpen(window.sessionStorage.getItem(CAMPAIGN_DISMISS_KEY) !== "1");
-      } catch {
-        setCampaignOpen(false);
-      }
-    });
-    return () => window.cancelAnimationFrame(frame);
+    const closing = closeRef.current;
+    if (showEverything || !pricing.campaign || !closing) return;
+    try {
+      if (window.sessionStorage.getItem(CAMPAIGN_DISMISS_KEY) === "1") return;
+    } catch {
+      return; // A browser that refuses storage cannot be asked twice, so it is not asked.
+    }
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry?.isIntersecting || campaignShownRef.current) return;
+      campaignShownRef.current = true;
+      setCampaignOpen(true);
+      observer.disconnect();
+    }, { threshold: 0.35 });
+    observer.observe(closing);
+    return () => observer.disconnect();
   }, [pricing.campaign, showEverything]);
+
+  // The guide is on the page for everyone. What "first visit" changes is one sentence
+  // in the hero pointing at it, so a returning visitor is never interrupted twice and
+  // nobody is ever blocked, redirected, or made to finish anything.
+  useEffect(() => {
+    if (showEverything) return;
+    const timer = window.setTimeout(() => {
+      try {
+        setShowGuideCue(window.localStorage.getItem(GUIDE_SEEN_KEY) !== "1");
+      } catch {
+        setShowGuideCue(true);
+      }
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [showEverything]);
+
+  /**
+   * Records that the guide has been reached, without changing this page.
+   *
+   * Removing the cue the moment the guide scrolls into view took it out from under the
+   * visitor's finger — it is directly above the guide, so reaching for it is what brings
+   * the guide into view. The cue therefore stays for the rest of this page view and is
+   * simply absent on the next visit, which is all "do not interrupt twice" requires.
+   */
+  function markGuideSeen() {
+    try { window.localStorage.setItem(GUIDE_SEEN_KEY, "1"); } catch { /* the cue simply returns */ }
+  }
+
+  useEffect(() => {
+    const guide = guideRef.current;
+    if (!guide || showEverything) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry?.isIntersecting) markGuideSeen();
+    }, { threshold: 0.4 });
+    observer.observe(guide);
+    return () => observer.disconnect();
+  }, [showEverything]);
+
+  function openGuide() {
+    markGuideSeen();
+    scrollToElement("#guide");
+  }
 
   function closeCampaign() {
     setCampaignOpen(false);
@@ -400,6 +510,18 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   // first commitment, and it carries straight into the form as the reading's focus.
   function chooseQuestion(focus: FocusId) {
     setFocusId(focus);
+    captureConversionEvent("concern_selected", locale, {
+      concern: focus,
+      surface: showEverything ? "reading" : "home",
+    });
+    if (!showEverything) {
+      // On the home page the question is the first step of the journey, not the first
+      // field of a purchase form: it carries into the free reading, where the visitor
+      // sees a result before being asked for anything. `free_start` belongs to that
+      // page, so departing here is recorded once, as `concern_selected`.
+      window.location.assign(`/${locale}/numerology?focus=${focus}`);
+      return;
+    }
     captureConversionEvent("form_start", locale, {});
     window.requestAnimationFrame(() => {
       document.getElementById("onboarding")?.scrollIntoView({ behavior: "smooth" });
@@ -465,6 +587,42 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
     window.location.assign(`/${locale}/plans?product=${payload.productCode}`);
   }
 
+  const questionsSection = (
+    <section className="entry-questions" id="questions" aria-labelledby="questions-title">
+      <div className="section-heading">
+        <p className="eyebrow">{t.entryEyebrow}</p>
+        <h2 id="questions-title">{t.entryTitle}</h2>
+        <p>{t.entryBody}</p>
+      </div>
+      <ul className="entry-question-grid">
+        {t.entryQuestions.map(([focus, question, label]) => (
+          <li key={focus}>
+            {/* On the reading page the choice stays pressed because it feeds the intake
+                form below it. On the home page it is a departure, not a toggle: nothing
+                may look answered before the visitor has answered it. */}
+            <button
+              type="button"
+              className={showEverything && focusId === focus ? "entry-question is-chosen" : "entry-question"}
+              aria-pressed={showEverything ? focusId === focus : undefined}
+              onClick={() => chooseQuestion(focus as FocusId)}
+            >
+              <small>{label}</small>
+              <strong>{question}</strong>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+
+  const siteFooter = (
+    <footer className="home-footer">
+      <div><strong>태령당</strong><p>{locale === "ko" ? "실제 삶으로 검증하는 개인 패턴 분석" : "Personal Pattern Intelligence verified through lived experience"}</p></div>
+      <nav aria-label={locale === "ko" ? "공식 채널 및 법률 안내" : "Official channels and legal"}><a href={OFFICIAL_NAVER_BLOG_URL} rel="me noopener noreferrer" target="_blank">{locale === "ko" ? "태령당 공식 블로그" : "태령당 official blog"}</a><Link href={`/${locale}/terms`}>{locale === "ko" ? "이용조건" : "Terms"}</Link><Link href={`/${locale}/privacy`}>{locale === "ko" ? "개인정보" : "Privacy"}</Link><Link href={`/${locale}/orders`}>{locale === "ko" ? "구매 내역" : "Find a purchase"}</Link><Link href={`/${locale}/support`}>{locale === "ko" ? "고객 문의" : "Support"}</Link></nav>
+      <small>{locale === "ko" ? "별루프 · 대표 박서준 · 사업자등록번호 482-12-03629 · 부산광역시 북구" : "Byeolloof · Busan, Republic of Korea"}</small>
+    </footer>
+  );
+
   return (
     <>
       {campaignOpen && pricing.campaign && (
@@ -497,9 +655,20 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             and hands its links to a panel, so nothing competes with the title. */}
         <header className="topbar home-topbar is-over-cinema">
           <Link className="brand" href={`/${locale}`}><strong>태령당</strong><small>{d.brandTagline}</small></Link>
-          <nav className="home-nav" aria-label={t.navLabel}>{t.nav.map(([href, label]) => <a href={href} key={href}>{label}</a>)}</nav>
+          {/* Every one of these used to point at a section that had been moved to
+              /reading, so the whole header did nothing on the home page. Same-page
+              anchors stay anchors; the rest name the route they actually live on. */}
+          <nav className="home-nav" aria-label={t.navLabel}>
+            {(showEverything ? t.nav : t.homeNav).map(([href, label]) => (
+              href.startsWith("#")
+                ? <a href={href} key={href}>{label}</a>
+                : <Link href={`/${locale}${href}`} key={href} prefetch={false}>{label}</Link>
+            ))}
+          </nav>
           <div className="home-header-actions">
-            <a className="header-start-link" href="#onboarding">{locale === "ko" ? "리딩 시작하기" : "Start reading"}</a>
+            {showEverything
+              ? <a className="header-start-link" href="#onboarding">{locale === "ko" ? "리딩 시작하기" : "Start reading"}</a>
+              : <Link className="header-start-link" href={`/${locale}/reading#onboarding`} prefetch={false}>{locale === "ko" ? "리딩 시작하기" : "Start reading"}</Link>}
             <Link className="locale-switch" href={`/${otherLocale}`}>{otherLocale === "ko" ? "한국어" : "English"}</Link>
             <Link className="locale-switch" href="/ja">日本語</Link>
           </div>
@@ -665,7 +834,12 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                   {t.primary}
                 </a>
               </>
-            ) : null}
+            ) : (
+              // One line, because a visitor who cannot say what this is will not press
+              // either button. It says what the service reads and from what, and it is
+              // the only sentence competing with the picture.
+              <p className="cinema-hook">{t.homeLead}</p>
+            )}
             {/* Numerology has its own named menu. `/profile` remains a compatible historical
                 route, while new visitors enter through the product-shaped URL. */}
             <Link
@@ -682,49 +856,121 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             >
               {t.sajuHubCta}
             </Link>
+            {showGuideCue && (
+              <button className="cinema-guide-cue" onClick={openGuide} type="button">{t.guideCue}</button>
+            )}
           </div>
         </section>
 
-        {/* The opening screen is the whole home page: the film and two route buttons.
-            Everything that used to sit under it — the questions, the samples, the prices,
-            the reviews, the method, the intake form — now lives at /{locale}/reading, so
-            scrolling the home page finds nothing, which is the point. */}
+        {/* Under the opening screen the home page answers the three questions a visitor
+            has in order — what is this, what do I do first, what do I actually receive —
+            and then hands over to /{locale}/reading, which holds the prices, the reviews,
+            the method and the intake form. The film stays the first screen; what follows
+            is a sequence, not a second page of panels. */}
+        {!showEverything && (
+          <>
+            <section className="journey-guide" id="guide" aria-labelledby="guide-title" ref={guideRef}>
+              <div className="section-heading">
+                <p className="eyebrow">{t.guideEyebrow}</p>
+                <h2 id="guide-title">{t.guideTitle}</h2>
+              </div>
+              {/* A rule down the left with the step numbers on it. The order is the
+                  guidance; there is nothing to dismiss and nothing to complete. */}
+              <ol className="journey-steps">
+                {t.guideSteps.map(([title, body], index) => (
+                  <li key={title}>
+                    <span className="journey-step-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                    <div>
+                      <strong>{title}</strong>
+                      <p>{body}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+              <button className="journey-guide-action" onClick={() => { markGuideSeen(); scrollToElement("#questions"); }} type="button">
+                {t.guideStepAction}
+              </button>
+            </section>
+
+            {questionsSection}
+
+            {reportOutline && reportOutline.entries.length > 0 && (
+              <section className="report-outline" id="preview" aria-labelledby="outline-title" ref={sampleRef}>
+                <div className="section-heading">
+                  <p className="eyebrow">{t.outlineEyebrow}</p>
+                  <h2 id="outline-title">{t.outlineTitle}</h2>
+                  <p>{t.outlineBody}</p>
+                </div>
+                <ol className="report-outline-list">
+                  {reportOutline.entries.map((entry) => (
+                    <li className={entry.locked ? "is-locked" : undefined} key={entry.position}>
+                      <span className="report-outline-index" aria-hidden="true">{String(entry.position).padStart(2, "0")}</span>
+                      <div>
+                        <strong>{entry.title}</strong>
+                        {entry.excerpt
+                          ? <p>{entry.excerpt}</p>
+                          : <p className="report-outline-lock">{t.outlineLocked}</p>}
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+                <p className="report-outline-more">
+                  {reportOutline.remaining > 0 && <span>{t.outlineMore(reportOutline.remaining)}</span>}
+                  <Link href={`/${locale}/samples/detail`} prefetch={false}>{t.outlineSample}</Link>
+                </p>
+              </section>
+            )}
+
+            <section className="home-close" aria-labelledby="home-close-title" ref={closeRef}>
+              <h2 id="home-close-title">{t.homeCloseTitle}</h2>
+              <p>{t.homeCloseBody}</p>
+              <Link
+                className="primary-button"
+                href={`/${locale}/reading#products`}
+                onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "hero" })}
+                prefetch={false}
+              >
+                {t.homeCloseCta}
+              </Link>
+              <small>{t.paymentFacts}</small>
+            </section>
+          </>
+        )}
+
         {showEverything && (
           <>
-        <section className="entry-questions" id="questions" aria-labelledby="questions-title">
-          <div className="section-heading">
-            <p className="eyebrow">{t.entryEyebrow}</p>
-            <h2 id="questions-title">{t.entryTitle}</h2>
-            <p>{t.entryBody}</p>
-          </div>
-          <ul className="entry-question-grid">
-            {t.entryQuestions.map(([focus, question, label]) => (
-              <li key={focus}>
-                <button
-                  type="button"
-                  className={focusId === focus ? "entry-question is-chosen" : "entry-question"}
-                  aria-pressed={focusId === focus}
-                  onClick={() => chooseQuestion(focus as FocusId)}
-                >
-                  <small>{label}</small>
-                  <strong>{question}</strong>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </section>
+        {questionsSection}
 
-        <section className="report-preview" id="preview" aria-labelledby="preview-title" ref={sampleRef}>
+        {/* Three invented example sentences used to stand here. They described the
+            reading rather than showing it, and nothing tied them to what the generator
+            actually writes. This is the real chapter list of a real generated report. */}
+        <section className="report-outline" id="preview" aria-labelledby="preview-title" ref={sampleRef}>
           <div className="section-heading">
-            <p className="eyebrow">{t.sampleEyebrow}</p>
-            <h2 id="preview-title">{t.sampleTitle}</h2>
-            <p className="report-preview-disclosure">{t.sampleBody}</p>
+            <p className="eyebrow">{t.outlineEyebrow}</p>
+            <h2 id="preview-title">{t.outlineTitle}</h2>
+            <p className="report-preview-disclosure">{t.outlineBody}</p>
           </div>
-          <div className="preview-case-grid">
-            {t.sampleCases.map(([label, body]) => (
-              <article className="preview-reading" key={label}><small>{t.sampleEyebrow} · {label}</small><p>{body}</p></article>
-            ))}
-          </div>
+          {reportOutline && reportOutline.entries.length > 0 && (
+            <>
+              <ol className="report-outline-list">
+                {reportOutline.entries.map((entry) => (
+                  <li className={entry.locked ? "is-locked" : undefined} key={entry.position}>
+                    <span className="report-outline-index" aria-hidden="true">{String(entry.position).padStart(2, "0")}</span>
+                    <div>
+                      <strong>{entry.title}</strong>
+                      {entry.excerpt
+                        ? <p>{entry.excerpt}</p>
+                        : <p className="report-outline-lock">{t.outlineLocked}</p>}
+                    </div>
+                  </li>
+                ))}
+              </ol>
+              <p className="report-outline-more">
+                {reportOutline.remaining > 0 && <span>{t.outlineMore(reportOutline.remaining)}</span>}
+                <Link href={`/${locale}/samples/detail`} prefetch={false}>{t.outlineSample}</Link>
+              </p>
+            </>
+          )}
         </section>
 
         <section className="pass-summary" id="products" aria-labelledby="products-title" ref={productsRef}>
@@ -872,13 +1118,10 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
           <div className="trust-grid">{t.trust.map(([title, body]) => <article key={title}><h3>{title}</h3><p>{body}</p></article>)}</div>
         </section>
 
-        <footer className="home-footer">
-          <div><strong>태령당</strong><p>{locale === "ko" ? "실제 삶으로 검증하는 개인 패턴 분석" : "Personal Pattern Intelligence verified through lived experience"}</p></div>
-          <nav aria-label={locale === "ko" ? "공식 채널 및 법률 안내" : "Official channels and legal"}><a href={OFFICIAL_NAVER_BLOG_URL} rel="me noopener noreferrer" target="_blank">{locale === "ko" ? "태령당 공식 블로그" : "태령당 official blog"}</a><Link href={`/${locale}/terms`}>{locale === "ko" ? "이용조건" : "Terms"}</Link><Link href={`/${locale}/privacy`}>{locale === "ko" ? "개인정보" : "Privacy"}</Link><Link href={`/${locale}/orders`}>{locale === "ko" ? "구매 내역" : "Find a purchase"}</Link><Link href={`/${locale}/support`}>{locale === "ko" ? "고객 문의" : "Support"}</Link></nav>
-          <small>{locale === "ko" ? "별루프 · 대표 박서준 · 사업자등록번호 482-12-03629 · 부산광역시 북구" : "Byeolloof · Busan, Republic of Korea"}</small>
-        </footer>
           </>
         )}
+
+        {siteFooter}
       </main>
       {showEverything && !intakeVisible && !heroVisible && (
         <a className="mobile-purchase-bar" href="#onboarding" onClick={() => {
