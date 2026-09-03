@@ -101,13 +101,19 @@ jobs:
           set -euo pipefail
           asset="$(basename "$(ls dist/client/assets/index-*.css | head -n 1)")"
           echo "expecting the live site to reference ${asset}"
-          for attempt in 1 2 3 4 5 6; do
+          # Three minutes, not one. A new Worker version does not reach every Cloudflare
+          # PoP at once, and the runner talks to a different one than the operator does:
+          # on 2026-09-03 this step failed twice on a deploy that was already live in
+          # Korea within the minute. The check itself is unchanged — the live HTML still
+          # has to reference the stylesheet this build produced — it just waits long
+          # enough for propagation before calling the deploy detached.
+          for attempt in $(seq 1 12); do
             if curl -fsS --max-time 20 https://mygyeol.kr/ko | grep -qF "${asset}"; then
               echo "mygyeol.kr is serving this build"
               exit 0
             fi
             echo "attempt ${attempt}: not yet"
-            sleep 10
+            sleep 15
           done
           echo "::error::mygyeol.kr answers, but not with this build — the deploy reached a Worker the domain does not route to. Check that mygyeol.kr is delegated to Cloudflare (zone status must be active, not pending) and that its route points at the Worker named in vite.config.ts."
           exit 1

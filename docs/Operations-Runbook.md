@@ -28,6 +28,23 @@ Confirm afterwards by requesting the live site and checking it references the st
 build produced, exactly as the workflow's last step does. Deployed and serving are different
 claims.
 
+## A failed "Confirm the domain is serving this build" is not always a failed deploy
+
+That step compares the live HTML against the stylesheet the build just produced. It ran
+six times over a minute, which is not long enough: a new Worker version does not reach
+every Cloudflare PoP at once, and the GitHub runner talks to a different one than an
+operator in Korea does. On 2026-09-03 it failed twice on a deploy that was already live
+within the minute. The window is now twelve attempts over three minutes.
+
+Before assuming a deploy is detached, check what the domain actually serves:
+
+```
+curl -s https://mygyeol.kr/ko | grep -o 'assets/index-[A-Za-z0-9_-]*\.css'
+```
+
+If that matches the asset the run said it was expecting, the deploy landed and only the
+check timed out. If it does not, the error text on that step is the right place to start.
+
 ## Release gate
 
 1. Install from the frozen pnpm lockfile and run lint, strict typecheck, all unit/integration tests, production build, Chromium accessibility/performance/user-flow tests, and mobile flows.
