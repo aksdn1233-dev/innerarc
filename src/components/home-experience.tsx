@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { MeteorTrails, NightHorizon, SceneDivider } from "@/components/brand-visuals";
@@ -969,22 +968,25 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                       Flipping `loading` from lazy to eager afterwards does not restart
                       the fetch in WebKit for a `display: none` image, so the other three
                       steps stayed blank there however long you waited. */}
+                  {/* A plain img, deliberately. next/image keeps a `640w…1200w` srcset
+                      even when unoptimized, and because every candidate is the same file
+                      the browser derives a density from the descriptor and treats an
+                      780px capture as 367px — one device pixel per CSS pixel on a 2x
+                      screen, for a picture made entirely of small Korean text. Its
+                      resizing service also failed outright on the CI server. These are
+                      fixed screenshots already cut to the size the stage renders them
+                      at, so they want no processing at all. */}
                   {stageReady ? GUIDE_SCREENS.map((screen, index) => (
-                    <Image
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
                       alt={t.guideSteps[index]![1]}
                       className="guide-stage-shot"
+                      decoding="async"
                       height={screen.height}
                       hidden={guideStep !== index}
                       key={screen.file}
                       loading="eager"
                       src={`/images/guide/${screen.file}`}
-                      // Straight from /public, no resizing service in the path. The
-                      // optimizer was handing back a 367px-wide copy for a ~344px slot,
-                      // which is half the pixels a 2x screen wants for a picture whose
-                      // whole content is small Korean text — and it failed outright on
-                      // the CI server, where these never decoded. The captures are
-                      // already cut to the size the stage renders them at.
-                      unoptimized
                       width={screen.width}
                     />
                   )) : (
