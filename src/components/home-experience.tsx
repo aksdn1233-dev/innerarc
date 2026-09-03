@@ -977,8 +977,14 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                       hidden={guideStep !== index}
                       key={screen.file}
                       loading="eager"
-                      sizes="(max-width: 720px) 100vw, 640px"
                       src={`/images/guide/${screen.file}`}
+                      // Straight from /public, no resizing service in the path. The
+                      // optimizer was handing back a 367px-wide copy for a ~344px slot,
+                      // which is half the pixels a 2x screen wants for a picture whose
+                      // whole content is small Korean text — and it failed outright on
+                      // the CI server, where these never decoded. The captures are
+                      // already cut to the size the stage renders them at.
+                      unoptimized
                       width={screen.width}
                     />
                   )) : (
