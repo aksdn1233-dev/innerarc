@@ -434,7 +434,8 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
     // No rootMargin: a generous 600px reached the stage before the first paint on a
     // desktop viewport and pulled all four captures into the initial page load. Loading
     // them as the stage comes into view is early enough, because the reader has to see
-    // the tabs before they can tap one.
+    // the tabs before they can tap one. Touching a tab mounts them too, so a browser
+    // that delivers the observer late still never leaves the frame empty.
     const observer = new IntersectionObserver(([entry]) => {
       if (!entry?.isIntersecting) return;
       setStageReady(true);
@@ -931,6 +932,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                     if (!delta) return;
                     event.preventDefault();
                     const next = (guideStep + delta + GUIDE_SCREENS.length) % GUIDE_SCREENS.length;
+                    setStageReady(true);
                     setGuideStep(next);
                     guideTabsRef.current?.querySelectorAll("button")[next]?.focus();
                   }}
@@ -942,7 +944,8 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                       className={guideStep === index ? "is-current" : undefined}
                       id={`guide-tab-${index}`}
                       key={label}
-                      onClick={() => setGuideStep(index)}
+                      onClick={() => { setStageReady(true); setGuideStep(index); }}
+                      onFocus={() => setStageReady(true)}
                       role="tab"
                       tabIndex={guideStep === index ? 0 : -1}
                       type="button"

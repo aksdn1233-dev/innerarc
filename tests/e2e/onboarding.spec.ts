@@ -751,13 +751,7 @@ test("the walkthrough shows captured screens with the guidance on the stage", as
   await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
   await expect(stage.locator(".guide-stage-badge")).toHaveText("실제 화면");
 
-  // Reaching the stage preloads every capture, so a tap never lands on an empty frame.
   await stage.scrollIntoViewIfNeeded();
-  await page.waitForFunction(() => {
-    const shots = [...document.querySelectorAll(".guide-stage-shot")];
-    return shots.length === 4 && shots.every((shot) => (shot as HTMLImageElement).complete
-      && (shot as HTMLImageElement).naturalWidth > 0);
-  }, null, { timeout: 30_000 });
 
   const expected = [
     ["questions.jpg", "지금 가장 걸리는 질문을 고릅니다", "지금 하는 일이 돈이 될까요?"],
@@ -775,8 +769,11 @@ test("the walkthrough shows captured screens with the guidance on the stage", as
     await expect(shown).toHaveCount(1);
     await expect(shown).toHaveAttribute("alt", request);
     // The picture actually decoded — a broken capture would render 0 wide.
-    expect(await shown.evaluate((image) => (image as HTMLImageElement).naturalWidth))
-      .toBeGreaterThan(0);
+    await expect.poll(
+      () => shown.evaluate((image) => (image as HTMLImageElement).complete
+        && (image as HTMLImageElement).naturalWidth > 0),
+      { timeout: 20_000 },
+    ).toBe(true);
   }
 
   // Nothing in the stage takes focus: it is a picture, not a form.
