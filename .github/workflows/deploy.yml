@@ -101,17 +101,20 @@ jobs:
           set -euo pipefail
           asset="$(basename "$(ls dist/client/assets/index-*.css | head -n 1)")"
           echo "expecting the live site to reference ${asset}"
-          # Three minutes, not one. A new Worker version does not reach every Cloudflare
-          # PoP at once, and the runner talks to a different one than the operator does:
-          # on 2026-09-03 this step failed twice on a deploy that was already live in
-          # Korea within the minute. The check itself is unchanged — the live HTML still
-          # has to reference the stylesheet this build produced — it just waits long
-          # enough for propagation before calling the deploy detached.
+          # The response is read into a variable rather than piped into `grep -q`.
+          # Under `pipefail`, grep exits the moment it matches, curl dies on the broken
+          # pipe, and the pipeline reports failure *because* the check succeeded. It only
+          # ever passed when the page was small enough for curl to finish writing first,
+          # so it began failing every run as the home page grew — reporting a detached
+          # deploy for a build the domain was already serving.
           for attempt in $(seq 1 12); do
-            if curl -fsS --max-time 20 https://mygyeol.kr/ko | grep -qF "${asset}"; then
-              echo "mygyeol.kr is serving this build"
-              exit 0
-            fi
+            html="$(curl -fsS --max-time 20 https://mygyeol.kr/ko || true)"
+            case "${html}" in
+              *"${asset}"*)
+                echo "mygyeol.kr is serving this build"
+                exit 0
+                ;;
+            esac
             echo "attempt ${attempt}: not yet"
             sleep 15
           done

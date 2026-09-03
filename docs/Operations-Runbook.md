@@ -30,11 +30,13 @@ claims.
 
 ## A failed "Confirm the domain is serving this build" is not always a failed deploy
 
-That step compares the live HTML against the stylesheet the build just produced. It ran
-six times over a minute, which is not long enough: a new Worker version does not reach
-every Cloudflare PoP at once, and the GitHub runner talks to a different one than an
-operator in Korea does. On 2026-09-03 it failed twice on a deploy that was already live
-within the minute. The window is now twelve attempts over three minutes.
+That step compares the live HTML against the stylesheet the build just produced. Until
+2026-09-03 it piped curl into `grep -q` under `set -o pipefail`: grep exits the instant it
+matches, curl dies on the broken pipe, and the pipeline reports failure *because* the
+check passed. It only ever succeeded when the page was small enough for curl to finish
+writing first, so it started failing on every run as the home page grew — reporting a
+detached deploy for a build the domain was already serving. The response is now read into
+a variable before matching, over twelve attempts in three minutes.
 
 Before assuming a deploy is detached, check what the domain actually serves:
 
