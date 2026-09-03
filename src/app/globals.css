@@ -10795,6 +10795,12 @@ summary {
   display: none;
 }
 
+/* Holds the exact shape of the step's capture until the pictures mount, so arriving at
+   the stage does not shift the page under the reader. */
+.guide-stage-hold {
+  width: 100%;
+}
+
 /* In a strip of its own, not floating on the picture: overlaid, it sat on the first
    question card. The broadcast puts its LIVE badge on scenery; here the picture is the
    product and nothing may cover it. */

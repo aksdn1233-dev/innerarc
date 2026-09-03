@@ -962,19 +962,31 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                   tabIndex={0}
                 >
                   <span className="guide-stage-badge">{t.guideScreenLabel}</span>
-                  {GUIDE_SCREENS.map((screen, index) => (
+                  {/* Mounted only once the stage is in view, and eager from the start.
+                      Flipping `loading` from lazy to eager afterwards does not restart
+                      the fetch in WebKit for a `display: none` image, so the other three
+                      steps stayed blank there however long you waited. */}
+                  {stageReady ? GUIDE_SCREENS.map((screen, index) => (
                     <Image
                       alt={t.guideSteps[index]![1]}
                       className="guide-stage-shot"
                       height={screen.height}
                       hidden={guideStep !== index}
                       key={screen.file}
-                      loading={stageReady ? "eager" : "lazy"}
+                      loading="eager"
                       sizes="(max-width: 720px) 100vw, 640px"
                       src={`/images/guide/${screen.file}`}
                       width={screen.width}
                     />
-                  ))}
+                  )) : (
+                    <div
+                      aria-hidden="true"
+                      className="guide-stage-hold"
+                      style={{
+                        aspectRatio: `${GUIDE_SCREENS[guideStep]!.width} / ${GUIDE_SCREENS[guideStep]!.height}`,
+                      }}
+                    />
+                  )}
                   <div className="guide-stage-panel">
                     <p className="guide-stage-request">{t.guideSteps[guideStep]![1]}</p>
                     <p className="guide-stage-example">{t.guideSteps[guideStep]![2]}</p>
