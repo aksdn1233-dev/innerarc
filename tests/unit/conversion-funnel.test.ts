@@ -9,7 +9,9 @@ import { createIntegratedProfile } from "@/core/profile";
 import { onboardingFocusIds } from "@/core/onboarding";
 import { createPaidTeaser } from "@/core/paid-teaser";
 import { buildReportOutline } from "@/core/report-outline";
-import { getSampleReport } from "@/server/reports/sample-report";
+import { getSampleReport, SAMPLE_REPORT_BIRTH_DATE } from "@/server/reports/sample-report";
+import { createGuideSampleResult, GUIDE_SAMPLE_BIRTH_DATE } from "@/core/guide-sample";
+import { getRuleBasedProfile } from "@/core/profile";
 import {
   OPERATIONAL_EVENT_NAMES,
   metricDimension,
@@ -245,5 +247,44 @@ describe("the free reading shows less than the engine calculates", () => {
     expect(onboardingExperience).toContain("integratedProfile.careerRecommendations.slice(0, FREE_CAREER_COUNT)");
     // Withheld sections are named, so the page never quietly drops content.
     expect(onboardingExperience).toContain("free-tier-remainder");
+  });
+});
+
+describe("the walkthrough shows what the engines produce", () => {
+  /**
+   * The guide claims to be showing the actual screen. That claim is only true while the
+   * numbers on it come from the calculator and the chapters from the report generator,
+   * so both are asserted against the engines rather than against a fixture.
+   */
+  it("calculates the free result it displays", () => {
+    const sample = createGuideSampleResult("ko", 2026);
+    const profile = calculateNumerologyProfile({
+      birthDate: GUIDE_SAMPLE_BIRTH_DATE,
+      name: "",
+      personalYear: 2026,
+    });
+    const reading = getRuleBasedProfile(profile.lifePath.value, "ko");
+    expect(sample.birthDate).toBe(GUIDE_SAMPLE_BIRTH_DATE);
+    expect(sample.numbers).toHaveLength(4);
+    expect(sample.numbers[0]!.value).toBe("11/2");
+    expect(sample.summary).toBe(reading.summary);
+    expect(sample.strength).toBe(reading.strengths[0]);
+    expect(sample.risk).toBe(reading.risks[0]);
+  });
+
+  it("uses the same birth date as the published report samples", () => {
+    expect(GUIDE_SAMPLE_BIRTH_DATE).toBe(SAMPLE_REPORT_BIRTH_DATE);
+  });
+
+  it("stays deterministic for a given year and locale", () => {
+    expect(createGuideSampleResult("en", 2026)).toEqual(createGuideSampleResult("en", 2026));
+    expect(createGuideSampleResult("en", 2026).summary)
+      .not.toBe(createGuideSampleResult("ko", 2026).summary);
+  });
+
+  it("renders inert markup instead of dead form controls", () => {
+    const screen = /className="guide-screen"[\s\S]*?className="guide-screen-caption"/.exec(homeExperience)?.[0] ?? "";
+    expect(screen).not.toBe("");
+    expect(screen).not.toMatch(/<input|<select|<textarea|<button|<Link/);
   });
 });

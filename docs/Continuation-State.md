@@ -4,6 +4,17 @@ Last updated: 2026-08-02 (mobile trust and checkout-conversion refinement)<br>
 Current version: 0.20.1
 Overall progress: 97% (web MVP code 100%; production deployment and payment path 98%; native app not started)
 
+## 2026-09-03 — The walkthrough shows the screens instead of describing them
+
+- The home "이용 방법" was four lines of prose about the process. It is now the pattern the
+  live broadcast overlay uses: one actual screen at a time, the instruction attached under
+  it, and one concrete example line.
+- Every screen is generated, not drawn: the real question copy, the real field set, numbers
+  from `calculateNumerologyProfile` for `GUIDE_SAMPLE_BIRTH_DATE` (the same date as
+  `/samples`), and chapter titles from `buildReportOutline`.
+- Preview markup is inert by rule — no input, button, or link inside the screen frame — so
+  it cannot put dead controls in the keyboard path. Guarded by a unit test.
+
 ## 2026-09-02 — Deployment restored, and the image binding it exposed
 
 - The owner added `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`, and the funnel

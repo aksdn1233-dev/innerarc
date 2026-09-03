@@ -7,11 +7,19 @@ const DEFAULT_DECODED_BUDGET = 1_200_000;
  * Raised from 197,000 on 2026-09-02 for the home journey sections: the four-step guide,
  * the generated report outline, the closing action, and the concern-specific paid teaser.
  * The rules those sections replaced were deleted first — the invented report-example
- * cards and the orphaned cinema menu button came to about 3.6 KB — so the net cost is the
- * ~3.6 KB the new sections actually need. Measured at 200.6 KB. The allowance stays narrow
- * on purpose: another global screen still cannot be absorbed without an explicit decision.
+ * cards and the orphaned cinema menu button came to about 3.6 KB — so the net cost was
+ * the ~3.6 KB the new sections actually need.
+ *
+ * Raised again to 206,000 on 2026-09-03, when the guide stopped describing the product
+ * and started showing it: four screen types (the question list, the field set, the
+ * calculated free result, the chapter list) styled inside one frame. The prose step list
+ * it replaced was 1.2 KB; this is about 5.2 KB after merging the pill, tabular-index and
+ * muted-body rules that were written out three times each. Measured at 204.1 KB.
+ *
+ * The allowance stays narrow on purpose: another global screen still cannot be absorbed
+ * without an explicit decision, which is the only reason these numbers move at all.
  */
-const DEFAULT_CSS_DECODED_BUDGET = 202_000;
+const DEFAULT_CSS_DECODED_BUDGET = 206_000;
 
 /**
  * The home page carries the 태율 hero clip, its iOS animated fallback, audio, and poster,
@@ -38,7 +46,7 @@ const routes = [
   // while and the six guide cuts had grown past the shared 1.2 MB default unnoticed. The
   // number below records the measured state rather than pretending it is new; the guide
   // artwork on this route is the thing to shrink, and that is a separate change.
-  { path: "/en/fortune", resources: 52, cssDecoded: 207_000, decoded: 1_260_000 },
+  { path: "/en/fortune", resources: 52, cssDecoded: 211_000, decoded: 1_260_000 },
   { path: "/en/saju" },
 ] as const satisfies readonly { path: string; transfer?: number; decoded?: number; resources?: number; cssDecoded?: number }[];
 

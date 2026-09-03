@@ -11,6 +11,7 @@ import type { PublicReview } from "@/core/reviews";
 import { MIN_BIRTH_DATE, currentMaxBirthDate, isAcceptedBirthDate } from "@/core/birth-range";
 import { scrollToElement } from "@/components/accessibility";
 import type { ReportOutline } from "@/core/report-outline";
+import type { GuideSampleResult } from "@/core/guide-sample";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 import type { AdminPageContent } from "@/server/admin-content";
@@ -42,6 +43,11 @@ type Props = {
    * tab never runs.
    */
   initialFocusId?: FocusId;
+  /**
+   * The free result the walkthrough shows, calculated on the server for the published
+   * sample birth date. Null only when the caller has no reason to show the walkthrough.
+   */
+  guideSample?: GuideSampleResult | null;
 };
 
 type ReadingProductId = "comprehensive" | "premium_pdf";
@@ -122,12 +128,24 @@ const copy = {
     guideCue: "처음이세요? 이용 방법 먼저 보기",
     guideEyebrow: "이용 방법",
     guideTitle: "네 단계면 결과까지 갑니다",
+    guideScreenLabel: "실제 화면",
     guideSteps: [
-      ["지금 가장 걸리는 질문을 고릅니다", "다섯 가지 중 하나면 됩니다. 고른 질문이 리딩의 중심이 됩니다."],
-      ["생년월일을 넣습니다", "양력 생년월일 하나로 계산이 시작됩니다. 회원가입은 없습니다."],
-      ["무료 결과에서 기본 패턴을 봅니다", "핵심 숫자, 성향 두 가지, 걸리기 쉬운 지점 두 가지를 결제 없이 확인합니다."],
-      ["고른 질문으로 이어서 봅니다", "관계·일·돈처럼 실제 상황으로 들어가는 부분은 상세 리딩에서 이어집니다."],
+      ["질문 고르기", "지금 가장 걸리는 질문을 고릅니다", "다섯 가지 중 하나만 고르면 됩니다. 고른 질문이 리딩의 중심이 됩니다."],
+      ["생년월일", "양력 생년월일을 넣습니다", "날짜 하나면 계산이 시작됩니다. 회원가입도, 이름도 필요 없습니다."],
+      ["무료 결과", "결제 없이 기본 패턴을 봅니다", "핵심 숫자와 한 줄 요약, 성향과 걸리기 쉬운 지점까지 여기서 확인합니다."],
+      ["상세 리딩", "고른 질문으로 이어서 봅니다", "관계·일·돈처럼 실제 상황으로 들어가는 부분이 상세 리딩에서 이어집니다."],
     ],
+    guideExamples: [
+      "예) 지금 하는 일이 돈이 될까요?",
+      "예) 1994년 11월 4일 → 1994-11-04",
+      "위 화면은 1994-11-04로 실제 계산한 결과입니다",
+      "위 화면은 실제로 생성되는 리포트의 장 제목입니다",
+    ],
+    guideBirthLabel: "생년월일 (양력)",
+    guideOptionalTime: "출생 시각 (선택)",
+    guideOptionalName: "이름 (선택)",
+    guideFreeBadge: "무료",
+    guideLockedBadge: "결제 후 열람",
     guideStepAction: "질문 고르기",
     outlineEyebrow: "상세 리딩 목차",
     outlineTitle: "결제 전에 무엇을 받는지 먼저 보세요",
@@ -193,12 +211,24 @@ const copy = {
     guideCue: "First time here? See how it works",
     guideEyebrow: "How it works",
     guideTitle: "Four steps to a result",
+    guideScreenLabel: "The actual screen",
     guideSteps: [
-      ["Pick the question on your mind", "One of five is enough. Your choice becomes the centre of the reading."],
-      ["Enter your birth date", "One Gregorian date starts the calculation. There is no account to create."],
-      ["Read the free result", "Core numbers, two tendencies, and two friction points — before any payment."],
-      ["Continue with the question you chose", "Relationships, work, money: the part that enters your real situation continues in the detailed reading."],
+      ["Pick a question", "Choose the question on your mind", "One of five is enough. Your choice becomes the centre of the reading."],
+      ["Birth date", "Enter your birth date", "One date starts the calculation. No account, no name required."],
+      ["Free result", "Read the free result before paying", "Core numbers, a one-line summary, a tendency and a friction point."],
+      ["Detailed reading", "Continue with the question you chose", "Relationships, work, money: the part that enters your real situation continues here."],
     ],
+    guideExamples: [
+      "e.g. Will the work I am doing actually pay?",
+      "e.g. 4 November 1994 → 1994-11-04",
+      "Calculated above for 1994-11-04",
+      "Above: chapter titles a generated report actually carries",
+    ],
+    guideBirthLabel: "Birth date",
+    guideOptionalTime: "Birth time (optional)",
+    guideOptionalName: "Name (optional)",
+    guideFreeBadge: "Free",
+    guideLockedBadge: "Opens after payment",
     guideStepAction: "Pick a question",
     outlineEyebrow: "Detailed reading contents",
     outlineTitle: "See what you receive before you pay",
@@ -279,7 +309,7 @@ function isValidGregorianDate(value: string) {
     && date.getUTCDate() === day;
 }
 
-export function HomeExperience({ locale, dictionary: d, pricing, pageContent, reviews, reviewCount, showEverything = false, reportOutline = null, initialFocusId }: Props) {
+export function HomeExperience({ locale, dictionary: d, pricing, pageContent, reviews, reviewCount, showEverything = false, reportOutline = null, initialFocusId, guideSample = null }: Props) {
   // Bounded here rather than in the module so a long-lived tab still refuses tomorrow.
   const maxBirthDate = currentMaxBirthDate();
   const [selectedProduct, setSelectedProduct] = useState<ReadingProductId>("comprehensive");
@@ -299,6 +329,10 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   // Only a one-line cue depends on this. It starts false so the server and the first
   // client render agree, and a browser that refuses storage simply keeps showing it.
   const [showGuideCue, setShowGuideCue] = useState(false);
+  // Which step's screen the walkthrough is showing. One screen at a time, like the live
+  // stage it is modelled on — four screens stacked would be a panel grid again.
+  const [guideStep, setGuideStep] = useState(0);
+  const guideTabsRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLElement>(null);
   const guideRef = useRef<HTMLElement>(null);
   const closeRef = useRef<HTMLElement>(null);
@@ -874,19 +908,123 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                 <p className="eyebrow">{t.guideEyebrow}</p>
                 <h2 id="guide-title">{t.guideTitle}</h2>
               </div>
-              {/* A rule down the left with the step numbers on it. The order is the
-                  guidance; there is nothing to dismiss and nothing to complete. */}
-              <ol className="journey-steps">
-                {t.guideSteps.map(([title, body], index) => (
-                  <li key={title}>
-                    <span className="journey-step-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-                    <div>
-                      <strong>{title}</strong>
-                      <p>{body}</p>
+              {/* The steps used to be four lines of prose, which described the service
+                  instead of showing it. This is the pattern the live stage overlay uses:
+                  one actual screen, with the instruction for that screen attached to it
+                  and a concrete example of what to enter. Nothing here is a mock-up —
+                  the questions are the real question list, the numbers are calculated by
+                  the engine, and the chapters come from the report generator. */}
+              <div className="guide-walk">
+                <div
+                  className="guide-steps-tabs"
+                  role="tablist"
+                  aria-label={t.guideTitle}
+                  ref={guideTabsRef}
+                  onKeyDown={(event) => {
+                    const delta = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+                    if (!delta) return;
+                    event.preventDefault();
+                    const next = (guideStep + delta + t.guideSteps.length) % t.guideSteps.length;
+                    setGuideStep(next);
+                    guideTabsRef.current?.querySelectorAll("button")[next]?.focus();
+                  }}
+                >
+                  {t.guideSteps.map(([label], index) => (
+                    <button
+                      aria-controls="guide-screen"
+                      aria-selected={guideStep === index}
+                      className={guideStep === index ? "is-current" : undefined}
+                      id={`guide-tab-${index}`}
+                      key={label}
+                      onClick={() => setGuideStep(index)}
+                      role="tab"
+                      tabIndex={guideStep === index ? 0 : -1}
+                      type="button"
+                    >
+                      <small aria-hidden="true">{String(index + 1).padStart(2, "0")}</small>
+                      <span>{label}</span>
+                    </button>
+                  ))}
+                </div>
+
+                <div
+                  aria-labelledby={`guide-tab-${guideStep}`}
+                  className="guide-screen"
+                  id="guide-screen"
+                  role="tabpanel"
+                  tabIndex={0}
+                >
+                  <p className="guide-screen-label">{t.guideScreenLabel}</p>
+
+                  {/* Not form controls: a preview must not put dead inputs and buttons
+                      in the keyboard path. Same words, inert markup. */}
+                  {guideStep === 0 && (
+                    <ul className="guide-screen-questions">
+                      {t.entryQuestions.map(([focus, question, label]) => (
+                        <li key={focus}><small>{label}</small><strong>{question}</strong></li>
+                      ))}
+                    </ul>
+                  )}
+
+                  {guideStep === 1 && (
+                    <div className="guide-screen-form">
+                      <div className="guide-screen-field">
+                        <small>{t.guideBirthLabel}</small>
+                        <strong>{guideSample?.birthDate ?? "1994-11-04"}</strong>
+                      </div>
+                      {/* The real intake asks for these two and marks them optional. A
+                          screen that showed only the required field would understate
+                          how little is actually asked for. */}
+                      <div className="guide-screen-field is-optional">
+                        <small>{t.guideOptionalTime}</small>
+                        <strong>—</strong>
+                      </div>
+                      <div className="guide-screen-field is-optional">
+                        <small>{t.guideOptionalName}</small>
+                        <strong>—</strong>
+                      </div>
+                      <p className="guide-screen-note">{t.heroNote}</p>
                     </div>
-                  </li>
-                ))}
-              </ol>
+                  )}
+
+                  {guideStep === 2 && guideSample && (
+                    <div className="guide-screen-result">
+                      <p className="guide-screen-badge">{t.guideFreeBadge}</p>
+                      <div className="guide-screen-numbers">
+                        {guideSample.numbers.map((number) => (
+                          <div key={number.label}>
+                            <strong>{number.value}</strong>
+                            <span>{number.label}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="guide-screen-summary">{guideSample.summary}</p>
+                      <dl>
+                        <div><dt>{d.strengths}</dt><dd>{guideSample.strength}</dd></div>
+                        <div><dt>{d.risks}</dt><dd>{guideSample.risk}</dd></div>
+                      </dl>
+                    </div>
+                  )}
+
+                  {guideStep === 3 && reportOutline && (
+                    <ol className="guide-screen-chapters">
+                      {reportOutline.entries.slice(0, 4).map((entry) => (
+                        <li className={entry.locked ? "is-locked" : undefined} key={entry.position}>
+                          <small aria-hidden="true">{String(entry.position).padStart(2, "0")}</small>
+                          <strong>{entry.title}</strong>
+                          {entry.locked && <span>{t.guideLockedBadge}</span>}
+                        </li>
+                      ))}
+                    </ol>
+                  )}
+                </div>
+
+                <div className="guide-screen-caption">
+                  <strong>{t.guideSteps[guideStep]![1]}</strong>
+                  <p>{t.guideSteps[guideStep]![2]}</p>
+                  <small>{t.guideExamples[guideStep]}</small>
+                </div>
+              </div>
               <button className="journey-guide-action" onClick={() => { markGuideSeen(); scrollToElement("#questions"); }} type="button">
                 {t.guideStepAction}
               </button>

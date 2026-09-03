@@ -128,6 +128,27 @@ actually shipped.
 
 ## 5. Guidance rules
 
+**Guidance shows the screen; it does not describe it.** The pattern comes from the live
+broadcast overlay (`stage.html` in the AI JUMSA LIVE workspace): the actual running picture
+fills the view, and the instruction for what to do sits attached to it with a concrete
+example — "양력 생년월일 · 예) 2000년 3월 15일" — rather than a paragraph about the process.
+The home walkthrough follows it: one screen at a time, the instruction under it, one
+example line.
+
+Nothing on those screens may be a mock-up:
+
+- The question screen renders the same question copy as `#questions`.
+- The birth-date screen shows the real field set, including the two optional ones, so it
+  cannot overstate what is asked for.
+- The free-result screen shows numbers `calculateNumerologyProfile` produced and a summary
+  `getRuleBasedProfile` wrote, for `GUIDE_SAMPLE_BIRTH_DATE`.
+- The report screen shows chapter titles from `buildReportOutline`.
+
+A screen labelled "실제 화면" that was drawn by hand would drift from the product the first
+time either changed, and the label would quietly become a lie. Preview markup is also
+**inert** — no `<input>`, `<button>`, or link inside it — so a preview never puts a dead
+control in the keyboard path.
+
 First-visit guidance is a nudge, never a gate.
 
 - The guide itself stays on the page for everyone; only the one-line cue pointing at it is

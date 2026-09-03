@@ -43,7 +43,7 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   // five questions, and the chapter list of a real generated report. Every header link
   // on this page must reach one of them.
   await expect(page.locator(".cinema-hook")).toContainText("생년월일로 관계·일·돈에서 반복되는 나의 패턴을 읽습니다.");
-  await expect(page.locator("#guide .journey-steps li")).toHaveCount(4);
+  await expect(page.locator("#guide .guide-steps-tabs button")).toHaveCount(4);
   await expect(page.locator("#questions .entry-question")).toHaveCount(5);
   await expect(page.locator("#preview .report-outline-list li")).toHaveCount(6);
   await expect(page.locator("#preview .report-outline-list li.is-locked")).toHaveCount(4);
@@ -116,7 +116,7 @@ test("mobile home has no overflow and the sticky payment bar yields to the form"
 
     // The sticky purchase bar belongs to the page that sells; the home page guides.
     await expect(page.locator(".mobile-purchase-bar")).toHaveCount(0);
-    await expect(page.locator("#guide .journey-steps li")).toHaveCount(4);
+    await expect(page.locator("#guide .guide-steps-tabs button")).toHaveCount(4);
     await expect(page.locator("#preview .report-outline-list li")).toHaveCount(6);
 
     await page.goto("/ko/reading");
@@ -158,7 +158,7 @@ test("English page keeps the same calculated core meaning", async ({ page }) => 
   await expect(page.getByRole("link", { name: "View free pattern" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Open Saju services" })).toBeVisible();
   await expect(page.locator(".cinema-hook")).toContainText("patterns that repeat in relationships, work, and money");
-  await expect(page.locator("#guide .journey-steps li")).toHaveCount(4);
+  await expect(page.locator("#guide .guide-steps-tabs button")).toHaveCount(4);
   await expect(page.locator("#preview .report-outline-list li")).toHaveCount(6);
   await page.goto("/en/profile");
   await expect(page).toHaveURL(`${E2E_ORIGIN}/en/profile`);
@@ -735,6 +735,48 @@ test("first-visit guidance appears once and can be reopened", async ({ page }) =
   await page.goto("/ko");
   await dismissCampaign(page);
   await expect(page.getByRole("button", { name: "처음이세요? 이용 방법 먼저 보기" })).toHaveCount(0);
-  await expect(page.locator("#guide .journey-steps li")).toHaveCount(4);
+  await expect(page.locator("#guide .guide-steps-tabs button")).toHaveCount(4);
   await expect(page.locator('.home-nav a:has-text("이용 방법")')).toHaveAttribute("href", "#guide");
+});
+
+test("the walkthrough shows real screens rather than describing them", async ({ page }) => {
+  // Modelled on the live broadcast overlay: one actual screen at a time with the
+  // instruction attached to it. What makes it worth having is that nothing on it is a
+  // mock-up, so each screen is checked against the thing it claims to be showing.
+  await page.goto("/ko");
+  await dismissCampaign(page);
+  const screen = page.locator("#guide .guide-screen");
+  const tabs = page.locator("#guide .guide-steps-tabs button");
+  await expect(tabs).toHaveCount(4);
+  await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
+
+  // 01 — the real question list, same wording as the section below.
+  await expect(screen.locator(".guide-screen-questions li")).toHaveCount(5);
+  await expect(screen).toContainText("지금 하는 일이 돈이 될까요?");
+  await expect(page.locator(".guide-screen-caption")).toContainText("다섯 가지 중 하나만");
+
+  // 02 — the real field set: the one required date, and the two the intake marks
+  // optional, so the screen cannot overstate what is asked for.
+  await tabs.nth(1).click();
+  await expect(screen.locator(".guide-screen-field")).toHaveCount(3);
+  await expect(screen.locator(".guide-screen-field strong").first()).toHaveText("1994-11-04");
+  await expect(screen.locator(".guide-screen-field.is-optional")).toHaveCount(2);
+
+  // 03 — numbers the engine calculated for that date, not written by hand.
+  await tabs.nth(2).click();
+  await expect(screen.locator(".guide-screen-numbers div")).toHaveCount(4);
+  await expect(screen.locator(".guide-screen-numbers strong").first()).toHaveText("11/2");
+
+  // 04 — chapter titles the report generator actually produces.
+  await tabs.nth(3).click();
+  await expect(screen.locator(".guide-screen-chapters li")).toHaveCount(4);
+  await expect(screen.locator(".guide-screen-chapters strong").first()).toHaveText("핵심 숫자");
+  await expect(screen.locator(".guide-screen-chapters li.is-locked")).toHaveCount(2);
+
+  // A preview must not put dead controls in the keyboard path.
+  expect(await screen.locator("input, select, textarea, a, button").count()).toBe(0);
+
+  // Arrow keys move between steps, as a tablist is expected to.
+  await tabs.nth(3).press("ArrowRight");
+  await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
 });
