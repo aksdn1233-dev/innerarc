@@ -11,7 +11,6 @@ import { readStoredPageContent } from "@/server/admin-storage";
 import { countPublicReviews, listPublicReviews } from "@/server/reviews";
 import { buildReportOutline } from "@/core/report-outline";
 import { getSampleReport } from "@/server/reports/sample-report";
-import { createGuideSampleResult } from "@/core/guide-sample";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -57,7 +56,6 @@ export default async function LocaleHome({
       reviews={reviews}
       reviewCount={reviewCount}
       reportOutline={buildReportOutline(getSampleReport("detail", locale), { openCount: 2, maxEntries: 6, excerptLength: 110 })}
-      guideSample={createGuideSampleResult(locale, new Date().getUTCFullYear())}
     />
   );
 }

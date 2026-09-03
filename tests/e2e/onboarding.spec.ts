@@ -739,42 +739,48 @@ test("first-visit guidance appears once and can be reopened", async ({ page }) =
   await expect(page.locator('.home-nav a:has-text("이용 방법")')).toHaveAttribute("href", "#guide");
 });
 
-test("the walkthrough shows real screens rather than describing them", async ({ page }) => {
-  // Modelled on the live broadcast overlay: one actual screen at a time with the
-  // instruction attached to it. What makes it worth having is that nothing on it is a
-  // mock-up, so each screen is checked against the thing it claims to be showing.
+test("the walkthrough shows captured screens with the guidance on the stage", async ({ page }) => {
+  // The composition comes from the live broadcast overlay: the actual screen fills a
+  // framed stage, a badge names it, and the instruction sits in a panel at the bottom of
+  // that same frame with one concrete example.
   await page.goto("/ko");
   await dismissCampaign(page);
-  const screen = page.locator("#guide .guide-screen");
+  const stage = page.locator("#guide .guide-stage");
   const tabs = page.locator("#guide .guide-steps-tabs button");
   await expect(tabs).toHaveCount(4);
   await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
+  await expect(stage.locator(".guide-stage-badge")).toHaveText("실제 화면");
 
-  // 01 — the real question list, same wording as the section below.
-  await expect(screen.locator(".guide-screen-questions li")).toHaveCount(5);
-  await expect(screen).toContainText("지금 하는 일이 돈이 될까요?");
-  await expect(page.locator(".guide-screen-caption")).toContainText("다섯 가지 중 하나만");
+  // Reaching the stage preloads every capture, so a tap never lands on an empty frame.
+  await stage.scrollIntoViewIfNeeded();
+  await page.waitForFunction(() => {
+    const shots = [...document.querySelectorAll(".guide-stage-shot")];
+    return shots.length === 4 && shots.every((shot) => (shot as HTMLImageElement).complete
+      && (shot as HTMLImageElement).naturalWidth > 0);
+  }, null, { timeout: 30_000 });
 
-  // 02 — the real field set: the one required date, and the two the intake marks
-  // optional, so the screen cannot overstate what is asked for.
-  await tabs.nth(1).click();
-  await expect(screen.locator(".guide-screen-field")).toHaveCount(3);
-  await expect(screen.locator(".guide-screen-field strong").first()).toHaveText("1994-11-04");
-  await expect(screen.locator(".guide-screen-field.is-optional")).toHaveCount(2);
+  const expected = [
+    ["questions.jpg", "지금 가장 걸리는 질문을 고릅니다", "지금 하는 일이 돈이 될까요?"],
+    ["intake.jpg", "양력 생년월일만 넣습니다", "1994-11-04"],
+    ["무료 결과", "결제 없이 기본 패턴을 봅니다", "계산 근거까지 공개"],
+    ["report.jpg", "고른 질문으로 이어서 봅니다", "39,000원"],
+  ];
 
-  // 03 — numbers the engine calculated for that date, not written by hand.
-  await tabs.nth(2).click();
-  await expect(screen.locator(".guide-screen-numbers div")).toHaveCount(4);
-  await expect(screen.locator(".guide-screen-numbers strong").first()).toHaveText("11/2");
+  for (const [index, [, request, example]] of expected.entries()) {
+    await tabs.nth(index).click();
+    await expect(stage.locator(".guide-stage-request")).toHaveText(request);
+    await expect(stage.locator(".guide-stage-example")).toContainText(example);
+    // Exactly one capture is on screen, and it is the one this step names.
+    const shown = stage.locator(".guide-stage-shot:not([hidden])");
+    await expect(shown).toHaveCount(1);
+    await expect(shown).toHaveAttribute("alt", request);
+    // The picture actually decoded — a broken capture would render 0 wide.
+    expect(await shown.evaluate((image) => (image as HTMLImageElement).naturalWidth))
+      .toBeGreaterThan(0);
+  }
 
-  // 04 — chapter titles the report generator actually produces.
-  await tabs.nth(3).click();
-  await expect(screen.locator(".guide-screen-chapters li")).toHaveCount(4);
-  await expect(screen.locator(".guide-screen-chapters strong").first()).toHaveText("핵심 숫자");
-  await expect(screen.locator(".guide-screen-chapters li.is-locked")).toHaveCount(2);
-
-  // A preview must not put dead controls in the keyboard path.
-  expect(await screen.locator("input, select, textarea, a, button").count()).toBe(0);
+  // Nothing in the stage takes focus: it is a picture, not a form.
+  expect(await stage.locator("input, select, textarea, a, button").count()).toBe(0);
 
   // Arrow keys move between steps, as a tablist is expected to.
   await tabs.nth(3).press("ArrowRight");

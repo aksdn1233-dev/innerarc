@@ -4,16 +4,23 @@ Last updated: 2026-08-02 (mobile trust and checkout-conversion refinement)<br>
 Current version: 0.20.1
 Overall progress: 97% (web MVP code 100%; production deployment and payment path 98%; native app not started)
 
-## 2026-09-03 — The walkthrough shows the screens instead of describing them
+## 2026-09-03 — The walkthrough shows captured screens on a stage
 
-- The home "이용 방법" was four lines of prose about the process. It is now the pattern the
-  live broadcast overlay uses: one actual screen at a time, the instruction attached under
-  it, and one concrete example line.
-- Every screen is generated, not drawn: the real question copy, the real field set, numbers
-  from `calculateNumerologyProfile` for `GUIDE_SAMPLE_BIRTH_DATE` (the same date as
-  `/samples`), and chapter titles from `buildReportOutline`.
-- Preview markup is inert by rule — no input, button, or link inside the screen frame — so
-  it cannot put dead controls in the keyboard path. Guarded by a unit test.
+- The home "이용 방법" was four lines of prose. It is now the broadcast overlay's
+  composition: the actual screen fills a framed stage, a 실제 화면 badge names it in its own
+  strip, and the guidance sits in a panel at the bottom of the same frame with one concrete
+  example. A step tablist switches screens; arrow keys work.
+- The four pictures are captures of the running product, committed under
+  `public/images/guide/` and produced by `scripts/capture-guide-screens.mjs`: the question
+  list, the intake with the date filled in, the free result the engine calculates for
+  1994-11-04, and `/ko/samples/detail` — the paid report itself, shown whole.
+- Each capture is cut on an element boundary measured in the page. An earlier version used
+  a fixed fallback height and sliced a heading; every measured capture now throws instead.
+  Captured as JPEG at 2x, which took the four screens from 2.0 MB to 683 KB.
+- The stage holds no interactive element, and the badge and panel sit outside the picture
+  rather than over it, because here the picture is the product rather than scenery.
+- Re-run the capture script whenever one of those screens changes: a stale capture makes
+  the 실제 화면 label as false as a drawing would.
 
 ## 2026-09-02 — Deployment restored, and the image binding it exposed
 

@@ -10,16 +10,15 @@ const DEFAULT_DECODED_BUDGET = 1_200_000;
  * cards and the orphaned cinema menu button came to about 3.6 KB — so the net cost was
  * the ~3.6 KB the new sections actually need.
  *
- * Raised again to 206,000 on 2026-09-03, when the guide stopped describing the product
- * and started showing it: four screen types (the question list, the field set, the
- * calculated free result, the chapter list) styled inside one frame. The prose step list
- * it replaced was 1.2 KB; this is about 5.2 KB after merging the pill, tabular-index and
- * muted-body rules that were written out three times each. Measured at 204.1 KB.
+ * Raised again to 203,000 on 2026-09-03, when the guide stopped describing the product
+ * and started showing it. The first attempt styled four screen types in markup and cost
+ * about 5.2 KB; replacing them with captured screenshots on one framed stage gave most of
+ * that back, so the ceiling comes down with it. Measured at 201.9 KB.
  *
  * The allowance stays narrow on purpose: another global screen still cannot be absorbed
  * without an explicit decision, which is the only reason these numbers move at all.
  */
-const DEFAULT_CSS_DECODED_BUDGET = 206_000;
+const DEFAULT_CSS_DECODED_BUDGET = 203_000;
 
 /**
  * The home page carries the 태율 hero clip, its iOS animated fallback, audio, and poster,
@@ -46,7 +45,7 @@ const routes = [
   // while and the six guide cuts had grown past the shared 1.2 MB default unnoticed. The
   // number below records the measured state rather than pretending it is new; the guide
   // artwork on this route is the thing to shrink, and that is a separate change.
-  { path: "/en/fortune", resources: 52, cssDecoded: 211_000, decoded: 1_260_000 },
+  { path: "/en/fortune", resources: 52, cssDecoded: 209_000, decoded: 1_260_000 },
   { path: "/en/saju" },
 ] as const satisfies readonly { path: string; transfer?: number; decoded?: number; resources?: number; cssDecoded?: number }[];
 

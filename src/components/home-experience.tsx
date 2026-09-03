@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { MeteorTrails, NightHorizon, SceneDivider } from "@/components/brand-visuals";
@@ -11,7 +12,6 @@ import type { PublicReview } from "@/core/reviews";
 import { MIN_BIRTH_DATE, currentMaxBirthDate, isAcceptedBirthDate } from "@/core/birth-range";
 import { scrollToElement } from "@/components/accessibility";
 import type { ReportOutline } from "@/core/report-outline";
-import type { GuideSampleResult } from "@/core/guide-sample";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 import type { AdminPageContent } from "@/server/admin-content";
@@ -43,11 +43,6 @@ type Props = {
    * tab never runs.
    */
   initialFocusId?: FocusId;
-  /**
-   * The free result the walkthrough shows, calculated on the server for the published
-   * sample birth date. Null only when the caller has no reason to show the walkthrough.
-   */
-  guideSample?: GuideSampleResult | null;
 };
 
 type ReadingProductId = "comprehensive" | "premium_pdf";
@@ -61,6 +56,18 @@ const CAMPAIGN_DISMISS_KEY = "gyeol.campaign.one-week-extension-1500.dismissed.v
  * the nudge, and a browser that refuses storage simply shows the cue again.
  */
 const GUIDE_SEEN_KEY = "gyeol.guide.seen.v1";
+
+/**
+ * The captured screens, with the intrinsic size of each file so the stage reserves the
+ * right height before the picture arrives. Regenerate with
+ * `node scripts/capture-guide-screens.mjs` whenever any of these screens changes.
+ */
+const GUIDE_SCREENS = [
+  { file: "questions.jpg", width: 780, height: 1290 },
+  { file: "intake.jpg", width: 780, height: 1758 },
+  { file: "free-result.jpg", width: 780, height: 2686 },
+  { file: "report.jpg", width: 780, height: 2844 },
+] as const;
 
 const concernExamples: Record<Locale, Record<FocusId, string>> = {
   ko: {
@@ -130,22 +137,11 @@ const copy = {
     guideTitle: "네 단계면 결과까지 갑니다",
     guideScreenLabel: "실제 화면",
     guideSteps: [
-      ["질문 고르기", "지금 가장 걸리는 질문을 고릅니다", "다섯 가지 중 하나만 고르면 됩니다. 고른 질문이 리딩의 중심이 됩니다."],
-      ["생년월일", "양력 생년월일을 넣습니다", "날짜 하나면 계산이 시작됩니다. 회원가입도, 이름도 필요 없습니다."],
-      ["무료 결과", "결제 없이 기본 패턴을 봅니다", "핵심 숫자와 한 줄 요약, 성향과 걸리기 쉬운 지점까지 여기서 확인합니다."],
-      ["상세 리딩", "고른 질문으로 이어서 봅니다", "관계·일·돈처럼 실제 상황으로 들어가는 부분이 상세 리딩에서 이어집니다."],
+      ["질문 고르기", "지금 가장 걸리는 질문을 고릅니다", "예) 지금 하는 일이 돈이 될까요?"],
+      ["생년월일", "양력 생년월일만 넣습니다", "예) 1994년 11월 4일 → 1994-11-04 · 회원가입 없음"],
+      ["무료 결과", "결제 없이 기본 패턴을 봅니다", "핵심 성향과 반복 지점 · 계산 근거까지 공개"],
+      ["상세 리딩", "고른 질문으로 이어서 봅니다", "상세 리딩 39,000원 · 1회 결제 · 비회원 열람"],
     ],
-    guideExamples: [
-      "예) 지금 하는 일이 돈이 될까요?",
-      "예) 1994년 11월 4일 → 1994-11-04",
-      "위 화면은 1994-11-04로 실제 계산한 결과입니다",
-      "위 화면은 실제로 생성되는 리포트의 장 제목입니다",
-    ],
-    guideBirthLabel: "생년월일 (양력)",
-    guideOptionalTime: "출생 시각 (선택)",
-    guideOptionalName: "이름 (선택)",
-    guideFreeBadge: "무료",
-    guideLockedBadge: "결제 후 열람",
     guideStepAction: "질문 고르기",
     outlineEyebrow: "상세 리딩 목차",
     outlineTitle: "결제 전에 무엇을 받는지 먼저 보세요",
@@ -213,22 +209,11 @@ const copy = {
     guideTitle: "Four steps to a result",
     guideScreenLabel: "The actual screen",
     guideSteps: [
-      ["Pick a question", "Choose the question on your mind", "One of five is enough. Your choice becomes the centre of the reading."],
-      ["Birth date", "Enter your birth date", "One date starts the calculation. No account, no name required."],
-      ["Free result", "Read the free result before paying", "Core numbers, a one-line summary, a tendency and a friction point."],
-      ["Detailed reading", "Continue with the question you chose", "Relationships, work, money: the part that enters your real situation continues here."],
+      ["Pick a question", "Choose the question on your mind", "e.g. Will the work I am doing actually pay?"],
+      ["Birth date", "A birth date is all it takes", "e.g. 4 November 1994 → 1994-11-04 · no account"],
+      ["Free result", "Read the free result before paying", "Core tendencies, what repeats, and the calculation shown"],
+      ["Detailed reading", "Continue with the question you chose", "₩39,000 · one-time · opens without an account"],
     ],
-    guideExamples: [
-      "e.g. Will the work I am doing actually pay?",
-      "e.g. 4 November 1994 → 1994-11-04",
-      "Calculated above for 1994-11-04",
-      "Above: chapter titles a generated report actually carries",
-    ],
-    guideBirthLabel: "Birth date",
-    guideOptionalTime: "Birth time (optional)",
-    guideOptionalName: "Name (optional)",
-    guideFreeBadge: "Free",
-    guideLockedBadge: "Opens after payment",
     guideStepAction: "Pick a question",
     outlineEyebrow: "Detailed reading contents",
     outlineTitle: "See what you receive before you pay",
@@ -309,7 +294,7 @@ function isValidGregorianDate(value: string) {
     && date.getUTCDate() === day;
 }
 
-export function HomeExperience({ locale, dictionary: d, pricing, pageContent, reviews, reviewCount, showEverything = false, reportOutline = null, initialFocusId, guideSample = null }: Props) {
+export function HomeExperience({ locale, dictionary: d, pricing, pageContent, reviews, reviewCount, showEverything = false, reportOutline = null, initialFocusId }: Props) {
   // Bounded here rather than in the module so a long-lived tab still refuses tomorrow.
   const maxBirthDate = currentMaxBirthDate();
   const [selectedProduct, setSelectedProduct] = useState<ReadingProductId>("comprehensive");
@@ -332,7 +317,12 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   // Which step's screen the walkthrough is showing. One screen at a time, like the live
   // stage it is modelled on — four screens stacked would be a panel grid again.
   const [guideStep, setGuideStep] = useState(0);
+  // Switching steps must not show an empty frame. `display: none` stops a lazy image
+  // being fetched at all, so once the stage is near the viewport every capture is loaded
+  // eagerly and a tap changes the picture immediately.
+  const [stageReady, setStageReady] = useState(false);
   const guideTabsRef = useRef<HTMLDivElement>(null);
+  const guideStageRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLElement>(null);
   const guideRef = useRef<HTMLElement>(null);
   const closeRef = useRef<HTMLElement>(null);
@@ -435,6 +425,22 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
       if (entry?.isIntersecting) markGuideSeen();
     }, { threshold: 0.4 });
     observer.observe(guide);
+    return () => observer.disconnect();
+  }, [showEverything]);
+
+  useEffect(() => {
+    const stage = guideStageRef.current;
+    if (!stage || showEverything) return;
+    // No rootMargin: a generous 600px reached the stage before the first paint on a
+    // desktop viewport and pulled all four captures into the initial page load. Loading
+    // them as the stage comes into view is early enough, because the reader has to see
+    // the tabs before they can tap one.
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry?.isIntersecting) return;
+      setStageReady(true);
+      observer.disconnect();
+    }, { threshold: 0.05 });
+    observer.observe(stage);
     return () => observer.disconnect();
   }, [showEverything]);
 
@@ -908,12 +914,12 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                 <p className="eyebrow">{t.guideEyebrow}</p>
                 <h2 id="guide-title">{t.guideTitle}</h2>
               </div>
-              {/* The steps used to be four lines of prose, which described the service
-                  instead of showing it. This is the pattern the live stage overlay uses:
-                  one actual screen, with the instruction for that screen attached to it
-                  and a concrete example of what to enter. Nothing here is a mock-up —
-                  the questions are the real question list, the numbers are calculated by
-                  the engine, and the chapters come from the report generator. */}
+              {/* The pattern is the live broadcast overlay: the actual screen fills a
+                  framed stage, a small badge names it, and the guidance sits in a panel
+                  at the bottom of that same stage with one concrete example — not a
+                  paragraph beside a diagram. The pictures are captured from the running
+                  product by scripts/capture-guide-screens.mjs, cut on element
+                  boundaries so no screen is sliced through a line of Korean. */}
               <div className="guide-walk">
                 <div
                   className="guide-steps-tabs"
@@ -924,14 +930,14 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                     const delta = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
                     if (!delta) return;
                     event.preventDefault();
-                    const next = (guideStep + delta + t.guideSteps.length) % t.guideSteps.length;
+                    const next = (guideStep + delta + GUIDE_SCREENS.length) % GUIDE_SCREENS.length;
                     setGuideStep(next);
                     guideTabsRef.current?.querySelectorAll("button")[next]?.focus();
                   }}
                 >
                   {t.guideSteps.map(([label], index) => (
                     <button
-                      aria-controls="guide-screen"
+                      aria-controls="guide-stage"
                       aria-selected={guideStep === index}
                       className={guideStep === index ? "is-current" : undefined}
                       id={`guide-tab-${index}`}
@@ -949,82 +955,33 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
 
                 <div
                   aria-labelledby={`guide-tab-${guideStep}`}
-                  className="guide-screen"
-                  id="guide-screen"
+                  className="guide-stage"
+                  id="guide-stage"
+                  ref={guideStageRef}
                   role="tabpanel"
                   tabIndex={0}
                 >
-                  <p className="guide-screen-label">{t.guideScreenLabel}</p>
-
-                  {/* Not form controls: a preview must not put dead inputs and buttons
-                      in the keyboard path. Same words, inert markup. */}
-                  {guideStep === 0 && (
-                    <ul className="guide-screen-questions">
-                      {t.entryQuestions.map(([focus, question, label]) => (
-                        <li key={focus}><small>{label}</small><strong>{question}</strong></li>
-                      ))}
-                    </ul>
-                  )}
-
-                  {guideStep === 1 && (
-                    <div className="guide-screen-form">
-                      <div className="guide-screen-field">
-                        <small>{t.guideBirthLabel}</small>
-                        <strong>{guideSample?.birthDate ?? "1994-11-04"}</strong>
-                      </div>
-                      {/* The real intake asks for these two and marks them optional. A
-                          screen that showed only the required field would understate
-                          how little is actually asked for. */}
-                      <div className="guide-screen-field is-optional">
-                        <small>{t.guideOptionalTime}</small>
-                        <strong>—</strong>
-                      </div>
-                      <div className="guide-screen-field is-optional">
-                        <small>{t.guideOptionalName}</small>
-                        <strong>—</strong>
-                      </div>
-                      <p className="guide-screen-note">{t.heroNote}</p>
-                    </div>
-                  )}
-
-                  {guideStep === 2 && guideSample && (
-                    <div className="guide-screen-result">
-                      <p className="guide-screen-badge">{t.guideFreeBadge}</p>
-                      <div className="guide-screen-numbers">
-                        {guideSample.numbers.map((number) => (
-                          <div key={number.label}>
-                            <strong>{number.value}</strong>
-                            <span>{number.label}</span>
-                          </div>
-                        ))}
-                      </div>
-                      <p className="guide-screen-summary">{guideSample.summary}</p>
-                      <dl>
-                        <div><dt>{d.strengths}</dt><dd>{guideSample.strength}</dd></div>
-                        <div><dt>{d.risks}</dt><dd>{guideSample.risk}</dd></div>
-                      </dl>
-                    </div>
-                  )}
-
-                  {guideStep === 3 && reportOutline && (
-                    <ol className="guide-screen-chapters">
-                      {reportOutline.entries.slice(0, 4).map((entry) => (
-                        <li className={entry.locked ? "is-locked" : undefined} key={entry.position}>
-                          <small aria-hidden="true">{String(entry.position).padStart(2, "0")}</small>
-                          <strong>{entry.title}</strong>
-                          {entry.locked && <span>{t.guideLockedBadge}</span>}
-                        </li>
-                      ))}
-                    </ol>
-                  )}
-                </div>
-
-                <div className="guide-screen-caption">
-                  <strong>{t.guideSteps[guideStep]![1]}</strong>
-                  <p>{t.guideSteps[guideStep]![2]}</p>
-                  <small>{t.guideExamples[guideStep]}</small>
+                  <span className="guide-stage-badge">{t.guideScreenLabel}</span>
+                  {GUIDE_SCREENS.map((screen, index) => (
+                    <Image
+                      alt={t.guideSteps[index]![1]}
+                      className="guide-stage-shot"
+                      height={screen.height}
+                      hidden={guideStep !== index}
+                      key={screen.file}
+                      loading={stageReady ? "eager" : "lazy"}
+                      sizes="(max-width: 720px) 100vw, 640px"
+                      src={`/images/guide/${screen.file}`}
+                      width={screen.width}
+                    />
+                  ))}
+                  <div className="guide-stage-panel">
+                    <p className="guide-stage-request">{t.guideSteps[guideStep]![1]}</p>
+                    <p className="guide-stage-example">{t.guideSteps[guideStep]![2]}</p>
+                  </div>
                 </div>
               </div>
+
               <button className="journey-guide-action" onClick={() => { markGuideSeen(); scrollToElement("#questions"); }} type="button">
                 {t.guideStepAction}
               </button>

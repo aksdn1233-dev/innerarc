@@ -10,8 +10,6 @@ import { onboardingFocusIds } from "@/core/onboarding";
 import { createPaidTeaser } from "@/core/paid-teaser";
 import { buildReportOutline } from "@/core/report-outline";
 import { getSampleReport, SAMPLE_REPORT_BIRTH_DATE } from "@/server/reports/sample-report";
-import { createGuideSampleResult, GUIDE_SAMPLE_BIRTH_DATE } from "@/core/guide-sample";
-import { getRuleBasedProfile } from "@/core/profile";
 import {
   OPERATIONAL_EVENT_NAMES,
   metricDimension,
@@ -250,41 +248,55 @@ describe("the free reading shows less than the engine calculates", () => {
   });
 });
 
-describe("the walkthrough shows what the engines produce", () => {
+describe("the walkthrough shows captured screens of the running product", () => {
   /**
-   * The guide claims to be showing the actual screen. That claim is only true while the
-   * numbers on it come from the calculator and the chapters from the report generator,
-   * so both are asserted against the engines rather than against a fixture.
+   * The stage is labelled 실제 화면, so the pictures on it have to come from the product.
+   * They are captured by a committed script rather than drawn, and the script cuts each
+   * capture on an element boundary — an earlier version used a fixed fallback height and
+   * sliced a heading in half. These assertions keep the files, the script, and the sizes
+   * the component reserves in agreement.
    */
-  it("calculates the free result it displays", () => {
-    const sample = createGuideSampleResult("ko", 2026);
-    const profile = calculateNumerologyProfile({
-      birthDate: GUIDE_SAMPLE_BIRTH_DATE,
-      name: "",
-      personalYear: 2026,
-    });
-    const reading = getRuleBasedProfile(profile.lifePath.value, "ko");
-    expect(sample.birthDate).toBe(GUIDE_SAMPLE_BIRTH_DATE);
-    expect(sample.numbers).toHaveLength(4);
-    expect(sample.numbers[0]!.value).toBe("11/2");
-    expect(sample.summary).toBe(reading.summary);
-    expect(sample.strength).toBe(reading.strengths[0]);
-    expect(sample.risk).toBe(reading.risks[0]);
+  const screens = ["questions", "intake", "free-result", "report"] as const;
+
+  it("ships a capture for every step, none of them trivially small", async () => {
+    for (const name of screens) {
+      const file = await readFile(`public/images/guide/${name}.jpg`);
+      expect(file.byteLength).toBeGreaterThan(20_000);
+      expect(file.byteLength).toBeLessThan(400_000);
+    }
   });
 
-  it("uses the same birth date as the published report samples", () => {
-    expect(GUIDE_SAMPLE_BIRTH_DATE).toBe(SAMPLE_REPORT_BIRTH_DATE);
+  it("reserves the intrinsic size of each capture so the stage cannot jump", async () => {
+    const declared = [...homeExperience.matchAll(
+      /\{ file: "([a-z-]+\.jpg)", width: (\d+), height: (\d+) \}/g,
+    )].map(([, file, width, height]) => ({ file, width: Number(width), height: Number(height) }));
+    expect(declared.map((entry) => entry.file)).toEqual(screens.map((name) => `${name}.jpg`));
+    for (const entry of declared) {
+      const file = await readFile(`public/images/guide/${entry.file}`);
+      // JPEG SOF0/SOF2 frame header carries the real dimensions.
+      let size: { width: number; height: number } | null = null;
+      for (let index = 2; index + 9 < file.length; index += 1) {
+        if (file[index] !== 0xff) continue;
+        const marker = file[index + 1]!;
+        if (marker !== 0xc0 && marker !== 0xc2) continue;
+        size = { height: file.readUInt16BE(index + 5), width: file.readUInt16BE(index + 7) };
+        break;
+      }
+      expect(size).toEqual({ width: entry.width, height: entry.height });
+    }
   });
 
-  it("stays deterministic for a given year and locale", () => {
-    expect(createGuideSampleResult("en", 2026)).toEqual(createGuideSampleResult("en", 2026));
-    expect(createGuideSampleResult("en", 2026).summary)
-      .not.toBe(createGuideSampleResult("ko", 2026).summary);
+  it("keeps the capture script committed, on the published sample birth date", async () => {
+    const script = await readFile("scripts/capture-guide-screens.mjs", "utf8");
+    expect(script).toContain(SAMPLE_REPORT_BIRTH_DATE);
+    expect(script).toContain("/ko/samples/detail");
+    // A silent fallback height is what cut a screen before; each measured capture throws.
+    expect([...script.matchAll(/no element boundary inside the limit/g)]).toHaveLength(3);
   });
 
-  it("renders inert markup instead of dead form controls", () => {
-    const screen = /className="guide-screen"[\s\S]*?className="guide-screen-caption"/.exec(homeExperience)?.[0] ?? "";
-    expect(screen).not.toBe("");
-    expect(screen).not.toMatch(/<input|<select|<textarea|<button|<Link/);
+  it("puts no interactive control inside the stage", () => {
+    const stage = /className="guide-stage"[\s\S]*?guide-stage-panel[\s\S]*?<\/div>/.exec(homeExperience)?.[0] ?? "";
+    expect(stage).not.toBe("");
+    expect(stage).not.toMatch(/<input|<select|<textarea|<button|<Link/);
   });
 });

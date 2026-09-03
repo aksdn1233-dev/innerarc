@@ -128,21 +128,34 @@ actually shipped.
 
 ## 5. Guidance rules
 
-**Guidance shows the screen; it does not describe it.** The pattern comes from the live
-broadcast overlay (`stage.html` in the AI JUMSA LIVE workspace): the actual running picture
-fills the view, and the instruction for what to do sits attached to it with a concrete
-example — "양력 생년월일 · 예) 2000년 3월 15일" — rather than a paragraph about the process.
-The home walkthrough follows it: one screen at a time, the instruction under it, one
-example line.
+**Guidance shows the screen; it does not describe it.** The composition is the live
+broadcast overlay's (`stage.html` in the AI JUMSA LIVE workspace): the actual screen fills
+a framed stage, a small badge names it, and the guidance sits in a panel at the bottom of
+that same frame with one concrete example — "양력 생년월일 · 예) 2000년 3월 15일" — rather
+than a paragraph beside a diagram. One screen at a time, chosen by a step tablist.
 
-Nothing on those screens may be a mock-up:
+The pictures are **captures of the running product**, taken by
+`scripts/capture-guide-screens.mjs` and committed under `public/images/guide/`:
 
-- The question screen renders the same question copy as `#questions`.
-- The birth-date screen shows the real field set, including the two optional ones, so it
-  cannot overstate what is asked for.
-- The free-result screen shows numbers `calculateNumerologyProfile` produced and a summary
-  `getRuleBasedProfile` wrote, for `GUIDE_SAMPLE_BIRTH_DATE`.
-- The report screen shows chapter titles from `buildReportOutline`.
+| Step | Captured from |
+| --- | --- |
+| 01 질문 고르기 | `/ko` question list |
+| 02 생년월일 | `/ko/numerology` intake, date filled in |
+| 03 무료 결과 | the free result the engine calculates for `1994-11-04` |
+| 04 상세 리딩 | `/ko/samples/detail`, the report the generator produces |
+
+Rules that keep the 실제 화면 label honest:
+
+- **Re-run the capture script whenever any of those four screens changes visually.** A
+  stale capture is the same lie as a hand-drawn one.
+- **Every capture is cut on an element boundary measured in the page**, never at a fixed
+  pixel height. The first version used a fallback height and sliced a heading in half; each
+  measured capture now throws instead of falling back.
+- Captures use the same birth date as `/samples`, so every published example agrees.
+- Nothing may cover the picture: the badge sits in its own strip and the guidance in its
+  own panel, because here the picture is the product rather than scenery.
+- The stage holds no `<input>`, `<button>`, or link, so a preview never puts a dead control
+  in the keyboard path.
 
 A screen labelled "실제 화면" that was drawn by hand would drift from the product the first
 time either changed, and the label would quietly become a lie. Preview markup is also

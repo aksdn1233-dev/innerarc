@@ -11,7 +11,6 @@ import { readStoredPageContent } from "@/server/admin-storage";
 import { countPublicReviews, listPublicReviews } from "@/server/reviews";
 import { buildReportOutline } from "@/core/report-outline";
 import { getSampleReport } from "@/server/reports/sample-report";
-import { createGuideSampleResult } from "@/core/guide-sample";
 
 export default async function LocaleReading({
   params,
@@ -50,7 +49,6 @@ export default async function LocaleReading({
       reviews={reviews}
       reviewCount={reviewCount}
       reportOutline={buildReportOutline(getSampleReport("detail", locale), { openCount: 2, maxEntries: 6, excerptLength: 110 })}
-      guideSample={createGuideSampleResult(locale, new Date().getUTCFullYear())}
       initialFocusId={requestedFocus === "leadership" ? undefined : requestedFocus}
     />
   );
