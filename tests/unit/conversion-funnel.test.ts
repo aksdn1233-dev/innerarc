@@ -28,6 +28,7 @@ const base = {
 const homeExperience = await readFile("src/components/home-experience.tsx", "utf8");
 const onboardingExperience = await readFile("src/components/onboarding-experience.tsx", "utf8");
 const shopExperience = await readFile("src/components/shop-experience.tsx", "utf8");
+const globals = await readFile("src/app/globals.css", "utf8");
 
 describe("home navigation reaches something", () => {
   /**
@@ -248,6 +249,42 @@ describe("the free reading shows less than the engine calculates", () => {
   });
 });
 
+describe("a free reading is readable on the ground it is painted on", () => {
+  /**
+   * .webtoon-flow paints a night ground; .webtoon-adapt deliberately leaves its blocks
+   * unpainted, so they keep the light theme's ink. Together those two facts put near-black
+   * body text on a near-black page: the free result's own "탐색할 강점" measured 2.35:1 and
+   * its bullets 2.14:1, against the 4.5 those sizes need. The ground under the bands is
+   * paper for exactly that reason.
+   */
+  it("gives the adapted bands a paper ground under the night flow", () => {
+    const rule = /\.webtoon-flow > \.webtoon-adapt,\s*\.webtoon-flow\.webtoon-adapt \{[^}]*\}/.exec(globals)?.[0] ?? "";
+    expect(rule).toContain("background: var(--paper)");
+  });
+
+  it("keeps the small label tones above AA on every paper the site paints", () => {
+    const channel = (value: number) => {
+      const c = value / 255;
+      return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+    };
+    const luminance = (hex: string) => {
+      const [r, g, b] = [1, 3, 5].map((at) => parseInt(hex.slice(at, at + 2), 16));
+      return 0.2126 * channel(r!) + 0.7152 * channel(g!) + 0.0722 * channel(b!);
+    };
+    const contrast = (a: string, b: string) =>
+      (Math.max(luminance(a), luminance(b)) + 0.05) / (Math.min(luminance(a), luminance(b)) + 0.05);
+    const token = (name: string) =>
+      new RegExp(`--${name}: (#[0-9a-f]{6});`).exec(globals)?.[1] ?? "";
+
+    const grounds = ["paper", "paper-deep", "white"].map(token);
+    expect(grounds.every(Boolean)).toBe(true);
+    for (const ink of ["muted", "clay"].map(token)) {
+      expect(ink).not.toBe("");
+      for (const ground of grounds) expect(contrast(ink, ground)).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+});
+
 describe("the walkthrough plays recordings of the running product", () => {
   /**
    * The stage claims to be showing the real screen, so what plays on it is a recording
@@ -293,14 +330,32 @@ describe("the walkthrough plays recordings of the running product", () => {
     expect(stage).not.toMatch(/<input|<select|<textarea|<button|<Link|<p |<h2|<h3/);
   });
 
-  it("downloads only the step being watched, and only once the stage is reached", () => {
-    expect(homeExperience).toContain('preload={stageReady && guideStep === index ? "auto" : "none"}');
+  it("downloads the step being watched and the one it moves to next, once the stage is reached", () => {
+    expect(homeExperience).toContain('preload={stageReady && isNear(index) ? "auto" : "none"}');
+    expect(homeExperience).toContain("index === (guideStep + 1) % GUIDE_SCREENS.length");
     // A poster is fetched whatever `preload` says, so it waits for the stage too.
     expect(homeExperience).toContain("poster={stageReady ?");
   });
 
+  it("moves to the next step when the clip ends, and shows how far through it is", () => {
+    // The reference advances by itself. `loop` would hold a step forever, so its absence
+    // is the thing that makes the walk a walk.
+    expect(homeExperience).toContain("setGuideStep((step) => (step + 1) % GUIDE_SCREENS.length)");
+    // Scoped to the stage: the hero portrait upstairs is a loop on purpose.
+    const clip = homeExperience.slice(
+      homeExperience.indexOf('className="guide-stage-clip"'),
+      homeExperience.indexOf('type="video/mp4"'),
+    );
+    expect(clip).not.toMatch(/^\s+loop$/m);
+    expect(homeExperience).toContain('guideTabsRef.current?.style.setProperty("--guide-progress"');
+    expect(globals).toContain("transform: scaleX(var(--guide-progress, 0));");
+    // Nothing steps through screens nobody is looking at.
+    expect(homeExperience).toContain("setStageOnScreen(entry.isIntersecting)");
+    expect(homeExperience).toContain("!stageOnScreen");
+  });
+
   it("leaves a visitor who asked for less motion the poster instead", () => {
     expect(homeExperience).toContain('window.matchMedia("(prefers-reduced-motion: reduce)").matches');
-    expect(homeExperience).toMatch(/if \(index !== guideStep \|\| !stageReady \|\| still\) \{/);
+    expect(homeExperience).toContain("if (index !== guideStep || !stageReady || !stageOnScreen || still) {");
   });
 });

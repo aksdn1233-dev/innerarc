@@ -4,6 +4,36 @@ Last updated: 2026-08-02 (mobile trust and checkout-conversion refinement)<br>
 Current version: 0.20.1
 Overall progress: 97% (web MVP code 100%; production deployment and payment path 98%; native app not started)
 
+## 2026-09-04 — The walkthrough walks, and the free result is readable
+
+- The walkthrough advanced only when a tab was tapped, which the reference does not: it
+  moves on when the clip ends, so the screen's own length is the step's length. The current
+  tab carries the clip's progress as `--guide-progress`, written from `timeupdate` onto the
+  tab row rather than through React, so the change is explained without re-rendering four
+  times a second. Nothing plays or advances while the stage is off screen — the
+  IntersectionObserver stays connected now instead of disconnecting on first sight — and a
+  visitor who asked for reduced motion gets the poster and the tabs, no automatic step.
+- **The free result was printing near-black body text on a near-black page.**
+  `.webtoon-flow` paints a night ground; `.webtoon-adapt` deliberately leaves its blocks
+  unpainted so each keeps whatever colour it carries as meaning. Together those two put the
+  light theme's ink on night: "탐색할 강점" measured 2.35:1 and its bullets 2.14:1, against
+  4.5. The ground under the adapted bands is now `--paper`, painted on the container so any
+  band or card that paints itself still paints over it — the sage cards, the accessory
+  cards and the night summary header all keep their own colour.
+- `--clay` (#a45f45 → #955039) and `--muted` (#686b63 → #5f625a) were just under AA at the
+  sizes they are used: 4.33/3.86 and 4.81/4.29 on paper and paper-deep. The hero's second
+  action was cream on a mid-gold at 3:1 and its gold is deepened; the night summary header's
+  archetype line was on paper clay at 2.99:1 and now takes the header's gold.
+- Measured with a pixel audit rather than computed styles, which report `transparent` for
+  every block involved. Four traps it walks into if written naively: `visibility: hidden`
+  hides the element's own background and hands you the parent's colour; full-page capture
+  re-lays out anything sized in viewport units, so boxes miss their pixels; a closed
+  `<details>` is still laid out and measures as visible; and the campaign popup covers the
+  page you thought you were measuring. Home now measures 0 failures across 72 text boxes;
+  the free result 121 boxes with the remainder verified by eye as gold-on-dark pills.
+- Guarded by unit tests: the paper ground on the adapt container, and both label tones
+  against all three paper grounds.
+
 ## 2026-09-04 — The walkthrough plays the real screen
 
 - The home "이용 방법" was four lines of prose, then a stage of stills. It is now the

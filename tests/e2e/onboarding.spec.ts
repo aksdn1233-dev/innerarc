@@ -740,45 +740,79 @@ test("first-visit guidance appears once and can be reopened", async ({ page }) =
 });
 
 test("the walkthrough plays the real screen with the guidance above it", async ({ page }) => {
-  // The composition comes from the reference: the instruction is a heading above the
-  // frame, and the frame holds nothing but a recording of the product being used.
+    // The composition comes from the reference: the instruction is a heading above the
+    // frame, and the frame holds nothing but a recording of the product being used.
+    //
+    // Held still on purpose: the walkthrough moves to the next step when a clip ends, and
+    // asserting step by step would be racing it. The automatic step has a test of its own
+    // below, where it is the thing being measured rather than the weather.
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/ko");
+    await dismissCampaign(page);
+    const walk = page.locator("#guide .guide-walk");
+    const stage = page.locator("#guide .guide-stage");
+    const tabs = page.locator("#guide .guide-steps-tabs button");
+    await expect(tabs).toHaveCount(4);
+    await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
+    await expect(walk.locator(".guide-stage-eyebrow")).toHaveText("실제 화면");
+    await stage.scrollIntoViewIfNeeded();
+
+    const expected = [
+      ["questions.mp4", "지금 가장 걸리는 질문을 고릅니다", "지금 하는 일이 돈이 될까요?"],
+      ["intake.mp4", "양력 생년월일만 넣습니다", "1994-11-04"],
+      ["free-result.mp4", "결제 없이 기본 패턴을 봅니다", "계산 근거까지 공개"],
+      ["report.mp4", "고른 질문으로 이어서 봅니다", "39,000원"],
+    ];
+
+    for (const [index, [clip, request, example]] of expected.entries()) {
+      await tabs.nth(index).click();
+      await expect(walk.locator(".guide-stage-title strong")).toHaveText(request);
+      await expect(walk.locator(".guide-stage-title span")).toContainText(example);
+
+      // Exactly one clip is on screen, it is this step's, and it actually has frames.
+      const shown = stage.locator(".guide-stage-clip:not([hidden])");
+      await expect(shown).toHaveCount(1);
+      await expect(shown.locator("source")).toHaveAttribute("src", `/images/guide/${clip}`);
+      await expect(shown).toHaveAttribute("poster", `/images/guide/${clip.replace(".mp4", ".jpg")}`);
+      await expect.poll(
+        () => shown.evaluate((video) => (video as HTMLVideoElement).videoWidth),
+        { timeout: 20_000 },
+      ).toBeGreaterThan(0);
+      // Nothing plays for a visitor who asked for less motion; the poster is the screen.
+      expect(await shown.evaluate((video) => (video as HTMLVideoElement).paused)).toBe(true);
+    }
+
+    // The guidance never sits on the picture, and the frame takes no focus.
+    expect(await stage.locator("input, select, textarea, a, button, p, h2, h3").count()).toBe(0);
+
+    // Arrow keys move between steps, as a tablist is expected to.
+    await tabs.nth(3).press("ArrowRight");
+    await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
+});
+
+test("the walkthrough moves to the next step on its own, and the tab shows how far in it is", async ({ page }) => {
+  // The reference advances by itself; a walkthrough that only moves when tapped is a
+  // stack of tabs. The clip's own length is the step's length.
   await page.goto("/ko");
   await dismissCampaign(page);
-  const walk = page.locator("#guide .guide-walk");
-  const stage = page.locator("#guide .guide-stage");
   const tabs = page.locator("#guide .guide-steps-tabs button");
-  await expect(tabs).toHaveCount(4);
-  await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
-  await expect(walk.locator(".guide-stage-eyebrow")).toHaveText("실제 화면");
-  await stage.scrollIntoViewIfNeeded();
+  await page.locator("#guide .guide-stage").scrollIntoViewIfNeeded();
 
-  const expected = [
-    ["questions.mp4", "지금 가장 걸리는 질문을 고릅니다", "지금 하는 일이 돈이 될까요?"],
-    ["intake.mp4", "양력 생년월일만 넣습니다", "1994-11-04"],
-    ["free-result.mp4", "결제 없이 기본 패턴을 봅니다", "계산 근거까지 공개"],
-    ["report.mp4", "고른 질문으로 이어서 봅니다", "39,000원"],
-  ];
+  const playing = page.locator("#guide .guide-stage-clip:not([hidden])");
+  await expect.poll(
+    () => playing.evaluate((video) => !(video as HTMLVideoElement).paused),
+    { timeout: 20_000 },
+  ).toBe(true);
 
-  for (const [index, [clip, request, example]] of expected.entries()) {
-    await tabs.nth(index).click();
-    await expect(walk.locator(".guide-stage-title strong")).toHaveText(request);
-    await expect(walk.locator(".guide-stage-title span")).toContainText(example);
+  // The current tab carries the clip's own progress, so the change is not unexplained.
+  await expect.poll(
+    () => page.locator("#guide .guide-steps-tabs").evaluate((row) =>
+      Number(getComputedStyle(row).getPropertyValue("--guide-progress"))),
+    { timeout: 20_000 },
+  ).toBeGreaterThan(0);
 
-    // Exactly one clip is on screen, it is this step's, and it actually has frames.
-    const shown = stage.locator(".guide-stage-clip:not([hidden])");
-    await expect(shown).toHaveCount(1);
-    await expect(shown.locator("source")).toHaveAttribute("src", `/images/guide/${clip}`);
-    await expect(shown).toHaveAttribute("poster", `/images/guide/${clip.replace(".mp4", ".jpg")}`);
-    await expect.poll(
-      () => shown.evaluate((video) => (video as HTMLVideoElement).videoWidth),
-      { timeout: 20_000 },
-    ).toBeGreaterThan(0);
-  }
-
-  // The guidance never sits on the picture, and the frame takes no focus.
-  expect(await stage.locator("input, select, textarea, a, button, p, h2, h3").count()).toBe(0);
-
-  // Arrow keys move between steps, as a tablist is expected to.
-  await tabs.nth(3).press("ArrowRight");
-  await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
+  // No click: the first clip ends and the second step takes over.
+  await expect(tabs.nth(1)).toHaveAttribute("aria-selected", "true", { timeout: 30_000 });
+  await expect(page.locator("#guide .guide-stage-clip:not([hidden]) source"))
+    .toHaveAttribute("src", "/images/guide/intake.mp4");
 });

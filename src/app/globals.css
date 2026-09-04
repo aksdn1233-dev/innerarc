@@ -4,11 +4,15 @@
   --paper: #f5f1e8;
   --paper-deep: #ebe4d7;
   --ink: #20231f;
-  --muted: #686b63;
+  /* Both tones carry small, heavy label text — eyebrows, kickers, disclaimers — and both
+     were just under AA on this paper: clay measured 4.33:1 on --paper and 3.86:1 on
+     --paper-deep, muted 4.81 and 4.29, against the 4.5 those sizes need. Darkened only far
+     enough to clear it on every ground the site paints, terracotta and grey intact. */
+  --muted: #5f625a;
   --line: #d7d0c3;
   --sage: #637563;
   --sage-dark: #3f5142;
-  --clay: #a45f45;
+  --clay: #955039;
   --white: #fffdf8;
   --radius-sm: 12px;
   --radius-md: 18px;
@@ -7853,9 +7857,13 @@ summary {
   box-shadow: 0 12px 32px rgba(8, 6, 16, 0.34), inset 0 1px rgba(255, 248, 216, 0.54);
 }
 
+/* The second action carried cream on a mid-gold, which measured 3:1 against the 4.5 its
+   size needs. The gold is deepened rather than the ink darkened: dark ink would have made
+   it a second copy of the primary button above it, and the point of the pair is that one
+   of them is quieter. */
 .cinema-hero-actions .cinema-cta-secondary + .cinema-cta-secondary {
   border-color: rgba(228, 194, 112, 0.62);
-  background: linear-gradient(135deg, rgba(200, 158, 75, 0.94), rgba(129, 91, 37, 0.96));
+  background: linear-gradient(135deg, rgba(122, 86, 32, 0.96), rgba(78, 55, 20, 0.97));
   color: #fff6db;
 }
 
@@ -9190,7 +9198,10 @@ summary {
   color: #fffaf0;
 }
 
+/* The night summary header carries its own light ink. The archetype line was left on the
+   page's clay, which is a terracotta meant for paper and sat at 2.99:1 on this navy. */
 .webtoon-adapt > header:first-of-type .eyebrow,
+.webtoon-adapt > header:first-of-type .archetype,
 .webtoon-adapt > header:first-of-type .profile-facts {
   color: #edc57f;
 }
@@ -9209,13 +9220,23 @@ summary {
 
 /* Where the adapted result was itself wrapped in a card, the card is flattened: the bands
    inside it are the only structure the reading needs, and a border around all of them is
-   the exact thing this layout is getting rid of. */
-.webtoon-flow > .webtoon-adapt {
+   the exact thing this layout is getting rid of.
+
+   The ground under the bands is paper, not the flow's night. Adapt mode leaves its blocks
+   unpainted on purpose, so they keep the light theme's ink — near-black body, sage
+   headings — and over the night gradient that ink disappeared: the free result's own
+   "탐색할 강점" measured 2.35:1 and its bullets 2.14:1, against 4.5 required. Painting the
+   ground here rather than on the bands leaves every block that paints itself untouched,
+   because a child's background paints over its parent's: the sage outcome cards, the
+   accessory cards and the night summary header all still carry their own colour as
+   meaning. The night stays where it is asked for, not everywhere by default. */
+.webtoon-flow > .webtoon-adapt,
+.webtoon-flow.webtoon-adapt {
   margin: 0;
   padding: 0;
   border: 0;
   border-radius: 0;
-  background: none;
+  background: var(--paper);
   box-shadow: none;
 }
 
@@ -10762,9 +10783,32 @@ summary {
 
 .guide-steps-tabs button.is-current small { color: var(--gold-v4, #c89b55); }
 
-/* The stage: one captured screen filling a framed surface, a badge naming it, and
-   the guidance in a panel at the bottom of the same frame. Straight from the live
-   broadcast overlay — the picture is the thing, the instruction rides on it. */
+/* The walkthrough moves on when the clip ends, so the current tab carries how far through
+   the step it is. Without it the picture changes for no visible reason. The bar is driven
+   by the clip's own time, set on the tab row as --guide-progress, so it is the truth about
+   playback rather than a decoration on a timer. */
+.guide-steps-tabs button.is-current {
+  position: relative;
+  overflow: hidden;
+}
+
+.guide-steps-tabs button.is-current::after {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--gold-v4, #c89b55);
+  content: "";
+  transform: scaleX(var(--guide-progress, 0));
+  transform-origin: left;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Nothing plays and nothing advances, so a progress bar would be a lie. */
+  .guide-steps-tabs button.is-current::after { display: none; }
+}
+
 /* The instruction is a heading above the frame, and the frame holds nothing but the
    screen — the way the reference lays it out. Putting the guidance on the picture would
    cover the product it is pointing at. */

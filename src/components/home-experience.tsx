@@ -323,6 +323,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   // being fetched at all, so once the stage is near the viewport every capture is loaded
   // eagerly and a tap changes the picture immediately.
   const [stageReady, setStageReady] = useState(false);
+  const [stageOnScreen, setStageOnScreen] = useState(false);
   const guideTabsRef = useRef<HTMLDivElement>(null);
   const guideStageRef = useRef<HTMLDivElement>(null);
   const guideClipRefs = useRef<(HTMLVideoElement | null)[]>([]);
@@ -440,9 +441,12 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
     // the tabs before they can tap one. Touching a tab mounts them too, so a browser
     // that delivers the observer late still never leaves the frame empty.
     const observer = new IntersectionObserver(([entry]) => {
-      if (!entry?.isIntersecting) return;
-      setStageReady(true);
-      observer.disconnect();
+      if (!entry) return;
+      if (entry.isIntersecting) setStageReady(true);
+      // Kept connected, unlike the first version: the walkthrough moves on by itself, and
+      // a walkthrough that keeps stepping through screens nobody is looking at is just a
+      // battery bill.
+      setStageOnScreen(entry.isIntersecting);
     }, { threshold: 0.05 });
     observer.observe(stage);
     return () => observer.disconnect();
@@ -452,22 +456,29 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
    * Plays the step that is showing, and only while the stage is on screen.
    *
    * A visitor who asked for reduced motion gets the poster frame instead: the poster is
-   * the clip's own first frame, so they still see the screen, it just does not move.
+   * the clip's own first frame, so they still see the screen, it just does not move. They
+   * do not get the automatic step either — the tabs still move them.
    */
   useEffect(() => {
     if (showEverything) return;
     const clips = guideClipRefs.current;
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    guideTabsRef.current?.style.setProperty("--guide-progress", "0");
     clips.forEach((clip, index) => {
       if (!clip) return;
-      if (index !== guideStep || !stageReady || still) {
+      if (index !== guideStep || !stageReady || !stageOnScreen || still) {
         clip.pause();
         return;
       }
       clip.currentTime = 0;
       void clip.play().catch(() => { /* a browser may refuse; the poster stays */ });
     });
-  }, [guideStep, showEverything, stageReady]);
+  }, [guideStep, showEverything, stageOnScreen, stageReady]);
+
+  /** The step showing, and the one the walkthrough will move to next. */
+  function isNear(index: number) {
+    return index === guideStep || index === (guideStep + 1) % GUIDE_SCREENS.length;
+  }
 
   function openGuide() {
     markGuideSeen();
@@ -999,7 +1010,6 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                         className="guide-stage-clip"
                         hidden={guideStep !== index}
                         key={screen}
-                        loop
                         muted
                         playsInline
                         // Nothing downloads until the reader reaches the stage — the
@@ -1008,10 +1018,21 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                         // poster is the clip's own first frame, so the still and the
                         // moving picture are the same image.
                         poster={stageReady ? `/images/guide/${screen}.jpg` : undefined}
-                        // Only the step being watched is downloaded. Preloading all four
-                        // put 2.4 MB on the reader's connection for three screens they
-                        // may never open; the poster covers the moment after a tap.
-                        preload={stageReady && guideStep === index ? "auto" : "none"}
+                        // The step being watched and the one it will move to next. All
+                        // four put 2.4 MB on the reader's connection for screens they may
+                        // never reach; only the current one leaves the automatic step
+                        // waiting on a download.
+                        preload={stageReady && isNear(index) ? "auto" : "none"}
+                        // The clip's own length is the step's length: it moves on when the
+                        // screen has finished showing itself, not on a timer picked out of
+                        // the air. Only the visible clip plays, so only it can end.
+                        onEnded={() => setGuideStep((step) => (step + 1) % GUIDE_SCREENS.length)}
+                        onTimeUpdate={(event) => {
+                          if (index !== guideStep) return;
+                          const { currentTime, duration } = event.currentTarget;
+                          const played = duration ? currentTime / duration : 0;
+                          guideTabsRef.current?.style.setProperty("--guide-progress", played.toFixed(3));
+                        }}
                         ref={(node) => { guideClipRefs.current[index] = node; }}
                         style={{ aspectRatio: `${GUIDE_FRAME.width} / ${GUIDE_FRAME.height}` }}
                       >

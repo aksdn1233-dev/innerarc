@@ -158,12 +158,38 @@ Rules that keep the 실제 화면 label honest:
 - Recordings use the same birth date as `/samples`, so every published example agrees.
 - Nothing may cover the picture: the label and the guidance sit above the frame, because
   here the picture is the product rather than scenery.
-- Clips are `muted`, `loop`, `playsInline`, and download nothing — poster included, since a
-  poster is fetched whatever `preload` says — until the reader reaches the stage. Only the
-  step being watched is fetched and played, and a reader who asked for reduced motion is
-  left the poster.
+- **The walk walks.** The step changes when its clip ends — the screen's own length is the
+  step's length — and the current tab carries the clip's progress so the change is never
+  unexplained. A walkthrough that only moves when tapped is a stack of tabs, which is the
+  thing this replaced. Tapping a tab still works and simply takes over from there.
+- Clips are `muted`, `playsInline`, not looped (a loop would hold a step forever), and
+  download nothing — poster included, since a poster is fetched whatever `preload` says —
+  until the reader reaches the stage. Only the step being watched and the one it moves to
+  next are fetched; nothing plays or advances while the stage is off screen; and a reader
+  who asked for reduced motion is left the poster and the tabs.
 - The stage holds no `<input>`, `<button>`, or link, so a preview never puts a dead control
   in the keyboard path.
+
+## 6. Ink and ground
+
+**Every screen states the ground its ink is standing on.** Two rules, both learned the hard
+way on the free result:
+
+- **A ground painted by an ancestor is not a licence to keep the other theme's ink.**
+  `.webtoon-flow` paints a night ground and `.webtoon-adapt` deliberately leaves its blocks
+  unpainted, so the free result's bands kept the light theme's near-black body text and put
+  it on a near-black page — "탐색할 강점" at 2.35:1, its bullets at 2.14:1. Whichever of the
+  two you set, set the other with it.
+- **Measure the pixels, not the CSS.** `getComputedStyle().backgroundColor` reports
+  `transparent` for every one of those blocks and reads the wrong ancestor's colour, so it
+  cleared them all. The audit that found this makes the glyphs transparent, photographs the
+  page a viewport at a time, and reads the ground under each box — see the Continuation
+  State entry for the traps (`visibility: hidden` takes the element's own background with
+  it; full-page capture re-lays out anything sized in viewport units; a closed `<details>`
+  is still laid out; and the campaign popup will happily cover the page you are measuring).
+
+The small label tones — `--muted` and `--clay` — are unit-tested to clear 4.5:1 on `--paper`,
+`--paper-deep` and `--white`, because they carry eyebrows, kickers and disclaimers at 12–15px.
 
 A screen labelled "실제 화면" that was drawn by hand would drift from the product the first
 time either changed, and the label would quietly become a lie. Preview markup is also
