@@ -23,3 +23,4 @@ Thumbs.db
 INNERARC*.zip
 INNERARC*.txt
 next-env.d.ts
+.guide-recordings/

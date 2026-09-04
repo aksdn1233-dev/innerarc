@@ -128,32 +128,40 @@ actually shipped.
 
 ## 5. Guidance rules
 
-**Guidance shows the screen; it does not describe it.** The composition is the live
-broadcast overlay's (`stage.html` in the AI JUMSA LIVE workspace): the actual screen fills
-a framed stage, a small badge names it, and the guidance sits in a panel at the bottom of
-that same frame with one concrete example — "양력 생년월일 · 예) 2000년 3월 15일" — rather
-than a paragraph beside a diagram. One screen at a time, chosen by a step tablist.
+**Guidance shows the screen; it does not describe it.** The composition is Naver's AI탭
+walkthrough (`mkt.naver.com/aitab`): the instruction is a heading *above* the frame with one
+concrete example under it — "양력 생년월일만 넣습니다 / 1994-11-04" — and the frame below holds
+nothing but the screen, playing. One screen at a time, chosen by a step tablist.
 
-The pictures are **captures of the running product**, taken by
-`scripts/capture-guide-screens.mjs` and committed under `public/images/guide/`:
+The screens are **recordings of the running product**, made by
+`scripts/capture-guide-screens.mjs` and committed under `public/images/guide/` as an H.264
+MP4 plus its own first frame as a poster:
 
-| Step | Captured from |
+| Step | Recorded from |
 | --- | --- |
-| 01 질문 고르기 | `/ko` question list |
-| 02 생년월일 | `/ko/numerology` intake, date filled in |
-| 03 무료 결과 | the free result the engine calculates for `1994-11-04` |
-| 04 상세 리딩 | `/ko/samples/detail`, the report the generator produces |
+| 01 질문 고르기 | `/ko` question list, scrolled and hovered |
+| 02 생년월일 | `/ko/numerology` intake, the date typed and consent ticked |
+| 03 무료 결과 | the free result the engine calculates for `1994-11-04`, scrolled |
+| 04 상세 리딩 | `/ko/samples/detail`, the report the generator produces, scrolled |
 
 Rules that keep the 실제 화면 label honest:
 
-- **Re-run the capture script whenever any of those four screens changes visually.** A
-  stale capture is the same lie as a hand-drawn one.
-- **Every capture is cut on an element boundary measured in the page**, never at a fixed
-  pixel height. The first version used a fallback height and sliced a heading in half; each
-  measured capture now throws instead of falling back.
-- Captures use the same birth date as `/samples`, so every published example agrees.
-- Nothing may cover the picture: the badge sits in its own strip and the guidance in its
-  own panel, because here the picture is the product rather than scenery.
+- **Re-run the recording script whenever any of those four screens changes visually.** A
+  stale recording is the same lie as a hand-drawn one.
+- **Nothing is cropped.** A screen taller than the frame is *scrolled* inside it, the way a
+  visitor reads it, instead of being cut to fit. This is why these are clips and not stills:
+  the earlier stills had to be cut on a measured element boundary, and one slice still lost
+  a heading.
+- Frames are grabbed as 2x screenshots and encoded at 20fps, not through Playwright's own
+  video encoder — it never scales a page up, so it left the 390px page in the corner of a
+  780px canvas. Each clip stays under ~1.3 MB.
+- Recordings use the same birth date as `/samples`, so every published example agrees.
+- Nothing may cover the picture: the label and the guidance sit above the frame, because
+  here the picture is the product rather than scenery.
+- Clips are `muted`, `loop`, `playsInline`, and download nothing — poster included, since a
+  poster is fetched whatever `preload` says — until the reader reaches the stage. Only the
+  step being watched is fetched and played, and a reader who asked for reduced motion is
+  left the poster.
 - The stage holds no `<input>`, `<button>`, or link, so a preview never puts a dead control
   in the keyboard path.
 

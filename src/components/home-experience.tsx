@@ -57,16 +57,19 @@ const CAMPAIGN_DISMISS_KEY = "gyeol.campaign.one-week-extension-1500.dismissed.v
 const GUIDE_SEEN_KEY = "gyeol.guide.seen.v1";
 
 /**
- * The captured screens, with the intrinsic size of each file so the stage reserves the
- * right height before the picture arrives. Regenerate with
+ * The recorded screens, with the frame each clip was shot in so the stage reserves the
+ * right height before playback. Regenerate with
  * `node scripts/capture-guide-screens.mjs` whenever any of these screens changes.
  */
 const GUIDE_SCREENS = [
-  { file: "questions.jpg", width: 780, height: 1290 },
-  { file: "intake.jpg", width: 780, height: 1758 },
-  { file: "free-result.jpg", width: 780, height: 2686 },
-  { file: "report.jpg", width: 780, height: 2844 },
+  "questions",
+  "intake",
+  "free-result",
+  "report",
 ] as const;
+
+/** 390×531 at 2x — the portrait frame the clips are recorded in. */
+const GUIDE_FRAME = { width: 780, height: 1062 } as const;
 
 const concernExamples: Record<Locale, Record<FocusId, string>> = {
   ko: {
@@ -322,6 +325,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   const [stageReady, setStageReady] = useState(false);
   const guideTabsRef = useRef<HTMLDivElement>(null);
   const guideStageRef = useRef<HTMLDivElement>(null);
+  const guideClipRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const heroRef = useRef<HTMLElement>(null);
   const guideRef = useRef<HTMLElement>(null);
   const closeRef = useRef<HTMLElement>(null);
@@ -443,6 +447,27 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
     observer.observe(stage);
     return () => observer.disconnect();
   }, [showEverything]);
+
+  /**
+   * Plays the step that is showing, and only while the stage is on screen.
+   *
+   * A visitor who asked for reduced motion gets the poster frame instead: the poster is
+   * the clip's own first frame, so they still see the screen, it just does not move.
+   */
+  useEffect(() => {
+    if (showEverything) return;
+    const clips = guideClipRefs.current;
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    clips.forEach((clip, index) => {
+      if (!clip) return;
+      if (index !== guideStep || !stageReady || still) {
+        clip.pause();
+        return;
+      }
+      clip.currentTime = 0;
+      void clip.play().catch(() => { /* a browser may refuse; the poster stays */ });
+    });
+  }, [guideStep, showEverything, stageReady]);
 
   function openGuide() {
     markGuideSeen();
@@ -914,12 +939,11 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                 <p className="eyebrow">{t.guideEyebrow}</p>
                 <h2 id="guide-title">{t.guideTitle}</h2>
               </div>
-              {/* The pattern is the live broadcast overlay: the actual screen fills a
-                  framed stage, a small badge names it, and the guidance sits in a panel
-                  at the bottom of that same stage with one concrete example — not a
-                  paragraph beside a diagram. The pictures are captured from the running
-                  product by scripts/capture-guide-screens.mjs, cut on element
-                  boundaries so no screen is sliced through a line of Korean. */}
+              {/* The instruction sits above the frame and the frame holds nothing but
+                  the screen, which is how the reference lays it out. Each clip is a
+                  scripted run of the real flow recorded by
+                  scripts/capture-guide-screens.mjs: a long screen is read by scrolling
+                  inside the frame, so nothing has to be cropped to fit it. */}
               <div className="guide-walk">
                 <div
                   className="guide-steps-tabs"
@@ -955,52 +979,45 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                   ))}
                 </div>
 
+                <p className="guide-stage-eyebrow">{t.guideScreenLabel}</p>
                 <div
                   aria-labelledby={`guide-tab-${guideStep}`}
-                  className="guide-stage"
+                  className="guide-walk-body"
                   id="guide-stage"
-                  ref={guideStageRef}
                   role="tabpanel"
                   tabIndex={0}
                 >
-                  <span className="guide-stage-badge">{t.guideScreenLabel}</span>
-                  {/* Mounted only once the stage is in view, and eager from the start.
-                      Flipping `loading` from lazy to eager afterwards does not restart
-                      the fetch in WebKit for a `display: none` image, so the other three
-                      steps stayed blank there however long you waited. */}
-                  {/* A plain img, deliberately. next/image keeps a `640w…1200w` srcset
-                      even when unoptimized, and because every candidate is the same file
-                      the browser derives a density from the descriptor and treats an
-                      780px capture as 367px — one device pixel per CSS pixel on a 2x
-                      screen, for a picture made entirely of small Korean text. Its
-                      resizing service also failed outright on the CI server. These are
-                      fixed screenshots already cut to the size the stage renders them
-                      at, so they want no processing at all. */}
-                  {stageReady ? GUIDE_SCREENS.map((screen, index) => (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      alt={t.guideSteps[index]![1]}
-                      className="guide-stage-shot"
-                      decoding="async"
-                      height={screen.height}
-                      hidden={guideStep !== index}
-                      key={screen.file}
-                      loading="eager"
-                      src={`/images/guide/${screen.file}`}
-                      width={screen.width}
-                    />
-                  )) : (
-                    <div
-                      aria-hidden="true"
-                      className="guide-stage-hold"
-                      style={{
-                        aspectRatio: `${GUIDE_SCREENS[guideStep]!.width} / ${GUIDE_SCREENS[guideStep]!.height}`,
-                      }}
-                    />
-                  )}
-                  <div className="guide-stage-panel">
-                    <p className="guide-stage-request">{t.guideSteps[guideStep]![1]}</p>
-                    <p className="guide-stage-example">{t.guideSteps[guideStep]![2]}</p>
+                  <div className="guide-stage-title">
+                    <strong>{t.guideSteps[guideStep]![1]}</strong>
+                    <span>{t.guideSteps[guideStep]![2]}</span>
+                  </div>
+
+                  <div className="guide-stage" ref={guideStageRef}>
+                    {GUIDE_SCREENS.map((screen, index) => (
+                      <video
+                        aria-label={t.guideSteps[index]![1]}
+                        className="guide-stage-clip"
+                        hidden={guideStep !== index}
+                        key={screen}
+                        loop
+                        muted
+                        playsInline
+                        // Nothing downloads until the reader reaches the stage — the
+                        // poster included, since a poster is fetched whatever `preload`
+                        // says, and four of them landed in the initial payload. The
+                        // poster is the clip's own first frame, so the still and the
+                        // moving picture are the same image.
+                        poster={stageReady ? `/images/guide/${screen}.jpg` : undefined}
+                        // Only the step being watched is downloaded. Preloading all four
+                        // put 2.4 MB on the reader's connection for three screens they
+                        // may never open; the poster covers the moment after a tap.
+                        preload={stageReady && guideStep === index ? "auto" : "none"}
+                        ref={(node) => { guideClipRefs.current[index] = node; }}
+                        style={{ aspectRatio: `${GUIDE_FRAME.width} / ${GUIDE_FRAME.height}` }}
+                      >
+                        <source src={`/images/guide/${screen}.mp4`} type="video/mp4" />
+                      </video>
+                    ))}
                   </div>
                 </div>
               </div>

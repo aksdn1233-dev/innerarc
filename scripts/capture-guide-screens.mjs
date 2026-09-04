@@ -1,67 +1,80 @@
 /**
- * Captures the four screens the home walkthrough shows.
+ * Records the four screens the home walkthrough shows.
  *
- * The walkthrough claims to be showing the actual product, so the pictures on it are
- * taken from the actual product rather than drawn. Re-run this whenever the question
- * list, the free-reading intake, the free result, or the paid report changes visually:
+ * The walkthrough claims to be showing the actual product, so the clips on it are
+ * recordings of the actual product being used rather than drawings of it. Re-run this
+ * whenever the question list, the free-reading intake, the free result, or the paid
+ * report changes visually:
  *
- *   node scripts/serve-production.mjs        # in one shell, after `pnpm build`
+ *   pnpm build
+ *   node scripts/serve-production.mjs        # in one shell
  *   node scripts/capture-guide-screens.mjs   # in another
  *
- * Every capture ends on an element boundary measured in the page, never at a fixed
- * pixel height, so no screen is cut through a line of Korean text.
+ * Each recording is a scripted run of the real flow inside a phone-sized viewport, so a
+ * long screen is read by scrolling exactly as a visitor reads it — nothing is cropped to
+ * fit a frame. Frames are grabbed as retina screenshots rather than through Playwright's
+ * own video encoder, which never scales a page up and so would leave a 390px page in the
+ * corner of a 780px canvas. Output is H.264 MP4 plus a poster frame, in public/images/guide.
  */
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, rm, writeFile } from "node:fs/promises";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
 import { chromium } from "@playwright/test";
 
+const run = promisify(execFile);
 const BASE = process.env.CAPTURE_BASE_URL ?? "http://127.0.0.1:3000";
 const OUT = new URL("../public/images/guide/", import.meta.url);
+const OUT_DIR = OUT.pathname;
+const WORK = new URL("../.guide-recordings/", import.meta.url).pathname;
+
+/** The frame the stage renders, matching the reference's portrait proportion. */
 const WIDTH = 390;
-/** Retina, so the screenshots stay legible when the frame scales them down. */
+const HEIGHT = 531;
+/** Recorded at 2x, so the clip is sharp in the stage on a phone screen. */
 const SCALE = 2;
+const FPS = 20;
 const SAMPLE_BIRTH_DATE = "1994-11-04";
 
-/**
- * Page-coordinate box of an element.
- *
- * Everything here works in page coordinates, because `screenshot({ fullPage, clip })`
- * does. Playwright's own `boundingBox()` is viewport-relative, and mixing the two is
- * how the first version of this script ended up clipping outside the image.
- */
-async function pageBox(page, selector) {
-  return page.evaluate((sel) => {
-    const node = document.querySelector(sel);
-    if (!node) return null;
-    const rect = node.getBoundingClientRect();
-    return {
-      x: Math.round(rect.left + window.scrollX),
-      y: Math.round(rect.top + window.scrollY),
-      width: Math.round(rect.width),
-      height: Math.round(rect.height),
-    };
-  }, selector);
-}
+/** Collects frames for one clip: every screenshot is one 1/FPS of the finished video. */
+class Reel {
+  constructor(page, dir) {
+    this.page = page;
+    this.dir = dir;
+    this.count = 0;
+    this.last = null;
+  }
 
-/** Bottom of the last element that fits within `limit`, so nothing is sliced. */
-async function boundaryBelow(page, selector, limit) {
-  return page.evaluate(([sel, max]) => {
-    let bottom = 0;
-    for (const node of document.querySelectorAll(sel)) {
-      const rect = node.getBoundingClientRect();
-      const nodeBottom = rect.top + window.scrollY + rect.height;
-      if (nodeBottom <= max) bottom = Math.max(bottom, nodeBottom);
+  async shot() {
+    this.last = await this.page.screenshot({ type: "png", animations: "disabled" });
+    await this.write(this.last);
+  }
+
+  async write(buffer) {
+    this.count += 1;
+    await writeFile(`${this.dir}/${String(this.count).padStart(5, "0")}.png`, buffer);
+  }
+
+  /** Rests on the screen. The picture is not changing, so the frame is simply repeated. */
+  async hold(seconds) {
+    if (!this.last) await this.shot();
+    for (let frame = 1; frame < Math.round(seconds * FPS); frame += 1) await this.write(this.last);
+  }
+
+  /** A readable reading pace: fast enough to hold attention, slow enough to follow. */
+  async glide(distance, seconds) {
+    const steps = Math.round(seconds * FPS);
+    for (let step = 1; step <= steps; step += 1) {
+      // Eased, so the scroll starts and stops the way a thumb does.
+      const before = (step - 1) / steps;
+      const now = step / steps;
+      const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
+      await this.page.mouse.wheel(0, distance * (ease(now) - ease(before)));
+      await this.shot();
     }
-    return Math.round(bottom);
-  }, [selector, limit]);
+  }
 }
 
-async function shoot(page, name, clip) {
-  const buffer = await page.screenshot({ fullPage: true, clip, type: "jpeg", quality: 88 });
-  await writeFile(new URL(`${name}.jpg`, OUT), buffer);
-  return { name, height: Math.round(clip.height), bytes: buffer.byteLength };
-}
-
-async function quietMedia(page) {
+async function silence(page) {
   await page.addInitScript(() => {
     document.addEventListener("DOMContentLoaded", () => {
       document.querySelectorAll("video,audio").forEach((media) => {
@@ -71,85 +84,121 @@ async function quietMedia(page) {
   });
 }
 
-const browser = await chromium.launch();
-const page = await browser.newPage({
-  viewport: { width: WIDTH, height: 2400 },
-  deviceScaleFactor: SCALE,
-  reducedMotion: "reduce",
-});
-await quietMedia(page);
+async function record(browser, name, act) {
+  const dir = `${WORK}${name}`;
+  await mkdir(dir, { recursive: true });
+  const context = await browser.newContext({
+    viewport: { width: WIDTH, height: HEIGHT },
+    deviceScaleFactor: SCALE,
+    reducedMotion: "reduce",
+  });
+  const page = await context.newPage();
+  await silence(page);
+  const reel = new Reel(page, dir);
+  await act(page, reel);
+  await context.close();
+  if (reel.count < FPS * 3) throw new Error(`${name}: only ${reel.count} frames recorded`);
+
+  // H.264 so it plays on iOS Safari, faststart so it can begin before it finishes
+  // downloading, and no audio track at all.
+  await run("ffmpeg", [
+    "-y", "-framerate", String(FPS), "-i", `${dir}/%05d.png`,
+    "-an",
+    "-c:v", "libx264", "-profile:v", "high", "-pix_fmt", "yuv420p",
+    "-crf", "33", "-preset", "slow", "-movflags", "+faststart",
+    `${OUT_DIR}${name}.mp4`,
+  ]);
+  // The poster is the clip's own first frame, so the still and the moving picture are
+  // the same image and nothing jumps when playback starts.
+  await run("ffmpeg", [
+    "-y", "-i", `${OUT_DIR}${name}.mp4`,
+    "-frames:v", "1", "-q:v", "3",
+    `${OUT_DIR}${name}.jpg`,
+  ]);
+  return { name, frames: reel.count };
+}
+
+async function dismissCampaign(page) {
+  const close = page.getByRole("button", { name: "팝업 닫기" });
+  if (await close.count()) await close.click();
+}
+
+await rm(WORK, { recursive: true, force: true });
 await mkdir(OUT, { recursive: true });
+const browser = await chromium.launch();
 const captured = [];
 
-/* 01 — the question list, as it stands on the home page. */
-await page.goto(`${BASE}/ko`, { waitUntil: "load" });
-await page.waitForTimeout(1200);
-const closeCampaign = page.getByRole("button", { name: "팝업 닫기" });
-if (await closeCampaign.count()) await closeCampaign.click();
-await page.locator("#questions").scrollIntoViewIfNeeded();
-await page.waitForTimeout(600);
-{
-  const box = await pageBox(page, "#questions .entry-question-grid");
-  captured.push(await shoot(page, "questions", {
-    x: 0,
-    y: Math.max(0, box.y - 14),
-    width: WIDTH,
-    height: box.height + 28,
-  }));
-}
+/* 01 — choosing a question on the home page. */
+captured.push(await record(browser, "questions", async (page, reel) => {
+  await page.goto(`${BASE}/ko`, { waitUntil: "load" });
+  await page.waitForTimeout(1200);
+  await dismissCampaign(page);
+  // Start on the section heading and stop at the end of the question list. A fixed
+  // distance overshot it and spent half the clip on the section below, which is not the
+  // screen the step is naming.
+  const questions = await page.evaluate(() => {
+    const section = document.querySelector("#questions");
+    const grid = document.querySelector("#questions .entry-question-grid");
+    const top = section.getBoundingClientRect().top + window.scrollY - 16;
+    window.scrollTo(0, top);
+    const end = grid.getBoundingClientRect().bottom + window.scrollY - window.innerHeight + 24;
+    return Math.max(0, end - top);
+  });
+  await page.waitForTimeout(900);
+  await reel.hold(1.2);
+  await reel.glide(questions, 3.4);
+  await reel.hold(0.6);
+  await page.locator('#questions .entry-question:has-text("돈·사업")').hover();
+  await reel.shot();
+  await reel.hold(1.6);
+}));
 
-/* 02 — the free-reading intake, exactly as a visitor first meets it. */
-await page.goto(`${BASE}/ko/numerology`, { waitUntil: "load" });
-await page.waitForTimeout(1200);
-await page.locator("#birthDate").fill(SAMPLE_BIRTH_DATE);
-await page.locator('input[name="privacyRequired"]').check();
-await page.locator("#onboarding").scrollIntoViewIfNeeded();
-await page.waitForTimeout(500);
-{
-  const form = await pageBox(page, "#onboarding .form-card");
-  const limit = form.y + Math.min(form.height, 1100);
-  const bottom = await boundaryBelow(page, "#onboarding .form-card > *", limit);
-  if (bottom <= form.y) throw new Error("intake: no element boundary inside the limit");
-  captured.push(await shoot(page, "intake", {
-    x: 0,
-    y: Math.max(0, form.y - 12),
-    width: WIDTH,
-    height: bottom - form.y + 24,
-  }));
-}
+/* 02 — the intake, filled in the way a visitor fills it. */
+captured.push(await record(browser, "intake", async (page, reel) => {
+  await page.goto(`${BASE}/ko/numerology`, { waitUntil: "load" });
+  await page.waitForTimeout(1200);
+  await page.locator("#onboarding").scrollIntoViewIfNeeded();
+  await page.waitForTimeout(700);
+  await reel.hold(1.2);
+  await page.locator("#birthDate").fill(SAMPLE_BIRTH_DATE);
+  await reel.shot();
+  await reel.hold(1.2);
+  await reel.glide(420, 2.2);
+  await page.locator('input[name="privacyRequired"]').check();
+  await reel.shot();
+  await reel.hold(1.6);
+}));
 
-/* 03 — the free result, calculated by the engine for the sample date. */
-await page.locator('button[type="submit"]').first().click();
-await page.waitForSelector("#result", { timeout: 30_000 });
-await page.waitForTimeout(2500);
-{
-  const card = await pageBox(page, "#result .result-card");
-  const limit = card.y + 1400;
-  const bottom = await boundaryBelow(page, "#result .result-card > *", limit);
-  if (bottom <= card.y) throw new Error("free result: no element boundary inside the limit");
-  captured.push(await shoot(page, "free-result", {
-    x: 0,
-    y: Math.max(0, card.y - 12),
-    width: WIDTH,
-    height: bottom - card.y + 24,
-  }));
-}
+/* 03 — the free result, calculated live and then read. */
+captured.push(await record(browser, "free-result", async (page, reel) => {
+  await page.goto(`${BASE}/ko/numerology`, { waitUntil: "load" });
+  await page.waitForTimeout(1000);
+  await page.locator("#birthDate").fill(SAMPLE_BIRTH_DATE);
+  await page.locator('input[name="privacyRequired"]').check();
+  await page.locator('button[type="submit"]').first().click();
+  await page.waitForSelector("#result", { timeout: 30_000 });
+  await page.waitForTimeout(1500);
+  await page.locator("#result .result-card").scrollIntoViewIfNeeded();
+  await page.waitForTimeout(700);
+  await reel.hold(1.2);
+  await reel.glide(1500, 5.5);
+  await reel.hold(1);
+}));
 
-/* 04 — the paid report itself, from the published sample the generator produces. */
-await page.goto(`${BASE}/ko/samples/detail`, { waitUntil: "load" });
-await page.waitForTimeout(2500);
-{
-  const head = await pageBox(page, ".sample-report-head");
-  const limit = head.y + 1500;
-  const bottom = await boundaryBelow(page, ".webtoon-story-panel, .sample-report-head", limit);
-  if (bottom <= head.y) throw new Error("report: no element boundary inside the limit");
-  captured.push(await shoot(page, "report", {
-    x: 0,
-    y: Math.max(0, head.y - 12),
-    width: WIDTH,
-    height: bottom - head.y + 24,
-  }));
-}
+/* 04 — the paid report, read the way a buyer reads it. */
+captured.push(await record(browser, "report", async (page, reel) => {
+  await page.goto(`${BASE}/ko/samples/detail`, { waitUntil: "load" });
+  await page.waitForTimeout(2200);
+  await reel.hold(1.2);
+  await reel.glide(2100, 6.5);
+  await reel.hold(1);
+}));
 
-console.log(JSON.stringify({ base: BASE, width: WIDTH, scale: SCALE, captured }, null, 2));
 await browser.close();
+await rm(WORK, { recursive: true, force: true });
+console.log(JSON.stringify({
+  base: BASE,
+  frame: `${WIDTH * SCALE}x${HEIGHT * SCALE}`,
+  fps: FPS,
+  captured,
+}, null, 2));

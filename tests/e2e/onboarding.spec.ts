@@ -739,45 +739,44 @@ test("first-visit guidance appears once and can be reopened", async ({ page }) =
   await expect(page.locator('.home-nav a:has-text("이용 방법")')).toHaveAttribute("href", "#guide");
 });
 
-test("the walkthrough shows captured screens with the guidance on the stage", async ({ page }) => {
-  // The composition comes from the live broadcast overlay: the actual screen fills a
-  // framed stage, a badge names it, and the instruction sits in a panel at the bottom of
-  // that same frame with one concrete example.
+test("the walkthrough plays the real screen with the guidance above it", async ({ page }) => {
+  // The composition comes from the reference: the instruction is a heading above the
+  // frame, and the frame holds nothing but a recording of the product being used.
   await page.goto("/ko");
   await dismissCampaign(page);
+  const walk = page.locator("#guide .guide-walk");
   const stage = page.locator("#guide .guide-stage");
   const tabs = page.locator("#guide .guide-steps-tabs button");
   await expect(tabs).toHaveCount(4);
   await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
-  await expect(stage.locator(".guide-stage-badge")).toHaveText("실제 화면");
-
+  await expect(walk.locator(".guide-stage-eyebrow")).toHaveText("실제 화면");
   await stage.scrollIntoViewIfNeeded();
 
   const expected = [
-    ["questions.jpg", "지금 가장 걸리는 질문을 고릅니다", "지금 하는 일이 돈이 될까요?"],
-    ["intake.jpg", "양력 생년월일만 넣습니다", "1994-11-04"],
-    ["무료 결과", "결제 없이 기본 패턴을 봅니다", "계산 근거까지 공개"],
-    ["report.jpg", "고른 질문으로 이어서 봅니다", "39,000원"],
+    ["questions.mp4", "지금 가장 걸리는 질문을 고릅니다", "지금 하는 일이 돈이 될까요?"],
+    ["intake.mp4", "양력 생년월일만 넣습니다", "1994-11-04"],
+    ["free-result.mp4", "결제 없이 기본 패턴을 봅니다", "계산 근거까지 공개"],
+    ["report.mp4", "고른 질문으로 이어서 봅니다", "39,000원"],
   ];
 
-  for (const [index, [, request, example]] of expected.entries()) {
+  for (const [index, [clip, request, example]] of expected.entries()) {
     await tabs.nth(index).click();
-    await expect(stage.locator(".guide-stage-request")).toHaveText(request);
-    await expect(stage.locator(".guide-stage-example")).toContainText(example);
-    // Exactly one capture is on screen, and it is the one this step names.
-    const shown = stage.locator(".guide-stage-shot:not([hidden])");
+    await expect(walk.locator(".guide-stage-title strong")).toHaveText(request);
+    await expect(walk.locator(".guide-stage-title span")).toContainText(example);
+
+    // Exactly one clip is on screen, it is this step's, and it actually has frames.
+    const shown = stage.locator(".guide-stage-clip:not([hidden])");
     await expect(shown).toHaveCount(1);
-    await expect(shown).toHaveAttribute("alt", request);
-    // The picture actually decoded — a broken capture would render 0 wide.
+    await expect(shown.locator("source")).toHaveAttribute("src", `/images/guide/${clip}`);
+    await expect(shown).toHaveAttribute("poster", `/images/guide/${clip.replace(".mp4", ".jpg")}`);
     await expect.poll(
-      () => shown.evaluate((image) => (image as HTMLImageElement).complete
-        && (image as HTMLImageElement).naturalWidth > 0),
+      () => shown.evaluate((video) => (video as HTMLVideoElement).videoWidth),
       { timeout: 20_000 },
-    ).toBe(true);
+    ).toBeGreaterThan(0);
   }
 
-  // Nothing in the stage takes focus: it is a picture, not a form.
-  expect(await stage.locator("input, select, textarea, a, button").count()).toBe(0);
+  // The guidance never sits on the picture, and the frame takes no focus.
+  expect(await stage.locator("input, select, textarea, a, button, p, h2, h3").count()).toBe(0);
 
   // Arrow keys move between steps, as a tablist is expected to.
   await tabs.nth(3).press("ArrowRight");

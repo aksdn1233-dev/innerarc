@@ -248,55 +248,59 @@ describe("the free reading shows less than the engine calculates", () => {
   });
 });
 
-describe("the walkthrough shows captured screens of the running product", () => {
+describe("the walkthrough plays recordings of the running product", () => {
   /**
-   * The stage is labelled 실제 화면, so the pictures on it have to come from the product.
-   * They are captured by a committed script rather than drawn, and the script cuts each
-   * capture on an element boundary — an earlier version used a fixed fallback height and
-   * sliced a heading in half. These assertions keep the files, the script, and the sizes
-   * the component reserves in agreement.
+   * The stage claims to be showing the real screen, so what plays on it is a recording
+   * of the real screen, made by a committed script rather than drawn. These keep the
+   * files, the script, and what the component asks for in agreement.
    */
   const screens = ["questions", "intake", "free-result", "report"] as const;
 
-  it("ships a capture for every step, none of them trivially small", async () => {
+  it("ships a clip and a poster for every step", async () => {
     for (const name of screens) {
-      const file = await readFile(`public/images/guide/${name}.jpg`);
-      expect(file.byteLength).toBeGreaterThan(20_000);
-      expect(file.byteLength).toBeLessThan(400_000);
+      const clip = await readFile(`public/images/guide/${name}.mp4`);
+      const poster = await readFile(`public/images/guide/${name}.jpg`);
+      expect(clip.byteLength).toBeGreaterThan(20_000);
+      // Only the step being watched downloads, but keep each one modest anyway.
+      expect(clip.byteLength).toBeLessThan(1_600_000);
+      expect(poster.byteLength).toBeGreaterThan(5_000);
+      // H.264 in an MP4 container, so it plays on iOS Safari.
+      expect(clip.subarray(4, 8).toString("latin1")).toBe("ftyp");
+      expect(clip.subarray(0, 4_096).toString("latin1")).toContain("avc1");
     }
   });
 
-  it("reserves the intrinsic size of each capture so the stage cannot jump", async () => {
-    const declared = [...homeExperience.matchAll(
-      /\{ file: "([a-z-]+\.jpg)", width: (\d+), height: (\d+) \}/g,
-    )].map(([, file, width, height]) => ({ file, width: Number(width), height: Number(height) }));
-    expect(declared.map((entry) => entry.file)).toEqual(screens.map((name) => `${name}.jpg`));
-    for (const entry of declared) {
-      const file = await readFile(`public/images/guide/${entry.file}`);
-      // JPEG SOF0/SOF2 frame header carries the real dimensions.
-      let size: { width: number; height: number } | null = null;
-      for (let index = 2; index + 9 < file.length; index += 1) {
-        if (file[index] !== 0xff) continue;
-        const marker = file[index + 1]!;
-        if (marker !== 0xc0 && marker !== 0xc2) continue;
-        size = { height: file.readUInt16BE(index + 5), width: file.readUInt16BE(index + 7) };
-        break;
-      }
-      expect(size).toEqual({ width: entry.width, height: entry.height });
-    }
+  it("asks for exactly those clips, in order", () => {
+    const declared = /const GUIDE_SCREENS = \[([\s\S]*?)\] as const;/.exec(homeExperience)?.[1] ?? "";
+    expect([...declared.matchAll(/"([a-z-]+)"/g)].map(([, name]) => name)).toEqual([...screens]);
+    expect(homeExperience).toContain('`/images/guide/${screen}.jpg`');
+    expect(homeExperience).toContain('src={`/images/guide/${screen}.mp4`}');
   });
 
-  it("keeps the capture script committed, on the published sample birth date", async () => {
+  it("keeps the recording script committed, on the published sample birth date", async () => {
     const script = await readFile("scripts/capture-guide-screens.mjs", "utf8");
     expect(script).toContain(SAMPLE_REPORT_BIRTH_DATE);
     expect(script).toContain("/ko/samples/detail");
-    // A silent fallback height is what cut a screen before; each measured capture throws.
-    expect([...script.matchAll(/no element boundary inside the limit/g)]).toHaveLength(3);
+    expect(script).toContain("libx264");
   });
 
-  it("puts no interactive control inside the stage", () => {
-    const stage = /className="guide-stage"[\s\S]*?guide-stage-panel[\s\S]*?<\/div>/.exec(homeExperience)?.[0] ?? "";
+  it("holds nothing but the picture inside the frame", () => {
+    const source = homeExperience.slice(
+      homeExperience.indexOf('<div className="guide-stage" ref={guideStageRef}>'),
+    );
+    const stage = source.slice(0, source.indexOf("</div>"));
     expect(stage).not.toBe("");
-    expect(stage).not.toMatch(/<input|<select|<textarea|<button|<Link/);
+    expect(stage).not.toMatch(/<input|<select|<textarea|<button|<Link|<p |<h2|<h3/);
+  });
+
+  it("downloads only the step being watched, and only once the stage is reached", () => {
+    expect(homeExperience).toContain('preload={stageReady && guideStep === index ? "auto" : "none"}');
+    // A poster is fetched whatever `preload` says, so it waits for the stage too.
+    expect(homeExperience).toContain("poster={stageReady ?");
+  });
+
+  it("leaves a visitor who asked for less motion the poster instead", () => {
+    expect(homeExperience).toContain('window.matchMedia("(prefers-reduced-motion: reduce)").matches');
+    expect(homeExperience).toMatch(/if \(index !== guideStep \|\| !stageReady \|\| still\) \{/);
   });
 });

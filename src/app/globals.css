@@ -10765,83 +10765,69 @@ summary {
 /* The stage: one captured screen filling a framed surface, a badge naming it, and
    the guidance in a panel at the bottom of the same frame. Straight from the live
    broadcast overlay — the picture is the thing, the instruction rides on it. */
+/* The instruction is a heading above the frame, and the frame holds nothing but the
+   screen — the way the reference lays it out. Putting the guidance on the picture would
+   cover the product it is pointing at. */
+.guide-stage-eyebrow {
+  margin: 22px 0 0;
+  color: var(--clay);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.guide-stage-title {
+  margin: 8px 0 18px;
+}
+
+.guide-stage-title strong {
+  display: block;
+  font: 700 clamp(1.35rem, 4vw, 1.9rem)/1.32 var(--display-font);
+  letter-spacing: -0.035em;
+  word-break: keep-all;
+}
+
+.guide-stage-title span {
+  display: block;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.94rem;
+  line-height: 1.7;
+  word-break: keep-all;
+}
+
+/* The frame has to read as a separate screen. Three of the four recordings are of cream
+   pages on a cream section, so without a border and a shadow the picture dissolves into
+   the page and the reader cannot tell where the product starts. */
 .guide-stage {
-  position: relative;
   overflow: hidden;
-  border: 1px solid rgba(200, 155, 85, 0.28);
-  border-radius: 16px;
+  border: 1px solid rgba(27, 27, 30, 0.14);
+  border-radius: 18px;
   background: var(--ink-v4, #07111f);
+  box-shadow: 0 18px 40px -26px rgba(27, 27, 30, 0.55);
 }
 
-/* The section's own gutter left the captured phone screen rendering at 73% of the size
-   it was taken at, which is where Korean body text starts to break down. On a phone the
-   stage takes the full shell width instead. */
-@media (max-width: 680px) {
-  .guide-stage {
-    margin-inline: calc(clamp(22px, 6vw, 44px) * -1);
-    border-radius: 14px;
-  }
-}
-
-.guide-stage-shot {
+.guide-stage-clip {
   display: block;
   width: 100%;
   height: auto;
 }
 
 /* An author `display` beats the UA rule behind the `hidden` attribute, so without this
-   every captured screen renders at once, stacked. */
-.guide-stage-shot[hidden] {
+   every recorded screen renders at once, stacked. */
+.guide-stage-clip[hidden] {
   display: none;
 }
 
-/* Holds the exact shape of the step's capture until the pictures mount, so arriving at
-   the stage does not shift the page under the reader. */
-.guide-stage-hold {
-  width: 100%;
+/* Full-bleed was tried and dropped: it put the frame's edge off-screen, and a cream
+   recording then looked like more of the page. The clip is recorded at 2x, so the gutter
+   costs sharpness it can afford. */
+@media (max-width: 680px) {
+  .guide-stage {
+    margin-inline: calc(clamp(22px, 6vw, 44px) * -0.5);
+  }
 }
-
-/* In a strip of its own, not floating on the picture: overlaid, it sat on the first
-   question card. The broadcast puts its LIVE badge on scenery; here the picture is the
-   product and nothing may cover it. */
-.guide-stage-badge {
-  display: block;
-  padding: 11px clamp(14px, 4vw, 18px) 10px;
-  border-bottom: 1px solid rgba(200, 155, 85, 0.22);
-  background: rgba(12, 10, 20, 0.94);
-  color: var(--gold-v4, #c89b55);
-  font-size: 0.64rem;
-  font-weight: 800;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-/* In the frame rather than over the picture: on the broadcast the picture behind the
-   panel is scenery, but here it is the product, and covering the bottom of a report
-   would hide the part a buyer came to look at. */
-.guide-stage-panel {
-  padding: 15px clamp(15px, 4vw, 22px) 17px;
-  border-top: 1px solid rgba(200, 155, 85, 0.22);
-  background: rgba(12, 10, 20, 0.94);
-  color: var(--ivory-v4, #f7f1e7);
-}
-
-.guide-stage-request {
-  margin: 0;
-  font-size: clamp(0.98rem, 1.6vw, 1.12rem);
-  font-weight: 800;
-  line-height: 1.45;
-  word-break: keep-all;
-}
-
-.guide-stage-example {
-  margin: 7px 0 0;
-  color: rgba(247, 241, 231, 0.72);
-  font-size: 0.86rem;
-  line-height: 1.6;
-  word-break: keep-all;
-}
-
 
 .journey-guide-action {
   min-height: 44px;

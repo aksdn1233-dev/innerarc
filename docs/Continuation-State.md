@@ -4,23 +4,32 @@ Last updated: 2026-08-02 (mobile trust and checkout-conversion refinement)<br>
 Current version: 0.20.1
 Overall progress: 97% (web MVP code 100%; production deployment and payment path 98%; native app not started)
 
-## 2026-09-03 — The walkthrough shows captured screens on a stage
+## 2026-09-04 — The walkthrough plays the real screen
 
-- The home "이용 방법" was four lines of prose. It is now the broadcast overlay's
-  composition: the actual screen fills a framed stage, a 실제 화면 badge names it in its own
-  strip, and the guidance sits in a panel at the bottom of the same frame with one concrete
-  example. A step tablist switches screens; arrow keys work.
-- The four pictures are captures of the running product, committed under
-  `public/images/guide/` and produced by `scripts/capture-guide-screens.mjs`: the question
-  list, the intake with the date filled in, the free result the engine calculates for
-  1994-11-04, and `/ko/samples/detail` — the paid report itself, shown whole.
-- Each capture is cut on an element boundary measured in the page. An earlier version used
-  a fixed fallback height and sliced a heading; every measured capture now throws instead.
-  Captured as JPEG at 2x, which took the four screens from 2.0 MB to 683 KB.
-- The stage holds no interactive element, and the badge and panel sit outside the picture
-  rather than over it, because here the picture is the product rather than scenery.
-- Re-run the capture script whenever one of those screens changes: a stale capture makes
-  the 실제 화면 label as false as a drawing would.
+- The home "이용 방법" was four lines of prose, then a stage of stills. It is now the
+  composition of Naver's AI탭 page (`mkt.naver.com/aitab`), which the owner gave as the
+  reference: the instruction is a heading above the frame with one concrete example under
+  it, and the frame below holds nothing but the product, playing. A step tablist switches
+  screens; arrow keys work.
+- The four clips are recordings of the running product, committed under
+  `public/images/guide/` with a poster each, and produced by
+  `scripts/capture-guide-screens.mjs`: the question list, the intake with the date typed,
+  the free result the engine calculates for 1994-11-04, and `/ko/samples/detail` — the paid
+  report itself. A screen taller than the frame scrolls inside it, so nothing is cropped;
+  this is what the stills could not do.
+- Frames are 2x screenshots encoded at 20fps rather than Playwright's own video, which
+  never scales a page up and so left the 390px page in the corner of a 780px canvas.
+  Nothing downloads — the posters included, since a poster is fetched whatever `preload`
+  says, and four of them broke the `/en` payload budget — until the reader reaches the
+  stage, and then only the step being watched.
+- The stage holds no interactive element, and the label and guidance sit above the picture
+  rather than over it, because here the picture is the product rather than scenery. A
+  reader who asked for reduced motion is left the poster.
+- The frame keeps its border, radius, shadow and gutter. Full-bleed was tried and dropped:
+  three of the four recordings are cream pages on a cream section, so with the edge off
+  screen the picture dissolved into the page.
+- Re-run the recording script whenever one of those screens changes: a stale recording
+  makes the 실제 화면 label as false as a drawing would.
 
 ## 2026-09-02 — Deployment restored, and the image binding it exposed
 
