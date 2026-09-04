@@ -540,7 +540,7 @@ export function PlansExperience({
   }
 
   return (
-    <main className="shell plans-shell" id="main-content" tabIndex={-1}>
+    <main className="shell plans-shell night-ground" id="main-content" tabIndex={-1}>
       <header className="topbar">
         <Link className="brand" href={`/${locale}`}>
             <strong>태령당</strong>

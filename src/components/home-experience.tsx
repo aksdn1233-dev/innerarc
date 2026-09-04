@@ -726,7 +726,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
           </section>
         </div>
       )}
-      <main className="shell home-shell" id="main-content" tabIndex={-1}>
+      <main className="shell home-shell night-ground" id="main-content" tabIndex={-1}>
         {/* Over the opening screen the header is chrome, not content: it goes transparent
             and hands its links to a panel, so nothing competes with the title. */}
         <header className="topbar home-topbar is-over-cinema">

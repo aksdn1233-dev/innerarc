@@ -15,10 +15,16 @@ const DEFAULT_DECODED_BUDGET = 1_200_000;
  * about 5.2 KB; replacing them with captured screenshots on one framed stage gave most of
  * that back, so the ceiling comes down with it. Measured at 201.9 KB.
  *
+ * Raised to 208,000 on 2026-09-04 for the night ground on the home, free reading and
+ * pricing surfaces. Two thirds of it is one mechanical change: every near-white fill in
+ * the stylesheet now reads `var(--card, <its own colour>)` so a ground change can reach
+ * it, which costs about 13 bytes each across 91 declarations. The rest is the scoped
+ * token block and the surfaces that stopped being cards. Measured at 206.6 KB.
+ *
  * The allowance stays narrow on purpose: another global screen still cannot be absorbed
  * without an explicit decision, which is the only reason these numbers move at all.
  */
-const DEFAULT_CSS_DECODED_BUDGET = 203_000;
+const DEFAULT_CSS_DECODED_BUDGET = 208_000;
 
 /**
  * The home page carries the 태율 hero clip, its iOS animated fallback, audio, and poster,
@@ -45,7 +51,7 @@ const routes = [
   // while and the six guide cuts had grown past the shared 1.2 MB default unnoticed. The
   // number below records the measured state rather than pretending it is new; the guide
   // artwork on this route is the thing to shrink, and that is a separate change.
-  { path: "/en/fortune", resources: 52, cssDecoded: 209_000, decoded: 1_260_000 },
+  { path: "/en/fortune", resources: 52, cssDecoded: 214_000, decoded: 1_260_000 },
   { path: "/en/saju" },
 ] as const satisfies readonly { path: string; transfer?: number; decoded?: number; resources?: number; cssDecoded?: number }[];
 

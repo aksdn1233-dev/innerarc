@@ -62,7 +62,7 @@ export function CharacterLayer({ scene, priority }: { scene: WebtoonScene; prior
 
 export function SpeechBubble({ children, speaker }: { children: ReactNode; speaker: string }) {
   return (
-    <div className={styles.bubble}>
+    <div className={`${styles.bubble} paper-island`}>
       <strong className={styles.speaker}>{speaker}</strong>
       {children}
     </div>
@@ -144,7 +144,7 @@ export function NumerologyWebtoonReading({ locale, result, context, archetype, s
       <div className={styles.panels}>
         {panels.map((panel, index) => <WebtoonPanel index={index} key={`${panel.scene.character}:${index}`} panel={panel} />)}
       </div>
-      <p className={styles.boundary}>
+      <p className={`${styles.boundary} paper-island`}>
         {ko
           ? "수비학은 상징을 활용한 자기 성찰 도구이며, 과학적 예측·진단·치료 또는 전문적인 조언을 대신하지 않습니다."
           : "Numerology is a symbolic reflection tool, not scientific prediction, diagnosis, treatment, or professional advice."}

@@ -170,7 +170,44 @@ Rules that keep the 실제 화면 label honest:
 - The stage holds no `<input>`, `<button>`, or link, so a preview never puts a dead control
   in the keyboard path.
 
-## 6. Ink and ground
+## 6. The ground is night
+
+**태령당 is a night-time hall, and the page says so.** The home, the free reading and the
+pricing page are painted on the same night the opening screen, the paid report and the
+character panels already used. Before this they were one flat warm beige — 87% of the home
+by measured pixel — with beige cards floating on it and gold pills on those. That is the
+look of a page nobody chose, and three of the things §1 already forbids arriving together:
+card inside card, badge rows, one weight for everything.
+
+What the change actually is, beyond the colour:
+
+- **The questions are a list, not a deck.** A hairline and the space between rows separate
+  them as well as a border did, and the question itself is the loudest thing in the row —
+  which is what a visitor is choosing between.
+- **The walkthrough steps are text.** The number in gold, the label beside it, and a gold
+  rule under the one playing; that rule is also the clip's progress, so the one mark that
+  says "this one" is the same mark that says how long it has left.
+- **The pricing cards are not cards.** Hairline-separated, price carrying the weight, the
+  common choice marked in gold instead of a plum pill.
+- **One strong call to action, in gold.** The sage-on-white button was a third colour doing
+  a job gold was already doing upstairs.
+
+How it is built, because this is the part that breaks:
+
+- The night is scoped with `body:has(.night-ground)`, and `.night-ground` is a class on the
+  three shells. The readings this pass does not cover are still built light and keep
+  working — until they get the same treatment, which is a separate decision.
+- **Every near-white fill in the stylesheet reads `var(--card, <its own colour>)`.** Chasing
+  light cards one selector at a time kept missing them; catching them by their colour did
+  not. `--card` is defined once, inside the night scope.
+- Islands of paper stay paper. A character's speech bubble is the webtoon's own material and
+  the share-card preview has to look like the image it will produce, so both carry the light
+  tokens with them via `.paper-island` rather than inheriting an ink the paper cannot show.
+- Two body-text shades and two label shades were written as literals in fifteen rules, so no
+  theme could reach them. They are `--ink-soft`, `--ink-quiet`, `--gold-ink` and `--clay-ink`
+  now, with their original light values unchanged.
+
+## 7. Ink and ground
 
 **Every screen states the ground its ink is standing on.** Two rules, both learned the hard
 way on the free result:

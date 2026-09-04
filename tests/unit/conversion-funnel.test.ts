@@ -29,6 +29,7 @@ const homeExperience = await readFile("src/components/home-experience.tsx", "utf
 const onboardingExperience = await readFile("src/components/onboarding-experience.tsx", "utf8");
 const shopExperience = await readFile("src/components/shop-experience.tsx", "utf8");
 const globals = await readFile("src/app/globals.css", "utf8");
+const numerologyWebtoon = await readFile("src/components/numerology-webtoon-reading.tsx", "utf8");
 
 describe("home navigation reaches something", () => {
   /**
@@ -282,6 +283,57 @@ describe("a free reading is readable on the ground it is painted on", () => {
       expect(ink).not.toBe("");
       for (const ground of grounds) expect(contrast(ink, ground)).toBeGreaterThanOrEqual(4.5);
     }
+  });
+});
+
+describe("the night ground", () => {
+  /**
+   * The home, the free reading and the pricing page are painted on the night the opening
+   * screen and the paid report already use; the rest of the site is still built light. The
+   * failure mode this guards is the one that has now happened in both directions: a ground
+   * changes, the ink that goes with it does not, and text lands on its own colour.
+   */
+  const nightBlock = /body:has\(\.night-ground\) \{([\s\S]*?)\n\}/.exec(globals)?.[1] ?? "";
+  const rootBlock = /^:root \{([\s\S]*?)\n\}/m.exec(globals)?.[1] ?? "";
+  const names = (block: string) =>
+    new Set([...block.matchAll(/^\s*(--[a-z-]+):/gm)].map(([, name]) => name));
+
+  it("gives every ink and ground token a night value", () => {
+    expect(rootBlock).not.toBe("");
+    expect(nightBlock).not.toBe("");
+    // Colours only: the radii, fonts and widths are the same on either ground.
+    const carried = [...names(rootBlock)].filter((name) =>
+      /ink|paper|muted|line|sage|clay|white/.test(name));
+    expect(carried.length).toBeGreaterThan(6);
+    for (const name of carried) expect(names(nightBlock)).toContain(name);
+  });
+
+  it("lets a ground change reach every near-white fill", () => {
+    // Chasing these one selector at a time kept missing some, so each one reads --card
+    // with its own colour as the fallback and the night scope re-points it once.
+    const literals = [...globals.matchAll(/^\s*background(?:-color)?: (#[0-9a-f]{6}|rgba?\([^)]*\));/gm)];
+    const light = literals.filter(([, value]) => {
+      const parts = value.startsWith("#")
+        ? [1, 3, 5].map((at) => parseInt(value.slice(at, at + 2), 16))
+        : value.match(/[\d.]+/g)!.map(Number);
+      const [r, g, b] = parts;
+      // A near-white wash at low alpha is a highlight on a dark surface, not a card: what
+      // this looks for is a fill opaque enough to become the ground under its own text.
+      if ((parts[3] ?? 1) < 0.3) return false;
+      const channel = (v: number) => (v / 255 <= 0.03928 ? v / 255 / 12.92 : ((v / 255 + 0.055) / 1.055) ** 2.4);
+      return 0.2126 * channel(r!) + 0.7152 * channel(g!) + 0.0722 * channel(b!) >= 0.7;
+    });
+    expect(light).toEqual([]);
+    expect(globals).toContain("--card: rgba(255, 255, 255, 0.032);");
+  });
+
+  it("keeps the paper the webtoon needs, with the ink that belongs on it", () => {
+    // A character's speech bubble is the webtoon's own material and stays paper, so it
+    // carries the light tokens rather than inheriting an ink it cannot show.
+    const island = /\.night-ground :is\(\.paper-island[\s\S]*?\n\}/.exec(globals)?.[0] ?? "";
+    expect(island).toContain("--ink: #20231f;");
+    expect(island).toContain("--card: #fffdf8;");
+    expect(numerologyWebtoon).toContain("paper-island");
   });
 });
 

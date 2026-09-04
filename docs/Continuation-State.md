@@ -4,6 +4,35 @@ Last updated: 2026-08-02 (mobile trust and checkout-conversion refinement)<br>
 Current version: 0.20.1
 Overall progress: 97% (web MVP code 100%; production deployment and payment path 98%; native app not started)
 
+## 2026-09-04 — The ground is night on the home, the free reading and the pricing page
+
+- The owner's words were that the beige everything is laid on looks like generic AI design,
+  and the measurement agreed: 87% of the home and 88% of the free result was one flat
+  `#f5f1e8`, carrying beige cards with gold pills on them. The parts of this product that
+  were actually designed — the opening screen, the paid report, the character panels — are
+  night, so the ground is night now on the three surfaces the owner chose. Three directions
+  were drawn and shown before any code changed; this is the one picked.
+- Beyond the colour: the questions became a hairline list instead of a deck of cards, the
+  walkthrough steps became text with the gold progress rule under the playing one, the
+  pricing cards lost their pastel top-borders and plum "가장 많이 선택" pill, and the primary
+  action is one gold button instead of sage-on-white.
+- Scoped with `body:has(.night-ground)` and a class on the three shells, so every reading
+  this pass does not cover stays light and keeps working.
+- **Every near-white fill in globals.css now reads `var(--card, <its own colour>)`** — 91
+  declarations, mechanically converted by luminance, fallbacks unchanged. Fixing them one
+  selector at a time took four rounds and kept missing some; this ended it. Translucent
+  washes below 0.3 alpha are left alone: those are highlights on dark surfaces, not cards.
+- `--ink-soft`, `--ink-quiet`, `--gold-ink` and `--clay-ink` are new tokens holding shades
+  that fifteen rules had written as literals, at their existing light values.
+- Paper islands stay paper: the character speech bubbles and the share-card preview carry
+  the light tokens through `.paper-island`.
+- Measured after: home 0 contrast failures across 74 text boxes, pricing 3 (all the gold
+  button's rounded corners), free reading 10 (the character-name pills, verified by eye).
+  Full e2e 221 passed including axe on `/ko/reading`, `/en/reading` and the generated
+  context card, which is where the half-migrated surfaces surfaced first.
+- The CSS budget moved 203 KB → 208 KB, two thirds of it the `--card` conversion.
+- Guide clips re-recorded: they show the product, and the product changed.
+
 ## 2026-09-04 — The walkthrough walks, and the free result is readable
 
 - The walkthrough advanced only when a tab was tapped, which the reference does not: it

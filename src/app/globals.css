@@ -9,6 +9,12 @@
      --paper-deep, muted 4.81 and 4.29, against the 4.5 those sizes need. Darkened only far
      enough to clear it on every ground the site paints, terracotta and grey intact. */
   --muted: #5f625a;
+  /* Two darker body-text shades that fifteen rules had written as literals. Same values
+     as before; they are tokens now so a ground change can reach them. */
+  --ink-soft: #444840;
+  --ink-quiet: #555950;
+  --gold-ink: #8a6232;
+  --clay-ink: #95523b;
   --line: #d7d0c3;
   --sage: #637563;
   --sage-dark: #3f5142;
@@ -134,7 +140,7 @@
   padding: 1rem 1.2rem;
   border: 1px solid #d9b7a8;
   border-radius: var(--radius-sm);
-  background: #f7e8e0;
+  background: var(--card, #f7e8e0);
 }
 
 .plans-gate a,
@@ -183,7 +189,7 @@
   padding: clamp(1.4rem, 4vw, 2.5rem);
   border: 1px solid var(--line);
   border-radius: 18px;
-  background: #fffaf1;
+  background: var(--card, #fffaf1);
   box-shadow: none;
 }
 
@@ -207,7 +213,7 @@
 .plan-recommendation { position: absolute; top: -14px; right: 18px; padding: 6px 11px; border-radius: 999px; background: #6d315b; color: #fff; font-size: .75rem; font-weight: 850; box-shadow: 0 8px 24px rgba(109,49,91,.24); }
 
 .plan-card .eyebrow {
-  color: #8a6232;
+  color: var(--gold-ink);
 }
 
 .plan-card .plan-price,
@@ -426,7 +432,7 @@
 
 .plan-price-stack span,
 .campaign-price-row span {
-  color: #8a6232;
+  color: var(--gold-ink);
   font-size: 0.78rem;
   font-weight: 800;
 }
@@ -575,7 +581,7 @@
   padding: clamp(1rem, 3vw, 1.75rem);
   border: 1px solid var(--sage-dark);
   border-radius: 16px;
-  background: #f3f6f1;
+  background: var(--card, #f3f6f1);
 }
 
 .report-link-card p {
@@ -640,7 +646,7 @@
 .payment-choice:hover,
 .payment-choice.is-selected {
   border-color: #9b7651;
-  background: #efe2ce;
+  background: var(--card, #efe2ce);
   color: #4b3828;
 }
 
@@ -924,7 +930,7 @@
   display: inline-flex;
   padding: 0.45rem 0.75rem;
   border-radius: 999px;
-  background: #f4e1da;
+  background: var(--card, #f4e1da);
   color: #6b2c24;
   font-weight: 800;
 }
@@ -950,6 +956,189 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+/* ── The night ground ──────────────────────────────────────────────────────────
+   태령당 is a night-time hall, and the parts of this product that were actually designed
+   say so: the opening screen, the paid report, the character panels. Everything between
+   them had defaulted to one flat warm beige with beige cards floating on it — the look of
+   a page nobody chose, and the half of "AI page" that the design rules already forbid
+   (card inside card, badge rows, one weight for everything).
+
+   So the ground is night on the three surfaces this pass covers, and the tokens are
+   re-pointed rather than every rule rewritten: `--muted` alone is read by 136 rules,
+   `--line` by 116. Scoped with :has() rather than set on :root, because the readings this
+   pass does not cover are still built light and must keep working until they get the same
+   treatment. */
+body:has(.night-ground) {
+  --paper: #0a0912;
+  --paper-deep: #12101c;
+  --white: #15131f;
+  --ink: #f2ece0;
+  --muted: #9d968a;
+  --line: #241f33;
+  --ink-soft: #d9d3c7;
+  --ink-quiet: #b3ab9c;
+  --gold-ink: #d9ae6a;
+  --clay-ink: #e0a582;
+  --sage: #9dbfa6;
+  --sage-dark: #b9d3c0;
+  --clay: #d99a72;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(87, 57, 132, 0.22), transparent 30rem),
+    radial-gradient(circle at 12% 46%, rgba(32, 75, 113, 0.16), transparent 34rem),
+    linear-gradient(180deg, #0a0912, #0c0a16 52%, #07060f);
+  background-attachment: fixed;
+}
+
+/* Islands of paper inside the night.
+   A character's speech bubble and the preview of a shared card paint themselves light on
+   purpose — the bubble is the webtoon's own material, and the preview has to look like the
+   image it will actually produce. They carry the light tokens with them rather than
+   inheriting an ink the paper cannot show. */
+.night-ground :is(.paper-island, .share-card-preview, .plans-guide > span) {
+  --card: #fffdf8;
+  --ink: #20231f;
+  --ink-soft: #444840;
+  --ink-quiet: #555950;
+  --gold-ink: #8a6232;
+  --clay-ink: #95523b;
+  --muted: #5f625a;
+  --line: #d7d0c3;
+  --clay: #955039;
+  --sage: #637563;
+  --sage-dark: #3f5142;
+  --paper: #f5f1e8;
+  --paper-deep: #ebe4d7;
+  --white: #fffdf8;
+  color: var(--ink);
+}
+
+/* Surfaces that were light cards on a light page. On the night they are not repainted as
+   dark cards — a card inside a card is a card inside a card whatever its colour — but let
+   the ground through and keep a hairline where the boundary carries meaning. */
+.night-ground :is(.onboarding-context-card, .ai-boundary, .celebrity-result-link,
+  .lifestyle-safety, .lifestyle-card, .domain-card, .plans-gate, .plans-notice) {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.032);
+  color: var(--ink);
+  box-shadow: none;
+}
+
+/* Every near-white fill in this stylesheet now reads `--card` with its own colour as the
+   fallback, so nothing changed for the pages this pass does not cover, and the surfaces on
+   the three that it does covers stop being lighter blocks sitting on the ground. Chasing
+   them one selector at a time kept missing some; this catches them by their colour. */
+.night-ground {
+  --card: rgba(255, 255, 255, 0.032);
+}
+
+.night-ground :is(.lifestyle-card, .domain-card) dl > div {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* The pricing page.
+   Three cream cards with pastel top-borders, a plum "가장 많이 선택" pill and a mint button
+   is the pricing page every generated site ships. What a buyer needs here is the price, what
+   it includes, and which one is the common choice — so the cards stop being cards, the
+   prices carry the weight, and the one mark left is gold. */
+.night-ground :is(.plan-card, .payment-widget-shell, .payment-result-card) {
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.night-ground :is(.plan-card-1, .plan-card-2, .plan-card-3) {
+  border-top: 1px solid var(--line);
+  background: none;
+}
+
+.night-ground .plan-card.is-recommended {
+  border-top: 2px solid var(--gold-v4, #c89b55);
+  box-shadow: none;
+  transform: none;
+}
+
+/* The badge becomes a line of type in the gold that already means "this one". */
+.night-ground .plan-recommendation {
+  position: static;
+  display: block;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--gold-v4, #c89b55);
+  box-shadow: none;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+}
+
+.night-ground .plan-price {
+  color: var(--ink);
+}
+
+.night-ground .plan-card-footnote {
+  color: var(--muted);
+}
+
+/* The rest of the surfaces these three pages own: the full reading page's product strip,
+   evidence panel, intake form and its controls, and the context card the free result
+   writes. All were cream blocks on a cream page; on the night they are the ground with a
+   hairline, which is also what the design rules ask for on any ground. */
+.night-ground :is(.pass-summary, .editorial-product, .evidence-panel, .form-card,
+  .intake-panel, .privacy-assurance, .context-question, .live-reaction-bubble,
+  .numerology-guide-card) {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.032);
+  color: var(--ink);
+  box-shadow: none;
+}
+
+.night-ground .editorial-product.is-free {
+  background: none;
+}
+
+/* A field a visitor types into has to look like one on this ground too: the browser's
+   white would leave their own answer in light ink on white. */
+.night-ground :is(input[type="text"], input[type="date"], input[type="time"],
+  input[type="email"], input[type="search"], input[type="tel"], input[type="number"],
+  input:not([type]), textarea, select) {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ink);
+}
+
+.night-ground :is(input, textarea, select)::placeholder {
+  color: var(--muted);
+}
+
+.night-ground :is(.choice, .product-choice) > span {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.032);
+  color: var(--ink);
+}
+
+.night-ground :is(.choice, .product-choice) > input:checked + span {
+  border-color: var(--gold-v4, #c89b55);
+  background: rgba(200, 155, 85, 0.14);
+}
+
+.night-ground .live-reaction-mark {
+  background: rgba(247, 241, 231, 0.28);
+}
+
+/* One strong call to action, in the gold this brand already uses for "this one". The
+   sage-on-white button was a third colour doing a job gold was already doing upstairs. */
+.night-ground .primary-button {
+  background: var(--gold-v4, #c89b55);
+  color: #17110a;
+  box-shadow: none;
+}
+
+.night-ground .primary-button:hover,
+.night-ground .primary-button:focus-visible {
+  background: #dcb26a;
 }
 
 body {
@@ -1181,7 +1370,7 @@ a:focus-visible {
   left: 26%;
   top: 18%;
   border: 1px solid rgba(63, 81, 66, 0.46);
-  background: rgba(255, 253, 248, 0.45);
+  background: var(--card, rgba(255, 253, 248, 0.45));
 }
 
 .hero-object::after {
@@ -1221,7 +1410,7 @@ a:focus-visible {
   aspect-ratio: 0.64;
   border: 1px solid rgba(61, 74, 61, 0.34);
   border-radius: 12px;
-  background: #f8f3e8;
+  background: var(--card, #f8f3e8);
   box-shadow: 0 16px 34px rgba(43, 40, 34, 0.14);
   transform-origin: 50% 100%;
 }
@@ -1276,7 +1465,7 @@ a:focus-visible {
   padding: clamp(24px, 5vw, 52px);
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  background: rgba(255, 253, 248, 0.86);
+  background: var(--card, rgba(255, 253, 248, 0.86));
   box-shadow: var(--shadow);
 }
 
@@ -1352,7 +1541,7 @@ fieldset.field {
 
 .choice input:checked + span {
   border-color: var(--sage);
-  background: #e4eadf;
+  background: var(--card, #e4eadf);
   color: var(--sage-dark);
 }
 
@@ -1410,12 +1599,12 @@ fieldset.field {
   padding: clamp(22px, 4vw, 34px);
   border: 1px solid #d6cdbd;
   border-radius: var(--radius-md);
-  background: #f2ede3;
+  background: var(--card, #f2ede3);
 }
 
 .onboarding-context-card > .eyebrow {
   margin-bottom: 0;
-  color: #95523b;
+  color: var(--clay-ink);
 }
 
 .onboarding-context-card > h3 {
@@ -1427,7 +1616,7 @@ fieldset.field {
 .onboarding-context-card > p {
   max-width: 670px;
   margin: 0;
-  color: #444840;
+  color: var(--ink-soft);
 }
 
 .onboarding-context-card dl {
@@ -1460,7 +1649,7 @@ fieldset.field {
   padding: 18px;
   border: 1px solid rgb(87 79 67 / 14%);
   border-radius: var(--radius-sm);
-  background: rgb(255 253 248 / 72%);
+  background: var(--card, rgb(255 253 248 / 72%));
 }
 
 .context-question > strong,
@@ -1480,7 +1669,7 @@ fieldset.field {
 
 .context-question small,
 .context-uncertainty {
-  color: #555950;
+  color: var(--ink-quiet);
   line-height: 1.55;
 }
 
@@ -1490,7 +1679,7 @@ fieldset.field {
   width: 100%;
   padding: 16px 18px;
   border-radius: var(--radius-sm);
-  background: #e4eadf;
+  background: var(--card, #e4eadf);
   color: #344d3d;
 }
 
@@ -1517,13 +1706,13 @@ fieldset.field {
   margin: 18px 0 0;
   padding: 15px 18px;
   border-radius: var(--radius-sm);
-  background: #e4eadf;
+  background: var(--card, #e4eadf);
   color: var(--sage-dark);
   text-decoration: none;
 }
 
 .celebrity-result-link span {
-  color: #59665a;
+  color: var(--ink-quiet);
   font-size: 0.82rem;
 }
 
@@ -1567,7 +1756,7 @@ fieldset.field {
 .insight p,
 .insight ul {
   margin: 0;
-  color: #444840;
+  color: var(--ink-soft);
 }
 
 .insight ul {
@@ -1615,7 +1804,11 @@ summary {
   padding: clamp(1.25rem, 4vw, 2rem);
   border: 1px solid color-mix(in srgb, var(--ink, #17211b) 18%, transparent);
   border-radius: 1.25rem;
-  background: linear-gradient(135deg, #f4efe2, #e5eee6);
+  background: var(--teaser-ground, linear-gradient(135deg, #f4efe2, #e5eee6));
+}
+
+.night-ground {
+  --teaser-ground: rgba(255, 255, 255, 0.032);
 }
 
 .paid-preview-bridge {
@@ -1696,7 +1889,7 @@ summary {
   padding: 22px;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
-  background: rgba(255, 253, 248, 0.72);
+  background: var(--card, rgba(255, 253, 248, 0.72));
 }
 
 .domain-card h3,
@@ -1718,7 +1911,7 @@ summary {
 
 .domain-card p {
   margin: 5px 0 0;
-  color: #444840;
+  color: var(--ink-soft);
   font-size: 0.9rem;
 }
 
@@ -1796,7 +1989,7 @@ summary {
 
 .career-grid dd {
   margin: 0;
-  color: #444840;
+  color: var(--ink-soft);
   font-size: 0.8rem;
 }
 
@@ -1867,7 +2060,7 @@ summary {
 }
 
 .music-card {
-  background: #eef1ec;
+  background: var(--card, #eef1ec);
 }
 
 .lifestyle-rank {
@@ -1906,7 +2099,7 @@ summary {
 }
 
 .music-card dl div {
-  background: rgba(255, 253, 248, 0.72);
+  background: var(--card, rgba(255, 253, 248, 0.72));
 }
 
 .lifestyle-card dt {
@@ -1917,7 +2110,7 @@ summary {
 
 .lifestyle-card dd {
   margin: 5px 0 0;
-  color: #444840;
+  color: var(--ink-soft);
   font-size: 0.82rem;
 }
 
@@ -1942,7 +2135,7 @@ summary {
   margin: 16px 0 0;
   padding: 15px;
   border-left: 3px solid var(--clay);
-  background: #f4e5d9;
+  background: var(--card, #f4e5d9);
   color: #694b39;
   font-size: 0.82rem;
 }
@@ -1993,7 +2186,7 @@ summary {
 
 .share-card-preview > p {
   margin: 0;
-  color: #444840;
+  color: var(--ink-soft);
 }
 
 .share-card-preview ul {
@@ -2007,7 +2200,7 @@ summary {
 .share-card-preview li {
   padding: 13px 15px;
   border-radius: 12px;
-  background: rgba(255, 253, 248, 0.88);
+  background: var(--card, rgba(255, 253, 248, 0.88));
   font-size: 0.86rem;
 }
 
@@ -2090,7 +2283,7 @@ summary {
   padding: 8px;
   border: 1px solid rgba(93, 83, 69, 0.16);
   border-radius: 18px;
-  background: rgba(255, 253, 248, 0.94);
+  background: var(--card, rgba(255, 253, 248, 0.94));
   box-shadow: 0 16px 40px rgba(44, 39, 32, 0.14);
   backdrop-filter: blur(12px);
 }
@@ -2109,7 +2302,7 @@ summary {
 
 .bottom-nav span:first-child {
   border-radius: 11px;
-  background: #e4eadf;
+  background: var(--card, #e4eadf);
   color: var(--sage-dark);
   font-weight: 800;
 }
@@ -2122,7 +2315,7 @@ summary {
 
 .question-nav .active {
   border-radius: 11px;
-  background: #e4eadf;
+  background: var(--card, #e4eadf);
   color: var(--sage-dark);
   font-weight: 800;
 }
@@ -2166,7 +2359,7 @@ summary {
   padding: 16px 18px;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
-  background: rgba(255, 253, 248, 0.8);
+  background: var(--card, rgba(255, 253, 248, 0.8));
   color: var(--ink);
   text-decoration: none;
 }
@@ -2181,7 +2374,7 @@ summary {
   padding: clamp(24px, 5vw, 52px);
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  background: rgba(255, 253, 248, 0.9);
+  background: var(--card, rgba(255, 253, 248, 0.9));
   box-shadow: var(--shadow);
 }
 
@@ -2388,7 +2581,7 @@ summary {
 }
 
 .secondary-button:hover {
-  background: #e8ede4;
+  background: var(--card, #e8ede4);
 }
 
 .relationship-outcome-context {
@@ -2397,20 +2590,20 @@ summary {
   border: 1px solid #c9d3c4;
   border-left: 5px solid var(--sage-dark);
   border-radius: var(--radius-md);
-  background: #f2f5ef;
+  background: var(--card, #f2f5ef);
 }
 
 .relationship-outcome-context.signal-repeatedly_not_relevant {
   border-color: #d9c2b6;
   border-left-color: var(--clay);
-  background: #f8f1ed;
+  background: var(--card, #f8f1ed);
 }
 
 .relationship-outcome-context.signal-mixed_or_uncertain,
 .relationship-outcome-context.signal-insufficient_evidence {
   border-color: #d9d2bd;
   border-left-color: #a1874f;
-  background: #f8f5e9;
+  background: var(--card, #f8f5e9);
 }
 
 .relationship-outcome-context > h2 {
@@ -2419,11 +2612,11 @@ summary {
 }
 
 .relationship-outcome-context > .eyebrow {
-  color: #95523b;
+  color: var(--clay-ink);
 }
 
 .relationship-outcome-context > .disclaimer {
-  color: #555950;
+  color: var(--ink-quiet);
 }
 
 .outcome-counts {
@@ -2437,12 +2630,12 @@ summary {
   padding: 15px;
   border: 1px solid rgb(45 68 51 / 14%);
   border-radius: 12px;
-  background: rgb(255 255 255 / 58%);
+  background: var(--card, rgb(255 255 255 / 58%));
 }
 
 .outcome-counts dt {
   min-height: 34px;
-  color: #555950;
+  color: var(--ink-quiet);
   font-size: 0.76rem;
   font-weight: 750;
 }
@@ -2495,7 +2688,7 @@ summary {
 
 .relationship-nav .active {
   border-radius: 11px;
-  background: #e4eadf;
+  background: var(--card, #e4eadf);
   color: var(--sage-dark);
   font-weight: 800;
 }
@@ -2560,7 +2753,7 @@ summary {
   padding: clamp(24px, 5vw, 48px);
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  background: rgba(255, 253, 248, 0.9);
+  background: var(--card, rgba(255, 253, 248, 0.9));
   box-shadow: var(--shadow);
 }
 
@@ -2569,7 +2762,7 @@ summary {
   margin-top: -42px;
   border-color: #d8d2c7;
   border-radius: 18px;
-  background: #fffdf8;
+  background: var(--card, #fffdf8);
   box-shadow: 0 14px 36px rgba(31, 35, 31, .09);
 }
 
@@ -2715,7 +2908,7 @@ summary {
   margin-top: 18px;
   padding: 9px 12px;
   border-radius: 9px;
-  background: #f4e5d9;
+  background: var(--card, #f4e5d9);
   color: #784c32;
   font-size: 0.82rem;
   font-weight: 800;
@@ -2750,7 +2943,7 @@ summary {
 }
 
 .compatibility-card > p,
-.compatibility-card li { color: #444840; }
+.compatibility-card li { color: var(--ink-soft); }
 
 .compatibility-card > div > strong {
   color: var(--clay);
@@ -2800,7 +2993,7 @@ summary {
   padding: clamp(24px, 5vw, 48px);
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  background: rgba(255, 253, 248, 0.9);
+  background: var(--card, rgba(255, 253, 248, 0.9));
   box-shadow: var(--shadow);
 }
 
@@ -2877,7 +3070,7 @@ summary {
 
 .celebrity-card dd {
   margin: 6px 0 0;
-  color: #444840;
+  color: var(--ink-soft);
   font-size: 0.86rem;
 }
 
@@ -2901,7 +3094,7 @@ summary {
 
 .celebrity-nav .active {
   border-radius: 11px;
-  background: #e4eadf;
+  background: var(--card, #e4eadf);
   color: var(--sage-dark);
   font-weight: 800;
 }
@@ -2936,7 +3129,7 @@ summary {
   margin-top: 20px;
   padding: 10px 15px;
   border-radius: 999px;
-  background: #e4eadf;
+  background: var(--card, #e4eadf);
   color: var(--sage-dark);
   font-weight: 800;
 }
@@ -2948,7 +3141,7 @@ summary {
   padding: clamp(24px, 5vw, 48px);
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  background: rgba(255, 253, 248, 0.9);
+  background: var(--card, rgba(255, 253, 248, 0.9));
   box-shadow: var(--shadow);
 }
 
@@ -2994,7 +3187,7 @@ summary {
 
 .shop-category-grid p {
   min-height: 92px;
-  color: #444840;
+  color: var(--ink-soft);
   font-size: 0.88rem;
 }
 
@@ -3007,7 +3200,7 @@ summary {
 
 .shop-category-grid small {
   display: block;
-  color: #555950;
+  color: var(--ink-quiet);
   font-size: 0.76rem;
 }
 
@@ -3120,7 +3313,7 @@ summary {
   padding: clamp(24px, 5vw, 48px);
   border: 1px solid #d9cdbd;
   border-radius: 24px;
-  background: #fffdf8;
+  background: var(--card, #fffdf8);
 }
 
 .shop-vending-section > header { max-width: 780px; }
@@ -3135,7 +3328,7 @@ summary {
   padding: 5px;
   border: 1px solid #cbbda9;
   border-radius: 14px;
-  background: #eee6da;
+  background: var(--card, #eee6da);
 }
 
 .shop-mode-switch button,
@@ -3197,7 +3390,7 @@ summary {
   padding: clamp(24px, 5vw, 48px);
   border: 1px solid #d8ccbc;
   border-radius: 24px;
-  background: #f8f3eb;
+  background: var(--card, #f8f3eb);
 }
 
 .shop-full-catalog > header { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 10px 24px; }
@@ -3367,7 +3560,7 @@ summary {
   padding: clamp(24px, 5vw, 48px);
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  background: rgba(255, 253, 248, 0.88);
+  background: var(--card, rgba(255, 253, 248, 0.88));
   box-shadow: var(--shadow);
 }
 
@@ -3653,7 +3846,7 @@ summary {
   padding: clamp(24px, 5vw, 42px);
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  background: rgba(255, 253, 248, 0.88);
+  background: var(--card, rgba(255, 253, 248, 0.88));
 }
 
 .tarot-history > header {
@@ -3765,7 +3958,7 @@ summary {
 .review-panel form {
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  background: rgba(255, 253, 248, 0.9);
+  background: var(--card, rgba(255, 253, 248, 0.9));
   box-shadow: var(--shadow);
 }
 
@@ -3789,7 +3982,7 @@ summary {
   border: 1px solid #c9d3c4;
   border-left: 4px solid var(--sage-dark);
   border-radius: 12px;
-  background: #f2f5ef;
+  background: var(--card, #f2f5ef);
 }
 
 .handoff-notice strong {
@@ -3803,7 +3996,7 @@ summary {
 }
 
 .handoff-notice small {
-  color: #555950;
+  color: var(--ink-quiet);
   line-height: 1.5;
 }
 
@@ -4022,7 +4215,7 @@ summary {
   padding: 9px 14px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: rgba(255, 253, 248, 0.82);
+  background: var(--card, rgba(255, 253, 248, 0.82));
   color: var(--muted);
 }
 
@@ -4074,12 +4267,12 @@ summary {
 }
 
 .status-due {
-  background: #f4e5d9;
+  background: var(--card, #f4e5d9);
   color: #784c32;
 }
 
 .status-reviewed {
-  background: #e4eadf;
+  background: var(--card, #e4eadf);
 }
 
 .reality-record h3 {
@@ -4157,7 +4350,7 @@ summary {
 
 .fit-options input:checked + span {
   border-color: var(--sage-dark);
-  background: #e4eadf;
+  background: var(--card, #e4eadf);
   color: var(--sage-dark);
   font-weight: 800;
 }
@@ -4170,7 +4363,7 @@ summary {
 
 .reality-nav .active {
   border-radius: 11px;
-  background: #e4eadf;
+  background: var(--card, #e4eadf);
   color: var(--sage-dark);
   font-weight: 800;
 }
@@ -4465,7 +4658,7 @@ summary {
   padding: 8px 12px;
   border: 1px solid rgba(155, 118, 81, 0.3);
   border-radius: 999px;
-  background: rgba(255, 253, 248, 0.7);
+  background: var(--card, rgba(255, 253, 248, 0.7));
   color: #684b31;
   font-size: 0.78rem;
   font-weight: 800;
@@ -4487,7 +4680,7 @@ summary {
   padding: 16px 18px;
   border: 1px solid rgba(155, 118, 81, 0.28);
   border-radius: 14px;
-  background: #fff9ed;
+  background: var(--card, #fff9ed);
 }
 
 .about-gyeol {
@@ -4719,7 +4912,7 @@ summary {
   padding: 18px 20px;
   border: 2px solid var(--line);
   border-radius: 18px;
-  background: rgba(255, 253, 248, 0.96);
+  background: var(--card, rgba(255, 253, 248, 0.96));
   color: var(--ink);
 }
 
@@ -4769,7 +4962,7 @@ summary {
   padding: clamp(22px, 5vw, 38px);
   border: 1px solid rgba(218, 176, 107, 0.23);
   border-radius: 24px;
-  background: rgba(255, 253, 248, 0.98);
+  background: var(--card, rgba(255, 253, 248, 0.98));
   color: var(--ink);
   box-shadow: inset 0 1px 0 #fff;
 }
@@ -4808,7 +5001,7 @@ summary {
 .field-premium textarea {
   border: 1px solid #d8ccb9;
   border-radius: 14px;
-  background: #fffcf7;
+  background: var(--card, #fffcf7);
   box-shadow: inset 0 1px 2px rgba(41, 34, 26, 0.04);
 }
 
@@ -4842,12 +5035,12 @@ summary {
 .intake-panel .simple-topic-picker .choice span {
   min-height: 50px;
   border-color: #d8ccb9;
-  background: #fffcf7;
+  background: var(--card, #fffcf7);
 }
 
 .intake-panel .simple-topic-picker .choice input:checked + span {
   border-color: #9b7651;
-  background: #efe1cb;
+  background: var(--card, #efe1cb);
   color: #503923;
 }
 
@@ -4903,7 +5096,7 @@ summary {
   margin: 0 0 12px;
   padding: 7px 11px;
   border-radius: 999px;
-  background: #efe2ce;
+  background: var(--card, #efe2ce);
   color: #674b31;
   font-weight: 800;
 }
@@ -5111,7 +5304,7 @@ summary {
   padding: 18px;
   border: 1px solid #d9b7a8;
   border-radius: 14px;
-  background: #fff4ea;
+  background: var(--card, #fff4ea);
 }
 
 .caution-reminder p {
@@ -5870,7 +6063,7 @@ summary {
   padding: clamp(0.9rem, 3vw, 1.4rem);
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: #fffaf1;
+  background: var(--card, #fffaf1);
 }
 
 .admin-inquiry header {
@@ -5887,16 +6080,16 @@ summary {
 .admin-badge {
   padding: 0.15rem 0.6rem;
   border-radius: 999px;
-  background: #e6e0d4;
+  background: var(--card, #e6e0d4);
   font-size: 0.8rem;
 }
 
 .admin-badge.is-open {
-  background: #f6d9c8;
+  background: var(--card, #f6d9c8);
 }
 
 .admin-badge.is-closed {
-  background: #dfe6da;
+  background: var(--card, #dfe6da);
 }
 
 .admin-inquiry-contact code {
@@ -5975,7 +6168,7 @@ summary {
   padding: 0.85rem 1rem;
   border: 1px solid #d9b7a8;
   border-radius: 12px;
-  background: #fff9f4;
+  background: var(--card, #fff9f4);
 }
 
 .admin-content-editor {
@@ -6028,18 +6221,18 @@ summary {
   padding: 0.9rem;
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: #fffaf1;
+  background: var(--card, #fffaf1);
   text-align: center;
 }
 
 .admin-funnel article.is-good {
   border-color: var(--sage-dark);
-  background: #f3f6f1;
+  background: var(--card, #f3f6f1);
 }
 
 .admin-funnel article.is-warn {
   border-color: #d9b7a8;
-  background: #fff9f4;
+  background: var(--card, #fff9f4);
 }
 
 .admin-funnel strong {
@@ -6073,7 +6266,7 @@ summary {
   width: 100%;
   height: 76px;
   border-radius: 4px;
-  background: #efe9dd;
+  background: var(--card, #efe9dd);
 }
 
 .admin-daybar-track span {
@@ -6331,7 +6524,7 @@ summary {
   padding: 30px;
   border: 1px solid #ded3c3;
   border-radius: 22px;
-  background: #fffdf9;
+  background: var(--card, #fffdf9);
 }
 
 .editorial-product.is-featured {
@@ -6346,7 +6539,7 @@ summary {
   align-self: flex-start;
   padding: 6px 10px;
   border-radius: 999px;
-  background: #eee4d5;
+  background: var(--card, #eee4d5);
   color: var(--berry-v4);
   font-weight: 800;
 }
@@ -6425,7 +6618,7 @@ summary {
 
 .home-form-section .form-card {
   border: 1px solid rgba(200, 155, 85, 0.34);
-  background: #fffdf9;
+  background: var(--card, #fffdf9);
   color: var(--ink-v4);
   box-shadow: none;
 }
@@ -6459,7 +6652,7 @@ summary {
 
 .home-form-section .privacy-assurance {
   border-color: var(--line);
-  background: #f7f1e7;
+  background: var(--card, #f7f1e7);
 }
 
 .home-form-section .privacy-lock {
@@ -6487,7 +6680,7 @@ summary {
 
 .home-form-section .intake-panel {
   border-radius: 22px;
-  background: #fffdf9;
+  background: var(--card, #fffdf9);
 }
 
 .home-form-section .intake-panel small {
@@ -6670,12 +6863,12 @@ summary {
 
 .admin-readiness-card .readiness-summary.is-open {
   border: 1px solid #b6d3bd;
-  background: #f2faf4;
+  background: var(--card, #f2faf4);
 }
 
 .admin-readiness-card .readiness-summary.is-closed {
   border: 1px solid #d9b7a8;
-  background: #fff9f4;
+  background: var(--card, #fff9f4);
 }
 
 .admin-readiness-card .readiness-blocking {
@@ -6997,7 +7190,7 @@ summary {
   padding: clamp(24px, 4vw, 44px);
   border: 1px solid var(--line);
   border-radius: 22px;
-  background: #fbf6ed;
+  background: var(--card, #fbf6ed);
   isolation: isolate;
 }
 
@@ -7198,7 +7391,7 @@ summary {
   padding: 11px 15px;
   border: 1px solid rgba(215, 208, 195, 0.66);
   border-radius: 4px 16px 16px 16px;
-  background: rgba(255, 253, 248, 0.52);
+  background: var(--card, rgba(255, 253, 248, 0.52));
   backdrop-filter: blur(7px);
 }
 
@@ -7401,19 +7594,19 @@ summary {
   justify-self: start;
   padding: 5px 11px;
   border-radius: 999px;
-  background: #e6e0d4;
+  background: var(--card, #e6e0d4);
   color: var(--ink);
   font-size: 0.78rem;
   font-weight: 800;
 }
 
 .review-status.is-approved {
-  background: #dfe6da;
+  background: var(--card, #dfe6da);
 }
 
 .review-status.is-withdrawn,
 .review-status.is-rejected {
-  background: #f2e2da;
+  background: var(--card, #f2e2da);
 }
 
 .review-consent-actions {
@@ -7436,7 +7629,7 @@ summary {
   padding: clamp(0.9rem, 3vw, 1.4rem);
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: #fffaf1;
+  background: var(--card, #fffaf1);
 }
 
 .admin-review header {
@@ -7451,16 +7644,16 @@ summary {
 }
 
 .admin-badge.is-pending {
-  background: #f6ecd0;
+  background: var(--card, #f6ecd0);
 }
 
 .admin-badge.is-approved {
-  background: #dfe6da;
+  background: var(--card, #dfe6da);
 }
 
 .admin-badge.is-rejected,
 .admin-badge.is-withdrawn {
-  background: #f2e2da;
+  background: var(--card, #f2e2da);
 }
 
 .admin-review-meta {
@@ -7530,59 +7723,79 @@ summary {
   padding: 72px clamp(22px, 6vw, 44px);
 }
 
+/* The questions are a list, not a deck of cards. Each one was a cream card with a pill on
+   it, floating on a cream page — card inside card, badge row, one weight for everything:
+   the three things the design rules name as the AI look, in one component. A hairline and
+   the space between them separate these as well as a border did, and the question itself
+   is now the loudest thing in the row, which is what a visitor is choosing between. */
 .entry-question-grid {
-  display: grid;
-  margin: 30px 0 0;
+  margin: 26px 0 0;
   padding: 0;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
-  gap: 14px;
+  border-top: 1px solid var(--line);
   list-style: none;
 }
 
 .entry-question {
   display: flex;
   width: 100%;
-  height: 100%;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 22px 24px;
-  border: 1px solid #ded3c3;
-  border-radius: 18px;
-  background: #fffdf9;
+  align-items: baseline;
+  gap: 16px;
+  padding: 17px 2px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  color: inherit;
   cursor: pointer;
   font: inherit;
   text-align: left;
 }
 
-.entry-question:hover,
-.entry-question:focus-visible {
-  border-color: var(--gold-v4);
+.entry-question:hover strong,
+.entry-question:focus-visible strong {
+  color: var(--gold-v4, #c89b55);
 }
 
-.entry-question.is-chosen {
-  border-color: var(--ink-v4);
-  background: var(--ink-v4);
-  color: var(--ivory-v4);
-}
-
-.entry-question small {
-  padding: 5px 10px;
-  border-radius: 999px;
-  background: #eee4d5;
-  color: var(--berry-v4);
-  font-weight: 800;
+/* The chosen one is marked in the gold the rest of the page uses for "this one", not by
+   inverting a card. */
+.entry-question.is-chosen strong {
+  color: var(--gold-v4, #c89b55);
 }
 
 .entry-question.is-chosen small {
-  background: var(--gold-v4);
-  color: var(--ink-v4);
+  color: var(--gold-v4, #c89b55);
+}
+
+.entry-question small {
+  flex: 0 0 4.6rem;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
 }
 
 .entry-question strong {
-  font-size: clamp(1.02rem, 1.5vw, 1.16rem);
+  font-size: clamp(1.02rem, 1.5vw, 1.12rem);
+  font-weight: 700;
   line-height: 1.45;
+  word-break: keep-all;
 }
+
+@media (max-width: 420px) {
+  /* Below this the label and the question fight for the same line, so the label goes
+     above it rather than squeezing the question into two words a line. */
+  .entry-question {
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .entry-question small {
+    flex: none;
+  }
+}
+
 
 .editorial-product-grid.has-free-tier {
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -7590,7 +7803,7 @@ summary {
 
 .editorial-product.is-free {
   border-style: dashed;
-  background: #fbf7ef;
+  background: var(--card, #fbf7ef);
 }
 
 /* The free tier's action is a link, not a button, so it needs the button treatment
@@ -8174,7 +8387,7 @@ summary {
   padding: clamp(22px, 5vw, 36px);
   border: 3px solid #241f1a;
   border-radius: 34px 34px 34px 8px;
-  background: rgba(255, 253, 247, .97);
+  background: var(--card, rgba(255, 253, 247, .97));
   box-shadow: 0 24px 70px rgba(0, 0, 0, .4);
   overflow-wrap: anywhere;
 }
@@ -8192,7 +8405,7 @@ summary {
   height: 34px;
   border-top: 3px solid #241f1a;
   border-left: 3px solid #241f1a;
-  background: rgba(255, 253, 247, .97);
+  background: var(--card, rgba(255, 253, 247, .97));
   content: "";
   transform: rotate(45deg);
 }
@@ -8406,7 +8619,7 @@ summary {
   overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--guide-color) 42%, #d8d0c4);
   border-radius: 24px;
-  background: #fffdf9;
+  background: var(--card, #fffdf9);
   box-shadow: 0 16px 44px rgba(31, 29, 43, 0.08);
 }
 
@@ -8513,7 +8726,7 @@ summary {
   height: auto;
   aspect-ratio: 2 / 3;
   border-radius: 14px;
-  background: #eee8df;
+  background: var(--card, #eee8df);
   object-fit: contain;
   object-position: center center;
 }
@@ -9630,7 +9843,7 @@ summary {
   padding: 0;
   border: 1px solid #ded3c3;
   border-radius: 14px;
-  background: #fffdf9;
+  background: var(--card, #fffdf9);
 }
 
 .optional-intake > summary {
@@ -10030,7 +10243,7 @@ summary {
   padding: clamp(22px, 4vw, 34px);
   border: 1px solid var(--line);
   border-radius: 22px;
-  background: #fbf6ed;
+  background: var(--card, #fbf6ed);
 }
 
 .saju-upsell h3 { margin: 0; font-size: 1.1rem; }
@@ -10421,7 +10634,7 @@ summary {
   overflow: hidden;
   border: 1px solid rgba(70, 51, 91, 0.12);
   border-radius: 1rem;
-  background: #fffdf9;
+  background: var(--card, #fffdf9);
 }
 .daily-notification-list summary {
   display: grid;
@@ -10618,7 +10831,7 @@ summary {
   border: 1px solid rgba(118, 80, 111, 0.24);
   border-radius: 999px;
   color: inherit;
-  background: rgba(255, 253, 248, 0.75);
+  background: var(--card, rgba(255, 253, 248, 0.75));
   cursor: pointer;
 }
 .pattern-feedback-actions button[aria-pressed="true"] { color: #fff; background: #76506f; }
@@ -10647,7 +10860,7 @@ summary {
   margin: 2rem auto 0;
   padding: 1.25rem clamp(1rem, 4vw, 2rem) 2rem;
   border-top: 1px solid rgba(118, 80, 111, 0.16);
-  color: #68635d;
+  color: var(--ink-quiet);
   font-size: 0.76rem;
   line-height: 1.65;
 }
@@ -10745,22 +10958,27 @@ summary {
   margin-top: 30px;
 }
 
+/* The steps were four filled pills, one of them inverted — a badge row, which is the
+   other half of the look this page is getting rid of. They are text now: the number in
+   gold, the label beside it, and a gold rule under the one playing. That rule is also the
+   clip's progress, so the single mark that says "this one" is the same mark that says how
+   long it has left. */
 .guide-steps-tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 14px;
+  gap: 4px 22px;
+  margin-bottom: 20px;
 }
 
 .guide-steps-tabs button {
+  position: relative;
   display: inline-flex;
   min-height: 44px;
-  align-items: baseline;
-  gap: 7px;
-  padding: 0 14px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: transparent;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
   color: var(--muted);
   cursor: pointer;
   font: inherit;
@@ -10769,32 +10987,25 @@ summary {
 }
 
 .guide-steps-tabs button small {
-  color: var(--clay);
+  color: var(--muted);
   font-size: 0.72rem;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
+  opacity: 0.72;
 }
 
 .guide-steps-tabs button.is-current {
-  border-color: var(--ink-v4, #07111f);
-  background: var(--ink-v4, #07111f);
-  color: var(--ivory-v4, #f7f1e7);
+  color: var(--ink);
 }
 
-.guide-steps-tabs button.is-current small { color: var(--gold-v4, #c89b55); }
-
-/* The walkthrough moves on when the clip ends, so the current tab carries how far through
-   the step it is. Without it the picture changes for no visible reason. The bar is driven
-   by the clip's own time, set on the tab row as --guide-progress, so it is the truth about
-   playback rather than a decoration on a timer. */
-.guide-steps-tabs button.is-current {
-  position: relative;
-  overflow: hidden;
+.guide-steps-tabs button.is-current small {
+  color: var(--gold-v4, #c89b55);
+  opacity: 1;
 }
 
 .guide-steps-tabs button.is-current::after {
   position: absolute;
-  bottom: 0;
+  bottom: 6px;
   left: 0;
   width: 100%;
   height: 2px;
@@ -10805,8 +11016,9 @@ summary {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* Nothing plays and nothing advances, so a progress bar would be a lie. */
-  .guide-steps-tabs button.is-current::after { display: none; }
+  /* Nothing plays and nothing advances, so a progress bar would be a lie — but the step
+     still has to be marked, so the rule stays and simply stands still at full width. */
+  .guide-steps-tabs button.is-current::after { transform: none; }
 }
 
 /* The instruction is a heading above the frame, and the frame holds nothing but the
@@ -10844,12 +11056,19 @@ summary {
 /* The frame has to read as a separate screen. Three of the four recordings are of cream
    pages on a cream section, so without a border and a shadow the picture dissolves into
    the page and the reader cannot tell where the product starts. */
+/* The frame has to read as a separate screen. On paper the recordings were cream on cream
+   and dissolved into the page; on the night they are night on night and do the same, so the
+   edge is a hairline in the page's own line colour either way. */
 .guide-stage {
   overflow: hidden;
-  border: 1px solid rgba(27, 27, 30, 0.14);
+  border: 1px solid var(--line);
   border-radius: 18px;
   background: var(--ink-v4, #07111f);
-  box-shadow: 0 18px 40px -26px rgba(27, 27, 30, 0.55);
+  box-shadow: 0 18px 40px -26px rgba(0, 0, 0, 0.7);
+}
+
+.night-ground .guide-stage {
+  border-color: rgba(247, 241, 231, 0.16);
 }
 
 .guide-stage-clip {
