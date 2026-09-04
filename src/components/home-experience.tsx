@@ -11,6 +11,7 @@ import type { PublicReview } from "@/core/reviews";
 import { MIN_BIRTH_DATE, currentMaxBirthDate, isAcceptedBirthDate } from "@/core/birth-range";
 import { scrollToElement } from "@/components/accessibility";
 import type { ReportOutline } from "@/core/report-outline";
+import { getHomeFaq } from "@/i18n/home-faq";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 import type { AdminPageContent } from "@/server/admin-content";
@@ -133,7 +134,7 @@ const copy = {
     navLabel: "홈페이지 탐색",
     nav: [["#questions", "질문 고르기"], ["#preview", "리포트 예시"], ["#products", "가격"], ["#evidence", "후기"], ["#method", "리딩 방식"]],
     homeNav: [["#guide", "이용 방법"], ["#questions", "질문 고르기"], ["#preview", "리포트 예시"], ["/reading#products", "가격"], ["/reading#evidence", "후기"]],
-    homeLead: "생년월일로 관계·일·돈에서 반복되는 나의 패턴을 읽습니다.",
+    homeLead: "연애·돈·일·공부에서 왜 늘 같은 자리에서 막히는지, 생년월일 하나로 찾아드립니다.",
     guideCue: "처음이세요? 이용 방법 먼저 보기",
     guideEyebrow: "이용 방법",
     guideTitle: "네 단계면 결과까지 갑니다",
@@ -151,15 +152,19 @@ const copy = {
     outlineLocked: "결제 후 열람",
     outlineMore: (count: number) => `외 ${count}개 장이 이어집니다.`,
     outlineSample: "예시 리포트 전체 보기",
+    faqEyebrow: "자주 묻는 질문",
+    faqTitle: "태령당이 뭘 해주나요?",
     homeCloseTitle: "가격과 후기를 확인하고 시작하세요",
     homeCloseBody: "무료 결과를 먼저 보셔도 되고, 바로 상세 리딩으로 가셔도 됩니다.",
     homeCloseCta: "상세 리딩 보기",
-    heroKicker: "사주명리와는 다른, 현실 선택 중심의 리딩",
-    heroTitle: "나의 결은 어떤 특징과 장점을 가지고 있을까요?",
-    heroBody: "타고난 성향과 반복되는 관계·일·돈의 패턴을 살펴보고, 올해 어떤 선택에 힘을 주어야 할지 정리해드립니다.",
+    heroKicker: "연애 · 돈 · 일 · 공부",
+    // The h1 is read by search engines and screen readers before anyone sees the art, so
+    // it says the areas in the words people search with rather than naming the machinery.
+    heroTitle: "태령당 — 연애·돈·일·공부에서 반복되는 흐름을 생년월일로 찾습니다",
+    heroBody: "듣고 흘려보내면 끝인 이야기가 아니라, 숫자가 어떻게 나왔는지 계산 근거까지 전부 열어 글로 남겨드립니다. 다시 읽고, 실제 삶과 맞는지 직접 대조하실 수 있습니다.",
     primary: "내 패턴 확인하기",
     heroNote: "생년월일 기반 · 1회 결제 · 자동 갱신 없음",
-    heroHook: "관계·일·돈에서 반복되는 선택의 이유를 확인하세요",
+    heroHook: "연애·돈·일·공부에서 반복되는 선택의 이유를 확인하세요",
     freeCta: "무료 패턴 보기",
     sajuHubCta: "사주 서비스로 이동",
     sajuTitle: "사주도 무료로 세워드립니다",
@@ -169,7 +174,7 @@ const copy = {
     freeNote: "결제 없이 생년월일만으로 기본 리딩을 볼 수 있어요",
     entryEyebrow: "어떤 게 제일 걸리세요?",
     entryTitle: "요즘 마음에 걸리는 질문을 골라보세요",
-    entryBody: "고른 질문이 리딩의 중심이 됩니다.",
+    entryBody: "고른 질문이 리딩의 중심이 됩니다. 공부·시험처럼 목록에 없는 고민은 다음 화면에서 직접 적으실 수 있습니다.",
     entryQuestions: [
       ["relationships", "왜 늘 비슷한 사람에게 마음이 갈까요?", "연애·관계"],
       ["work", "지금 이 일, 계속 가는 게 맞을까요?", "일·진로"],
@@ -205,7 +210,7 @@ const copy = {
     navLabel: "Home navigation",
     nav: [["#questions", "Pick a question"], ["#preview", "Report examples"], ["#products", "Pricing"], ["#evidence", "Reviews"], ["#method", "Method"]],
     homeNav: [["#guide", "How it works"], ["#questions", "Pick a question"], ["#preview", "Report examples"], ["/reading#products", "Pricing"], ["/reading#evidence", "Reviews"]],
-    homeLead: "A birth date, read for the patterns that repeat in relationships, work, and money.",
+    homeLead: "Find why you keep getting stuck in the same place in love, money, work and study — from your birth date alone.",
     guideCue: "First time here? See how it works",
     guideEyebrow: "How it works",
     guideTitle: "Four steps to a result",
@@ -223,15 +228,17 @@ const copy = {
     outlineLocked: "Opens after payment",
     outlineMore: (count: number) => `${count} more chapters follow.`,
     outlineSample: "Read the full sample report",
+    faqEyebrow: "Common questions",
+    faqTitle: "What does 태령당 actually do?",
     homeCloseTitle: "Check the prices and reviews, then begin",
     homeCloseBody: "See the free result first, or go straight to the detailed reading.",
     homeCloseCta: "See the detailed reading",
-    heroKicker: "A different kind of reading, centered on real-life choices",
-    heroTitle: "Why do I keep making the same choices?",
-    heroBody: "Explore your natural tendencies and recurring patterns in relationships, work, and money—then clarify where to place your energy this year.",
+    heroKicker: "Love · Money · Work · Study",
+    heroTitle: "태령당 — find the patterns that keep repeating in love, money, work and study, from your birth date",
+    heroBody: "Not something you hear once and lose: every number is shown with the calculation behind it, and the reading stays in writing so you can read it again and check it against what actually happens.",
     primary: "See my patterns",
     heroNote: "Birth-date based · One-time payment · No auto-renewal",
-    heroHook: "See why the same choices repeat in relationships, work, and money",
+    heroHook: "See why the same choices repeat in love, money, work and study",
     freeCta: "View free pattern",
     sajuHubCta: "Open Saju services",
     sajuTitle: "Your Four Pillars chart, also free",
@@ -241,7 +248,7 @@ const copy = {
     freeNote: "See a basic reading from your birth date alone — no payment",
     entryEyebrow: "What is on your mind?",
     entryTitle: "Pick the question that keeps coming back",
-    entryBody: "Your choice becomes the centre of the reading.",
+    entryBody: "Your choice becomes the centre of the reading. A concern that is not on the list — study or exams, say — can be written in on the next screen.",
     entryQuestions: [
       ["relationships", "Why am I drawn to the same kind of person?", "Relationships"],
       ["work", "Is staying in this work still the right call?", "Work"],
@@ -356,6 +363,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
     };
   });
 
+  const faqEntries = getHomeFaq(locale, pricing.prices.pro_30d);
   const campaignEndLabel = pricing.campaign
     ? new Intl.DateTimeFormat(locale === "ko" ? "ko-KR" : "en-US", {
         month: "long",
@@ -1076,6 +1084,25 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                 </p>
               </section>
             )}
+
+            {/* Plain answers to what a stranger actually asks, on the page rather than only
+                in markup: search engines only honour FAQ structured data when the reader
+                can see the same words, and a visitor who arrived from a search result is
+                asking exactly these five things. */}
+            <section className="home-faq" id="faq" aria-labelledby="home-faq-title">
+              <div className="section-heading">
+                <p className="eyebrow">{t.faqEyebrow}</p>
+                <h2 id="home-faq-title">{t.faqTitle}</h2>
+              </div>
+              <dl className="home-faq-list">
+                {faqEntries.map(([question, answer]) => (
+                  <div key={question}>
+                    <dt>{question}</dt>
+                    <dd>{answer}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
 
             <section className="home-close" aria-labelledby="home-close-title" ref={closeRef}>
               <h2 id="home-close-title">{t.homeCloseTitle}</h2>

@@ -1,22 +1,19 @@
 import { expect, test } from "@playwright/test";
 import { resolvePublicAppUrl } from "../../src/core/site-url";
+import { getLocalizedSiteMetadata } from "../../src/i18n/site-metadata";
 
-const cases = [
-  {
-    locale: "ko",
-    title: "태령당 | 실제 삶으로 검증하는 개인 패턴 분석",
-    description:
-      "생년월일 기반 상징 분석을 가설로 제시하고, Reality Check와 실제 삶의 기록으로 시간이 갈수록 나를 더 정확하게 이해하는 개인 패턴 분석 시스템입니다.",
-    openGraphLocale: "ko_KR",
-  },
-  {
-    locale: "en",
-    title: "태령당 | Personal Pattern Intelligence",
-    description:
-      "A personal pattern intelligence system that keeps deterministic symbolic analysis separate from lived-experience feedback, evidence, and uncertainty.",
-    openGraphLocale: "en_US",
-  },
-] as const;
+/*
+ * What this test is about is the plumbing: that whatever the copy says reaches the title,
+ * the description, the Open Graph and Twitter tags, and the Naver ownership proof, on both
+ * locales. It used to restate every string, so rewriting a sentence for readers meant
+ * editing the test that guards it — which teaches a maintainer to edit tests to make them
+ * pass. The copy is read from where the site reads it; whether that copy is any good is
+ * checked in tests/unit/search-presence.test.ts.
+ */
+const cases = (["ko", "en"] as const).map((locale) => {
+  const copy = getLocalizedSiteMetadata(locale);
+  return { locale, title: copy.title, description: copy.description, openGraphLocale: copy.openGraphLocale };
+});
 
 for (const expected of cases) {
   test(`${expected.locale} links expose native first-party preview metadata`, async ({ page, request }) => {

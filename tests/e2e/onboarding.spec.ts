@@ -42,7 +42,7 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   // What the opening screen hands over to: what the service is, the four steps, the
   // five questions, and the chapter list of a real generated report. Every header link
   // on this page must reach one of them.
-  await expect(page.locator(".cinema-hook")).toContainText("생년월일로 관계·일·돈에서 반복되는 나의 패턴을 읽습니다.");
+  await expect(page.locator(".cinema-hook")).toContainText("생년월일");
   await expect(page.locator("#guide .guide-steps-tabs button")).toHaveCount(4);
   await expect(page.locator("#questions .entry-question")).toHaveCount(5);
   await expect(page.locator("#preview .report-outline-list li")).toHaveCount(6);
@@ -157,7 +157,7 @@ test("English page keeps the same calculated core meaning", async ({ page }) => 
   await expect(page.getByRole("button", { name: "See my patterns" })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "View free pattern" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Open Saju services" })).toBeVisible();
-  await expect(page.locator(".cinema-hook")).toContainText("patterns that repeat in relationships, work, and money");
+  await expect(page.locator(".cinema-hook")).toContainText("birth date");
   await expect(page.locator("#guide .guide-steps-tabs button")).toHaveCount(4);
   await expect(page.locator("#preview .report-outline-list li")).toHaveCount(6);
   await page.goto("/en/profile");

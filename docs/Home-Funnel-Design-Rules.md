@@ -207,7 +207,34 @@ How it is built, because this is the part that breaks:
   theme could reach them. They are `--ink-soft`, `--ink-quiet`, `--gold-ink` and `--clay-ink`
   now, with their original light values unchanged.
 
-## 7. Ink and ground
+## 7. What the outside sees
+
+**The search result is the first page.** Most people will read one sentence about this
+product before deciding whether to open it, and that sentence is the meta description. It
+used to be *"생년월일 기반 상징 분석을 가설로 제시하고, Reality Check와 실제 삶의 기록으로…"* —
+every word accurate, and none of it meaning anything to someone who typed 연애운 into a
+search box. It named the machinery instead of the question the reader arrived with.
+
+Rules for anything a stranger reads before they arrive — the title, the description, the
+link preview, the FAQ:
+
+- **The areas, in the words people search with.** 연애 · 돈 · 일 · 공부, not "개인 패턴 분석
+  시스템". If a word has to be explained before it helps, it does not belong here.
+- **Say what is different procedurally, never comparatively.** This product can stand behind
+  *the calculation is shown* and *the reading stays in writing to be re-read and checked*.
+  It cannot stand behind knowing something another reader cannot — that is unprovable, it is
+  unfair comparative advertising under 표시광고법, and it contradicts the notice this product
+  carries on every screen. `tests/unit/marketing-claims.test.ts` guards both halves.
+- **Structured data may only say what the page says.** The FAQ is on the home page *and* in
+  `FAQPage` markup, both read from `src/i18n/home-faq.ts`. Google honours the markup only
+  when the reader can see the same words, and a second copy of a sentence is a copy that
+  drifts.
+- **Never restate copy in a test.** A test that pins the exact sentence turns a copy change
+  into a test edit, which teaches a maintainer to edit tests until they pass. Pin the
+  property — the areas are named, the price matches the live snapshot, the forbidden claim
+  is absent — and read the sentence from where the site reads it.
+
+## 8. Ink and ground
 
 **Every screen states the ground its ink is standing on.** Two rules, both learned the hard
 way on the free result:

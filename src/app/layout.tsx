@@ -23,9 +23,10 @@ const naverSiteVerification =
 
 export const metadata: Metadata = {
   metadataBase: resolvePublicAppUrl(process.env.NEXT_PUBLIC_APP_URL),
-  title: `${brandNameKo} | 실제 삶으로 검증하는 개인 패턴 분석`,
+  title: `${brandNameKo} | 연애·돈·일·공부, 반복되는 흐름 찾기`,
   description:
-    "결정론적 상징 분석을 가설로 제시하고 Reality Check와 실제 삶의 기록으로 개인 패턴을 검증합니다.",
+    "연애·돈·일·공부에서 왜 늘 같은 자리에서 막히는지 생년월일만으로 찾아드립니다. "
+    + "계산 근거를 전부 공개하고, 회원가입 없이 무료로 먼저 보실 수 있습니다.",
   applicationName: brandNameKo,
   keywords: [
     ...BRAND_SEARCH_ALIASES,
@@ -56,18 +57,18 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: brandNameKo,
-    title: `${brandNameKo} | 실제 삶으로 검증하는 개인 패턴 분석`,
+    title: `${brandNameKo} | 연애·돈·일·공부, 반복되는 흐름 찾기`,
     description:
-      "상징 분석을 가설로 보고, 실제 경험과 결과를 기록해 나만의 패턴을 검증해 보세요.",
+      "왜 늘 같은 자리에서 막히는지 생년월일만으로 찾고, 계산 근거까지 전부 열어 보여드립니다.",
     locale: "en_US",
     alternateLocale: ["ko_KR"],
     images: [openGraphImage],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${brandNameKo} | 실제 삶으로 검증하는 개인 패턴 분석`,
+    title: `${brandNameKo} | 연애·돈·일·공부, 반복되는 흐름 찾기`,
     description:
-      "상징 분석을 가설로 보고, 실제 경험과 결과를 기록해 나만의 패턴을 검증해 보세요.",
+      "왜 늘 같은 자리에서 막히는지 생년월일만으로 찾고, 계산 근거까지 전부 열어 보여드립니다.",
     images: [openGraphImage],
   },
 };

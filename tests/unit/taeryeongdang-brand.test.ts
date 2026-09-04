@@ -22,6 +22,10 @@ describe("태령당 brand migration", () => {
     const primary = [layout, home, metadata, report].join("\n");
     expect(primary).toContain("태령당");
     expect(primary).not.toMatch(/결 GYEOL|MY GYEOL 공식 블로그/);
-    expect(home).toContain("나의 결은 어떤 특징과 장점을 가지고 있을까요?");
+    // The page's own heading, which is what a crawler and a screen reader read first: it
+    // carries the brand and says the areas rather than posing a riddle about 결.
+    const heroTitle = /heroTitle: "(.*?)",/.exec(home)?.[1] ?? "";
+    expect(heroTitle).toContain("태령당");
+    expect(heroTitle).toMatch(/연애/);
   });
 });

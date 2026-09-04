@@ -14,6 +14,7 @@ import { JourneyAnalytics } from "@/components/journey-analytics";
 import { resolveProductPricing } from "@/core/product-prices";
 import { resolvePublicAppUrl } from "@/core/site-url";
 import { isLocale, locales } from "@/i18n/config";
+import { getHomeFaq } from "@/i18n/home-faq";
 import { getLocalizedSiteMetadata } from "@/i18n/site-metadata";
 
 const openGraphImage = {
@@ -88,7 +89,8 @@ export default async function LocaleLayout({
   const baseUrl = resolvePublicAppUrl(process.env.NEXT_PUBLIC_APP_URL);
   const homeUrl = new URL(`/${locale}`, baseUrl).toString();
   const copy = getLocalizedSiteMetadata(locale);
-  const campaign = resolveProductPricing().campaign;
+  const pricing = resolveProductPricing();
+  const campaign = pricing.campaign;
   const structuredData = {
     "@context": "https://schema.org",
     "@graph": [
@@ -110,6 +112,41 @@ export default async function LocaleLayout({
         description: copy.description,
         inLanguage: locale === "ko" ? "ko-KR" : "en-US",
         publisher: { "@id": `${baseUrl.origin}/#organization` },
+      },
+      // What is sold, in the words of a catalogue rather than a brochure. A crawler that
+      // reads only this should still be able to say what this site offers and for how much.
+      {
+        "@type": "Service",
+        "@id": `${baseUrl.origin}/#reading`,
+        name: locale === "ko" ? "상세 리딩" : "Detailed reading",
+        serviceType: locale === "ko"
+          ? "생년월일 기반 개인 리딩"
+          : "Personal reading from a birth date",
+        description: locale === "ko"
+          ? "생년월일로 연애·돈·일·공부에서 반복되는 흐름을 찾아 글로 정리하고, 숫자가 나온 계산 근거를 함께 공개합니다."
+          : "Finds the patterns that repeat in love, money, work and study from a birth date, in writing, with the calculation behind every number shown.",
+        provider: { "@id": `${baseUrl.origin}/#organization` },
+        areaServed: "KR",
+        offers: {
+          "@type": "Offer",
+          price: String(pricing.prices.pro_30d),
+          priceCurrency: "KRW",
+          availability: "https://schema.org/InStock",
+          url: new URL(`/${locale}/plans`, baseUrl).toString(),
+        },
+      },
+      // Only ever the questions the page itself shows: structured data that answers
+      // something a reader cannot find on the page is the thing search engines penalise.
+      {
+        "@type": "FAQPage",
+        "@id": `${homeUrl}#faq`,
+        mainEntity: getHomeFaq(locale, pricing.prices.pro_30d).map(
+          ([question, answer]) => ({
+            "@type": "Question",
+            name: question,
+            acceptedAnswer: { "@type": "Answer", text: answer },
+          }),
+        ),
       },
     ],
   };

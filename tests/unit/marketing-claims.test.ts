@@ -90,9 +90,17 @@ describe("advertising claims stay defensible", () => {
     }
   });
 
-  it("positions against fortune systems without an unsupported accuracy comparison", () => {
-    expect(homepage).toContain("사주명리와는 다른, 현실 선택 중심의 리딩");
+  it("positions on what it does differently, not on being better at knowing", () => {
+    // The difference this product can actually stand behind is procedural: the numbers are
+    // shown with the calculation that produced them, and the reading stays in writing to be
+    // re-read and checked. Pinning the sentence itself made a copy change fail three tests
+    // and taught nothing, so what is pinned is the claim being made.
+    expect(homepage).toMatch(/계산 근거|계산이 어떻게|숫자가 어떻게/);
+    expect(homepage).toMatch(/글로 남|다시 읽|대조/);
+    // And the comparison it must never make.
     expect(homepage).not.toMatch(/사주명리보다\s*정확/);
+    expect(homepage).not.toMatch(/점집보다|무당보다|철학관보다/);
+    expect(homepage).not.toMatch(/알 수 없었던.*찾아드립니다|못 찾는.*찾아/);
   });
 
   it("promises no outcome it cannot control", () => {

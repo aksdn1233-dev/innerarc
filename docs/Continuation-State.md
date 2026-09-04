@@ -4,6 +4,36 @@ Last updated: 2026-08-02 (mobile trust and checkout-conversion refinement)<br>
 Current version: 0.20.1
 Overall progress: 97% (web MVP code 100%; production deployment and payment path 98%; native app not started)
 
+## 2026-09-05 — What the outside sees
+
+- The owner asked to be findable on Google and Naver, and for the introduction to say in
+  plain words what this offers. The technical side was already sound: robots.txt allows
+  search, the sitemap carries 81 URLs with hreflang, canonicals and Open Graph are in place,
+  Googlebot/Yeti/bingbot all get 200, and there is no `noindex` anywhere. Naver's ownership
+  token has been committed since earlier. What was missing was Google Search Console
+  ownership, and a description a human would understand.
+- The home's description named the machinery — "상징 분석을 가설로 제시", "Reality Check",
+  "개인 패턴 분석 시스템". It now names the areas in the words people search with (연애·돈·
+  일·공부), what is different about the answer, and that the first one is free. The h1, hero
+  lead and Open Graph copy moved with it. The other landing pages were already concrete
+  ("무료 사주 원국 보기") and were left alone.
+- A five-question FAQ is on the home and in `FAQPage` structured data, both from
+  `src/i18n/home-faq.ts` — Google honours FAQ markup only when the reader can see the same
+  words. A `Service` node with the live price joins Organization and WebSite in the graph.
+- 학업 was verified before it was advertised: a concern mentioning 시험/공부 makes the detail
+  report generate a "학업·시험 준비" chapter, so the copy naming 공부 is a promise the product
+  keeps. The entry section now says a concern that is not on the list can be written in.
+- `/` was a temporary redirect to `/ko`, which asks a crawler to keep the ranking signals on
+  an address that is never coming back. It is permanent now.
+- **The slogan the owner asked for was not shipped as asked.** "점집에 100만원 200만원을 써도
+  알 수 없었던 흐름을 태령당이 찾아준다" is an unprovable comparative claim, and this product
+  disclaims prediction on every screen. The same feeling is carried by what is true: the
+  calculation is shown, the reading stays in writing, and the visitor can check it against
+  their own life. `marketing-claims.test.ts` now guards the property rather than the old
+  sentence.
+- Three unit tests and one e2e spec had pinned the exact old copy, so a copy change failed
+  four tests that were about plumbing. They read the source of truth now.
+
 ## 2026-09-04 — The ground is night on the home, the free reading and the pricing page
 
 - The owner's words were that the beige everything is laid on looks like generic AI design,

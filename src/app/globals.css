@@ -11092,6 +11092,38 @@ summary {
   }
 }
 
+/* The questions a visitor arriving from a search result asks, answered on the page. A
+   definition list rather than a stack of cards: the question is the heavy line, the answer
+   sits under it, and a hairline separates one from the next. */
+.home-faq {
+  padding: clamp(56px, 12vw, 96px) 0 0;
+}
+
+.home-faq-list {
+  margin: 26px 0 0;
+  border-top: 1px solid var(--line);
+}
+
+.home-faq-list > div {
+  padding: 18px 2px;
+  border-bottom: 1px solid var(--line);
+}
+
+.home-faq-list dt {
+  font-size: 1.02rem;
+  font-weight: 700;
+  line-height: 1.45;
+  word-break: keep-all;
+}
+
+.home-faq-list dd {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.72;
+  word-break: keep-all;
+}
+
 .journey-guide-action {
   min-height: 44px;
   margin-top: 30px;
