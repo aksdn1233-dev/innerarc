@@ -26,7 +26,36 @@ jobs:
       - run: pnpm build
       # image-size 2.0.3 is listed as patched by the advisories but is not published
       # in npm yet. D-060 defines this narrow, expiring exception.
-      - run: pnpm audit --ignore GHSA-w3rx-r6r6-pgpr --ignore GHSA-5p2g-fcmc-qvqq
+      #
+      # A found vulnerability fails the build. npm's advisory endpoint being unreachable
+      # does not: on 2026-09-04 registry.npmjs.org answered in 90ms while
+      # /-/npm/v1/security/advisories/bulk timed out for everyone, which blocked the
+      # pipeline twice over something no commit here can fix. Three attempts, then the run
+      # continues with a loud notice — the audit is a gate on this code, not on npm's
+      # uptime. Every other outcome still fails.
+      - name: Audit dependencies
+        run: |
+          # The step's shell runs with -e, which would abort on the first failed attempt
+          # before the outcome could be told apart from an outage.
+          set +e -u -o pipefail
+          for attempt in 1 2 3; do
+            output=$(pnpm audit --ignore GHSA-w3rx-r6r6-pgpr --ignore GHSA-5p2g-fcmc-qvqq 2>&1)
+            status=$?
+            printf '%s\n' "$output"
+            if [ "$status" -eq 0 ]; then exit 0; fi
+            case "$output" in
+              *TimeoutError*|*ETIMEDOUT*|*ECONNRESET*|*ENOTFOUND*|*EAI_AGAIN*|*"socket hang up"*)
+                echo "::warning::Attempt ${attempt}: npm's advisory endpoint is unreachable."
+                sleep 30
+                ;;
+              *)
+                echo "::error::pnpm audit reported findings."
+                exit "$status"
+                ;;
+            esac
+          done
+          echo "::warning::pnpm audit skipped: npm's advisory endpoint was unreachable for three attempts."
+
       - run: pnpm run generate:sbom
       - uses: actions/upload-artifact@v7
         with:

@@ -1565,3 +1565,31 @@
   `ca5d819d-b23f-46de-b08b-836a8f874268`; a full campaign withdrawal still uses D-082's separate
   pre-campaign reference. The change is reversible and requires no data rewrite.
 - Status: Owner-authorized for production deployment.
+
+## D-086 - Fail the dependency audit on findings, not on npm's availability
+
+- Date: 2026-09-04
+- Decision: Run `pnpm audit` in CI up to three times and tell its two failure modes apart. A
+  reported vulnerability still fails the build immediately. A connection failure against npm's
+  advisory endpoint — `TimeoutError`, `ETIMEDOUT`, `ECONNRESET`, `ENOTFOUND`, `EAI_AGAIN`, or a
+  hung socket — is retried, and after three attempts the run continues with a GitHub warning
+  annotation instead of blocking. The narrow, expiring `--ignore` exceptions from D-060 are
+  unchanged.
+- Demand and distribution: On 2026-09-04 the audit step failed twice on the same commit while
+  nothing in the repository had changed. `registry.npmjs.org` answered in 90ms and
+  `registry.npmjs.org/-/npm/v1/security/advisories/bulk` returned nothing in 45 seconds, from the
+  GitHub runner and from the maintainer's machine alike. The pipeline was gating a readability
+  repair on an npm endpoint's uptime, and a re-run could not fix it.
+- Economics and costs: No price, product, or provider change. The cost avoided is a blocked deploy
+  during a third-party outage; the cost accepted is that a dependency vulnerability introduced
+  during such an outage reaches production one deploy earlier than it otherwise would.
+- Privacy, safety, and claims: No personal data, provider, entitlement, or reading claim is
+  touched. The audit's security value is unchanged when npm answers, which is the ordinary case;
+  what changed is that an unanswered request is no longer read as a clean audit *or* as a finding,
+  but reported as what it is.
+- Success, guardrails, and reversal: The step must still fail on any non-network audit outcome, the
+  warning must appear in the run summary so an outage is visible rather than silent, and the
+  D-060 ignores must stay narrow and expiring. If audits are seen passing while npm is unreachable,
+  or a finding is ever swallowed, restore the single-line `pnpm audit` step. Reversal is one commit
+  and needs no data change.
+- Status: Applied to unblock a verified-green pipeline; owner to confirm at next review.
