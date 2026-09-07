@@ -39,3 +39,8 @@ Premium visual acceptance remains **FAIL**. Current internal review is approxima
 5. Physical iPhone/Android GPU/touch/memory and independent bilingual review remain release gates.
 
 Rollback: disable SPACE_AI_ENABLED, then SPACE_ENABLED. Home entries/new writes stop; direct public demo and owner reads/export/delete/cleanup remain. Retain migration/private bucket/data-rights/cleanup until retained data is safely removed. Do not drop data or revert cleanup blindly. AR/LiDAR/irregular or whole-home scanning remain V2 candidates only.
+
+
+## Remote result / draft handoff
+
+Draft PR: https://github.com/aksdn1233-dev/innerarc/pull/22 (no merge/deploy). Code c0a39e7 remote run34093793928: verify success with230 first-pass browser cases,3 retry-pass,9 skipped; fake checkout8, unit1013/110. Targeted local retries investigation9/9 passed without retries. Space57 passed/3 performance failures (P90234–1049.9ms); exact runner backend unconfirmed because failure originally preceded its attachment. Tests now attach backend/viewport evidence before the unchanged soft failure gate and continue capturing comparison pictures. No product-performance fix is claimed. See failure ledger/runbook. Original checkout and production main remain untouched. Review artifacts and actual30 local captures are in the task outputs/space-v1-review directory.

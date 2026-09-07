@@ -42,9 +42,15 @@ test("selection, validated adjustment, undo and same-camera comparison", async (
   await expect(view).toHaveAttribute("data-sampled-frames", /[1-9]/);
   const measured = await view.evaluate(element => ({ p90Ms: Number((element as HTMLElement).dataset.frameP90), cpuRenderP90Ms: Number((element as HTMLElement).dataset.renderMsP90), textureCount: Number((element as HTMLElement).dataset.textureCount), quality: (element as HTMLElement).dataset.quality, beforeFallbackFrameP90Ms: Number((element as HTMLElement).dataset.beforeFallbackFrameP90 || 0) }));
   await testInfo.attach("active-frame-timing", { body: JSON.stringify(measured), contentType: "application/json" });
-  expect(measured.p90Ms).toBeLessThan(100);
   const gpu = await view.locator("canvas").evaluate(canvas => { const gl = (canvas as HTMLCanvasElement).getContext("webgl2"); const extension = gl?.getExtension("WEBGL_debug_renderer_info"); return gl && extension ? gl.getParameter(extension.UNMASKED_RENDERER_WEBGL) as string : "unavailable"; });
   await testInfo.attach("renderer-backend", { body: gpu, contentType: "text/plain" });
+  await testInfo.attach("performance-environment", { body: JSON.stringify(await view.evaluate(element => {
+    const canvas = element.querySelector("canvas")!, rect = element.getBoundingClientRect();
+    return { visibility: document.visibilityState, viewport: [innerWidth, innerHeight], pixelRatio: devicePixelRatio, canvasPixels: [canvas.width, canvas.height], canvasRect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height }, hardwareConcurrency: navigator.hardwareConcurrency, userAgent: navigator.userAgent };
+  })), contentType: "application/json" });
+  // Keep the same blocking threshold, but retain backend evidence and comparison
+  // captures even when a runner cannot meet it. A soft failure still fails the test.
+  expect.soft(measured.p90Ms).toBeLessThan(100);
   // Direct corrections deliberately invalidate analysis. Re-analyze the restored
   // scene before capturing a fresh current/recommended pair at the warmed tier.
   await page.getByRole("checkbox", { name: "I compared the room, openings and furniture with the actual space" }).check();

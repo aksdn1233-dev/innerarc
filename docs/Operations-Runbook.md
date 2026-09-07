@@ -360,3 +360,8 @@ Follow `Space-Intelligence-V1.md` for staging migration dependencies and exact e
 On a privacy/cost/write incident: set `SPACE_AI_ENABLED=false`; set `SPACE_ENABLED=false` to stop new writes. Preserve owner reads/export/delete and scheduled cleanup. Do not drop `space-private` or new tables while retained data remains. The additive migration also repairs existing PPI deletion ordering; reverting all code can strand cleanup or regress account rights. Main auto-deploys; use an unmerged review branch until hosted two-owner and model gates pass.
 
 Space deletion responses now acknowledge the committed database deletion immediately and conservatively report image-removal verification pending. Only the scheduled worker drains the global cleanup queue. Monitor backlog separately; never interpret a successful API receipt as proof that all private bytes have already been removed. Do not disable cleanup when rolling back feature writes.
+
+
+### Space draft remote validation exception — 2026-09-07
+
+Draft PR22 remains blocked. Run34093793928 passed general verify but recorded3 retry-pass mobile tests (share accessibility, onboarding result, shop curation); local repeated checks passed9/9 without retries, and the remote first-failure cause remains unconfirmed. The space job passed57 and failed3 unchanged<100ms frame gates at234–1049.9ms. GPU ReadPixels stalls are evidence, not a verified backend diagnosis. Keep SPACE_ENABLED/SPACE_AI_ENABLED off in production, preserve traces/captures, and require runner/device diagnosis plus the visual gate before launch. No main merge, migration or deployment is authorized by a green general-verify job alone. Diagnostic attachments now precede the performance assertion; that change does not waive the failing gate.
