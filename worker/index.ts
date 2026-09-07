@@ -5,6 +5,7 @@ import {
 } from "vinext/server/image-optimization";
 import handler from "vinext/server/app-router-entry";
 import { runDailyNotificationBatch } from "../src/server/daily-notifications";
+import { runSpaceCleanup } from "../src/server/space/cleanup";
 import {
   aiCrawlerRefused,
   shouldBlockAICrawlerRequest,
@@ -78,13 +79,15 @@ const worker = {
 
     return handler.fetch(request, env, context);
   },
-  scheduled(controller: { scheduledTime: number }, env: WorkerEnv, context: WorkerContext) {
+  scheduled(controller: { scheduledTime: number; cron?: string }, env: WorkerEnv, context: WorkerContext) {
     const runtimeEnvironment = {
       NEXT_PUBLIC_SUPABASE_URL: env.NEXT_PUBLIC_SUPABASE_URL,
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
       SUPABASE_SERVICE_ROLE_KEY: env.SUPABASE_SERVICE_ROLE_KEY,
     };
-    context.waitUntil(runDailyNotificationBatch(runtimeEnvironment, new Date(controller.scheduledTime)));
+    if (controller.cron !== "15 * * * *") context.waitUntil(runDailyNotificationBatch(runtimeEnvironment, new Date(controller.scheduledTime)));
+    // Independent cleanup keeps running even when new space creation is disabled.
+    context.waitUntil(runSpaceCleanup(runtimeEnvironment));
   },
 };
 

@@ -1593,3 +1593,13 @@
   or a finding is ever swallowed, restore the single-line `pnpm audit` step. Reversal is one commit
   and needs no data change.
 - Status: Applied to unblock a verified-green pipeline; owner to confirm at next review.
+
+## D-087 - Add isolated, deterministic 3D space intelligence behind operational flags
+
+- Date: 2026-09-07
+- Decision: Add independent space introduction/workbench routes, private owner data and a versioned geometry/rule engine to existing Self-Discovery. Preserve all current auth/payment/report/canonical calculations. AI extracts validated candidates only; all score/coordinates/actions and personal-pattern calculations remain code-owned. Failure leads to manual input. Upgrade actual interactive Three.js rendering with licensed assets/PBR/quality tiers instead of generated images.
+- Demand and distribution: Explicit owner request; existing menu is distribution. No customer-conversion or efficacy evidence is claimed. Traditional/spatial/personal evidence categories remain visibly separate.
+- Economics: No new checkout or price. AI has exact input preflight, configured rates, capped attempts/deadline/output/cost and validated same-project reuse. No model is assumed account-accessible. Rendering and deterministic analysis use no paid model calls.
+- Privacy and safety: Private sanitized derivatives, 24-hour access expiry, durable cleanup/deletion, owner RLS, explicit photo consent, server-only report context, fail-closed rate limit. Pixels can still contain visible personal information. Provider retention differs from local expiry. Narrow existing PPI account-deletion ordering/grant repair is tested alongside additive space tables.
+- Success and reversal: Require local regression and visual gates plus hosted two-owner/storage/model verification before production activation. Disable AI, then new-write feature flag; preserve account rights and cleanup until retained data is gone. Main auto-deploys, therefore this change stays a draft branch and is not merged/deployed. Exact contracts and known limits: Space-Intelligence-V1.md.
+- Status: Implemented for review; production release held pending external staging checks and final visual acceptance.

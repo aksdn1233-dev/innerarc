@@ -130,3 +130,7 @@ Interface and funnel rules, including the checklist that a "simplification" has 
 [Home funnel and interface design rules](docs/Home-Funnel-Design-Rules.md).
 
 Read [Continuation State](docs/Continuation-State.md) first when resuming the project. The strict keep/improve/hold assessment is in [Feature Audit](docs/Feature-Audit.md). Operational boundaries are in [Operations Runbook](docs/Operations-Runbook.md), crisis behavior is in [Crisis Response Protocol](docs/Crisis-Response-Protocol.md), and the local security baseline is in [Security Review](docs/Security-Review.md).
+
+## 3D Space V1 (draft, default off)
+
+An additive ko/en space introduction and owner workspace are implemented behind `SPACE_ENABLED` and `SPACE_AI_ENABLED`. Production enablement remains held for premium visual acceptance, hosted isolation/storage checks and verified model configuration. See [Space V1](docs/Space-Intelligence-V1.md), [current evidence](docs/Space-Project-State.md) and [failure ledger](docs/Space-Failure-Ledger.md). Existing payments, entitlement history and symbolic calculation engines remain authoritative.

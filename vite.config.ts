@@ -39,7 +39,7 @@ export default defineConfig({
         assets: { binding: "ASSETS" },
         // 00:00 UTC is 09:00 in Korea. The handler only creates consented,
         // owner-scoped in-site notifications and is idempotent per account/day.
-        triggers: { crons: ["0 0 * * *"] },
+        triggers: { crons: ["0 0 * * *", "15 * * * *"] },
       },
     }),
   ],

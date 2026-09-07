@@ -26,7 +26,8 @@ overrides:
   postcss: "8.5.23"
   # Host confusion via a backslash authority introducer, reached through webpack's
   # schema validation inside @vitejs/plugin-rsc.
-  fast-uri: "3.1.5"
+  # Follow-up canonicalization advisories are fixed by3.1.6 (2026-08-23).
+  fast-uri: "3.1.6"
   # GHSA-5p4m-2wfm-xmqj, fixed in 4.3.1. Reached only through eslint and its configs, so
   # it runs while linting and never in the deployed Worker.
   js-yaml: "4.3.1"

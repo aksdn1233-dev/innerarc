@@ -60,6 +60,8 @@ export function buildContentSecurityPolicy(
 // to index or archive it, and it travels with the response rather than a separate file
 // a crawler may never read.
 const PRIVATE_PATH_PREFIXES = [
+  "/ko/space/workspace",
+  "/en/space/workspace",
   "/api/",
   "/auth/",
   "/ko/admin",

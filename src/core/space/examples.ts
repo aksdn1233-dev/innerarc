@@ -1,0 +1,14 @@
+import { manualScene, type Scene, type SpatialObject } from "./schema";
+export const SPACE_EXAMPLES = ["small_bedroom", "large_bedroom", "living_room", "narrow_room", "dense_room", "sparse_room"] as const;
+export type SpaceExample = typeof SPACE_EXAMPLES[number];
+export function spaceExample(name: SpaceExample): Scene {
+  const scene = manualScene();
+  const object = (id: string, kind: SpatialObject["kind"], x: number, z: number, width: number, depth: number, height: number): SpatialObject => ({ id, kind, x, z, width, depth, height, rotation: 0, movable: true, confidence: 1, dimensionSource: "confirmed" });
+  if (name === "small_bedroom") scene.objects.push(object("nightstand_1", "nightstand", 2.02, 1.13, .45, .40, .55), object("plant_1", "plant", 3.55, .6, .55, .55, 1.25), object("rug_1", "rug", 1.2, 2.30, 2.15, 2.65, .012), object("lamp_1", "lighting", 2.72, .68, .42, .42, 1.5));
+  if (name === "large_bedroom") { scene.room = { width: 6, depth: 7, height: 2.8 }; scene.objects = [object("bed_1", "bed", 2, 2, 1.7, 2.15, 1.1), object("desk_1", "desk", 4.9, 4.8, 1.4, .7, .76), object("sofa_1", "sofa", 3.2, 5.8, 2.2, .9, .85), object("plant_1", "plant", 5.2, 1, .65, .65, 1.3)]; scene.windows[0] = { id: "window_1", wall: "top", offset: 3.5, width: 1.6, sill: .8, height: 1.4 }; }
+  if (name === "living_room") { scene.room = { width: 6, depth: 5, height: 2.7 }; scene.objects = [object("sofa_1", "sofa", 1.9, 1.15, 2.4, 1, .9), object("table_1", "coffee_table", 2.2, 2.8, 1.25, .65, .43), object("storage_1", "cabinet", 5.3, 2.1, 1.2, .4, .85), object("plant_1", "plant", 4.9, .7, .65, .65, 1.3), object("rug_1", "rug", 2.5, 2.65, 3.5, 3.2, .012), { ...object("chair_1", "lounge_chair", 3.9, 2, .827, .570, .686), rotation: 90 }, object("lamp_1", "lighting", .45, .65, .42, .42, 1.6)]; scene.windows[0] = { id: "window_1", wall: "top", offset: 3.5, width: 1.6, sill: .8, height: 1.4 }; }
+  if (name === "narrow_room") { scene.room = { width: 2.7, depth: 5.5, height: 2.5 }; scene.objects = [object("bed_1", "bed", 1, 1.5, 1, 2, 1.05), object("desk_1", "desk", 2.1, 4.3, .9, .45, .76)]; scene.windows[0] = { id: "window_1", wall: "top", offset: 1.5, width: .9, sill: .9, height: 1.1 }; }
+  if (name === "dense_room") { scene.room = { width: 5, depth: 6, height: 2.6 }; scene.objects = [object("bed_1", "bed", 1.1, 1.4, 1.4, 2, 1.05), object("desk_1", "desk", 3.8, 1.6, 1.2, .6, .76), object("storage_1", "storage", 4.4, 4, 1, .4, 1.3), object("sofa_1", "sofa", 2.6, 4.8, 2.2, .9, .85), object("plant_1", "plant", 4.4, .6, .6, .6, 1.2)]; scene.windows[0] = { id: "window_1", wall: "top", offset: 2.5, width: 1.5, sill: .9, height: 1.2 }; }
+  if (name === "sparse_room") { scene.room = { width: 4.5, depth: 5, height: 2.7 }; scene.objects = [object("desk_1", "desk", 2.2, 2.4, 1.5, .75, .76), object("plant_1", "plant", 3.8, 1, .6, .6, 1.3)]; }
+  return scene;
+}

@@ -39,7 +39,9 @@ jobs:
           # before the outcome could be told apart from an outage.
           set +e -u -o pipefail
           for attempt in 1 2 3; do
-            output=$(pnpm audit --ignore GHSA-w3rx-r6r6-pgpr --ignore GHSA-5p2g-fcmc-qvqq 2>&1)
+            # pnpm11 --ignore is a configuration mutation, not the audit gate.
+            # The two approved exceptions already live in pnpm-workspace.yaml.
+            output=$(pnpm audit 2>&1)
             status=$?
             printf '%s\n' "$output"
             if [ "$status" -eq 0 ]; then exit 0; fi
@@ -69,3 +71,33 @@ jobs:
         run: pnpm test:e2e tests/e2e/payments.spec.ts --project=chromium --project=mobile --workers=1 --reporter=line
         env:
           E2E_PAYMENT_CHECKOUT: "1"
+
+  space-browser:
+    # Functional/asset/geometry gates and current captures on a separate runner.
+    # Linux-generated pictures are review artifacts, not automatic premium visual approval.
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SPACE_ENABLED: "true"
+      SPACE_AI_ENABLED: "false"
+      PLAYWRIGHT_JSON_OUTPUT_NAME: artifacts/space-browser-results.json
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium webkit
+      - run: pnpm test:space --update-snapshots=all --reporter=line,json
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: space-browser-evidence
+          path: |
+            artifacts/space-browser-results.json
+            tests/visual/snapshots
+            test-results
+          if-no-files-found: error
+          retention-days: 14

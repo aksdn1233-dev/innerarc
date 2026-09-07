@@ -158,3 +158,9 @@ Browser storage adds shared-device exposure, quota/corruption, and stale-retenti
   from the verified winner after a separate notice and consent, then retained under the approved
   fulfilment/legal schedule. Draw evidence is deleted or minimized after the claim/dispute period,
   subject to qualified legal review.
+
+## Space V1 additive data boundary (feature disabled by default)
+
+Authenticated space projects contain room dimensions, orientation, object coordinates, analysis, applied choices and30/90-day feedback. These are personal records even without a street address. Browser-selected images are resized and re-encoded to JPEG before authenticated server transfer; server decoding/re-encoding strips metadata again. Visible faces, addresses and documents are not automatically redacted. The UI requests explicit AI-image consent; no original image or public photo URL is stored. Owner checks apply before body processing; private server image transfer is not a signed-URL upload flow.
+
+Image metadata access expires after24 hours. Durable background cleanup removes bytes and retains race-recovery tombstones; outages can delay physical removal. Deleting a room/account immediately revokes access and queues storage removal transactionally. Existing deletion receipts never wait for the global storage queue. Export omits image bytes/object paths, preserves owner filtering and uses stable composite-key pagination. Disabling feature writes retains owner export/delete and cleanup. Hosted two-owner/storage verification remains a release gate.

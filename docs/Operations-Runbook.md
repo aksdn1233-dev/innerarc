@@ -352,3 +352,11 @@ The final runbook must add named on-call, legal/privacy, security, payment-suppo
 - If known bots appear in the owner console, add a failing user-agent test before expanding the
   bounded server filter. If real customer browsers are excluded, remove the overbroad matcher and
   roll back the journey component without changing payment or historical aggregates.
+
+## 3D 공간운 — disabled-by-default operational path
+
+Follow `Space-Intelligence-V1.md` for staging migration dependencies and exact environment prerequisites. Enable saved/manual operation separately from AI. Monitor candidate validity/manual fallback, per-run reserved/settled cost, failed saves, leases, upload quota, hourly cleanup backlog and 48-hour deletion warnings. No image/report text belongs in logs.
+
+On a privacy/cost/write incident: set `SPACE_AI_ENABLED=false`; set `SPACE_ENABLED=false` to stop new writes. Preserve owner reads/export/delete and scheduled cleanup. Do not drop `space-private` or new tables while retained data remains. The additive migration also repairs existing PPI deletion ordering; reverting all code can strand cleanup or regress account rights. Main auto-deploys; use an unmerged review branch until hosted two-owner and model gates pass.
+
+Space deletion responses now acknowledge the committed database deletion immediately and conservatively report image-removal verification pending. Only the scheduled worker drains the global cleanup queue. Monitor backlog separately; never interpret a successful API receipt as proof that all private bytes have already been removed. Do not disable cleanup when rolling back feature writes.

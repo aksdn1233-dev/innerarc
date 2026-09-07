@@ -238,3 +238,19 @@ Last updated: 2026-08-22
   required private-use consent, responsive stacking, and centered 44-pixel-or-larger actions.
 - [ ] Collect at least 30 non-internal home entries per source before diagnosing a percentage-based
   journey drop-off; until then report counts, automation evidence, and uncertainty only.
+
+## 2026-09-07 — additive 3D 공간운
+
+- [x] Inspect production source/baseline and isolate work without rewriting existing flows.
+- [x] Separate bilingual intro/workbench/menu, shared protection/legal footer and private noindex.
+- [x] Strict scene/action contracts, deterministic geometry/Feng Shui, reference calibration, existing canonical report/PPI reuse, comparison/application/Reality Check storage.
+- [x] Private sanitized uploads, ownership/rate/cost checks, additive migration, leased writes, durable expiration/deletion and account export/delete integration.
+- [x] Real Three.js asset/PBR renderer, 17 object kinds, licensed manifest, touch/key controls, bounded loading, retry, disposal and text fallback.
+- [x] Synthetic unit/integration fixtures and desktop/WebKit/Android browser coverage; final evidence recorded in Space-Project-State.md.
+- [ ] Final premium visual acceptance (every category ≥8, overall ≥8.5).
+- [ ] Hosted staging: migration, two-owner isolation, physical object cleanup and account-rights verification.
+- [ ] Confirm account-accessible model IDs/current rates and exact-count endpoint before AI activation.
+- [ ] Physical iPhone/Android GPU and sensor checks before broad production rollout.
+- [ ] Merge/deploy only after release gates; keep rollback cleanup/account-rights paths alive.
+
+Space follow-up (2026-09-07): added camera corner/occlusion/fallback, failed HTTP/blob cleanup, asynchronous deletion receipt, composite export-order and moving-rug/GPU-draw regressions. Local unit suite1013/110 passes. Premium visual acceptance and hosted/physical-device gates remain unchecked; record final browser/performance evidence in `Space-Project-State.md`.

@@ -65,7 +65,28 @@ export async function GET() {
   }
 
   const exportedAt = new Date().toISOString();
+  // Keep space data exportable when the feature flag is off. Never silently truncate it.
+  const spaceData: Record<string, unknown[]> = {};
+  let spaceMigrationPending = false;
+  for (const table of ["space_projects", "space_rooms", "space_assets", "space_analysis_runs", "space_applied_changes", "space_reality_checks"]) {
+    const rows: unknown[] = [];
+    for (let offset = 0; ; offset += 500) {
+      const select = table === "space_assets" ? "id,project_id,status,byte_size,expires_at,created_at" : "*";
+      let query = auth.client.from(table).select(select).eq("owner_user_id", auth.user.id).order(table === "space_rooms" ? "project_id" : table === "space_applied_changes" ? "run_id" : "id");
+      if (table === "space_applied_changes") query = query.order("recommendation_id");
+      const result = await query.range(offset, offset + 499);
+      if (result.error) {
+        if (["42P01", "PGRST205"].includes(result.error.code ?? "")) { spaceMigrationPending = true; break; }
+        return NextResponse.json({ error: "EXPORT_FAILED" }, { status: 500 });
+      }
+      rows.push(...(result.data ?? []));
+      if ((result.data?.length ?? 0) < 500) break;
+      if (offset >= 9500) return NextResponse.json({ error: "EXPORT_TOO_LARGE_CONTACT_SUPPORT" }, { status: 413 });
+    }
+    spaceData[table] = rows;
+  }
   const exportData = {
+    space: spaceData,
     profile: profile.data,
     consentReceipts: consents.data ?? [],
     tarotReadings: tarot.data ?? [],
@@ -104,6 +125,7 @@ export async function GET() {
     exportedAt,
     ownerUserId: auth.user.id,
     patternMigrationPending,
+    spaceMigrationPending,
     artifactProvenance: provenance,
     data: exportData,
   }, null, 2);

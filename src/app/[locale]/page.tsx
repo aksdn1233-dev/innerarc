@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { HomeExperience } from "@/components/home-experience";
+import { spaceEnabled } from "@/server/space/config";
 import { resolveProductPricing } from "@/core/product-prices";
 import { dictionaries } from "@/i18n/dictionaries";
 import { isLocale } from "@/i18n/config";
@@ -49,6 +50,7 @@ export default async function LocaleHome({
   }
   return (
     <HomeExperience
+      spaceAvailable={spaceEnabled()}
       locale={locale}
       dictionary={dictionaries[locale]}
       pageContent={pageContent}

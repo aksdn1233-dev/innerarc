@@ -166,3 +166,18 @@
 - [x] Simple-is-best compatibility follow-up removes orbit/glow/grid/gradient decoration and nested
   person cards while preserving the form order, privacy statement, five relationship choices,
   consent, centered controls, responsive layout, and eight-section result behavior.
+
+## Additive 3D Space V1 — release held
+
+- [x] Independent Korean/English intro and owner workspace; default-off flags; existing checkout and calculation contracts preserved.
+- [x] Strict candidate scene boundary, deterministic recommendations, reference-measurement provenance and safe manual fallback.
+- [x] Private sanitized image transfer, quota/rate/cost limits, durable deletion queue and account export/deletion integration.
+- [x] Local PostgreSQL-engine tests for the additive schema and inherited PPI deletion constraints.
+- [x] Licensed asset manifest, actual GLB bounds/material tests, browser failure/retry and synthetic visual fixtures.
+- [ ] Premium visual gate: every category≥8 and overall≥8.5. Test success alone does not approve visuals.
+- [ ] Hosted staging migration, two-owner Supabase RLS/storage/cleanup/rollback verification.
+- [ ] Account-accessible model, current rate/capability evidence and consented live fixture extraction.
+- [ ] Physical iPhone/Android GPU, touch and memory validation.
+- [ ] Production enablement. No migration/deployment or new paid product is authorized by this checklist.
+
+Rollback reference: production base `ee4ae5038e34e0715456b837cbe7c7f2db5591c4`; retain data-rights and cleanup code when disabling new space writes. See `Space-Intelligence-V1.md` and `Space-Failure-Ledger.md`.

@@ -11213,3 +11213,10 @@ summary {
   color: var(--muted);
   font-size: 0.86rem;
 }
+
+/* Additive space entry: the existing full home nav is hidden on phones. */
+.home-space-mobile-menu { display: none; }
+@media (max-width: 899px) {
+  .home-space-mobile-menu { display: flex; align-items: center; margin-left: auto; }
+  .home-space-mobile-menu a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border: 1px solid rgba(239,212,147,.4); border-radius: 999px; background: rgba(22,19,31,.8); color: #f5dfad; font-size: .82rem; font-weight: 700; text-decoration: none; }
+}
