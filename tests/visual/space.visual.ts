@@ -129,7 +129,7 @@ for (const example of ["small_bedroom", "living_room"] as const) test(`interior 
   await page.getByRole("combobox", { name: "Example space", exact: true }).selectOption(example);
   const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", example === "small_bedroom" ? "6" : "7", { timeout: 20000 }); await expect(view).toHaveAttribute("data-triangles", /[1-9]/);
   await page.getByRole("button", { name: "Recommended", exact: true }).click();
-  await expect(view.locator("..")).toHaveScreenshot(`${example}-interior.png`, { animations: "disabled", threshold: .10, maxDiffPixelRatio: .01 });
+  await expect(view.locator("..")).toHaveScreenshot(`${example}-interior.png`, { animations: "disabled", threshold: .10, maxDiffPixelRatio: .01, timeout: 15_000 });
   expect(failures).toEqual([]);
 });
 test("failed material load releases the canvas and retry restores one renderer", async ({ page }) => {

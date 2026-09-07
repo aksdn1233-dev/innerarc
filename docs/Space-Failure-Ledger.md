@@ -91,3 +91,10 @@ The warmed comparison capture also re-analyzes after manual edits: edits intenti
 - Cause: the checkbox action depended on Playwright's viewport stability while the mobile editorial rail was settling, and the storage-failure assertion kept the default five-second UI deadline under five-worker contention.
 - Correction: dispatch the checkbox's native click and verify its checked state; allow the failure message ten seconds while preserving its exact text, URL and no-storage assertions.
 - Recurrence test: run both mobile cases three times serially, then require the complete browser matrix to pass without product-code retries.
+
+## 2026-09-08 — Node 24 CI passed with avoidable UI/capture retries
+
+- Trigger: run 34144223670 completed all four jobs, but both shop recommendation checks retried after their five-second result wait and both desktop high-resolution interior captures retried after Playwright's five-second stability window.
+- Cause: the unchanged shop interaction relied on actionability while the full parallel suite was loaded; the new larger drawing buffer made stable interior capture exceed a timeout chosen for the former resolution.
+- Correction: dispatch the real shop button click directly and verify its three results within a bounded ten seconds; allow only the two high-resolution interior screenshots fifteen seconds without changing their pixel tolerance, geometry, quality tier or performance ceiling.
+- Recurrence test: run the shop case on desktop/mobile and both interior captures locally, then require a fresh four-job Node 24 run with no retry-pass cases from these checks.
