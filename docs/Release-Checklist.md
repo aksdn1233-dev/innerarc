@@ -174,7 +174,7 @@
 - [x] Private sanitized image transfer, quota/rate/cost limits, durable deletion queue and account export/deletion integration.
 - [x] Local PostgreSQL-engine tests for the additive schema and inherited PPI deletion constraints.
 - [x] Licensed asset manifest, actual GLB bounds/material tests, browser failure/retry and synthetic visual fixtures.
-- [ ] Premium visual gate: every category≥8 and overall≥8.5. Test success alone does not approve visuals.
+- [ ] Owner-approved premium visual gate from actual captures: preferred overall≥9.0; minimum overall≥8.7 only with explicit owner acceptance; every critical category≥8.5. Current provisional score is8.86 overall and8.6 minimum. Test success alone does not approve visuals.
 - [ ] Hosted staging migration, two-owner Supabase RLS/storage/cleanup/rollback verification.
 - [ ] Account-accessible model, current rate/capability evidence and consented live fixture extraction.
 - [ ] Physical iPhone/Android GPU, touch and memory validation.

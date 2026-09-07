@@ -23,8 +23,17 @@ export function supplementaryFurniture(g: T.Group, object: SpatialObject, m: Int
           box(i % 3 === 0 ? m.sage : i % 3 === 1 ? m.sand : m.linen, .075 + i * .004, height, .50, x, y + .013 + height / 2, -.10, .003);
         }
       }
+    } else if (kind === "nightstand") {
+      // Two inset drawers, shadow gaps and horizontal pulls read as real joinery
+      // at the bedroom camera distance without adding a separate material batch.
+      for (let row = 0; row < 2; row++) {
+        const y = base + .205 + row * .405;
+        box(m.walnut, .88, .37, .018, 0, y, .455, .006);
+        box(m.oak, .84, .335, .035, 0, y, .477, .012);
+        box(m.bronze, .16, .014, .025, 0, y + .055, .485, .005);
+      }
     } else {
-      const doors = kind === "nightstand" ? 1 : kind === "cabinet" ? 3 : 2;
+      const doors = kind === "cabinet" ? 3 : 2;
       for (let i = 0; i < doors; i++) {
         const w = .92 / doors, x = -.46 + w * (i + .5);
         box(m.oak, w - .012, .93 - base, .03, x, (1 + base) / 2 - .025, .465, .003);

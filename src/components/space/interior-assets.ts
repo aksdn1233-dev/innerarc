@@ -40,6 +40,10 @@ export function interiorMaterials(anisotropy: number) {
     const texture = new T.CanvasTexture(canvas); texture.colorSpace = T.SRGBColorSpace; texture.wrapS = texture.wrapT = T.RepeatWrapping; texture.anisotropy = Math.min(anisotropy, 8); texture.minFilter = T.LinearMipmapLinearFilter; textures.push(texture); return texture;
   }
   const oak = surface("oak"), linen = surface("linen"), plaster = surface("plaster"), floor = surface("floor"), marble = surface("marble");
+  const daylightCanvas = document.createElement("canvas"); daylightCanvas.width = 256; daylightCanvas.height = 512;
+  const daylightContext = daylightCanvas.getContext("2d")!; const daylight = daylightContext.createLinearGradient(0, 0, 0, 512);
+  daylight.addColorStop(0, "#b9ced8"); daylight.addColorStop(.58, "#d8e1e1"); daylight.addColorStop(1, "#e8dfcf"); daylightContext.fillStyle = daylight; daylightContext.fillRect(0, 0, 256, 512);
+  const daylightTexture = new T.CanvasTexture(daylightCanvas); daylightTexture.colorSpace = T.SRGBColorSpace; daylightTexture.anisotropy = Math.min(anisotropy, 4); textures.push(daylightTexture);
   // Bump maps carry scalar data, never sRGB colour transforms.
   const bump = (texture: T.Texture) => { const copy = texture.clone(); copy.colorSpace = T.NoColorSpace; copy.needsUpdate = true; textures.push(copy); return copy; };
   const oakBump = bump(oak), linenBump = bump(linen), plasterBump = bump(plaster), floorBump = bump(floor), marbleRoughness = bump(marble);
@@ -60,8 +64,8 @@ export function interiorMaterials(anisotropy: number) {
     lampshade: new T.MeshStandardMaterial({ color: 0xf1e5ce, map: linen, roughness: .9, side: T.DoubleSide }),
     bulb: new T.MeshStandardMaterial({ color: 0xffe6bd, emissive: 0xffc77d, emissiveIntensity: 1.8, roughness: .35 }),
     rug: new T.MeshStandardMaterial({ color: 0xcbc4b5, map: linen, bumpMap: linenBump, bumpScale: .002, roughness: 1 }),
-    glass: new T.MeshPhysicalMaterial({ color: 0xc7dee5, metalness: .10, roughness: .06, envMapIntensity: 1.5, transparent: true, opacity: .34, side: T.DoubleSide, depthWrite: false }),
-    exterior: new T.MeshBasicMaterial({ color: 0xc9d7dc, toneMapped: false }),
+    glass: new T.MeshPhysicalMaterial({ color: 0xd7e8eb, metalness: 0, roughness: .10, clearcoat: 1, clearcoatRoughness: .04, envMapIntensity: 1.8, transparent: true, opacity: .22, side: T.DoubleSide, depthWrite: false }),
+    exterior: new T.MeshBasicMaterial({ color: 0xffffff, map: daylightTexture, toneMapped: false }),
   };
   return { ...materials, dispose() { Object.values(materials).forEach(m => m.dispose()); textures.forEach(t => t.dispose()); } };
 }
@@ -229,9 +233,9 @@ export function architecture(scene: Scene, m: InteriorMaterials) {
       if (o.bottom > 0) {
         const inward = wall === "bottom" || wall === "left" ? -1 : 1;
         block(g, m.wall, o.width + .06, .045, .22, o.offset + o.width / 2, o.bottom + .0225, inward * .045, .005);
-        // Recessed frame, slender center mullion, and a clear reveal produce physical depth.
+        // A recessed frame and clear reveal produce depth without inventing a sash
+        // division that was not observed in the source room.
         for (const x of [o.offset + .05, o.offset + o.width - .05]) block(g, m.dark, .025, o.top - o.bottom - .06, .04, x, (o.bottom + o.top) / 2, -.025 * inward, .003);
-        block(g, m.dark, .026, o.top - o.bottom, .045, o.offset + o.width / 2, (o.top + o.bottom) / 2, 0, .003);
         block(g, m.exterior, o.width - .09, o.top - o.bottom - .09, .006, o.offset + o.width / 2, (o.top + o.bottom) / 2, .035 * inward, 0);
         block(g, m.glass, o.width - .07, o.top - o.bottom - .07, .008, o.offset + o.width / 2, (o.top + o.bottom) / 2, 0, 0);
       } else {

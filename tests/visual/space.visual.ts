@@ -31,12 +31,28 @@ test("selection, validated adjustment, undo and same-camera comparison", async (
   await expect(view).toHaveAttribute("data-motion", "settled");
   await page.getByRole("button", { name: "Suggested layout", exact: true }).click();
   await expect(view).not.toHaveAttribute("data-scene-state", before!); await expect(view).toHaveAttribute("data-camera", camera!);
+  await expect(view).toHaveAttribute("data-comparison-changes", /[1-9]/);
   await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 });
   await page.getByRole("button", { name: "Current layout", exact: true }).click(); await expect(view).toHaveAttribute("data-scene-state", before!);
   await expect(view.locator("..")).toHaveScreenshot("current-layout.png", { animations: "disabled", threshold: .10, maxDiffPixelRatio: .01 });
+  await view.locator("xpath=../../..").evaluate(element => element.scrollIntoView({ block: "start" }));
+  await expect(page).toHaveScreenshot("current-layout-panel.png", { animations: "disabled", threshold: .10, maxDiffPixelRatio: .01 });
   await page.getByRole("button", { name: "Suggested layout", exact: true }).click(); await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 });
   await expect(view).toHaveAttribute("data-camera", camera!);
   await expect(view.locator("..")).toHaveScreenshot("recommended-layout.png", { animations: "disabled", threshold: .10, maxDiffPixelRatio: .01 });
+  await expect(page).toHaveScreenshot("recommended-layout-panel.png", { animations: "disabled", threshold: .10, maxDiffPixelRatio: .01 });
+});
+
+test("Ultra Preview exposes its real render profile", async ({ page }) => {
+  await page.goto("/en/space");
+  const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "6", { timeout: 20000 });
+  await page.getByRole("combobox", { name: "Quality", exact: true }).selectOption("ultra");
+  await expect(view).toHaveAttribute("data-effective-quality", "ultra");
+  await expect(view).toHaveAttribute("data-preview-profile", "ultra-preview");
+  expect(await view.locator("canvas").evaluate(canvas => (canvas as HTMLCanvasElement).width / canvas.getBoundingClientRect().width)).toBeGreaterThanOrEqual(1.49);
+  await page.getByRole("button", { name: "Recommended", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Recommended", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await expect(view.locator("..")).toHaveScreenshot("ultra-preview.png", { animations: "disabled", threshold: .10, maxDiffPixelRatio: .01 });
 });
 
 test("lightweight tier stays within the active-frame budget", async ({ page }, testInfo) => {
@@ -103,7 +119,7 @@ for (const example of ["small_bedroom", "living_room"] as const) test(`interior 
   await page.emulateMedia({ reducedMotion: "reduce" }); await page.goto("/en/space");
   await page.getByRole("combobox", { name: "Example space", exact: true }).selectOption(example);
   const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", example === "small_bedroom" ? "6" : "7", { timeout: 20000 }); await expect(view).toHaveAttribute("data-triangles", /[1-9]/);
-  await page.getByRole("button", { name: "Recommended view", exact: true }).click();
+  await page.getByRole("button", { name: "Recommended", exact: true }).click();
   await expect(view.locator("..")).toHaveScreenshot(`${example}-interior.png`, { animations: "disabled", threshold: .10, maxDiffPixelRatio: .01 });
   expect(failures).toEqual([]);
 });

@@ -6,6 +6,7 @@
     {
       "asset_id": "taeryeongdang-bed-v1",
       "category": "bed",
+      "visual_style": "Warm contemporary upholstered timber bed with tailored linen bedding",
       "source": "Original project procedural geometry",
       "license": "Project-owned",
       "dimensions_m": {
@@ -14,7 +15,7 @@
         "height": 1.05
       },
       "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
-      "polygon_count": 19804,
+      "polygon_count": 23524,
       "texture_resolution": "1024 maximum PBR; original color details 512",
       "lod_availability": false,
       "compression_status": "Material batches; demand-generated geometry; no network model",
@@ -23,6 +24,7 @@
     {
       "asset_id": "taeryeongdang-bookshelf-v1",
       "category": "bookshelf",
+      "visual_style": "Warm contemporary timber shelving with restrained book accents",
       "source": "Original project procedural geometry",
       "license": "Project-owned",
       "dimensions_m": {
@@ -40,6 +42,7 @@
     {
       "asset_id": "taeryeongdang-cabinet-v1",
       "category": "cabinet",
+      "visual_style": "Warm contemporary veneer casework with recessed panels and brass pulls",
       "source": "Original project procedural geometry",
       "license": "Project-owned",
       "dimensions_m": {
@@ -57,6 +60,7 @@
     {
       "asset_id": "taeryeongdang-coffee_table-v1",
       "category": "coffee_table",
+      "visual_style": "Soft modern marble top with dark timber pedestal bases",
       "source": "Original project procedural geometry",
       "license": "Project-owned",
       "dimensions_m": {
@@ -74,6 +78,7 @@
     {
       "asset_id": "taeryeongdang-desk-v1",
       "category": "desk",
+      "visual_style": "Warm contemporary writing desk with slim dark legs and integrated drawers",
       "source": "Original project procedural geometry",
       "license": "Project-owned",
       "dimensions_m": {
@@ -91,6 +96,7 @@
     {
       "asset_id": "taeryeongdang-dining_chair-v1",
       "category": "dining_chair",
+      "visual_style": "Tailored neutral upholstery with slender dark timber supports",
       "source": "Original project procedural geometry",
       "license": "Project-owned",
       "dimensions_m": {
@@ -108,6 +114,7 @@
     {
       "asset_id": "taeryeongdang-dining_table-v1",
       "category": "dining_table",
+      "visual_style": "Rounded warm-veneer dining table with slender dark timber legs",
       "source": "Original project procedural geometry",
       "license": "Project-owned",
       "dimensions_m": {
@@ -125,6 +132,7 @@
     {
       "asset_id": "taeryeongdang-lighting-v1",
       "category": "lighting",
+      "visual_style": "Minimal warm-metal floor lamp with a woven neutral shade",
       "source": "Original project procedural geometry",
       "license": "Project-owned",
       "dimensions_m": {
@@ -133,7 +141,7 @@
         "height": 1.6
       },
       "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
-      "polygon_count": 992,
+      "polygon_count": 1432,
       "texture_resolution": "1024 maximum PBR; original color details 512",
       "lod_availability": false,
       "compression_status": "Material batches; demand-generated geometry; no network model",
@@ -142,6 +150,7 @@
     {
       "asset_id": "taeryeongdang-nightstand-v1",
       "category": "nightstand",
+      "visual_style": "Compact two-drawer veneer nightstand with shadow gaps and inset brass pulls",
       "source": "Original project procedural geometry",
       "license": "Project-owned",
       "dimensions_m": {
@@ -150,7 +159,7 @@
         "height": 0.55
       },
       "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
-      "polygon_count": 2912,
+      "polygon_count": 3812,
       "texture_resolution": "1024 maximum PBR; original color details 512",
       "lod_availability": false,
       "compression_status": "Material batches; demand-generated geometry; no network model",
@@ -159,6 +168,7 @@
     {
       "asset_id": "taeryeongdang-office_chair-v1",
       "category": "office_chair",
+      "visual_style": "Neutral upholstered task chair with a restrained dark-metal base",
       "source": "Original project procedural geometry",
       "license": "Project-owned",
       "dimensions_m": {
@@ -176,6 +186,7 @@
     {
       "asset_id": "khronos-indoor-plant-v1",
       "category": "plant",
+      "visual_style": "Natural indoor foliage in a warm ceramic planter",
       "source": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/DiffuseTransmissionPlant",
       "license": "CC-BY-4.0",
       "dimensions_m": {
@@ -197,6 +208,7 @@
     {
       "asset_id": "taeryeongdang-rug-v1",
       "category": "rug",
+      "visual_style": "Low-pile neutral woven rug with fine border and fringe",
       "source": "Original project procedural geometry",
       "license": "Project-owned",
       "dimensions_m": {
@@ -214,6 +226,7 @@
     {
       "asset_id": "taeryeongdang-storage-v1",
       "category": "storage",
+      "visual_style": "Low warm-veneer storage unit with subtle panel rhythm",
       "source": "Original project procedural geometry",
       "license": "Project-owned",
       "dimensions_m": {
@@ -231,6 +244,7 @@
     {
       "asset_id": "taeryeongdang-tv-v1",
       "category": "tv",
+      "visual_style": "Slim near-black display with a minimal pedestal and low-reflection screen",
       "source": "Original project procedural geometry",
       "license": "Project-owned",
       "dimensions_m": {
@@ -248,6 +262,7 @@
     {
       "asset_id": "taeryeongdang-wardrobe-v1",
       "category": "wardrobe",
+      "visual_style": "Tall warm-veneer wardrobe with recessed doors and slim brass pulls",
       "source": "Original project procedural geometry",
       "license": "Project-owned",
       "dimensions_m": {
@@ -265,6 +280,7 @@
     {
       "asset_id": "velvet-sofa-v1",
       "category": "sofa",
+      "visual_style": "Sculptural champagne-brown velvet seating with slender dark legs",
       "source": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/GlamVelvetSofa",
       "author": "Wayfair / Eric Chadwick",
       "license": "CC-BY-4.0",
@@ -286,6 +302,7 @@
     {
       "asset_id": "upholstered-chair-v1",
       "category": "lounge_chair",
+      "visual_style": "Sage tailored lounge chair with a dark timber frame",
       "source": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/SheenChair",
       "author": "Wayfair / Eric Chadwick",
       "license": "CC0-1.0",
@@ -307,6 +324,7 @@
     {
       "asset_id": "oak-floor-pbr-v1",
       "category": "material",
+      "visual_style": "Natural matte oak plank flooring",
       "source": "https://polyhaven.com/a/laminate_floor_03",
       "author": "Charlotte Baglioni / Dario Barresi",
       "license": "CC0-1.0",
@@ -338,6 +356,7 @@
     {
       "asset_id": "veneer-pbr-v1",
       "category": "material",
+      "visual_style": "Warm fine-grain timber veneer",
       "source": "https://polyhaven.com/a/okoume_veneer",
       "author": "Jenelle van Heerden",
       "license": "CC0-1.0",
@@ -369,6 +388,7 @@
     {
       "asset_id": "fabric-pbr-v1",
       "category": "material",
+      "visual_style": "Fine neutral woven upholstery and bedding fabric",
       "source": "https://polyhaven.com/a/fabric_pattern_07",
       "author": "Rob Tuytel",
       "license": "CC0-1.0",
@@ -395,6 +415,7 @@
     {
       "asset_id": "studio-small-09-v1",
       "category": "environment",
+      "visual_style": "Neutral soft studio reflections used only for material illumination",
       "source": "https://polyhaven.com/a/studio_small_09",
       "author": "Sergej Majboroda",
       "license": "CC0-1.0",
@@ -410,6 +431,7 @@
     {
       "asset_id": "original-marble-surface-v1",
       "category": "material",
+      "visual_style": "Quiet warm-white marble with restrained low-contrast veining",
       "source": "Original project generated material surface in interior-assets.ts",
       "license": "Project-owned",
       "dimensions_m": {

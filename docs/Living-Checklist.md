@@ -247,10 +247,12 @@ Last updated: 2026-08-22
 - [x] Private sanitized uploads, ownership/rate/cost checks, additive migration, leased writes, durable expiration/deletion and account export/delete integration.
 - [x] Real Three.js asset/PBR renderer, 17 object kinds, licensed manifest, touch/key controls, bounded loading, retry, disposal and text fallback.
 - [x] Synthetic unit/integration fixtures and desktop/WebKit/Android browser coverage; final evidence recorded in Space-Project-State.md.
-- [ ] Final premium visual acceptance (every category ≥8, overall ≥8.5).
+- [ ] Owner visual acceptance from actual captures (preferred overall≥9.0; minimum overall≥8.7 only with explicit owner acceptance; every critical category≥8.5). Current internal review is8.86 overall and8.6 minimum.
 - [ ] Hosted staging: migration, two-owner isolation, physical object cleanup and account-rights verification.
 - [ ] Confirm account-accessible model IDs/current rates and exact-count endpoint before AI activation.
 - [ ] Physical iPhone/Android GPU and sensor checks before broad production rollout.
 - [ ] Merge/deploy only after release gates; keep rollback cleanup/account-rights paths alive.
 
 Space follow-up (2026-09-07): added camera corner/occlusion/fallback, failed HTTP/blob cleanup, asynchronous deletion receipt, composite export-order and moving-rug/GPU-draw regressions. Local unit suite1013/110 passes. Premium visual acceptance and hosted/physical-device gates remain unchecked; record final browser/performance evidence in `Space-Project-State.md`.
+
+Premium visual follow-up (2026-09-07): current/recommended deltas and scene cues are deterministic, the exterior shadow/window/mobile/Ultra presentation defects have regression coverage, and the current local totals are unit1019/111, space66/66 and fake checkout8/8. The provisional14-category score is8.86 with8.6 minimum; owner acceptance, hosted storage/model tests and physical devices remain unchecked.

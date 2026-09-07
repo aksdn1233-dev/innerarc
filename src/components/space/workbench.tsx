@@ -7,6 +7,7 @@ import { analyzeSpace, applyAction, geometryIssues } from "@/core/space/engine";
 import { AnalysisSchema, manualScene, SceneSchema, estimatedMeasurements, type Analysis, type Goal, type Scene, type SpatialObject } from "@/core/space/schema";
 import { SPACE_EXAMPLES, spaceExample, type SpaceExample } from "@/core/space/examples";
 import { movementSummary } from "@/core/space/presentation";
+import { spatialChanges } from "@/core/space/comparison";
 import { calibrateScene } from "@/core/space/measurement";
 import styles from "./space.module.css";
 import { FURNITURE_CATALOG, OBJECT_KINDS, type ObjectKind } from "@/core/space/catalog";
@@ -139,6 +140,13 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
     setAnalysis(response.result); setRunId(response.runId); setRunDate(new Date().toISOString()); setApplied({}); setMessage(words("분석과 방 구조를 내 계정에 저장했습니다.", "Analysis and room structure saved to your account."));
   }
   const kindName = (kind: string) => FURNITURE_CATALOG[kind as ObjectKind]?.[ko ? "ko" : "en"] ?? kind;
+  const comparisonChanges = analysis ? spatialChanges(analysis.current, analysis.recommended) : [];
+  const comparisonSummary = (change: (typeof comparisonChanges)[number]) => {
+    const parts: string[] = [];
+    if (change.distance > .001) parts.push(movementSummary(analysis!.current, { type: "move", objectId: change.objectId, x: change.to.x, z: change.to.z, rotation: null }, locale));
+    if (change.rotationDelta) parts.push(`${words("회전", "rotate")} ${change.rotationDelta}°`);
+    return parts.join(" · ");
+  };
   return <fieldset className={styles.workbench} disabled={busy || !hydrated} data-ready={hydrated}>
     {demo && <label>{words("예시 공간", "Example space")}<select defaultValue="small_bedroom" onChange={e => { if (e.target.value === "irregular_room") { setError(words("비정형 방은 아직 지원하지 않습니다. 직사각형 구역 하나의 치수를 직접 입력하세요. 자동으로 직사각형으로 바꾸지 않습니다.", "Irregular rooms are not supported yet. Enter one measured rectangular zone; we will not silently reshape your room.")); return; } const next = spaceExample(e.target.value as SpaceExample); edit(next); setSource("example"); originalScene.current = next; setUndo([]); setSelectedId(null); setError(""); }}>{SPACE_EXAMPLES.map((name, index) => <option key={name} value={name}>{ko ? ["작은 침실", "넓은 침실", "거실", "긴 방", "가구가 많은 방", "가구가 적은 방"][index] : ["Small bedroom", "Large bedroom", "Living room", "Narrow room", "Dense furniture", "Sparse furniture"][index]}</option>)}<option value="irregular_room">{words("비정형 방 · 지원 범위 확인", "Irregular room · check support")}</option></select></label>}
     {!demo && <section className={styles.panel} aria-label={words("저장된 방", "Saved rooms")}>
@@ -154,9 +162,13 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
       <div>
         <section className={styles.panel}>
           <div className={styles.actions}><span className={styles.badge}>{source === "example" ? words("직접 고치는 예시 방", "Editable example room") : source === "photo" ? words("사진에서 읽은 초안", "Draft from photos") : source === "saved" ? words("저장된 방", "Saved room") : words("직접 입력한 방", "Manually entered room")}</span>
-            {analysis && <><button aria-pressed={!compare} onClick={() => setCompare(false)}>{words("현재 배치", "Current layout")}</button><button aria-pressed={compare} onClick={() => setCompare(true)}>{words("추천 배치", "Suggested layout")}</button></>}
+            {analysis && <div className={styles.compareSwitch} aria-label={words("현재와 추천 배치 비교", "Compare current and suggested layouts")}><button aria-pressed={!compare} onClick={() => setCompare(false)}>{words("현재 배치", "Current layout")}</button><span aria-hidden="true">↔</span><button aria-pressed={compare} onClick={() => setCompare(true)}>{words("추천 배치", "Suggested layout")}</button></div>}
           </div>
-          {validScene ? <RoomView locale={locale} scene={compare && analysis ? analysis.recommended : scene} selectedId={selectedId} onSelect={setSelectedId} /> : <p role="status">{words("크기와 좌표를 올바르게 입력하면 3D가 표시됩니다.", "Enter valid dimensions and coordinates to display 3D.")}</p>}
+          {analysis && <div className={styles.comparisonSummary} data-comparison-mode={compare ? "recommended" : "current"}>
+            <div><strong>{compare ? words("추천 배치", "Suggested layout") : words("현재 배치", "Current layout")}</strong><span>{compare ? words("청록 윤곽은 원래 위치입니다.", "Teal outlines mark original positions.") : words("금색 윤곽은 추천 위치입니다.", "Gold outlines mark suggested positions.")}</span></div>
+            {comparisonChanges.length ? <ol>{comparisonChanges.map(change => <li key={change.objectId}><span>{kindName(change.kind)}</span><b>{comparisonSummary(change)}</b></li>)}</ol> : <p>{words("좌표나 방향이 바뀐 가구가 없습니다.", "No furniture coordinates or rotations changed.")}</p>}
+          </div>}
+          {validScene ? <RoomView locale={locale} scene={compare && analysis ? analysis.recommended : scene} comparisonScene={analysis ? compare ? analysis.current : analysis.recommended : undefined} comparisonMode={analysis ? compare ? "recommended" : "current" : undefined} selectedId={selectedId} onSelect={setSelectedId} /> : <p role="status">{words("크기와 좌표를 올바르게 입력하면 3D가 표시됩니다.", "Enter valid dimensions and coordinates to display 3D.")}</p>}
           <label>{words("가구 선택", "Select furniture")}<select value={selectedId ?? ""} onChange={e => setSelectedId(e.target.value || null)}><option value="">{words("가구를 누르거나 선택하세요", "Tap furniture or choose here")}</option>{scene.objects.map(o => <option key={o.id} value={o.id}>{kindName(o.kind)} · {o.id}</option>)}</select></label>
           {selectedId && <div className={styles.toolbar} aria-label={words("선택한 가구 조정", "Adjust selected furniture")}>
             {([["←", -.1, 0], ["→", .1, 0], ["↑", 0, -.1], ["↓", 0, .1]] as const).map(([label, dx, dz]) => <button key={label} disabled={compare || !scene.objects.find(o => o.id === selectedId)?.movable} aria-label={words(`가구 ${label} 10cm`, `Move furniture ${label} 10cm`)} onClick={() => void task(async () => { const object = scene.objects.find(o => o.id === selectedId)!; edit(applyAction(scene, { type: "move", objectId: selectedId, x: Math.round((object.x + dx) * 1000) / 1000, z: Math.round((object.z + dz) * 1000) / 1000, rotation: null })); })}>{label} 10cm</button>)}

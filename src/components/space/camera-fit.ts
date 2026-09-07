@@ -15,7 +15,10 @@ export function roomCameraFit(room: { width: number; depth: number; height: numb
     const point = new Vector3(x, y, z).sub(target), depth = point.dot(direction);
     distance = Math.max(distance, Math.abs(point.dot(right)) / tanH + depth, Math.abs(point.dot(up)) / tanV + depth);
   }
-  return { target, position: direction.multiplyScalar(distance * 1.08).add(target) };
+  // The corner proof already includes a 20–22cm architectural margin. A small
+  // optical margin keeps portrait rooms prominent without cropping their shell.
+  const opticalMargin = top ? 1.035 : aspect < 1 ? 1.025 : 1.05;
+  return { target, position: direction.multiplyScalar(distance * opticalMargin).add(target) };
 }
 
 /** Choose an unobstructed room corner and prove the subject fits before offering an inside view. */

@@ -43,8 +43,8 @@ test("private workspace is login-gated and noindex; shared footer remains", asyn
 });
 test("space mobile layout, reduced motion and accessibility stay usable", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" }); await page.goto("/en/space");
-  await expect(page.getByRole("button", { name: "Top view", exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Top view", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Top", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Top", exact: true }).click();
   await page.getByRole("button", { name: "Zoom in", exact: true }).click();
   await page.addScriptTag({ content: axe });
   const violations = await page.evaluate(async () => {
