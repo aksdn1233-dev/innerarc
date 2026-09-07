@@ -132,7 +132,9 @@ test("failed material load releases the canvas and retry restores one renderer",
   await page.route("**/space/assets/oak-floor-color.jpg", route => route.fulfill({ status: 503, body: "synthetic outage" })); await page.goto("/en/space");
   await expect(page.getByRole("button", { name: "Retry 3D" })).toBeVisible({ timeout: 20000 }); expect(await page.locator("canvas").count()).toBe(0);
   await page.unroute("**/space/assets/oak-floor-color.jpg"); await page.getByRole("button", { name: "Retry 3D" }).click();
-  await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "6", { timeout: 20000 }); expect(await page.locator("canvas").count()).toBe(1);
+  // A fresh WebGL context and all bounded assets are rebuilt after disposal. Allow
+  // the constrained WebKit runner its 15s download ceiling plus context setup time.
+  await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "6", { timeout: 30000 }); expect(await page.locator("canvas").count()).toBe(1);
 });
 
 test("a stalled asset reaches retry without leaving a half-mounted renderer", async ({ page }) => {
