@@ -81,26 +81,29 @@ test("lightweight tier stays within the active-frame budget", async ({ page }, t
   })).toBe(true);
   const move = page.getByRole("button", { name: "Move furniture → 10cm", exact: true });
   const undo = page.getByRole("button", { name: "Undo edit", exact: true });
-  let responseMs = 0;
+  const commit = async (button: typeof move, expected: string) => button.evaluate((element: HTMLButtonElement, state) => new Promise<number>(resolve => {
+    const scene = document.querySelector<HTMLElement>("[data-scene-state]")!, started = performance.now();
+    const observer = new MutationObserver(() => { if (scene.dataset.sceneState?.includes(state)) { observer.disconnect(); resolve(performance.now() - started); } });
+    observer.observe(scene, { attributes: true, attributeFilter: ["data-scene-state"] }); element.click();
+  }), expected);
+  let responseMs = 0, adaptive = false;
   if (software) {
-    const snap = async (button: typeof move, expected: string) => button.evaluate((element: HTMLButtonElement, state) => new Promise<number>(resolve => {
-      const scene = document.querySelector<HTMLElement>("[data-scene-state]")!, started = performance.now();
-      const observer = new MutationObserver(() => { if (scene.dataset.sceneState?.includes(state)) { observer.disconnect(); resolve(performance.now() - started); } });
-      observer.observe(scene, { attributes: true, attributeFilter: ["data-scene-state"] }); element.click();
-    }), expected);
-    responseMs = Math.max(await snap(move, '"x":3.1'), await snap(undo, '"x":3,'));
+    responseMs = Math.max(await commit(move, '"x":3.1'), await commit(undo, '"x":3,'));
     await expect(view).toHaveAttribute("data-motion-policy", "software-snap");
   } else {
     for (let i = 0; i < 8; i++) {
-      await move.evaluate((button: HTMLButtonElement) => button.click());
-      await expect(view).toHaveAttribute("data-motion-policy", "animated");
-      await expect(view).toHaveAttribute("data-scene-state", /"x":3.1/); await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 });
-      await undo.evaluate((button: HTMLButtonElement) => button.click()); await expect(view).toHaveAttribute("data-scene-state", /"x":3,/); await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 });
-      if (i >= 1 && Number(await view.getAttribute("data-sampled-frames")) >= 12) break;
+      const moveMs = await commit(move, '"x":3.1'); const movePolicy = await view.getAttribute("data-motion-policy");
+      if (movePolicy === "adaptive-snap") { adaptive = true; responseMs = Math.max(responseMs, moveMs); }
+      else { expect(movePolicy).toBe("animated"); await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 }); }
+      const undoMs = await commit(undo, '"x":3,'); const undoPolicy = await view.getAttribute("data-motion-policy");
+      if (undoPolicy === "adaptive-snap") { adaptive = true; responseMs = Math.max(responseMs, undoMs); }
+      else { expect(undoPolicy).toBe("animated"); await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 }); }
+      if (adaptive || (i >= 1 && Number(await view.getAttribute("data-sampled-frames")) >= 12)) break;
     }
-    await expect(view).toHaveAttribute("data-sampled-frames", /[1-9]/);
+    if (adaptive) { await expect(view).toHaveAttribute("data-scheduler-policy", "immediate"); await expect(view).toHaveAttribute("data-motion-policy", "adaptive-snap"); }
+    else await expect(view).toHaveAttribute("data-sampled-frames", /[1-9]/);
   }
-  const measured = await view.evaluate((element, snapMs) => { const canvas = element.querySelector("canvas")!, rect = canvas.getBoundingClientRect(); return { p90Ms: Number((element as HTMLElement).dataset.frameP90), responseMs: snapMs, cpuRenderP90Ms: Number((element as HTMLElement).dataset.renderMsP90), drawCalls: Number((element as HTMLElement).dataset.drawCalls), triangles: Number((element as HTMLElement).dataset.triangles), textureCount: Number((element as HTMLElement).dataset.textureCount), textureBytesEstimate: Number((element as HTMLElement).dataset.textureBytesEstimate), quality: (element as HTMLElement).dataset.quality, shadowMode: (element as HTMLElement).dataset.shadowMode, canvasScale: canvas.width / rect.width, beforeFallbackFrameP90Ms: Number((element as HTMLElement).dataset.beforeFallbackFrameP90 || 0) }; }, responseMs);
+  const measured = await view.evaluate((element, snapMs) => { const canvas = element.querySelector("canvas")!, rect = canvas.getBoundingClientRect(); return { p90Ms: Number((element as HTMLElement).dataset.frameP90), responseMs: snapMs, cpuRenderP90Ms: Number((element as HTMLElement).dataset.renderMsP90), drawCalls: Number((element as HTMLElement).dataset.drawCalls), triangles: Number((element as HTMLElement).dataset.triangles), textureCount: Number((element as HTMLElement).dataset.textureCount), textureBytesEstimate: Number((element as HTMLElement).dataset.textureBytesEstimate), quality: (element as HTMLElement).dataset.quality, shadowMode: (element as HTMLElement).dataset.shadowMode, motionPolicy: (element as HTMLElement).dataset.motionPolicy, schedulerPolicy: (element as HTMLElement).dataset.schedulerPolicy, canvasScale: canvas.width / rect.width, beforeFallbackFrameP90Ms: Number((element as HTMLElement).dataset.beforeFallbackFrameP90 || 0) }; }, responseMs);
   await testInfo.attach("active-frame-timing", { body: JSON.stringify(measured), contentType: "application/json" });
   expect(measured.shadowMode).toBe("performance-unshadowed");
   expect(measured.canvasScale).toBeLessThanOrEqual(.71);
@@ -108,8 +111,8 @@ test("lightweight tier stays within the active-frame budget", async ({ page }, t
     const canvas = element.querySelector("canvas")!, rect = element.getBoundingClientRect();
     return { visibility: document.visibilityState, viewport: [innerWidth, innerHeight], pixelRatio: devicePixelRatio, canvasPixels: [canvas.width, canvas.height], canvasRect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height }, hardwareConcurrency: navigator.hardwareConcurrency, userAgent: navigator.userAgent };
   })), contentType: "application/json" });
-  // Hardware motion and software immediate response share the same blocking ceiling.
-  expect.soft(software ? measured.responseMs : measured.p90Ms).toBeLessThan(100);
+  // Smooth hardware motion and evidence-driven immediate response share the same ceiling.
+  expect.soft(software || measured.motionPolicy === "adaptive-snap" ? measured.responseMs : measured.p90Ms).toBeLessThan(100);
 });
 test("irregular room is explicitly unsupported and never silently reshaped", async ({ page }) => {
   await page.goto("/en/space"); const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "6", { timeout: 20000 }); await expect(view).toHaveAttribute("data-triangles", /[1-9]/); const before = await view.getAttribute("data-scene-state");

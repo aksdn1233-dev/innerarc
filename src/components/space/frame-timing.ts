@@ -14,6 +14,13 @@ export function shouldReduceQuality(frameP90Ms: number, sampleCount: number, ren
   return frameP90Ms > 100 || (sampleCount >= 12 && (frameP90Ms > 38 || renderP90Ms > 24));
 }
 
+/** If the lightest profile still cannot schedule a visible transition, finish
+ * validated movement immediately. This preserves input response without guessing
+ * from a renderer name or weakening the shared 100ms ceiling. */
+export function shouldUseImmediateMotion(frameP90Ms: number, sampleCount: number) {
+  return sampleCount >= 4 && frameP90Ms > 100;
+}
+
 export function isSoftwareRendererName(name: string) {
   return /swiftshader|llvmpipe|software rasterizer/i.test(name);
 }

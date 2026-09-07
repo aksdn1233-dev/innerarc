@@ -255,4 +255,6 @@ Last updated: 2026-08-22
 
 Space follow-up (2026-09-07): added camera corner/occlusion/fallback, failed HTTP/blob cleanup, asynchronous deletion receipt, composite export-order and moving-rug/GPU-draw regressions. Local unit suite1013/110 passes. Premium visual acceptance and hosted/physical-device gates remain unchecked; record final browser/performance evidence in `Space-Project-State.md`.
 
-Premium visual follow-up (2026-09-07): current/recommended deltas and scene cues are deterministic, the exterior shadow/window/mobile/Ultra presentation defects have regression coverage, and the current local totals are unit1019/111, space66/66 and fake checkout8/8. The provisional14-category score is8.86 with8.6 minimum; owner acceptance, hosted storage/model tests and physical devices remain unchecked.
+Premium visual follow-up (2026-09-07): current/recommended deltas and scene cues are deterministic, the exterior shadow/window/mobile/Ultra presentation defects have regression coverage, and the current local totals are unit1020/111, space66/66 and fake checkout8/8. The provisional14-category score is8.86 with8.6 minimum; owner acceptance, hosted storage/model tests and physical devices remain unchecked.
+
+Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered in15–19ms but scheduled frames at263–269ms. The performance tier now switches to immediate validated movement only after four observed over-ceiling frames. The100ms limit remains unchanged; a clean remote rerun and physical devices remain required.

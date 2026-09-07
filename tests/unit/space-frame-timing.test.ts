@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import { activeFrameTiming, isInViewport, isSoftwareRendererName, shouldReduceQuality } from "@/components/space/frame-timing";
+import { activeFrameTiming, isInViewport, isSoftwareRendererName, shouldReduceQuality, shouldUseImmediateMotion } from "@/components/space/frame-timing";
 it("includes the last moving frame but excludes idle time and separate camera clicks", () => {
   const frame = activeFrameTiming();
   expect(frame(100, true)).toBeNull(); expect(frame(116, true)).toBe(16); expect(frame(132, false)).toBe(16);
@@ -27,4 +27,10 @@ it("recognizes known software renderer labels without classifying hardware GPUs"
   expect(isSoftwareRendererName("llvmpipe (LLVM 19.1.7, 256 bits)")).toBe(true);
   expect(isSoftwareRendererName("Microsoft Basic Software Rasterizer")).toBe(true);
   expect(isSoftwareRendererName("Apple GPU")).toBe(false);
+});
+
+it("uses immediate validated motion only after repeated over-ceiling frames", () => {
+  expect(shouldUseImmediateMotion(101, 3)).toBe(false);
+  expect(shouldUseImmediateMotion(100, 4)).toBe(false);
+  expect(shouldUseImmediateMotion(101, 4)).toBe(true);
 });
