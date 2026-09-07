@@ -108,7 +108,7 @@ export default function RoomView({ scene, locale, selectedId = null, onSelect }:
       function profile(value: string) {
         const tier = value === "auto" ? mobile ? "balanced" : "high" : value;
         tierWarmSamples = 2; intervals.length = 0; renderTimes.length = 0; delete container!.dataset.frameP90; delete container!.dataset.sampledFrames;
-        pixelRatio = Math.min(devicePixelRatio, tier === "ultra" ? 2 : tier === "high" ? 1.8 : tier === "balanced" ? 1.35 : 1);
+        pixelRatio = Math.min(devicePixelRatio, tier === "ultra" ? 2 : tier === "high" ? 1.8 : tier === "balanced" ? 1.35 : .7);
         windowFill.visible = current.windows.length > 0 && tier !== "performance"; world.environmentIntensity = tier === "performance" ? .50 : .42;
         practical.visible = tier === "ultra" || tier === "high";
         const lightweight = tier === "performance";
