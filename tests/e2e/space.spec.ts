@@ -6,6 +6,7 @@ const axe = readFileSync(path.resolve("node_modules/axe-core/axe.min.js"), "utf8
 test("space demo confirms, analyzes, compares, applies and invalidates edits", async ({ page }) => {
   const remote: string[] = [];
   page.on("request", request => { if (request.url().includes("api.openai.com") || request.url().includes("/api/space")) remote.push(request.url()); });
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/ko/space");
   await expect(page.locator("fieldset[data-ready]")).toHaveAttribute("data-ready", "true", { timeout: 10_000 });
   await expect(page.getByRole("heading", { name: "내 방을, 움직여 보기 전에.", exact: true })).toBeVisible();
