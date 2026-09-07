@@ -13,14 +13,9 @@ for (const example of SPACE_EXAMPLES) test(`visual geometry fixture: ${example}`
   expect(failures).toEqual([]);
   await expect(view.locator("..")).toHaveScreenshot(`${example}.png`, { animations: "disabled", threshold: .10, maxDiffPixelRatio: .01 });
 });
-test("selection, validated adjustment, undo and same-camera comparison", async ({ page }, testInfo) => {
+test("selection, validated adjustment, undo and same-camera comparison", async ({ page }) => {
   await page.goto("/en/space"); await page.getByRole("combobox", { name: "Select furniture", exact: true }).selectOption("desk_1");
   const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "6", { timeout: 20000 }); await expect(view).toHaveAttribute("data-triangles", /[1-9]/);
-  // Use the same low-cost policy for the complete interaction benchmark so setup
-  // animations cannot consume the test budget before performance is measured.
-  await page.getByLabel("Quality", { exact: true }).selectOption("performance");
-  await expect(view).toHaveAttribute("data-effective-quality", "performance");
-  await expect(view).toHaveAttribute("data-shadow-mode", "performance-unshadowed");
   await expect(view).toHaveAttribute("data-selected-object", "desk_1");
   const camera = await view.getAttribute("data-camera");
   await page.getByRole("button", { name: "Move furniture → 10cm", exact: true }).click();
@@ -37,10 +32,21 @@ test("selection, validated adjustment, undo and same-camera comparison", async (
   await expect(view).not.toHaveAttribute("data-scene-state", before!); await expect(view).toHaveAttribute("data-camera", camera!);
   await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 });
   await page.getByRole("button", { name: "Current layout", exact: true }).click(); await expect(view).toHaveAttribute("data-scene-state", before!);
-  // Measure the lightweight tier after initial shader/quality warm-up; retain any
-  // earlier automatic-fallback measurement separately. Select this tier so
-  // every backend is compared under the same render policy; the automatic threshold
-  // is covered by unit tests. Keep the canvas visible: browsers throttle
+  await expect(view.locator("..")).toHaveScreenshot("current-layout.png", { animations: "disabled", threshold: .10, maxDiffPixelRatio: .01 });
+  await page.getByRole("button", { name: "Suggested layout", exact: true }).click(); await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 });
+  await expect(view).toHaveAttribute("data-camera", camera!);
+  await expect(view.locator("..")).toHaveScreenshot("recommended-layout.png", { animations: "disabled", threshold: .10, maxDiffPixelRatio: .01 });
+});
+
+test("lightweight tier stays within the active-frame budget", async ({ page }, testInfo) => {
+  await page.goto("/en/space");
+  const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "6", { timeout: 20000 }); await expect(view).toHaveAttribute("data-triangles", /[1-9]/);
+  await page.getByRole("combobox", { name: "Select furniture", exact: true }).selectOption("desk_1");
+  await page.getByLabel("Quality", { exact: true }).selectOption("performance");
+  await expect(view).toHaveAttribute("data-effective-quality", "performance");
+  await expect(view).toHaveAttribute("data-shadow-mode", "performance-unshadowed");
+  // Every backend is compared under the same render policy; the automatic threshold
+  // is covered by unit tests. Keep the canvas visible because browsers throttle
   // requestAnimationFrame for fully offscreen content, which is a power policy rather
   // than renderer throughput. Programmatic click avoids scrolling back to the editor.
   await view.scrollIntoViewIfNeeded();
@@ -59,25 +65,15 @@ test("selection, validated adjustment, undo and same-camera comparison", async (
   await expect(view).toHaveAttribute("data-sampled-frames", /[1-9]/);
   const measured = await view.evaluate(element => ({ p90Ms: Number((element as HTMLElement).dataset.frameP90), cpuRenderP90Ms: Number((element as HTMLElement).dataset.renderMsP90), drawCalls: Number((element as HTMLElement).dataset.drawCalls), triangles: Number((element as HTMLElement).dataset.triangles), textureCount: Number((element as HTMLElement).dataset.textureCount), textureBytesEstimate: Number((element as HTMLElement).dataset.textureBytesEstimate), quality: (element as HTMLElement).dataset.quality, shadowMode: (element as HTMLElement).dataset.shadowMode, beforeFallbackFrameP90Ms: Number((element as HTMLElement).dataset.beforeFallbackFrameP90 || 0) }));
   await testInfo.attach("active-frame-timing", { body: JSON.stringify(measured), contentType: "application/json" });
-  expect(measured.shadowMode).toBe(measured.quality === "performance" ? "performance-unshadowed" : "directional-contact");
+  expect(measured.shadowMode).toBe("performance-unshadowed");
   const gpu = await view.locator("canvas").evaluate(canvas => { const gl = (canvas as HTMLCanvasElement).getContext("webgl2"); const extension = gl?.getExtension("WEBGL_debug_renderer_info"); return gl && extension ? gl.getParameter(extension.UNMASKED_RENDERER_WEBGL) as string : "unavailable"; });
   await testInfo.attach("renderer-backend", { body: gpu, contentType: "text/plain" });
   await testInfo.attach("performance-environment", { body: JSON.stringify(await view.evaluate(element => {
     const canvas = element.querySelector("canvas")!, rect = element.getBoundingClientRect();
     return { visibility: document.visibilityState, viewport: [innerWidth, innerHeight], pixelRatio: devicePixelRatio, canvasPixels: [canvas.width, canvas.height], canvasRect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height }, hardwareConcurrency: navigator.hardwareConcurrency, userAgent: navigator.userAgent };
   })), contentType: "application/json" });
-  // Keep the same blocking threshold, but retain backend evidence and comparison
-  // captures even when a runner cannot meet it. A soft failure still fails the test.
+  // Keep the same blocking threshold while retaining backend evidence first.
   expect.soft(measured.p90Ms).toBeLessThan(100);
-  // Direct corrections deliberately invalidate analysis. Re-analyze the restored
-  // scene before capturing a fresh current/recommended pair at the warmed tier.
-  await page.getByRole("checkbox", { name: "I compared the room, openings and furniture with the actual space" }).check();
-  await page.getByRole("button", { name: "Analyze demo room", exact: true }).click();
-  const tier = await view.getAttribute("data-quality");
-  await expect(view.locator("..")).toHaveScreenshot(`current-layout-${tier}.png`, { animations: "disabled", threshold: .10, maxDiffPixelRatio: .01 });
-  await page.getByRole("button", { name: "Suggested layout", exact: true }).click(); await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 });
-  await expect(view).toHaveAttribute("data-quality", tier!); await expect(view).toHaveAttribute("data-camera", camera!);
-  await expect(view.locator("..")).toHaveScreenshot(`recommended-layout-${tier}.png`, { animations: "disabled", threshold: .10, maxDiffPixelRatio: .01 });
 });
 test("irregular room is explicitly unsupported and never silently reshaped", async ({ page }) => {
   await page.goto("/en/space"); const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "6", { timeout: 20000 }); await expect(view).toHaveAttribute("data-triangles", /[1-9]/); const before = await view.getAttribute("data-scene-state");
