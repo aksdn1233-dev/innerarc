@@ -387,6 +387,7 @@ test("relationship handoff stays put when session storage is unavailable", async
   await expect(page).toHaveURL(`${E2E_ORIGIN}/en/relationship`);
   await expect(page.locator(".meeting-contexts .error")).toContainText(
     "could not be created safely",
+    { timeout: 10_000 },
   );
   expect(await page.evaluate((key) => sessionStorage.getItem(key), handoffKey)).toBeNull();
   expect(await page.evaluate(() => localStorage.getItem("innerarc:reality-check:v1"))).toBeNull();

@@ -7,7 +7,7 @@ test("space demo confirms, analyzes, compares, applies and invalidates edits", a
   const remote: string[] = [];
   page.on("request", request => { if (request.url().includes("api.openai.com") || request.url().includes("/api/space")) remote.push(request.url()); });
   await page.goto("/ko/space");
-  await expect(page.getByRole("heading", { name: "3D 공간운", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "내 방을, 움직여 보기 전에.", exact: true })).toBeVisible();
   const analyze = page.getByRole("button", { name: "예시 방 분석", exact: true });
   await expect(analyze).toBeDisabled();
   await page.getByRole("checkbox", { name: "북쪽 방향을 확인했어요" }).check();

@@ -12,9 +12,10 @@ import styles from "./space.module.css";
 
 type ComparisonMode = "current" | "recommended";
 type Runtime = { update(scene: Scene, comparison?: Scene, mode?: ComparisonMode): void; select(id: string | null): void; perspective(): void; top(): void; reset(): void; zoom(n: number): void; turn(): void; recommended(): void; profile(value: string): void; dispose(): void };
+type RenderResolution = { cssWidth: number; cssHeight: number; bufferWidth: number; bufferHeight: number; scale: number };
 export default function RoomView({ scene, comparisonScene, comparisonMode, locale, selectedId = null, onSelect }: { scene: Scene; comparisonScene?: Scene; comparisonMode?: ComparisonMode; locale: "ko" | "en"; selectedId?: string | null; onSelect?: (id: string) => void }) {
   const host = useRef<HTMLDivElement>(null), runtime = useRef<Runtime | null>(null), latest = useRef(scene), latestComparison = useRef(comparisonScene), latestComparisonMode = useRef(comparisonMode), selectCallback = useRef(onSelect), latestSelected = useRef(selectedId);
-  const [failed, setFailed] = useState(false), [ready, setReady] = useState(false), [attempt, setAttempt] = useState(0), [quality, setQuality] = useState("auto"), [assetLoading, setAssetLoading] = useState(false), [viewFallback, setViewFallback] = useState(false), [cameraChoice, setCameraChoice] = useState<"perspective" | "top" | "recommended">("perspective");
+  const [failed, setFailed] = useState(false), [ready, setReady] = useState(false), [attempt, setAttempt] = useState(0), [quality, setQuality] = useState("auto"), [assetLoading, setAssetLoading] = useState(false), [viewFallback, setViewFallback] = useState(false), [cameraChoice, setCameraChoice] = useState<"perspective" | "top" | "recommended">("perspective"), [resolution, setResolution] = useState<RenderResolution | null>(null);
   const ko = locale === "ko";
   useEffect(() => { latest.current = scene; latestComparison.current = comparisonScene; latestComparisonMode.current = comparisonMode; runtime.current?.update(scene, comparisonScene, comparisonMode); }, [scene, comparisonScene, comparisonMode]);
   useEffect(() => { selectCallback.current = onSelect; latestSelected.current = selectedId; runtime.current?.select(selectedId); }, [onSelect, selectedId]);
@@ -31,9 +32,9 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
       const debugRenderer = renderer.getContext().getExtension("WEBGL_debug_renderer_info");
       const rendererName = debugRenderer ? String(renderer.getContext().getParameter(debugRenderer.UNMASKED_RENDERER_WEBGL)) : "";
       const softwareRenderer = isSoftwareRendererName(rendererName);
-      own(() => { renderer.dispose(); renderer.forceContextLoss(); renderer.domElement.remove(); for (const key of ["sceneState", "objectCount", "drawCalls", "triangles", "camera", "motion", "frameP90", "sampledFrames"]) delete container.dataset[key]; });
+      own(() => { renderer.dispose(); renderer.forceContextLoss(); renderer.domElement.remove(); for (const key of ["sceneState", "objectCount", "drawCalls", "triangles", "camera", "motion", "frameP90", "sampledFrames", "cssWidth", "cssHeight", "renderWidth", "renderHeight", "renderScale"]) delete container.dataset[key]; });
       const mobile = matchMedia("(pointer: coarse)").matches, reduced = matchMedia("(prefers-reduced-motion: reduce)");
-      let pixelRatio = Math.min(devicePixelRatio, mobile ? 1.35 : 1.8), qualityReduced = false, schedulerConstrained = false;
+      let pixelRatio = mobile ? Math.min(1.5, Math.max(1.25, devicePixelRatio)) : Math.min(2, Math.max(1.5, devicePixelRatio)), qualityReduced = false, schedulerConstrained = false;
       renderer.setPixelRatio(pixelRatio); renderer.setClearColor(0xd9d7d0);
       renderer.outputColorSpace = T.SRGBColorSpace; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.02;
       renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap;
@@ -153,10 +154,18 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
       function schedule() { if (!frame && !contextLost) frame = requestAnimationFrame(draw); }
       function fit(top = false) { interiorView = false; setViewFallback(false); container!.dataset.cameraMode = top ? "top" : "perspective"; camera.fov = 38; camera.updateProjectionMatrix(); const fitted = roomCameraFit(current.room, camera.aspect, top); camera.position.copy(fitted.position); orbit.target.copy(fitted.target); orbit.update(); schedule(); }
       function reset() { fit(); }
+      function publishResolution() {
+        const cssWidth = Math.max(1, Math.round(container!.clientWidth)), cssHeight = Math.max(1, Math.round(container!.clientHeight));
+        const buffer = renderer.getDrawingBufferSize(new T.Vector2());
+        const next = { cssWidth, cssHeight, bufferWidth: Math.round(buffer.x), bufferHeight: Math.round(buffer.y), scale: pixelRatio };
+        container!.dataset.cssWidth = String(next.cssWidth); container!.dataset.cssHeight = String(next.cssHeight);
+        container!.dataset.renderWidth = String(next.bufferWidth); container!.dataset.renderHeight = String(next.bufferHeight); container!.dataset.renderScale = next.scale.toFixed(2);
+        if (!stopped) setResolution(previous => previous && JSON.stringify(previous) === JSON.stringify(next) ? previous : next);
+      }
       function profile(value: string) {
         const tier = value === "auto" ? mobile ? "balanced" : "high" : value;
         tierWarmSamples = 2; intervals.length = 0; renderTimes.length = 0; delete container!.dataset.frameP90; delete container!.dataset.sampledFrames;
-        pixelRatio = tier === "ultra" ? Math.min(2, Math.max(1.5, devicePixelRatio)) : Math.min(devicePixelRatio, tier === "high" ? 1.8 : tier === "balanced" ? 1.35 : .7);
+        pixelRatio = tier === "ultra" ? Math.min(2.5, Math.max(2, devicePixelRatio)) : tier === "high" ? Math.min(2, Math.max(1.5, devicePixelRatio)) : tier === "balanced" ? Math.min(1.5, Math.max(1.25, devicePixelRatio)) : .7;
         windowFill.visible = current.windows.length > 0 && tier !== "performance"; world.environmentIntensity = tier === "ultra" ? .52 : tier === "high" ? .46 : tier === "balanced" ? .40 : .50;
         practical.visible = tier === "ultra" || tier === "high";
         const lightweight = tier === "performance";
@@ -167,7 +176,7 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
         renderer.setPixelRatio(pixelRatio); composer.setPixelRatio(pixelRatio); const shadowSize = tier === "ultra" && !mobile ? 4096 : tier === "ultra" || tier === "high" ? 2048 : 1024; sun.shadow.mapSize.set(shadowSize, shadowSize); sun.shadow.intensity = tier === "ultra" ? .52 : tier === "high" ? .46 : .38; sun.shadow.map?.dispose(); sun.shadow.map = null; sun.castShadow = !lightweight;
         container!.dataset.shadowMode = lightweight ? "performance-unshadowed" : "directional-contact";
         container!.dataset.previewProfile = tier === "ultra" ? "ultra-preview" : tier;
-        container!.dataset.effectiveQuality = tier; schedule();
+        container!.dataset.effectiveQuality = tier; publishResolution(); schedule();
       }
       function update(next: Scene, comparison?: Scene, mode?: ComparisonMode) {
         if (geometryIssues(next).length) return; // Last valid geometry stays visible; no invalid input reaches WebGL.
@@ -242,7 +251,7 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
       const onLoss = (event: Event) => { event.preventDefault(); contextLost = true; resources.dispose(); if (!stopped) { runtime.current = null; setFailed(true); } };
       renderer.domElement.addEventListener("pointerdown", onDown); renderer.domElement.addEventListener("pointerup", onUp); renderer.domElement.addEventListener("webglcontextlost", onLoss); const onOrbit = () => { camera.position.y = Math.max(.18, camera.position.y); orbit.target.y = Math.max(0, Math.min(current.room.height, orbit.target.y)); schedule(); }; orbit.addEventListener("change", onOrbit);
       let readyAtLeastOnce = false;
-      const resize = new ResizeObserver(() => { const w = container.clientWidth, h = container.clientHeight; if (!w || !h) return; const changed = Math.abs(camera.aspect - w / h) > .1; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); composer.setSize(w, h); if (changed || !readyAtLeastOnce) reset(); else schedule(); }); resize.observe(container);
+      const resize = new ResizeObserver(() => { const w = container.clientWidth, h = container.clientHeight; if (!w || !h) return; const changed = Math.abs(camera.aspect - w / h) > .1; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); composer.setSize(w, h); publishResolution(); if (changed || !readyAtLeastOnce) reset(); else schedule(); }); resize.observe(container);
       own(() => { if (frame) cancelAnimationFrame(frame); resize.disconnect(); orbit.removeEventListener("change", onOrbit); renderer.domElement.removeEventListener("pointerdown", onDown); renderer.domElement.removeEventListener("pointerup", onUp); renderer.domElement.removeEventListener("webglcontextlost", onLoss); sun.shadow.map?.dispose(); });
       async function requestUpdate(next: Scene, comparison?: Scene, mode?: ComparisonMode) {
         const version = ++updateVersion; setAssetLoading(true);
@@ -264,7 +273,7 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
       };
       await requestUpdate(latest.current, latestComparison.current, latestComparisonMode.current); if (stopped || contextLost || !runtime.current) return;
       profile("auto");
-      const w = container.clientWidth, h = container.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); composer.setSize(w, h); reset(); readyAtLeastOnce = true; setReady(true);
+      const w = container.clientWidth, h = container.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); composer.setSize(w, h); publishResolution(); reset(); readyAtLeastOnce = true; setReady(true);
     }
     mount().catch(() => { partialCleanup(); if (!stopped) { runtime.current = null; setFailed(true); } });
     return () => { stopped = true; partialCleanup(); runtime.current = null; };
@@ -275,6 +284,7 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
     <div className={styles.sceneFrame}>
       <div ref={host} className={styles.canvas} hidden={failed} data-quality={quality} />
       {!failed && <div className={styles.compass} aria-label={`${ko ? "평면도 기준 북쪽" : "North relative to plan"}: ${scene.orientation.northDegrees}°`}><span style={{ transform: `rotate(${scene.orientation.northDegrees}deg)` }}>↑</span>{ko ? "북" : "N"}<small>{scene.orientation.northDegrees}° · {ko ? "평면도 기준" : "plan"}</small></div>}
+      {!failed && resolution && <output className={styles.renderMeter} aria-label={ko ? "실제 3D 렌더 해상도" : "Actual 3D render resolution"}>{ko ? "실제 렌더" : "Actual render"} <strong>{resolution.bufferWidth}×{resolution.bufferHeight}</strong><small>{resolution.cssWidth}×{resolution.cssHeight} 화면 · {resolution.scale.toFixed(2)}×</small></output>}
     </div>
     <div className={styles.toolbar} aria-label={ko ? "3D 보기 조작" : "3D view controls"}>
       <label className={styles.qualityChoice}>{ko ? "화질" : "Quality"}<select value={quality} onChange={e => { setQuality(e.target.value); runtime.current?.profile(e.target.value); }}>{["auto", "ultra", "high", "balanced", "performance"].map(value => <option key={value} value={value}>{({auto:ko?"자동":"Auto",ultra:ko?"울트라 미리보기":"Ultra Preview",high:"High",balanced:"Balanced",performance:ko?"가벼운 효과":"Performance"})[value]}</option>)}</select></label>

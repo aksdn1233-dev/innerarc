@@ -5,7 +5,15 @@ import { spaceAIConfig, spaceEnabled, type SpaceAIConfig } from "@/server/space/
 const config: SpaceAIConfig = spaceAIConfig({ SPACE_ENABLED: "true", SPACE_AI_ENABLED: "true", OPENAI_API_KEY: "synthetic-test-key-not-live", SPACE_AI_TIMEOUT_MS: "1000", SPACE_AI_MODELS_JSON: JSON.stringify([{ id: "synthetic-primary", inputMicrosPerMillion: 10_000_000, cachedInputMicrosPerMillion: 1_000_000, cacheWriteMicrosPerMillion: 12_500_000, outputMicrosPerMillion: 50_000_000, tier: "strong" }, { id: "synthetic-fallback", inputMicrosPerMillion: 1_000_000, cachedInputMicrosPerMillion: 100_000, cacheWriteMicrosPerMillion: 1_250_000, outputMicrosPerMillion: 2_000_000, tier: "routine" }]) })!;
 const images = ["data:image/jpeg;base64,AA==", "data:image/jpeg;base64,AA=="];
 const scene = manualScene();
-const observation = { room: scene.room, doors: scene.doors, windows: scene.windows, objects: scene.objects, confidence: 0.8, missing: [] };
+const observation = {
+  room: scene.room, doors: scene.doors, windows: scene.windows, objects: scene.objects, confidence: 0.8,
+  imageEvidence: [
+    { imageIndex: 0, usable: true, view: "overview", observesRoomBoundary: true, observedObjectIds: scene.objects.map(object => object.id) },
+    { imageIndex: 1, usable: true, view: "opposite", observesRoomBoundary: true, observedObjectIds: scene.objects.map(object => object.id) },
+  ],
+  crossView: { matchedViews: 2, geometryConsistency: .9, lightingRisk: .1, perspectiveRisk: .1, occlusionRisk: .1, scaleEvidence: "visual" },
+  missing: [],
+};
 function output(text = JSON.stringify(observation)) { return { status: "completed", output: [{ type: "message", content: [{ type: "output_text", text }] }], usage: { input_tokens: 1000, output_tokens: 100, input_tokens_details: { cached_tokens: 0, cache_write_tokens: 0 }, output_tokens_details: { reasoning_tokens: 0 } } }; }
 function transport(generation: (body: Record<string, unknown>, n: number) => Response | Promise<Response> = () => Response.json(output()), count = 1000) {
   let n = 0;
@@ -32,6 +40,16 @@ describe("space model boundary", () => {
   it("falls back after definite model capability rejection", async () => { const fetch = transport((body, n) => n === 1 ? Response.json({ error: "unsupported" }, { status: 400 }) : Response.json(output())); const result = await extractSpace(images, scene.orientation, config, fetch); expect(result.scene).not.toBeNull(); expect(result.telemetry.model).toBe("synthetic-primary"); expect(result.telemetry.attemptRecords.map(a => a.model)).toEqual(["synthetic-fallback", "synthetic-primary"]); expect(result.telemetry.attempts).toBe(2); expect(result.telemetry.billingUnknown).toBe(false); });
   it.each(["not json", "{}", JSON.stringify({ ...observation, objects: [{ ...scene.objects[0], x: 99 }] }), JSON.stringify({ ...observation, objects: [scene.objects[0], { ...scene.objects[0], id: "overlap" }] })])("caps invalid output retry: %s", async text => { const result = await extractSpace(images, scene.orientation, config, transport(() => Response.json(output(text)))); expect(result.scene).toBeNull(); expect(result.telemetry.attempts).toBe(2); });
   it("routes empty geometry to manual editing", async () => { const result = await extractSpace(images, scene.orientation, config, transport(() => Response.json(output(JSON.stringify({ ...observation, objects: [] }))))); expect(result.reason).toBe("INSUFFICIENT_EVIDENCE"); });
+  it.each([
+    { imageEvidence: [observation.imageEvidence[0], { ...observation.imageEvidence[1], imageIndex: 0 }] },
+    { crossView: { ...observation.crossView, matchedViews: 1 } },
+    { crossView: { ...observation.crossView, geometryConsistency: .4 } },
+    { crossView: { ...observation.crossView, lightingRisk: .9 } },
+  ])("rejects photo evidence that cannot support cross-view geometry", async evidence => {
+    const response = output(JSON.stringify({ ...observation, ...evidence }));
+    const result = await extractSpace(images, scene.orientation, config, transport(() => Response.json(response)));
+    expect(result.reason).toBe("INSUFFICIENT_CAPTURE_EVIDENCE"); expect(result.scene).toBeNull();
+  });
   it("does not retry ambiguous transport failure", async () => { const result = await extractSpace(images, scene.orientation, config, transport(() => { throw new Error("transport"); })); expect(result.telemetry.billingUnknown).toBe(true); expect(result.telemetry.attempts).toBe(1); expect(result.telemetry.reservedMicros).toBeGreaterThan(0); });
   it("fails closed on missing usage", async () => { const raw = output(); const result = await extractSpace(images, scene.orientation, config, transport(() => Response.json({ ...raw, usage: null }))); expect(result.scene).toBeNull(); expect(result.telemetry.billingUnknown).toBe(true); });
   it("honors timeout without launching another model", async () => {

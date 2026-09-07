@@ -4,6 +4,7 @@ export const CELEBRITIES: readonly CelebrityRecord[] = [
   {
     id: "barack-obama",
     displayName: { ko: "버락 오바마", en: "Barack Obama" },
+    profession: { ko: "공공 리더십", en: "Public leadership" },
     birthDate: "1961-08-04",
     fields: ["public_leadership"],
     source: {
@@ -12,11 +13,13 @@ export const CELEBRITIES: readonly CelebrityRecord[] = [
       url: "https://www.obamalibrary.gov/obamas/president-barack-obama",
       accessedAt: "2026-07-22",
     },
+    careerEvidence: [{ date: "2009-01-20", category: "public_service", claim: { ko: "미국 제44대 대통령으로 취임했습니다.", en: "He was inaugurated as the 44th President of the United States." }, source: { title: "President Barack Obama", publisher: "Barack Obama Presidential Library", url: "https://www.obamalibrary.gov/obamas/president-barack-obama", accessedAt: "2026-09-08" } }],
     confidence: "confirmed",
   },
   {
     id: "marie-curie",
     displayName: { ko: "마리 퀴리", en: "Marie Curie" },
+    profession: { ko: "물리학·화학 연구", en: "Physics and chemistry research" },
     birthDate: "1867-11-07",
     fields: ["science"],
     source: {
@@ -25,11 +28,13 @@ export const CELEBRITIES: readonly CelebrityRecord[] = [
       url: "https://www.nobelprize.org/prizes/physics/1903/marie-curie/facts/",
       accessedAt: "2026-07-22",
     },
+    careerEvidence: [{ date: "1911-12-10", category: "award", claim: { ko: "라듐과 폴로늄 발견 관련 연구로 노벨 화학상을 받았습니다.", en: "She received the Nobel Prize in Chemistry for research connected to radium and polonium." }, source: { title: "The Nobel Prize in Chemistry 1911", publisher: "Nobel Prize", url: "https://www.nobelprize.org/prizes/chemistry/1911/marie-curie/facts/", accessedAt: "2026-09-08" } }],
     confidence: "confirmed",
   },
   {
     id: "serena-williams",
     displayName: { ko: "세리나 윌리엄스", en: "Serena Williams" },
+    profession: { ko: "프로 테니스", en: "Professional tennis" },
     birthDate: "1981-09-26",
     fields: ["sports"],
     source: {
@@ -38,11 +43,13 @@ export const CELEBRITIES: readonly CelebrityRecord[] = [
       url: "https://www.wtatennis.com/legends/230234/serena",
       accessedAt: "2026-07-22",
     },
+    careerEvidence: [{ date: "2017-01-28", category: "milestone", claim: { ko: "호주 오픈 우승으로 오픈 시대 여자 단식 메이저 23승을 기록했습니다.", en: "Her Australian Open title brought her Open Era women's singles major total to 23." }, source: { title: "Legend bio: Serena Williams", publisher: "WTA", url: "https://www.wtatennis.com/news/4487583/legend-bio-serena-williams", accessedAt: "2026-09-08" } }],
     confidence: "confirmed",
   },
   {
     id: "son-heung-min",
     displayName: { ko: "손흥민", en: "Heung-Min Son" },
+    profession: { ko: "프로 축구", en: "Professional football" },
     birthDate: "1992-07-08",
     fields: ["sports"],
     source: {
@@ -51,11 +58,13 @@ export const CELEBRITIES: readonly CelebrityRecord[] = [
       url: "https://www.tottenhamhotspur.com/player/85971/heung-min-son",
       accessedAt: "2026-07-22",
     },
+    careerEvidence: [{ date: "2025-05-21", category: "milestone", claim: { ko: "토트넘 주장으로 UEFA 유로파리그 우승을 함께했습니다.", en: "He captained Tottenham Hotspur to the UEFA Europa League title." }, source: { title: "Heung-Min Son: Spurs legend", publisher: "Tottenham Hotspur", url: "https://www.tottenhamhotspur.com/the-club/history/legends/heung-min-son", accessedAt: "2026-09-08" } }],
     confidence: "confirmed",
   },
   {
     id: "rm-bts",
     displayName: { ko: "RM", en: "RM" },
+    profession: { ko: "음악·작사", en: "Music and songwriting" },
     birthDate: "1994-09-12",
     fields: ["arts_entertainment"],
     source: {
@@ -64,11 +73,13 @@ export const CELEBRITIES: readonly CelebrityRecord[] = [
       url: "https://ibighit.com/bts/eng/profile/",
       accessedAt: "2026-07-22",
     },
+    careerEvidence: [{ date: "2013-06-13", category: "debut", claim: { ko: "BTS 멤버로 공식 데뷔했습니다.", en: "He made his official debut as a member of BTS." }, source: { title: "BTS Profile", publisher: "BIGHIT MUSIC", url: "https://bts.ibighit.com/eng/profile/", accessedAt: "2026-09-08" } }],
     confidence: "confirmed",
   },
   {
     id: "nelson-mandela",
     displayName: { ko: "넬슨 만델라", en: "Nelson Mandela" },
+    profession: { ko: "인권·공공 리더십", en: "Human rights and public leadership" },
     birthDate: "1918-07-18",
     fields: ["public_leadership", "education_advocacy"],
     source: {
@@ -77,11 +88,13 @@ export const CELEBRITIES: readonly CelebrityRecord[] = [
       url: "https://www.nelsonmandela.org/biography",
       accessedAt: "2026-07-22",
     },
+    careerEvidence: [{ date: "1994-05-10", category: "public_service", claim: { ko: "남아프리카공화국 대통령으로 취임했습니다.", en: "He was inaugurated as President of South Africa." }, source: { title: "Biography of Nelson Mandela", publisher: "Nelson Mandela Foundation", url: "https://www.nelsonmandela.org/biography", accessedAt: "2026-09-08" } }],
     confidence: "confirmed",
   },
   {
     id: "malala-yousafzai",
     displayName: { ko: "말랄라 유사프자이", en: "Malala Yousafzai" },
+    profession: { ko: "교육권 활동", en: "Education advocacy" },
     birthDate: "1997-07-12",
     fields: ["education_advocacy"],
     source: {
@@ -90,6 +103,7 @@ export const CELEBRITIES: readonly CelebrityRecord[] = [
       url: "https://malala.org/malalas-story.html",
       accessedAt: "2026-07-22",
     },
+    careerEvidence: [{ date: "2014-12-10", category: "award", claim: { ko: "아동과 청소년의 교육권 활동으로 노벨 평화상을 공동 수상했습니다.", en: "She shared the Nobel Peace Prize for work supporting children's right to education." }, source: { title: "The Nobel Peace Prize 2014", publisher: "Nobel Prize", url: "https://www.nobelprize.org/prizes/peace/2014/yousafzai/facts/", accessedAt: "2026-09-08" } }],
     confidence: "confirmed",
   },
 ];

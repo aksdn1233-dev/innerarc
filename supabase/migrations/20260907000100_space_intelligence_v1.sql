@@ -24,7 +24,10 @@ create table public.space_assets (
   object_path text not null unique,
   status text not null default 'pending' check (status in ('pending','ready')),
   content_sha256 text check (content_sha256 ~ '^[a-f0-9]{64}$'),
-  byte_size integer check (byte_size between 1 and 1500000),
+  byte_size integer check (byte_size between 1 and 3500000),
+  pixel_width integer check (pixel_width between 480 and 2048),
+  pixel_height integer check (pixel_height between 480 and 2048),
+  quality jsonb check (quality is null or (jsonb_typeof(quality)='object' and octet_length(quality::text)<=2000)),
   expires_at timestamptz not null default now()+interval '24 hours',
   created_at timestamptz not null default now(),
   foreign key(project_id,owner_user_id) references public.space_projects(id,owner_user_id) on delete cascade
@@ -86,7 +89,7 @@ revoke all on public.space_cleanup_queue from public,anon,authenticated;
 grant all on public.space_cleanup_queue to service_role;
 
 insert into storage.buckets(id,name,public,file_size_limit,allowed_mime_types)
-values('space-private','space-private',false,1500000,array['image/jpeg']);
+values('space-private','space-private',false,3500000,array['image/jpeg']);
 -- No storage.objects policy: only server service-role can read/write. No signed/public URLs.
 
 create function public.space_reserve_asset(p_owner uuid,p_project uuid)

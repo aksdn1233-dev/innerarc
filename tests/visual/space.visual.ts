@@ -49,7 +49,11 @@ test("Ultra Preview exposes its real render profile", async ({ page }) => {
   await page.getByRole("combobox", { name: "Quality", exact: true }).selectOption("ultra");
   await expect(view).toHaveAttribute("data-effective-quality", "ultra");
   await expect(view).toHaveAttribute("data-preview-profile", "ultra-preview");
-  expect(await view.locator("canvas").evaluate(canvas => (canvas as HTMLCanvasElement).width / canvas.getBoundingClientRect().width)).toBeGreaterThanOrEqual(1.49);
+  await expect(view).toHaveAttribute("data-render-scale", /^(2\.00|2\.50)$/);
+  expect(await view.locator("canvas").evaluate(canvas => (canvas as HTMLCanvasElement).width / canvas.getBoundingClientRect().width)).toBeGreaterThanOrEqual(1.99);
+  const dimensions = await view.evaluate(element => ({ css: [Number((element as HTMLElement).dataset.cssWidth), Number((element as HTMLElement).dataset.cssHeight)], render: [Number((element as HTMLElement).dataset.renderWidth), Number((element as HTMLElement).dataset.renderHeight)] }));
+  expect(dimensions.render[0]).toBeGreaterThanOrEqual(dimensions.css[0] * 1.99); expect(dimensions.render[1]).toBeGreaterThanOrEqual(dimensions.css[1] * 1.99);
+  await expect(page.getByLabel("Actual 3D render resolution")).toContainText(/Actual render \d+×\d+/);
   await page.getByRole("button", { name: "Recommended", exact: true }).click();
   await expect(page.getByRole("button", { name: "Recommended", exact: true })).toHaveAttribute("aria-pressed", "true");
   // Ultra deliberately renders at a higher internal resolution. Allow a constrained

@@ -9,6 +9,7 @@ import { SPACE_EXAMPLES, spaceExample, type SpaceExample } from "@/core/space/ex
 import { movementSummary } from "@/core/space/presentation";
 import { spatialChanges } from "@/core/space/comparison";
 import { calibrateScene } from "@/core/space/measurement";
+import { assessPhotoPixels, usablePhotoSet, type PhotoIssue, type PhotoQuality } from "@/core/space/photo-quality";
 import styles from "./space.module.css";
 import { FURNITURE_CATALOG, OBJECT_KINDS, type ObjectKind } from "@/core/space/catalog";
 
@@ -16,13 +17,13 @@ const RoomView = dynamic(() => import("./room-view"), { ssr: false, loading: () 
 const ProjectSchema = z.object({ id: z.uuid(), title: z.string(), goal: z.enum(["rest", "focus", "balance"]), locale: z.enum(["ko", "en"]) });
 type Project = z.infer<typeof ProjectSchema>;
 const DetailSchema = z.object({
-  project: ProjectSchema, scene: SceneSchema.nullable(), assets: z.array(z.object({ id: z.uuid(), status: z.string(), expires_at: z.string() })),
+  project: ProjectSchema, scene: SceneSchema.nullable(), assets: z.array(z.object({ id: z.uuid(), status: z.string(), expires_at: z.string(), pixel_width: z.number().nullable().optional(), pixel_height: z.number().nullable().optional(), quality: z.unknown().optional() })),
   runs: z.array(z.object({ id: z.uuid(), kind: z.string(), status: z.string(), result: z.unknown(), created_at: z.string() })),
   changes: z.array(z.object({ run_id: z.uuid(), recommendation_id: z.string(), applied: z.boolean() })),
   checks: z.array(z.object({ id: z.uuid(), run_id: z.uuid(), outcome: z.string(), note: z.string(), days: z.number(), created_at: z.string() })),
   reports: z.array(z.object({ id: z.string(), title: z.string() })),
 });
-type Photo = { name: string; blob: Blob; assetId: string | null };
+type Photo = { name: string; blob: Blob; assetId: string | null; quality: PhotoQuality };
 const errorCopy: Record<string, [string, string]> = {
   AUTH_REQUIRED: ["로그인이 필요합니다. 내 계정에서 로그인한 뒤 다시 시도하세요.", "Sign in through My account, then retry."],
   SPACE_DISABLED: ["새 분석이 일시 중지되어 있습니다. 저장된 방은 확인·삭제할 수 있습니다.", "New analysis is paused. You can still read or delete saved rooms."],
@@ -31,6 +32,9 @@ const errorCopy: Record<string, [string, string]> = {
   TWO_TO_SIX_IMAGES_REQUIRED: ["사진을 2~6장 선택하세요. 기한이 지난 사진은 다시 올려 주세요.", "Choose 2–6 images. Re-upload expired images."],
   ANALYSIS_IN_PROGRESS: ["분석이 진행 중입니다. 저장된 방을 다시 열어 결과를 확인하세요.", "Analysis is running. Reopen the saved room to check its result."],
   CHECK_NOT_DUE: ["선택한 30일 또는 90일이 지난 뒤 기록할 수 있습니다.", "Return after the selected 30 or 90 days to record a check."],
+  PHOTO_QUALITY_UNUSABLE: ["이 사진은 너무 작거나, 거의 비어 있거나, 너무 어둡거나 밝습니다. 원본 카메라 사진을 다시 선택하세요.", "This photo is too small, nearly blank, too dark or too bright. Choose the original camera photo."],
+  PHOTO_SET_QUALITY_LOW: ["서로 확인할 수 있는 선명한 사진이 부족합니다. 밝은 전체 사진을 포함해 두 방향 이상 다시 찍어 주세요.", "There are not enough clear cross-checkable photos. Add a bright overview from at least two directions."],
+  PHOTO_VIEWS_DUPLICATED: ["같은 사진을 반복해서 올릴 수 없습니다. 방의 반대쪽에서 찍은 사진을 추가해 주세요.", "Duplicate photos cannot establish geometry. Add a photo from the opposite side of the room."],
 };
 async function api(path: string, body?: unknown, method?: string): Promise<unknown> {
   const response = await fetch(`/api/space/projects${path}`, { method: method ?? (body ? "POST" : "GET"), ...(body ? { headers: { "Content-Type": body instanceof Blob ? "image/jpeg" : "application/json" }, body: body instanceof Blob ? body : JSON.stringify(body) } : {}), cache: "no-store", signal: AbortSignal.timeout(120_000) });
@@ -40,15 +44,16 @@ async function api(path: string, body?: unknown, method?: string): Promise<unkno
 }
 async function normalizePhoto(file: File): Promise<Photo> {
   if (!["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 8_000_000 || file.size === 0) throw new Error("PHOTO_FORMAT");
-  const bitmap = await createImageBitmap(file, { resizeWidth: 1024, resizeQuality: "high" });
+  const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
   try {
-    const scale = Math.min(1, 1024 / Math.max(bitmap.width, bitmap.height));
+    const scale = Math.min(1, 2048 / Math.max(bitmap.width, bitmap.height));
     const canvas = document.createElement("canvas"); canvas.width = Math.round(bitmap.width * scale); canvas.height = Math.round(bitmap.height * scale);
     const context = canvas.getContext("2d"); if (!context) throw new Error("PHOTO_FORMAT");
     context.fillStyle = "white"; context.fillRect(0, 0, canvas.width, canvas.height); context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-    const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob(value => value ? resolve(value) : reject(new Error("PHOTO_FORMAT")), "image/jpeg", 0.8));
-    if (blob.size > 1_500_000) throw new Error("PHOTO_FORMAT");
-    return { name: file.name, blob, assetId: null };
+    const quality = assessPhotoPixels(context.getImageData(0, 0, canvas.width, canvas.height).data, canvas.width, canvas.height);
+    const blob = await new Promise<Blob>((resolve, reject) => canvas.toBlob(value => value ? resolve(value) : reject(new Error("PHOTO_FORMAT")), "image/jpeg", 0.86));
+    if (blob.size > 3_500_000) throw new Error("PHOTO_FORMAT");
+    return { name: file.name, blob, assetId: null, quality };
   } finally { bitmap.close(); }
 }
 export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady = false }: { locale: "ko" | "en"; demo?: boolean; enabled?: boolean; aiReady?: boolean }) {
@@ -61,7 +66,7 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
   const [source, setSource] = useState<"example" | "manual" | "photo" | "saved">("example");
   const [goal, setGoal] = useState<Goal>("balance"), [title, setTitle] = useState(ko ? "나의 방" : "My room");
   const [photos, setPhotos] = useState<Photo[]>([]), [remoteAssets, setRemoteAssets] = useState(0);
-  const [consent, setConsent] = useState(false), [patternConsent, setPatternConsent] = useState(false), [reportId, setReportId] = useState("");
+  const [consent, setConsent] = useState(false), [captureConfirmed, setCaptureConfirmed] = useState(false), [patternConsent, setPatternConsent] = useState(false), [reportId, setReportId] = useState("");
   const [reports, setReports] = useState<{ id: string; title: string }[]>([]);
   const [projects, setProjects] = useState<Project[]>([]), [projectId, setProjectId] = useState<string | null>(null);
   const [analysis, setAnalysis] = useState<Analysis | null>(null), [runId, setRunId] = useState<string | null>(null), [runDate, setRunDate] = useState<string | null>(null);
@@ -74,6 +79,10 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
   const requiresReference = scene.measurements?.origin === "photo" && !scene.measurements.reference;
   const validScene = SceneSchema.safeParse(scene).success;
   const words = (a: string, b: string) => ko ? a : b;
+  const photoIssueCopy = (issue: PhotoIssue) => ({
+    too_small: words("해상도 부족", "resolution too low"), underexposed: words("너무 어두움", "too dark"), overexposed: words("너무 밝음", "too bright"),
+    low_contrast: words("대비 부족", "low contrast"), likely_blur: words("흐림 가능성", "possible blur"), low_information: words("공간 정보 부족", "insufficient visual information"),
+  })[issue];
   async function task(work: () => Promise<void>) {
     setBusy(true); setError(""); setNow(Date.now());
     try { await work(); } catch (e) {
@@ -88,7 +97,7 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
     return () => { disposed = true; };
   }, [demo, ko]);
   function edit(next: Scene) { if (!geometryIssues(scene).length) setUndo(items => [...items, scene].slice(-20)); setScene({ ...next, calibrationSource: undefined, confirmed: false }); setAnalysis(null); setCompare(false); setRunId(null); setSource("manual"); }
-  function clearPrivateDraft() { setUndo([]); setSelectedId(null); originalScene.current = manualScene(); setNote(""); setOutcome("unchanged"); setDays(30); setReportId(""); setPatternConsent(false); setConsent(false); setRunDate(null); }
+  function clearPrivateDraft() { setUndo([]); setSelectedId(null); originalScene.current = manualScene(); setNote(""); setOutcome("unchanged"); setDays(30); setReportId(""); setPatternConsent(false); setConsent(false); setCaptureConfirmed(false); setRunDate(null); }
   function editObject(id: string, patch: Partial<SpatialObject>) { if (patch.width !== undefined || patch.depth !== undefined || patch.height !== undefined) patch.dimensionSource = "user_corrected"; edit({ ...scene, objects: scene.objects.map(o => o.id === id ? { ...o, ...patch } : o) }); }
   async function ensureProject() {
     if (projectId) return projectId;
@@ -114,18 +123,20 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
   }
   async function extract() {
     if (!scene.orientation.confirmed) throw new Error("CONFIRM_NORTH");
+    if (!captureConfirmed) throw new Error("PHOTO_SET_QUALITY_LOW");
+    if (photos.length >= 2 && !usablePhotoSet(photos.map(photo => photo.quality))) throw new Error("PHOTO_SET_QUALITY_LOW");
     const count = remoteAssets + photos.filter(p => !p.assetId).length;
     if (count < 2 || count > 6) throw new Error("TWO_TO_SIX_IMAGES_REQUIRED");
     const id = await ensureProject();
     for (let index = 0; index < photos.length; index++) {
       const photo = photos[index]; if (photo.assetId) continue;
       setMessage(words(`사진 ${index + 1}/${photos.length} 보호 처리 중…`, `Securing photo ${index + 1}/${photos.length}…`));
-      const uploaded = z.object({ asset: z.object({ id: z.uuid() }) }).parse(await api(`/${id}/uploads`, photo.blob));
+      const uploaded = z.object({ asset: z.object({ id: z.uuid(), quality: z.unknown() }) }).parse(await api(`/${id}/uploads`, photo.blob));
       setPhotos(current => current.map((p, i) => i === index ? { ...p, assetId: uploaded.asset.id } : p));
       setRemoteAssets(current => current + 1);
     }
     setMessage(words("사진에서 방 구조를 읽는 중입니다. 잠시 기다려 주세요.", "Reading the room structure from your photos…"));
-    const response = z.object({ result: z.object({ scene: SceneSchema.nullable(), reason: z.string().nullable() }) }).parse(await api(`/${id}/extract`, { requestId: crypto.randomUUID(), orientation: scene.orientation, aiConsent: true }));
+    const response = z.object({ result: z.object({ scene: SceneSchema.nullable(), reason: z.string().nullable() }) }).parse(await api(`/${id}/extract`, { requestId: crypto.randomUUID(), orientation: scene.orientation, aiConsent: true, captureConfirmed: true }));
     if (!response.result.scene) {
       setScene(current => ({ ...current, confirmed: false }));
       setSource("manual"); setMessage(words("사진을 신뢰할 수 있는 구조로 읽지 못했습니다. 아래 예시를 실제 방에 맞게 수정해 주세요. 사진 분석 결과로 표시하지 않습니다.", "The photos could not be read reliably. Edit the example to match your room; it is not a photo reconstruction."));
@@ -205,9 +216,17 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
           <label>{words("방 이름", "Room name")}<input maxLength={60} value={title} disabled={!!projectId || busy} onChange={e => setTitle(e.target.value)} /></label>
           {!demo && !projectId && <button disabled={busy || !enabled || !title.trim()} onClick={() => void task(async () => { await ensureProject(); setMessage(words("방을 만들었습니다. 사진을 올리거나 직접 구조를 입력하세요.", "Room created. Add photos or enter its structure manually.")); })}>{words("이 이름으로 방 만들기", "Create this room")}</button>}
           <label>{words("이 방에서 중요한 것", "Your goal for this room")}<select value={goal} disabled={!!projectId || busy} onChange={e => { setGoal(e.target.value as Goal); setAnalysis(null); }}><option value="balance">{words("일상 균형", "Daily balance")}</option><option value="rest">{words("휴식", "Rest")}</option><option value="focus">{words("집중", "Focus")}</option></select></label>
-          {!demo ? <><p className={styles.hint}>{words("같은 방의 사진·평면도 2~6장. JPEG·PNG·WebP, 한 장 8MB 이하. 얼굴·주소·문서가 보이지 않게 가려 주세요. 사진은 위치 정보 제거 후 비공개로 처리하며, 24시간 뒤 접근을 막고 삭제를 예약합니다. 저장소 장애 시 완료가 늦어질 수 있습니다.", "2–6 photos or plans of the same room. JPEG/PNG/WebP, 8 MB each. Hide faces, addresses and documents. Metadata is stripped; photos are private, expire in 24 hours and are scheduled for deletion. Storage outages can delay completion.")}</p>
-            <label>{words("사진 선택", "Choose photos")}<input type="file" accept="image/jpeg,image/png,image/webp" multiple disabled={busy || !enabled} onChange={e => { const files = Array.from(e.target.files ?? []); void task(async () => { if (files.length < 2 || files.length + remoteAssets > 6) throw new Error("TWO_TO_SIX_IMAGES_REQUIRED"); const selected: Photo[] = []; for (const file of files) selected.push(await normalizePhoto(file)); setPhotos(selected); setMessage(words("사진을 준비했습니다. 동의 후 사진 구조 읽기를 누르면 전송됩니다.", "Photos ready. They are sent only after consent and Read photos.")); }); }} /></label>
-            <div className={styles.photoList}>{photos.map((photo, index) => <span key={index}>{index + 1}. {photo.assetId ? words("업로드됨", "Uploaded") : words("준비됨", "Ready")}</span>)}{remoteAssets > 0 && <span>{words("서버 사진", "Stored photos")}: {remoteAssets}</span>}</div>
+          {!demo ? <><p className={styles.hint}>{words("같은 방의 원본 사진·평면도 2~6장. JPEG·PNG·WebP, 한 장 8MB 이하입니다. 긴 변은 최대 2,048픽셀로 보존하고 위치 정보는 제거합니다. 얼굴·주소·문서는 사진 안에서 직접 가려 주세요. 비공개 사진은 24시간 뒤 접근을 막고 삭제를 예약합니다.", "Use 2–6 original photos or plans of the same room, JPEG/PNG/WebP up to 8 MB. The long edge is preserved up to 2,048 pixels and metadata is removed. Hide faces, addresses and documents visible in the pixels. Private photos expire after 24 hours and are scheduled for deletion.")}</p>
+            <div className={styles.captureGuide} aria-label={words("정확도를 높이는 촬영 순서", "Capture sequence for better accuracy")}>
+              <div><b>01</b><span>{words("방 전체와 네 모서리", "Whole room and all corners")}</span></div>
+              <div><b>02</b><span>{words("반대쪽에서 한 장", "One opposite view")}</span></div>
+              <div><b>03</b><span>{words("문·창·바닥 경계", "Doors, windows, floor edges")}</span></div>
+              <div><b>04</b><span>{words("실제 길이를 잰 벽", "One measured wall")}</span></div>
+            </div>
+            <p className={styles.captureTruth}>{words("어두움·역광·흔들림·가림을 자동 점검합니다. 사진만으로 가려진 곳이나 절대 길이를 확정하지 않으며, 서로 다른 시점이 일치하지 않으면 3D 초안 생성을 중단합니다.", "Darkness, backlight, blur and occlusion are checked. Photos cannot prove hidden areas or absolute dimensions; reconstruction stops when distinct views do not agree.")}</p>
+            <label>{words("사진 선택", "Choose photos")}<input type="file" accept="image/jpeg,image/png,image/webp" multiple disabled={busy || !enabled} onChange={e => { const files = Array.from(e.target.files ?? []); setCaptureConfirmed(false); void task(async () => { if (files.length < 2 || files.length + remoteAssets > 6) throw new Error("TWO_TO_SIX_IMAGES_REQUIRED"); const selected: Photo[] = []; for (const file of files) selected.push(await normalizePhoto(file)); setPhotos(selected); setMessage(words("사진별 해상도·밝기·대비·흐림을 점검했습니다. 경고가 있으면 다시 촬영해 주세요.", "Checked each photo for resolution, exposure, contrast and blur. Retake photos with warnings.")); }); }} /></label>
+            <div className={styles.photoList}>{photos.map((photo, index) => <div key={index} data-photo-quality={photo.quality.status}><strong>{index + 1}. {photo.name}</strong><span>{photo.quality.width}×{photo.quality.height} · {photo.quality.megapixels.toFixed(2)}MP · {photo.quality.status === "good" ? words("사용 가능", "ready") : photo.quality.status === "review" ? words("재촬영 권장", "retake advised") : words("사용 불가", "unusable")}</span>{photo.quality.issues.length > 0 && <small>{photo.quality.issues.map(photoIssueCopy).join(" · ")}</small>}</div>)}{remoteAssets > 0 && <div><strong>{words("비공개 저장 사진", "Stored private photos")}</strong><span>{remoteAssets}{words("장 · 서버에서 다시 품질 확인", " · rechecked by server")}</span></div>}</div>
+            <label className={styles.captureConfirm}><input type="checkbox" checked={captureConfirmed} onChange={e => setCaptureConfirmed(e.target.checked)} />{words("같은 방을 서로 다른 두 방향 이상에서 찍었고, 문·창·바닥 경계가 보이는지 확인했어요", "I captured the same room from at least two directions and checked that doors, windows and floor edges are visible")}</label>
             <label><input type="checkbox" checked={consent} onChange={e => setConsent(e.target.checked)} />{words("사진을 비공개 저장하고 OpenAI에 보내 방 구조를 읽는 데 동의합니다. 메타데이터 제거는 사진 속 얼굴·주소를 가리지 않습니다.", "I agree to private storage and sending the photos to OpenAI to read room structure. Metadata removal does not hide faces or addresses visible in pixels.")}</label>
             <p className={styles.hint}>{words("제공자 응답 저장을 끄지만 제공자 자체 보존 정책은 적용될 수 있습니다. 동의하지 않아도 아래에서 직접 입력할 수 있습니다.", "Response storage is disabled, but the provider's own retention policy may apply. Manual input remains available without consent.")}</p>
           </> : <p>{words("사진이나 개인정보를 보내지 않는 예시입니다. 아래 치수와 가구를 바꿔 배치를 비교해 보세요.", "This demo sends no photos or personal data. Edit dimensions and furniture below to compare layouts.")}</p>}
@@ -217,7 +236,7 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
           <p className={styles.hint}>{words("도면 위쪽이 0°, 오른쪽이 90°입니다. 휴대폰 나침반으로 북쪽을 확인해 직접 지정하세요. 가구 좌표는 중심점이며 왼쪽 위가 (0, 0)입니다.", "Plan top is 0°, right is 90°. Check north with a compass and enter it. Furniture coordinates are centers; top-left is (0, 0).")}</p>
           <label>{words("북쪽 각도 (0~359°)", "North angle (0–359°)")}<input type="number" min={0} max={359} value={scene.orientation.northDegrees} onChange={e => edit({ ...scene, orientation: { northDegrees: Number(e.target.value), source: "manual", confirmed: false } })} /></label>
           <label><input type="checkbox" checked={scene.orientation.confirmed} onChange={e => setScene(current => ({ ...current, orientation: { ...current.orientation, confirmed: e.target.checked }, confirmed: false }))} />{words("북쪽 방향을 확인했어요", "I checked north")}</label>
-          {!demo && <><button className={styles.primary} disabled={busy || !enabled || !aiReady || !consent || !scene.orientation.confirmed} onClick={() => void task(extract)}>{words("사진 구조 읽기", "Read photos")}</button>{!aiReady && <p className={styles.hint}>{words("사진 자동 읽기 연결을 준비 중입니다. 직접 입력으로 계속할 수 있습니다.", "Photo reading is not connected. Continue with manual input.")}</p>}</>}
+          {!demo && <><button className={styles.primary} disabled={busy || !enabled || !aiReady || !consent || !captureConfirmed || !scene.orientation.confirmed || (photos.length >= 2 && !usablePhotoSet(photos.map(photo => photo.quality)))} onClick={() => void task(extract)}>{words("사진 교차 확인 후 3D 초안 만들기", "Cross-check photos and build 3D draft")}</button>{!aiReady && <p className={styles.hint}>{words("사진 자동 읽기 연결을 준비 중입니다. 직접 입력으로 계속할 수 있습니다.", "Photo reading is not connected. Continue with manual input.")}</p>}</>}
           <div className={styles.fields}>{(["width", "depth", "height"] as const).map(key => <label key={key}>{key === "width" ? words("방 가로 (m)", "Room width (m)") : key === "depth" ? words("방 세로 (m)", "Room depth (m)") : words("방 높이 (m)", "Room height (m)")}<input type="number" min={2} max={key === "height" ? 4 : 20} step={0.1} value={scene.room[key]} onChange={e => edit({ ...scene, room: { ...scene.room, [key]: Number(e.target.value) }, measurements: { ...(scene.measurements ?? estimatedMeasurements("manual")), [key]: { status: "user_corrected", confidence: 1 } } })} /></label>)}</div>
           <p className={styles.hint}>{words("치수 상태: ", "Measurement status: ")}{(["width", "depth", "height"] as const).map(key => `${ko ? {width:"가로",depth:"세로",height:"높이"}[key] : key}: ${scene.measurements?.[key].status === "user_corrected" ? words("사용자 수정", "user-corrected") : scene.measurements?.[key].status === "confirmed" ? words("실측 확인", "confirmed") : words("추정", "estimated")}`).join(" · ")}</p>
           <p className={styles.hint}>{words("사진만으로 정확한 길이를 알 수 없습니다. 한 벽의 실제 길이를 입력하면 비율을 다시 맞춥니다. 다른 치수는 추정으로 남으며 직접 수정할 수 있습니다.", "Photos alone cannot establish exact dimensions. Enter one measured wall length to recalibrate proportions. Other dimensions remain estimated until corrected.")}</p>

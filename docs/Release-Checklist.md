@@ -174,10 +174,19 @@
 - [x] Private sanitized image transfer, quota/rate/cost limits, durable deletion queue and account export/deletion integration.
 - [x] Local PostgreSQL-engine tests for the additive schema and inherited PPI deletion constraints.
 - [x] Licensed asset manifest, actual GLB bounds/material tests, browser failure/retry and synthetic visual fixtures.
-- [ ] Owner-approved premium visual gate from actual captures: preferred overall≥9.0; minimum overall≥8.7 only with explicit owner acceptance; every critical category≥8.5. Current provisional score is8.86 overall and8.6 minimum. Test success alone does not approve visuals.
+- [ ] Owner-approved premium visual gate from actual captures: preferred overall≥9.0; minimum overall≥8.7 only with explicit owner acceptance; every critical category≥8.5. Current provisional score is8.9 overall and8.6 minimum after the 2026-09-08 product-story/capture pass. Test success alone does not approve visuals.
 - [ ] Hosted staging migration, two-owner Supabase RLS/storage/cleanup/rollback verification.
 - [ ] Account-accessible model, current rate/capability evidence and consented live fixture extraction.
 - [ ] Physical iPhone/Android GPU, touch and memory validation.
 - [ ] Production enablement. No migration/deployment or new paid product is authorized by this checklist.
 
 Rollback reference: production base `ee4ae5038e34e0715456b837cbe7c7f2db5591c4`; retain data-rights and cleanup code when disabling new space writes. See `Space-Intelligence-V1.md` and `Space-Failure-Ledger.md`.
+
+## Additive premium capture pass — 2026-09-08
+
+- [x] Real render pixels are visible and covered at balanced/high/Ultra/performance tiers; no CSS-only upscale is described as quality.
+- [x] Capture-quality, duplicate-view and cross-view inconsistency failures have deterministic regression tests.
+- [x] 390, 430, 768, 1024 and 1440 product evidence captures cover Space landing/workspace/analysis/current/recommended and success landing/result.
+- [x] Success evidence uses official sources and visibly separates career facts, symbolic overlap, context and unknowns.
+- [ ] Reconfirm the complete Node 24 CI matrix after PR push; local fallback runtime is Node 22 and does not replace CI evidence.
+- [ ] Owner visual acceptance, hosted private storage/model tests, and physical iPhone/Android GPU/camera tests remain release blockers.

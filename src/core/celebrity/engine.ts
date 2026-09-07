@@ -34,6 +34,7 @@ export function validateCelebrityDataset(records: readonly CelebrityRecord[]): v
     if (!record.id || ids.has(record.id)) throw new CelebrityDataError(`Duplicate or empty celebrity ID: ${record.id}`);
     ids.add(record.id);
     if (!record.displayName.ko.trim() || !record.displayName.en.trim()) throw new CelebrityDataError(`Missing display name: ${record.id}`);
+    if (!record.profession.ko.trim() || !record.profession.en.trim()) throw new CelebrityDataError(`Missing profession: ${record.id}`);
     if (!datePattern.test(record.birthDate)) throw new CelebrityDataError(`Invalid ISO birth date: ${record.id}`);
     parseBirthDate(record.birthDate);
     if (!record.fields.length || record.fields.some((field) => !celebrityFields.includes(field))) {
@@ -43,6 +44,13 @@ export function validateCelebrityDataset(records: readonly CelebrityRecord[]): v
     if (!datePattern.test(record.source.accessedAt)) throw new CelebrityDataError(`Invalid access date: ${record.id}`);
     parseBirthDate(record.source.accessedAt);
     if (!record.source.title.trim() || !record.source.publisher.trim()) throw new CelebrityDataError(`Incomplete source: ${record.id}`);
+    if (!record.careerEvidence.length) throw new CelebrityDataError(`Missing career evidence: ${record.id}`);
+    for (const evidence of record.careerEvidence) {
+      if (!datePattern.test(evidence.date) || !datePattern.test(evidence.source.accessedAt)) throw new CelebrityDataError(`Invalid evidence date: ${record.id}`);
+      parseBirthDate(evidence.date); parseBirthDate(evidence.source.accessedAt);
+      if (!evidence.claim.ko.trim() || !evidence.claim.en.trim() || !evidence.source.title.trim() || !evidence.source.publisher.trim()) throw new CelebrityDataError(`Incomplete career evidence: ${record.id}`);
+      if (!evidence.source.url.startsWith("https://")) throw new CelebrityDataError(`Career source must use HTTPS: ${record.id}`);
+    }
   }
 }
 

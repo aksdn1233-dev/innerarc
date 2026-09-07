@@ -3085,6 +3085,7 @@ summary {
 .celebrity-card > a span,
 .celebrity-card > a small { color: var(--muted); font-size: 0.75rem; }
 .celebrity-card details { margin-top: 10px; padding-top: 10px; }
+.celebrity-card details p { color: var(--muted); font-size: .8rem; }
 
 .celebrity-nav span:first-child {
   background: transparent;

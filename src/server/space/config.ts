@@ -31,5 +31,8 @@ export function spaceAIConfig(env: Readonly<Record<string, string | undefined>> 
   } catch { return null; }
 }
 export const SPACE_BUCKET = "space-private";
-export const SPACE_IMAGE_MAX_BYTES = 1_500_000;
+// Sanitized reconstruction evidence. The browser accepts an 8 MB source but sends a
+// metadata-free, bounded JPEG. 3.5 MB preserves up to 2048 px detail without buffering
+// original phone photos in the Worker or provider request.
+export const SPACE_IMAGE_MAX_BYTES = 3_500_000;
 export const SPACE_IMAGE_RETENTION_HOURS = 24;

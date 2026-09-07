@@ -247,7 +247,7 @@ Last updated: 2026-08-22
 - [x] Private sanitized uploads, ownership/rate/cost checks, additive migration, leased writes, durable expiration/deletion and account export/delete integration.
 - [x] Real Three.js asset/PBR renderer, 17 object kinds, licensed manifest, touch/key controls, bounded loading, retry, disposal and text fallback.
 - [x] Synthetic unit/integration fixtures and desktop/WebKit/Android browser coverage; final evidence recorded in Space-Project-State.md.
-- [ ] Owner visual acceptance from actual captures (preferred overall≥9.0; minimum overall≥8.7 only with explicit owner acceptance; every critical category≥8.5). Current internal review is8.86 overall and8.6 minimum.
+- [ ] Owner visual acceptance from actual captures (preferred overall≥9.0; minimum overall≥8.7 only with explicit owner acceptance; every critical category≥8.5). Current internal review is8.9 overall and8.6 minimum after the 2026-09-08 product-story/capture pass.
 - [ ] Hosted staging: migration, two-owner isolation, physical object cleanup and account-rights verification.
 - [ ] Confirm account-accessible model IDs/current rates and exact-count endpoint before AI activation.
 - [ ] Physical iPhone/Android GPU and sensor checks before broad production rollout.
@@ -258,3 +258,13 @@ Space follow-up (2026-09-07): added camera corner/occlusion/fallback, failed HTT
 Premium visual follow-up (2026-09-07): current/recommended deltas and scene cues are deterministic, the exterior shadow/window/mobile/Ultra presentation defects have regression coverage, and the current local totals are unit1020/111, space66/66 and fake checkout8/8. The provisional14-category score is8.86 with8.6 minimum; owner acceptance, hosted storage/model tests and physical devices remain unchecked.
 
 Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered in15–19ms but scheduled frames at263–269ms. The performance tier now switches to immediate validated movement only after four observed over-ceiling frames. The100ms limit remains unchanged; a clean remote rerun and physical devices remain required.
+
+## 2026-09-08 Space capture and premium presentation hardening
+
+- [x] Browser and server independently reject tiny, empty, severely dark or blown-out pixels before provider use.
+- [x] Two distinct usable views, one clean frame, room-boundary evidence, cross-view consistency and bounded capture risks are required; duplicate hashes and duplicate evidence indexes fail closed.
+- [x] One measured wall and user confirmation remain required because photos cannot prove hidden geometry or absolute dimensions.
+- [x] The visible render meter reports CSS size, WebGL drawing-buffer pixels and actual render scale; Ultra is at least 2.0x and the 0.7x constrained fallback remains explicit.
+- [x] Public Space begins with product storytelling and an actual first-party product capture rather than a technical form.
+- [x] Existing public-figure comparison adds official career evidence and separates symbolic calculation from real-world context and unknowns without percentages or outcome claims.
+- [ ] Re-run hosted private-storage/model and physical iPhone/Android capture tests before either Space flag is enabled.

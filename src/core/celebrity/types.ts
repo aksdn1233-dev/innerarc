@@ -14,18 +14,17 @@ export type CelebrityField = (typeof celebrityFields)[number];
 export type BirthDateConfidence = "confirmed" | "reported" | "uncertain";
 export type StructuralOverlapTier = "strong_overlap" | "some_overlap" | "contrast_forward";
 export type DateStructureId = "lifePath" | "birthday" | "attitude";
+export interface PublicSource { title: string; publisher: string; url: string; accessedAt: string }
+export interface CareerEvidence { date: string; category: "milestone" | "award" | "public_service" | "debut"; claim: LocalizedText; source: PublicSource }
 
 export interface CelebrityRecord {
   id: string;
   displayName: LocalizedText;
+  profession: LocalizedText;
   birthDate: string;
   fields: CelebrityField[];
-  source: {
-    title: string;
-    publisher: string;
-    url: string;
-    accessedAt: string;
-  };
+  source: PublicSource;
+  careerEvidence: readonly CareerEvidence[];
   confidence: BirthDateConfidence;
 }
 

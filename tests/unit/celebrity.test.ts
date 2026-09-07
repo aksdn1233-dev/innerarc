@@ -23,6 +23,8 @@ describe("sourced celebrity dataset", () => {
       expect(celebrity.source.url).toMatch(/^https:\/\//);
       expect(celebrity.source.accessedAt).toBe("2026-07-22");
       expect(celebrity.confidence).toBe("confirmed");
+      expect(celebrity.careerEvidence.length).toBeGreaterThan(0);
+      expect(celebrity.careerEvidence.every(item => item.source.url.startsWith("https://") && item.source.accessedAt === "2026-09-08")).toBe(true);
     }
   });
 
@@ -35,6 +37,7 @@ describe("sourced celebrity dataset", () => {
       id: "bad-source",
       source: { ...CELEBRITIES[0].source, url: "http://example.com" },
     }])).toThrow(/HTTPS/);
+    expect(() => validateCelebrityDataset([{ ...CELEBRITIES[0], id: "missing-evidence", careerEvidence: [] }])).toThrow(/career evidence/);
   });
 });
 

@@ -20,6 +20,11 @@ export interface CelebrityCopy {
   accessed: string;
   confidence: Record<BirthDateConfidence, string>;
   evidence: string;
+  careerEvidence: string;
+  boundaryTitle: string;
+  boundaryBody: string;
+  practicalTitle: string;
+  practicalBody: string;
   reset: string;
   ruleVersion: string;
   nav: readonly [string, string, string, string, string];
@@ -27,9 +32,9 @@ export interface CelebrityCopy {
 
 const ko: CelebrityCopy = {
   brandTagline: "공개 구조 비교",
-  eyebrow: "유명인 수비학 구조",
-  headline: "성격이 같다는 말 대신,\n숫자 구조의 겹침만 보기",
-  intro: "공식·권위 출처에 공개된 생년월일로 라이프 패스, 생일 수, 태도 수를 계산해 비교합니다. 인물의 성격이나 삶을 추측하지 않습니다.",
+  eyebrow: "성공 패턴 비교",
+  headline: "성공한 사람들은\n원래부터 나와 달랐을까?",
+  intro: "공개된 생년월일의 상징적 숫자 구조와 출처가 있는 실제 경력 사건을 나란히 봅니다. 숫자가 성공을 만들었다고 말하지 않고, 환경·교육·기회·노력과 알 수 없는 부분을 분리합니다.",
   birthDate: "내 생년월일 (양력)",
   field: "분야 필터",
   allFields: "전체 분야",
@@ -44,6 +49,11 @@ const ko: CelebrityCopy = {
   accessed: "확인일",
   confidence: { confirmed: "공식 출처 확인", reported: "공개 보도", uncertain: "날짜 불확실" },
   evidence: "계산 근거",
+  careerEvidence: "출처가 있는 실제 경력 사건",
+  boundaryTitle: "생년월일로는 설명할 수 없는 것",
+  boundaryBody: "가정환경, 교육, 자본, 건강, 멘토, 팀, 사회적 시기, 시장, 네트워크, 특권과 불이익, 반복한 노력은 이 계산에 들어 있지 않습니다. 공개 자료만으로 알 수 없는 과정도 남아 있습니다.",
+  practicalTitle: "내가 가져갈 질문",
+  practicalBody: "겹치는 숫자를 성공 공식으로 믿기보다, 이 인물이 실제로 오래 반복한 행동 중 내 상황에서 작게 시험할 수 있는 한 가지를 찾아보세요.",
   reset: "다른 입력 보기",
   ruleVersion: "비교 규칙",
   nav: ["홈", "나", "관계", "질문", "성장"],
@@ -51,9 +61,9 @@ const ko: CelebrityCopy = {
 
 const en: CelebrityCopy = {
   brandTagline: "Public structure comparison",
-  eyebrow: "Public-figure numerology structures",
-  headline: "Do not claim the same personality.\nCompare number-structure overlap only.",
-  intro: "Calculate Life Path, Birthday, and Attitude from birth dates published by official or authoritative sources. No personality or life-story inference is added.",
+  eyebrow: "Success pattern comparison",
+  headline: "Were successful people\nalways different from me?",
+  intro: "Place symbolic number structures from public birth dates beside sourced career events. The numbers are never presented as a cause of success; environment, education, opportunity, effort, and unknowns remain separate.",
   birthDate: "My date of birth (Gregorian calendar)",
   field: "Field filter",
   allFields: "All fields",
@@ -68,6 +78,11 @@ const en: CelebrityCopy = {
   accessed: "Accessed",
   confidence: { confirmed: "Confirmed by official source", reported: "Publicly reported", uncertain: "Date uncertain" },
   evidence: "Calculation evidence",
+  careerEvidence: "Sourced real-world career event",
+  boundaryTitle: "What a birth date cannot explain",
+  boundaryBody: "Family environment, education, capital, health, mentors, teams, social timing, markets, networks, privilege, disadvantage, and repeated effort are outside this calculation. Public records also leave parts of the process unknown.",
+  practicalTitle: "A question to take with you",
+  practicalBody: "Treat overlap as a reflection prompt, not a success formula. Look for one behavior this person repeated that you can test at a small scale in your own context.",
   reset: "Try another input",
   ruleVersion: "Comparison rule",
   nav: ["Home", "Me", "Relations", "Questions", "Growth"],

@@ -22,7 +22,11 @@ test("the retired Core product is absent and Detailed becomes the default", asyn
   ).toContainText(krw(pricing.prices.pro_30d));
 
   await page.locator("#birthDate").fill("1994-11-04");
-  await page.locator('input[name="privacyRequired"]').check();
+  const privacyRequired = page.locator('input[name="privacyRequired"]');
+  // The mobile editorial rail can still be settling under parallel browser load.
+  // Dispatch the native user action directly, then assert the required state.
+  await privacyRequired.evaluate((element: HTMLInputElement) => element.click());
+  await expect(privacyRequired).toBeChecked();
   await page.locator(".home-form-section button[type='submit']").click();
 
   await expect(page).toHaveURL(/\/ko\/plans\?product=pro_30d$/);

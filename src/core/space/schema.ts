@@ -19,6 +19,21 @@ export const RoomSchema = z.object({ width: z.number().min(2).max(20), depth: z.
 const MeasurementSchema = z.object({ status: z.enum(["estimated", "confirmed", "user_corrected"]), confidence: z.number().min(0).max(1) }).strict();
 export const MeasurementsSchema = z.object({ origin: z.enum(["example", "photo", "manual"]), width: MeasurementSchema, depth: MeasurementSchema, height: MeasurementSchema, reference: z.object({ axis: z.enum(["width", "depth"]), metres: z.number().min(2).max(20) }).strict().nullable() }).strict();
 export const CalibrationSourceSchema = z.object({ room: RoomSchema, objects: z.array(SpatialObjectSchema).max(20), doors: z.array(OpeningSchema).max(4), windows: z.array(OpeningSchema).max(8) }).strict();
+export const ImageEvidenceSchema = z.object({
+  imageIndex: z.number().int().min(0).max(5),
+  usable: z.boolean(),
+  view: z.enum(["overview", "opposite", "doorway", "window", "floor_wall", "plan", "unknown"]),
+  observesRoomBoundary: z.boolean(),
+  observedObjectIds: z.array(ID).max(20),
+}).strict();
+export const CrossViewEvidenceSchema = z.object({
+  matchedViews: z.number().int().min(0).max(6),
+  geometryConsistency: z.number().min(0).max(1),
+  lightingRisk: z.number().min(0).max(1),
+  perspectiveRisk: z.number().min(0).max(1),
+  occlusionRisk: z.number().min(0).max(1),
+  scaleEvidence: z.enum(["none", "visual", "measured_reference", "plan"]),
+}).strict();
 export const SceneSchema = z.object({
   version: z.literal(SPACE_VERSION), room: RoomSchema, measurements: MeasurementsSchema.optional(), calibrationSource: CalibrationSourceSchema.optional(),
   walls: z.array(WallSchema).length(4), doors: z.array(OpeningSchema).min(1).max(4), windows: z.array(OpeningSchema).max(8),
@@ -29,7 +44,9 @@ export const SceneSchema = z.object({
 export const ObservationSchema = z.object({
   room: RoomSchema.nullable(), doors: z.array(OpeningSchema.omit({ height: true, sill: true })).max(4), windows: z.array(OpeningSchema.omit({ height: true, sill: true })).max(8),
   objects: z.array(SpatialObjectSchema.omit({ dimensionSource: true })).max(20), confidence: z.number().min(0).max(1),
-  missing: z.array(z.enum(["dimensions", "door", "window", "objects", "multiple_rooms", "irregular_room"])).max(5),
+  imageEvidence: z.array(ImageEvidenceSchema).min(2).max(6),
+  crossView: CrossViewEvidenceSchema,
+  missing: z.array(z.enum(["dimensions", "door", "window", "objects", "multiple_rooms", "irregular_room", "cross_view", "low_light", "blur", "occlusion", "perspective", "scale_reference"])).max(8),
 }).strict();
 export const EvidenceTypeSchema = z.enum(["traditional", "practical", "personal"]);
 export const ActionSchema = z.object({
@@ -48,7 +65,7 @@ export const AnalysisSchema = z.object({
 }).strict();
 export const ProjectInputSchema = z.object({ title: z.string().trim().min(1).max(60), goal: z.enum(["rest", "focus", "balance"]), locale: z.enum(["ko", "en"]) }).strict();
 export const AnalyzeInputSchema = z.object({ scene: SceneSchema, requestId: z.uuid(), reportId: z.string().max(120).nullable(), usePatterns: z.boolean() }).strict();
-export const ExtractInputSchema = z.object({ requestId: z.uuid(), orientation: OrientationSchema, aiConsent: z.literal(true) }).strict();
+export const ExtractInputSchema = z.object({ requestId: z.uuid(), orientation: OrientationSchema, aiConsent: z.literal(true), captureConfirmed: z.literal(true) }).strict();
 export const ChangeInputSchema = z.object({ runId: z.uuid(), recommendationId: ID, applied: z.boolean() }).strict();
 export const CheckInputSchema = z.object({ runId: z.uuid(), requestId: z.uuid(), outcome: z.enum(["helpful", "unchanged", "unhelpful"]), note: z.string().trim().max(500), days: z.union([z.literal(30), z.literal(90)]) }).strict();
 export type Scene = z.infer<typeof SceneSchema>;

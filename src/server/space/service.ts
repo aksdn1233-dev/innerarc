@@ -1,12 +1,21 @@
 import { z } from "zod";
 import { analyzeSpace, applyAction, geometryIssues } from "@/core/space/engine";
+import { usablePhotoSet } from "@/core/space/photo-quality";
 import { AnalyzeInputSchema, AnalysisSchema, ChangeInputSchema, CheckInputSchema, ExtractInputSchema, ProjectInputSchema } from "@/core/space/schema";
 import { spacePersonalContext } from "./personal";
 import { SpaceError, spaceAccess, spaceResponse } from "./access";
 import { SPACE_BUCKET, SPACE_IMAGE_MAX_BYTES } from "./config";
-import { readBounded, readJson, sanitizeJpeg } from "./io";
+import { prepareSpaceImage, readBounded, readJson } from "./io";
 import { spaceRoutingState } from "./routing-store";
 import { extractSpace } from "./provider";
+
+const StoredPhotoQualitySchema = z.object({
+  width: z.number().int().positive(), height: z.number().int().positive(), megapixels: z.number().nonnegative(),
+  meanLuma: z.number(), contrast: z.number().nonnegative(), edgeEnergy: z.number().nonnegative(),
+  darkClipRatio: z.number().min(0).max(1), lightClipRatio: z.number().min(0).max(1),
+  status: z.enum(["good", "review", "unusable"]),
+  issues: z.array(z.enum(["too_small", "underexposed", "overexposed", "low_contrast", "likely_blur", "low_information"])),
+}).strict();
 
 export async function projects(request: Request) {
   const ctx = await spaceAccess(request, { write: request.method === "POST", existing: request.method === "GET" });
@@ -35,7 +44,7 @@ export async function project(request: Request, projectId: string) {
   }
   const [room, assets, runs, changes, checks, reports] = await Promise.all([
     ctx.client.from("space_rooms").select("scene").eq("project_id", projectId).eq("owner_user_id", ctx.owner).maybeSingle(),
-    ctx.client.from("space_assets").select("id,status,expires_at").eq("project_id", projectId).eq("owner_user_id", ctx.owner).gt("expires_at", new Date().toISOString()),
+    ctx.client.from("space_assets").select("id,status,expires_at,pixel_width,pixel_height,quality").eq("project_id", projectId).eq("owner_user_id", ctx.owner).gt("expires_at", new Date().toISOString()),
     ctx.client.from("space_analysis_runs").select("id,kind,status,result,telemetry,created_at").eq("project_id", projectId).eq("owner_user_id", ctx.owner).order("created_at", { ascending: false }).limit(20),
     ctx.client.from("space_applied_changes").select("run_id,recommendation_id,applied").eq("project_id", projectId).eq("owner_user_id", ctx.owner),
     ctx.client.from("space_reality_checks").select("id,run_id,outcome,note,days,created_at").eq("project_id", projectId).eq("owner_user_id", ctx.owner).limit(100),
@@ -55,7 +64,8 @@ export async function projectOperation(request: Request, projectId: string, oper
   const owner = ctx.owner;
   if (operation === "uploads") {
     // One bounded file/request; never buffer a 6-file multipart body in a Worker.
-    const bytes = sanitizeJpeg(await readBounded(request.body, SPACE_IMAGE_MAX_BYTES), request.headers.get("content-type"));
+    const prepared = prepareSpaceImage(await readBounded(request.body, SPACE_IMAGE_MAX_BYTES), request.headers.get("content-type"));
+    const bytes = prepared.bytes;
     const reservation = await ctx.admin.rpc("space_reserve_asset", { p_owner: owner, p_project: projectId });
     if (reservation.error || !reservation.data) throw new SpaceError("UPLOAD_LIMIT", 409);
     const asset = reservation.data;
@@ -64,14 +74,14 @@ export async function projectOperation(request: Request, projectId: string, oper
       await ctx.admin.from("space_assets").delete().eq("id", asset.id).eq("owner_user_id", owner);
       throw new SpaceError("UPLOAD_FAILED", 503);
     }
-    const ready = await ctx.admin.from("space_assets").update({ status: "ready", byte_size: bytes.length, content_sha256: Buffer.from(await crypto.subtle.digest("SHA-256", new Uint8Array(bytes))).toString("hex") }).eq("id", asset.id).eq("owner_user_id", owner).select("id").maybeSingle();
+    const ready = await ctx.admin.from("space_assets").update({ status: "ready", byte_size: bytes.length, content_sha256: Buffer.from(await crypto.subtle.digest("SHA-256", new Uint8Array(bytes))).toString("hex"), pixel_width: prepared.quality.width, pixel_height: prepared.quality.height, quality: prepared.quality }).eq("id", asset.id).eq("owner_user_id", owner).select("id").maybeSingle();
     if (ready.error || !ready.data) {
       // The project may have been deleted while the upload was in flight.
       await ctx.admin.storage.from(SPACE_BUCKET).remove([asset.object_path]);
       await ctx.admin.from("space_cleanup_queue").upsert({ object_path: asset.object_path, generation: crypto.randomUUID(), attempts: 0, next_attempt_at: new Date().toISOString(), retain_until: new Date(Date.now() + 86400_000).toISOString(), last_removed_at: null });
       throw new SpaceError("UPLOAD_FAILED", 503);
     }
-    return spaceResponse({ asset: { id: asset.id, status: "ready", expires_at: asset.expires_at } }, 201);
+    return spaceResponse({ asset: { id: asset.id, status: "ready", expires_at: asset.expires_at, quality: prepared.quality } }, 201);
   }
   const body = await readJson(request);
   if (operation === "extract" || operation === "analyze") {
@@ -85,8 +95,11 @@ export async function projectOperation(request: Request, projectId: string, oper
     if (!acquired) return spaceResponse({ runId: run.id, status: run.status, result: run.result, duplicate: true }, run.status === "pending" ? 202 : 200);
     try {
       if (extract) {
-        const assets = await ctx.admin.from("space_assets").select("id,object_path,content_sha256").eq("project_id", projectId).eq("owner_user_id", owner).eq("status", "ready").gt("expires_at", new Date().toISOString()).order("created_at");
+        const assets = await ctx.admin.from("space_assets").select("id,object_path,content_sha256,quality").eq("project_id", projectId).eq("owner_user_id", owner).eq("status", "ready").gt("expires_at", new Date().toISOString()).order("created_at");
         if (assets.error || assets.data.length < 2 || assets.data.length > 6) throw new SpaceError("TWO_TO_SIX_IMAGES_REQUIRED");
+        const quality = assets.data.map(asset => StoredPhotoQualitySchema.safeParse(asset.quality));
+        if (quality.some(item => !item.success) || !usablePhotoSet(quality.flatMap(item => item.success ? [item.data] : []))) throw new SpaceError("PHOTO_SET_QUALITY_LOW", 422);
+        if (new Set(assets.data.map(asset => asset.content_sha256)).size < 2) throw new SpaceError("PHOTO_VIEWS_DUPLICATED", 422);
         const routing = await spaceRoutingState(ctx.admin, owner, projectId, assets.data, extract.orientation);
         if (routing.reuse) {
           const result = { scene: routing.reuse.scene, reason: null, telemetry: { provider: "manual", model: null, attempts: 0, inputTokens: 0, outputTokens: 0, costMicros: 0, reservedMicros: 0, billingUnknown: false, outcome: "reused", routerVersion: "space-router-1", attemptRecords: [], inputFingerprint: routing.fingerprint, reuse: { hit: true, sourceRunId: routing.reuse.sourceRunId } } };

@@ -19,6 +19,7 @@ import { buildCelebrityMatchShare } from "@/core/share";
 import { ShareCardPanel } from "@/components/share-card-panel";
 import { focusAndScroll, scrollToElement } from "@/components/accessibility";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
+import styles from "./success-pattern.module.css";
 
 type Props = { locale: Locale; copy: CelebrityCopy };
 
@@ -102,6 +103,28 @@ export function CelebrityExperience({ locale, copy }: Props) {
               <p className="profile-facts">Life Path {profile.lifePath.value} · Birthday {profile.birthday.value} · Attitude {profile.attitude.value}</p>
             </header>
 
+            {comparison.matches[0] && <section className={styles.feature} aria-labelledby="celebrity-feature-title">
+              <span className={styles.featureNumber}>01</span>
+              <div>
+                <p>{comparison.matches[0].celebrity.profession[locale]}</p>
+                <h3 id="celebrity-feature-title">{comparison.matches[0].celebrity.displayName[locale]}</h3>
+                <strong>{comparison.matches[0].tierLabel}</strong>
+                <p>{comparison.matches[0].similarNote}</p>
+              </div>
+              <div className={styles.careerEvidence}>
+                <span>{copy.careerEvidence}</span>
+                {comparison.matches[0].celebrity.careerEvidence.map(item => <article key={`${comparison.matches[0].celebrity.id}-${item.date}`}>
+                  <time dateTime={item.date}>{item.date}</time><p>{item.claim[locale]}</p>
+                  <a href={item.source.url} target="_blank" rel="noreferrer">{item.source.publisher} · {item.source.title}</a>
+                </article>)}
+              </div>
+            </section>}
+
+            <section className={styles.boundary}>
+              <article><span>02</span><h3>{copy.boundaryTitle}</h3><p>{copy.boundaryBody}</p></article>
+              <article><span>03</span><h3>{copy.practicalTitle}</h3><p>{copy.practicalBody}</p></article>
+            </section>
+
             <div className="celebrity-grid">
               {comparison.matches.map((match) => (
                 <article className="celebrity-card" key={match.celebrity.id}>
@@ -109,7 +132,7 @@ export function CelebrityExperience({ locale, copy }: Props) {
                   <div className="celebrity-heading">
                     <p>{match.tierLabel}</p>
                     <h3>{match.celebrity.displayName[locale]}</h3>
-                    <small>{match.celebrity.birthDate} · {copy.confidence[match.celebrity.confidence]}</small>
+                    <small>{match.celebrity.profession[locale]} · {match.celebrity.birthDate} · {copy.confidence[match.celebrity.confidence]}</small>
                   </div>
                   <dl>
                     <div><dt>{copy.shared}</dt><dd>{match.similarNote}</dd></div>
@@ -123,6 +146,10 @@ export function CelebrityExperience({ locale, copy }: Props) {
                   <details>
                     <summary>{copy.evidence}</summary>
                     <div className="evidence-chips">{match.evidenceRefs.map((ref) => <span key={ref}>{ref}</span>)}</div>
+                  </details>
+                  <details>
+                    <summary>{copy.careerEvidence}</summary>
+                    {match.celebrity.careerEvidence.map(item => <p key={item.date}><time dateTime={item.date}>{item.date}</time> · {item.claim[locale]} <a href={item.source.url} target="_blank" rel="noreferrer">{item.source.publisher}</a></p>)}
                   </details>
                 </article>
               ))}
