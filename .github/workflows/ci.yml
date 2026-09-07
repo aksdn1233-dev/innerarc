@@ -94,13 +94,21 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium webkit
-      - run: pnpm exec playwright test -c playwright.space.config.ts --project=${{ matrix.project }} --workers=1 --update-snapshots=all --reporter=line,json
+      - name: Run isolated lightweight performance gate
+        run: pnpm exec playwright test -c playwright.space.config.ts --project=${{ matrix.project }} --workers=1 --grep='lightweight tier stays within' --reporter=line,json
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: artifacts/space-browser-results-${{ matrix.project }}-performance.json
+      - name: Run functional and visual space gates
+        if: always()
+        run: pnpm exec playwright test -c playwright.space.config.ts --project=${{ matrix.project }} --workers=1 --grep-invert='lightweight tier stays within' --update-snapshots=all --reporter=line,json
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: artifacts/space-browser-results-${{ matrix.project }}-functional.json
       - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: space-browser-evidence-${{ matrix.project }}
           path: |
-            artifacts/space-browser-results-${{ matrix.project }}.json
+            artifacts/space-browser-results-${{ matrix.project }}-*.json
             tests/visual/snapshots
             test-results
           if-no-files-found: error
