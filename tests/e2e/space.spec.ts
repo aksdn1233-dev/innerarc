@@ -4,6 +4,11 @@ import path from "node:path";
 const axe = readFileSync(path.resolve("node_modules/axe-core/axe.min.js"), "utf8");
 
 test("space demo confirms, analyzes, compares, applies and invalidates edits", async ({ page }) => {
+  // This integration case boots the real WebGL scene and then exercises the full
+  // state flow. Parallel CI runners can spend most of the default budget compiling
+  // shaders, so keep the product assertions unchanged and give this one case the
+  // documented slow-test allowance instead of relying on a retry.
+  test.slow();
   const remote: string[] = [];
   page.on("request", request => { if (request.url().includes("api.openai.com") || request.url().includes("/api/space")) remote.push(request.url()); });
   await page.emulateMedia({ reducedMotion: "reduce" });

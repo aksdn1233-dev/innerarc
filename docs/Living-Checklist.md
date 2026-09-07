@@ -273,6 +273,7 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] The full route regression caught the redesigned home missing its direct Four Pillars service path; contextual Four Pillars and free-pattern links restore that route without expanding the top navigation.
 - [x] The retired home closing-section selector in campaign coverage now targets the editorial closing section, preserving the same delayed-popup and expired-campaign behavior check.
 - [x] Mobile share coverage now opens the disclosure control directly and verifies its `open` state before checking the card, removing a load-sensitive text-click race while keeping the privacy assertion intact.
+- [x] Remote run 34158372056 exposed a whole-test timeout only after the real WebGL state flow reached its final invalidation check under four-worker contention; that integration case now has an explicit slow-test budget while every product assertion and the dedicated 3D frame ceiling stay unchanged.
 - [ ] Owner visual acceptance and existing PR #22 hosted/physical-device gates remain required before production release.
 
 ## 2026-09-08 Space capture and premium presentation hardening
