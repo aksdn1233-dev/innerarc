@@ -75,12 +75,16 @@ jobs:
   space-browser:
     # Functional/asset/geometry gates and current captures on a separate runner.
     # Linux-generated pictures are review artifacts, not automatic premium visual approval.
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [desktop-space, iphone-space, android-space]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
       SPACE_ENABLED: "true"
       SPACE_AI_ENABLED: "false"
-      PLAYWRIGHT_JSON_OUTPUT_NAME: artifacts/space-browser-results.json
+      PLAYWRIGHT_JSON_OUTPUT_NAME: artifacts/space-browser-results-${{ matrix.project }}.json
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -90,13 +94,13 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium webkit
-      - run: pnpm test:space --update-snapshots=all --reporter=line,json
+      - run: pnpm exec playwright test -c playwright.space.config.ts --project=${{ matrix.project }} --workers=1 --update-snapshots=all --reporter=line,json
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: space-browser-evidence
+          name: space-browser-evidence-${{ matrix.project }}
           path: |
-            artifacts/space-browser-results.json
+            artifacts/space-browser-results-${{ matrix.project }}.json
             tests/visual/snapshots
             test-results
           if-no-files-found: error

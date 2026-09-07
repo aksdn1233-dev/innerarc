@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import { activeFrameTiming, isInViewport } from "@/components/space/frame-timing";
+import { activeFrameTiming, isInViewport, shouldReduceQuality } from "@/components/space/frame-timing";
 it("includes the last moving frame but excludes idle time and separate camera clicks", () => {
   const frame = activeFrameTiming();
   expect(frame(100, true)).toBeNull(); expect(frame(116, true)).toBe(16); expect(frame(132, false)).toBe(16);
@@ -12,4 +12,12 @@ it("animates partial visibility but rejects every fully offscreen direction", ()
   expect(isInViewport({ left: 390, right: 600, top: 10, bottom: 200 }, 390, 664)).toBe(false);
   expect(isInViewport({ left: -200, right: 0, top: 10, bottom: 200 }, 390, 664)).toBe(false);
   expect(isInViewport({ left: 20, right: 220, top: 664, bottom: 900 }, 390, 664)).toBe(false);
+});
+
+it("uses an emergency ceiling and otherwise waits for representative samples", () => {
+  expect(shouldReduceQuality(101, 4, 1)).toBe(true);
+  expect(shouldReduceQuality(39, 11, 25)).toBe(false);
+  expect(shouldReduceQuality(39, 12, 1)).toBe(true);
+  expect(shouldReduceQuality(20, 12, 25)).toBe(true);
+  expect(shouldReduceQuality(38, 12, 24)).toBe(false);
 });

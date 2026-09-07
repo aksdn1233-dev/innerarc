@@ -36,7 +36,7 @@ export function createContactShadows(renderer: T.WebGLRenderer, world: T.Scene, 
     Object.assign(camera, { left: -w / 2, right: w / 2, top: d / 2, bottom: -d / 2, near: 0, far: 1.5 }); camera.position.set(x, .001, z); camera.rotation.set(Math.PI / 2, 0, 0); camera.updateProjectionMatrix();
   }
   function releasePlanes() { overlays.traverse(node => { if (node instanceof T.Mesh) node.geometry.dispose(); }); overlays.clear(); materials.forEach(value => value.dispose()); materials.length = 0; }
-  let dirty = true, width = 1, depthMetres = 1, disposed = false;
+  let dirty = true, width = 1, depthMetres = 1, disposed = false, enabled = true;
   let dynamic: { source: T.Group; width: number; depth: number; planes: { group: T.Group; material: T.ShaderMaterial; height: number }[] } | null = null;
   const receivers: { source: T.Group; group: T.Group; height: number }[] = [];
   function bake(scene: T.Scene, camera: T.Camera, destination: T.WebGLRenderTarget, w: number, d: number) {
@@ -45,6 +45,7 @@ export function createContactShadows(renderer: T.WebGLRenderer, world: T.Scene, 
     blur.uniforms.image.value = scratch.texture; blur.uniforms.step.value.set(0, .022 / d); renderer.setRenderTarget(destination); renderer.render(blurScene, blurCamera);
   }
   return {
+    enabled(value: boolean) { enabled = value; overlays.visible = value; },
     resolution(size: number) { if (disposed || target.width === size) return; target.setSize(size, size); scratch.setSize(size, size); dirty = true; },
     update(scene: Scene, objects: Map<string, { group: T.Group }>, movingId?: string) {
       if (disposed) return;
@@ -67,7 +68,7 @@ export function createContactShadows(renderer: T.WebGLRenderer, world: T.Scene, 
       dirty = true;
     },
     render() {
-      if (disposed) return;
+      if (disposed || !enabled) return;
       for (const { source, group, height } of receivers) { group.position.copy(source.position); group.position.y = height; group.quaternion.copy(source.quaternion); }
       if (dynamic) for (const receiver of dynamic.planes) { receiver.group.position.set(dynamic.source.position.x, receiver.height, dynamic.source.position.z); receiver.material.uniforms.offset.value.set(dynamic.source.position.x - dynamic.width / 2, dynamic.source.position.z - dynamic.depth / 2); }
       if (!dirty) return;

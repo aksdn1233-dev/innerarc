@@ -4,7 +4,7 @@ import type { Scene } from "@/core/space/schema";
 import { clearTranslation } from "@/core/space/navigation";
 import { geometryIssues } from "@/core/space/engine";
 import { SpaceAssetCredits } from "./asset-credits";
-import { activeFrameTiming, isInViewport } from "./frame-timing";
+import { activeFrameTiming, isInViewport, shouldReduceQuality } from "./frame-timing";
 import { resourceScope } from "./resource-scope";
 import { roomCameraFit, interiorCameraFit } from "./camera-fit";
 import styles from "./space.module.css";
@@ -98,7 +98,7 @@ export default function RoomView({ scene, locale, selectedId = null, onSelect }:
         if (committed) { container!.dataset.objectCount = String(objects.size); container!.dataset.sceneState = JSON.stringify(current.objects.map(o => ({ id: o.id, x: o.x, z: o.z, rotation: o.rotation }))); }
         if (intervals.length >= 4) {
           const sorted = [...intervals].sort((a, b) => a - b), p90 = sorted[Math.floor(sorted.length * .9)]; if (intervals.length >= 12) { container!.dataset.frameP90 = p90.toFixed(1); container!.dataset.sampledFrames = String(intervals.length); }
-          if (!qualityReduced && (p90 > 100 || (intervals.length >= 12 && (p90 > 38 || renderP90 > 24)))) { qualityReduced = true; container!.dataset.beforeFallbackFrameP90 = p90.toFixed(1); container!.dataset.beforeFallbackRenderP90 = renderP90.toFixed(2); profile("performance"); setQuality("performance"); }
+          if (!qualityReduced && shouldReduceQuality(p90, intervals.length, renderP90)) { qualityReduced = true; container!.dataset.beforeFallbackFrameP90 = p90.toFixed(1); container!.dataset.beforeFallbackRenderP90 = renderP90.toFixed(2); profile("performance"); setQuality("performance"); }
         }
         if (transition) schedule();
       }
@@ -111,11 +111,12 @@ export default function RoomView({ scene, locale, selectedId = null, onSelect }:
         pixelRatio = Math.min(devicePixelRatio, tier === "ultra" ? 2 : tier === "high" ? 1.8 : tier === "balanced" ? 1.35 : 1);
         windowFill.visible = current.windows.length > 0 && tier !== "performance"; world.environmentIntensity = tier === "performance" ? .50 : .42;
         practical.visible = tier === "ultra" || tier === "high";
-        contact.resolution(tier === "performance" ? 128 : tier === "balanced" ? 256 : 512);
+        const lightweight = tier === "performance";
+        contact.enabled(!lightweight); contact.resolution(tier === "balanced" ? 256 : 512);
         ao.enabled = tier !== "performance"; aoScale = tier === "ultra" ? 1 : tier === "high" ? .8 : .55;
         ao.updateGtaoMaterial({ samples: tier === "ultra" ? 16 : tier === "high" ? 12 : 8 });
-        renderer.setPixelRatio(pixelRatio); composer.setPixelRatio(pixelRatio); const shadowSize = tier === "ultra" || tier === "high" ? 2048 : tier === "performance" ? 512 : 1024; sun.shadow.mapSize.set(shadowSize, shadowSize); sun.shadow.map?.dispose(); sun.shadow.map = null;
-        container!.dataset.shadowMode = "directional-contact";
+        renderer.setPixelRatio(pixelRatio); composer.setPixelRatio(pixelRatio); const shadowSize = tier === "ultra" || tier === "high" ? 2048 : 1024; sun.shadow.mapSize.set(shadowSize, shadowSize); sun.shadow.map?.dispose(); sun.shadow.map = null; sun.castShadow = !lightweight;
+        container!.dataset.shadowMode = lightweight ? "performance-unshadowed" : "directional-contact";
         container!.dataset.effectiveQuality = tier; schedule();
       }
       function update(next: Scene) {
