@@ -41,8 +41,12 @@ test("selection, validated adjustment, undo and same-camera comparison", async (
 test("lightweight tier stays within the active-frame budget", async ({ page }, testInfo) => {
   await page.goto("/en/space");
   const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "6", { timeout: 20000 }); await expect(view).toHaveAttribute("data-triangles", /[1-9]/);
-  await page.getByRole("combobox", { name: "Select furniture", exact: true }).selectOption("desk_1");
-  await page.getByLabel("Quality", { exact: true }).selectOption("performance");
+  const setSelect = async (name: string, value: string) => page.getByRole("combobox", { name, exact: true }).evaluate((element, next) => {
+    const select = element as HTMLSelectElement; select.value = next; select.dispatchEvent(new Event("change", { bubbles: true }));
+  }, value);
+  // The fixed-tier benchmark is not a select actionability test. Dispatch the same
+  // change event without Playwright scrolling the canvas and waiting for it to settle.
+  await setSelect("Select furniture", "desk_1"); await setSelect("Quality", "performance");
   await expect(view).toHaveAttribute("data-effective-quality", "performance");
   await expect(view).toHaveAttribute("data-shadow-mode", "performance-unshadowed");
   // Every backend is compared under the same render policy; the automatic threshold
