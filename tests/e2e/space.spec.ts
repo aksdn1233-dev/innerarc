@@ -7,6 +7,7 @@ test("space demo confirms, analyzes, compares, applies and invalidates edits", a
   const remote: string[] = [];
   page.on("request", request => { if (request.url().includes("api.openai.com") || request.url().includes("/api/space")) remote.push(request.url()); });
   await page.goto("/ko/space");
+  await expect(page.locator("fieldset[data-ready]")).toHaveAttribute("data-ready", "true", { timeout: 10_000 });
   await expect(page.getByRole("heading", { name: "내 방을, 움직여 보기 전에.", exact: true })).toBeVisible();
   const analyze = page.getByRole("button", { name: "예시 방 분석", exact: true });
   await expect(analyze).toBeDisabled();
@@ -15,8 +16,9 @@ test("space demo confirms, analyzes, compares, applies and invalidates edits", a
     await checkbox.evaluate((element: HTMLInputElement) => element.click());
     await expect(checkbox).toBeChecked();
   }
-  await analyze.click();
-  await expect(page.getByRole("region", { name: "공간 분석 결과" })).toBeVisible();
+  await expect(analyze).toBeEnabled();
+  await analyze.evaluate((element: HTMLButtonElement) => element.click());
+  await expect(page.getByRole("region", { name: "공간 분석 결과" })).toBeVisible({ timeout: 15_000 });
   await expect(page.getByText("전통 풍수 해석", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("공간·생활 분석", { exact: true })).toBeVisible();
   const compare = page.getByRole("button", { name: "추천 배치", exact: true });

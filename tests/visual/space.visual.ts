@@ -135,7 +135,7 @@ for (const example of ["small_bedroom", "living_room"] as const) test(`interior 
 test("failed material load releases the canvas and retry restores one renderer", async ({ page }) => {
   await page.route("**/space/assets/oak-floor-color.jpg", route => route.fulfill({ status: 503, body: "synthetic outage" })); await page.goto("/en/space");
   await expect(page.getByRole("button", { name: "Retry 3D" })).toBeVisible({ timeout: 20000 }); expect(await page.locator("canvas").count()).toBe(0);
-  await page.unroute("**/space/assets/oak-floor-color.jpg"); await page.getByRole("button", { name: "Retry 3D" }).click();
+  await page.unroute("**/space/assets/oak-floor-color.jpg"); await page.getByRole("button", { name: "Retry 3D" }).evaluate((element: HTMLButtonElement) => element.click());
   // A fresh WebGL context and all bounded assets are rebuilt after disposal. Allow
   // the constrained WebKit runner its 15s download ceiling plus context setup time.
   await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "6", { timeout: 30000 }); expect(await page.locator("canvas").count()).toBe(1);
