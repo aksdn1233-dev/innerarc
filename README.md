@@ -4,9 +4,9 @@
 
 ## Current scope
 
-Version 0.18.2 provides a web-first, guest-first Korean/English application with:
+Version 0.20.2 provides a web-first, guest-first Korean/English application with:
 
-- a mobile-first premium homepage that introduces the InnerArc pattern model, previews a result, explains four analysis fields, and leads clearly into the existing free calculation flow;
+- a mobile-first Korean editorial homepage that connects deterministic self analysis, sourced public comparison, relationship analysis, optional 3D Space, and Reality Check through real product evidence and clear symbolic-claim boundaries;
 - deterministic Pythagorean numerology and calculation evidence;
 - an optional free Daily Flow that uses only birth month/day plus the device-local date,
   stays stable for the day, updates on the next local date, and stores its setting only

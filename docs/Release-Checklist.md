@@ -190,3 +190,12 @@ Rollback reference: production base `ee4ae5038e34e0715456b837cbe7c7f2db5591c4`; 
 - [x] Success evidence uses official sources and visibly separates career facts, symbolic overlap, context and unknowns.
 - [ ] Reconfirm the complete Node 24 CI matrix after PR push; local fallback runtime is Node 22 and does not replace CI evidence.
 - [ ] Owner visual acceptance, hosted private storage/model tests, and physical iPhone/Android GPU/camera tests remain release blockers.
+
+## Editorial home presentation — 2026-09-08
+
+- [x] Home remains an introduction; purchase intake, checkout, entitlements, report generation, account recovery, and deterministic engines are unchanged.
+- [x] Generated brand art is disclosed and no preview is presented as a customer outcome.
+- [x] Symbolic systems remain clearly bounded from scientific prediction, diagnosis, treatment, and guaranteed results in Korean and English.
+- [x] Feature-off rendering omits the Space menu/showcase without breaking the other home chapters.
+- [ ] Run the complete Node 24 CI matrix and inspect generated five-width captures before merge.
+- [ ] Keep PR #22 unmerged and Space flags off until its existing hosted, physical-device, and owner-acceptance gates pass.

@@ -259,6 +259,22 @@ Premium visual follow-up (2026-09-07): current/recommended deltas and scene cues
 
 Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered in15–19ms but scheduled frames at263–269ms. The performance tier now switches to immediate validated movement only after four observed over-ceiling frames. The100ms limit remains unchanged; a clean remote rerun and physical devices remain required.
 
+## 2026-09-08 editorial brand presentation
+
+- [x] Public home uses the approved editorial sequence: self, sourced comparison, relationship, optional Space, and Reality Check.
+- [x] Hero art is original, decorative, contains no personal result, and is visibly disclosed as generated imagery.
+- [x] Personal and public-figure previews follow shipped product structures; Space before/after images are captured from the real WebGL renderer.
+- [x] Korean/English claim boundaries remain visible; the global Level B content-protection notice still comes from the locale layout.
+- [x] Route-scoped styling avoids adding the landing CSS to every product route.
+- [x] Automated visual evidence covers 390, 430, 768, 1024, and 1440 pixels; mobile overflow and target checks cover 320–430 pixels.
+- [x] The customer-language regression caught technology-first `AI analysis` navigation copy; the shipped label is the user-facing `Pattern analysis`, and the existing scanner prevents recurrence.
+- [x] Space preview sources are 1354×1082 retina captures from the real WebGL view; responsive presentation preserves their full 677:541 frame, requests a larger mobile candidate after the density gate caught a 0.3–1.6% shortfall, and fails visual QA if a preview is cropped or upscaled.
+- [x] The full WCAG scan caught low contrast in the editorial sequence numbers and business caption; both use AA-readable ink values and remain covered on Korean and English home routes.
+- [x] The full route regression caught the redesigned home missing its direct Four Pillars service path; contextual Four Pillars and free-pattern links restore that route without expanding the top navigation.
+- [x] The retired home closing-section selector in campaign coverage now targets the editorial closing section, preserving the same delayed-popup and expired-campaign behavior check.
+- [x] Mobile share coverage now opens the disclosure control directly and verifies its `open` state before checking the card, removing a load-sensitive text-click race while keeping the privacy assertion intact.
+- [ ] Owner visual acceptance and existing PR #22 hosted/physical-device gates remain required before production release.
+
 ## 2026-09-08 Space capture and premium presentation hardening
 
 - [x] Browser and server independently reject tiny, empty, severely dark or blown-out pixels before provider use.

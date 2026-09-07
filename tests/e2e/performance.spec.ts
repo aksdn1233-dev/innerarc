@@ -26,16 +26,12 @@ const DEFAULT_DECODED_BUDGET = 1_200_000;
  */
 const DEFAULT_CSS_DECODED_BUDGET = 208_000;
 
-/**
- * The home page carries the 태율 hero clip, its iOS animated fallback, audio, and poster,
- * which no other route downloads. The browser selects playback behavior at runtime, so
- * the initial-page budget records the full current transfer instead of hiding media bytes.
- * Every other route keeps the original, tighter allowance.
- */
 const routes = [
-  // Measured at 3.59–3.61 MB with the 2.1 MB iOS fallback and 942 KB MP4 represented.
-  // The allowance remains narrow enough that another large media asset cannot slip in.
-  { path: "/en", transfer: 4_000_000, decoded: 4_500_000 },
+  // The editorial home removes the old autoplay film, audio and iOS animation. Its
+  // measured initial transfer is 319.5 KB and decoded total 1.116 MB. The only route
+  // addition is 25.7 KB of scoped presentation CSS on top of the unchanged 189.8 KB
+  // shared sheet, so its CSS exception is local and the transfer ceiling drops by 91%.
+  { path: "/en", transfer: 350_000, cssDecoded: 220_000 },
   { path: "/en/question" },
   { path: "/en/relationship" },
   { path: "/en/compatibility" },
