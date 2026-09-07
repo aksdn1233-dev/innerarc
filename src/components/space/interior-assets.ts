@@ -58,8 +58,10 @@ export function interiorMaterials(anisotropy: number) {
     stone: new T.MeshStandardMaterial({ color: 0xffffff, map: marble, roughnessMap: marbleRoughness, bumpMap: plasterBump, bumpScale: .0003, roughness: .32 }),
     screen: new T.MeshPhysicalMaterial({ color: 0x141e22, metalness: .15, roughness: .12, clearcoat: .8, clearcoatRoughness: .08 }),
     lampshade: new T.MeshStandardMaterial({ color: 0xf1e5ce, map: linen, roughness: .9, side: T.DoubleSide }),
+    bulb: new T.MeshStandardMaterial({ color: 0xffe6bd, emissive: 0xffc77d, emissiveIntensity: 1.8, roughness: .35 }),
     rug: new T.MeshStandardMaterial({ color: 0xcbc4b5, map: linen, bumpMap: linenBump, bumpScale: .002, roughness: 1 }),
     glass: new T.MeshPhysicalMaterial({ color: 0xc7dee5, metalness: .10, roughness: .06, envMapIntensity: 1.5, transparent: true, opacity: .34, side: T.DoubleSide, depthWrite: false }),
+    exterior: new T.MeshBasicMaterial({ color: 0xc9d7dc, toneMapped: false }),
   };
   return { ...materials, dispose() { Object.values(materials).forEach(m => m.dispose()); textures.forEach(t => t.dispose()); } };
 }
@@ -109,7 +111,7 @@ export function furnitureAsset(object: SpatialObject, m: InteriorMaterials) {
   if (object.kind === "bed") {
     for (const x of [-.42, .42]) for (const z of [-.4, .4]) cylinder(g, m.walnut, .028, .022, .1, x, .05, z);
     block(g, m.oak, .98, .15, .98, 0, .17, 0, .03);
-    block(g, m.linen, .94, .20, .89, 0, .335, .025, .055);
+    block(g, m.sand, .94, .20, .89, 0, .335, .025, .055);
     // Upholstered twin panels with a narrow reveal and rounded timber surround.
     block(g, m.walnut, 1, .82, .065, 0, .59, -.4675, .025);
     for (const x of [-.241, .241]) block(g, m.sand, .475, .77, .10, x, .608, -.429, .047);
@@ -121,8 +123,33 @@ export function furnitureAsset(object: SpatialObject, m: InteriorMaterials) {
     }
     duvet.computeVertexNormals(); const sheet = mesh(g, duvet, m.linen, 0, 0, 0); sheet.userData.clothUv = { width: .98, depth: .70 };
 
+    // A top-only plane reads as paper-thin at an interior camera angle. These
+    // stitched side and foot drops share the top's weave and follow restrained
+    // gravity folds without changing the bed's authoritative dimensions.
+    for (const sign of [-1, 1]) {
+      const side = new T.PlaneGeometry(.70, .17, 36, 12), p = side.getAttribute("position");
+      for (let i = 0; i < p.count; i++) {
+        const z = p.getX(i) + .14, v = p.getY(i) + .5;
+        const x = sign * (.475 + .008 * Math.sin(z * 31) * v);
+        const y = .47 - v * .155 + .006 * Math.sin(z * 24 + sign) * Math.sin(v * Math.PI);
+        p.setXYZ(i, x, y, z);
+      }
+      side.computeVertexNormals(); const panel = mesh(g, side, m.linen, 0, 0, 0); panel.userData.clothUv = { width: .70, depth: .17 };
+    }
+    const footDrop = new T.PlaneGeometry(.95, .16, 48, 12), footPositions = footDrop.getAttribute("position");
+    for (let i = 0; i < footPositions.count; i++) {
+      const x = footPositions.getX(i), v = footPositions.getY(i) + .5;
+      footPositions.setXYZ(i, x, .465 - v * .145 + .005 * Math.sin(x * 27) * Math.sin(v * Math.PI), .487 + .008 * Math.cos(x * 18) * v);
+    }
+    footDrop.computeVertexNormals(); const footPanel = mesh(g, footDrop, m.linen, 0, 0, 0); footPanel.userData.clothUv = { width: .95, depth: .16 };
+    const duvetHem = [
+      ...Array.from({ length: 49 }, (_, i) => new T.Vector3(-.475 + i * .95 / 48, .32 + .005 * Math.sin(i * .7), .492)),
+      ...Array.from({ length: 36 }, (_, i) => new T.Vector3(.483, .32 + .005 * Math.cos(i * .8), .49 - i * .70 / 35)),
+    ];
+    mesh(g, new T.TubeGeometry(new T.CatmullRomCurve3(duvetHem), 84, .0028, 5, false), m.linen, 0, 0, 0);
+
     for (const x of [-.225, .225]) {
-      const pillow = cushion(g, m.linen, .43, .13, .29, x, .49, -.255); pillow.rotation.x = .16;
+      const pillow = cushion(g, m.linen, .43, .13, .29, x, .49 + (x > 0 ? .008 : 0), -.255 + (x > 0 ? .012 : 0)); pillow.rotation.set(.16, x > 0 ? -.045 : .035, 0);
     }
     // Continuous draped weave: no rigid ribs, with natural curved folds and a sewn hem.
     const throwGeometry = new T.PlaneGeometry(.98, .31, 64, 28), throwPositions = throwGeometry.getAttribute("position");
@@ -205,6 +232,7 @@ export function architecture(scene: Scene, m: InteriorMaterials) {
         // Recessed frame, slender center mullion, and a clear reveal produce physical depth.
         for (const x of [o.offset + .05, o.offset + o.width - .05]) block(g, m.dark, .025, o.top - o.bottom - .06, .04, x, (o.bottom + o.top) / 2, -.025 * inward, .003);
         block(g, m.dark, .026, o.top - o.bottom, .045, o.offset + o.width / 2, (o.top + o.bottom) / 2, 0, .003);
+        block(g, m.exterior, o.width - .09, o.top - o.bottom - .09, .006, o.offset + o.width / 2, (o.top + o.bottom) / 2, .035 * inward, 0);
         block(g, m.glass, o.width - .07, o.top - o.bottom - .07, .008, o.offset + o.width / 2, (o.top + o.bottom) / 2, 0, 0);
       } else {
         // A closed reference door sits in the opening plane; swing is not inferred.
@@ -221,6 +249,9 @@ export function architecture(scene: Scene, m: InteriorMaterials) {
     // Baseboard split around door openings.
     const doors = scene.doors.filter(o => o.wall === wall).sort((a, b) => a.offset - b.offset); let start = 0;
     for (const door of [...doors, { offset: length, width: 0 }]) { if (door.offset > start) block(g, m.oak, door.offset - start, .07, .035, (start + door.offset) / 2, .035, (wall === "bottom" || wall === "left" ? -1 : 1) * .068, .003); start = door.offset + door.width; }
+    // A shallow ceiling reveal gives the room a real wall/ceiling junction while
+    // remaining part of the same merged architectural draw batch.
+    block(g, m.wall, length, .055, .055, length / 2, h - .055, (wall === "bottom" || wall === "left" ? -1 : 1) * .067, .004);
     mergeWallParts(g);
   }
   return { group, walls, ceiling };

@@ -71,6 +71,7 @@ export function supplementaryFurniture(g: T.Group, object: SpatialObject, m: Int
     const profile = [new T.Vector2(.49, .70), new T.Vector2(.48, .72), new T.Vector2(.27, .98), new T.Vector2(.26, 1)];
     add(new T.LatheGeometry(profile, 48), m.lampshade, 0, 0, 0);
     cylinder(m.lampshade, .255, .255, .012, 0, .994, 0);
+    add(new T.SphereGeometry(.075, 20, 12), m.bulb, 0, .80, 0);
     tube(m.bronze, [[-.3, .76, 0], [0, .80, 0], [.3, .76, 0]], .006);
   } else if (kind === "rug") {
     box(m.rug, .98, .96, .98, 0, .48, 0, .005);

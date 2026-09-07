@@ -21,6 +21,7 @@ test("selection, validated adjustment, undo and same-camera comparison", async (
   await page.getByRole("button", { name: "Move furniture → 10cm", exact: true }).click();
   await expect(view).toHaveAttribute("data-scene-state", /"x":3.1/);
   await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 });
+  await expect(view).toHaveAttribute("data-motion-policy", "offscreen-snap");
   await page.getByRole("button", { name: "Undo edit", exact: true }).click(); await expect(view).toHaveAttribute("data-scene-state", /"x":3,/);
   await page.getByRole("checkbox", { name: "I checked north" }).check();
   await page.getByRole("checkbox", { name: "I compared the room, openings and furniture with the actual space" }).check();
@@ -32,15 +33,24 @@ test("selection, validated adjustment, undo and same-camera comparison", async (
   await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 });
   await page.getByRole("button", { name: "Current layout", exact: true }).click(); await expect(view).toHaveAttribute("data-scene-state", before!);
   // Measure the settled adaptive tier after initial shader/quality warm-up; retain the
-  // pre-fallback measurement separately. This is browser timing, not physical-device evidence.
+  // pre-fallback measurement separately. Keep the canvas visible: browsers throttle
+  // requestAnimationFrame for fully offscreen content, which is a power policy rather
+  // than renderer throughput. Programmatic click avoids scrolling back to the editor.
+  await view.scrollIntoViewIfNeeded();
+  await expect.poll(() => view.evaluate(element => {
+    const rect = element.getBoundingClientRect(); return rect.bottom > 0 && rect.top < innerHeight;
+  })).toBe(true);
+  const move = page.getByRole("button", { name: "Move furniture → 10cm", exact: true });
+  const undo = page.getByRole("button", { name: "Undo edit", exact: true });
   for (let i = 0; i < 8; i++) {
-    await page.getByRole("button", { name: "Move furniture → 10cm", exact: true }).click();
+    await move.evaluate((button: HTMLButtonElement) => button.click());
+    await expect(view).toHaveAttribute("data-motion-policy", "animated");
     await expect(view).toHaveAttribute("data-scene-state", /"x":3.1/); await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 });
-    await page.getByRole("button", { name: "Undo edit", exact: true }).click(); await expect(view).toHaveAttribute("data-scene-state", /"x":3,/); await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 });
+    await undo.evaluate((button: HTMLButtonElement) => button.click()); await expect(view).toHaveAttribute("data-scene-state", /"x":3,/); await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 });
     if (i >= 1 && Number(await view.getAttribute("data-sampled-frames")) >= 12) break;
   }
   await expect(view).toHaveAttribute("data-sampled-frames", /[1-9]/);
-  const measured = await view.evaluate(element => ({ p90Ms: Number((element as HTMLElement).dataset.frameP90), cpuRenderP90Ms: Number((element as HTMLElement).dataset.renderMsP90), textureCount: Number((element as HTMLElement).dataset.textureCount), quality: (element as HTMLElement).dataset.quality, beforeFallbackFrameP90Ms: Number((element as HTMLElement).dataset.beforeFallbackFrameP90 || 0) }));
+  const measured = await view.evaluate(element => ({ p90Ms: Number((element as HTMLElement).dataset.frameP90), cpuRenderP90Ms: Number((element as HTMLElement).dataset.renderMsP90), drawCalls: Number((element as HTMLElement).dataset.drawCalls), triangles: Number((element as HTMLElement).dataset.triangles), textureCount: Number((element as HTMLElement).dataset.textureCount), textureBytesEstimate: Number((element as HTMLElement).dataset.textureBytesEstimate), quality: (element as HTMLElement).dataset.quality, shadowMode: (element as HTMLElement).dataset.shadowMode, beforeFallbackFrameP90Ms: Number((element as HTMLElement).dataset.beforeFallbackFrameP90 || 0) }));
   await testInfo.attach("active-frame-timing", { body: JSON.stringify(measured), contentType: "application/json" });
   const gpu = await view.locator("canvas").evaluate(canvas => { const gl = (canvas as HTMLCanvasElement).getContext("webgl2"); const extension = gl?.getExtension("WEBGL_debug_renderer_info"); return gl && extension ? gl.getParameter(extension.UNMASKED_RENDERER_WEBGL) as string : "unavailable"; });
   await testInfo.attach("renderer-backend", { body: gpu, contentType: "text/plain" });

@@ -4,7 +4,7 @@ import type { Scene } from "@/core/space/schema";
 import { clearTranslation } from "@/core/space/navigation";
 import { geometryIssues } from "@/core/space/engine";
 import { SpaceAssetCredits } from "./asset-credits";
-import { activeFrameTiming } from "./frame-timing";
+import { activeFrameTiming, isInViewport } from "./frame-timing";
 import { resourceScope } from "./resource-scope";
 import { roomCameraFit, interiorCameraFit } from "./camera-fit";
 import styles from "./space.module.css";
@@ -29,24 +29,25 @@ export default function RoomView({ scene, locale, selectedId = null, onSelect }:
       own(() => { renderer.dispose(); renderer.forceContextLoss(); renderer.domElement.remove(); for (const key of ["sceneState", "objectCount", "drawCalls", "triangles", "camera", "motion", "frameP90", "sampledFrames"]) delete container.dataset[key]; });
       const mobile = matchMedia("(pointer: coarse)").matches, reduced = matchMedia("(prefers-reduced-motion: reduce)");
       let pixelRatio = Math.min(devicePixelRatio, mobile ? 1.35 : 1.8), qualityReduced = false;
-      renderer.setPixelRatio(pixelRatio); renderer.setClearColor(0xe4e1d9);
-      renderer.outputColorSpace = T.SRGBColorSpace; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.16;
+      renderer.setPixelRatio(pixelRatio); renderer.setClearColor(0xe3e0d8);
+      renderer.outputColorSpace = T.SRGBColorSpace; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.02;
       renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap;
       renderer.domElement.setAttribute("aria-label", ko ? "선택하고 돌려볼 수 있는 방의 3D 모형" : "Interactive 3D room with selectable furniture"); renderer.domElement.setAttribute("role", "img"); container.appendChild(renderer.domElement);
-      const world = new T.Scene(); world.background = new T.Color(0xe4e1d9);
+      const world = new T.Scene(); world.background = new T.Color(0xe3e0d8);
       own(() => assets.disposeGeometry(world));
       const materials = assets.interiorMaterials(renderer.capabilities.getMaxAnisotropy()); own(materials.dispose);
       const surfaces = await loadPbrSurfaces(materials, renderer, abort.signal); own(surfaces.dispose);
       if (stopped) return;
-      world.environment = surfaces.environment.texture; world.environmentIntensity = .32;
+      world.environment = surfaces.environment.texture; world.environmentIntensity = .42;
       const library = createAssetLibrary(abort.signal); own(library.dispose);
       const contact = createContactShadows(renderer, world, 512); own(contact.dispose);
       const camera = new T.PerspectiveCamera(38, 1, .05, 200), orbit = new OrbitControls(camera, renderer.domElement);
       own(() => orbit.dispose());
       orbit.enableDamping = false; orbit.screenSpacePanning = true; orbit.minDistance = 1; orbit.maxDistance = 65; orbit.maxPolarAngle = Math.PI / 2 - .01;
-      const sun = new T.DirectionalLight(0xffefd5, 3.2); sun.castShadow = true; sun.shadow.mapSize.set(mobile ? 1024 : 2048, mobile ? 1024 : 2048); sun.shadow.bias = -.00003; sun.shadow.normalBias = .001; sun.shadow.radius = 3; sun.shadow.blurSamples = 8; world.add(sun, sun.target);
-      RectAreaLightUniformsLib.init(); const windowFill = new T.RectAreaLight(0xe6eeff, 8, 1, 1); world.add(windowFill);
-      world.add(new T.HemisphereLight(0xe5efff, 0x8d765a, .30));
+      const sun = new T.DirectionalLight(0xffefd5, 1.45); sun.castShadow = true; sun.shadow.mapSize.set(mobile ? 1024 : 2048, mobile ? 1024 : 2048); sun.shadow.bias = -.00003; sun.shadow.normalBias = .001; sun.shadow.radius = 6; sun.shadow.blurSamples = 16; world.add(sun, sun.target);
+      RectAreaLightUniformsLib.init(); const windowFill = new T.RectAreaLight(0xe9f1ff, 4.2, 1, 1); world.add(windowFill);
+      const practical = new T.PointLight(0xffc98f, 2.8, 3, 2); practical.castShadow = false; practical.visible = false; world.add(practical);
+      world.add(new T.HemisphereLight(0xe5efff, 0x806b50, .34));
       const ground = new T.Mesh(new T.PlaneGeometry(200, 200), new T.MeshStandardMaterial({ color: 0xe4e1d9, roughness: 1 })); ground.rotation.x = -Math.PI / 2; ground.position.y = -.17; ground.receiveShadow = true; world.add(ground); own(() => (ground.material as import("three").Material).dispose());
       const selection = new T.Box3Helper(new T.Box3(), 0x99703a); selection.visible = false; world.add(selection); own(() => (selection.material as import("three").Material).dispose());
       const renderTarget = new T.WebGLRenderTarget(1, 1, { type: T.HalfFloatType, samples: mobile ? 2 : 4 });
@@ -108,11 +109,13 @@ export default function RoomView({ scene, locale, selectedId = null, onSelect }:
         const tier = value === "auto" ? mobile ? "balanced" : "high" : value;
         tierWarmSamples = 2; intervals.length = 0; renderTimes.length = 0; delete container!.dataset.frameP90; delete container!.dataset.sampledFrames;
         pixelRatio = Math.min(devicePixelRatio, tier === "ultra" ? 2 : tier === "high" ? 1.8 : tier === "balanced" ? 1.35 : 1);
-        windowFill.visible = current.windows.length > 0 && tier !== "performance"; world.environmentIntensity = tier === "performance" ? .50 : .32;
+        windowFill.visible = current.windows.length > 0 && tier !== "performance"; world.environmentIntensity = tier === "performance" ? .50 : .42;
+        practical.visible = tier === "ultra" || tier === "high";
         contact.resolution(tier === "performance" ? 128 : tier === "balanced" ? 256 : 512);
         ao.enabled = tier !== "performance"; aoScale = tier === "ultra" ? 1 : tier === "high" ? .8 : .55;
         ao.updateGtaoMaterial({ samples: tier === "ultra" ? 16 : tier === "high" ? 12 : 8 });
         renderer.setPixelRatio(pixelRatio); composer.setPixelRatio(pixelRatio); const shadowSize = tier === "ultra" || tier === "high" ? 2048 : tier === "performance" ? 512 : 1024; sun.shadow.mapSize.set(shadowSize, shadowSize); sun.shadow.map?.dispose(); sun.shadow.map = null;
+        container!.dataset.shadowMode = "directional-contact";
         container!.dataset.effectiveQuality = tier; schedule();
       }
       function update(next: Scene) {
@@ -130,6 +133,9 @@ export default function RoomView({ scene, locale, selectedId = null, onSelect }:
           const windowZ = opening ? opening.wall === "top" ? 0 : opening.wall === "bottom" ? d : opening.offset + opening.width / 2 : 0;
           const windowY = opening ? (opening.sill ?? .85) + (opening.height ?? 1.2) * .65 : h * .75;
           const focalObject = next.objects.find(object => object.kind === "bed" || object.kind === "sofa");
+          const lamp = next.objects.find(object => object.kind === "lighting");
+          if (lamp) practical.position.set(lamp.x, lamp.height * .78, lamp.z);
+          practical.visible = !!lamp && ["high", "ultra"].includes(container!.dataset.effectiveQuality ?? "");
           sun.target.position.set(focalObject?.x ?? w / 2, 0, focalObject?.z ?? d / 2);
           const through = new T.Vector3(windowX, windowY, windowZ).sub(sun.target.position);
           sun.position.copy(sun.target.position).addScaledVector(through, 3);
@@ -156,8 +162,15 @@ export default function RoomView({ scene, locale, selectedId = null, onSelect }:
           }
         }
         // Simultaneous independent sweeps could cross: animate only one movement at a time.
-        if (moves.length === 1) transition = { moves, start: performance.now(), duration: 650 };
-        else { transition = null; for (const move of moves) { move.group.position.copy(move.to); move.group.rotation.y = move.toRotation; } }
+        const visible = isInViewport(container!.getBoundingClientRect(), innerWidth, innerHeight);
+        if (moves.length === 1 && visible) {
+          transition = { moves, start: performance.now(), duration: 650 };
+          container!.dataset.motionPolicy = "animated";
+        } else {
+          transition = null;
+          for (const move of moves) { move.group.position.copy(move.to); move.group.rotation.y = move.toRotation; }
+          container!.dataset.motionPolicy = moves.length === 1 ? "offscreen-snap" : "direct";
+        }
         contact.update(next, objects, transition?.moves[0]?.group.userData.objectId); committed = true; schedule();
       }
       const ray = new T.Raycaster(), pointer = new T.Vector2(); let down: { x: number; y: number } | null = null;

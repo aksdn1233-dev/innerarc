@@ -48,7 +48,14 @@ export function interiorCameraFit(scene: Scene, aspect: number) {
     }
     const fov = Math.atan(requiredTan) * 360 / Math.PI;
     // A fisheye lens is not an acceptable way to conceal an impossible interior view.
-    if (valid && fov <= 100) candidates.push({ position, fov, score: fov + (1 - direction.dot(facing)) * 18 });
+    // Prefer corners that do not put unrelated furniture against the lens. The
+    // center-ray occlusion proof above remains the hard safety gate; this distance
+    // penalty improves depth and avoids a giant foreground desk in bedroom views.
+    const foregroundPenalty = scene.objects.filter(object => !objects.includes(object) && object.kind !== "rug").reduce((total, object) => {
+      const box = footprint(object), dx = Math.max(box.left - x, 0, x - box.right), dz = Math.max(box.top - z, 0, z - box.bottom);
+      return total + Math.max(0, 2.1 - Math.hypot(dx, dz)) * 22;
+    }, 0);
+    if (valid && fov <= 100) candidates.push({ position, fov, score: fov + (1 - direction.dot(facing)) * 18 + foregroundPenalty });
   }
   candidates.sort((a, b) => a.score - b.score);
   const best = candidates[0];
