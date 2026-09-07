@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import { activeFrameTiming, isInViewport, shouldReduceQuality } from "@/components/space/frame-timing";
+import { activeFrameTiming, isInViewport, isSoftwareRendererName, shouldReduceQuality } from "@/components/space/frame-timing";
 it("includes the last moving frame but excludes idle time and separate camera clicks", () => {
   const frame = activeFrameTiming();
   expect(frame(100, true)).toBeNull(); expect(frame(116, true)).toBe(16); expect(frame(132, false)).toBe(16);
@@ -20,4 +20,11 @@ it("uses an emergency ceiling and otherwise waits for representative samples", (
   expect(shouldReduceQuality(39, 12, 1)).toBe(true);
   expect(shouldReduceQuality(20, 12, 25)).toBe(true);
   expect(shouldReduceQuality(38, 12, 24)).toBe(false);
+});
+
+it("recognizes known software renderer labels without classifying hardware GPUs", () => {
+  expect(isSoftwareRendererName("ANGLE (Google, Vulkan SwiftShader Device (Subzero))")).toBe(true);
+  expect(isSoftwareRendererName("llvmpipe (LLVM 19.1.7, 256 bits)")).toBe(true);
+  expect(isSoftwareRendererName("Microsoft Basic Software Rasterizer")).toBe(true);
+  expect(isSoftwareRendererName("Apple GPU")).toBe(false);
 });

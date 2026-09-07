@@ -4,7 +4,7 @@ import type { Scene } from "@/core/space/schema";
 import { clearTranslation } from "@/core/space/navigation";
 import { geometryIssues } from "@/core/space/engine";
 import { SpaceAssetCredits } from "./asset-credits";
-import { activeFrameTiming, isInViewport, shouldReduceQuality } from "./frame-timing";
+import { activeFrameTiming, isInViewport, isSoftwareRendererName, shouldReduceQuality } from "./frame-timing";
 import { resourceScope } from "./resource-scope";
 import { roomCameraFit, interiorCameraFit } from "./camera-fit";
 import styles from "./space.module.css";
@@ -26,6 +26,9 @@ export default function RoomView({ scene, locale, selectedId = null, onSelect }:
       const resources = resourceScope(); partialCleanup = resources.dispose; const own = resources.add;
       const abort = new AbortController(); own(() => abort.abort());
       const renderer = new T.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "default" });
+      const debugRenderer = renderer.getContext().getExtension("WEBGL_debug_renderer_info");
+      const rendererName = debugRenderer ? String(renderer.getContext().getParameter(debugRenderer.UNMASKED_RENDERER_WEBGL)) : "";
+      const softwareRenderer = isSoftwareRendererName(rendererName);
       own(() => { renderer.dispose(); renderer.forceContextLoss(); renderer.domElement.remove(); for (const key of ["sceneState", "objectCount", "drawCalls", "triangles", "camera", "motion", "frameP90", "sampledFrames"]) delete container.dataset[key]; });
       const mobile = matchMedia("(pointer: coarse)").matches, reduced = matchMedia("(prefers-reduced-motion: reduce)");
       let pixelRatio = Math.min(devicePixelRatio, mobile ? 1.35 : 1.8), qualityReduced = false;
@@ -164,15 +167,17 @@ export default function RoomView({ scene, locale, selectedId = null, onSelect }:
         }
         // Simultaneous independent sweeps could cross: animate only one movement at a time.
         const visible = isInViewport(container!.getBoundingClientRect(), innerWidth, innerHeight);
-        if (moves.length === 1 && visible) {
+        const softwareSnap = moves.length === 1 && visible && softwareRenderer;
+        if (moves.length === 1 && visible && !softwareRenderer) {
           transition = { moves, start: performance.now(), duration: 650 };
           container!.dataset.motionPolicy = "animated";
         } else {
           transition = null;
           for (const move of moves) { move.group.position.copy(move.to); move.group.rotation.y = move.toRotation; }
-          container!.dataset.motionPolicy = moves.length === 1 ? "offscreen-snap" : "direct";
+          container!.dataset.motionPolicy = moves.length === 1 ? softwareSnap ? "software-snap" : "offscreen-snap" : "direct";
         }
-        contact.update(next, objects, transition?.moves[0]?.group.userData.objectId); committed = true; schedule();
+        contact.update(next, objects, transition?.moves[0]?.group.userData.objectId); committed = true;
+        if (softwareSnap) { if (frame) cancelAnimationFrame(frame); frame = 0; draw(performance.now()); } else schedule();
       }
       const ray = new T.Raycaster(), pointer = new T.Vector2(); let down: { x: number; y: number } | null = null;
       const onDown = (event: PointerEvent) => { down = { x: event.clientX, y: event.clientY }; };

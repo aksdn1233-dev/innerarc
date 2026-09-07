@@ -14,6 +14,10 @@ export function shouldReduceQuality(frameP90Ms: number, sampleCount: number, ren
   return frameP90Ms > 100 || (sampleCount >= 12 && (frameP90Ms > 38 || renderP90Ms > 24));
 }
 
+export function isSoftwareRendererName(name: string) {
+  return /swiftshader|llvmpipe|software rasterizer/i.test(name);
+}
+
 /** Animating a canvas that is completely outside the viewport wastes battery and
  * browsers intentionally throttle its animation frames. Partially visible rooms
  * still animate so a user can keep the scene and controls in view together. */
