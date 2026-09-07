@@ -52,7 +52,9 @@ test("Ultra Preview exposes its real render profile", async ({ page }) => {
   expect(await view.locator("canvas").evaluate(canvas => (canvas as HTMLCanvasElement).width / canvas.getBoundingClientRect().width)).toBeGreaterThanOrEqual(1.49);
   await page.getByRole("button", { name: "Recommended", exact: true }).click();
   await expect(page.getByRole("button", { name: "Recommended", exact: true })).toHaveAttribute("aria-pressed", "true");
-  await expect(view.locator("..")).toHaveScreenshot("ultra-preview.png", { animations: "disabled", threshold: .10, maxDiffPixelRatio: .01 });
+  // Ultra deliberately renders at a higher internal resolution. Allow a constrained
+  // CI software renderer to finish the same pixel comparison without weakening it.
+  await expect(view.locator("..")).toHaveScreenshot("ultra-preview.png", { animations: "disabled", threshold: .10, maxDiffPixelRatio: .01, timeout: 15000 });
 });
 
 test("lightweight tier stays within the active-frame budget", async ({ page }, testInfo) => {
