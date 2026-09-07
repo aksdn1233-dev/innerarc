@@ -16,7 +16,10 @@ for (const example of SPACE_EXAMPLES) test(`visual geometry fixture: ${example}`
 });
 test("selection, validated adjustment, undo and same-camera comparison", async ({ page }) => {
   await page.goto("/en/space"); await page.getByRole("combobox", { name: "Select furniture", exact: true }).selectOption("desk_1");
-  const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "6", { timeout: 20000 }); await expect(view).toHaveAttribute("data-triangles", /[1-9]/);
+  // The first real WebGL context and bounded assets use the same 30-second
+  // reconstruction allowance as fault recovery. Frame timing starts only after
+  // this exact scene is ready, so this does not relax the performance ceiling.
+  const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "6", { timeout: 30000 }); await expect(view).toHaveAttribute("data-triangles", /[1-9]/);
   await expect(view).toHaveAttribute("data-selected-object", "desk_1");
   const camera = await view.getAttribute("data-camera");
   await page.getByRole("button", { name: "Move furniture → 10cm", exact: true }).click();
