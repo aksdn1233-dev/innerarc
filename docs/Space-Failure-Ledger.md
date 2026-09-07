@@ -98,3 +98,12 @@ The warmed comparison capture also re-analyzes after manual edits: edits intenti
 - Cause: the unchanged shop interaction relied on actionability while the full parallel suite was loaded; the new larger drawing buffer made stable interior capture exceed a timeout chosen for the former resolution.
 - Correction: dispatch the real shop button click directly and verify its three results within a bounded ten seconds; allow only the two high-resolution interior screenshots fifteen seconds without changing their pixel tolerance, geometry, quality tier or performance ceiling.
 - Recurrence test: run the shop case on desktop/mobile and both interior captures locally, then require a fresh four-job Node 24 run with no retry-pass cases from these checks.
+
+## 2026-09-08 — visible controls were exercised before stable client interaction
+
+- Trigger: follow-up run 34145292609 removed the high-resolution capture retries, but one shop recommendation and one iPhone space confirmation still passed only on retry.
+- Cause: a native shop click could fire after server HTML appeared but before React attached its submit handler. The iPhone checkbox action separately depended on Playwright's moving-element actionability while the responsive layout settled.
+- Correction: expose the shop form's hydration state and keep its submit button disabled until the handler is attached, then use an ordinary user click; dispatch each space checkbox's native click and assert its controlled checked state before analysis.
+- Recurrence test: repeat the shop case in desktop/mobile and the complete iPhone space flow three times without retries, then require a fresh four-job Node 24 run with zero retry-pass cases.
+
+The first local hydration-marker repeat accidentally reused the prior production build, so all six checks correctly reported that the new marker was absent. Rebuild the production bundle after client-source changes before using the production-server E2E wrapper; the rebuilt repeat is the only acceptance evidence.

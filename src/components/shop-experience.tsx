@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, type FormEvent } from "react";
+import { useState, useSyncExternalStore, type FormEvent } from "react";
 import { currentMaxBirthDate, MIN_BIRTH_DATE } from "@/core/birth-range";
 import { createShopPreview } from "@/core/lifestyle";
 import {
@@ -20,6 +20,7 @@ import type { ShopCopy } from "@/i18n/shop-copy";
 import "./shop-refresh.css";
 
 export function ShopExperience({ locale, copy }: { locale: Locale; copy: ShopCopy }) {
+  const hydrated = useSyncExternalStore(() => () => {}, () => true, () => false);
   const preview = createShopPreview(locale);
   const otherLocale = locale === "ko" ? "en" : "ko";
   const [mode, setMode] = useState<"saju" | "numerology">("saju");
@@ -131,7 +132,7 @@ export function ShopExperience({ locale, copy }: { locale: Locale; copy: ShopCop
             <p>{copy.intro}</p>
             <span className="shop-status" role="status">{copy.status}</span>
           </div>
-          <form className="shop-birth-recommender" onSubmit={submitBirthRecommendation}>
+          <form className="shop-birth-recommender" data-ready={hydrated} onSubmit={submitBirthRecommendation}>
             <p className="eyebrow">{copy.recommendationEyebrow}</p>
             <h2>{copy.recommendationTitle}</h2>
             <p>{copy.recommendationIntro}</p>
@@ -149,7 +150,7 @@ export function ShopExperience({ locale, copy }: { locale: Locale; copy: ShopCop
                 aria-describedby="shop-birth-privacy shop-birth-error"
                 required
               />
-              <button type="submit">{copy.recommendationSubmit}</button>
+              <button type="submit" disabled={!hydrated}>{copy.recommendationSubmit}</button>
             </div>
             <small id="shop-birth-privacy">{copy.recommendationPrivacy}</small>
             <span id="shop-birth-error" className="shop-birth-error" role="alert">{birthRecommendationError}</span>

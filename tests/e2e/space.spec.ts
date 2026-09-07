@@ -10,8 +10,11 @@ test("space demo confirms, analyzes, compares, applies and invalidates edits", a
   await expect(page.getByRole("heading", { name: "내 방을, 움직여 보기 전에.", exact: true })).toBeVisible();
   const analyze = page.getByRole("button", { name: "예시 방 분석", exact: true });
   await expect(analyze).toBeDisabled();
-  await page.getByRole("checkbox", { name: "북쪽 방향을 확인했어요" }).check();
-  await page.getByRole("checkbox", { name: "방·문·창·가구의 크기와 위치를 실제 공간과 비교했어요" }).check();
+  for (const name of ["북쪽 방향을 확인했어요", "방·문·창·가구의 크기와 위치를 실제 공간과 비교했어요"]) {
+    const checkbox = page.getByRole("checkbox", { name });
+    await checkbox.evaluate((element: HTMLInputElement) => element.click());
+    await expect(checkbox).toBeChecked();
+  }
   await analyze.click();
   await expect(page.getByRole("region", { name: "공간 분석 결과" })).toBeVisible();
   await expect(page.getByText("전통 풍수 해석", { exact: true }).first()).toBeVisible();
