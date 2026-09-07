@@ -275,6 +275,7 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Mobile share coverage now opens the disclosure control directly and verifies its `open` state before checking the card, removing a load-sensitive text-click race while keeping the privacy assertion intact.
 - [x] Remote run 34158372056 exposed a whole-test timeout only after the real WebGL state flow reached its final invalidation check under four-worker contention; that integration case now has an explicit slow-test budget while every product assertion and the dedicated 3D frame ceiling stay unchanged.
 - [x] Follow-up run 34159488010 made the full browser flow clean but exposed a 20-second initial desktop scene-readiness retry; the exact six-object readiness wait now matches the existing 30-second full reconstruction allowance and still starts the unchanged performance clock only after readiness.
+- [x] Run 34160365698 revealed that the first timeout edit hit a similar earlier assertion instead of the lightweight benchmark; the comparison bound is restored and the named performance case now carries the intended 30-second readiness allowance with a line-level diff check.
 - [ ] Owner visual acceptance and existing PR #22 hosted/physical-device gates remain required before production release.
 
 ## 2026-09-08 Space capture and premium presentation hardening
