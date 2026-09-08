@@ -312,3 +312,4 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Verify keyboard tabs, mobile/desktop behavior, local seen-state privacy and five-width visual snapshots.
 - [x] Preserve all existing calculation, payment, authentication, report, Space and Reality Check behavior.
 - [x] Keep full calculation and long mobile journey suites sequential with the media-heavy visual matrix; a local parallel run exhausted the shared CPU and produced timeout-only failures, while the unchanged suites passed alone (1,039/1,039 unit and 1/1 mobile journey).
+- [x] The full accessibility gate caught 3.07:1 contrast on inactive walkthrough step numbers; the route-scoped override now keeps those small labels at AA contrast in Korean and English on desktop and mobile.
