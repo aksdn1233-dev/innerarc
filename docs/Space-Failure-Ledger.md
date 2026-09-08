@@ -182,3 +182,10 @@ Run 34160365698 repeated that retry because the first timeout edit matched an ea
 - **Cause:** the Home case performs twenty real production navigations inside a 90-second budget while four workers compete. The recovery case ran after the same WebKit process had created many short-lived high-resolution WebGL contexts.
 - **Fix:** the multi-width Home case uses Playwright's documented slow-test allowance without dropping a width or assertion. Material recovery runs before the fixture gallery, while its 30-second recovery bound and exact one-canvas assertion stay unchanged.
 - **Prevention:** require a fresh four-job Node 24 run with zero flaky or retry-pass cases before reporting remote completion.
+
+### 2026-09-08 — the native-share regression exhausted its aggregate mobile budget
+
+- **Symptom:** Node 24 run 34211020651 completed every dedicated Space job without retries, but the general mobile native-share case passed on retry after its first attempt spent the full 90-second test budget waiting for the privacy-safe result card.
+- **Cause:** this case opens the complete profile flow and creates the real 1080×1350 PNG before exercising the native file-sharing boundary. Late in the four-worker production matrix, its aggregate setup and raster work can exceed the default budget even though the share payload and duplicate-click lock remain correct.
+- **Fix:** mark only this end-to-end raster/share case as slow. Its real profile navigation, PNG signature, one-file envelope, duplicate-click assertion and privacy-safe payload checks remain unchanged.
+- **Prevention:** repeat the native-share case under parallel mobile workers, then require another four-job Node 24 run with zero flaky or retry-pass cases.

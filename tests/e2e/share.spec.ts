@@ -56,6 +56,7 @@ test("local PNG and SVG downloads are portable and side-effect free", async ({ p
 });
 
 test("native sharing receives one generic PNG and duplicate clicks are locked", async ({ page }) => {
+  test.slow();
   await page.addInitScript(() => {
     Object.defineProperty(navigator, "canShare", {
       configurable: true,
