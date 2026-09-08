@@ -29,12 +29,13 @@ Clean starting SHA above. Fresh baseline: 113 unit files, 1,035 tests, Next buil
 11. Three lint warnings and misleading fixed-birth-range / Worker-name documentation.
 12. Compass text could fall to 3.92:1 contrast because its background was translucent.
 13. Remote WebKit exposed a confirmation click failure: loading text moved the form, and checkbox updaters deferred reading mutable DOM state.
+14. Queued result focus could interrupt a new edit; smooth result scrolling competed with mobile input. Two general-suite flakes exposed the remaining gap.
 
 A dev-only hydration experiment was stopped because Next dev blocked cross-origin dev resources. Production checks were used; CSP stayed intact. See the failure ledger for causes and regression coverage.
 
 ## 5. EVERY ISSUE FIXED
 
-Immediate implicit scrolling; grouped mobile trust phrases; real pointer checks; disabled SSR fieldsets until hydration with bilingual no-JavaScript guidance; speech lifecycle/error guards; named guide fallback; numbered world-position marker with explicit camera update and displayed-scene coordinates; opaque, high-contrast compass; explanation below canvas; minimum 1× lightweight render density; image-ready captures; failing CI on flakes; warning cleanup; phrase-grouped mobile hero note and readable 12px image provenance. The 3D loader now occupies reserved canvas space, and confirmation handlers snapshot the click value before scheduling state updates. Fixed range policy and deterministic engines remain unchanged.
+Immediate implicit scrolling; grouped mobile trust phrases; real pointer checks; disabled SSR fieldsets until hydration with bilingual no-JavaScript guidance; speech lifecycle/error guards; named guide fallback; numbered world-position marker with explicit camera update and displayed-scene coordinates; opaque, high-contrast compass; explanation below canvas; minimum 1× lightweight render density; image-ready captures; failing CI on flakes; warning cleanup; phrase-grouped mobile hero note and readable 12px image provenance. Delayed result focus now yields to new input and return navigation, and form results scroll immediately. The 3D loader now occupies reserved canvas space, and confirmation handlers snapshot the click value before scheduling state updates. Fixed range policy and deterministic engines remain unchanged.
 
 ## 6. DESIGN CHANGES
 
@@ -106,7 +107,7 @@ Not performed: no physical test devices available to this task. Browser emulatio
 
 ## 23. EXACT TEST COUNTS
 
-- Node **24.19.0**: lint 0 errors / 0 warnings, typecheck passed, **113 files / 1,035 unit tests passed**. Next production build emitted **134 routes**; actual Cloudflare/vinext deployment build passed.
+- Node **24.19.0**: lint 0 errors / 0 warnings, typecheck passed, **114 files / 1,039 unit tests passed**. Next production build emitted **134 routes**; actual Cloudflare/vinext deployment build passed.
 - General browser suite: **238 passed / 1 failed / 9 skipped / 0 retries**. The one failure found real compass contrast and was fixed; the exact affected gate is rerun below rather than rewriting this run as green.
 - Full three-engine Space matrix: **81 passed / 1 failed / 20 duplicate skips / 0 retries**. The failure was integer-vs-fractional pixel measurement; corrected isolated performance rerun: **3/3 passed**.
 - Subsequent changed-scope three-engine/5-width gate: **34 passed / 20 duplicate skips / 0 retries** (speech, world-coordinate consistency, forms, Before/After, home and success/Reality Check captures).
@@ -115,6 +116,8 @@ Not performed: no physical test devices available to this task. Browser emulatio
 - Final correction reruns: **40 visual/interaction checks passed / 20 duplicate skips**, **6 accessibility checks passed**, **0 retries / 0 failures**. All 114 screenshots were refreshed. These validate the compass and phrase-wrapping fixes after the failed general run. Remote PR status is linked in the final PR handoff, independently from these local results.
 
 - Follow-up after remote run `34241014728`: **27/27 three-engine Space input tests + 10/10 repeated iPhone checks passed**, without retries. A delayed-material test verifies less than one pixel of form movement and repeated real pointer checks. Lint, typecheck, Next and Cloudflare builds passed again. The old remote run passed general/desktop/Android gates but correctly failed one flaky iPhone check; final-head CI is reported separately in the PR.
+
+- Run `34243058630` passed all **85 Space checks / 20 duplicate skips / 0 retries**, but correctly failed two mobile general-suite flakes (239 other tests passed, 9 skipped). A subsequent focus/scroll correction and four deterministic regression cases address the discovered input race; the corrected two flows passed **20/20 repeated desktop/mobile checks** without retries. Lint, types, all 1,039 units and both production build targets passed. Final-head CI counts are linked in the PR handoff.
 
 ## 24. SCREENSHOT LOCATIONS
 
@@ -190,7 +193,7 @@ V2 only: AR, LiDAR, full-home scanning. Not implemented here.
 
 ## Changed implementation files
 
-- `src/components/hydration-gate.tsx`; profile/onboarding, Saju and celebrity forms.
+- `src/components/hydration-gate.tsx`, `src/components/accessibility.ts`; profile/onboarding, Saju and celebrity forms; four focus regression tests.
 - `src/components/space/{room-view,guide-narration,workbench}.tsx`, `space.module.css`, `src/core/space/narration.ts`.
 - `src/components/taeryeong-landing.tsx`, `src/app/{globals,taeryeong-landing}.css`; intentional-video-poster lint annotations.
 - `src/core/birth-range.ts`, `vite.config.ts`: documentation/warning cleanup only; policy values and Worker configuration preserved.

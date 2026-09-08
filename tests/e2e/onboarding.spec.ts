@@ -522,20 +522,22 @@ test("Reality Check preserves a choice and reviews personal relevance without de
 
   await page.getByRole("button", { name: "Review outcome" }).click();
   await page.locator("#reality-outcome").fill("The conversation clarified a mismatch in timing.");
+  await expect(page.locator("#reality-outcome")).toHaveValue("The conversation clarified a mismatch in timing.");
   const fit = page.locator('input[name="fit"][value="mostly_relevant"]');
-  await fit.evaluate((element: HTMLInputElement) => element.click());
+  await fit.check();
   await expect(fit).toBeChecked();
   await page.locator("#reality-learning").fill("Ask about timing earlier next time.");
+  await expect(page.locator("#reality-learning")).toHaveValue("Ask about timing earlier next time.");
   const saveOutcome = page.getByRole("button", { name: "Save outcome" });
   await expect(saveOutcome).toBeVisible();
-  await saveOutcome.evaluate((element: HTMLButtonElement) => element.click());
+  await saveOutcome.click();
 
   await expect(page.locator(".reality-record")).toContainText("Outcome reviewed", { timeout: 15_000 });
   await expect(page.locator(".pattern-report")).toContainText("1");
   await expect(page.locator(".pattern-report")).toContainText("not enough reviewed outcomes");
   await expect(page.locator("main")).not.toContainText("prediction accuracy");
 
-  await page.locator(".storage-card input[type='checkbox']").check({ force: true });
+  await page.locator(".storage-card input[type='checkbox']").check();
   const persistedReview = await page.evaluate(() => {
     const payload = JSON.parse(localStorage.getItem("innerarc:reality-check:v1")!);
     return {
