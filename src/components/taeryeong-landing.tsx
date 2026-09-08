@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import { captureConversionEvent } from "@/core/analytics";
 import type { Locale } from "@/i18n/config";
 
@@ -10,10 +11,15 @@ type Props = {
   reviewCount: number | null;
 };
 
+const GUIDE_SEEN_KEY = "gyeol.guide.seen.v1";
+const GUIDE_SCREENS = ["questions", "intake", "free-result", "report"] as const;
+const GUIDE_FRAME = { width: 780, height: 1062 } as const;
+
 const content = {
   ko: {
     navLabel: "태령당 주요 메뉴",
     services: "서비스",
+    guide: "처음 안내",
     analysis: "나 알아보기",
     success: "성공 비교",
     relationship: "관계 보기",
@@ -28,6 +34,18 @@ const content = {
     heroSecondary: "내 방 분석하기",
     heroNote: "무료로 시작 · 계산 과정 확인 · 나중에 다시 보기",
     heroArtNote: "브랜드 연출 이미지 · 생성형 이미지",
+    guideCue: "처음이세요? 1분 안내 보기",
+    guideEyebrow: "처음 오셨다면",
+    guideTitle: "결과를 보는 방법부터 알려드릴게요.",
+    guideBody: "실제 화면을 보면서 네 단계만 따라오면 돼요.",
+    guideScreenLabel: "실제 이용 화면",
+    guideSteps: [
+      ["질문 고르기", "지금 궁금한 것을 고릅니다", "관계, 일, 돈, 나 자신 중에서 하나를 골라요."],
+      ["생년월일 넣기", "생년월일을 넣습니다", "회원가입 없이 기본 결과를 볼 수 있어요."],
+      ["무료 결과 보기", "내 기본 패턴을 확인합니다", "결과와 계산 과정을 함께 보여드려요."],
+      ["더 자세히 보기", "필요할 때 상세 리딩을 고릅니다", "가격과 내용을 확인한 뒤 선택할 수 있어요."],
+    ],
+    guideAction: "기능 골라보기",
     readEyebrow: "바로 시작하기",
     readTitle: <>궁금한 것부터<br />골라보세요.</>,
     readBody: "나, 성공, 관계, 공간 중에서 지금 궁금한 것을 선택하면 돼요.",
@@ -81,11 +99,23 @@ const content = {
   },
   en: {
     navLabel: "Taeryeongdang main navigation",
-    services: "Services", analysis: "Pattern analysis", success: "Success patterns", relationship: "Relationships", space: "3D Space", reviews: "Reviews", login: "Purchases", start: "Start now",
+    services: "Services", guide: "First visit", analysis: "Pattern analysis", success: "Success patterns", relationship: "Relationships", space: "3D Space", reviews: "Reviews", login: "Purchases", start: "Start now",
     kicker: "People, relationships, spaces, and lived experience",
     title: <>There may be a reason<br />the same patterns<br /><em>keep returning.</em></>,
     heroBody: "Taeryeongdang connects symbolic traditions, deterministic calculations, and what you record from real life.",
     heroPrimary: "See my patterns", heroSecondary: "Meet Taeryeongdang", heroNote: "Free foundation · Visible calculations · Reality-checked", heroArtNote: "Brand scene · generated image",
+    guideCue: "New here? See the one-minute guide",
+    guideEyebrow: "FIRST VISIT",
+    guideTitle: "See how a result works before you begin.",
+    guideBody: "Follow four short steps using the real product screens.",
+    guideScreenLabel: "ACTUAL PRODUCT SCREEN",
+    guideSteps: [
+      ["Choose a question", "Choose what is on your mind", "Start with relationships, work, money, or yourself."],
+      ["Add a birth date", "Enter your birth date", "See the basic result without creating an account."],
+      ["Read the free result", "See your basic pattern", "The result and calculation are shown together."],
+      ["Go deeper if needed", "Choose a detailed reading only if needed", "Review the contents and price before deciding."],
+    ],
+    guideAction: "Choose a feature",
     readEyebrow: "WHAT WE READ", readTitle: <>One birth date,<br />connected across real life.</>, readBody: "Rather than scatter unrelated answers, we trace the choices one person repeats across different settings.", sajuHub: "Open Four Pillars services", freePattern: "View free pattern",
     pillars: [
       ["01", "Read yourself.", "Saju · numerology · tarot", "Calculated evidence and symbolic interpretation stay distinct.", "/en/numerology"],
@@ -115,6 +145,59 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
     : t.reviews;
 
   const track = () => captureConversionEvent("primary_cta_click", locale, { location: "hero" });
+  const [showGuideCue, setShowGuideCue] = useState(false);
+  const [guideStep, setGuideStep] = useState(0);
+  const [guideReady, setGuideReady] = useState(false);
+  const [guideVisible, setGuideVisible] = useState(false);
+  const guideRef = useRef<HTMLElement>(null);
+  const guideTabsRef = useRef<HTMLDivElement>(null);
+  const guideStageRef = useRef<HTMLDivElement>(null);
+  const guideClipRefs = useRef<(HTMLVideoElement | null)[]>([]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      try { setShowGuideCue(window.localStorage.getItem(GUIDE_SEEN_KEY) !== "1"); }
+      catch { setShowGuideCue(true); }
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const guide = guideRef.current;
+    const stage = guideStageRef.current;
+    if (!guide || !stage) return;
+    const seenObserver = new IntersectionObserver(([entry]) => {
+      if (!entry?.isIntersecting) return;
+      try { window.localStorage.setItem(GUIDE_SEEN_KEY, "1"); } catch { /* show again next visit */ }
+    }, { threshold: 0.35 });
+    const stageObserver = new IntersectionObserver(([entry]) => {
+      if (!entry) return;
+      setGuideVisible(entry.isIntersecting);
+      if (entry.isIntersecting) setGuideReady(true);
+    }, { threshold: 0.05 });
+    seenObserver.observe(guide);
+    stageObserver.observe(stage);
+    return () => { seenObserver.disconnect(); stageObserver.disconnect(); };
+  }, []);
+
+  useEffect(() => {
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    guideTabsRef.current?.style.setProperty("--guide-progress", "0");
+    guideClipRefs.current.forEach((clip, index) => {
+      if (!clip) return;
+      if (still || !guideReady || !guideVisible || index !== guideStep) {
+        clip.pause();
+        return;
+      }
+      clip.currentTime = 0;
+      void clip.play().catch(() => { /* poster remains visible */ });
+    });
+  }, [guideReady, guideStep, guideVisible]);
+
+  function openGuide() {
+    try { window.localStorage.setItem(GUIDE_SEEN_KEY, "1"); } catch { /* non-blocking */ }
+    document.getElementById("guide")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 
   return <main className="td2" id="main-content" tabIndex={-1}>
     <header className="td2-nav-shell">
@@ -122,7 +205,7 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
         <strong>태령당</strong><small>TAERYEONGDANG</small>
       </Link>
       <nav className="td2-nav" aria-label={t.navLabel}>
-        <a href="#services">{t.services}</a>
+        <a href="#guide">{t.guide}</a>
         <Link href={`/${locale}/numerology`}>{t.analysis}</Link>
         <Link href={`/${locale}/celebrity`}>{t.success}</Link>
         <Link href={`/${locale}/relationship`}>{t.relationship}</Link>
@@ -148,9 +231,79 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
           <Link className="td2-secondary" href={`/${locale}/space`} prefetch={false}>{t.heroSecondary}<Arrow /></Link>
         </div>
         <p className="td2-note">{t.heroNote.split(" · ").map((part, index) => <span key={part}>{index > 0 ? " · " : ""}{part}</span>)}</p>
+        {showGuideCue && <button className="td2-guide-cue" onClick={openGuide} type="button">{t.guideCue}<Arrow /></button>}
       </div>
       <div className="td2-hero-signature" aria-hidden="true"><span>태</span><span>령</span><span>당</span></div>
       <small className="td2-hero-art-note">{t.heroArtNote}</small>
+    </section>
+
+    <section className="td2-walkthrough" id="guide" aria-labelledby="td2-guide-title" ref={guideRef}>
+      <header>
+        <p className="td2-eyebrow">{t.guideEyebrow}</p>
+        <h2 id="td2-guide-title">{t.guideTitle}</h2>
+        <p>{t.guideBody}</p>
+      </header>
+      <div className="guide-walk">
+        <div
+          className="guide-steps-tabs"
+          role="tablist"
+          aria-label={t.guideTitle}
+          ref={guideTabsRef}
+          onKeyDown={(event) => {
+            const delta = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+            if (!delta) return;
+            event.preventDefault();
+            const next = (guideStep + delta + GUIDE_SCREENS.length) % GUIDE_SCREENS.length;
+            setGuideReady(true);
+            setGuideStep(next);
+            guideTabsRef.current?.querySelectorAll("button")[next]?.focus();
+          }}
+        >
+          {t.guideSteps.map(([label], index) => <button
+            aria-controls="td2-guide-stage"
+            aria-selected={guideStep === index}
+            className={guideStep === index ? "is-current" : undefined}
+            id={`td2-guide-tab-${index}`}
+            key={label}
+            onClick={() => { setGuideReady(true); setGuideStep(index); }}
+            onFocus={() => setGuideReady(true)}
+            role="tab"
+            tabIndex={guideStep === index ? 0 : -1}
+            type="button"
+          ><small aria-hidden="true">{String(index + 1).padStart(2, "0")}</small><span>{label}</span></button>)}
+        </div>
+        <p className="guide-stage-eyebrow">{t.guideScreenLabel}</p>
+        <div
+          aria-labelledby={`td2-guide-tab-${guideStep}`}
+          className="guide-walk-body"
+          id="td2-guide-stage"
+          role="tabpanel"
+          tabIndex={0}
+        >
+          <div className="guide-stage-title"><strong>{t.guideSteps[guideStep]![1]}</strong><span>{t.guideSteps[guideStep]![2]}</span></div>
+          <div className="guide-stage" ref={guideStageRef}>
+            {GUIDE_SCREENS.map((screen, index) => <video
+              aria-label={t.guideSteps[index]![1]}
+              className="guide-stage-clip"
+              hidden={guideStep !== index}
+              key={screen}
+              muted
+              playsInline
+              poster={guideReady ? `/images/guide/${screen}.jpg` : undefined}
+              preload={guideReady && (index === guideStep || index === (guideStep + 1) % GUIDE_SCREENS.length) ? "auto" : "none"}
+              onEnded={() => setGuideStep((step) => (step + 1) % GUIDE_SCREENS.length)}
+              onTimeUpdate={(event) => {
+                if (index !== guideStep) return;
+                const { currentTime, duration } = event.currentTarget;
+                guideTabsRef.current?.style.setProperty("--guide-progress", duration ? String(currentTime / duration) : "0");
+              }}
+              ref={(node) => { guideClipRefs.current[index] = node; }}
+              style={{ aspectRatio: `${GUIDE_FRAME.width} / ${GUIDE_FRAME.height}` }}
+            ><source src={`/images/guide/${screen}.mp4`} type="video/mp4" /></video>)}
+          </div>
+        </div>
+      </div>
+      <button className="journey-guide-action" onClick={() => document.getElementById("services")?.scrollIntoView({ behavior: "smooth" })} type="button">{t.guideAction}<Arrow /></button>
     </section>
 
     <section className="td2-section td2-reading-map" id="services" aria-labelledby="td2-services-title">

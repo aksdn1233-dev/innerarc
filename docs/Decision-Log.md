@@ -1630,3 +1630,13 @@
 - Decision: Preserve the six canonical guide identities and add native 2.5D assets only for roles used in a shipped flow. 윤도 is attached to a validated Space recommendation/object ID; 사현 presents sourced success evidence. Device speech is user-initiated, locally synthesized and caption-backed, with no provider call or automatic audio.
 - Economics: No catalog, payment, entitlement or fulfillment change. Public-figure analysis and narration cost zero per run. The local font and two image assets add transfer bytes only; route-level lazy loading is required and monitored.
 - Safety and reversal: Public career records do not establish causality. Context-specific actions are labelled as such. Remove the new story panels and guide props to roll back; the legacy comparison, Space renderer, calculations and handoff storage version remain readable.
+
+## D-090 - Restore the real-screen first-visit walkthrough on the editorial home
+
+- Date: 2026-09-09
+- Decision: Restore the previously completed four-step walkthrough to the current editorial home instead of replacing it with another description-card system. A first-visit cue leads to real recorded product screens for choosing a question, entering a birth date, reading the free result and reviewing a detailed reading. The guide remains reachable from the main navigation after the cue has been seen.
+- Demand and distribution: The owner explicitly reported that new visitors could not tell which features existed and identified the earlier NAVER-referenced walkthrough as the intended implementation. Distribution is the existing public home only. This is direct owner demand evidence; no conversion, retention or efficacy claim is inferred.
+- Economics and costs: No price, checkout, provider or fulfillment change. Existing 780×1062 clips load only when the guide reaches the viewport, current plus next clip only, so the media does not enter the initial page payload. There is no model or token cost.
+- Privacy, safety and claims: The seen marker is one local boolean and contains no identity, birth input or behavior history. Recordings use scripted fixture screens, not customer data. Existing symbolic-tool and no-guaranteed-outcome boundaries remain unchanged.
+- Success, guardrails and reversal: Require a one-time first-visit cue, permanent navigation access, keyboard tabs, reduced-motion posters, no video upscaling above 780 CSS pixels, no mobile overflow, green five-width visual evidence and unchanged payment/calculation regressions. Revert the walkthrough component block and route-scoped CSS to return to the prior editorial home; no migration or stored user record is involved.
+- Status: Owner-authorized for production deployment.
