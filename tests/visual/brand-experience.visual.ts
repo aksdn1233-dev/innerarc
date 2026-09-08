@@ -29,7 +29,7 @@ test.describe("Taeryeong editorial brand evidence", () => {
       await page.goto("/ko", { waitUntil: "networkidle" });
 
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
-      await expect(page.getByRole("heading", { level: 1, name: "당신에게 반복되는 패턴에는 이유가 있을지도 모릅니다." })).toBeVisible();
+      await expect(page.getByRole("heading", { level: 1, name: "나와 내 삶을 조금 더 쉽게 알아보세요." })).toBeVisible();
       await capture(page, ".td2-hero", `brand-${width}-hero.png`);
       await capture(page, ".td2-reading-map", `brand-${width}-services.png`);
       await capture(page, ".td2-product-section", `brand-${width}-personal.png`);

@@ -182,7 +182,7 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
     <div className={styles.layout}>
       <div>
         <section className={styles.panel}>
-          <div className={styles.actions}><span className={styles.badge}>{source === "example" ? words("직접 고치는 예시 방", "Editable example room") : source === "photo" ? words("사진에서 읽은 초안", "Draft from photos") : source === "saved" ? words("저장된 방", "Saved room") : words("직접 입력한 방", "Manually entered room")}</span>
+          <div className={styles.actions}><span className={styles.badge}>{source === "example" ? words("연습용 방", "Example room") : source === "photo" ? words("사진으로 만든 방", "Room from photos") : source === "saved" ? words("저장한 방", "Saved room") : words("직접 만든 방", "Manual room")}</span>
             {analysis && <div className={styles.compareSwitch} aria-label={words("현재와 추천 배치 비교", "Compare current and suggested layouts")}><button aria-pressed={!compare} onClick={() => setCompare(false)}>{words("현재 배치", "Current layout")}</button><span aria-hidden="true">↔</span><button aria-pressed={compare} onClick={() => setCompare(true)}>{words("추천 배치", "Suggested layout")}</button></div>}
           </div>
           {analysis && <div className={styles.comparisonSummary} data-comparison-mode={compare ? "recommended" : "current"}>

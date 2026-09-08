@@ -12,19 +12,19 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await page.goto("/ko");
   await expect(page.getByRole("heading", {
     level: 1,
-    name: "당신에게 반복되는 패턴에는 이유가 있을지도 모릅니다.",
+    name: "나와 내 삶을 조금 더 쉽게 알아보세요.",
   })).toBeVisible();
-  await expect(page.getByRole("link", { name: /내 패턴 확인하기/ })).toBeVisible();
-  await expect(page.getByRole("link", { name: /태령당 알아보기/ })).toBeVisible();
+  await expect(page.locator(".td2-hero").getByRole("link", { name: /무료로 나 알아보기/ })).toBeVisible();
+  await expect(page.locator(".td2-hero").getByRole("link", { name: /내 방 분석하기/ })).toBeVisible();
   await expect(page.locator("#onboarding")).toHaveCount(0);
   expect(await page.locator("#services .td2-pillar").count()).toBeGreaterThanOrEqual(4);
   await expect(page.locator(".td2-report-preview")).toContainText("계산 · 상징 · 현실");
   await expect(page.locator(".td2-success-canvas")).toContainText("출처가 있는 실제 경력 사건");
-  await expect(page.locator(".td2-reality")).toContainText("맞지 않은 결과도");
+  await expect(page.locator(".td2-reality")).toContainText("한 달 뒤에 돌아와");
   await expect(page.locator(".td2-footer")).toContainText("사업자등록번호");
-  await expect(page.locator('.td2-nav a:has-text("서비스 소개")')).toHaveAttribute("href", "#services");
+  await expect(page.locator('.td2-nav a:has-text("서비스")')).toHaveAttribute("href", "#services");
   await expect(page.locator('.td2-nav a:has-text("이용 후기")')).toHaveAttribute("href", "/ko/reading#evidence");
-  await page.getByRole("link", { name: /내 패턴 확인하기/ }).click();
+  await page.locator(".td2-hero").getByRole("link", { name: /무료로 나 알아보기/ }).click();
   await page.waitForURL("**/ko/numerology");
 
   await page.goto("/ko/reading");
@@ -72,8 +72,8 @@ test("mobile home has no overflow and preserves the selling page behavior", asyn
   for (const width of [320, 360, 375, 390, 430]) {
     await page.setViewportSize({ width, height: 844 });
     await page.goto("/ko");
-    await expect(page.getByRole("heading", { level: 1, name: "당신에게 반복되는 패턴에는 이유가 있을지도 모릅니다." })).toBeVisible();
-    await expect(page.getByRole("link", { name: /내 패턴 확인하기/ })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: "나와 내 삶을 조금 더 쉽게 알아보세요." })).toBeVisible();
+    await expect(page.locator(".td2-hero").getByRole("link", { name: /무료로 나 알아보기/ })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
     await expect(page.locator(".mobile-purchase-bar")).toHaveCount(0);
     await expect(page.locator(".td2-report-preview")).toHaveCount(1);
@@ -682,7 +682,7 @@ test("privacy, terms, and support publish contacts while disclosing unresolved l
 
 test("the whole funnel connects: home, free result, paid teaser, intake", async ({ page }) => {
   await page.goto("/ko");
-  await page.getByRole("link", { name: /내 패턴 확인하기/ }).click();
+  await page.locator(".td2-hero").getByRole("link", { name: /무료로 나 알아보기/ }).click();
   await page.waitForURL("**/ko/numerology");
   await page.locator("#birthDate").fill("1994-11-04");
   await page.locator('input[name="privacyRequired"]').check();
@@ -700,8 +700,8 @@ test("editorial home shows real product evidence and clear claim boundaries", as
   await page.goto("/ko");
   await expect(page.locator(".td2-room-comparison img")).toHaveCount(2);
   await expect(page.locator(".td2-room-comparison img").first()).toHaveAttribute("alt", /현재 배치/);
-  await expect(page.locator(".td2-space-copy")).toContainText("사진 2~6장 찍기");
-  await expect(page.locator(".td2-space-copy")).toContainText("북쪽 방향 알려주기");
-  await expect(page.locator(".td2-space-copy")).toContainText("추천 배치 비교하기");
+  await expect(page.locator(".td2-space-copy")).toContainText("방 사진 찍기");
+  await expect(page.locator(".td2-space-copy")).toContainText("북쪽 알려주기");
+  await expect(page.locator(".td2-space-copy")).toContainText("바꾼 모습 보기");
   await expect(page.locator(".td2-footer-boundary")).toContainText("과학적 예측, 진단, 치료 또는 결과 보장이 아닙니다");
 });
