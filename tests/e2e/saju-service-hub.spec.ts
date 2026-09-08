@@ -6,8 +6,11 @@ const krw = (value: number) => value.toLocaleString("en-US");
 
 test("main and free-pattern screens route to the separate Saju service hub", async ({ page }) => {
   await page.goto("/ko");
-  await expect(page.getByRole("link", { name: "사주 서비스로 이동" })).toHaveAttribute("href", "/ko/fortune");
-  await expect(page.getByRole("link", { name: "무료 패턴 보기" })).toHaveAttribute("href", "/ko/numerology");
+  await expect(page.getByRole("link", { name: "사주 보기" })).toHaveAttribute("href", "/ko/fortune");
+  await expect(page.locator(".td2-nav").getByRole("link", { name: "나 알아보기", exact: true })).toHaveAttribute(
+    "href",
+    "/ko/numerology",
+  );
   await expect(page.getByRole("button", { name: "내 패턴 확인하기" })).toHaveCount(0);
   await expect(page.getByText("반복되는 선택엔, 이유가 있습니다")).toHaveCount(0);
 
