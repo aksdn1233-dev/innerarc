@@ -189,3 +189,17 @@ Run 34160365698 repeated that retry because the first timeout edit matched an ea
 - **Cause:** this case opens the complete profile flow and creates the real 1080×1350 PNG before exercising the native file-sharing boundary. Late in the four-worker production matrix, its aggregate setup and raster work can exceed the default budget even though the share payload and duplicate-click lock remain correct.
 - **Fix:** mark only this end-to-end raster/share case as slow. Its real profile navigation, PNG signature, one-file envelope, duplicate-click assertion and privacy-safe payload checks remain unchanged.
 - **Prevention:** repeat the native-share case under parallel mobile workers, then require another four-job Node 24 run with zero flaky or retry-pass cases.
+
+### 2026-09-08 — a prior WebGL process contaminated the iPhone recovery gate
+
+- **Symptom:** run 34212698003 passed all jobs, but iPhone material recovery exceeded its unchanged 30-second reconstruction allowance once and passed in a fresh retry worker.
+- **Cause:** CI launched the isolated performance browser before recovery. Moving recovery to the top of its source file could not isolate it from that earlier Playwright process, so the test still inherited constrained software-renderer resources.
+- **Fix:** CI now runs material recovery in its own Playwright invocation and excludes it from the later fixture gallery. The 30-second reconstruction bound, exact six-object scene and one-canvas assertions remain unchanged.
+- **Prevention:** every desktop/iPhone/Android job must pass the isolated recovery process and the remaining visual matrix without retry-pass cases.
+
+### 2026-09-08 — moving mobile consent made an actionability check toggle twice
+
+- **Symptom:** the mobile family-comparison regression reported that its consent checkbox did not remain checked after Playwright scrolled and retried the same action.
+- **Cause:** the input moved across the viewport while the general four-worker matrix was settling. Playwright completed a click, then its retry path observed the opposite state.
+- **Fix:** prove that the real checkbox is visible, dispatch its native click once and assert its controlled checked state before submitting the unchanged form.
+- **Prevention:** repeat this exact mobile family flow in parallel and require the full general browser matrix to finish without retries.

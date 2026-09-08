@@ -80,7 +80,7 @@ Latest local evidence at handoff: 1,035/1,035 unit/integration tests passed; pro
 
 ## N. Remaining TODOs
 
-- Run Node 24 GitHub CI on the pushed commit.
+- Confirm the latest PR check is green and inspect its Node 24 logs for zero flaky or retry-pass cases; a green status alone is insufficient evidence.
 - Perform hosted two-account Supabase RLS/private-storage/cleanup/rollback verification.
 - Official OpenAI documentation identifies `gpt-6-astra` and the Responses API, but this repository/environment has no account-access evidence or configured approved model. Keep `SPACE_AI_MODELS_JSON` empty until `GET /v1/models/{model}` succeeds for the deployment account; do not turn documentation existence into an account-access claim.
 - Capture an authenticated workspace in staging.

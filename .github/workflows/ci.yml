@@ -98,9 +98,14 @@ jobs:
         run: pnpm exec playwright test -c playwright.space.config.ts --project=${{ matrix.project }} --workers=1 --grep='lightweight tier stays within' --reporter=line,json
         env:
           PLAYWRIGHT_JSON_OUTPUT_NAME: artifacts/space-browser-results-${{ matrix.project }}-performance.json
+      - name: Run isolated material recovery gate
+        if: always()
+        run: pnpm exec playwright test -c playwright.space.config.ts --project=${{ matrix.project }} --workers=1 --grep='failed material load releases' --reporter=line,json
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: artifacts/space-browser-results-${{ matrix.project }}-recovery.json
       - name: Run functional and visual space gates
         if: always()
-        run: pnpm exec playwright test -c playwright.space.config.ts --project=${{ matrix.project }} --workers=1 --grep-invert='lightweight tier stays within' --update-snapshots=all --reporter=line,json
+        run: pnpm exec playwright test -c playwright.space.config.ts --project=${{ matrix.project }} --workers=1 --grep-invert='lightweight tier stays within|failed material load releases' --update-snapshots=all --reporter=line,json
         env:
           PLAYWRIGHT_JSON_OUTPUT_NAME: artifacts/space-browser-results-${{ matrix.project }}-functional.json
       - uses: actions/upload-artifact@v7
