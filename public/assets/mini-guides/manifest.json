@@ -1,0 +1,13 @@
+{
+  "version": "mini-guides-1.0.0",
+  "artDirection": "Premium Korean-inspired 2.5D miniature; ivory, navy, sage and muted gold; concept boards used as direction only",
+  "runtimePolicy": "Use native source pixels only. Never enlarge beyond safeCssWidth at 3x DPR. Lazy-load outside the first viewport.",
+  "assets": [
+    {"characterId":"taeryeong","canonicalRole":"중심 해석자","runtimeRole":"self_discovery_guide","pose":"welcome","expression":"calm","assetType":"2.5d-raster","file":"taeryeong/taeryeong_welcome_calm_01.png","sourceWidth":1254,"sourceHeight":1254,"alpha":true,"safeCssWidth":240,"sourceMaster":"Codex ImageGen native output; chroma background converted to alpha without resampling"},
+    {"characterId":"yeonhui","canonicalRole":"관계와 마음의 해석자","runtimeRole":"relationship_guide","pose":"relationship-listen","expression":"warm","assetType":"2.5d-raster","file":"yeonhui/yeonhui_relationship-listen_warm_01.png","sourceWidth":1254,"sourceHeight":1254,"alpha":true,"safeCssWidth":240,"sourceMaster":"Codex ImageGen native output; chroma background converted to alpha without resampling"},
+    {"characterId":"sahyeon","canonicalRole":"지혜와 통찰의 해석자","runtimeRole":"success_evidence_guide","pose":"success-present","expression":"confident","assetType":"2.5d-raster","file":"sahyeon/sahyeon_success-present_confident_01.png","sourceWidth":1254,"sourceHeight":1254,"alpha":true,"safeCssWidth":240,"sourceMaster":"Codex ImageGen native output; chroma background converted to alpha without resampling; initial non-canonical dark-hair render rejected and regenerated"},
+    {"characterId":"hwayeon","canonicalRole":"운과 변화의 해석자","runtimeRole":"timing_guide","pose":"timing-consider","expression":"alert","assetType":"2.5d-raster","file":"hwayeon/hwayeon_timing-consider_alert_01.png","sourceWidth":1254,"sourceHeight":1254,"alpha":true,"safeCssWidth":240,"sourceMaster":"Codex ImageGen native output; chroma background converted to alpha without resampling"},
+    {"characterId":"yundo","canonicalRole":"균형과 안정의 해석자","runtimeRole":"space_guide","pose":"space-explain","expression":"focus","assetType":"2.5d-raster","file":"yundo/yundo_space-explain_focus_01.png","sourceWidth":1254,"sourceHeight":1254,"alpha":true,"safeCssWidth":240,"sourceMaster":"Codex ImageGen native output; chroma background converted to alpha without resampling"},
+    {"characterId":"hoyeon","canonicalRole":"직관과 방향의 해석자","runtimeRole":"action_guide","pose":"direction-point","expression":"bright","assetType":"2.5d-raster","file":"hoyeon/hoyeon_direction-point_bright_01.png","sourceWidth":1254,"sourceHeight":1254,"alpha":true,"safeCssWidth":240,"sourceMaster":"Codex ImageGen native output; chroma background converted to alpha without resampling"}
+  ]
+}

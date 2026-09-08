@@ -1,0 +1,53 @@
+import { spatialAccessIssues } from "@/core/space/navigation";
+import { describe, expect, it } from "vitest";
+import { analyzeSpace, applyAction, blockedDoors, footprint, geometryIssues, headGap, MAX_PLACEMENT_GRID } from "@/core/space/engine";
+import { manualScene, SceneSchema, type Scene } from "@/core/space/schema";
+function room(): Scene { const scene = manualScene(); scene.confirmed = true; scene.orientation.confirmed = true; return scene; }
+describe("space deterministic geometry and interpretation", () => {
+  it("replays a normal room without mutating source", () => { const scene = room(), snapshot = JSON.stringify(scene); expect(analyzeSpace(scene, "balance", "ko")).toEqual(analyzeSpace(scene, "balance", "ko")); expect(JSON.stringify(scene)).toBe(snapshot); });
+  it.each([-1, 360, NaN, Infinity])("rejects invalid north %s", angle => { const s = room(); s.orientation.northDegrees = angle; expect(SceneSchema.safeParse(s).success).toBe(false); });
+  it("requires explicit orientation and scene confirmation", () => { expect(() => analyzeSpace(manualScene(), "rest", "ko")).toThrow(); const s = room(); s.orientation.confirmed = false; expect(() => analyzeSpace(s, "rest", "ko")).toThrow(); });
+  it.each(["objects", "doors"] as const)("refuses empty %s", key => { const s = room(); s[key] = []; expect(geometryIssues(s)).toContain("INVALID_SCENE"); });
+  it("rejects duplicate identities across objects and openings", () => { const s = room(); s.objects[0].id = s.doors[0].id; expect(geometryIssues(s)).toContain("DUPLICATE_ID"); });
+  it("rejects bounds after rotation", () => { const s = room(); s.objects[0].x = 0.8; s.objects[0].rotation = 90; expect(geometryIssues(s)).toContain("OUT_OF_BOUNDS:bed_1"); });
+  it("detects overlapping rotated objects", () => { const s = room(); s.objects[1].x = 1.2; s.objects[1].z = 1.2; s.objects[1].rotation = 90; expect(geometryIssues(s).some(i => i.startsWith("COLLISION:"))).toBe(true); });
+  it("checks opening bounds and overlap", () => { const s = room(); s.windows[0] = { id: "w", wall: "bottom", offset: 0.5, width: 4 }; expect(geometryIssues(s)).toEqual(expect.arrayContaining(["OPENING_BOUNDS:w", "OPENING_OVERLAP:door_1"])); });
+  it("checks all four unique walls", () => { const s = room(); s.walls[0] = "bottom"; expect(geometryIssues(s)).toContain("INVALID_WALLS"); });
+  it("rejects out-of-room and missing-target actions", () => { const s = room(); expect(() => applyAction(s, { type: "move", objectId: "missing", x: 1, z: 1, rotation: null })).toThrow("INVALID_ACTION_TARGET"); expect(() => applyAction(s, { type: "move", objectId: "bed_1", x: 0, z: 0, rotation: null })).toThrow("UNSAFE_ACTION"); });
+  it("refuses a new blocked doorway", () => { const s = room(); expect(() => applyAction(s, { type: "move", objectId: "desk_1", x: 0.8, z: 4.5, rotation: null })).toThrow("UNSAFE_ACTION"); });
+  it("does not execute remove/add suggestions", () => { for (const type of ["remove_suggestion", "add_suggestion"]) expect(applyAction(room(), { type, objectId: null, x: null, z: null, rotation: null })).toEqual(room()); });
+  it.each([0, 90, 180, 270] as const)("bed support actually reduces head-wall gap at %s°", rotation => {
+    const s = room(); s.objects = [{ ...s.objects[0], x: 2, z: 2.5, rotation }];
+    const result = analyzeSpace(s, "rest", "en");
+    expect(result.recommendations.some(r => r.ruleId === "bed_wall_support_v1")).toBe(true);
+    expect(headGap(result.recommended, result.recommended.objects[0])).toBeLessThanOrEqual(0.4);
+    expect(geometryIssues(result.recommended)).toEqual([]); expect(blockedDoors(result.recommended)).toEqual([]);
+  });
+  it("warns every blocked object when five recommendations cannot resolve all", () => {
+    const s = room(); s.doors = [{ id: "door", wall: "bottom", offset: 0, width: 4 }];
+    s.objects = Array.from({ length: 6 }, (_, i) => ({ ...s.objects[1], id: `obj_${i}`, kind: "plant", x: 0.3 + i * 0.6, z: 4.5, width: 0.3, depth: 0.3, height: 0.3 }));
+    const result = analyzeSpace(s, "balance", "en"); expect(result.recommendations.length).toBeLessThanOrEqual(5);
+    for (const id of blockedDoors(result.recommended)) expect(result.warnings.some(w => w.startsWith(id))).toBe(true);
+  });
+  it("bounds placement search for maximum valid adversarial room", () => {
+    const s = room(); s.room = { width: 20, depth: 20, height: 3 }; s.windows = [];
+    s.doors = ["top", "right", "bottom", "left"].map((wall, i) => ({ id: `door_${i}`, wall: wall as Scene["doors"][number]["wall"], offset: 0, width: 10 }));
+    s.objects = Array.from({ length: 20 }, (_, i) => ({ ...s.objects[1], id: `obj_${i}`, kind: "storage", x: 2 + i % 5 * 4, z: 2.5 + Math.floor(i / 5) * 5, width: 4, depth: 5 }));
+    expect(geometryIssues(s)).toEqual([]); expect(MAX_PLACEMENT_GRID).toBe(24); expect(analyzeSpace(s, "balance", "en").warnings.length).toBeGreaterThan(0);
+  });
+  it("uses explicit personal outcomes conservatively without changing geometry", () => {
+    const personal = { sources: ["report:synthetic"], systems: ["numerology"] as const, confirmedChecks: 3, mismatchCount: 2, symbolicBasis: ["Life Path 7"] };
+    const result = analyzeSpace(room(), "focus", "en", { ...personal, systems: [...personal.systems] });
+    const rec = result.recommendations.find(r => r.evidence_type === "personal")!;
+    expect(rec.ruleId).toBe("personal_context_uncertain_v1"); expect(rec.rationale).toContain("Life Path 7"); expect(rec.rationale).toContain("2 were mismatched"); expect(rec.confidence).toBe(0.3);
+  });
+  it("uses exact quarter-turn footprints", () => { const obj = room().objects[1]; expect(footprint({ ...obj, rotation: 90 }).right - footprint({ ...obj, rotation: 90 }).left).toBeCloseTo(obj.depth); });
+});
+
+it("treats a thin rug as floor covering without hiding solid furniture or window obstructions", () => {
+  const scene = manualScene(); const without = spatialAccessIssues(scene);
+  scene.objects.push({ id: "rug", kind: "rug", x: 1, z: 2, width: 1.8, depth: 2.5, height: .015, rotation: 0, movable: true, confidence: 1 });
+  expect(geometryIssues(scene)).toEqual([]); expect(spatialAccessIssues(scene)).toEqual(without);
+  scene.objects.at(-1)!.height = .05; expect(geometryIssues(scene)).toContain("INVALID_OBJECT_HEIGHT:rug");
+  scene.objects.at(-1)!.height = .015; scene.objects.at(-1)!.x = .1; expect(geometryIssues(scene)).toContain("OUT_OF_BOUNDS:rug");
+});

@@ -137,7 +137,10 @@ test("generated onboarding context has no serious accessibility violation", asyn
 test("generated share controls have no serious accessibility violation", async ({ page }) => {
   await page.goto("/en/profile");
   await page.locator("#birthDate").fill("1994-11-04");
-  await page.locator('input[name="privacyRequired"]').check();
+  const privacyConsent = page.locator('input[name="privacyRequired"]');
+  await expect(privacyConsent).toBeVisible();
+  await privacyConsent.evaluate((element: HTMLInputElement) => element.click());
+  await expect(privacyConsent).toBeChecked();
   await page.getByRole("button", { name: "Show my core pattern" }).click();
   await page.getByText("Privacy-safe share card", { exact: true }).click();
   await page.addScriptTag({ content: axe.source });
@@ -203,17 +206,26 @@ test("reduced motion turns result scrolling into an immediate move", async ({ pa
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/en/profile");
   await page.evaluate(() => {
-    const state = window as typeof window & { observedScrollBehavior?: ScrollBehavior };
+    const state = window as typeof window & { resultScroll?: { behavior?: ScrollBehavior; top: number; nextTop?: number } };
+    const scroll = HTMLElement.prototype.scrollIntoView;
     HTMLElement.prototype.scrollIntoView = function scrollIntoView(options?: boolean | ScrollIntoViewOptions) {
-      if (typeof options === "object") state.observedScrollBehavior = options.behavior;
+      scroll.call(this, options);
+      if (this.id !== "result") return;
+      const observation = { behavior: typeof options === "object" ? options.behavior : undefined, top: this.getBoundingClientRect().top, nextTop: undefined as number | undefined };
+      state.resultScroll = observation;
+      requestAnimationFrame(() => { observation.nextTop = this.getBoundingClientRect().top; });
     };
   });
   await page.locator("#birthDate").fill("1994-11-04");
   await page.getByText("I have read the privacy notice.").click();
   await page.getByRole("button", { name: "Show my core pattern" }).click();
-  await expect.poll(() => page.evaluate(() =>
-    (window as typeof window & { observedScrollBehavior?: ScrollBehavior }).observedScrollBehavior,
-  )).toBe("auto");
+  await expect(page.locator("#result")).toBeFocused();
+  await expect.poll(() => page.evaluate(() => {
+    const observation = (window as typeof window & { resultScroll?: { behavior?: ScrollBehavior; top: number; nextTop?: number } }).resultScroll;
+    return observation?.behavior === "instant" && observation.nextTop !== undefined
+      && observation.top >= 0 && observation.top < innerHeight
+      && Math.abs(observation.nextTop - observation.top) < 1;
+  })).toBe(true);
 });
 
 test("production headers and install metadata do not add offline data storage", async ({ page, request }) => {

@@ -352,3 +352,48 @@ The final runbook must add named on-call, legal/privacy, security, payment-suppo
 - If known bots appear in the owner console, add a failing user-agent test before expanding the
   bounded server filter. If real customer browsers are excluded, remove the overbroad matcher and
   roll back the journey component without changing payment or historical aggregates.
+
+## 3D 공간운 — disabled-by-default operational path
+
+Follow `Space-Intelligence-V1.md` for staging migration dependencies and exact environment prerequisites. Enable saved/manual operation separately from AI. Monitor candidate validity/manual fallback, per-run reserved/settled cost, failed saves, leases, upload quota, hourly cleanup backlog and 48-hour deletion warnings. No image/report text belongs in logs.
+
+On a privacy/cost/write incident: set `SPACE_AI_ENABLED=false`; set `SPACE_ENABLED=false` to stop new writes. Preserve owner reads/export/delete and scheduled cleanup. Do not drop `space-private` or new tables while retained data remains. The additive migration also repairs existing PPI deletion ordering; reverting all code can strand cleanup or regress account rights. Main auto-deploys; use an unmerged review branch until hosted two-owner and model gates pass.
+
+Space deletion responses now acknowledge the committed database deletion immediately and conservatively report image-removal verification pending. Only the scheduled worker drains the global cleanup queue. Monitor backlog separately; never interpret a successful API receipt as proof that all private bytes have already been removed. Do not disable cleanup when rolling back feature writes.
+
+
+### Space draft remote validation exception — 2026-09-07
+
+Draft PR22 remains blocked. Run34093793928 passed general verify but recorded3 retry-pass mobile tests (share accessibility, onboarding result, shop curation); local repeated checks passed9/9 without retries, and the remote first-failure cause remains unconfirmed. The space job passed57 and failed3 unchanged<100ms frame gates at234–1049.9ms. GPU ReadPixels stalls are evidence, not a verified backend diagnosis. Keep SPACE_ENABLED/SPACE_AI_ENABLED off in production, preserve traces/captures, and require runner/device diagnosis plus the visual gate before launch. No main merge, migration or deployment is authorized by a green general-verify job alone. Diagnostic attachments now precede the performance assertion; that change does not waive the failing gate.
+
+Run34095636928 then proved every failed canvas was fully outside the viewport. Chromium's SwiftShader CPU submission stayed4–7ms while offscreen rAF was throttled to633–1050ms. The product now snaps a validated move when the canvas is completely invisible and benchmarks the same edit with the canvas visible; threshold remains100ms. A WebKit-incompatible shadow-cache attempt was removed rather than excepted. Local quality matrix60/60 passes at17.7–18.2ms. Keep both feature flags off until the matching remote run passes, owner visual review accepts the8.51 provisional capture set, and hosted storage/model tests are supplied and pass.
+
+Run34100600256 passed general verification but the visible fixed canvas still measured235–237ms in WebKit after automatic fallback; desktop/Android could not gather12 frames on the constrained runner. The performance tier now explicitly removes contact and directional shadow passes while higher tiers retain them. Run34105562638 passed general verification and19/20 cases on each browser, but a combined case exhausted90 seconds before measurement. Run34111669123 split it; the focused snapshot showed its enabled select present while Playwright actionability/scroll settling consumed the timeout. Each matrix job now starts a fresh process and programmatically dispatches the actual select change for the benchmark, then a second process runs20 functional/visual cases:63 total, with the same90-second and100ms limits. Do not merge until all three remote jobs are green. Hosted private storage/model and physical-device/owner review gates still apply.
+
+Run34113160978 reached the isolated WebKit measurement but active P90 was106–114ms even with6–10ms CPU render and all expensive effects disabled. The performance profile now sets renderer pixel ratio0.7, and the benchmark blocks if its canvas scale exceeds0.71 or active P90 reaches100ms. Higher tiers and their review captures remain unchanged.
+
+Run34113746751 passed the WebKit animation gate after that change. Android SwiftShader still scheduled visible rAF at433–450ms while synchronous render was2.5–3.1ms. Known software renderers now expose `software-snap` and synchronously draw a validated move; their response time must remain below100ms. Do not report this as physical-Android performance. Hardware backends continue to animate and use active-frame P90.
+
+The additive premium pass keeps both flags off and does not alter this fallback policy. Local Node24 evidence was space66/66, including the unchanged performance ceilings and a real Ultra canvas-scale assertion. The 2026-09-08 capture pass raises Ultra to at least2.0× and exposes exact CSS and drawing-buffer dimensions; it is still a user-selected inspection tier and must not replace the 0.7 performance profile on constrained devices. The provisional actual-app visual review remains below the preferred9.0, so record the owner's explicit capture acceptance before clearing the visual gate. Hosted private storage/model, physical-device, merge and deployment gates remain unchanged.
+
+Run34131758087 showed that a hardware renderer can also receive263–269ms animation callbacks while its synchronous render stays15–19ms. Do not use the renderer name as the only scheduling signal. In the performance tier, four repeated frames over the unchanged100ms ceiling switch later validated moves to `adaptive-snap`; monitor that policy separately from `software-snap`. This protects response time but is still not physical-iPhone performance evidence.
+
+### Capture-quality and render-resolution signals — 2026-09-08
+
+Treat `PHOTO_QUALITY_UNUSABLE`, `PHOTO_SET_QUALITY_LOW`, `PHOTO_VIEWS_DUPLICATED` and `INSUFFICIENT_CAPTURE_EVIDENCE` as recapture/manual-measurement outcomes, not provider outages. A sudden rise can mean changed camera formats, browser canvas behavior or over-strict thresholds; reproduce with synthetic non-personal fixtures before changing a threshold. Never weaken cross-view or scale confirmation to improve completion rate. The 3D host exposes `data-css-width`, `data-css-height`, `data-render-width`, `data-render-height` and `data-render-scale` for QA. Ultra must remain at least 2.0x; the performance profile must remain at or below 0.71x and keep its existing response-time gate. On memory/GPU incidents, let automatic fallback operate or disable new Space writes; preserve cleanup.
+
+For isolated checkout UI evidence, run `E2E_PAYMENT_CHECKOUT=1 pnpm test:e2e tests/e2e/payments.spec.ts ...`. Setting only `E2E_PAYMENT_CHECKOUT` on an already-running external server does not install the fake provider shell; `scripts/run-e2e.mjs` translates it into the bounded server variables. WebGL snapshot pixels can also differ across local GPU backends. Treat functional/geometry assertions as portable gates and use the CI job's documented `--update-snapshots=all` evidence capture for each browser backend rather than rewriting unrelated baselines from another machine.
+
+Run the final Vitest suite without a concurrent lint, typecheck, build or browser matrix. The full premium-report question matrix has a deliberate 5-second ceiling and exceeded it under a three-way local CPU run while passing in the isolated suite; concurrency is not evidence of a product calculation failure.
+
+### Editorial capture runner notes — 2026-09-08
+
+`pnpm start -- -p <port>` passes `-p` as a project directory in this repository's script shape. Start an explicit review server with `pnpm exec next start -p <port>`. For interactive browser checks, use the same hostname printed by the server. A Next development server opened as `localhost` but driven through `127.0.0.1` refuses cross-origin HMR and can leave forms as plain HTML submissions; that is not product-hydration evidence. Build first and use the production server for final interaction, console, and screenshot checks. Import Chromium from `@playwright/test`; the standalone `playwright` package is not installed. These command failures do not justify skipping the same production-server checks.
+
+## Guide assets and public-story sources — 2026-09-08
+
+Monitor guide assets as static route resources: a missing asset or font must not block Space analysis, 3D controls, recommendations or Reality Check. If browser speech fails, keep captions visible and do not retry through a paid provider. If a story source becomes unavailable or materially conflicts with its claim, mark that record insufficient or remove it from discovery until reviewed; never preserve a claim only to avoid an empty result.
+
+### PR22 final quality pass (2026-09-08)
+
+Use the Node 24 runtime required by package.json for release checks. Preserve Worker `innerarc`, its `mygyeol.kr` route, IMAGES binding and deployed secrets. Local Worker smoke checks must use `--local`; do not infer hosted RLS or provider access from local PGlite/mock success. The quality pass applies no migrations and authorizes no deployment. Rollback reference before any later release remains `52a70b80da6287693e09f17c9f8d3945c893c6be`; disable SPACE_ENABLED / SPACE_AI_ENABLED independently when needed. CI retries are diagnostic: flaky outcomes fail the gate. See `Final-Product-Quality-Pass.md` for the final bounded evidence and external launch gates.

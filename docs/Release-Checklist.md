@@ -166,3 +166,46 @@
 - [x] Simple-is-best compatibility follow-up removes orbit/glow/grid/gradient decoration and nested
   person cards while preserving the form order, privacy statement, five relationship choices,
   consent, centered controls, responsive layout, and eight-section result behavior.
+
+## Additive 3D Space V1 — release held
+
+- [x] Independent Korean/English intro and owner workspace; default-off flags; existing checkout and calculation contracts preserved.
+- [x] Strict candidate scene boundary, deterministic recommendations, reference-measurement provenance and safe manual fallback.
+- [x] Private sanitized image transfer, quota/rate/cost limits, durable deletion queue and account export/deletion integration.
+- [x] Local PostgreSQL-engine tests for the additive schema and inherited PPI deletion constraints.
+- [x] Licensed asset manifest, actual GLB bounds/material tests, browser failure/retry and synthetic visual fixtures.
+- [ ] Owner-approved premium visual gate from actual captures: preferred overall≥9.0; minimum overall≥8.7 only with explicit owner acceptance; every critical category≥8.5. Current provisional score is8.9 overall and8.6 minimum after the 2026-09-08 product-story/capture pass. Test success alone does not approve visuals.
+- [ ] Hosted staging migration, two-owner Supabase RLS/storage/cleanup/rollback verification.
+- [ ] Account-accessible model, current rate/capability evidence and consented live fixture extraction.
+- [ ] Physical iPhone/Android GPU, touch and memory validation.
+- [ ] Production enablement. No migration/deployment or new paid product is authorized by this checklist.
+
+Rollback reference: production base `ee4ae5038e34e0715456b837cbe7c7f2db5591c4`; retain data-rights and cleanup code when disabling new space writes. See `Space-Intelligence-V1.md` and `Space-Failure-Ledger.md`.
+
+## Additive premium capture pass — 2026-09-08
+
+- [x] Real render pixels are visible and covered at balanced/high/Ultra/performance tiers; no CSS-only upscale is described as quality.
+- [x] Capture-quality, duplicate-view and cross-view inconsistency failures have deterministic regression tests.
+- [x] 390, 430, 768, 1024 and 1440 product evidence captures cover Space landing/workspace/analysis/current/recommended and success landing/result.
+- [x] Success evidence uses official sources and visibly separates career facts, symbolic overlap, context and unknowns.
+- [ ] Reconfirm the complete Node 24 CI matrix after PR push; local fallback runtime is Node 22 and does not replace CI evidence.
+- [ ] Owner visual acceptance, hosted private storage/model tests, and physical iPhone/Android GPU/camera tests remain release blockers.
+
+## Editorial home presentation — 2026-09-08
+
+- [x] Home remains an introduction; purchase intake, checkout, entitlements, report generation, account recovery, and deterministic engines are unchanged.
+- [x] Generated brand art is disclosed and no preview is presented as a customer outcome.
+- [x] Symbolic systems remain clearly bounded from scientific prediction, diagnosis, treatment, and guaranteed results in Korean and English.
+- [x] Feature-off rendering omits the Space menu/showcase without breaking the other home chapters.
+- [ ] Run the complete Node 24 CI matrix and inspect generated five-width captures before merge.
+- [ ] Keep PR #22 unmerged and Space flags off until its existing hosted, physical-device, and owner-acceptance gates pass.
+
+## Success story and miniature guide hardening — 2026-09-08
+
+- [x] Seven public records have validated HTTPS story sources, evidence status, context, unknowns, transferability and one bounded action.
+- [x] Profession/name search has a truthful empty state; symbolic ranking remains deterministic and percentage-free.
+- [x] Success action handoff and invalid mixed-context payloads have regression coverage.
+- [x] Space guide is tied to a recommendation/object ID and keeps mute, replay, caption, detail and speech-failure paths.
+- [x] New guide images are native 1254×1254 RGBA assets and are never upscaled beyond their 3× DPR safe display size.
+- [x] Capture 390/430/768/1024/1440 success result and Space analysis after the asset/font load gate passes.
+- [ ] Owner accepts the actual captures. This remains separate from CI and does not authorize merge or deployment.

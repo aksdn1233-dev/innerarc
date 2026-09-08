@@ -1,0 +1,446 @@
+{
+  "version": 1,
+  "reviewed_at": "2026-09-07",
+  "license_notice": "Third-party assets retain their listed licenses; the site content-protection notice does not restrict those rights.",
+  "assets": [
+    {
+      "asset_id": "taeryeongdang-bed-v1",
+      "category": "bed",
+      "visual_style": "Warm contemporary upholstered timber bed with tailored linen bedding",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 1.5,
+        "depth": 2.1,
+        "height": 1.05
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 23524,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
+    },
+    {
+      "asset_id": "taeryeongdang-bookshelf-v1",
+      "category": "bookshelf",
+      "visual_style": "Warm contemporary timber shelving with restrained book accents",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 0.9,
+        "depth": 0.32,
+        "height": 1.8
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 8012,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
+    },
+    {
+      "asset_id": "taeryeongdang-cabinet-v1",
+      "category": "cabinet",
+      "visual_style": "Warm contemporary veneer casework with recessed panels and brass pulls",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 1.4,
+        "depth": 0.4,
+        "height": 0.85
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 4712,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
+    },
+    {
+      "asset_id": "taeryeongdang-coffee_table-v1",
+      "category": "coffee_table",
+      "visual_style": "Soft modern marble top with dark timber pedestal bases",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 1.1,
+        "depth": 0.6,
+        "height": 0.4
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 1152,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
+    },
+    {
+      "asset_id": "taeryeongdang-desk-v1",
+      "category": "desk",
+      "visual_style": "Warm contemporary writing desk with slim dark legs and integrated drawers",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 1.3,
+        "depth": 0.65,
+        "height": 0.76
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 4200,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
+    },
+    {
+      "asset_id": "taeryeongdang-dining_chair-v1",
+      "category": "dining_chair",
+      "visual_style": "Tailored neutral upholstery with slender dark timber supports",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 0.48,
+        "depth": 0.53,
+        "height": 0.83
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 2440,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
+    },
+    {
+      "asset_id": "taeryeongdang-dining_table-v1",
+      "category": "dining_table",
+      "visual_style": "Rounded warm-veneer dining table with slender dark timber legs",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 1.8,
+        "depth": 0.9,
+        "height": 0.76
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 2100,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
+    },
+    {
+      "asset_id": "taeryeongdang-lighting-v1",
+      "category": "lighting",
+      "visual_style": "Minimal warm-metal floor lamp with a woven neutral shade",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 0.45,
+        "depth": 0.45,
+        "height": 1.6
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 1432,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
+    },
+    {
+      "asset_id": "taeryeongdang-nightstand-v1",
+      "category": "nightstand",
+      "visual_style": "Compact two-drawer veneer nightstand with shadow gaps and inset brass pulls",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 0.5,
+        "depth": 0.4,
+        "height": 0.55
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 3812,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
+    },
+    {
+      "asset_id": "taeryeongdang-office_chair-v1",
+      "category": "office_chair",
+      "visual_style": "Neutral upholstered task chair with a restrained dark-metal base",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 0.65,
+        "depth": 0.65,
+        "height": 1.05
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 4208,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
+    },
+    {
+      "asset_id": "khronos-indoor-plant-v1",
+      "category": "plant",
+      "visual_style": "Natural indoor foliage in a warm ceramic planter",
+      "source": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/DiffuseTransmissionPlant",
+      "license": "CC-BY-4.0",
+      "dimensions_m": {
+        "width": 0.55,
+        "depth": 0.55,
+        "height": 1.2
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 13652,
+      "texture_resolution": "1024",
+      "lod_availability": false,
+      "compression_status": "glTF Transform 4.5.0: mesh quantization and 1K WebP; fireflies, animation, lights and cameras removed; meshoptimizer simplify ratio .2 error .01",
+      "geometry_source": "Licensed GLB; original procedural plant unused by production library",
+      "attribution": "Eric Chadwick / Darmstadt Graphics Group GmbH (materials); original Rico Cilliers / Poly Haven (CC0)",
+      "path": "/space/assets/indoor-plant.glb",
+      "bytes": 1054892,
+      "sha256": "7c9f733fb7947a6875790f9d93845adec1e888a226b5b44070258333064cf10a"
+    },
+    {
+      "asset_id": "taeryeongdang-rug-v1",
+      "category": "rug",
+      "visual_style": "Low-pile neutral woven rug with fine border and fringe",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 2.0,
+        "depth": 1.5,
+        "height": 0.012
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 2124,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
+    },
+    {
+      "asset_id": "taeryeongdang-storage-v1",
+      "category": "storage",
+      "visual_style": "Low warm-veneer storage unit with subtle panel rhythm",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 1.2,
+        "depth": 0.4,
+        "height": 1.3
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 3600,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
+    },
+    {
+      "asset_id": "taeryeongdang-tv-v1",
+      "category": "tv",
+      "visual_style": "Slim near-black display with a minimal pedestal and low-reflection screen",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 1.25,
+        "depth": 0.35,
+        "height": 1.1
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 1328,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
+    },
+    {
+      "asset_id": "taeryeongdang-wardrobe-v1",
+      "category": "wardrobe",
+      "visual_style": "Tall warm-veneer wardrobe with recessed doors and slim brass pulls",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 1.6,
+        "depth": 0.6,
+        "height": 2.1
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 3812,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
+    },
+    {
+      "asset_id": "velvet-sofa-v1",
+      "category": "sofa",
+      "visual_style": "Sculptural champagne-brown velvet seating with slender dark legs",
+      "source": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/GlamVelvetSofa",
+      "author": "Wayfair / Eric Chadwick",
+      "license": "CC-BY-4.0",
+      "dimensions_m": {
+        "width": 2.188443,
+        "height": 0.787541,
+        "depth": 1.022829
+      },
+      "polygon_count": 4196,
+      "texture_resolution": "1024 maximum",
+      "lod_availability": false,
+      "compression_status": "KHR_mesh_quantization + WebP; no topology simplification; no WASM decoder",
+      "bytes": 477836,
+      "sha256": "6eb1b2fe23778c5420061afdf183ef654a1fdd2940a26b5f3fca6b076dd5357e",
+      "original_sha256": "67202c74a1a33377771f162dc7fad612a6c9bd51ee15124c488e9851d9ac5266",
+      "modifications": "Champagne variant selected",
+      "path": "/space/assets/velvet-sofa.glb"
+    },
+    {
+      "asset_id": "upholstered-chair-v1",
+      "category": "lounge_chair",
+      "visual_style": "Sage tailored lounge chair with a dark timber frame",
+      "source": "https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/SheenChair",
+      "author": "Wayfair / Eric Chadwick",
+      "license": "CC0-1.0",
+      "dimensions_m": {
+        "width": 0.826558,
+        "height": 0.686247,
+        "depth": 0.570265
+      },
+      "polygon_count": 39936,
+      "texture_resolution": "1024 maximum",
+      "lod_availability": false,
+      "compression_status": "KHR_mesh_quantization + WebP; no topology simplification; no WASM decoder",
+      "bytes": 1278708,
+      "sha256": "c7a3901ae9edf04795b004dc1109b890e6d17f3268e33d995bfd71a3d7aeab0e",
+      "original_sha256": "f0af2a2b102d28d540236306ae19f8fb36842df76bd38cf76f063f9bd2853399",
+      "modifications": "Sage base and sheen recolor",
+      "path": "/space/assets/upholstered-chair.glb"
+    },
+    {
+      "asset_id": "oak-floor-pbr-v1",
+      "category": "material",
+      "visual_style": "Natural matte oak plank flooring",
+      "source": "https://polyhaven.com/a/laminate_floor_03",
+      "author": "Charlotte Baglioni / Dario Barresi",
+      "license": "CC0-1.0",
+      "dimensions_m": {
+        "tile": 2.1
+      },
+      "polygon_count": 0,
+      "texture_resolution": "1024\u00d71024",
+      "lod_availability": false,
+      "compression_status": "JPEG; mipmaps; anisotropic filtering; no KTX2/WASM requirement",
+      "files": [
+        {
+          "path": "/space/assets/oak-floor-arm.jpg",
+          "bytes": 458502,
+          "sha256": "a4701a719c81fa544aab8060a27da846434ba43ee50e50e516a8867774a8e3e1"
+        },
+        {
+          "path": "/space/assets/oak-floor-color.jpg",
+          "bytes": 701368,
+          "sha256": "ce2813cdc714fc5a2d816c9b79a0b4aece71c8d5bf56db52331cf413d950eae3"
+        },
+        {
+          "path": "/space/assets/oak-floor-normal.jpg",
+          "bytes": 426083,
+          "sha256": "8fc982ef3aaffcd3ace508334bbefb02ffefa748658914733ad8b235b9522d7a"
+        }
+      ]
+    },
+    {
+      "asset_id": "veneer-pbr-v1",
+      "category": "material",
+      "visual_style": "Warm fine-grain timber veneer",
+      "source": "https://polyhaven.com/a/okoume_veneer",
+      "author": "Jenelle van Heerden",
+      "license": "CC0-1.0",
+      "dimensions_m": {
+        "tile": 1
+      },
+      "polygon_count": 0,
+      "texture_resolution": "1024\u00d71024",
+      "lod_availability": false,
+      "compression_status": "JPEG; mipmaps; anisotropic filtering; no KTX2/WASM requirement",
+      "files": [
+        {
+          "path": "/space/assets/veneer-arm.jpg",
+          "bytes": 894411,
+          "sha256": "1753def20b6524652fff13cd45b96daa802037deca6df5aedc7e9c82a065d481"
+        },
+        {
+          "path": "/space/assets/veneer-color.jpg",
+          "bytes": 484769,
+          "sha256": "5241ff72a790c033bc1acfb6d7a9ae5a96e59c03cc2b4ca2270a2ad0308a735e"
+        },
+        {
+          "path": "/space/assets/veneer-normal.jpg",
+          "bytes": 339052,
+          "sha256": "1685a9ae2e19d672846273acfd00119ab4d56a08ddebd04421b9d015aca2adbc"
+        }
+      ]
+    },
+    {
+      "asset_id": "fabric-pbr-v1",
+      "category": "material",
+      "visual_style": "Fine neutral woven upholstery and bedding fabric",
+      "source": "https://polyhaven.com/a/fabric_pattern_07",
+      "author": "Rob Tuytel",
+      "license": "CC0-1.0",
+      "dimensions_m": {
+        "tile": 0.4
+      },
+      "polygon_count": 0,
+      "texture_resolution": "1024\u00d71024",
+      "lod_availability": false,
+      "compression_status": "JPEG; mipmaps; anisotropic filtering; no KTX2/WASM requirement",
+      "files": [
+        {
+          "path": "/space/assets/fabric-arm.jpg",
+          "bytes": 227059,
+          "sha256": "57520f1383a41ea9d69a3f9c1d2a2b0cdc6ba85c579935c44a1281845ec11030"
+        },
+        {
+          "path": "/space/assets/fabric-normal.jpg",
+          "bytes": 828071,
+          "sha256": "f6955bbdead9f023f2357f6f8808ed49627d10882cd2a3cb6b5a5ace155abc45"
+        }
+      ]
+    },
+    {
+      "asset_id": "studio-small-09-v1",
+      "category": "environment",
+      "visual_style": "Neutral soft studio reflections used only for material illumination",
+      "source": "https://polyhaven.com/a/studio_small_09",
+      "author": "Sergej Majboroda",
+      "license": "CC0-1.0",
+      "dimensions_m": null,
+      "polygon_count": 0,
+      "texture_resolution": "1024\u00d7512",
+      "lod_availability": false,
+      "compression_status": "RGBE HDR converted once to PMREM",
+      "path": "/space/assets/studio-environment.hdr",
+      "bytes": 1615248,
+      "sha256": "e7cfda5f4e98e623db12b8bfd0184e048488e4855d9c83e2751fb44a32e80c45"
+    },
+    {
+      "asset_id": "original-marble-surface-v1",
+      "category": "material",
+      "visual_style": "Quiet warm-white marble with restrained low-contrast veining",
+      "source": "Original project generated material surface in interior-assets.ts",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "tile": 1
+      },
+      "polygon_count": 0,
+      "texture_resolution": "512\u00d7512",
+      "lod_availability": false,
+      "compression_status": "Generated once; mipmaps and anisotropic filtering; base color + linear roughness + subtle plaster micro-bump"
+    }
+  ]
+}

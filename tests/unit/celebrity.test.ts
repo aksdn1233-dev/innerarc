@@ -23,6 +23,8 @@ describe("sourced celebrity dataset", () => {
       expect(celebrity.source.url).toMatch(/^https:\/\//);
       expect(celebrity.source.accessedAt).toBe("2026-07-22");
       expect(celebrity.confidence).toBe("confirmed");
+      expect(celebrity.careerEvidence.length).toBeGreaterThan(0);
+      expect(celebrity.careerEvidence.every(item => item.source.url.startsWith("https://") && item.source.accessedAt === "2026-09-08")).toBe(true);
     }
   });
 
@@ -35,6 +37,7 @@ describe("sourced celebrity dataset", () => {
       id: "bad-source",
       source: { ...CELEBRITIES[0].source, url: "http://example.com" },
     }])).toThrow(/HTTPS/);
+    expect(() => validateCelebrityDataset([{ ...CELEBRITIES[0], id: "missing-evidence", careerEvidence: [] }])).toThrow(/career evidence/);
   });
 });
 
@@ -51,6 +54,16 @@ describe("celebrity structural comparison", () => {
     const sports = findCelebrityMatches({ profile, locale: "en", field: "sports", limit: 10 });
     expect(sports.matches.map((item) => item.celebrity.id).sort()).toEqual(["serena-williams", "son-heung-min"]);
     expect(sports.matches.every((item) => item.celebrity.fields.includes("sports"))).toBe(true);
+  });
+
+  it("filters by localized profession and carries sourced context and transfer limits", () => {
+    const science = findCelebrityMatches({ profile, locale: "en", professionQuery: "chemistry", limit: 10 });
+    expect(science.matches.map(item => item.celebrity.id)).toEqual(["marie-curie"]);
+    expect(science.matches[0].story.evidenceStatus).toBe("supported");
+    expect(science.matches[0].story.hiddenConditions.length).toBeGreaterThan(0);
+    expect(science.matches[0].story.unknowns.length).toBeGreaterThan(0);
+    expect(science.matches[0].story.sources.every(item => item.url.startsWith("https://"))).toBe(true);
+    expect(findCelebrityMatches({ profile, locale: "en", professionQuery: "not-in-dataset" }).matches).toEqual([]);
   });
 
   it("keeps Korean and English rank, structure, and evidence identical", () => {

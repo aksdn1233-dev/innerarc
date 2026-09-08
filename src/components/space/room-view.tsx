@@ -1,0 +1,324 @@
+"use client";
+import { useEffect, useRef, useState } from "react";
+import type { Scene } from "@/core/space/schema";
+import { clearTranslation } from "@/core/space/navigation";
+import { geometryIssues } from "@/core/space/engine";
+import { SpaceAssetCredits } from "./asset-credits";
+import { activeFrameTiming, isInViewport, isSoftwareRendererName, shouldReduceQuality, shouldUseImmediateMotion } from "./frame-timing";
+import { resourceScope } from "./resource-scope";
+import { roomCameraFit, interiorCameraFit } from "./camera-fit";
+import { spatialChanges } from "@/core/space/comparison";
+import styles from "./space.module.css";
+import type { SpaceGuideNarration as SpaceGuideNarrationData } from "@/core/space/narration";
+import { SpaceGuideNarration } from "./guide-narration";
+
+type ComparisonMode = "current" | "recommended";
+type Runtime = { update(scene: Scene, comparison?: Scene, mode?: ComparisonMode): void; select(id: string | null): void; perspective(): void; top(): void; reset(): void; zoom(n: number): void; turn(): void; recommended(): void; profile(value: string): void; dispose(): void };
+type RenderResolution = { cssWidth: number; cssHeight: number; bufferWidth: number; bufferHeight: number; scale: number };
+export default function RoomView({ scene, comparisonScene, comparisonMode, locale, selectedId = null, onSelect, guide }: { scene: Scene; comparisonScene?: Scene; comparisonMode?: ComparisonMode; locale: "ko" | "en"; selectedId?: string | null; onSelect?: (id: string) => void; guide?: SpaceGuideNarrationData | null }) {
+  const guideMarker = useRef<HTMLSpanElement>(null), guideRef = useRef(guide);
+  const host = useRef<HTMLDivElement>(null), runtime = useRef<Runtime | null>(null), latest = useRef(scene), latestComparison = useRef(comparisonScene), latestComparisonMode = useRef(comparisonMode), selectCallback = useRef(onSelect), latestSelected = useRef(selectedId);
+  const [failed, setFailed] = useState(false), [ready, setReady] = useState(false), [attempt, setAttempt] = useState(0), [quality, setQuality] = useState("auto"), [assetLoading, setAssetLoading] = useState(false), [viewFallback, setViewFallback] = useState(false), [cameraChoice, setCameraChoice] = useState<"perspective" | "top" | "recommended">("perspective"), [resolution, setResolution] = useState<RenderResolution | null>(null);
+  const ko = locale === "ko";
+  useEffect(() => { guideRef.current = guide; runtime.current?.select(latestSelected.current); }, [guide]);
+  useEffect(() => { latest.current = scene; latestComparison.current = comparisonScene; latestComparisonMode.current = comparisonMode; runtime.current?.update(scene, comparisonScene, comparisonMode); }, [scene, comparisonScene, comparisonMode]);
+  useEffect(() => { selectCallback.current = onSelect; latestSelected.current = selectedId; runtime.current?.select(selectedId); }, [onSelect, selectedId]);
+  useEffect(() => {
+    let stopped = false, partialCleanup = () => {};
+    const container = host.current;
+    if (!container) return;
+    async function mount() {
+      const [T, { OrbitControls }, assets, { createAssetLibrary }, { loadPbrSurfaces }, { EffectComposer }, { RenderPass }, { GTAOPass }, { OutputPass }, { createContactShadows }, { RectAreaLightUniformsLib }] = await Promise.all([import("three"), import("three/addons/controls/OrbitControls.js"), import("./interior-assets"), import("./asset-library"), import("./pbr-surfaces"), import("three/addons/postprocessing/EffectComposer.js"), import("three/addons/postprocessing/RenderPass.js"), import("three/addons/postprocessing/GTAOPass.js"), import("three/addons/postprocessing/OutputPass.js"), import("./contact-shadows"), import("three/addons/lights/RectAreaLightUniformsLib.js")]);
+      if (stopped || !container) return;
+      const resources = resourceScope(); partialCleanup = () => { abort.abort(); resources.dispose(); }; const own = resources.add;
+      const abort = new AbortController(); own(() => abort.abort());
+      const renderer = new T.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "default" });
+      const debugRenderer = renderer.getContext().getExtension("WEBGL_debug_renderer_info");
+      const rendererName = debugRenderer ? String(renderer.getContext().getParameter(debugRenderer.UNMASKED_RENDERER_WEBGL)) : "";
+      const softwareRenderer = isSoftwareRendererName(rendererName);
+      own(() => { renderer.dispose(); renderer.forceContextLoss(); renderer.domElement.remove(); for (const key of ["sceneState", "objectCount", "drawCalls", "triangles", "camera", "motion", "frameP90", "sampledFrames", "cssWidth", "cssHeight", "renderWidth", "renderHeight", "renderScale"]) delete container.dataset[key]; });
+      const mobile = matchMedia("(pointer: coarse)").matches, reduced = matchMedia("(prefers-reduced-motion: reduce)");
+      let pixelRatio = mobile ? Math.min(1.5, Math.max(1.25, devicePixelRatio)) : Math.min(2, Math.max(1.5, devicePixelRatio)), qualityReduced = false, schedulerConstrained = false;
+      renderer.setPixelRatio(pixelRatio); renderer.setClearColor(0xd9d7d0);
+      renderer.outputColorSpace = T.SRGBColorSpace; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.02;
+      renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFShadowMap;
+      renderer.domElement.setAttribute("aria-label", ko ? "선택하고 돌려볼 수 있는 방의 3D 모형" : "Interactive 3D room with selectable furniture"); renderer.domElement.setAttribute("role", "img"); container.appendChild(renderer.domElement);
+      const world = new T.Scene(); world.background = new T.Color(0xd7d5ce);
+      own(() => assets.disposeGeometry(world));
+      const materials = assets.interiorMaterials(renderer.capabilities.getMaxAnisotropy()); own(materials.dispose);
+      const surfaces = await loadPbrSurfaces(materials, renderer, abort.signal); own(surfaces.dispose);
+      if (stopped) return;
+      world.environment = surfaces.environment.texture; world.environmentIntensity = .42;
+      const library = createAssetLibrary(abort.signal); own(library.dispose);
+      const contact = createContactShadows(renderer, world, 512); own(contact.dispose);
+      const camera = new T.PerspectiveCamera(38, 1, .05, 200), orbit = new OrbitControls(camera, renderer.domElement);
+      own(() => orbit.dispose());
+      orbit.enableDamping = false; orbit.screenSpacePanning = true; orbit.minDistance = 1; orbit.maxDistance = 65; orbit.maxPolarAngle = Math.PI / 2 - .01;
+      const sun = new T.DirectionalLight(0xffefd5, 1.45); sun.castShadow = true; sun.shadow.mapSize.set(mobile ? 1024 : 2048, mobile ? 1024 : 2048); sun.shadow.bias = -.00003; sun.shadow.normalBias = .001; sun.shadow.radius = 6; sun.shadow.blurSamples = 16; world.add(sun, sun.target);
+      RectAreaLightUniformsLib.init(); const windowFill = new T.RectAreaLight(0xe9f1ff, 4.2, 1, 1); world.add(windowFill);
+      const practical = new T.PointLight(0xffc98f, 2.8, 3, 2); practical.castShadow = false; practical.visible = false; world.add(practical);
+      world.add(new T.HemisphereLight(0xe5efff, 0x806b50, .34));
+      const studioCanvas = document.createElement("canvas"); studioCanvas.width = studioCanvas.height = 256;
+      const studioContext = studioCanvas.getContext("2d")!; const studioGradient = studioContext.createRadialGradient(128, 118, 8, 128, 128, 178);
+      studioGradient.addColorStop(0, "#ece9e1"); studioGradient.addColorStop(.55, "#e2dfd7"); studioGradient.addColorStop(1, "#cbc9c3"); studioContext.fillStyle = studioGradient; studioContext.fillRect(0, 0, 256, 256);
+      const studioTexture = new T.CanvasTexture(studioCanvas); studioTexture.colorSpace = T.SRGBColorSpace; studioTexture.anisotropy = Math.min(4, renderer.capabilities.getMaxAnisotropy()); own(() => studioTexture.dispose());
+      const groundMaterial = new T.MeshStandardMaterial({ color: 0xffffff, map: studioTexture, roughness: 1 }); own(() => groundMaterial.dispose());
+      const ground = new T.Mesh(new T.PlaneGeometry(1, 1), groundMaterial); ground.rotation.x = -Math.PI / 2; ground.position.y = -.17; ground.receiveShadow = false; world.add(ground);
+      const groundingCanvas = document.createElement("canvas"); groundingCanvas.width = groundingCanvas.height = 256;
+      const groundingContext = groundingCanvas.getContext("2d")!; const groundingGradient = groundingContext.createRadialGradient(128, 128, 22, 128, 128, 128);
+      groundingGradient.addColorStop(0, "rgba(39,35,29,.38)"); groundingGradient.addColorStop(.66, "rgba(39,35,29,.15)"); groundingGradient.addColorStop(1, "rgba(39,35,29,0)"); groundingContext.fillStyle = groundingGradient; groundingContext.fillRect(0, 0, 256, 256);
+      const groundingTexture = new T.CanvasTexture(groundingCanvas); groundingTexture.colorSpace = T.SRGBColorSpace; own(() => groundingTexture.dispose());
+      const groundingMaterial = new T.MeshBasicMaterial({ map: groundingTexture, transparent: true, opacity: .42, depthWrite: false, toneMapped: false }); own(() => groundingMaterial.dispose());
+      const grounding = new T.Mesh(new T.PlaneGeometry(1, 1), groundingMaterial); grounding.rotation.x = -Math.PI / 2; grounding.position.y = -.159; world.add(grounding);
+      const selection = new T.Box3Helper(new T.Box3(), 0x99703a); selection.visible = false; world.add(selection); own(() => (selection.material as import("three").Material).dispose());
+      const comparisonGuides = new T.Group(); comparisonGuides.name = "validated-comparison-guides"; world.add(comparisonGuides);
+      const guideMaterials = {
+        current: new T.LineBasicMaterial({ color: 0xd8a94d, transparent: true, opacity: .92 }),
+        recommended: new T.LineBasicMaterial({ color: 0x57b7aa, transparent: true, opacity: .92 }),
+        currentMarker: new T.MeshBasicMaterial({ color: 0xd8a94d, transparent: true, opacity: .58, side: T.DoubleSide, depthWrite: false }),
+        recommendedMarker: new T.MeshBasicMaterial({ color: 0x57b7aa, transparent: true, opacity: .58, side: T.DoubleSide, depthWrite: false }),
+      };
+      own(() => Object.values(guideMaterials).forEach(material => material.dispose()));
+      const renderTarget = new T.WebGLRenderTarget(1, 1, { type: T.HalfFloatType, samples: mobile ? 2 : 4 });
+      const composer = new EffectComposer(renderer, renderTarget); own(() => composer.dispose());
+      const basePass = new RenderPass(world, camera), ao = new GTAOPass(world, camera, 256, 256), output = new OutputPass();
+      own(() => { basePass.dispose(); ao.dispose(); output.dispose(); });
+      ao.blendIntensity = .82; ao.updateGtaoMaterial({ radius: .38, distanceExponent: 1.5, thickness: .3, scale: 1, samples: mobile ? 8 : 12 }); ao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 4, samples: 8 });
+      let aoScale = mobile ? .55 : .8;
+      const resizeAo = ao.setSize.bind(ao); ao.setSize = (w: number, h: number) => resizeAo(Math.max(1, Math.floor(w * aoScale)), Math.max(1, Math.floor(h * aoScale)));
+      composer.addPass(basePass); composer.addPass(ao); composer.addPass(output);
+      // Count all geometry/shadow/postprocessing passes, not only the final fullscreen pass.
+      renderer.info.autoReset = false;
+      let contextLost = false, updateVersion = 0;
+      let committed = false, current = latest.current, arch: ReturnType<typeof assets.architecture> | null = null, archKey = "", selected: string | null = latestSelected.current, interiorView = false;
+      const objects = new Map<string, { group: import("three").Group; key: string }>();
+      let frame = 0, renderedFrames = 0, tierWarmSamples = 0; const sampleFrame = activeFrameTiming(); const intervals: number[] = [], renderTimes: number[] = [];
+      type Motion = { start: number; duration: number; moves: { group: import("three").Group; from: import("three").Vector3; to: import("three").Vector3; fromRotation: number; toRotation: number }[] };
+      let transition: Motion | null = null;
+      function clearComparisonGuides() { comparisonGuides.traverse(item => { if (item instanceof T.LineSegments || item instanceof T.Line || item instanceof T.Mesh) item.geometry.dispose(); }); comparisonGuides.clear(); }
+      own(clearComparisonGuides);
+      function rebuildComparisonGuides(active: Scene, alternate?: Scene, mode?: ComparisonMode) {
+        clearComparisonGuides();
+        const changes = alternate ? spatialChanges(mode === "recommended" ? alternate : active, mode === "recommended" ? active : alternate) : [];
+        container!.dataset.comparisonChanges = String(changes.length);
+        if (!alternate || !mode) return;
+        const lineMaterial = mode === "current" ? guideMaterials.current : guideMaterials.recommended;
+        const markerMaterial = mode === "current" ? guideMaterials.currentMarker : guideMaterials.recommendedMarker;
+        for (const change of changes) {
+          const object = active.objects.find(candidate => candidate.id === change.objectId);
+          if (!object) continue;
+          const other = mode === "current" ? change.to : change.from;
+          const outlineGeometry = new T.EdgesGeometry(new T.BoxGeometry(object.width * 1.035, object.height * 1.035, object.depth * 1.035));
+          const outline = new T.LineSegments(outlineGeometry, lineMaterial); outline.position.set(other.x, object.height * .5175, other.z); outline.rotation.y = -other.rotation * Math.PI / 180; comparisonGuides.add(outline);
+          const activePosition = mode === "current" ? change.from : change.to;
+          const path = new T.Line(new T.BufferGeometry().setFromPoints([new T.Vector3(activePosition.x, .025, activePosition.z), new T.Vector3(other.x, .025, other.z)]), lineMaterial); comparisonGuides.add(path);
+          const radius = Math.max(.07, Math.min(.14, Math.min(object.width, object.depth) * .12));
+          const marker = new T.Mesh(new T.RingGeometry(radius * .72, radius, 32), markerMaterial); marker.rotation.x = -Math.PI / 2; marker.position.set(other.x, .032, other.z); comparisonGuides.add(marker);
+        }
+      }
+      function cutaway() {
+        if (!arch) return;
+        const { width: w, depth: d } = current.room;
+        arch.walls.get("top")!.visible = interiorView || camera.position.z >= 0;
+        arch.walls.get("bottom")!.visible = interiorView || camera.position.z <= d;
+        arch.walls.get("left")!.visible = interiorView || camera.position.x >= 0;
+        arch.walls.get("right")!.visible = interiorView || camera.position.x <= w;
+        arch.ceiling.visible = interiorView;
+      }
+      function draw(now: number) {
+        frame = 0; if (stopped || contextLost) return;
+        try { renderFrame(now); } catch {
+          contextLost = true; resources.dispose(); runtime.current = null;
+          if (!stopped) { setReady(false); setFailed(true); }
+        }
+      }
+      function renderFrame(now: number) {
+        if (transition) {
+          const p = Math.min(1, (now - transition.start) / transition.duration), eased = p * p * (3 - 2 * p);
+          for (const move of transition.moves) { move.group.position.lerpVectors(move.from, move.to, eased); move.group.rotation.y = move.fromRotation + (move.toRotation - move.fromRotation) * eased; }
+          if (p === 1) transition = null;
+        }
+        const interval = sampleFrame(now, !!transition); if (interval !== null) { if (tierWarmSamples > 0) tierWarmSamples--; else { intervals.push(interval); if (intervals.length > 60) intervals.shift(); } }
+        container!.dataset.selectedObject = selected ?? "";
+        if (selected && objects.has(selected)) { selection.box.setFromObject(objects.get(selected)!.group); selection.visible = true; } else selection.visible = false;
+        // Projection runs before render(), so refresh the camera matrix explicitly.
+        camera.updateMatrixWorld();
+        const anchor = guideRef.current?.objectId;
+        const anchored = anchor ? objects.get(anchor)?.group : undefined;
+        if (guideMarker.current) {
+          const point = anchored ? new T.Box3().setFromObject(anchored).getCenter(new T.Vector3()).project(camera) : null;
+          const visible = point && point.z >= -1 && point.z <= 1 && Math.abs(point.x) < .96 && Math.abs(point.y) < .96;
+          guideMarker.current.hidden = !visible;
+          if (point && visible) {
+            guideMarker.current.style.left = `${(point.x + 1) * 50}%`;
+            guideMarker.current.style.top = `${(1 - point.y) * 50}%`;
+            guideMarker.current.dataset.anchorObject = anchor!;
+          }
+        }
+        cutaway(); renderer.info.reset(); const renderStarted = performance.now(); contact.render(); if (ao.enabled) composer.render(); else renderer.render(world, camera); const cpuMs = performance.now() - renderStarted; renderedFrames++; if (renderedFrames === 1) container!.dataset.firstRenderMs = cpuMs.toFixed(2); if (renderedFrames > 4) renderTimes.push(cpuMs); if (renderTimes.length > 60) renderTimes.shift();
+        const renderP90 = [...renderTimes].sort((a,b) => a-b)[Math.floor(renderTimes.length * .9)] ?? 0; container!.dataset.renderMsP90 = renderP90.toFixed(2); container!.dataset.motion = transition ? "moving" : "settled";
+        container!.dataset.textureCount = String(renderer.info.memory.textures); container!.dataset.geometryCount = String(renderer.info.memory.geometries); container!.dataset.textureBytesEstimate = String(Math.round(surfaces.textureBytesEstimate + 2 * 256 * 256 * 4));
+        container!.dataset.drawCalls = String(renderer.info.render.calls); container!.dataset.triangles = String(renderer.info.render.triangles); container!.dataset.camera = camera.position.toArray().map(n => n.toFixed(3)).join(",");
+        if (committed) { container!.dataset.objectCount = String(objects.size); container!.dataset.sceneState = JSON.stringify(current.objects.map(o => ({ id: o.id, x: o.x, z: o.z, rotation: o.rotation }))); }
+        if (intervals.length >= 4) {
+          const sorted = [...intervals].sort((a, b) => a - b), p90 = sorted[Math.floor(sorted.length * .9)]; if (intervals.length >= 12) { container!.dataset.frameP90 = p90.toFixed(1); container!.dataset.sampledFrames = String(intervals.length); }
+          if (container!.dataset.effectiveQuality === "performance" && shouldUseImmediateMotion(p90, intervals.length)) {
+            schedulerConstrained = true; container!.dataset.schedulerPolicy = "immediate";
+            if (transition) { for (const move of transition.moves) { move.group.position.copy(move.to); move.group.rotation.y = move.toRotation; } transition = null; schedule(); }
+          } else if (!qualityReduced && shouldReduceQuality(p90, intervals.length, renderP90)) { qualityReduced = true; container!.dataset.beforeFallbackFrameP90 = p90.toFixed(1); container!.dataset.beforeFallbackRenderP90 = renderP90.toFixed(2); profile("performance"); setQuality("performance"); }
+        }
+        if (transition) schedule();
+      }
+      function schedule() { if (!frame && !contextLost) frame = requestAnimationFrame(draw); }
+      function fit(top = false) { interiorView = false; setViewFallback(false); container!.dataset.cameraMode = top ? "top" : "perspective"; camera.fov = 38; camera.updateProjectionMatrix(); const fitted = roomCameraFit(current.room, camera.aspect, top); camera.position.copy(fitted.position); orbit.target.copy(fitted.target); orbit.update(); schedule(); }
+      function reset() { fit(); }
+      function publishResolution() {
+        const cssWidth = Math.max(1, Math.round(container!.clientWidth)), cssHeight = Math.max(1, Math.round(container!.clientHeight));
+        const buffer = renderer.getDrawingBufferSize(new T.Vector2());
+        const next = { cssWidth, cssHeight, bufferWidth: Math.round(buffer.x), bufferHeight: Math.round(buffer.y), scale: pixelRatio };
+        container!.dataset.cssWidth = String(next.cssWidth); container!.dataset.cssHeight = String(next.cssHeight);
+        container!.dataset.renderWidth = String(next.bufferWidth); container!.dataset.renderHeight = String(next.bufferHeight); container!.dataset.renderScale = next.scale.toFixed(2);
+        if (!stopped) setResolution(previous => previous && JSON.stringify(previous) === JSON.stringify(next) ? previous : next);
+      }
+      function profile(value: string) {
+        const tier = value === "auto" ? mobile ? "balanced" : "high" : value;
+        tierWarmSamples = 2; intervals.length = 0; renderTimes.length = 0; delete container!.dataset.frameP90; delete container!.dataset.sampledFrames;
+        pixelRatio = tier === "ultra" ? Math.min(2.5, Math.max(2, devicePixelRatio)) : tier === "high" ? Math.min(2, Math.max(1.5, devicePixelRatio)) : tier === "balanced" ? Math.min(1.5, Math.max(1.25, devicePixelRatio)) : 1;
+        windowFill.visible = current.windows.length > 0 && tier !== "performance"; world.environmentIntensity = tier === "ultra" ? .52 : tier === "high" ? .46 : tier === "balanced" ? .40 : .50;
+        practical.visible = tier === "ultra" || tier === "high";
+        const lightweight = tier === "performance";
+        contact.enabled(!lightweight); contact.resolution(tier === "ultra" && !mobile ? 1024 : tier === "balanced" ? 256 : 512);
+        ao.enabled = tier !== "performance"; aoScale = tier === "ultra" ? 1 : tier === "high" ? .8 : .55;
+        ao.updateGtaoMaterial({ samples: tier === "ultra" ? 24 : tier === "high" ? 12 : 8 });
+        renderer.toneMappingExposure = tier === "ultra" ? 1.04 : tier === "high" ? 1.02 : 1;
+        renderer.setPixelRatio(pixelRatio); composer.setPixelRatio(pixelRatio); const shadowSize = tier === "ultra" && !mobile ? 4096 : tier === "ultra" || tier === "high" ? 2048 : 1024; sun.shadow.mapSize.set(shadowSize, shadowSize); sun.shadow.intensity = tier === "ultra" ? .52 : tier === "high" ? .46 : .38; sun.shadow.map?.dispose(); sun.shadow.map = null; sun.castShadow = !lightweight;
+        container!.dataset.shadowMode = lightweight ? "performance-unshadowed" : "directional-contact";
+        container!.dataset.previewProfile = tier === "ultra" ? "ultra-preview" : tier;
+        container!.dataset.effectiveQuality = tier; publishResolution(); schedule();
+      }
+      function update(next: Scene, comparison?: Scene, mode?: ComparisonMode) {
+        if (geometryIssues(next).length) return; // Last valid geometry stays visible; no invalid input reaches WebGL.
+        if (transition) { for (const move of transition.moves) { move.group.position.copy(move.to); move.group.rotation.y = move.toRotation; } transition = null; }
+        const previous = current; current = next;
+        const key = JSON.stringify([next.room, next.walls, next.doors, next.windows]);
+        if (key !== archKey) {
+          if (arch) { world.remove(arch.group); assets.disposeGeometry(arch.group); }
+          arch = assets.architecture(next, materials); world.add(arch.group); archKey = key;
+          const { width: w, depth: d, height: h } = next.room, span = Math.max(w, d);
+          // Directional daylight enters the first observed window. It is illustrative light, not a sun-path claim.
+          const opening = next.windows[0];
+          const windowX = opening ? opening.wall === "left" ? 0 : opening.wall === "right" ? w : opening.offset + opening.width / 2 : w * .6;
+          const windowZ = opening ? opening.wall === "top" ? 0 : opening.wall === "bottom" ? d : opening.offset + opening.width / 2 : 0;
+          const windowY = opening ? (opening.sill ?? .85) + (opening.height ?? 1.2) * .65 : h * .75;
+          const focalObject = next.objects.find(object => object.kind === "bed" || object.kind === "sofa");
+          const lamp = next.objects.find(object => object.kind === "lighting");
+          if (lamp) practical.position.set(lamp.x, lamp.height * .78, lamp.z);
+          practical.visible = !!lamp && ["high", "ultra"].includes(container!.dataset.effectiveQuality ?? "");
+          sun.target.position.set(focalObject?.x ?? w / 2, 0, focalObject?.z ?? d / 2);
+          const through = new T.Vector3(windowX, windowY, windowZ).sub(sun.target.position);
+          sun.position.copy(sun.target.position).addScaledVector(through, 3);
+          windowFill.visible = !!opening && container!.dataset.effectiveQuality !== "performance";
+          if (opening) { windowFill.width = opening.width; windowFill.height = opening.height ?? 1.2; windowFill.position.set(windowX, windowY, windowZ); windowFill.lookAt(w / 2, h * .45, d / 2); }
+          Object.assign(sun.shadow.camera, { left: -span, right: span, top: span, bottom: -span, near: .1, far: span * 5 + h }); sun.shadow.camera.updateProjectionMatrix();
+          const studioSize = Math.max(18, span * 4); ground.scale.set(studioSize, studioSize, 1); ground.position.x = w / 2; ground.position.z = d / 2;
+          grounding.scale.set(w + 1.3, d + 1.3, 1); grounding.position.x = w / 2; grounding.position.z = d / 2;
+          for (const map of [materials.floor.map, materials.floor.normalMap, materials.floor.aoMap, materials.floor.roughnessMap, materials.floor.metalnessMap]) map?.repeat.set(w / 2.1, d / 2.1);
+          if (JSON.stringify(previous.room) !== JSON.stringify(next.room)) reset();
+        }
+        rebuildComparisonGuides(next, comparison, mode);
+        const moves: Motion["moves"] = [];
+        for (const [id, value] of objects) if (!next.objects.some(o => o.id === id)) { world.remove(value.group); assets.disposeGeometry(value.group); objects.delete(id); }
+        for (const object of next.objects) {
+          const signature = JSON.stringify([object.kind, object.width, object.depth, object.height]); let entry = objects.get(object.id);
+          if (!entry || entry.key !== signature) {
+            if (entry) { world.remove(entry.group); assets.disposeGeometry(entry.group); }
+            const group = library.make(object, materials); world.add(group); entry = { group, key: signature }; objects.set(object.id, entry);
+          } else {
+            const from = entry.group.position.clone(), to = new T.Vector3(object.x, 0, object.z), fromRotation = entry.group.rotation.y, toRotation = -object.rotation * Math.PI / 180;
+            // Only tween a verified clear straight translation; rotations and blocked paths snap.
+            const source = previous.objects.find(o => o.id === object.id);
+            const clear = !!source && source.rotation === object.rotation && !reduced.matches && clearTranslation(previous, source, object.x, object.z);
+            if (clear && from.distanceTo(to) > .001) moves.push({ group: entry.group, from, to, fromRotation, toRotation });
+            else { entry.group.position.copy(to); entry.group.rotation.y = toRotation; }
+          }
+        }
+        // Simultaneous independent sweeps could cross: animate only one movement at a time.
+        const visible = isInViewport(container!.getBoundingClientRect(), innerWidth, innerHeight);
+        const softwareSnap = moves.length === 1 && visible && softwareRenderer;
+        const adaptiveSnap = moves.length === 1 && visible && !softwareRenderer && schedulerConstrained;
+        if (moves.length === 1 && visible && !softwareRenderer && !schedulerConstrained) {
+          transition = { moves, start: performance.now(), duration: 650 };
+          container!.dataset.motionPolicy = "animated";
+        } else {
+          transition = null;
+          for (const move of moves) { move.group.position.copy(move.to); move.group.rotation.y = move.toRotation; }
+          container!.dataset.motionPolicy = moves.length === 1 ? softwareSnap ? "software-snap" : adaptiveSnap ? "adaptive-snap" : "offscreen-snap" : "direct";
+        }
+        contact.update(next, objects, transition?.moves[0]?.group.userData.objectId); committed = true;
+        if (softwareSnap || adaptiveSnap) { if (frame) cancelAnimationFrame(frame); frame = 0; draw(performance.now()); } else schedule();
+      }
+      const ray = new T.Raycaster(), pointer = new T.Vector2(); let down: { x: number; y: number } | null = null;
+      const onDown = (event: PointerEvent) => { down = { x: event.clientX, y: event.clientY }; };
+      const onUp = (event: PointerEvent) => {
+        if (!down || Math.hypot(event.clientX - down.x, event.clientY - down.y) > 5) return; down = null;
+        const rect = renderer.domElement.getBoundingClientRect(); pointer.set((event.clientX - rect.left) / rect.width * 2 - 1, -(event.clientY - rect.top) / rect.height * 2 + 1); ray.setFromCamera(pointer, camera);
+        const hit = ray.intersectObjects([...objects.values()].map(v => v.group), true)[0]; if (!hit) return;
+        let root = hit.object; while (root.parent && !root.userData.objectId) root = root.parent;
+        if (root.userData.objectId) { selected = root.userData.objectId as string; selectCallback.current?.(selected); schedule(); }
+      };
+      const onLoss = (event: Event) => { event.preventDefault(); contextLost = true; resources.dispose(); if (!stopped) { runtime.current = null; setFailed(true); } };
+      renderer.domElement.addEventListener("pointerdown", onDown); renderer.domElement.addEventListener("pointerup", onUp); renderer.domElement.addEventListener("webglcontextlost", onLoss); const onOrbit = () => { camera.position.y = Math.max(.18, camera.position.y); orbit.target.y = Math.max(0, Math.min(current.room.height, orbit.target.y)); schedule(); }; orbit.addEventListener("change", onOrbit);
+      let readyAtLeastOnce = false;
+      const resize = new ResizeObserver(() => { const w = container.clientWidth, h = container.clientHeight; if (!w || !h) return; const changed = Math.abs(camera.aspect - w / h) > .1; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); composer.setSize(w, h); publishResolution(); if (changed || !readyAtLeastOnce) reset(); else schedule(); }); resize.observe(container);
+      own(() => { if (frame) cancelAnimationFrame(frame); resize.disconnect(); orbit.removeEventListener("change", onOrbit); renderer.domElement.removeEventListener("pointerdown", onDown); renderer.domElement.removeEventListener("pointerup", onUp); renderer.domElement.removeEventListener("webglcontextlost", onLoss); sun.shadow.map?.dispose(); });
+      async function requestUpdate(next: Scene, comparison?: Scene, mode?: ComparisonMode) {
+        const version = ++updateVersion; setAssetLoading(true);
+        try { await library.ensure(next.objects); if (!stopped && !contextLost && version === updateVersion) update(next, comparison, mode); }
+        catch { if (!stopped && !contextLost && version === updateVersion) { resources.dispose(); runtime.current = null; setFailed(true); } }
+        finally { if (!stopped && version === updateVersion) setAssetLoading(false); }
+      }
+      function inside() {
+        const fitted = interiorCameraFit(current, camera.aspect); camera.fov = fitted.fov; camera.updateProjectionMatrix(); camera.position.copy(fitted.position); orbit.target.copy(fitted.target);
+        interiorView = fitted.mode === "interior"; setViewFallback(!interiorView); container!.dataset.cameraMode = fitted.mode; orbit.update(); schedule();
+      }
+      runtime.current = { update(next, comparison, mode) { void requestUpdate(next, comparison, mode); }, profile, select(id) { selected = id; schedule(); }, reset,
+        perspective() { fit(false); },
+        top() { fit(true); },
+        recommended: inside,
+        zoom(n) { camera.position.sub(orbit.target).multiplyScalar(n).add(orbit.target); orbit.update(); schedule(); },
+        turn() { camera.position.sub(orbit.target).applyAxisAngle(new T.Vector3(0, 1, 0), Math.PI / 8).add(orbit.target); orbit.update(); schedule(); },
+        dispose: resources.dispose,
+      };
+      await requestUpdate(latest.current, latestComparison.current, latestComparisonMode.current); if (stopped || contextLost || !runtime.current) return;
+      profile("auto");
+      const w = container.clientWidth, h = container.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); composer.setSize(w, h); publishResolution(); reset(); readyAtLeastOnce = true; setReady(true);
+    }
+    mount().catch(() => { partialCleanup(); if (!stopped) { runtime.current = null; setFailed(true); } });
+    return () => { stopped = true; partialCleanup(); runtime.current = null; };
+  }, [ko, attempt]);
+  return <div>
+    {failed && <><p role="status">{ko ? "이 기기에서는 3D를 표시하지 못했습니다. 아래 객체 목록과 분석 결과로 계속 이용하세요." : "3D is unavailable on this device. Continue with the object list and text analysis below."}</p><button onClick={() => { setFailed(false); setReady(false); setQuality("auto"); setAttempt(value => value + 1); }}>{ko ? "3D 다시 시도" : "Retry 3D"}</button></>}
+    <div className={styles.sceneFrame}>
+      {(!ready || assetLoading) && !failed && <p className={styles.sceneLoading} data-space-loading role="status">{ko ? "방의 재질과 3D 가구를 불러오고 있습니다…" : "Loading room materials and 3D furniture…"}</p>}
+      <div ref={host} className={styles.canvas} hidden={failed} data-quality={quality} />
+      {!failed && <div className={styles.compass} aria-label={`${ko ? "평면도 기준 북쪽" : "North relative to plan"}: ${scene.orientation.northDegrees}°`}><span style={{ transform: `rotate(${scene.orientation.northDegrees}deg)` }}>↑</span>{ko ? "북" : "N"}<small>{scene.orientation.northDegrees}° · {ko ? "평면도 기준" : "plan"}</small></div>}
+      {!failed && resolution && <output className={styles.renderMeter} aria-label={ko ? "실제 3D 렌더 해상도" : "Actual 3D render resolution"}>{ko ? "실제 렌더" : "Actual render"} <strong>{resolution.bufferWidth}×{resolution.bufferHeight}</strong><small>{resolution.cssWidth}×{resolution.cssHeight} 화면 · {resolution.scale.toFixed(2)}×</small></output>}
+      <span ref={guideMarker} className={styles.guideMarker} hidden aria-hidden="true">1</span>
+    </div>
+    {!failed && guide && <SpaceGuideNarration guide={guide} locale={locale} />}
+    <div className={styles.toolbar} aria-label={ko ? "3D 보기 조작" : "3D view controls"}>
+      <label className={styles.qualityChoice}>{ko ? "화질" : "Quality"}<select value={quality} onChange={e => { setQuality(e.target.value); runtime.current?.profile(e.target.value); }}>{["auto", "ultra", "high", "balanced", "performance"].map(value => <option key={value} value={value}>{({auto:ko?"자동":"Auto",ultra:ko?"울트라 미리보기":"Ultra Preview",high:"High",balanced:"Balanced",performance:ko?"가벼운 효과":"Performance"})[value]}</option>)}</select></label>
+      <button type="button" disabled={failed} aria-pressed={cameraChoice === "perspective"} onClick={() => { setCameraChoice("perspective"); runtime.current?.perspective(); }}>{ko ? "원근 시점" : "Perspective"}</button>
+      <button type="button" disabled={failed} aria-pressed={cameraChoice === "top"} onClick={() => { setCameraChoice("top"); runtime.current?.top(); }}>{ko ? "위에서" : "Top"}</button>
+      <button type="button" disabled={failed} aria-pressed={cameraChoice === "recommended"} onClick={() => { setCameraChoice("recommended"); runtime.current?.recommended(); }}>{ko ? "추천 시점" : "Recommended"}</button>
+      <button type="button" disabled={failed} onClick={() => { setCameraChoice("perspective"); runtime.current?.reset(); }}>{ko ? "시점 초기화" : "Reset"}</button>
+      <button type="button" disabled={failed} onClick={() => runtime.current?.turn()}>{ko ? "회전" : "Rotate view"}</button>
+      <button type="button" disabled={failed} aria-label={ko ? "확대" : "Zoom in"} onClick={() => runtime.current?.zoom(.85)}>＋</button>
+      <button type="button" disabled={failed} aria-label={ko ? "축소" : "Zoom out"} onClick={() => runtime.current?.zoom(1.15)}>−</button>
+    </div>
+    {viewFallback && <p role="status" className={styles.hint}>{ko ? "이 배치를 방 안에서 한눈에 담기 어려워 전체 보기로 전환했습니다." : "This layout cannot fit in a clear inside view. Showing the full room instead."}</p>}
+    <p className={styles.hint}>{ko ? "가구를 누르면 선택 · 한 손가락 회전 · 두 손가락 확대·이동. 문·창 높이를 입력하지 않으면 표준 크기로 표현합니다." : "Tap furniture to select · One finger orbit · Two fingers zoom/pan. Unmeasured door/window heights use labelled standard estimates."}</p>
+    <p className={styles.hint}>{ko ? "가구 디자인·마감·조명은 시각화용 스타일입니다. 실제 방에 있는 객체와 확인한 크기·위치만 공간 분석에 사용합니다." : "Furniture design, finishes and lighting are visualization styles. Spatial analysis uses the objects present and the dimensions/positions you verify."}</p>
+    <SpaceAssetCredits locale={locale} />
+  </div>;
+}

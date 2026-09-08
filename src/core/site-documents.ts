@@ -9,6 +9,8 @@ import { resolvePublicAppUrl } from "@/core/site-url";
 import { brandNameKo, brandProductDescriptor } from "@/core/brand";
 
 const PRIVATE_PATHS = [
+  "/ko/space/workspace",
+  "/en/space/workspace",
   "/api/",
   "/auth/",
   "/ko/admin",
@@ -84,7 +86,7 @@ export function createSitemapDocument(
   const baseUrl = resolvePublicAppUrl(environment.NEXT_PUBLIC_APP_URL);
   const lastModified = new Date();
   const establishedRoutes = (["ko", "en"] as const).flatMap((locale) =>
-    PUBLIC_ROUTES.map((route) => ({
+    [...PUBLIC_ROUTES, ...(environment.SPACE_ENABLED === "true" ? ["/space"] : [])].map((route) => ({
       url: new URL(`/${locale}${route}`, baseUrl).toString(),
       lastModified,
       changeFrequency: route === "/daily-fortune" ? "daily" as const : route === "" ? "weekly" as const : "monthly" as const,

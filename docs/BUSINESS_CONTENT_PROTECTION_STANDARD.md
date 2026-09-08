@@ -2,6 +2,8 @@
 
 Version: 1.0.0 · 2026-08-30
 
+Current truthful product level: **B**. Promote to A only after the migration, secrets, retention automation, managed WAF/bot rules, two-account isolation, evidence export, and deployment verification below all pass in production.
+
 ## Classification
 
 Public content includes the home page, marketing/education pages, controlled samples, brand information, public product pages, and search discovery documents. Protected content includes purchased reports, pattern profiles and graphs, Reality Check history, life events, user evidence, relationship data, exports, internal prompts/rules, operator tools, and proprietary structured mappings.

@@ -62,7 +62,10 @@ test("family comparison keeps consent and renders all eight operating areas", as
   await page.locator("#compatibility-birth-a").fill("1994-11-04");
   await page.locator("#compatibility-birth-b").fill("1988-03-17");
   await page.locator("#compatibility-type").selectOption("family");
-  await page.getByRole("checkbox").check();
+  const consent = page.getByRole("checkbox");
+  await expect(consent).toBeVisible();
+  await consent.evaluate((element: HTMLInputElement) => element.click());
+  await expect(consent).toBeChecked();
   await page.getByRole("button", { name: "관계 패턴 비교" }).click();
 
   await expect(page.locator("#compatibility-result")).toContainText("가족");

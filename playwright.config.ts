@@ -11,6 +11,8 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 2 : 0,
+  // Retries collect failure evidence; they must not turn flaky behavior green.
+  failOnFlakyTests: Boolean(process.env.CI),
   reporter: "html",
   use: {
     baseURL,

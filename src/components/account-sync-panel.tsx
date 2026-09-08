@@ -43,10 +43,11 @@ const copy = {
     download: "서버 기록을 이 기기로 가져오기",
     export: "서버 기록 JSON 내보내기",
     delete: "서버에 저장된 내 기록 삭제",
-    deleteConfirm: "서버의 프로필, 동의 기록, 타로 기록, Reality Check를 삭제할까요? 로그인 계정 자체는 유지됩니다.",
+    deleteConfirm: "서버의 프로필, 동의 기록, 타로 기록, Reality Check, 3D 공간과 사진을 삭제할까요? 로그인 계정 자체는 유지됩니다.",
     synced: "기기 기록이 서버와 동기화되었습니다.",
     restored: "서버 기록을 검증한 뒤 이 기기에 저장했습니다.",
     deleted: "서버에 저장된 기록을 삭제했습니다. 로그인 계정은 유지됩니다.",
+    imageDeletionPending: "공간 사진은 즉시 접근이 차단되며, 저장소 정리와 삭제 확인은 순차적으로 진행됩니다.",
     failed: "요청을 완료하지 못했습니다. 잠시 후 다시 시도해주세요.",
     privacy: "기록은 로그인한 소유자만 접근할 수 있으며, 원시 질문이나 결과를 분석·마케팅 서비스로 보내지 않습니다.",
   },
@@ -63,10 +64,11 @@ const copy = {
     download: "Restore server records to this device",
     export: "Export server records as JSON",
     delete: "Delete my server records",
-    deleteConfirm: "Delete your server profile, consent receipts, tarot history, and Reality Checks? Your login identity will remain.",
+    deleteConfirm: "Delete your server profile, consent receipts, tarot history, Reality Checks, and 3D rooms and photos? Your login identity will remain.",
     synced: "Device records were synchronized with the server.",
     restored: "Server records were validated and saved on this device.",
     deleted: "Server records were deleted. Your login identity remains.",
+    imageDeletionPending: "Space photos are inaccessible immediately. Storage removal and deletion verification continue in the background.",
     failed: "The request could not be completed. Try again shortly.",
     privacy: "Only the signed-in owner can access these records. Raw questions and outcomes are not sent to analytics or marketing services.",
   },
@@ -155,7 +157,7 @@ export function AccountSyncPanel({ locale, account, configured }: Props) {
     });
     setBusy(false);
     if (!response.ok) setError(t.failed);
-    else setMessage(t.deleted);
+    else { const result = await response.json(); setMessage(result.spaceImageDeletionPending ? `${t.deleted} ${t.imageDeletionPending}` : t.deleted); }
   }
 
   if (!configured) {

@@ -4,9 +4,9 @@
 
 ## Current scope
 
-Version 0.18.2 provides a web-first, guest-first Korean/English application with:
+Version 0.20.2 provides a web-first, guest-first Korean/English application with:
 
-- a mobile-first premium homepage that introduces the InnerArc pattern model, previews a result, explains four analysis fields, and leads clearly into the existing free calculation flow;
+- a mobile-first Korean editorial homepage that connects deterministic self analysis, sourced public comparison, relationship analysis, optional 3D Space, and Reality Check through real product evidence and clear symbolic-claim boundaries;
 - deterministic Pythagorean numerology and calculation evidence;
 - an optional free Daily Flow that uses only birth month/day plus the device-local date,
   stays stable for the day, updates on the next local date, and stores its setting only
@@ -130,3 +130,7 @@ Interface and funnel rules, including the checklist that a "simplification" has 
 [Home funnel and interface design rules](docs/Home-Funnel-Design-Rules.md).
 
 Read [Continuation State](docs/Continuation-State.md) first when resuming the project. The strict keep/improve/hold assessment is in [Feature Audit](docs/Feature-Audit.md). Operational boundaries are in [Operations Runbook](docs/Operations-Runbook.md), crisis behavior is in [Crisis Response Protocol](docs/Crisis-Response-Protocol.md), and the local security baseline is in [Security Review](docs/Security-Review.md).
+
+## 3D Space V1 (draft, default off)
+
+An additive ko/en space introduction and owner workspace are implemented behind `SPACE_ENABLED` and `SPACE_AI_ENABLED`. Production enablement remains held for premium visual acceptance, hosted isolation/storage checks and verified model configuration. See [Space V1](docs/Space-Intelligence-V1.md), [current evidence](docs/Space-Project-State.md) and [failure ledger](docs/Space-Failure-Ledger.md). Existing payments, entitlement history and symbolic calculation engines remain authoritative.

@@ -30,5 +30,7 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: code }, { status });
   }
 
-  return NextResponse.json(data);
+  // The additive database trigger atomically revokes access and enqueues private
+  // image removal. A storage outage must not delay or invalidate this receipt.
+  return NextResponse.json({ ...data, spaceImageDeletionPending: parsedScope.data === "all_data" });
 }

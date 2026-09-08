@@ -1,5 +1,6 @@
 "use client";
 
+import { HydrationGate } from "./hydration-gate";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import {
@@ -197,7 +198,7 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
             <strong>태령당</strong>
             <small>{d.brandTagline}</small>
           </Link>
-          <Link className="locale-switch" href={`/${otherLocale}/${routeName}`}>
+          <Link className="locale-switch" href={`/${otherLocale}/${routeName}`} prefetch={false}>
             {otherLocale === "ko" ? "한국어" : "English"}
           </Link>
         </header>
@@ -219,7 +220,9 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
             </Link>
           </div>
           <div className="hero-guide">
-            <img
+            {/* Video poster must use the same direct asset as the video fallback. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
               alt=""
               aria-hidden="true"
               className="guide-clip guide-clip-fallback inline-video-fallback"
@@ -261,7 +264,7 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
 
         <section className="form-section cinema-intake" id="onboarding" aria-labelledby="onboarding-title">
           <div className="cinema-intake-art" aria-hidden="true" />
-          <form className="form-card" onFocusCapture={trackFreeStart} onSubmit={submit} noValidate>
+          <form className="form-card" onFocusCapture={trackFreeStart} onSubmit={submit} noValidate><HydrationGate locale={locale}>
             <p className="eyebrow">01 — {d.eyebrow}</p>
             <h2 id="onboarding-title">{d.start}</h2>
 
@@ -353,7 +356,7 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
             <p className="legal-note">
               <Link href={`/${locale}/terms`}>{locale === "ko" ? "출시 전 이용조건" : "Pre-release terms"}</Link>
             </p>
-          </form>
+          </HydrationGate></form>
         </section>
 
         {result && profile && integratedProfile && lifestyle && context && (

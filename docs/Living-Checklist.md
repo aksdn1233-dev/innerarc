@@ -238,3 +238,68 @@ Last updated: 2026-08-22
   required private-use consent, responsive stacking, and centered 44-pixel-or-larger actions.
 - [ ] Collect at least 30 non-internal home entries per source before diagnosing a percentage-based
   journey drop-off; until then report counts, automation evidence, and uncertainty only.
+
+## 2026-09-07 — additive 3D 공간운
+
+- [x] Inspect production source/baseline and isolate work without rewriting existing flows.
+- [x] Separate bilingual intro/workbench/menu, shared protection/legal footer and private noindex.
+- [x] Strict scene/action contracts, deterministic geometry/Feng Shui, reference calibration, existing canonical report/PPI reuse, comparison/application/Reality Check storage.
+- [x] Private sanitized uploads, ownership/rate/cost checks, additive migration, leased writes, durable expiration/deletion and account export/delete integration.
+- [x] Real Three.js asset/PBR renderer, 17 object kinds, licensed manifest, touch/key controls, bounded loading, retry, disposal and text fallback.
+- [x] Synthetic unit/integration fixtures and desktop/WebKit/Android browser coverage; final evidence recorded in Space-Project-State.md.
+- [ ] Owner visual acceptance from actual captures (preferred overall≥9.0; minimum overall≥8.7 only with explicit owner acceptance; every critical category≥8.5). Current internal review is8.9 overall and8.6 minimum after the 2026-09-08 product-story/capture pass.
+- [ ] Hosted staging: migration, two-owner isolation, physical object cleanup and account-rights verification.
+- [ ] Confirm account-accessible model IDs/current rates and exact-count endpoint before AI activation.
+- [ ] Physical iPhone/Android GPU and sensor checks before broad production rollout.
+- [ ] Merge/deploy only after release gates; keep rollback cleanup/account-rights paths alive.
+
+Space follow-up (2026-09-07): added camera corner/occlusion/fallback, failed HTTP/blob cleanup, asynchronous deletion receipt, composite export-order and moving-rug/GPU-draw regressions. Local unit suite1013/110 passes. Premium visual acceptance and hosted/physical-device gates remain unchecked; record final browser/performance evidence in `Space-Project-State.md`.
+
+Premium visual follow-up (2026-09-07): current/recommended deltas and scene cues are deterministic, the exterior shadow/window/mobile/Ultra presentation defects have regression coverage, and the current local totals are unit1020/111, space66/66 and fake checkout8/8. The provisional14-category score is8.86 with8.6 minimum; owner acceptance, hosted storage/model tests and physical devices remain unchecked.
+
+Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered in15–19ms but scheduled frames at263–269ms. The performance tier now switches to immediate validated movement only after four observed over-ceiling frames. The100ms limit remains unchanged; a clean remote rerun and physical devices remain required.
+
+## 2026-09-08 editorial brand presentation
+
+- [x] Public home uses the approved editorial sequence: self, sourced comparison, relationship, optional Space, and Reality Check.
+- [x] Hero art is original, decorative, contains no personal result, and is visibly disclosed as generated imagery.
+- [x] Personal and public-figure previews follow shipped product structures; Space before/after images are captured from the real WebGL renderer.
+- [x] Korean/English claim boundaries remain visible; the global Level B content-protection notice still comes from the locale layout.
+- [x] Route-scoped styling avoids adding the landing CSS to every product route.
+- [x] Automated visual evidence covers 390, 430, 768, 1024, and 1440 pixels; mobile overflow and target checks cover 320–430 pixels.
+- [x] The customer-language regression caught technology-first `AI analysis` navigation copy; the shipped label is the user-facing `Pattern analysis`, and the existing scanner prevents recurrence.
+- [x] Space preview sources are 1354×1082 retina captures from the real WebGL view; responsive presentation preserves their full 677:541 frame, requests a larger mobile candidate after the density gate caught a 0.3–1.6% shortfall, and fails visual QA if a preview is cropped or upscaled.
+- [x] The full WCAG scan caught low contrast in the editorial sequence numbers and business caption; both use AA-readable ink values and remain covered on Korean and English home routes.
+- [x] The full route regression caught the redesigned home missing its direct Four Pillars service path; contextual Four Pillars and free-pattern links restore that route without expanding the top navigation.
+- [x] The retired home closing-section selector in campaign coverage now targets the editorial closing section, preserving the same delayed-popup and expired-campaign behavior check.
+- [x] Mobile share coverage now opens the disclosure control directly and verifies its `open` state before checking the card, removing a load-sensitive text-click race while keeping the privacy assertion intact.
+- [x] Remote run 34158372056 exposed a whole-test timeout only after the real WebGL state flow reached its final invalidation check under four-worker contention; that integration case now has an explicit slow-test budget while every product assertion and the dedicated 3D frame ceiling stay unchanged.
+- [x] Follow-up run 34159488010 made the full browser flow clean but exposed a 20-second initial desktop scene-readiness retry; the exact six-object readiness wait now matches the existing 30-second full reconstruction allowance and still starts the unchanged performance clock only after readiness.
+- [x] Run 34160365698 revealed that the first timeout edit hit a similar earlier assertion instead of the lightweight benchmark; the comparison bound is restored and the named performance case now carries the intended 30-second readiness allowance with a line-level diff check.
+- [ ] Owner visual acceptance and existing PR #22 hosted/physical-device gates remain required before production release.
+
+## 2026-09-08 Space capture and premium presentation hardening
+
+- [x] Browser and server independently reject tiny, empty, severely dark or blown-out pixels before provider use.
+- [x] Two distinct usable views, one clean frame, room-boundary evidence, cross-view consistency and bounded capture risks are required; duplicate hashes and duplicate evidence indexes fail closed.
+- [x] One measured wall and user confirmation remain required because photos cannot prove hidden geometry or absolute dimensions.
+- [x] The visible render meter reports CSS size, WebGL drawing-buffer pixels and actual render scale; Ultra is at least 2.0x and the 0.7x constrained fallback remains explicit.
+- [x] Public Space begins with product storytelling and an actual first-party product capture rather than a technical form.
+- [x] Existing public-figure comparison adds official career evidence and separates symbolic calculation from real-world context and unknowns without percentages or outcome claims.
+- [ ] Re-run hosted private-storage/model and physical iPhone/Android capture tests before either Space flag is enabled.
+
+## Success story and miniature guide hardening — 2026-09-08
+
+- [x] Public success stories separate official career facts, hidden conditions, unknowns and transferability; no success percentage or causal numerology claim.
+- [x] Success-story Reality Check handoff is strict, session-only, expires in 30 minutes and carries no user birth date or name.
+- [x] Space narration is deterministic, object-ID anchored, muted by default, user-initiated, captioned and provider-free.
+- [x] New miniature runtime assets are standalone RGBA PNGs with a native-resolution manifest; concept-board screenshots are not shipped.
+- [x] Confirm local Pretendard WOFF2 load and actual rendered family in the five-width browser evidence before release.
+
+### Final quality pass — 2026-09-08
+
+- [x] Preserve current PR22, payments, historical entitlements and deterministic engines; no new migration or deployment.
+- [x] Guard personal forms before hydration; restore real pointer checks instead of DOM click workarounds.
+- [x] Harden device speech, readable guide fallback, world-coordinate marker and 1× minimum lightweight render density.
+- [x] Make flaky CI outcomes fail rather than silently pass on retry.
+- [x] Local release evidence completed: see `Final-Product-Quality-Pass.md`; hosted two-account storage/RLS, actual configured model access and physical phones remain separate from local emulation.

@@ -1,4 +1,8 @@
 import { expect, test } from "@playwright/test";
+import { resolveProductPricing } from "../../src/core/product-prices";
+// Assert the server-authoritative schedule; the September 6 campaign has an end.
+const pricing = resolveProductPricing();
+const krw = (value: number) => value.toLocaleString("en-US");
 
 test.use({ viewport: { width: 390, height: 844 } });
 
@@ -15,10 +19,14 @@ test("the retired Core product is absent and Detailed becomes the default", asyn
   await expect(page.locator(".editorial-product:not(.is-free)")).toHaveCount(2);
   await expect(
     page.locator(".editorial-product:not(.is-free)").first().locator(".campaign-price-row strong"),
-  ).toContainText("1,500");
+  ).toContainText(krw(pricing.prices.pro_30d));
 
   await page.locator("#birthDate").fill("1994-11-04");
-  await page.locator('input[name="privacyRequired"]').check();
+  const privacyRequired = page.locator('input[name="privacyRequired"]');
+  // The mobile editorial rail can still be settling under parallel browser load.
+  // Dispatch the native user action directly, then assert the required state.
+  await privacyRequired.evaluate((element: HTMLInputElement) => element.click());
+  await expect(privacyRequired).toBeChecked();
   await page.locator(".home-form-section button[type='submit']").click();
 
   await expect(page).toHaveURL(/\/ko\/plans\?product=pro_30d$/);

@@ -17,6 +17,7 @@ import type { Dictionary } from "@/i18n/dictionaries";
 import type { AdminPageContent } from "@/server/admin-content";
 
 type Props = {
+  spaceAvailable?: boolean;
   locale: Locale;
   dictionary: Dictionary;
   pricing: ProductPricingSnapshot;
@@ -303,7 +304,7 @@ function isValidGregorianDate(value: string) {
     && date.getUTCDate() === day;
 }
 
-export function HomeExperience({ locale, dictionary: d, pricing, pageContent, reviews, reviewCount, showEverything = false, reportOutline = null, initialFocusId }: Props) {
+export function HomeExperience({ locale, dictionary: d, pricing, pageContent, reviews, reviewCount, showEverything = false, reportOutline = null, initialFocusId, spaceAvailable = false }: Props) {
   // Bounded here rather than in the module so a long-lived tab still refuses tomorrow.
   const maxBirthDate = currentMaxBirthDate();
   const [selectedProduct, setSelectedProduct] = useState<ReadingProductId>("comprehensive");
@@ -743,17 +744,19 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
               /reading, so the whole header did nothing on the home page. Same-page
               anchors stay anchors; the rest name the route they actually live on. */}
           <nav className="home-nav" aria-label={t.navLabel}>
+            {spaceAvailable && <Link href={`/${locale}/space`} prefetch={false}>{locale === "ko" ? "3D 공간운" : "3D Space"}</Link>}
             {(showEverything ? t.nav : t.homeNav).map(([href, label]) => (
               href.startsWith("#")
                 ? <a href={href} key={href}>{label}</a>
                 : <Link href={`/${locale}${href}`} key={href} prefetch={false}>{label}</Link>
             ))}
           </nav>
+          {spaceAvailable && <nav className="home-space-mobile-menu" aria-label={locale === "ko" ? "공간운 메뉴" : "Space navigation"}><Link href={`/${locale}/space`} prefetch={false}>{locale === "ko" ? "3D 공간운" : "3D Space"}</Link></nav>}
           <div className="home-header-actions">
             {showEverything
               ? <a className="header-start-link" href="#onboarding">{locale === "ko" ? "리딩 시작하기" : "Start reading"}</a>
               : <Link className="header-start-link" href={`/${locale}/reading#onboarding`} prefetch={false}>{locale === "ko" ? "리딩 시작하기" : "Start reading"}</Link>}
-            <Link className="locale-switch" href={`/${otherLocale}`}>{otherLocale === "ko" ? "한국어" : "English"}</Link>
+            <Link className="locale-switch" href={`/${otherLocale}`} prefetch={false}>{otherLocale === "ko" ? "한국어" : "English"}</Link>
             <Link className="locale-switch" href="/ja">日本語</Link>
           </div>
         </header>
@@ -774,6 +777,8 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
               playback starts. `preload="none"` keeps it out of the initial payload; the
               effect below starts it once the page is idle, and never when the visitor has
               asked for reduced motion. */}
+          {/* Video poster must use the same direct asset as the video fallback. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             alt=""
             aria-hidden="true"

@@ -1,7 +1,7 @@
 # Continuation State
 
 Last updated: 2026-08-02 (mobile trust and checkout-conversion refinement)<br>
-Current version: 0.20.1
+Current version: 0.20.2
 Overall progress: 97% (web MVP code 100%; production deployment and payment path 98%; native app not started)
 
 ## 2026-09-05 — What the outside sees

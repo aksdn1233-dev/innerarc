@@ -1,4 +1,8 @@
 import { expect, test } from "@playwright/test";
+import { resolveProductPricing } from "../../src/core/product-prices";
+// Assert the server-authoritative schedule; the September 6 campaign has an end.
+const pricing = resolveProductPricing();
+const krw = (value: number) => value.toLocaleString("en-US");
 
 test("main and free-pattern screens route to the separate Saju service hub", async ({ page }) => {
   await page.goto("/ko");
@@ -23,9 +27,9 @@ test("the Saju service hub exposes real routes and labels unfinished services", 
   await expect(page.getByRole("heading", { name: "지금 필요한 관점의 해석자를 고르세요" })).toBeVisible();
   await expect(page.locator(".numerology-guide-card")).toHaveCount(6);
   await expect(page.getByRole("link", { name: /먼저 내 사주 원국 만들기/ })).toHaveAttribute("href", "/ko/saju");
-  await expect(page.getByRole("link", { name: /먼저 내 사주 원국 만들기/ })).toContainText("1회 1,500원");
+  await expect(page.getByRole("link", { name: /먼저 내 사주 원국 만들기/ })).toContainText(`1회 ${krw(pricing.prices.plus_30d)}원`);
   await expect(page.getByRole("link", { name: /상세 리딩/ })).toHaveAttribute("href", "/ko/plans");
-  await expect(page.getByRole("link", { name: /상세 리딩/ })).toContainText("상세 · 1,500원");
+  await expect(page.getByRole("link", { name: /상세 리딩/ })).toContainText(`상세 · ${krw(pricing.prices.pro_30d)}원`);
   await expect(page.getByRole("link", { name: /상세 리딩/ })).not.toContainText("상세 · 상세");
   await expect(page.getByRole("link", { name: /두 사람 궁합/ })).toHaveAttribute("href", "/ko/compatibility");
   await expect(page.getByRole("link", { name: /오늘의 흐름/ })).toHaveAttribute("href", "/ko/daily-fortune");
@@ -45,7 +49,7 @@ test("the Saju service hub preserves English route truth", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1, name: "What are you most curious about today?" })).toBeVisible();
   await expect(page.locator("main")).toContainText("Visible derivation");
   await expect(page.getByRole("link", { name: /Create my Four Pillars chart/ })).toHaveAttribute("href", "/en/saju");
-  await expect(page.getByRole("link", { name: /Detailed reading/ })).toContainText("Deep · ₩1,500");
+  await expect(page.getByRole("link", { name: /Detailed reading/ })).toContainText(`Deep · ₩${krw(pricing.prices.pro_30d)}`);
   await expect(page.getByRole("link", { name: "한국어" })).toHaveAttribute("href", "/ko/fortune");
 });
 

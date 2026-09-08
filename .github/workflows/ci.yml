@@ -39,7 +39,9 @@ jobs:
           # before the outcome could be told apart from an outage.
           set +e -u -o pipefail
           for attempt in 1 2 3; do
-            output=$(pnpm audit --ignore GHSA-w3rx-r6r6-pgpr --ignore GHSA-5p2g-fcmc-qvqq 2>&1)
+            # pnpm11 --ignore is a configuration mutation, not the audit gate.
+            # The two approved exceptions already live in pnpm-workspace.yaml.
+            output=$(pnpm audit 2>&1)
             status=$?
             printf '%s\n' "$output"
             if [ "$status" -eq 0 ]; then exit 0; fi
@@ -64,8 +66,55 @@ jobs:
           if-no-files-found: error
           retention-days: 30
       - run: pnpm exec playwright install --with-deps chromium webkit
-      - run: pnpm test:e2e --project=chromium --project=mobile --workers=4 --reporter=line
+      - run: pnpm test:e2e --project=chromium --project=mobile --workers=1 --reporter=line
       - name: Verify checkout UI with isolated fake provider shell
         run: pnpm test:e2e tests/e2e/payments.spec.ts --project=chromium --project=mobile --workers=1 --reporter=line
         env:
           E2E_PAYMENT_CHECKOUT: "1"
+
+  space-browser:
+    # Functional/asset/geometry gates and current captures on a separate runner.
+    # Linux-generated pictures are review artifacts, not automatic premium visual approval.
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [desktop-space, iphone-space, android-space]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SPACE_ENABLED: "true"
+      SPACE_AI_ENABLED: "false"
+      PLAYWRIGHT_JSON_OUTPUT_NAME: artifacts/space-browser-results-${{ matrix.project }}.json
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium webkit
+      - name: Run isolated lightweight performance gate
+        run: pnpm exec playwright test -c playwright.space.config.ts --project=${{ matrix.project }} --workers=1 --grep='lightweight tier stays within' --reporter=line,json
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: artifacts/space-browser-results-${{ matrix.project }}-performance.json
+      - name: Run isolated material recovery gate
+        if: always()
+        run: pnpm exec playwright test -c playwright.space.config.ts --project=${{ matrix.project }} --workers=1 --grep='failed material load releases' --reporter=line,json
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: artifacts/space-browser-results-${{ matrix.project }}-recovery.json
+      - name: Run functional and visual space gates
+        if: always()
+        run: pnpm exec playwright test -c playwright.space.config.ts --project=${{ matrix.project }} --workers=1 --grep-invert='lightweight tier stays within|failed material load releases' --update-snapshots=all --reporter=line,json
+        env:
+          PLAYWRIGHT_JSON_OUTPUT_NAME: artifacts/space-browser-results-${{ matrix.project }}-functional.json
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: space-browser-evidence-${{ matrix.project }}
+          path: |
+            artifacts/space-browser-results-${{ matrix.project }}-*.json
+            tests/visual/snapshots
+            test-results
+          if-no-files-found: error
+          retention-days: 14

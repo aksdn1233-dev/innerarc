@@ -3,6 +3,7 @@ import { getSupabasePublicConfig, isSecretSupabaseKey } from "./config";
 
 export function getSupabaseAdminClient(
   environment: Readonly<Record<string, string | undefined>> = process.env,
+  fetchImpl?: typeof fetch,
 ): SupabaseClient | null {
   const publicConfig = getSupabasePublicConfig(environment);
   const serviceRoleKey = environment.SUPABASE_SERVICE_ROLE_KEY?.trim();
@@ -23,6 +24,7 @@ export function getSupabaseAdminClient(
   }
 
   return createClient(publicConfig.url, serviceRoleKey, {
+    ...(fetchImpl ? { global: { fetch: fetchImpl } } : {}),
     auth: {
       autoRefreshToken: false,
       detectSessionInUrl: false,
@@ -43,9 +45,10 @@ export type AdminClientResolution =
  */
 export function resolveSupabaseAdminClient(
   environment: Readonly<Record<string, string | undefined>> = process.env,
+  fetchImpl?: typeof fetch,
 ): AdminClientResolution {
   try {
-    const client = getSupabaseAdminClient(environment);
+    const client = getSupabaseAdminClient(environment, fetchImpl);
     return client ? { client, reason: null } : { client: null, reason: "NOT_CONFIGURED" };
   } catch {
     return { client: null, reason: "MISCONFIGURED" };

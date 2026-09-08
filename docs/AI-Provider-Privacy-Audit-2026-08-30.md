@@ -1,5 +1,7 @@
 # AI provider privacy audit — 2026-08-30
 
+Revalidated 2026-08-31 against current official OpenAI data-control documentation: API data is not used for model training unless the customer opts in; default abuse-monitoring logs may retain customer content for up to 30 days; Responses application state may be retained for at least 30 days unless `store: false` or approved retention controls apply. `store: false` is implemented here, but ZDR/MAM eligibility and project configuration remain external operational evidence and are not inferred from source code.
+
 ## Verified in code
 
 - AI is disabled by default (`AI_PROVIDER=disabled`) and every provider is server-only.

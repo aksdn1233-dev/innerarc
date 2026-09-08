@@ -158,3 +158,19 @@ Browser storage adds shared-device exposure, quota/corruption, and stale-retenti
   from the verified winner after a separate notice and consent, then retained under the approved
   fulfilment/legal schedule. Draw evidence is deleted or minimized after the claim/dispute period,
   subject to qualified legal review.
+
+## Space V1 additive data boundary (feature disabled by default)
+
+Authenticated space projects contain room dimensions, orientation, object coordinates, analysis, applied choices and30/90-day feedback. These are personal records even without a street address. Browser-selected images are resized and re-encoded to JPEG before authenticated server transfer; server decoding/re-encoding strips metadata again. Visible faces, addresses and documents are not automatically redacted. The UI requests explicit AI-image consent; no original image or public photo URL is stored. Owner checks apply before body processing; private server image transfer is not a signed-URL upload flow.
+
+Image metadata access expires after24 hours. Durable background cleanup removes bytes and retains race-recovery tombstones; outages can delay physical removal. Deleting a room/account immediately revokes access and queues storage removal transactionally. Existing deletion receipts never wait for the global storage queue. Export omits image bytes/object paths, preserves owner filtering and uses stable composite-key pagination. Disabling feature writes retains owner export/delete and cleanup. Hosted two-owner/storage verification remains a release gate.
+
+## Space photo quality metadata — 2026-09-08
+
+The browser removes EXIF by canvas re-encoding and the server decodes and re-encodes again before private storage. The server stores only bounded diagnostic numbers (pixel dimensions, luminance, contrast, edge energy, clipping ratios, status and issue codes) beside the existing private asset. It stores no EXIF, camera model, location or diagnostic thumbnail. These checks detect visibly unusable pixels; they do not identify people or prove room geometry. Stored diagnostics follow the asset's owner isolation, 24-hour access expiry, export/deletion and durable physical-cleanup path. Provider processing still requires separate consent and can be disabled independently.
+
+## Success-story and guide-media minimization — 2026-09-08
+
+A success-story action can be copied into Reality Check through the same 30-minute `sessionStorage` handoff used by relationship context. It contains a public story ID, bounded public interpretation, transfer label and action text. The user's birth date, name and calculated structures are excluded. No record exists until the user edits and saves the draft.
+
+Optional Space voice uses the browser's device speech engine only after a user action. The application sends no narration text, voice recording or audio file to an external service and stores no speech preference or audio cache.

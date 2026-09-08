@@ -77,7 +77,7 @@ export function CompatibilityExperience({ locale, copy }: Props) {
             <strong>태령당</strong>
             <small>{copy.brandTagline}</small>
           </Link>
-          <Link className="locale-switch" href={`/${otherLocale}/compatibility`}>
+          <Link className="locale-switch" href={`/${otherLocale}/compatibility`} prefetch={false}>
             {otherLocale === "ko" ? "한국어" : "English"}
           </Link>
         </header>

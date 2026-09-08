@@ -14,18 +14,29 @@ export type CelebrityField = (typeof celebrityFields)[number];
 export type BirthDateConfidence = "confirmed" | "reported" | "uncertain";
 export type StructuralOverlapTier = "strong_overlap" | "some_overlap" | "contrast_forward";
 export type DateStructureId = "lifePath" | "birthday" | "attitude";
+export type EvidenceStatus = "supported" | "partial" | "insufficient";
+export type Transferability = "direct_experiment" | "conditional_experiment" | "context_specific";
+export interface PublicSource { title: string; publisher: string; url: string; accessedAt: string }
+export interface CareerEvidence { date: string; category: "milestone" | "award" | "public_service" | "debut"; claim: LocalizedText; source: PublicSource }
+export interface SuccessStory {
+  evidenceStatus: EvidenceStatus;
+  publicPattern: LocalizedText;
+  hiddenConditions: readonly LocalizedText[];
+  unknowns: readonly LocalizedText[];
+  transferability: Transferability;
+  transferableAction: LocalizedText;
+  comparisonQuestion: LocalizedText;
+  sources: readonly PublicSource[];
+}
 
 export interface CelebrityRecord {
   id: string;
   displayName: LocalizedText;
+  profession: LocalizedText;
   birthDate: string;
   fields: CelebrityField[];
-  source: {
-    title: string;
-    publisher: string;
-    url: string;
-    accessedAt: string;
-  };
+  source: PublicSource;
+  careerEvidence: readonly CareerEvidence[];
   confidence: BirthDateConfidence;
 }
 
@@ -45,6 +56,7 @@ export interface CelebrityMatch {
   similarNote: string;
   differentNote: string;
   evidenceRefs: string[];
+  story: SuccessStory;
 }
 
 export interface CelebrityComparisonResult {
