@@ -4,18 +4,17 @@ import { E2E_ORIGIN } from "./test-origin";
 async function openCoreShare(page: Page, locale: "ko" | "en" = "en") {
   await page.goto(`/${locale}/profile`);
   await page.locator("#birthDate").fill("1994-11-04");
-  await page.getByText(
-    locale === "ko"
-      ? "개인정보 처리 안내를 확인했습니다."
-      : "I have read the privacy notice.",
-  ).click();
+  const privacyConsent = page.locator('input[name="privacyRequired"]');
+  await expect(privacyConsent).toBeVisible();
+  await privacyConsent.evaluate((element: HTMLInputElement) => element.click());
+  await expect(privacyConsent).toBeChecked();
   await page.getByRole("button", {
     name: locale === "ko" ? "내 핵심 패턴 보기" : "Show my core pattern",
   }).click();
-  await page.getByText(
-    locale === "ko" ? "개인정보 안전 공유 카드" : "Privacy-safe share card",
-    { exact: true },
-  ).click();
+  await expect(page.locator(".number-tile").first()).toContainText("11");
+  const sharePanel = page.locator(".share-panel");
+  await sharePanel.locator("summary").evaluate((summary: HTMLElement) => summary.click());
+  await expect(sharePanel).toHaveAttribute("open", "");
 }
 
 async function downloadBytes(download: Download): Promise<Buffer> {

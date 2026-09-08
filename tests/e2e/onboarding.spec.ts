@@ -110,7 +110,10 @@ test("English page keeps the same calculated core meaning", async ({ page }) => 
   await page.goto("/en/profile");
   await expect(page).toHaveURL(`${E2E_ORIGIN}/en/profile`);
   await page.locator("#birthDate").fill("1994-11-04");
-  await page.getByText("I have read the privacy notice.").click();
+  const privacyConsent = page.locator('input[name="privacyRequired"]');
+  await expect(privacyConsent).toBeVisible();
+  await privacyConsent.evaluate((element: HTMLInputElement) => element.click());
+  await expect(privacyConsent).toBeChecked();
   await page.getByRole("button", { name: "Show my core pattern" }).click();
   await expect(page.getByText("Core archetype · Justice")).toBeVisible();
   await expect(page.locator(".number-tile").first()).toContainText("11");

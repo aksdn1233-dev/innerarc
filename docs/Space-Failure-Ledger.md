@@ -226,3 +226,12 @@ The first four-worker recurrence run then reproduced the same moving-control rac
 - **Cause:** Playwright's checkbox action targeted the nested input while its wrapping label intercepted the pointer during responsive movement. This was an individual control-target issue, not runner concurrency.
 - **Fix:** all three Saju regression paths now prove the real consent input is visible, invoke it exactly once and assert its checked state before continuing. Calculation, unknown-time omission and checkout assertions are unchanged.
 - **Prevention:** repeat all three Saju paths under four local workers and require one final complete Node 24 run with zero retries.
+
+### 2026-09-08 — final serial run exposed two remaining unverified consent/disclosure transitions
+
+- **Symptom:** run 34218836824 passed every job but retried the English core-pattern result once and the native-share setup once; both passed on retry. The complete Space matrix remained clean.
+- **Cause:** both setup paths clicked label text without proving the underlying privacy input changed. The share helper then searched for disclosure text without first proving that the deterministic result had rendered, so a missed consent transition consumed the broad test timeout at the wrong step.
+- **Fix:** the English onboarding and shared share-card helper now invoke the real privacy input once, assert its checked state, prove the deterministic `11` result, and open the native `summary` control with an `open` assertion.
+- **Prevention:** repeat both affected mobile paths under four workers before the next complete Node 24 acceptance run; accept the PR only when the complete log contains no retry marker.
+
+The first four-worker repetition then proved the moving disclosure itself could remain outside the mobile viewport during Playwright's scrolling click. The helper now invokes the already-located native `summary` control exactly once, matching the hardened tarot disclosure path, and still requires the real `open` state before continuing.
