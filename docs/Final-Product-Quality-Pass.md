@@ -119,6 +119,8 @@ Not performed: no physical test devices available to this task. Browser emulatio
 
 - Run `34243058630` passed all **85 Space checks / 20 duplicate skips / 0 retries**, but correctly failed two mobile general-suite flakes (239 other tests passed, 9 skipped). A subsequent focus/scroll correction and four deterministic regression cases address the discovered input race; the corrected two flows passed **20/20 repeated desktop/mobile checks** without retries. Lint, types, all 1,039 units and both production build targets passed. Final-head CI counts are linked in the PR handoff.
 
+- Run `34245234966`: 239 general passes, 2 obsolete reduced-motion assertions failed, 9 skips; 85 Space passes, 20 duplicate skips, no flakes. Updated the reduced-motion test from a no-op/options-only spy to native scrolling plus immediate/stable position and focus assertions. Final-head CI remains the authoritative combined result.
+
 ## 24. SCREENSHOT LOCATIONS
 
 **114 current screenshots**: 75 five-width product/home captures and 39 three-engine room/camera captures.
