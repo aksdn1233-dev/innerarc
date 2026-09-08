@@ -32,8 +32,8 @@ test.describe("premium product evidence", () => {
     await captureEvidence(page, page.locator("section").first(), `premium-${width}-space-landing.png`);
     const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "6", { timeout: 20_000 });
     await expect(page.getByLabel("실제 3D 렌더 해상도")).toContainText(/실제 렌더 \d+×\d+/);
-    for (const name of ["북쪽 방향을 확인했어요", "방·문·창·가구의 크기와 위치를 실제 공간과 비교했어요"]) await page.getByRole("checkbox", { name }).check();
-    await page.getByRole("button", { name: "예시 방 분석", exact: true }).click();
+    for (const name of ["북쪽 방향을 확인했어요", "방과 가구 위치를 확인했어요"]) await page.getByRole("checkbox", { name }).check();
+    await page.getByRole("button", { name: "추천 배치 보기", exact: true }).click();
     const analysis = page.getByRole("region", { name: "공간 분석 결과" });
     await expect(analysis).toBeVisible();
     await analysis.scrollIntoViewIfNeeded();

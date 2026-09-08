@@ -698,11 +698,10 @@ test("the whole funnel connects: home, free result, paid teaser, intake", async 
 
 test("editorial home shows real product evidence and clear claim boundaries", async ({ page }) => {
   await page.goto("/ko");
-  if (await page.locator(".td2-space-copy").count()) {
-    await expect(page.locator(".td2-room-comparison img")).toHaveCount(2);
-    await expect(page.locator(".td2-room-comparison img").first()).toHaveAttribute("alt", /현재 배치/);
-    await expect(page.locator(".td2-space-copy")).toContainText("실제 렌더 해상도");
-    await expect(page.locator(".td2-space-copy")).toContainText("전통 풍수 해석 · 공간·생활 분석 · 개인 패턴 추천");
-  }
+  await expect(page.locator(".td2-room-comparison img")).toHaveCount(2);
+  await expect(page.locator(".td2-room-comparison img").first()).toHaveAttribute("alt", /현재 배치/);
+  await expect(page.locator(".td2-space-copy")).toContainText("사진 2~6장 찍기");
+  await expect(page.locator(".td2-space-copy")).toContainText("북쪽 방향 알려주기");
+  await expect(page.locator(".td2-space-copy")).toContainText("추천 배치 비교하기");
   await expect(page.locator(".td2-footer-boundary")).toContainText("과학적 예측, 진단, 치료 또는 결과 보장이 아닙니다");
 });

@@ -14,10 +14,10 @@ test("space demo confirms, analyzes, compares, applies and invalidates edits", a
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/ko/space");
   await expect(page.locator("fieldset[data-ready]")).toHaveAttribute("data-ready", "true", { timeout: 10_000 });
-  await expect(page.getByRole("heading", { name: "내 방을, 움직여 보기 전에.", exact: true })).toBeVisible();
-  const analyze = page.getByRole("button", { name: "예시 방 분석", exact: true });
+  await expect(page.getByRole("heading", { name: "내 방을 찍고, 더 편한 배치를 찾아보세요.", exact: true })).toBeVisible();
+  const analyze = page.getByRole("button", { name: "추천 배치 보기", exact: true });
   await expect(analyze).toBeDisabled();
-  for (const name of ["북쪽 방향을 확인했어요", "방·문·창·가구의 크기와 위치를 실제 공간과 비교했어요"]) {
+  for (const name of ["북쪽 방향을 확인했어요", "방과 가구 위치를 확인했어요"]) {
     const checkbox = page.getByRole("checkbox", { name });
     await checkbox.check();
     await expect(checkbox).toBeChecked();
@@ -44,6 +44,7 @@ test("space demo confirms, analyzes, compares, applies and invalidates edits", a
   await expect(page.getByRole("button", { name: "3D에서 안내 보기", exact: true }).first()).toHaveAttribute("aria-pressed", "true");
   await page.getByRole("button", { name: "실제로 적용했어요", exact: true }).first().click();
   await expect(page.getByText("연습 표시입니다. 저장하지 않습니다.", { exact: true })).toBeVisible();
+  await page.getByText("방 크기와 가구 직접 고치기 (선택)", { exact: true }).click();
   await page.getByLabel("방 가로 (m)", { exact: true }).fill("4.5");
   await expect(page.getByRole("region", { name: "공간 분석 결과" })).toHaveCount(0);
   await expect(analyze).toBeDisabled(); expect(remote).toEqual([]);
@@ -52,8 +53,9 @@ test("invalid north and bounds block the room and explain the error", async ({ p
   await page.goto("/ko/space");
   await page.getByLabel("북쪽 각도 (0~359°)").fill("360");
   await expect(page.getByText(/크기·위치 또는 겹침을 확인하세요/)).toBeVisible();
-  await expect(page.getByRole("button", { name: "예시 방 분석", exact: true })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "추천 배치 보기", exact: true })).toBeDisabled();
   await page.getByLabel("북쪽 각도 (0~359°)").fill("0");
+  await page.getByText("방 크기와 가구 직접 고치기 (선택)", { exact: true }).click();
   await page.getByLabel("방 가로 (m)", { exact: true }).fill("2");
   await expect(page.getByText(/OUT_OF_BOUNDS/)).toBeVisible();
 });
@@ -90,8 +92,8 @@ test("WebGL failure retains text analysis and offers retry", async ({ page }) =>
   await page.addInitScript(() => { const original = HTMLCanvasElement.prototype.getContext; HTMLCanvasElement.prototype.getContext = function(this: HTMLCanvasElement, kind: string, ...args: unknown[]) { if (kind.includes("webgl")) return null; return Reflect.apply(original, this, [kind, ...args]); } as typeof original; });
   await page.goto("/en/space"); await expect(page.getByRole("button", { name: "Retry 3D" })).toBeVisible();
   await page.getByRole("checkbox", { name: "I checked north" }).check();
-  await page.getByRole("checkbox", { name: "I compared the room, openings and furniture with the actual space" }).check();
-  await page.getByRole("button", { name: "Analyze demo room", exact: true }).click();
+  await page.getByRole("checkbox", { name: "I checked the room and furniture" }).check();
+  await page.getByRole("button", { name: "See suggested layout", exact: true }).click();
   await expect(page.getByRole("region", { name: "Space analysis results" })).toBeVisible();
 });
 
@@ -102,12 +104,12 @@ test("device speech failure keeps the anchored guide readable", async ({ page })
   });
   await page.goto("/en/space");
   await expect(page.locator("fieldset[data-ready]")).toHaveAttribute("data-ready", "true", { timeout: 10_000 });
-  for (const name of ["I checked north", "I compared the room, openings and furniture with the actual space"]) {
+  for (const name of ["I checked north", "I checked the room and furniture"]) {
     const checkbox = page.getByRole("checkbox", { name });
     await checkbox.check();
     await expect(checkbox).toBeChecked();
   }
-  await page.getByRole("button", { name: "Analyze demo room", exact: true }).click();
+  await page.getByRole("button", { name: "See suggested layout", exact: true }).click();
   await expect(page.getByLabel("3D space guide")).toBeVisible();
   await page.getByRole("button", { name: "Unmute", exact: true }).click();
   const replay = page.getByRole("button", { name: "Replay", exact: true });
@@ -117,11 +119,15 @@ test("device speech failure keeps the anchored guide readable", async ({ page })
   await expect(page.getByLabel("3D space guide").locator("p").first()).toBeVisible();
 });
 
-test("independent home menu follows the feature flag without changing reading links", async ({ page }) => {
+test("the home always shows a simple path to 3D room analysis", async ({ page }) => {
   await page.goto("/ko");
   const menu = page.getByRole("navigation").getByRole("link", { name: "3D 공간운", exact: true });
-  if (process.env.SPACE_ENABLED === "true") { await expect(menu).toBeVisible(); await menu.click(); await expect(page).toHaveURL(/\/ko\/space$/); }
-  else await expect(menu).toHaveCount(0);
+  await expect(menu).toBeVisible();
+  await expect(page.getByRole("heading", { name: "내 방, 어떻게 바꾸면 좋을까요?", exact: true })).toBeVisible();
+  await expect(page.getByText("방 사진 2~6장 찍기", { exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "내 방 분석하기", exact: true })).toBeVisible();
+  await menu.click();
+  await expect(page).toHaveURL(/\/ko\/space$/);
 });
 
 test("speech exceptions retain captions and guide marker follows the camera", async ({ page }) => {
@@ -132,8 +138,8 @@ test("speech exceptions retain captions and guide marker follows the camera", as
   });
   await page.goto("/en/space");
   await page.getByRole("checkbox", { name: "I checked north" }).check();
-  await page.getByRole("checkbox", { name: "I compared the room, openings and furniture with the actual space" }).check();
-  await page.getByRole("button", { name: "Analyze demo room", exact: true }).click();
+  await page.getByRole("checkbox", { name: "I checked the room and furniture" }).check();
+  await page.getByRole("button", { name: "See suggested layout", exact: true }).click();
   const guide = page.getByLabel("3D space guide");
   await guide.getByRole("button", { name: "Unmute", exact: true }).click();
   await guide.getByRole("button", { name: "Replay", exact: true }).click();
@@ -172,7 +178,7 @@ test("finishing 3D loading does not move mobile confirmation controls", async ({
     await page.goto("/en/space");
     await expect(page.locator("[data-space-loading]")).toBeVisible();
     await page.getByRole("checkbox", { name: "I checked north" }).check();
-    const confirmation = page.getByRole("checkbox", { name: "I compared the room, openings and furniture with the actual space" });
+    const confirmation = page.getByRole("checkbox", { name: "I checked the room and furniture" });
     await confirmation.scrollIntoViewIfNeeded();
     const before = await confirmation.evaluate(element => element.getBoundingClientRect().top + scrollY);
     release();
