@@ -42,3 +42,6 @@
 
 /* Compass contrast must not depend on the pixels rendered behind it. */
 .compass{background:#f6f3ec}.compass small{color:#42483f}
+
+/* Loading may start/finish during a form click; never move the input beneath it. */
+.sceneLoading{position:absolute;z-index:4;inset:4rem 1rem auto;margin:0;padding:.8rem;background:#131f30;color:#f7f2e8;border:1px solid #788599;border-radius:8px;pointer-events:none}

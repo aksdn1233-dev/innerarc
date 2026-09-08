@@ -1,4 +1,4 @@
-# Final product quality pass — 2026-09-08
+# Final product quality pass — 2026-09-09
 
 This report describes the additive pass after `52a70b80da6287693e09f17c9f8d3945c893c6be`. Test counts below are finalized only after the corresponding run finishes. No merge or production deployment is authorized in this pass.
 
@@ -28,12 +28,13 @@ Clean starting SHA above. Fresh baseline: 113 unit files, 1,035 tests, Next buil
 10. Mobile hero trust-note orphan and tiny generated-image label.
 11. Three lint warnings and misleading fixed-birth-range / Worker-name documentation.
 12. Compass text could fall to 3.92:1 contrast because its background was translucent.
+13. Remote WebKit exposed a confirmation click failure: loading text moved the form, and checkbox updaters deferred reading mutable DOM state.
 
 A dev-only hydration experiment was stopped because Next dev blocked cross-origin dev resources. Production checks were used; CSP stayed intact. See the failure ledger for causes and regression coverage.
 
 ## 5. EVERY ISSUE FIXED
 
-Immediate implicit scrolling; grouped mobile trust phrases; real pointer checks; disabled SSR fieldsets until hydration with bilingual no-JavaScript guidance; speech lifecycle/error guards; named guide fallback; numbered world-position marker with explicit camera update and displayed-scene coordinates; opaque, high-contrast compass; explanation below canvas; minimum 1× lightweight render density; image-ready captures; failing CI on flakes; warning cleanup; phrase-grouped mobile hero note and readable 12px image provenance. Fixed range policy and deterministic engines remain unchanged.
+Immediate implicit scrolling; grouped mobile trust phrases; real pointer checks; disabled SSR fieldsets until hydration with bilingual no-JavaScript guidance; speech lifecycle/error guards; named guide fallback; numbered world-position marker with explicit camera update and displayed-scene coordinates; opaque, high-contrast compass; explanation below canvas; minimum 1× lightweight render density; image-ready captures; failing CI on flakes; warning cleanup; phrase-grouped mobile hero note and readable 12px image provenance. The 3D loader now occupies reserved canvas space, and confirmation handlers snapshot the click value before scheduling state updates. Fixed range policy and deterministic engines remain unchanged.
 
 ## 6. DESIGN CHANGES
 
@@ -113,6 +114,8 @@ Not performed: no physical test devices available to this task. Browser emulatio
 - Local Worker: **5/5 route responses**, plus hydrated Space controls and five-card success comparison, zero page exceptions. No hosted-account claim.
 - Final correction reruns: **40 visual/interaction checks passed / 20 duplicate skips**, **6 accessibility checks passed**, **0 retries / 0 failures**. All 114 screenshots were refreshed. These validate the compass and phrase-wrapping fixes after the failed general run. Remote PR status is linked in the final PR handoff, independently from these local results.
 
+- Follow-up after remote run `34241014728`: **27/27 three-engine Space input tests + 10/10 repeated iPhone checks passed**, without retries. A delayed-material test verifies less than one pixel of form movement and repeated real pointer checks. Lint, typecheck, Next and Cloudflare builds passed again. The old remote run passed general/desktop/Android gates but correctly failed one flaky iPhone check; final-head CI is reported separately in the PR.
+
 ## 24. SCREENSHOT LOCATIONS
 
 **114 current screenshots**: 75 five-width product/home captures and 39 three-engine room/camera captures.
@@ -174,7 +177,7 @@ It is not a proven 10/10 commercial release. Repository tests and visual evidenc
 
 ## Change scope and rollback
 
-Additive UI/lifecycle/test/documentation changes only; no new migration. Disable `SPACE_ENABLED` to hide Space entry points; disable `SPACE_AI_ENABLED` to prevent model calls while preserving manual analysis. Revert this quality-pass commit for its UI changes; the preserved baseline is `52a70b80da6287693e09f17c9f8d3945c893c6be`. Never roll back existing billing or delete historical entitlements.
+Additive UI/lifecycle/test/documentation changes only; no new migration. Disable `SPACE_ENABLED` to hide Space entry points; disable `SPACE_AI_ENABLED` to prevent model calls while preserving manual analysis. Revert the quality-pass commits in reverse order for their UI changes; the preserved baseline is `52a70b80da6287693e09f17c9f8d3945c893c6be`. Never roll back existing billing or delete historical entitlements.
 
 V2 only: AR, LiDAR, full-home scanning. Not implemented here.
 

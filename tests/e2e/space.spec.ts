@@ -162,3 +162,28 @@ test("speech exceptions retain captions and guide marker follows the camera", as
   await expect(marker).not.toHaveAttribute("style", before!);
   await expect(marker).toHaveAttribute("data-anchor-object", (await guide.getAttribute("data-anchor-object"))!);
 });
+
+test("finishing 3D loading does not move mobile confirmation controls", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  let release!: () => void;
+  const assetGate = new Promise<void>(resolve => { release = resolve; });
+  await page.route("**/space/assets/oak-floor-color.jpg", async route => { await assetGate; await route.continue(); });
+  try {
+    await page.goto("/en/space");
+    await expect(page.locator("[data-space-loading]")).toBeVisible();
+    await page.getByRole("checkbox", { name: "I checked north" }).check();
+    const confirmation = page.getByRole("checkbox", { name: "I compared the room, openings and furniture with the actual space" });
+    await confirmation.scrollIntoViewIfNeeded();
+    const before = await confirmation.evaluate(element => element.getBoundingClientRect().top + scrollY);
+    release();
+    await expect(page.locator("[data-space-loading]")).toHaveCount(0, { timeout: 30000 });
+    const after = await confirmation.evaluate(element => element.getBoundingClientRect().top + scrollY);
+    expect(Math.abs(after - before)).toBeLessThan(1);
+    for (let i = 0; i < 3; i++) {
+      await confirmation.check();
+      await expect(confirmation).toBeChecked();
+      await confirmation.uncheck();
+      await expect(confirmation).not.toBeChecked();
+    }
+  } finally { release(); }
+});

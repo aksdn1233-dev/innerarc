@@ -297,9 +297,9 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
     return () => { stopped = true; partialCleanup(); runtime.current = null; };
   }, [ko, attempt]);
   return <div>
-    {(!ready || assetLoading) && !failed && <p role="status">{ko ? "방의 재질과 3D 가구를 불러오고 있습니다…" : "Loading room materials and 3D furniture…"}</p>}
     {failed && <><p role="status">{ko ? "이 기기에서는 3D를 표시하지 못했습니다. 아래 객체 목록과 분석 결과로 계속 이용하세요." : "3D is unavailable on this device. Continue with the object list and text analysis below."}</p><button onClick={() => { setFailed(false); setReady(false); setQuality("auto"); setAttempt(value => value + 1); }}>{ko ? "3D 다시 시도" : "Retry 3D"}</button></>}
     <div className={styles.sceneFrame}>
+      {(!ready || assetLoading) && !failed && <p className={styles.sceneLoading} data-space-loading role="status">{ko ? "방의 재질과 3D 가구를 불러오고 있습니다…" : "Loading room materials and 3D furniture…"}</p>}
       <div ref={host} className={styles.canvas} hidden={failed} data-quality={quality} />
       {!failed && <div className={styles.compass} aria-label={`${ko ? "평면도 기준 북쪽" : "North relative to plan"}: ${scene.orientation.northDegrees}°`}><span style={{ transform: `rotate(${scene.orientation.northDegrees}deg)` }}>↑</span>{ko ? "북" : "N"}<small>{scene.orientation.northDegrees}° · {ko ? "평면도 기준" : "plan"}</small></div>}
       {!failed && resolution && <output className={styles.renderMeter} aria-label={ko ? "실제 3D 렌더 해상도" : "Actual 3D render resolution"}>{ko ? "실제 렌더" : "Actual render"} <strong>{resolution.bufferWidth}×{resolution.bufferHeight}</strong><small>{resolution.cssWidth}×{resolution.cssHeight} 화면 · {resolution.scale.toFixed(2)}×</small></output>}
