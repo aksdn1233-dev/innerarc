@@ -45,10 +45,10 @@ const content = {
       ["무료 결과 보기", "내 기본 패턴을 확인합니다", "결과와 계산 과정을 함께 보여드려요."],
       ["더 자세히 보기", "필요할 때 상세 리딩을 고릅니다", "가격과 내용을 확인한 뒤 선택할 수 있어요."],
     ],
-    guideAction: "기능 골라보기",
-    readEyebrow: "바로 시작하기",
-    readTitle: <>궁금한 것부터<br />골라보세요.</>,
-    readBody: "나, 성공, 관계, 공간 중에서 지금 궁금한 것을 선택하면 돼요.",
+    guideAction: "결과 예시 보기",
+    readEyebrow: "태령당에서 할 수 있는 것",
+    readTitle: <>지금 궁금한 걸<br />바로 볼 수 있어요.</>,
+    readBody: "나를 알아보고, 둘을 비교하고, 내 방까지 살펴볼 수 있어요.",
     sajuHub: "사주 보기",
     freePattern: "나 알아보기",
     pillars: [
@@ -59,12 +59,13 @@ const content = {
       ["05", "결과가 실제로 맞았을까?", "다시 확인하기", "시간이 지난 뒤 실제 경험을 남겨봐요.", "/ko/reality-check"],
     ],
     previewEyebrow: "개인 패턴 분석",
-    previewTitle: <>결과를 한눈에<br />볼 수 있어요.</>,
-    previewBody: "어려운 말은 줄이고, 왜 이런 결과가 나왔는지 함께 보여드려요.",
+    previewTitle: <>왜 같은 선택을 반복하는지<br />한눈에 보여드려요.</>,
+    previewBody: "내 강점, 자주 막히는 지점, 지금 바꿔볼 한 가지를 계산 과정과 함께 정리해요.",
     previewCta: "내 결과 보기",
     sample: "예시 결과",
     sampleDate: "1994년 11월 4일",
-    sampleHeadline: "깊이 생각하면서도 사람을 잘 살피는 편이에요.",
+    sampleHeadline: "깊이 생각하고 사람을 잘 살피지만, 결정할 때 혼자 오래 고민하는 편이에요.",
+    samplePoints: ["내가 잘하는 것", "자꾸 반복되는 선택", "지금 바꿔볼 한 가지"],
     chartLabels: ["사고력", "표현력", "실행력", "관계감각", "회복력", "변화적응"],
     successEyebrow: "성공 패턴 비교",
     successTitle: <>성공한 사람과 나는<br />무엇이 다를까요?</>,
@@ -115,8 +116,8 @@ const content = {
       ["Read the free result", "See your basic pattern", "The result and calculation are shown together."],
       ["Go deeper if needed", "Choose a detailed reading only if needed", "Review the contents and price before deciding."],
     ],
-    guideAction: "Choose a feature",
-    readEyebrow: "WHAT WE READ", readTitle: <>One birth date,<br />connected across real life.</>, readBody: "Rather than scatter unrelated answers, we trace the choices one person repeats across different settings.", sajuHub: "Open Four Pillars services", freePattern: "View free pattern",
+    guideAction: "See a sample result",
+    readEyebrow: "WHAT YOU CAN DO", readTitle: <>Start with what<br />you want to understand.</>, readBody: "Explore yourself, compare two people, and even review your room.", sajuHub: "Open Four Pillars services", freePattern: "View free pattern",
     pillars: [
       ["01", "Read yourself.", "Saju · numerology · tarot", "Calculated evidence and symbolic interpretation stay distinct.", "/en/numerology"],
       ["02", "Compare people.", "Success pattern comparison", "Only structures calculated from public birth dates are compared.", "/en/celebrity"],
@@ -124,7 +125,7 @@ const content = {
       ["04", "Read the space.", "3D Space", "Compare room structure and circulation in a real 3D scene.", "/en/space"],
       ["05", "Check real life.", "Reality Check", "Record whether an interpretation held up and revisit it later.", "/en/reality-check"],
     ],
-    previewEyebrow: "PERSONAL PATTERN ANALYSIS", previewTitle: <>Complex ideas become<br />evidence you can read.</>, previewBody: "This simplified sample follows the actual result structure. Deterministic code produces the numbers; interpretation and lived evidence stay separate.", previewCta: "Start free analysis", sample: "Sample result", sampleDate: "4 November 1994", sampleHeadline: "A person who goes deep without losing sight of human warmth", chartLabels: ["Thinking", "Expression", "Action", "Connection", "Recovery", "Adaptation"],
+    previewEyebrow: "PERSONAL PATTERN ANALYSIS", previewTitle: <>See why the same choices<br />keep returning.</>, previewBody: "Your strengths, recurring friction, and one practical change are shown with the calculation behind them.", previewCta: "Start free analysis", sample: "Sample result", sampleDate: "4 November 1994", sampleHeadline: "You think deeply and notice people well, but may spend too long deciding alone.", samplePoints: ["What comes naturally", "The choice that repeats", "One thing to try now"], chartLabels: ["Thinking", "Expression", "Action", "Connection", "Recovery", "Adaptation"],
     successEyebrow: "SUCCESS PATTERN COMPARISON", successTitle: <>Look past matching numbers<br />to how lives diverged.</>, successBody: "We use public birth dates and sourced career events. A public figure's life does not determine your future.", successCta: "Compare my success pattern",
     relationshipEyebrow: "RELATIONSHIP INTELLIGENCE", relationshipTitle: <>See where you diverge,<br />not just whether you match.</>, relationshipBody: "Compare how partners, family, friends, coworkers, or business partners operate across eight domains. No score decides whether a relationship is good or bad.", relationshipCta: "Start relationship analysis",
     spaceEyebrow: "3D SPACE", spaceTitle: <>Your room,<br /><span>what could work better?</span></>, spaceBody: "Add room photos to compare your current and suggested layouts side by side in 3D.", spaceSteps: ["Take 2–6 room photos", "Show which way is north", "Compare the suggested layout"], spaceCta: "Analyze my room", spaceDemo: "Try the 3D example", before: "Current", after: "Suggested", spaceBubble: "Try widening the path beside the bed.", spaceDisclosure: "Traditional feng shui and practical room advice are clearly separated.",
@@ -237,6 +238,22 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
       <small className="td2-hero-art-note">{t.heroArtNote}</small>
     </section>
 
+    <section className="td2-section td2-reading-map" id="services" aria-labelledby="td2-services-title">
+      <header className="td2-heading">
+        <div><p>{t.readEyebrow}</p><h2 id="td2-services-title">{t.readTitle}</h2></div>
+        <span>{t.readBody}</span>
+      </header>
+      <div className="td2-service-bridges">
+        <Link href={`/${locale}/fortune`}>{t.sajuHub}<Arrow /></Link>
+        <Link href={`/${locale}/numerology`}>{t.freePattern}<Arrow /></Link>
+      </div>
+      <div className="td2-pillar-grid">
+        {pillars.map(([number, title, label, body, href]) => <Link href={href} className="td2-pillar" key={number} prefetch={false}>
+          <small>{number}</small><h3>{title}</h3><strong>{label}</strong><p>{body}</p><Arrow />
+        </Link>)}
+      </div>
+    </section>
+
     <section className="td2-walkthrough" id="guide" aria-labelledby="td2-guide-title" ref={guideRef}>
       <header>
         <p className="td2-eyebrow">{t.guideEyebrow}</p>
@@ -303,23 +320,7 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
           </div>
         </div>
       </div>
-      <button className="journey-guide-action" onClick={() => document.getElementById("services")?.scrollIntoView({ behavior: "smooth" })} type="button">{t.guideAction}<Arrow /></button>
-    </section>
-
-    <section className="td2-section td2-reading-map" id="services" aria-labelledby="td2-services-title">
-      <header className="td2-heading">
-        <div><p>{t.readEyebrow}</p><h2 id="td2-services-title">{t.readTitle}</h2></div>
-        <span>{t.readBody}</span>
-      </header>
-      <div className="td2-service-bridges">
-        <Link href={`/${locale}/fortune`}>{t.sajuHub}<Arrow /></Link>
-        <Link href={`/${locale}/numerology`}>{t.freePattern}<Arrow /></Link>
-      </div>
-      <div className="td2-pillar-grid">
-        {pillars.map(([number, title, label, body, href]) => <Link href={href} className="td2-pillar" key={number} prefetch={false}>
-          <small>{number}</small><h3>{title}</h3><strong>{label}</strong><p>{body}</p><Arrow />
-        </Link>)}
-      </div>
+      <button className="journey-guide-action" onClick={() => document.querySelector(".td2-product-section")?.scrollIntoView({ behavior: "smooth" })} type="button">{t.guideAction}<Arrow /></button>
     </section>
 
     <section className="td2-section td2-product-section" aria-labelledby="td2-preview-title">
@@ -333,6 +334,9 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
         <header><div><small>{t.sample}</small><strong>{t.sampleDate}</strong></div><span aria-hidden="true">⌁</span></header>
         <nav aria-label={locale === "ko" ? "예시 리포트 목차" : "Sample report sections"}><b>{locale === "ko" ? "전체 성향" : "Overview"}</b><span>{locale === "ko" ? "강점" : "Strengths"}</span><span>{locale === "ko" ? "주의점" : "Cautions"}</span><span>{locale === "ko" ? "인생 흐름" : "Rhythm"}</span></nav>
         <h3>{t.sampleHeadline}</h3>
+        <ol className="td2-report-points">
+          {t.samplePoints.map((point, index) => <li key={point}><small>{String(index + 1).padStart(2, "0")}</small><strong>{point}</strong></li>)}
+        </ol>
         <div className="td2-radar-row">
           <div className="td2-radar" role="img" aria-label={t.chartLabels.map((label, index) => `${label} ${[82,72,64,88,76,69][index]}`).join(", ")}>
             <span /><span /><span /><i />

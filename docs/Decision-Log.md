@@ -1399,6 +1399,16 @@
 - Detailed operating and draw rules: `docs/Campaign-2026-08-30.md`.
 - Status: Owner-authorized for production deployment.
 
+## D-091 - Lead the home with a bright, concrete product story
+
+- Date: 2026-09-09
+- Decision: Follow the supplied NAVER AI Tab reference's clear sequence while keeping an original Taeryeongdang visual system: hero, immediately visible service choices, real recorded use, then a persuasive sample report. The report names three concrete things the user receives—strengths, a recurring choice and one practical change—without adding a prediction or guaranteed outcome.
+- Demand and distribution: Direct owner request after the first production pass remained too complex and hid the available functions. Distribution remains the existing Korean and English public home; every service choice links to its shipped route.
+- Economics and costs: No price, checkout, entitlement, provider, fulfillment or runtime-model change. Reordering existing content and rendering local fixture media adds no token cost. The walkthrough retains viewport loading and native-resolution limits.
+- Privacy, safety and claims: The report is explicitly a sample and retains calculation, symbol and reality labels. It uses no customer data. Numerology, tarot and feng shui boundaries in the global footer remain unchanged.
+- Success, guardrails and reversal: Require readable Korean and English copy, three concrete report outcomes, 44-pixel mobile controls, no horizontal overflow, keyboard walkthrough behavior and green regression/visual checks. Revert this home-only component and CSS change if comprehension, accessibility, page weight or conversion worsens; no migration or stored user data is involved.
+- Status: Owner-authorized for production deployment.
+
 ## D-086 - Refine the compatibility intake without changing its privacy boundary
 
 - Date: 2026-08-31
