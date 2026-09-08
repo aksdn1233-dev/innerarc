@@ -209,4 +209,13 @@ Run 34160365698 repeated that retry because the first timeout edit matched an ea
 - **Symptom:** after all 79 Space gates became clean, run 34214299620 still retried the mobile profile accessibility flow at its consent checkbox and the Reality Check flow after saving an outcome.
 - **Cause:** four general UI workers competed with three simultaneous high-resolution Space jobs. The profile checkbox moved during actionability scrolling, while the Reality Check state assertion used the default five-second UI deadline after an actionability click.
 - **Fix:** both regressions now prove the real controls are visible, invoke their native controls exactly once and assert the resulting radio/checkbox state. The Reality Check record keeps a bounded 15-second result deadline. General UI concurrency is reduced to two workers; concurrent browser coverage remains while the three isolated Space jobs continue in parallel.
-- **Prevention:** repeat both exact mobile flows with four local workers, then require the complete two-worker Node 24 matrix to report 231 passes, 9 intentional skips and zero retries.
+- **Prevention:** repeat both exact mobile flows with four local workers, then require the complete Node 24 matrix to report 231 passes, 9 intentional skips and zero retries.
+
+### 2026-09-08 — the last shared general worker raced a session-only tarot save
+
+- **Symptom:** run 34215707079 kept all 79 Space gates clean, but the mobile manual-tarot flow once failed to show its in-memory history record within five seconds after an actionability click and then passed in a fresh worker.
+- **Cause:** two general workers still shared the runner with the three independent Space jobs. The test's final save action could overlap responsive scrolling and React state scheduling even though the session-only repository behaved correctly on retry and in prior serialized runs.
+- **Fix:** prove the real save control is visible, invoke it once and retain a bounded 15-second record assertion. The general product regression now runs serially; desktop, iPhone and Android Space jobs still run concurrently and keep their independent performance limits.
+- **Prevention:** repeat the manual-tarot save under four local workers, then accept only a complete serial Node 24 general matrix with 231 passes, 9 intentional skips and zero retries.
+
+The first four-worker recurrence run then reproduced the same moving-control race earlier, at the native `details` disclosure: one of eight runs left the audit content closed after the generic text click. Both ordinary and manual tarot regressions now invoke the real `summary` control once, assert the `open` state, and keep a bounded 15-second content deadline. This preserves the disclosure interaction while removing actionability retries caused by responsive scrolling.

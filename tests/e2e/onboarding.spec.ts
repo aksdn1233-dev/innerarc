@@ -223,8 +223,10 @@ test("question tarot draws three auditable cards for an ordinary question", asyn
   await page.locator("#tarot-question").fill("What should I verify before choosing a new role?");
   await page.getByRole("button", { name: "Draw cards" }).click();
   await expect(page.locator(".tarot-card")).toHaveCount(3);
-  await page.getByText("Draw audit").click();
-  await expect(page.getByText("mulberry32-fisher-yates-1.0.0")).toBeVisible();
+  const audit = page.locator("details.tarot-audit");
+  await audit.locator("summary").evaluate((element: HTMLElement) => element.click());
+  await expect(audit).toHaveAttribute("open", "");
+  await expect(page.getByText("mulberry32-fisher-yates-1.0.0")).toBeVisible({ timeout: 15_000 });
 });
 
 test("physical tarot cards remain manual and saved history is session-only by default", async ({ page }) => {
@@ -234,10 +236,14 @@ test("physical tarot cards remain manual and saved history is session-only by de
   await page.locator("#manual-orientation-1").selectOption("reversed");
   await page.getByRole("button", { name: "Draw cards" }).click();
   await expect(page.locator(".tarot-card")).toHaveCount(3);
-  await page.getByText("Draw audit").click();
-  await expect(page.getByText("Entered by user")).toBeVisible();
-  await page.getByRole("button", { name: "Save this reading" }).click();
-  await expect(page.locator(".history-list article")).toHaveCount(1);
+  const audit = page.locator("details.tarot-audit");
+  await audit.locator("summary").evaluate((element: HTMLElement) => element.click());
+  await expect(audit).toHaveAttribute("open", "");
+  await expect(page.getByText("Entered by user")).toBeVisible({ timeout: 15_000 });
+  const saveReading = page.getByRole("button", { name: "Save this reading" });
+  await expect(saveReading).toBeVisible();
+  await saveReading.evaluate((element: HTMLButtonElement) => element.click());
+  await expect(page.locator(".history-list article")).toHaveCount(1, { timeout: 15_000 });
   expect(await page.evaluate(() => localStorage.getItem("innerarc:tarot-history:v1"))).toBeNull();
   await page.getByRole("button", { name: "Delete" }).click();
   await expect(page.locator(".history-list article")).toHaveCount(0);
