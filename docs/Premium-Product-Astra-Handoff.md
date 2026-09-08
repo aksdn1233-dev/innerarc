@@ -7,7 +7,7 @@ Production base / rollback reference: `ee4ae5038e34e0715456b837cbe7c7f2db5591c4`
 
 ## A. Architecture summary
 
-This is an additive pass on the existing Next.js/Supabase/Three.js product. It keeps auth, payment, reports, Saju, Numerology, Personal Pattern and Reality Check contracts intact. Space uses private owner assets, strict Zod boundaries, a deterministic geometry/Feng Shui engine, optional validated provider extraction, and a browser Three.js renderer. Success comparison extends the existing deterministic public-figure Numerology route with sourced career facts and explicit contextual unknowns.
+This is an additive pass on the existing Next.js/Supabase/Three.js product. It keeps auth, payment, reports, Saju, Numerology, Personal Pattern and Reality Check contracts intact. Space uses private owner assets, strict Zod boundaries, a deterministic geometry/Feng Shui engine, optional validated provider extraction, and a browser Three.js renderer. Success Story extends the existing deterministic public-figure Numerology route with sourced career events, explicit contextual unknowns and a bounded Reality Check handoff. Production miniature guides are local 2.5D assets; Space narration is generated from validated deterministic recommendations and real scene-object anchors.
 
 ## B. Routes changed
 
@@ -26,7 +26,7 @@ Space now uses a restrained ink/gold system, cinematic product-first hero, meani
 
 ## E. Fonts used
 
-The CSS stack is `Pretendard Variable`, `Pretendard`, `SUIT Variable`, `SUIT`, then system UI. No font file was downloaded, copied or redistributed. Availability therefore depends on installed/project-runtime fonts; the system Korean fallback was also visually captured. This is a known consistency limit until a licensed self-hosted Korean font is approved.
+The primary Korean webfont is the locally hosted `Pretendard Local` variable face, split into official dynamic Unicode subsets, distributed under the included SIL Open Font License and loaded with `font-display: swap` only for Korean routes. System UI remains the fallback. Browser evidence asserts both `document.fonts.check` and the computed body family, so the intended type does not depend on a developer machine installation.
 
 ## F. 3D architecture
 
@@ -34,7 +34,7 @@ Three.js r185 renders PBR surfaces, licensed GLB furniture where available, proc
 
 ## G. Success-comparison architecture
 
-The existing seven-record official-source dataset remains the selection source. Each record now carries profession and at least one dated official career milestone. Ranking still uses only deterministic Life Path, Birthday and Attitude overlap with ordinal labels and no invented percentage. Real career facts are displayed as facts with source links; environmental factors and unknowns are displayed separately.
+The existing seven-record official-source dataset remains the selection source. Each record now carries profession, at least one dated official career event, public process evidence, hidden conditions, explicit unknowns, transferability and official source links. Ranking still uses only deterministic Life Path, Birthday and Attitude overlap with ordinal labels and no invented percentage. The chosen bounded action is handed to the existing Reality Check route without changing its relationship handoff contract.
 
 ## H. Deterministic calculation boundaries
 
@@ -64,7 +64,7 @@ The original cross-browser Three.js fixture captures remain in the desktop, iPho
 - Photo-only absolute dimensions remain estimates until one wall is measured and the user confirms the scene.
 - The public workspace capture is the honest logged-out gate; authenticated staging capture still requires hosted owner-session evidence.
 - The first-party hero is an actual product screenshot, so it is truthful but less cinematic than bespoke photography.
-- Installed-font fallback can vary until a licensed Korean webfont is approved.
+- The self-hosted dynamic subset package is about 3.1 MB in the repository, while each Korean page requests only the Unicode shards it uses. English routes do not load it. Hosted Korean transfer timing still needs production monitoring.
 - PBR furniture is commercial-quality for the bounded catalog, but it does not reconstruct every real furniture shape or material.
 
 ## L. Performance measurements
@@ -76,13 +76,13 @@ The original cross-browser Three.js fixture captures remain in the desktop, iPho
 
 ## M. Failing or skipped tests
 
-Latest local evidence at handoff: 1,030/1,030 unit/integration tests passed; production build passed with 134 generated route outputs; the complete general browser matrix passed 233 with 9 intentional skips; and the focused Space matrix passed 71 with 10 intentional skips. The Space skips are duplicate premium-capture executions on iPhone/Android projects; those exact captures run once in deterministic Chromium, while the existing 3D behavior/visual matrix still runs on all three browser projects. Lint has zero errors and three pre-existing warnings outside this change. Two inherited mobile checks first failed under five-worker contention, passed three serialized repetitions each, then passed in the complete rerun after deterministic action/wait hardening. Hosted model/storage and physical-device tests remain release gates.
+Latest local evidence at handoff: 1,035/1,035 unit/integration tests passed; production build passed with 134 generated route outputs; the complete Chromium/mobile browser matrix passed 231 with 9 intentional skips; and the focused desktop/iPhone/Android Space matrix passed 79 with 20 intentional duplicate-capture skips. Lint has zero errors and three inherited warnings outside this change. Earlier parallel runs exposed result-screen timing and guide-control hydration races; each failing path was hardened, repeated in isolation, and then passed in the complete serialized matrix. Hosted model/storage and physical-device tests remain release gates.
 
 ## N. Remaining TODOs
 
 - Run Node 24 GitHub CI on the pushed commit.
 - Perform hosted two-account Supabase RLS/private-storage/cleanup/rollback verification.
-- Official documentation currently identifies `gpt-6-astra`; verify that exact model is accessible to the configured account and recheck current rates with a consented synthetic room before adding it to the approved model list. Do not turn documentation existence into an account-access claim.
+- Official OpenAI documentation identifies `gpt-6-astra` and the Responses API, but this repository/environment has no account-access evidence or configured approved model. Keep `SPACE_AI_MODELS_JSON` empty until `GET /v1/models/{model}` succeeds for the deployment account; do not turn documentation existence into an account-access claim.
 - Capture an authenticated workspace in staging.
 - Test camera intake, touch, GPU memory and thermal behavior on physical iPhone and Android.
 - Obtain owner visual acceptance before merge or deployment.
@@ -90,7 +90,7 @@ Latest local evidence at handoff: 1,030/1,030 unit/integration tests passed; pro
 
 ## O. Areas Astra should visually challenge
 
-Challenge Korean headline rhythm at every width, the balance between the hero copy and product frame at 1024/1440, whether the logged-out workspace feels too sparse, success-result source density, dark-surface contrast, 3D material realism, before/after discoverability, touch-control density, and whether every viewport communicates one main idea. Reject decorative complexity that hides product truth. Flag any statement that reads as guaranteed geometry, scientific Feng Shui, success causality or model capability not proven in the repository/environment.
+Challenge Korean headline rhythm at every width, the balance between the hero copy and product frame at 1024/1440, whether the logged-out workspace feels too sparse, success-result source density, miniature facial/hand consistency, anchored speech-bubble occlusion, dark-surface contrast, 3D material realism, before/after discoverability, touch-control density, and whether every viewport communicates one main idea. Reject decorative complexity that hides product truth. Flag any statement that reads as guaranteed geometry, scientific Feng Shui, success causality or model capability not proven in the repository/environment.
 
 > The final benchmark is not whether the feature works.  
 > The benchmark is whether the product feels comparable to a top-tier commercial Korean AI product such as the provided NAVER AI Tab reference, while remaining original.
@@ -101,7 +101,7 @@ The experience no longer starts as an internal workbench, and the product itself
 
 | Category | Score / 10 | Evidence / remaining gap |
 |---|---:|---|
-| Typography | 8.9 | deliberate Korean breaks; licensed self-hosted font still absent |
+| Typography | 8.9 | deliberate Korean breaks; licensed local dynamic-subset font loads only on Korean routes |
 | Hierarchy | 9.1 | one primary hero and numbered story stages |
 | Spacing | 8.9 | five breakpoint captures; workspace gate is intentionally sparse |
 | Visual polish | 8.8 | real product frame, refined chrome; furniture coverage remains bounded |
@@ -111,3 +111,16 @@ The experience no longer starts as an internal workbench, and the product itself
 | Product storytelling | 9.1 | photo → validation → 3D → comparison → Reality Check |
 | Premium perception | 8.8 | materially improved, still below the strongest bespoke Korean campaign production |
 | **Overall** | **8.9** | reviewable and above the 8.0 critical floor; below the preferred 9.0 owner-acceptance gate |
+
+## P. Miniature asset and narration evidence
+
+- Six canonical masters are registered in `public/assets/mini-guides/manifest.json`: 태령, 연희, 사현, 화연, 윤도 and 호연.
+- Every master is a native 1254×1254 RGBA PNG. Runtime CSS widths are capped at 240 px, which preserves at least 3× source coverage without enlarging the file.
+- Concept boards were used only as art direction; no board crop or user image is shipped.
+- The first dark-haired 사현 attempt was rejected because the repository canon specifies silver hair. The shipped replacement is recorded in the manifest.
+- Yundo appears only after validated Space analysis, anchored by actual `objectId`; Sahyeon appears with sourced Success Story evidence. Next Image loads both outside the initial viewport lazily.
+- Narration is muted by default and starts only after a user action. Browser speech is optional; captions and the deterministic rationale remain when device speech is unavailable.
+
+## Q. Model and provider truth
+
+OpenAI documentation currently lists `gpt-6-astra` and supports it on `v1/responses`. Documentation does not prove this deployment account can use it. The repository therefore hardcodes no model ID: model IDs enter only through `SPACE_AI_MODELS_JSON`, are checked through `GET /v1/models/{id}`, and provider output must pass the existing structured-observation schema before deterministic code can use it. With the current empty environment the actual runtime is `disabled/manual`; no remote model was invoked in this pass.

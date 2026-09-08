@@ -756,7 +756,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             {showEverything
               ? <a className="header-start-link" href="#onboarding">{locale === "ko" ? "리딩 시작하기" : "Start reading"}</a>
               : <Link className="header-start-link" href={`/${locale}/reading#onboarding`} prefetch={false}>{locale === "ko" ? "리딩 시작하기" : "Start reading"}</Link>}
-            <Link className="locale-switch" href={`/${otherLocale}`}>{otherLocale === "ko" ? "한국어" : "English"}</Link>
+            <Link className="locale-switch" href={`/${otherLocale}`} prefetch={false}>{otherLocale === "ko" ? "한국어" : "English"}</Link>
             <Link className="locale-switch" href="/ja">日本語</Link>
           </div>
         </header>

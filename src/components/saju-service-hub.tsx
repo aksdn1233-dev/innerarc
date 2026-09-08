@@ -91,7 +91,7 @@ export function SajuServiceHub({ locale, pricing }: { locale: Locale; pricing: P
       <div className={styles.appShell}>
         <header className={styles.topbar}>
           <Link className={styles.brand} href={`/${locale}`}>{t.brand}</Link>
-          <Link className={styles.locale} href={`/${otherLocale}/fortune`}>
+          <Link className={styles.locale} href={`/${otherLocale}/fortune`} prefetch={false}>
             {otherLocale === "ko" ? "한국어" : "English"}
           </Link>
         </header>

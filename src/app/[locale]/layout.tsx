@@ -151,21 +151,25 @@ export default async function LocaleLayout({
     ],
   };
   return (
-    <div lang={locale}>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replaceAll("<", "\\u003c") }}
-      />
-      <JourneyAnalytics locale={locale} />
-      {campaign && (
-        <nav className="campaign-utility-nav" aria-label={locale === "ko" ? "행사, 후기와 도움말" : "Campaign, reviews and help"}>
-          <Link href={`/${locale}/events`} prefetch={false}>{locale === "ko" ? "이벤트" : "Events"}</Link>
-          <Link href={`/${locale}/reading#evidence`} prefetch={false}>{locale === "ko" ? "후기" : "Reviews"}</Link>
-          <Link href={`/${locale}/events#faq`} prefetch={false}>FAQ</Link>
-        </nav>
-      )}
-      {children}
-      <ContentProtectionNotice locale={locale} />
-    </div>
+    <>
+      {/* eslint-disable-next-line @next/next/no-css-tags -- Locale-only loading keeps the Korean font payload off English routes. */}
+      {locale === "ko" && <link rel="stylesheet" href="/fonts/pretendard/pretendard-dynamic.css" />}
+      <div lang={locale} className={locale === "ko" ? "pretendard-locale" : undefined}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replaceAll("<", "\\u003c") }}
+        />
+        <JourneyAnalytics locale={locale} />
+        {campaign && (
+          <nav className="campaign-utility-nav" aria-label={locale === "ko" ? "행사, 후기와 도움말" : "Campaign, reviews and help"}>
+            <Link href={`/${locale}/events`} prefetch={false}>{locale === "ko" ? "이벤트" : "Events"}</Link>
+            <Link href={`/${locale}/reading#evidence`} prefetch={false}>{locale === "ko" ? "후기" : "Reviews"}</Link>
+            <Link href={`/${locale}/events#faq`} prefetch={false}>FAQ</Link>
+          </nav>
+        )}
+        {children}
+        <ContentProtectionNotice locale={locale} />
+      </div>
+    </>
   );
 }

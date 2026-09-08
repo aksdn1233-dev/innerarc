@@ -12,6 +12,7 @@ import { calibrateScene } from "@/core/space/measurement";
 import { assessPhotoPixels, usablePhotoSet, type PhotoIssue, type PhotoQuality } from "@/core/space/photo-quality";
 import styles from "./space.module.css";
 import { FURNITURE_CATALOG, OBJECT_KINDS, type ObjectKind } from "@/core/space/catalog";
+import { buildSpaceGuideNarration } from "@/core/space/narration";
 
 const RoomView = dynamic(() => import("./room-view"), { ssr: false, loading: () => <p role="status">3D…</p> });
 const ProjectSchema = z.object({ id: z.uuid(), title: z.string(), goal: z.enum(["rest", "focus", "balance"]), locale: z.enum(["ko", "en"]) });
@@ -71,6 +72,7 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
   const [projects, setProjects] = useState<Project[]>([]), [projectId, setProjectId] = useState<string | null>(null);
   const [analysis, setAnalysis] = useState<Analysis | null>(null), [runId, setRunId] = useState<string | null>(null), [runDate, setRunDate] = useState<string | null>(null);
   const [compare, setCompare] = useState(false), [applied, setApplied] = useState<Record<string, boolean>>({});
+  const [activeRecommendation, setActiveRecommendation] = useState(0);
   const [checks, setChecks] = useState<z.infer<typeof DetailSchema>["checks"]>([]);
   const [note, setNote] = useState(""), [days, setDays] = useState<30 | 90>(30), [outcome, setOutcome] = useState("unchanged");
   const [busy, setBusy] = useState(false), [message, setMessage] = useState(""), [error, setError] = useState("");
@@ -152,6 +154,14 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
   }
   const kindName = (kind: string) => FURNITURE_CATALOG[kind as ObjectKind]?.[ko ? "ko" : "en"] ?? kind;
   const comparisonChanges = analysis ? spatialChanges(analysis.current, analysis.recommended) : [];
+  const activeGuide = analysis?.recommendations[activeRecommendation]
+    ? buildSpaceGuideNarration(
+      analysis.recommendations[activeRecommendation],
+      analysis.current,
+      kindName(analysis.current.objects.find(object => object.id === analysis.recommendations[activeRecommendation].action.objectId)?.kind ?? ""),
+      locale,
+    )
+    : null;
   const comparisonSummary = (change: (typeof comparisonChanges)[number]) => {
     const parts: string[] = [];
     if (change.distance > .001) parts.push(movementSummary(analysis!.current, { type: "move", objectId: change.objectId, x: change.to.x, z: change.to.z, rotation: null }, locale));
@@ -179,7 +189,7 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
             <div><strong>{compare ? words("추천 배치", "Suggested layout") : words("현재 배치", "Current layout")}</strong><span>{compare ? words("청록 윤곽은 원래 위치입니다.", "Teal outlines mark original positions.") : words("금색 윤곽은 추천 위치입니다.", "Gold outlines mark suggested positions.")}</span></div>
             {comparisonChanges.length ? <ol>{comparisonChanges.map(change => <li key={change.objectId}><span>{kindName(change.kind)}</span><b>{comparisonSummary(change)}</b></li>)}</ol> : <p>{words("좌표나 방향이 바뀐 가구가 없습니다.", "No furniture coordinates or rotations changed.")}</p>}
           </div>}
-          {validScene ? <RoomView locale={locale} scene={compare && analysis ? analysis.recommended : scene} comparisonScene={analysis ? compare ? analysis.current : analysis.recommended : undefined} comparisonMode={analysis ? compare ? "recommended" : "current" : undefined} selectedId={selectedId} onSelect={setSelectedId} /> : <p role="status">{words("크기와 좌표를 올바르게 입력하면 3D가 표시됩니다.", "Enter valid dimensions and coordinates to display 3D.")}</p>}
+          {validScene ? <RoomView locale={locale} scene={compare && analysis ? analysis.recommended : scene} comparisonScene={analysis ? compare ? analysis.current : analysis.recommended : undefined} comparisonMode={analysis ? compare ? "recommended" : "current" : undefined} selectedId={selectedId} onSelect={setSelectedId} guide={activeGuide} /> : <p role="status">{words("크기와 좌표를 올바르게 입력하면 3D가 표시됩니다.", "Enter valid dimensions and coordinates to display 3D.")}</p>}
           <label>{words("가구 선택", "Select furniture")}<select value={selectedId ?? ""} onChange={e => setSelectedId(e.target.value || null)}><option value="">{words("가구를 누르거나 선택하세요", "Tap furniture or choose here")}</option>{scene.objects.map(o => <option key={o.id} value={o.id}>{kindName(o.kind)} · {o.id}</option>)}</select></label>
           {selectedId && <div className={styles.toolbar} aria-label={words("선택한 가구 조정", "Adjust selected furniture")}>
             {([["←", -.1, 0], ["→", .1, 0], ["↑", 0, -.1], ["↓", 0, .1]] as const).map(([label, dx, dz]) => <button key={label} disabled={compare || !scene.objects.find(o => o.id === selectedId)?.movable} aria-label={words(`가구 ${label} 10cm`, `Move furniture ${label} 10cm`)} onClick={() => void task(async () => { const object = scene.objects.find(o => o.id === selectedId)!; edit(applyAction(scene, { type: "move", objectId: selectedId, x: Math.round((object.x + dx) * 1000) / 1000, z: Math.round((object.z + dz) * 1000) / 1000, rotation: null })); })}>{label} 10cm</button>)}
@@ -191,11 +201,11 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
         {analysis && <section className={styles.panel} aria-label={words("공간 분석 결과", "Space analysis results")}>
           <h2>{words("생활에서 확인할 개선안", "Changes to try in everyday life")}</h2>
           {analysis.warnings.map(w => <p className={styles.error} key={w}>{w}</p>)}
-          {analysis.recommendations.map(rec => <article className={styles.recommendation} key={rec.id}>
+          {analysis.recommendations.map((rec, index) => <article className={styles.recommendation} key={rec.id} data-active={index === activeRecommendation}>
             <span className={styles.badge}>{rec.evidence_type === "traditional" ? words("전통 풍수 해석", "Traditional feng shui") : rec.evidence_type === "practical" ? words("공간·생활 분석", "Space & daily life") : words("개인 패턴 기반 추천", "Personal pattern context")}</span>
             <p>{rec.rationale}</p>
             {rec.action.type === "move" && <p>{kindName(analysis.current.objects.find(o => o.id === rec.action.objectId)?.kind ?? "")} · {movementSummary(analysis.current, rec.action, locale)}</p>}
-            <div className={styles.actions}><button disabled={busy} aria-pressed={applied[rec.id] === true} onClick={() => void task(async () => { if (!demo && projectId && runId) await api(`/${projectId}/changes`, { runId, recommendationId: rec.id, applied: true }); setApplied(current => ({ ...current, [rec.id]: true })); setMessage(words(demo ? "연습 표시입니다. 저장하지 않습니다." : "실제로 적용했다고 기록했습니다.", demo ? "Demo selection; not saved." : "Recorded as applied in your room.")); })}>{words("실제로 적용했어요", "I applied this")}</button>
+            <div className={styles.actions}><button type="button" aria-pressed={index === activeRecommendation} onClick={() => { setActiveRecommendation(index); setSelectedId(rec.action.objectId); if (rec.action.type === "move" || rec.action.type === "rotate") setCompare(true); }}>{words("3D에서 안내 보기", "Show guide in 3D")}</button><button disabled={busy} aria-pressed={applied[rec.id] === true} onClick={() => void task(async () => { if (!demo && projectId && runId) await api(`/${projectId}/changes`, { runId, recommendationId: rec.id, applied: true }); setApplied(current => ({ ...current, [rec.id]: true })); setMessage(words(demo ? "연습 표시입니다. 저장하지 않습니다." : "실제로 적용했다고 기록했습니다.", demo ? "Demo selection; not saved." : "Recorded as applied in your room.")); })}>{words("실제로 적용했어요", "I applied this")}</button>
               <button disabled={busy} aria-pressed={applied[rec.id] === false} onClick={() => void task(async () => { if (!demo && projectId && runId) await api(`/${projectId}/changes`, { runId, recommendationId: rec.id, applied: false }); setApplied(current => ({ ...current, [rec.id]: false })); })}>{words("적용하지 않았어요", "Not applied")}</button></div>
           </article>)}
           <p className={styles.hint}>{words("전통 해석은 문화적 참고입니다. 건강·재물·관계의 변화나 과학적 효과를 보장하지 않습니다.", "Traditional interpretations are cultural references, with no guaranteed health, financial, relationship or scientific effects.")}</p>

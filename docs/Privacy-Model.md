@@ -168,3 +168,9 @@ Image metadata access expires after24 hours. Durable background cleanup removes 
 ## Space photo quality metadata — 2026-09-08
 
 The browser removes EXIF by canvas re-encoding and the server decodes and re-encodes again before private storage. The server stores only bounded diagnostic numbers (pixel dimensions, luminance, contrast, edge energy, clipping ratios, status and issue codes) beside the existing private asset. It stores no EXIF, camera model, location or diagnostic thumbnail. These checks detect visibly unusable pixels; they do not identify people or prove room geometry. Stored diagnostics follow the asset's owner isolation, 24-hour access expiry, export/deletion and durable physical-cleanup path. Provider processing still requires separate consent and can be disabled independently.
+
+## Success-story and guide-media minimization — 2026-09-08
+
+A success-story action can be copied into Reality Check through the same 30-minute `sessionStorage` handoff used by relationship context. It contains a public story ID, bounded public interpretation, transfer label and action text. The user's birth date, name and calculated structures are excluded. No record exists until the user edits and saves the draft.
+
+Optional Space voice uses the browser's device speech engine only after a user action. The application sends no narration text, voice recording or audio file to an external service and stores no speech preference or audio cache.

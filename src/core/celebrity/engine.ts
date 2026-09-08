@@ -7,6 +7,7 @@ import {
 } from "@/core/numerology";
 import type { Locale } from "@/i18n/config";
 import { CELEBRITIES } from "./data";
+import { SUCCESS_STORIES } from "./stories";
 import {
   CELEBRITY_COMPARISON_RULE_VERSION,
   celebrityFields,
@@ -45,6 +46,11 @@ export function validateCelebrityDataset(records: readonly CelebrityRecord[]): v
     parseBirthDate(record.source.accessedAt);
     if (!record.source.title.trim() || !record.source.publisher.trim()) throw new CelebrityDataError(`Incomplete source: ${record.id}`);
     if (!record.careerEvidence.length) throw new CelebrityDataError(`Missing career evidence: ${record.id}`);
+    const story = SUCCESS_STORIES[record.id];
+    if (!story) throw new CelebrityDataError(`Missing success story: ${record.id}`);
+    if (!story.publicPattern.ko.trim() || !story.publicPattern.en.trim() || !story.transferableAction.ko.trim() || !story.transferableAction.en.trim()) throw new CelebrityDataError(`Incomplete success story: ${record.id}`);
+    if (!story.hiddenConditions.length || !story.unknowns.length || !story.sources.length) throw new CelebrityDataError(`Missing success context: ${record.id}`);
+    for (const storySource of story.sources) if (!storySource.url.startsWith("https://") || !datePattern.test(storySource.accessedAt)) throw new CelebrityDataError(`Invalid success source: ${record.id}`);
     for (const evidence of record.careerEvidence) {
       if (!datePattern.test(evidence.date) || !datePattern.test(evidence.source.accessedAt)) throw new CelebrityDataError(`Invalid evidence date: ${record.id}`);
       parseBirthDate(evidence.date); parseBirthDate(evidence.source.accessedAt);
@@ -100,6 +106,7 @@ export function findCelebrityMatches(input: {
   profile: NumerologyProfile;
   locale: Locale;
   field?: CelebrityField | "all";
+  professionQuery?: string;
   limit?: number;
   records?: readonly CelebrityRecord[];
 }): CelebrityComparisonResult {
@@ -108,7 +115,8 @@ export function findCelebrityMatches(input: {
   const field = input.field ?? "all";
   const limit = Math.min(Math.max(input.limit ?? 5, 1), 20);
   const user = userStructures(input.profile);
-  const candidates = records.filter((record) => field === "all" || record.fields.includes(field));
+  const query = input.professionQuery?.trim().toLocaleLowerCase(input.locale) ?? "";
+  const candidates = records.filter((record) => (field === "all" || record.fields.includes(field)) && (!query || `${record.displayName[input.locale]} ${record.profession[input.locale]}`.toLocaleLowerCase(input.locale).includes(query)));
   const scored = candidates.map((celebrity) => {
     const publicPattern = celebrityStructures(celebrity);
     const allItems = STRUCTURES.map(({ id }) => ({ id, userValue: user[id], celebrityValue: publicPattern[id] }));
@@ -140,6 +148,7 @@ export function findCelebrityMatches(input: {
         ...STRUCTURES.map(({ id }) => `celebrity.${entry.celebrity.id}.${id}:${celebrityStructures(entry.celebrity)[id]}`),
         `source:${entry.celebrity.id}`,
       ],
+      story: SUCCESS_STORIES[entry.celebrity.id],
     };
   });
 

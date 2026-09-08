@@ -1,6 +1,6 @@
 import { assetBytes } from "./asset-fetch";
 import * as T from "three";
-import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
+import { HDRLoader } from "three/addons/loaders/HDRLoader.js";
 import type { InteriorMaterials } from "./interior-assets";
 // Bundled CC0 textures: first-party requests only. No private images become textures.
 export async function loadPbrSurfaces(materials: InteriorMaterials, renderer: T.WebGLRenderer, signal: AbortSignal) {
@@ -20,7 +20,7 @@ export async function loadPbrSurfaces(materials: InteriorMaterials, renderer: T.
     for (const material of [materials.oak, materials.walnut]) { material.map = woodColor; material.bumpMap = null; material.normalMap = woodNormal; material.normalScale.set(.25, .25); material.roughnessMap = woodArm; material.aoMap = woodArm; material.aoMapIntensity = .4; material.roughness = .9; material.needsUpdate = true; }
     clothNormal.repeat.set(1, 1); clothArm.repeat.set(1, 1);
     for (const material of [materials.linen, materials.sand, materials.sage, materials.rug, materials.lampshade]) { material.bumpMap = null; material.normalMap = clothNormal; material.normalScale.set(.28, .28); material.roughnessMap = clothArm; material.aoMap = clothArm; material.aoMapIntensity = .20; material.needsUpdate = true; }
-    const hdr = new RGBELoader().parse(hdrData), source = new T.DataTexture(hdr.data, hdr.width, hdr.height, T.RGBAFormat, hdr.type); source.mapping = T.EquirectangularReflectionMapping; source.needsUpdate = true; owned.push(source);
+    const hdr = new HDRLoader().parse(hdrData), source = new T.DataTexture(hdr.data, hdr.width, hdr.height, T.RGBAFormat, hdr.type); source.mapping = T.EquirectangularReflectionMapping; source.needsUpdate = true; owned.push(source);
     const pmrem = new T.PMREMGenerator(renderer); let environment: T.WebGLRenderTarget;
     try { environment = pmrem.fromEquirectangular(source); } finally { pmrem.dispose(); }
     return { environment, textureBytesEstimate: 8 * 1024 * 1024 * 4 * 4 / 3 + 1024 * 512 * 8, dispose() { dispose(); environment.dispose(); } };

@@ -293,7 +293,7 @@ export function RealityCheckExperience({ locale, copy }: Props) {
             <strong>태령당</strong>
             <small>{copy.brandTagline}</small>
           </Link>
-          <Link className="locale-switch" href={`/${otherLocale}/reality-check`}>
+          <Link className="locale-switch" href={`/${otherLocale}/reality-check`} prefetch={false}>
             {otherLocale === "ko" ? "한국어" : "English"}
           </Link>
         </header>
@@ -314,8 +314,8 @@ export function RealityCheckExperience({ locale, copy }: Props) {
             <h2>{copy.formTitle}</h2>
             {handoff && (
               <aside className="handoff-notice" role="status">
-                <strong>{copy.handoffLoaded}</strong>
-                <span>{copy.handoffSource}</span>
+                <strong>{handoff.source === "success_story" ? (locale === "ko" ? "성공 스토리에서 고른 행동을 일회성 초안으로 불러왔습니다." : "Your selected success-story action was loaded as a one-time draft.") : copy.handoffLoaded}</strong>
+                <span>{handoff.source === "success_story" ? (locale === "ko" ? "성공 패턴 현실 비교에서 이어짐" : "Continued from success-pattern reality comparison") : copy.handoffSource}</span>
                 <small>{copy.handoffPrivacy}</small>
               </aside>
             )}

@@ -12,7 +12,7 @@ export function LegalDocument({ locale, copy, kind }: { locale: Locale; copy: Le
           <strong>{brandNameForLocale(locale)}</strong>
           <small>{copy.brandTagline}</small>
         </Link>
-        <Link className="locale-switch" href={`/${otherLocale}/${kind}`}>
+        <Link className="locale-switch" href={`/${otherLocale}/${kind}`} prefetch={false}>
           {otherLocale === "ko" ? "한국어" : "English"}
         </Link>
       </header>

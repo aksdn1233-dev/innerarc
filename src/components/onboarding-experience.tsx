@@ -197,7 +197,7 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
             <strong>태령당</strong>
             <small>{d.brandTagline}</small>
           </Link>
-          <Link className="locale-switch" href={`/${otherLocale}/${routeName}`}>
+          <Link className="locale-switch" href={`/${otherLocale}/${routeName}`} prefetch={false}>
             {otherLocale === "ko" ? "한국어" : "English"}
           </Link>
         </header>

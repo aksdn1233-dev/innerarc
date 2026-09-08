@@ -56,6 +56,16 @@ describe("celebrity structural comparison", () => {
     expect(sports.matches.every((item) => item.celebrity.fields.includes("sports"))).toBe(true);
   });
 
+  it("filters by localized profession and carries sourced context and transfer limits", () => {
+    const science = findCelebrityMatches({ profile, locale: "en", professionQuery: "chemistry", limit: 10 });
+    expect(science.matches.map(item => item.celebrity.id)).toEqual(["marie-curie"]);
+    expect(science.matches[0].story.evidenceStatus).toBe("supported");
+    expect(science.matches[0].story.hiddenConditions.length).toBeGreaterThan(0);
+    expect(science.matches[0].story.unknowns.length).toBeGreaterThan(0);
+    expect(science.matches[0].story.sources.every(item => item.url.startsWith("https://"))).toBe(true);
+    expect(findCelebrityMatches({ profile, locale: "en", professionQuery: "not-in-dataset" }).matches).toEqual([]);
+  });
+
   it("keeps Korean and English rank, structure, and evidence identical", () => {
     const ko = findCelebrityMatches({ profile, locale: "ko" });
     const en = findCelebrityMatches({ profile, locale: "en" });

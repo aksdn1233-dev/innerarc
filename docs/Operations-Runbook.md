@@ -389,3 +389,7 @@ Run the final Vitest suite without a concurrent lint, typecheck, build or browse
 ### Editorial capture runner notes — 2026-09-08
 
 `pnpm start -- -p <port>` passes `-p` as a project directory in this repository's script shape. Start an explicit review server with `pnpm exec next start -p <port>`. For interactive browser checks, use the same hostname printed by the server. A Next development server opened as `localhost` but driven through `127.0.0.1` refuses cross-origin HMR and can leave forms as plain HTML submissions; that is not product-hydration evidence. Build first and use the production server for final interaction, console, and screenshot checks. Import Chromium from `@playwright/test`; the standalone `playwright` package is not installed. These command failures do not justify skipping the same production-server checks.
+
+## Guide assets and public-story sources — 2026-09-08
+
+Monitor guide assets as static route resources: a missing asset or font must not block Space analysis, 3D controls, recommendations or Reality Check. If browser speech fails, keep captions visible and do not retry through a paid provider. If a story source becomes unavailable or materially conflicts with its claim, mark that record insufficient or remove it from discovery until reviewed; never preserve a claim only to avoid an empty result.

@@ -9,11 +9,13 @@ import { resourceScope } from "./resource-scope";
 import { roomCameraFit, interiorCameraFit } from "./camera-fit";
 import { spatialChanges } from "@/core/space/comparison";
 import styles from "./space.module.css";
+import type { SpaceGuideNarration as SpaceGuideNarrationData } from "@/core/space/narration";
+import { SpaceGuideNarration } from "./guide-narration";
 
 type ComparisonMode = "current" | "recommended";
 type Runtime = { update(scene: Scene, comparison?: Scene, mode?: ComparisonMode): void; select(id: string | null): void; perspective(): void; top(): void; reset(): void; zoom(n: number): void; turn(): void; recommended(): void; profile(value: string): void; dispose(): void };
 type RenderResolution = { cssWidth: number; cssHeight: number; bufferWidth: number; bufferHeight: number; scale: number };
-export default function RoomView({ scene, comparisonScene, comparisonMode, locale, selectedId = null, onSelect }: { scene: Scene; comparisonScene?: Scene; comparisonMode?: ComparisonMode; locale: "ko" | "en"; selectedId?: string | null; onSelect?: (id: string) => void }) {
+export default function RoomView({ scene, comparisonScene, comparisonMode, locale, selectedId = null, onSelect, guide }: { scene: Scene; comparisonScene?: Scene; comparisonMode?: ComparisonMode; locale: "ko" | "en"; selectedId?: string | null; onSelect?: (id: string) => void; guide?: SpaceGuideNarrationData | null }) {
   const host = useRef<HTMLDivElement>(null), runtime = useRef<Runtime | null>(null), latest = useRef(scene), latestComparison = useRef(comparisonScene), latestComparisonMode = useRef(comparisonMode), selectCallback = useRef(onSelect), latestSelected = useRef(selectedId);
   const [failed, setFailed] = useState(false), [ready, setReady] = useState(false), [attempt, setAttempt] = useState(0), [quality, setQuality] = useState("auto"), [assetLoading, setAssetLoading] = useState(false), [viewFallback, setViewFallback] = useState(false), [cameraChoice, setCameraChoice] = useState<"perspective" | "top" | "recommended">("perspective"), [resolution, setResolution] = useState<RenderResolution | null>(null);
   const ko = locale === "ko";
@@ -37,7 +39,7 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
       let pixelRatio = mobile ? Math.min(1.5, Math.max(1.25, devicePixelRatio)) : Math.min(2, Math.max(1.5, devicePixelRatio)), qualityReduced = false, schedulerConstrained = false;
       renderer.setPixelRatio(pixelRatio); renderer.setClearColor(0xd9d7d0);
       renderer.outputColorSpace = T.SRGBColorSpace; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.02;
-      renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap;
+      renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFShadowMap;
       renderer.domElement.setAttribute("aria-label", ko ? "선택하고 돌려볼 수 있는 방의 3D 모형" : "Interactive 3D room with selectable furniture"); renderer.domElement.setAttribute("role", "img"); container.appendChild(renderer.domElement);
       const world = new T.Scene(); world.background = new T.Color(0xd7d5ce);
       own(() => assets.disposeGeometry(world));
@@ -285,6 +287,7 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
       <div ref={host} className={styles.canvas} hidden={failed} data-quality={quality} />
       {!failed && <div className={styles.compass} aria-label={`${ko ? "평면도 기준 북쪽" : "North relative to plan"}: ${scene.orientation.northDegrees}°`}><span style={{ transform: `rotate(${scene.orientation.northDegrees}deg)` }}>↑</span>{ko ? "북" : "N"}<small>{scene.orientation.northDegrees}° · {ko ? "평면도 기준" : "plan"}</small></div>}
       {!failed && resolution && <output className={styles.renderMeter} aria-label={ko ? "실제 3D 렌더 해상도" : "Actual 3D render resolution"}>{ko ? "실제 렌더" : "Actual render"} <strong>{resolution.bufferWidth}×{resolution.bufferHeight}</strong><small>{resolution.cssWidth}×{resolution.cssHeight} 화면 · {resolution.scale.toFixed(2)}×</small></output>}
+      {!failed && guide && <SpaceGuideNarration key={guide.templateId} guide={guide} locale={locale} />}
     </div>
     <div className={styles.toolbar} aria-label={ko ? "3D 보기 조작" : "3D view controls"}>
       <label className={styles.qualityChoice}>{ko ? "화질" : "Quality"}<select value={quality} onChange={e => { setQuality(e.target.value); runtime.current?.profile(e.target.value); }}>{["auto", "ultra", "high", "balanced", "performance"].map(value => <option key={value} value={value}>{({auto:ko?"자동":"Auto",ultra:ko?"울트라 미리보기":"Ultra Preview",high:"High",balanced:"Balanced",performance:ko?"가벼운 효과":"Performance"})[value]}</option>)}</select></label>

@@ -51,6 +51,24 @@ const draft = createRelationshipRealityCheckDraft({
 const createdAt = "2026-07-26T10:00:00.000Z";
 
 describe("relationship to Reality Check handoff", () => {
+  it("accepts a strict success-story draft without relationship context", () => {
+    const handoff = createRealityCheckHandoff({
+      handoffId: "handoff:success-story-1234",
+      source: "success_story",
+      locale: "en",
+      category: "work",
+      storyId: "marie-curie",
+      sourceRuleVersion: "celebrity-date-structure-1.0.0",
+      question: "What small observation can I repeat?",
+      currentState: "I am choosing one bounded experiment.",
+      interpretation: "Public evidence supports a long research path, while private help remains unknown.",
+      choice: "Test only the transferable behavior.",
+      actionPlan: "Record one observation three times this week.",
+    }, createdAt);
+    expect(handoff.source).toBe("success_story");
+    expect(handoff).not.toHaveProperty("contextId");
+    expect(() => createRealityCheckHandoff({ ...handoff, contextId, createdAt: undefined, expiresAt: undefined } as never, createdAt)).toThrow();
+  });
   it("builds a purpose-limited draft from only the selected context", () => {
     const selected = insight.meetingContexts[0];
     expect(draft).toMatchObject({

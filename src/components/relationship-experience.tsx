@@ -125,7 +125,7 @@ export function RelationshipExperience({ locale, copy }: Props) {
             <strong>태령당</strong>
             <small>{copy.eyebrow}</small>
           </Link>
-          <Link className="locale-switch" href={`/${otherLocale}/relationship`}>
+          <Link className="locale-switch" href={`/${otherLocale}/relationship`} prefetch={false}>
             {otherLocale === "ko" ? "한국어" : "English"}
           </Link>
         </header>

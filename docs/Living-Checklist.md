@@ -287,3 +287,11 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Public Space begins with product storytelling and an actual first-party product capture rather than a technical form.
 - [x] Existing public-figure comparison adds official career evidence and separates symbolic calculation from real-world context and unknowns without percentages or outcome claims.
 - [ ] Re-run hosted private-storage/model and physical iPhone/Android capture tests before either Space flag is enabled.
+
+## Success story and miniature guide hardening — 2026-09-08
+
+- [x] Public success stories separate official career facts, hidden conditions, unknowns and transferability; no success percentage or causal numerology claim.
+- [x] Success-story Reality Check handoff is strict, session-only, expires in 30 minutes and carries no user birth date or name.
+- [x] Space narration is deterministic, object-ID anchored, muted by default, user-initiated, captioned and provider-free.
+- [x] New miniature runtime assets are standalone RGBA PNGs with a native-resolution manifest; concept-board screenshots are not shipped.
+- [x] Confirm local Pretendard WOFF2 load and actual rendered family in the five-width browser evidence before release.

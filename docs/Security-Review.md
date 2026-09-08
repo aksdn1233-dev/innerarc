@@ -101,3 +101,7 @@ Local regressions cover private cross-owner denial, quota/lease/CAS, deletion ra
 ## Space capture evidence gate — 2026-09-08
 
 The upload boundary now permits at most 3.5 MB only to preserve useful 2048-pixel detail, while retaining strict JPEG magic/MIME, decoded-pixel, memory and dimension caps. Server-side pixel diagnostics run before reservation/storage. Extraction refuses malformed diagnostic metadata, fewer than two usable views, no clean frame, duplicate stored hashes, repeated provider image indexes, insufficient room boundaries, low cross-view consistency, or high lighting/perspective/occlusion risk. Coordinates still pass schema, bounds and collision checks and provider text cannot directly supply actions. Residual risk: visually detailed photographs can still contain faces, papers, screens and addresses. The capture guide asks users to exclude them; private storage, consent, expiry and deletion remain required controls.
+
+## Guide and success-handoff boundary — 2026-09-08
+
+The miniature guide layer receives only already-validated recommendation text and an allowlisted object ID. It cannot mutate scene coordinates or submit an analysis. Speech synthesis is local, begins only from a button, and falls back to visible text. Success-story handoffs remain strict JSON, same-origin tab storage and short-lived; unexpected keys, mixed relationship/story context, wrong locale, future timestamps and expired payloads fail closed.

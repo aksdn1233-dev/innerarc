@@ -132,7 +132,7 @@ export function TaeryeongLanding({ locale, reviewCount, spaceAvailable }: Props)
       <div className="td2-nav-actions">
         <Link className="td2-login" href={`/${locale}/orders`}>{t.login}</Link>
         <Link className="td2-pill" href={`/${locale}/numerology`} onClick={track}>{t.start}<Arrow /></Link>
-        <Link className="td2-language" href={`/${locale === "ko" ? "en" : "ko"}`}>{locale === "ko" ? "EN" : "한국어"}</Link>
+        <Link className="td2-language" href={`/${locale === "ko" ? "en" : "ko"}`} prefetch={false}>{locale === "ko" ? "EN" : "한국어"}</Link>
       </div>
     </header>
 

@@ -19,7 +19,7 @@ Scope: public home presentation and the shared visual direction for product intr
 
 | Family | Values | Use |
 |---|---|---|
-| Typography | system Korean serif display; system Korean sans body | editorial statements and readable interface copy without redistributed font files |
+| Typography | locally shipped Pretendard Variable (45–920), licensed under SIL OFL 1.1; Korean system fallbacks | consistent Korean display/body rendering with `font-display: swap` |
 | Paper | `#fbfaf7`, `#f7f4ef` | calm main ground and section continuity |
 | Mist | `#edf1f6` | Space Intelligence environment |
 | Blush / lavender | `#f3e9e8`, `#eeeaf3` | relationship and comparison chapters |
@@ -36,6 +36,8 @@ Scope: public home presentation and the shared visual direction for product intr
 - Headings use large sentence-shaped typography, short paragraphs, and generous vertical spacing. Avoid faux dashboards and repeated badges.
 - Product previews show one dominant frame per chapter. Use fine dividers and background changes for hierarchy. Never invent a customer result or efficacy claim.
 - One small 태령 guide appears only beside the Space explanation. It does not occupy hero scale or replace product evidence.
+- Runtime guides use standalone native-resolution 2.5D assets. The current Space guide is 윤도 and the success-evidence guide is 사현, preserving the repository's canonical six-character names and roles. Mood-board screenshots are never runtime assets.
+- Guide speech bubbles have one short claim, one details disclosure, user-initiated mute/replay/caption controls, and a text-only fallback. They point to a deterministic result or object ID and never introduce a new calculated fact.
 - Forms and result pages retain their existing accessible controls and data flow. Future shell work should consume these tokens route by route instead of changing all legacy pages in one global CSS rewrite.
 - Space keeps the real-render label and before/after camera parity. Marketing screenshots must come from the renderer and cannot be enlarged substitutes for the scene.
 
@@ -60,7 +62,7 @@ Scores are internal review aids based on the generated 2026-09-08 application ca
 | Depth | 8.8 | restrained shadows, layered mist, real 3D scene evidence |
 | Interaction quality | 8.6 | direct route actions and responsive states; richer section motion intentionally deferred |
 
-Overall: **8.96/10**. Lowest category: **8.6/10**. The result clears the requested 8.5 implementation threshold. Final acceptance remains the owner's decision from the actual captures.
+Overall: **8.96/10**. Lowest category: **8.6/10**. The result clears the requested 8.5 implementation threshold. Final acceptance remains the owner's decision from the actual captures. The typography gate additionally requires the local WOFF2 request to succeed in browser evidence and the rendered family to resolve to `Pretendard Local`; a system fallback is a release failure for the reviewed Korean screens.
 
 ## Hostile template audit
 

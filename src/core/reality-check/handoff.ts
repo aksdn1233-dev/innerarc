@@ -13,10 +13,11 @@ const isoDateTime = z.string().datetime({ offset: true });
 export const RealityCheckHandoffSchema = z.object({
   version: z.literal(REALITY_CHECK_HANDOFF_VERSION),
   handoffId: z.string().regex(/^handoff:[A-Za-z0-9-]{8,100}$/),
-  source: z.literal("relationship"),
+  source: z.enum(["relationship", "success_story"]),
   locale: z.enum(["ko", "en"]),
-  category: z.literal("relationship"),
-  contextId: z.enum(meetingContextIds),
+  category: z.enum(["relationship", "work", "growth"]),
+  contextId: z.enum(meetingContextIds).optional(),
+  storyId: z.string().regex(/^[a-z0-9-]{3,80}$/).optional(),
   sourceRuleVersion: z.string().regex(/^[A-Za-z0-9._-]{3,80}$/),
   question: requiredText(1_000),
   currentState: requiredText(1_000),
@@ -35,6 +36,12 @@ export const RealityCheckHandoffSchema = z.object({
       path: ["expiresAt"],
       message: "Handoff expiry must be after creation and no more than 30 minutes later",
     });
+  }
+  if (handoff.source === "relationship" && (handoff.category !== "relationship" || !handoff.contextId || handoff.storyId)) {
+    context.addIssue({ code: "custom", path: ["source"], message: "Relationship handoffs require relationship context only" });
+  }
+  if (handoff.source === "success_story" && (!handoff.storyId || handoff.contextId || handoff.category === "relationship")) {
+    context.addIssue({ code: "custom", path: ["source"], message: "Success-story handoffs require a work or growth story only" });
   }
 });
 export type RealityCheckHandoff = z.infer<typeof RealityCheckHandoffSchema>;

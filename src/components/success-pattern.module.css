@@ -11,6 +11,7 @@
   color: #fff9ee;
 }
 .featureNumber { position: absolute; top: 18px; right: 24px; color: rgba(255,255,255,.18); font: 500 clamp(4rem, 10vw, 8rem)/1 Georgia, serif; }
+.guide{position:absolute;right:clamp(8px,2vw,24px);bottom:-22px;width:clamp(126px,18vw,220px);height:auto;object-fit:contain;filter:drop-shadow(0 18px 28px #02071399);pointer-events:none}
 .feature h3 { margin: 6px 0 16px; font: 700 clamp(2rem, 5vw, 4.5rem)/1 var(--display-font); letter-spacing: -.055em; }
 .feature > div:first-of-type > p:first-child { color: #e9cf94; font-size: .78rem; font-weight: 800; text-transform: uppercase; }
 .feature > div:first-of-type > p:last-child { max-width: 34ch; color: rgba(255,249,238,.72); }
@@ -24,4 +25,6 @@
 .boundary article > span { color: var(--clay); font: 500 1.35rem/1 Georgia,serif; }
 .boundary h3 { margin: 18px 0 10px; font: 700 1.2rem/1.3 var(--display-font); }
 .boundary p { color: var(--muted); font-size: .9rem; line-height: 1.75; }
+.realityStory{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;margin:38px 0;background:var(--line);border:1px solid var(--line);border-radius:20px;overflow:hidden}.realityStory article{min-width:0;padding:clamp(20px,4vw,36px);background:var(--paper)}.realityStory article>span{display:block;margin-bottom:10px;color:var(--clay);font-size:.76rem;font-weight:800;letter-spacing:.04em}.realityStory article>strong{display:inline-flex;margin-bottom:8px;padding:.28rem .55rem;border-radius:999px;background:#e8eef8;color:#1f365a;font-size:.73rem}.realityStory p,.realityStory li{color:var(--muted);font-size:.9rem;line-height:1.7}.realityStory ul{margin:0;padding-left:1.1rem}.transfer{grid-column:1/-1;background:linear-gradient(135deg,#faf5ea,#f1edf7)!important}.transfer button{margin-top:12px}.transfer small{display:block;margin-top:10px}.storySources{grid-column:1/-1;padding:18px 24px;background:#f7f4ec;color:var(--ink)}.storySources summary{cursor:pointer;font-weight:750}.storySources a{display:block;margin-top:8px;color:var(--clay);font-size:.82rem;overflow-wrap:anywhere}.empty{margin:32px 0;padding:24px;border:1px solid var(--line);border-radius:16px;background:var(--paper);color:var(--muted)}
 @media (max-width: 720px) { .feature, .boundary { grid-template-columns: 1fr; } }
+@media (max-width:720px){.guide{right:-8px;bottom:-8px;width:132px}.careerEvidence{margin-right:72px}.realityStory{grid-template-columns:1fr}.transfer,.storySources{grid-column:auto}}

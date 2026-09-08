@@ -1622,3 +1622,11 @@
 - Safety and claims: Korean and English copy label symbolic interpretation, sourced facts, practical space analysis, and Reality Check separately. The footer states that Saju, numerology, tarot, and feng shui are reflection tools rather than scientific prediction, diagnosis, treatment, or guaranteed outcomes. The generated hero contains no user data or result claim and is visibly disclosed.
 - Success, guardrails, and reversal: Require no horizontal overflow at 320–1440px, 44px controls, no console errors in production capture, real Space-render evidence, bilingual boundary text, green calculation/payment regressions, and an internal visual score at or above 8.5. Revert the home route to `HomeExperience` and delete the route-scoped presentation files/assets if comprehension, performance, accessibility, or conversion evidence worsens; no migration is involved. See `Taeryeong-Design-System-2.md`.
 - Status: Implemented on the unmerged review branch; production release remains held with PR #22 gates.
+
+## D-070 - Evidence-led success stories and anchored miniature guides
+
+- Date: 2026-09-08
+- Decision: Extend the existing public-figure comparison with source-backed career process, visible hidden conditions, explicit unknowns and a three-level transferability label. Ranking remains the unchanged deterministic date-structure comparison. A selected small action can enter Reality Check through the existing 30-minute session-only handoff without sending the user's birth date or name.
+- Decision: Preserve the six canonical guide identities and add native 2.5D assets only for roles used in a shipped flow. 윤도 is attached to a validated Space recommendation/object ID; 사현 presents sourced success evidence. Device speech is user-initiated, locally synthesized and caption-backed, with no provider call or automatic audio.
+- Economics: No catalog, payment, entitlement or fulfillment change. Public-figure analysis and narration cost zero per run. The local font and two image assets add transfer bytes only; route-level lazy loading is required and monitored.
+- Safety and reversal: Public career records do not establish causality. Context-specific actions are labelled as such. Remove the new story panels and guide props to roll back; the legacy comparison, Space renderer, calculations and handoff storage version remain readable.

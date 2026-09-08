@@ -466,10 +466,29 @@ test("celebrity comparison uses sourced birth-date structures without identity p
   await expect(page.locator(".celebrity-card")).toHaveCount(5);
   await expect(page.getByText("Similarity based on the numerology structure of public birth dates")).toBeVisible();
   await expect(page.locator(".celebrity-card a").first()).toHaveAttribute("href", /^https:\/\//);
+  await expect(page.getByText("Process supported by public records", { exact: true })).toBeVisible();
+  await expect(page.getByText("Conditions and context", { exact: true })).toBeVisible();
+  await expect(page.getByText("What public records cannot show", { exact: true })).toBeVisible();
   await expect(page.locator("#celebrity-result")).not.toContainText("%");
   await page.locator("#celebrity-field").selectOption("sports");
   await page.getByRole("button", { name: "Compare public structures" }).click();
   await expect(page.locator(".celebrity-card")).toHaveCount(2);
+  await page.locator("#celebrity-profession-query").fill("no-such-profession");
+  await page.getByRole("button", { name: "Compare public structures" }).click();
+  await expect(page.getByText(/No public figure matches/)).toBeVisible();
+  const professionQuery = page.locator("#celebrity-profession-query");
+  await professionQuery.evaluate((element: HTMLInputElement) => { element.value = "Marie Curie"; });
+  await expect(professionQuery).toHaveValue("Marie Curie");
+  await page.locator("#celebrity-field").selectOption("science");
+  await page.getByRole("button", { name: "Compare public structures" }).click();
+  const saveStory = page.getByRole("button", { name: "Save this action to Reality Check" });
+  await expect(saveStory).toBeVisible({ timeout: 15_000 });
+  await saveStory.evaluate((element: HTMLButtonElement) => element.click());
+  await expect(page).toHaveURL(/\/en\/reality-check$/);
+  await expect(page.getByText("Continued from success-pattern reality comparison", { exact: true })).toBeVisible();
+  await expect(page.locator("#reality-category")).toHaveValue("work");
+  await expect(page.locator("#reality-action")).not.toHaveValue("");
+  expect(await page.evaluate(() => sessionStorage.getItem("innerarc:reality-check-handoff:v1"))).toBeNull();
 });
 
 test("Reality Check preserves a choice and reviews personal relevance without default persistence", async ({ page }) => {

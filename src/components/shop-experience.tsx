@@ -120,7 +120,7 @@ export function ShopExperience({ locale, copy }: { locale: Locale; copy: ShopCop
             <strong>태령당</strong>
             <small>{copy.brandTagline}</small>
           </Link>
-          <Link className="locale-switch" href={`/${otherLocale}/shop`}>
+          <Link className="locale-switch" href={`/${otherLocale}/shop`} prefetch={false}>
             {otherLocale === "ko" ? "한국어" : "English"}
           </Link>
         </header>

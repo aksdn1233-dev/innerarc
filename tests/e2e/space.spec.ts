@@ -27,9 +27,21 @@ test("space demo confirms, analyzes, compares, applies and invalidates edits", a
   await expect(page.getByRole("region", { name: "공간 분석 결과" })).toBeVisible({ timeout: 15_000 });
   await expect(page.getByText("전통 풍수 해석", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("공간·생활 분석", { exact: true })).toBeVisible();
+  const guide = page.getByLabel("3D 공간 안내");
+  await expect(guide).toBeVisible({ timeout: 15_000 });
+  await expect(guide).toHaveAttribute("data-anchor-object", /^(bed|desk|sofa|object|room)/);
+  await expect(page.getByRole("button", { name: "다시 듣기", exact: true })).toBeDisabled();
+  const unmute = page.getByRole("button", { name: "음성 켜기", exact: true });
+  await unmute.evaluate((element: HTMLButtonElement) => element.click());
+  await expect(page.getByRole("button", { name: "음소거", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: "다시 듣기", exact: true })).toBeEnabled();
+  await page.getByRole("button", { name: "자막", exact: true }).evaluate((element: HTMLButtonElement) => element.click());
+  await expect(page.getByRole("button", { name: "자막", exact: true })).toHaveAttribute("aria-pressed", "false");
   const compare = page.getByRole("button", { name: "추천 배치", exact: true });
   await compare.click(); await expect(compare).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("region", { name: "공간 분석 결과" }).locator("article")).toHaveCount(3);
+  await page.getByRole("button", { name: "3D에서 안내 보기", exact: true }).first().click();
+  await expect(page.getByRole("button", { name: "3D에서 안내 보기", exact: true }).first()).toHaveAttribute("aria-pressed", "true");
   await page.getByRole("button", { name: "실제로 적용했어요", exact: true }).first().click();
   await expect(page.getByText("연습 표시입니다. 저장하지 않습니다.", { exact: true })).toBeVisible();
   await page.getByLabel("방 가로 (m)", { exact: true }).fill("4.5");
@@ -53,10 +65,19 @@ test("private workspace is login-gated and noindex; shared footer remains", asyn
   await expect(page.locator('input[type="file"]')).toHaveCount(0);
 });
 test("space mobile layout, reduced motion and accessibility stay usable", async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: "reduce" }); await page.goto("/en/space");
-  await expect(page.getByRole("button", { name: "Top", exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Top", exact: true }).click();
-  await page.getByRole("button", { name: "Zoom in", exact: true }).click();
+  await page.emulateMedia({ reducedMotion: "reduce" }); await page.goto("/ko/space");
+  const typography = await page.evaluate(async () => {
+    await document.fonts.ready;
+    return {
+      loaded: document.fonts.check('16px "Pretendard Local"'),
+      family: getComputedStyle(document.querySelector(".pretendard-locale")!).fontFamily,
+    };
+  });
+  expect(typography.loaded).toBe(true);
+  expect(typography.family).toContain("Pretendard Local");
+  await expect(page.getByRole("button", { name: "위에서", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "위에서", exact: true }).click();
+  await page.getByRole("button", { name: "확대", exact: true }).click();
   await page.addScriptTag({ content: axe });
   const violations = await page.evaluate(async () => {
     const result = await (window as unknown as { axe: { run(options: unknown): Promise<{ violations: { id: string; impact: string }[] }> } }).axe.run({ runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa"] } });
@@ -72,6 +93,28 @@ test("WebGL failure retains text analysis and offers retry", async ({ page }) =>
   await page.getByRole("checkbox", { name: "I compared the room, openings and furniture with the actual space" }).check();
   await page.getByRole("button", { name: "Analyze demo room", exact: true }).click();
   await expect(page.getByRole("region", { name: "Space analysis results" })).toBeVisible();
+});
+
+test("device speech failure keeps the anchored guide readable", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.addInitScript(() => {
+    Object.defineProperty(window, "speechSynthesis", { configurable: true, value: undefined });
+  });
+  await page.goto("/en/space");
+  await expect(page.locator("fieldset[data-ready]")).toHaveAttribute("data-ready", "true", { timeout: 10_000 });
+  for (const name of ["I checked north", "I compared the room, openings and furniture with the actual space"]) {
+    const checkbox = page.getByRole("checkbox", { name });
+    await checkbox.evaluate((element: HTMLInputElement) => element.click());
+    await expect(checkbox).toBeChecked();
+  }
+  await page.getByRole("button", { name: "Analyze demo room", exact: true }).click();
+  await expect(page.getByLabel("3D space guide")).toBeVisible();
+  await page.getByRole("button", { name: "Unmute", exact: true }).evaluate((element: HTMLButtonElement) => element.click());
+  const replay = page.getByRole("button", { name: "Replay", exact: true });
+  await expect(replay).toBeEnabled();
+  await replay.evaluate((element: HTMLButtonElement) => element.click());
+  await expect(page.getByLabel("3D space guide").getByRole("status")).toContainText("Device speech is unavailable");
+  await expect(page.getByLabel("3D space guide").locator("p").first()).toBeVisible();
 });
 
 test("independent home menu follows the feature flag without changing reading links", async ({ page }) => {

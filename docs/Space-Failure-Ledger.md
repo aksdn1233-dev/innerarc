@@ -119,3 +119,59 @@ Run 34158372056 passed all four jobs, but the general Chromium version of the sa
 Run 34159488010 proved the full state flow clean at 229/229 general browser passes, but the isolated desktop performance case needed one retry before its first exact six-object scene appeared. The assertion allowed 20 seconds while the existing post-failure full context and bounded-asset reconstruction policy allows 30 seconds. Align only the initial exact-scene readiness wait to that 30-second allowance; timing begins afterwards, so the unchanged 100ms response ceiling, render metrics and scene assertions cannot be hidden by this setup deadline. Require another clean four-job run.
 
 Run 34160365698 repeated that retry because the first timeout edit matched an earlier identical readiness line in the comparison test, leaving the performance case at 20 seconds. This was a test-edit targeting defect. Restore the comparison test's original bound, place the 30-second allowance inside the named lightweight benchmark, verify its line-level diff, and require another remote run with no retry-pass cases.
+
+### Guide narration fixture confirmation — 2026-09-08
+
+- Failure: the first new narration unit test passed an unconfirmed example scene into the production analyzer and correctly received `CONFIRM_SCENE_AND_NORTH`.
+- Cause: the test prepared a visual example but omitted the user-confirmation precondition enforced by the deterministic engine.
+- Correction: the fixture now explicitly confirms both the scene and north before analysis.
+- Recurrence guard: the narration test must continue to call the real analyzer so a guide can never be built from a scene that bypasses production confirmation.
+
+### 2026-09-08 — Korean particle scan rejected the first guide caption
+
+- **Symptom:** the complete unit suite reported `src/core/space/narration.ts: ${location}을`.
+- **Cause:** a fixed object particle followed a dynamic phrase whose final sound varies.
+- **Fix:** the caption now uses a particle-free pause that is natural for every generated location.
+- **Prevention:** the existing repository-wide Korean particle scan remains the regression gate for all deterministic narration copy.
+
+### 2026-09-08 — full Pretendard master broke the initial-transfer gate
+
+- **Symptom:** the general browser matrix measured about 2.33–2.50 MB on English routes against 350–450 KB limits.
+- **Cause:** the first typography pass applied one 2.0 MB variable-font master globally, so every locale downloaded it.
+- **Fix:** Korean routes alone load the official locally hosted dynamic Unicode subset stylesheet; English routes keep the existing system stack. The unpartitioned runtime font was removed.
+- **Prevention:** the existing per-route transfer/resource budgets remain mandatory and are rerun after every typography change.
+
+### 2026-09-08 — alternate-language prefetch downloaded Korean font CSS on English pages
+
+- **Symptom:** after locale-scoping the font, English Shop and Fortune still downloaded the 54 KB decoded Korean subset stylesheet.
+- **Cause:** visible language-switch links prefetched their Korean route payload, including the Korean stylesheet.
+- **Fix:** language-switch links now opt out of speculative route prefetch; the explicit click still navigates normally.
+- **Prevention:** performance tests count all resource timing entries, including speculative prefetches, so locale-only assets cannot silently cross the boundary again.
+
+### 2026-09-08 — parallel WebGL made new guide assertions wait on animation stability
+
+- **Symptom:** under the four-worker browser matrix, one anchored guide mounted after the initial 5-second assertion and the synthetic speech-fallback click waited for a moving overlay to become stable.
+- **Cause:** the tests used generic click stability and a shorter timeout than the already documented 15-second WebGL readiness limit.
+- **Fix:** guide visibility uses the same 15-second readiness limit; the speech fallback case runs with reduced motion and invokes the already-visible native button directly.
+- **Prevention:** the focused guide tests are repeated serially before the complete matrix is accepted.
+
+### 2026-09-08 — guide controls were clicked while the overlay was still settling
+
+- **Symptom:** the mobile full-flow check sometimes left mute or captions unchanged even though Playwright had completed an actionability click.
+- **Cause:** the guide is mounted over a live WebGL scene; generic pointer stability could finish at the same time as the responsive overlay settled.
+- **Fix:** after proving each control is visible, the regression dispatches its native click and asserts the resulting `aria-pressed` state before continuing.
+- **Prevention:** the complete flow passed three consecutive mobile repetitions and then the full 231-case serialized browser matrix.
+
+### 2026-09-08 — success-story search replacement kept a stale value once
+
+- **Symptom:** one full mobile run retained `no-such-profession` when the regression replaced it with `Marie Curie` immediately after rendering the empty state.
+- **Cause:** the uncontrolled search field and result focus/scroll update overlapped during the long combined run; the comparison engine itself was not involved.
+- **Fix:** the regression writes the next uncontrolled form value only after the empty state is visible, verifies the exact value, and then submits through the real form.
+- **Prevention:** the complete success-story flow passed three Chromium and three mobile repetitions, followed by a clean full browser matrix.
+
+### 2026-09-08 — intended font, material and narration changes invalidated old pictures
+
+- **Symptom:** 20 focused visual checks compared the approved Pretendard/PBR/anchored-guide presentation with screenshots captured before those changes.
+- **Cause:** the tests correctly detected visible differences in typography, lighting, materials, render resolution and the new guide overlay.
+- **Fix:** representative desktop and iPhone actuals were inspected at native pixels, all affected references were regenerated, and the entire no-update matrix was rerun.
+- **Prevention:** the final desktop/iPhone/Android Space matrix passed 79 cases with 20 intentional duplicate-capture skips and no visual mismatch.

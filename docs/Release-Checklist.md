@@ -199,3 +199,13 @@ Rollback reference: production base `ee4ae5038e34e0715456b837cbe7c7f2db5591c4`; 
 - [x] Feature-off rendering omits the Space menu/showcase without breaking the other home chapters.
 - [ ] Run the complete Node 24 CI matrix and inspect generated five-width captures before merge.
 - [ ] Keep PR #22 unmerged and Space flags off until its existing hosted, physical-device, and owner-acceptance gates pass.
+
+## Success story and miniature guide hardening — 2026-09-08
+
+- [x] Seven public records have validated HTTPS story sources, evidence status, context, unknowns, transferability and one bounded action.
+- [x] Profession/name search has a truthful empty state; symbolic ranking remains deterministic and percentage-free.
+- [x] Success action handoff and invalid mixed-context payloads have regression coverage.
+- [x] Space guide is tied to a recommendation/object ID and keeps mute, replay, caption, detail and speech-failure paths.
+- [x] New guide images are native 1254×1254 RGBA assets and are never upscaled beyond their 3× DPR safe display size.
+- [x] Capture 390/430/768/1024/1440 success result and Space analysis after the asset/font load gate passes.
+- [ ] Owner accepts the actual captures. This remains separate from CI and does not authorize merge or deployment.
