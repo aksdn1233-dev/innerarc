@@ -235,3 +235,5 @@ The first four-worker recurrence run then reproduced the same moving-control rac
 - **Prevention:** repeat both affected mobile paths under four workers before the next complete Node 24 acceptance run; accept the PR only when the complete log contains no retry marker.
 
 The first four-worker repetition then proved the moving disclosure itself could remain outside the mobile viewport during Playwright's scrolling click. The helper now invokes the already-located native `summary` control exactly once, matching the hardened tarot disclosure path, and still requires the real `open` state before continuing.
+
+Run 34220899715 then exposed the one Saju consent path omitted from the earlier helper conversion: the English derivation case still called Playwright's moving-element `.check()` directly and retried twice. It now uses the same visible, native-click and checked-state helper as all three Korean cases. A repeated English-only mobile gate covers the omitted branch before the next complete run.
