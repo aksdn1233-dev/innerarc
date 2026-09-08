@@ -219,3 +219,10 @@ Run 34160365698 repeated that retry because the first timeout edit matched an ea
 - **Prevention:** repeat the manual-tarot save under four local workers, then accept only a complete serial Node 24 general matrix with 231 passes, 9 intentional skips and zero retries.
 
 The first four-worker recurrence run then reproduced the same moving-control race earlier, at the native `details` disclosure: one of eight runs left the audit content closed after the generic text click. Both ordinary and manual tarot regressions now invoke the real `summary` control once, assert the `open` state, and keep a bounded 15-second content deadline. This preserves the disclosure interaction while removing actionability retries caused by responsive scrolling.
+
+### 2026-09-08 — serial Saju consent proved the shared label/input hit target was unstable
+
+- **Symptom:** run 34217315198 kept the complete Space matrix clean but retried the mobile unknown-birth-time Saju case once, even with one general worker.
+- **Cause:** Playwright's checkbox action targeted the nested input while its wrapping label intercepted the pointer during responsive movement. This was an individual control-target issue, not runner concurrency.
+- **Fix:** all three Saju regression paths now prove the real consent input is visible, invoke it exactly once and assert its checked state before continuing. Calculation, unknown-time omission and checkout assertions are unchanged.
+- **Prevention:** repeat all three Saju paths under four local workers and require one final complete Node 24 run with zero retries.

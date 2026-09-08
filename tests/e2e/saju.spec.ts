@@ -1,8 +1,14 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { resolveProductPricing } from "../../src/core/product-prices";
 // Assert the server-authoritative schedule; the September 6 campaign has an end.
 const pricing = resolveProductPricing();
 const krw = (value: number) => value.toLocaleString("en-US");
+async function checkPrivacyConsent(page: Page) {
+  const consent = page.getByRole("checkbox");
+  await expect(consent).toBeVisible();
+  await consent.evaluate((element: HTMLInputElement) => element.click());
+  await expect(consent).toBeChecked();
+}
 test("the Four Pillars chart moves into the current one-time checkout", async ({ page }) => {
   await page.goto("/ko/saju");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("사주 원국");
@@ -12,7 +18,7 @@ test("the Four Pillars chart moves into the current one-time checkout", async ({
   await page.locator("#saju-birthDate").fill("1994-11-04");
   await page.locator("#saju-readingName").fill("결이");
   await page.locator("#saju-birthTime").fill("09:30");
-  await page.getByRole("checkbox").check();
+  await checkPrivacyConsent(page);
   await page.getByRole("button", { name: /원 결제로 원국 받기/ }).click();
 
   await expect(page).toHaveURL(/\/ko\/plans\?product=plus_30d$/);
@@ -27,7 +33,7 @@ test("the Four Pillars chart moves into the current one-time checkout", async ({
 test("an unknown birth time leaves the hour pillar empty instead of inventing one", async ({ page }) => {
   await page.goto("/ko/saju");
   await page.locator("#saju-birthDate").fill("1994-11-04");
-  await page.getByRole("checkbox").check();
+  await checkPrivacyConsent(page);
   await page.getByRole("button", { name: /원 결제로 원국 받기/ }).click();
 
   const draft = await page.evaluate(() => JSON.parse(sessionStorage.getItem("innerarc.checkoutDraft.v1") ?? "null"));
@@ -38,7 +44,7 @@ test("an unknown birth time leaves the hour pillar empty instead of inventing on
 test("a date the engine will not stand behind is refused, not answered", async ({ page }) => {
   await page.goto("/ko/saju");
   await page.locator("#saju-birthDate").fill("1099-01-01");
-  await page.getByRole("checkbox").check();
+  await checkPrivacyConsent(page);
   await page.getByRole("button", { name: /원 결제로 원국 받기/ }).click();
   // Scoped to the form's own error: `role="alert"` alone also matches Next's route
   // announcer, which is empty.
