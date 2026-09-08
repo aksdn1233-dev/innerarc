@@ -303,3 +303,12 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Harden device speech, readable guide fallback, world-coordinate marker and 1× minimum lightweight render density.
 - [x] Make flaky CI outcomes fail rather than silently pass on retry.
 - [x] Local release evidence completed: see `Final-Product-Quality-Pass.md`; hosted two-account storage/RLS, actual configured model access and physical phones remain separate from local emulation.
+
+## 2026-09-09 first-visit walkthrough restoration
+
+- [x] Restore the prior real-screen four-step walkthrough directly below the home hero.
+- [x] Show a concise one-time cue to first visitors and keep the guide permanently reachable from the main navigation.
+- [x] Lazy-load only the visible and next 780×1062 guide clips; use posters for reduced motion and never enlarge the source beyond its native CSS width.
+- [x] Verify keyboard tabs, mobile/desktop behavior, local seen-state privacy and five-width visual snapshots.
+- [x] Preserve all existing calculation, payment, authentication, report, Space and Reality Check behavior.
+- [x] Keep full calculation and long mobile journey suites sequential with the media-heavy visual matrix; a local parallel run exhausted the shared CPU and produced timeout-only failures, while the unchanged suites passed alone (1,039/1,039 unit and 1/1 mobile journey).

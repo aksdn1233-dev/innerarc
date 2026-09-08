@@ -16,13 +16,19 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   })).toBeVisible();
   await expect(page.locator(".td2-hero").getByRole("link", { name: /무료로 나 알아보기/ })).toBeVisible();
   await expect(page.locator(".td2-hero").getByRole("link", { name: /내 방 분석하기/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /처음이세요\? 1분 안내 보기/ })).toBeVisible();
+  await page.getByRole("button", { name: /처음이세요\? 1분 안내 보기/ }).click();
+  await expect(page.locator("#guide")).toBeInViewport();
+  await expect(page.locator("#guide [role='tab']")).toHaveCount(4);
+  await expect(page.locator("#guide video")).toHaveCount(4);
+  await expect(page.locator("#guide [role='tabpanel']")).toContainText("지금 궁금한 것을 고릅니다");
   await expect(page.locator("#onboarding")).toHaveCount(0);
   expect(await page.locator("#services .td2-pillar").count()).toBeGreaterThanOrEqual(4);
   await expect(page.locator(".td2-report-preview")).toContainText("계산 · 상징 · 현실");
   await expect(page.locator(".td2-success-canvas")).toContainText("출처가 있는 실제 경력 사건");
   await expect(page.locator(".td2-reality")).toContainText("한 달 뒤에 돌아와");
   await expect(page.locator(".td2-footer")).toContainText("사업자등록번호");
-  await expect(page.locator('.td2-nav a:has-text("서비스")')).toHaveAttribute("href", "#services");
+  await expect(page.locator('.td2-nav a:has-text("처음 안내")')).toHaveAttribute("href", "#guide");
   await expect(page.locator('.td2-nav a:has-text("이용 후기")')).toHaveAttribute("href", "/ko/reading#evidence");
   await page.locator(".td2-hero").getByRole("link", { name: /무료로 나 알아보기/ }).click();
   await page.waitForURL("**/ko/numerology");
@@ -62,6 +68,18 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await expect(page.locator(".number-tile").first()).toContainText("11");
   await page.getByText("계산 근거 보기").click();
   await expect(page.getByText("1 + 9 + 9 + 4 + 1 + 1 + 0 + 4 = 29 → 11")).toBeVisible();
+});
+
+test("first-visit guide cue appears once while the real walkthrough remains available", async ({ page }) => {
+  await page.goto("/ko");
+  const cue = page.getByRole("button", { name: /처음이세요\? 1분 안내 보기/ });
+  await expect(cue).toBeVisible();
+  await cue.click();
+  await expect(page.locator("#guide")).toBeInViewport();
+  await page.reload();
+  await expect(cue).toHaveCount(0);
+  await expect(page.locator("#guide")).toBeAttached();
+  await expect(page.locator("#guide [role='tab']")).toHaveCount(4);
 });
 
 test("mobile home has no overflow and preserves the selling page behavior", async ({ page }) => {
