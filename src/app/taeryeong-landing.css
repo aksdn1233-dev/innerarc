@@ -158,6 +158,9 @@
 .td2-space-copy h2 span { color: #575473; }
 .td2-space-copy > p:not(.td2-eyebrow) { max-width: 48ch; margin-top: 28px; }
 .td2-space-copy > small { display: block; max-width: 50ch; margin-top: 22px; color: #72717a; font-size: .73rem; line-height: 1.7; }
+.td2-space-steps { display: grid; gap: 12px; margin: 28px 0 0; padding: 0; list-style: none; }
+.td2-space-steps li { display: flex; align-items: center; gap: 12px; color: #4f4d58; font-size: .92rem; }
+.td2-space-steps b { display: grid; width: 28px; height: 28px; place-items: center; border-radius: 50%; background: var(--td-navy); color: white; font-size: .7rem; }
 .td2-space-link { display: inline-flex; min-height: 48px; align-items: center; color: #3e3b50; font-size: .82rem; font-weight: 800; text-underline-offset: 5px; }
 .td2-space-stage { position: relative; min-width: 0; padding: 28px; border: 1px solid rgba(62,60,80,.13); border-radius: 32px; background: rgba(255,255,255,.7); box-shadow: 0 30px 90px rgba(47,57,73,.16); }
 .td2-space-tabs { display: flex; gap: 9px; justify-content: flex-end; margin-bottom: 18px; }

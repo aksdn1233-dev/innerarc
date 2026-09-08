@@ -36,8 +36,8 @@ test("selection, validated adjustment, undo and same-camera comparison", async (
   await expect(view).toHaveAttribute("data-motion-policy", "offscreen-snap");
   await page.getByRole("button", { name: "Undo edit", exact: true }).click(); await expect(view).toHaveAttribute("data-scene-state", /"x":3,/);
   await page.getByRole("checkbox", { name: "I checked north" }).check();
-  await page.getByRole("checkbox", { name: "I compared the room, openings and furniture with the actual space" }).check();
-  await page.getByRole("button", { name: "Analyze demo room", exact: true }).click();
+  await page.getByRole("checkbox", { name: "I checked the room and furniture" }).check();
+  await page.getByRole("button", { name: "See suggested layout", exact: true }).click();
   const before = await view.getAttribute("data-scene-state");
   await expect(view).toHaveAttribute("data-motion", "settled");
   await page.getByRole("button", { name: "Suggested layout", exact: true }).click();

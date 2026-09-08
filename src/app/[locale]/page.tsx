@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "@/app/taeryeong-landing.css";
 import { notFound } from "next/navigation";
 import { TaeryeongLanding } from "@/components/taeryeong-landing";
-import { spaceEnabled } from "@/server/space/config";
 import { isLocale } from "@/i18n/config";
 import { resolveSupabaseAdminClient } from "@/lib/supabase/admin";
 import { countPublicReviews } from "@/server/reviews";
@@ -30,7 +29,7 @@ export default async function LocaleHome({
   if (admin) {
     reviewCount = await countPublicReviews(admin, locale);
   }
-  return <TaeryeongLanding locale={locale} reviewCount={reviewCount} spaceAvailable={spaceEnabled()} />;
+  return <TaeryeongLanding locale={locale} reviewCount={reviewCount} />;
 }
 
 export const dynamic = "force-dynamic";

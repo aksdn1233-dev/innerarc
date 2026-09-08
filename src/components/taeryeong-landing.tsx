@@ -8,7 +8,6 @@ import type { Locale } from "@/i18n/config";
 type Props = {
   locale: Locale;
   reviewCount: number | null;
-  spaceAvailable: boolean;
 };
 
 const content = {
@@ -57,15 +56,16 @@ const content = {
     relationshipTitle: <>마음이 맞는지보다,<br />어디에서 어긋나는지 선명하게.</>,
     relationshipBody: "연인, 가족, 친구, 동료, 사업 파트너의 선택 방식을 여덟 영역에서 비교합니다. 점수로 관계의 좋고 나쁨을 단정하지 않습니다.",
     relationshipCta: "관계 분석 시작하기",
-    spaceEyebrow: "태령당 공간 인텔리전스",
-    spaceTitle: <>공간까지 읽습니다.<br /><span>사진에서 실제 3D 장면으로.</span></>,
-    spaceBody: "서로 다른 방향의 사진을 교차 확인하고, 실측 한 곳으로 비율을 보정합니다. 가구 배치는 같은 시점과 실제 렌더 해상도로 비교합니다.",
-    spaceCta: "내 공간 분석하기",
-    spaceDemo: "3D 예시 직접 보기",
+    spaceEyebrow: "3D 공간운",
+    spaceTitle: <>내 방,<br /><span>어떻게 바꾸면 좋을까요?</span></>,
+    spaceBody: "방 사진을 올리면 지금 모습과 추천 배치를 3D로 나란히 보여드려요.",
+    spaceSteps: ["방 사진 2~6장 찍기", "북쪽 방향 알려주기", "추천 배치 비교하기"],
+    spaceCta: "내 방 분석하기",
+    spaceDemo: "3D 예시 먼저 보기",
     before: "현재 배치",
     after: "추천 배치",
-    spaceBubble: "침대 옆 통로를 먼저 확보해 보세요.",
-    spaceDisclosure: "전통 풍수 해석 · 공간·생활 분석 · 개인 패턴 추천을 구분해 표시합니다.",
+    spaceBubble: "침대 옆 길을 조금 넓혀보세요.",
+    spaceDisclosure: "전통 풍수 해석과 생활에 필요한 조언을 나누어 보여드려요.",
     realityEyebrow: "REALITY CHECK",
     realityTitle: <>해석에서 끝내지 않습니다.<br />실제 삶에서 맞았는지 확인합니다.</>,
     realityBody: "한 달 뒤의 기록이 다음 해석의 근거가 됩니다. 맞지 않은 결과도 지우지 않고 함께 남깁니다.",
@@ -97,7 +97,7 @@ const content = {
     previewEyebrow: "PERSONAL PATTERN ANALYSIS", previewTitle: <>Complex ideas become<br />evidence you can read.</>, previewBody: "This simplified sample follows the actual result structure. Deterministic code produces the numbers; interpretation and lived evidence stay separate.", previewCta: "Start free analysis", sample: "Sample result", sampleDate: "4 November 1994", sampleHeadline: "A person who goes deep without losing sight of human warmth", chartLabels: ["Thinking", "Expression", "Action", "Connection", "Recovery", "Adaptation"],
     successEyebrow: "SUCCESS PATTERN COMPARISON", successTitle: <>Look past matching numbers<br />to how lives diverged.</>, successBody: "We use public birth dates and sourced career events. A public figure's life does not determine your future.", successCta: "Compare my success pattern",
     relationshipEyebrow: "RELATIONSHIP INTELLIGENCE", relationshipTitle: <>See where you diverge,<br />not just whether you match.</>, relationshipBody: "Compare how partners, family, friends, coworkers, or business partners operate across eight domains. No score decides whether a relationship is good or bad.", relationshipCta: "Start relationship analysis",
-    spaceEyebrow: "TAERYEONGDANG SPACE INTELLIGENCE", spaceTitle: <>Read the space.<br /><span>From photos to a real 3D scene.</span></>, spaceBody: "Cross-check different views and calibrate proportions with one measured wall. Compare furniture in the same camera view at real render resolution.", spaceCta: "Analyze my space", spaceDemo: "Try the 3D example", before: "Current", after: "Suggested", spaceBubble: "Try clearing the passage beside the bed first.", spaceDisclosure: "Traditional interpretation, practical space analysis, and personal pattern suggestions are labelled separately.",
+    spaceEyebrow: "3D SPACE", spaceTitle: <>Your room,<br /><span>what could work better?</span></>, spaceBody: "Add room photos to compare your current and suggested layouts side by side in 3D.", spaceSteps: ["Take 2–6 room photos", "Show which way is north", "Compare the suggested layout"], spaceCta: "Analyze my room", spaceDemo: "Try the 3D example", before: "Current", after: "Suggested", spaceBubble: "Try widening the path beside the bed.", spaceDisclosure: "Traditional feng shui and practical room advice are clearly separated.",
     realityEyebrow: "REALITY CHECK", realityTitle: <>Go beyond interpretation.<br />Check it against real life.</>, realityBody: "A later reflection becomes evidence for the next reading. Results that missed remain visible too.", realityCta: "Start Reality Check", realityOrbit: "Tested in\nreal life",
     closeTitle: "Begin your story today.", closeBody: "Read where you are now, then return to see what matched real life.", closeCta: "Start free", benefits: ["Simple start", "Visible evidence", "Personal report", "Ongoing checks"], footerBody: "Personal Pattern Intelligence that turns symbols into real questions and checks them against lived experience.", footerBoundary: "Saju, numerology, tarot, and feng shui are symbolic reflection tools, not scientific prediction, diagnosis, treatment, or guaranteed outcomes.", copyright: "Byeolloof · Busan, Republic of Korea",
   },
@@ -107,9 +107,9 @@ function Arrow() {
   return <span aria-hidden="true">→</span>;
 }
 
-export function TaeryeongLanding({ locale, reviewCount, spaceAvailable }: Props) {
+export function TaeryeongLanding({ locale, reviewCount }: Props) {
   const t = content[locale];
-  const pillars = spaceAvailable ? t.pillars : t.pillars.filter((item) => item[4] !== `/${locale}/space`);
+  const pillars = t.pillars;
   const reviewLabel = reviewCount && reviewCount > 0
     ? `${t.reviews} ${reviewCount}`
     : t.reviews;
@@ -126,7 +126,7 @@ export function TaeryeongLanding({ locale, reviewCount, spaceAvailable }: Props)
         <Link href={`/${locale}/numerology`}>{t.analysis}</Link>
         <Link href={`/${locale}/celebrity`}>{t.success}</Link>
         <Link href={`/${locale}/relationship`}>{t.relationship}</Link>
-        {spaceAvailable && <Link href={`/${locale}/space`} prefetch={false}>{t.space}</Link>}
+        <Link href={`/${locale}/space`} prefetch={false}>{t.space}</Link>
         <Link href={`/${locale}/reading#evidence`} prefetch={false}>{reviewLabel}</Link>
       </nav>
       <div className="td2-nav-actions">
@@ -212,10 +212,11 @@ export function TaeryeongLanding({ locale, reviewCount, spaceAvailable }: Props)
       </article>
     </section>
 
-    {spaceAvailable && <section className="td2-space" aria-labelledby="td2-space-title">
+    <section className="td2-space" aria-labelledby="td2-space-title">
       <div className="td2-space-copy">
         <p className="td2-eyebrow">{t.spaceEyebrow}</p><h2 id="td2-space-title">{t.spaceTitle}</h2><p>{t.spaceBody}</p>
-        <div className="td2-actions"><Link className="td2-primary" href={`/${locale}/space/workspace`} prefetch={false}>{t.spaceCta}<Arrow /></Link><Link className="td2-space-link" href={`/${locale}/space#space-demo`} prefetch={false}>{t.spaceDemo}</Link></div>
+        <ol className="td2-space-steps">{t.spaceSteps.map((step, index) => <li key={step}><b>{index + 1}</b><span>{step}</span></li>)}</ol>
+        <div className="td2-actions"><Link className="td2-primary" href={`/${locale}/space`} prefetch={false}>{t.spaceCta}<Arrow /></Link><Link className="td2-space-link" href={`/${locale}/space#space-demo`} prefetch={false}>{t.spaceDemo}</Link></div>
         <small>{t.spaceDisclosure}</small>
       </div>
       <div className="td2-space-stage">
@@ -230,7 +231,7 @@ export function TaeryeongLanding({ locale, reviewCount, spaceAvailable }: Props)
           <p>{t.spaceBubble}</p>
         </div>
       </div>
-    </section>}
+    </section>
 
     <section className="td2-reality" aria-labelledby="td2-reality-title">
       <div><p className="td2-eyebrow">{t.realityEyebrow}</p><h2 id="td2-reality-title">{t.realityTitle}</h2><p>{t.realityBody}</p><Link className="td2-light-button" href={`/${locale}/reality-check`}>{t.realityCta}<Arrow /></Link></div>
