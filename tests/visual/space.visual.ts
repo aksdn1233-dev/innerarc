@@ -1,6 +1,17 @@
 import { expect, test } from "@playwright/test";
 import { SPACE_EXAMPLES, spaceExample } from "../../src/core/space/examples";
 import { isSoftwareRendererName } from "../../src/components/space/frame-timing";
+
+test("failed material load releases the canvas and retry restores one renderer", async ({ page }) => {
+  // Run recovery before the fixture gallery creates many short-lived WebGL
+  // contexts in the same constrained browser process. The product timeout and
+  // exact fresh-scene assertion remain unchanged.
+  await page.route("**/space/assets/oak-floor-color.jpg", route => route.fulfill({ status: 503, body: "synthetic outage" })); await page.goto("/en/space");
+  await expect(page.getByRole("button", { name: "Retry 3D" })).toBeVisible({ timeout: 20000 }); expect(await page.locator("canvas").count()).toBe(0);
+  await page.unroute("**/space/assets/oak-floor-color.jpg"); await page.getByRole("button", { name: "Retry 3D" }).evaluate((element: HTMLButtonElement) => element.click());
+  await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "6", { timeout: 30000 }); expect(await page.locator("canvas").count()).toBe(1);
+});
+
 for (const example of SPACE_EXAMPLES) test(`visual geometry fixture: ${example}`, async ({ page }, testInfo) => {
   const loadStarted = Date.now();
   const failures: string[] = []; page.on("console", msg => { if (msg.type() === "error") failures.push(msg.text()); }); page.on("pageerror", error => failures.push(error.message));
@@ -135,15 +146,6 @@ for (const example of ["small_bedroom", "living_room"] as const) test(`interior 
   await expect(view.locator("..")).toHaveScreenshot(`${example}-interior.png`, { animations: "disabled", threshold: .10, maxDiffPixelRatio: .01, timeout: 15_000 });
   expect(failures).toEqual([]);
 });
-test("failed material load releases the canvas and retry restores one renderer", async ({ page }) => {
-  await page.route("**/space/assets/oak-floor-color.jpg", route => route.fulfill({ status: 503, body: "synthetic outage" })); await page.goto("/en/space");
-  await expect(page.getByRole("button", { name: "Retry 3D" })).toBeVisible({ timeout: 20000 }); expect(await page.locator("canvas").count()).toBe(0);
-  await page.unroute("**/space/assets/oak-floor-color.jpg"); await page.getByRole("button", { name: "Retry 3D" }).evaluate((element: HTMLButtonElement) => element.click());
-  // A fresh WebGL context and all bounded assets are rebuilt after disposal. Allow
-  // the constrained WebKit runner its 15s download ceiling plus context setup time.
-  await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "6", { timeout: 30000 }); expect(await page.locator("canvas").count()).toBe(1);
-});
-
 test("a stalled asset reaches retry without leaving a half-mounted renderer", async ({ page }) => {
   let release: (() => void) | undefined;
   await page.route("**/space/assets/oak-floor-color.jpg", async route => { await new Promise<void>(resolve => { release = resolve; }); await route.abort().catch(() => {}); });

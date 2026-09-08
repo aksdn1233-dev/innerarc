@@ -175,3 +175,10 @@ Run 34160365698 repeated that retry because the first timeout edit matched an ea
 - **Cause:** the tests correctly detected visible differences in typography, lighting, materials, render resolution and the new guide overlay.
 - **Fix:** representative desktop and iPhone actuals were inspected at native pixels, all affected references were regenerated, and the entire no-update matrix was rerun.
 - **Prevention:** the final desktop/iPhone/Android Space matrix passed 79 cases with 20 intentional duplicate-capture skips and no visual mismatch.
+
+### 2026-09-08 — remote parallel checks exposed two late-run resource races
+
+- **Symptom:** Node 24 run 34209142045 passed all four jobs, but the five-width mobile Home test passed on its third attempt and iPhone material recovery passed on its second attempt.
+- **Cause:** the Home case performs twenty real production navigations inside a 90-second budget while four workers compete. The recovery case ran after the same WebKit process had created many short-lived high-resolution WebGL contexts.
+- **Fix:** the multi-width Home case uses Playwright's documented slow-test allowance without dropping a width or assertion. Material recovery runs before the fixture gallery, while its 30-second recovery bound and exact one-canvas assertion stay unchanged.
+- **Prevention:** require a fresh four-job Node 24 run with zero flaky or retry-pass cases before reporting remote completion.

@@ -65,6 +65,10 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
 });
 
 test("mobile home has no overflow and preserves the selling page behavior", async ({ page }) => {
+  // Five widths each exercise Home, Reading, the sticky purchase boundary and
+  // both route-wide target scans. Keep the full matrix while giving the remote
+  // four-worker runner a budget proportional to its twenty production navigations.
+  test.slow();
   for (const width of [320, 360, 375, 390, 430]) {
     await page.setViewportSize({ width, height: 844 });
     await page.goto("/ko");
