@@ -123,9 +123,11 @@ test("the home always shows a simple path to 3D room analysis", async ({ page })
   await page.goto("/ko");
   const menu = page.getByRole("navigation").getByRole("link", { name: "3D 공간운", exact: true });
   await expect(menu).toBeVisible();
-  await expect(page.getByRole("heading", { name: "내 방, 어떻게 바꾸면 좋을까요?", exact: true })).toBeVisible();
-  await expect(page.getByText("방 사진 2~6장 찍기", { exact: true })).toBeVisible();
-  await expect(page.getByRole("link", { name: "내 방 분석하기", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "내 방, 어디를 바꾸면 좋을까요?", exact: true })).toBeVisible();
+  await expect(page.getByText("방 사진 찍기", { exact: true })).toBeVisible();
+  const roomLinks = page.getByRole("link", { name: "내 방 분석하기", exact: true });
+  await expect(roomLinks).toHaveCount(2);
+  await expect(roomLinks.first()).toBeVisible();
   await menu.click();
   await expect(page).toHaveURL(/\/ko\/space$/);
 });
