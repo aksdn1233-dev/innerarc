@@ -306,10 +306,11 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 
 ## 2026-09-09 first-visit walkthrough restoration
 
-- [x] Restore the prior real-screen four-step walkthrough directly below the home hero.
+- [x] Restore the prior real-screen four-step walkthrough on the home and place it after the service choices so first-time visitors understand what they can open before seeing how it works.
 - [x] Show a concise one-time cue to first visitors and keep the guide permanently reachable from the main navigation.
 - [x] Lazy-load only the visible and next 780×1062 guide clips; use posters for reduced motion and never enlarge the source beyond its native CSS width.
 - [x] Verify keyboard tabs, mobile/desktop behavior, local seen-state privacy and five-width visual snapshots.
 - [x] Preserve all existing calculation, payment, authentication, report, Space and Reality Check behavior.
 - [x] Keep full calculation and long mobile journey suites sequential with the media-heavy visual matrix; a local parallel run exhausted the shared CPU and produced timeout-only failures, while the unchanged suites passed alone (1,039/1,039 unit and 1/1 mobile journey).
 - [x] The full accessibility gate caught 3.07:1 contrast on inactive walkthrough step numbers; the route-scoped override now keeps those small labels at AA contrast in Korean and English on desktop and mobile.
+- [x] The NAVER-reference quality pass keeps an original Taeryeongdang design while using the requested bright sequence: service choices, real use and a three-part sample result. It introduces no model call, token cost, migration or customer-data field.

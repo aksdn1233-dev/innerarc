@@ -141,6 +141,11 @@
 .td2-report-preview nav { display: flex; gap: 26px; margin-top: 24px; overflow-x: auto; color: #898690; font-size: .75rem; white-space: nowrap; scrollbar-width: none; }
 .td2-report-preview nav b { color: var(--td-ink); border-bottom: 2px solid #6d668c; padding-bottom: 10px; }
 .td2-report-preview h3 { max-width: 28ch; margin: 32px 0; font: 500 clamp(1.3rem,2vw,1.75rem)/1.55 var(--td-display); letter-spacing: -.035em; }
+.td2-report-points { display: grid; grid-template-columns: repeat(3,1fr); margin: 0 0 36px; padding: 0; border-block: 1px solid var(--td-line); list-style: none; }
+.td2-report-points li { display: grid; min-height: 94px; align-content: center; gap: 9px; padding: 18px 20px; }
+.td2-report-points li + li { border-left: 1px solid var(--td-line); }
+.td2-report-points small { color: #6a668a; font-size: .68rem; font-weight: 800; }
+.td2-report-points strong { color: #353342; font-size: .82rem; line-height: 1.5; }
 .td2-radar-row { display: grid; grid-template-columns: 220px 1fr; align-items: center; gap: 38px; }
 .td2-radar { position: relative; aspect-ratio: 1; border-radius: 50%; background: conic-gradient(from 15deg, rgba(117,108,190,.48), rgba(150,140,219,.25), rgba(117,108,190,.52)); clip-path: polygon(50% 5%, 91% 27%, 88% 76%, 50% 95%, 11% 77%, 8% 27%); }
 .td2-radar::before, .td2-radar span { position: absolute; inset: 13%; border: 1px solid rgba(55,52,84,.22); border-radius: 50%; content: ""; }
@@ -305,6 +310,9 @@
   .td2-pillar:nth-child(3) { border-right: 0; }
   .td2-report-preview { margin-inline: -8px; padding: 24px 20px; border-radius: 20px; }
   .td2-report-preview nav { gap: 20px; }
+  .td2-report-points { grid-template-columns: 1fr; }
+  .td2-report-points li { min-height: 66px; grid-template-columns: 32px 1fr; align-items: center; padding: 13px 4px; }
+  .td2-report-points li + li { border-top: 1px solid var(--td-line); border-left: 0; }
   .td2-radar-row { grid-template-columns: 1fr; }
   .td2-radar { width: min(58vw,220px); margin: 0 auto; }
   .td2-report-preview > footer { grid-template-columns: 1fr; gap: 18px; }

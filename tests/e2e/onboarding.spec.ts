@@ -24,6 +24,8 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await expect(page.locator("#guide [role='tabpanel']")).toContainText("지금 궁금한 것을 고릅니다");
   await expect(page.locator("#onboarding")).toHaveCount(0);
   expect(await page.locator("#services .td2-pillar").count()).toBeGreaterThanOrEqual(4);
+  await expect(page.locator(".td2-report-points li")).toHaveCount(3);
+  await expect(page.locator(".td2-report-points")).toContainText("지금 바꿔볼 한 가지");
   await expect(page.locator(".td2-report-preview")).toContainText("계산 · 상징 · 현실");
   await expect(page.locator(".td2-success-canvas")).toContainText("출처가 있는 실제 경력 사건");
   await expect(page.locator(".td2-reality")).toContainText("한 달 뒤에 돌아와");
@@ -123,6 +125,7 @@ test("English page keeps the same calculated core meaning", async ({ page }) => 
   await expect(page.getByRole("heading", { level: 1, name: "There may be a reason the same patterns keep returning." })).toBeVisible();
   await expect(page.getByRole("link", { name: /See my patterns/ })).toBeVisible();
   expect(await page.locator("#services .td2-pillar").count()).toBeGreaterThanOrEqual(4);
+  await expect(page.locator(".td2-report-points li")).toHaveCount(3);
   await expect(page.locator(".td2-report-preview")).toContainText("fact · symbol · reality");
   await expect(page.locator(".td2-footer-boundary")).toContainText("not scientific prediction");
   await page.goto("/en/profile");
