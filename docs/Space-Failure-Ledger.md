@@ -203,3 +203,10 @@ Run 34160365698 repeated that retry because the first timeout edit matched an ea
 - **Cause:** the input moved across the viewport while the general four-worker matrix was settling. Playwright completed a click, then its retry path observed the opposite state.
 - **Fix:** prove that the real checkbox is visible, dispatch its native click once and assert its controlled checked state before submitting the unchanged form.
 - **Prevention:** repeat this exact mobile family flow in parallel and require the full general browser matrix to finish without retries.
+
+### 2026-09-08 — four general UI workers created unrelated moving-control retries
+
+- **Symptom:** after all 79 Space gates became clean, run 34214299620 still retried the mobile profile accessibility flow at its consent checkbox and the Reality Check flow after saving an outcome.
+- **Cause:** four general UI workers competed with three simultaneous high-resolution Space jobs. The profile checkbox moved during actionability scrolling, while the Reality Check state assertion used the default five-second UI deadline after an actionability click.
+- **Fix:** both regressions now prove the real controls are visible, invoke their native controls exactly once and assert the resulting radio/checkbox state. The Reality Check record keeps a bounded 15-second result deadline. General UI concurrency is reduced to two workers; concurrent browser coverage remains while the three isolated Space jobs continue in parallel.
+- **Prevention:** repeat both exact mobile flows with four local workers, then require the complete two-worker Node 24 matrix to report 231 passes, 9 intentional skips and zero retries.

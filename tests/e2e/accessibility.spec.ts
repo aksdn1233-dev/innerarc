@@ -137,7 +137,10 @@ test("generated onboarding context has no serious accessibility violation", asyn
 test("generated share controls have no serious accessibility violation", async ({ page }) => {
   await page.goto("/en/profile");
   await page.locator("#birthDate").fill("1994-11-04");
-  await page.locator('input[name="privacyRequired"]').check();
+  const privacyConsent = page.locator('input[name="privacyRequired"]');
+  await expect(privacyConsent).toBeVisible();
+  await privacyConsent.evaluate((element: HTMLInputElement) => element.click());
+  await expect(privacyConsent).toBeChecked();
   await page.getByRole("button", { name: "Show my core pattern" }).click();
   await page.getByText("Privacy-safe share card", { exact: true }).click();
   await page.addScriptTag({ content: axe.source });

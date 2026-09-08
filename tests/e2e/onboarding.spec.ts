@@ -513,11 +513,15 @@ test("Reality Check preserves a choice and reviews personal relevance without de
 
   await page.getByRole("button", { name: "Review outcome" }).click();
   await page.locator("#reality-outcome").fill("The conversation clarified a mismatch in timing.");
-  await page.getByText("Mostly relevant", { exact: true }).click();
+  const fit = page.locator('input[name="fit"][value="mostly_relevant"]');
+  await fit.evaluate((element: HTMLInputElement) => element.click());
+  await expect(fit).toBeChecked();
   await page.locator("#reality-learning").fill("Ask about timing earlier next time.");
-  await page.getByRole("button", { name: "Save outcome" }).click();
+  const saveOutcome = page.getByRole("button", { name: "Save outcome" });
+  await expect(saveOutcome).toBeVisible();
+  await saveOutcome.evaluate((element: HTMLButtonElement) => element.click());
 
-  await expect(page.locator(".reality-record")).toContainText("Outcome reviewed");
+  await expect(page.locator(".reality-record")).toContainText("Outcome reviewed", { timeout: 15_000 });
   await expect(page.locator(".pattern-report")).toContainText("1");
   await expect(page.locator(".pattern-report")).toContainText("not enough reviewed outcomes");
   await expect(page.locator("main")).not.toContainText("prediction accuracy");
