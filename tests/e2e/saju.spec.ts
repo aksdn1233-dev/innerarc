@@ -6,7 +6,7 @@ const krw = (value: number) => value.toLocaleString("en-US");
 async function checkPrivacyConsent(page: Page) {
   const consent = page.getByRole("checkbox");
   await expect(consent).toBeVisible();
-  await consent.evaluate((element: HTMLInputElement) => element.click());
+  await consent.check();
   await expect(consent).toBeChecked();
 }
 test("the Four Pillars chart moves into the current one-time checkout", async ({ page }) => {

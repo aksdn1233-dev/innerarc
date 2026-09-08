@@ -393,3 +393,7 @@ Run the final Vitest suite without a concurrent lint, typecheck, build or browse
 ## Guide assets and public-story sources — 2026-09-08
 
 Monitor guide assets as static route resources: a missing asset or font must not block Space analysis, 3D controls, recommendations or Reality Check. If browser speech fails, keep captions visible and do not retry through a paid provider. If a story source becomes unavailable or materially conflicts with its claim, mark that record insufficient or remove it from discovery until reviewed; never preserve a claim only to avoid an empty result.
+
+### PR22 final quality pass (2026-09-08)
+
+Use the Node 24 runtime required by package.json for release checks. Preserve Worker `innerarc`, its `mygyeol.kr` route, IMAGES binding and deployed secrets. Local Worker smoke checks must use `--local`; do not infer hosted RLS or provider access from local PGlite/mock success. The quality pass applies no migrations and authorizes no deployment. Rollback reference before any later release remains `52a70b80da6287693e09f17c9f8d3945c893c6be`; disable SPACE_ENABLED / SPACE_AI_ENABLED independently when needed. CI retries are diagnostic: flaky outcomes fail the gate. See `Final-Product-Quality-Pass.md` for the final bounded evidence and external launch gates.

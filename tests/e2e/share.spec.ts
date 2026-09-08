@@ -6,14 +6,14 @@ async function openCoreShare(page: Page, locale: "ko" | "en" = "en") {
   await page.locator("#birthDate").fill("1994-11-04");
   const privacyConsent = page.locator('input[name="privacyRequired"]');
   await expect(privacyConsent).toBeVisible();
-  await privacyConsent.evaluate((element: HTMLInputElement) => element.click());
+  await privacyConsent.check();
   await expect(privacyConsent).toBeChecked();
   await page.getByRole("button", {
     name: locale === "ko" ? "내 핵심 패턴 보기" : "Show my core pattern",
   }).click();
   await expect(page.locator(".number-tile").first()).toContainText("11");
   const sharePanel = page.locator(".share-panel");
-  await sharePanel.locator("summary").evaluate((summary: HTMLElement) => summary.click());
+  await sharePanel.locator("summary").click();
   await expect(sharePanel).toHaveAttribute("open", "");
 }
 

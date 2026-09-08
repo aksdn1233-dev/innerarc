@@ -310,3 +310,7 @@
   .td2 { --td-line: rgba(23,24,40,.42); --td-muted: #454550; }
   .td2-hero-wash { background: linear-gradient(90deg,#f9f7f2 0%,rgba(249,247,242,.96) 55%,rgba(249,247,242,.38)); }
 }
+
+/* Keep short trust notes balanced on phones and image provenance legible. */
+.td2-hero .td2-note > span { display: inline-block; white-space: nowrap; }
+.td2-hero-art-note { font-size: .75rem; }

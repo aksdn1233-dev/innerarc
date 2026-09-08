@@ -1,5 +1,6 @@
 "use client";
 
+import { HydrationGate } from "./hydration-gate";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, type FormEvent } from "react";
@@ -104,7 +105,7 @@ export function CelebrityExperience({ locale, copy }: Props) {
           <p>{copy.intro}</p>
         </section>
 
-        <form className="celebrity-form" id="celebrity-form" onSubmit={submit} noValidate>
+        <form className="celebrity-form" id="celebrity-form" onSubmit={submit} noValidate><HydrationGate locale={locale}>
           <div className="celebrity-form-grid">
             <div className="field">
               <label htmlFor="celebrity-birth-date">{copy.birthDate}</label>
@@ -125,7 +126,7 @@ export function CelebrityExperience({ locale, copy }: Props) {
           <button className="primary-button" type="submit">{copy.submit}</button>
           {error && <span className="error celebrity-error" role="alert">{error}</span>}
           <p className="privacy-note">{copy.privacyNote}</p>
-        </form>
+        </HydrationGate></form>
 
         {profile && comparison && (
           <section className="celebrity-result webtoon-flow webtoon-adapt" id="celebrity-result" aria-live="polite" tabIndex={-1}>

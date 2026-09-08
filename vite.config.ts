@@ -12,12 +12,8 @@ export default defineConfig({
       config: {
         main: "./worker/index.ts",
         compatibility_flags: ["nodejs_compat"],
-        // The Worker that `mygyeol.kr/*` routes to is called `gyeol`. Without this the
-        // name is derived from the package and comes out `innerarc`, which is a
-        // different, empty Worker in the same account holding only a discard route — so
-        // a deploy would report success while the live site kept serving the old build.
-        // `mygyeol.kr` must route to `innerarc`, so pin the worker name here to
-        // prevent accidental deploys to a detached worker.
+        // Production mygyeol.kr uses the innerarc Worker. Keep the explicit name
+        // aligned with README and the runbook to avoid deploying a detached Worker.
         name: "innerarc",
         routes: [{ pattern: "mygyeol.kr", custom_domain: true }],
         // Dynamic discovery routes execute after compilation, so a build-time shell

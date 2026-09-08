@@ -26,3 +26,19 @@
 @media(max-width:540px){.surface{padding-inline:16px}.hero{gap:2rem;padding-top:2rem}.heroCopy h1{font-size:clamp(2.8rem,15vw,4rem)}.heroVisual{margin-inline:-8px}.heroVisual figcaption{position:static;border:0;border-radius:0}.story{padding:4.5rem 0}.storySteps article{min-height:0;padding:1.2rem 0 1.2rem 3.2rem}.captureGuide{grid-template-columns:1fr}.canvas{height:360px}.renderMeter{right:.45rem;bottom:.45rem}.fields{grid-template-columns:1fr}}
 @media(max-width:540px){.spaceGuide{right:.35rem;top:4rem;max-width:88%}.spaceGuide>img{width:105px}.guideBubble{margin-left:-.9rem;padding:.65rem}.guideBubble p{font-size:.74rem}.guideControls button{min-height:34px}}
 @media(prefers-reduced-motion:reduce){.spaceGuide{filter:none}.guideBubble{backdrop-filter:none}}
+
+/* The guide explains a projected world marker without covering the room. */
+.guideMarker{position:absolute;z-index:2;transform:translate(-50%,-50%);width:30px;height:30px;border:2px solid white;border-radius:50%;background:#614218;color:white;text-align:center;line-height:26px;font-weight:700;pointer-events:none;box-shadow:0 2px 8px #0005}
+.guideMarker[hidden]{display:none}
+.spaceGuide{position:relative;inset:auto;max-width:100%;margin:.75rem 0;filter:none;align-items:center}
+.spaceGuide>img{width:112px;flex-shrink:0}
+.guideBubble{flex:1;margin:0;padding:1rem;backdrop-filter:none;box-shadow:none}
+.guideBubble p{font-size:.9rem;line-height:1.6}
+.guideBubble summary{font-size:.85rem;min-height:32px}
+.guideBubble details p{font-size:.85rem}
+.guideControls button{min-height:44px;font-size:.8rem}
+.guideBubble small{font-size:.75rem;color:#55482e;margin-bottom:.35rem}
+@media(max-width:540px){.spaceGuide{max-width:100%;inset:auto;align-items:flex-start}.spaceGuide>img{width:72px}.guideBubble{margin:0;padding:.7rem}.guideBubble p{font-size:.85rem}}
+
+/* Compass contrast must not depend on the pixels rendered behind it. */
+.compass{background:#f6f3ec}.compass small{color:#42483f}

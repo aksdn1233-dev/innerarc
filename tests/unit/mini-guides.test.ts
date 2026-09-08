@@ -42,7 +42,9 @@ describe("production miniature guide assets", () => {
     const guide = buildSpaceGuideNarration(recommendation, analysis.current, "Bed", "en");
     expect(guide.templateId).toContain(SPACE_GUIDE_NARRATION_VERSION);
     expect(guide.objectId).toBe(recommendation.action.objectId);
-    expect(guide.detail).toBe(recommendation.rationale);
+    expect(guide.detail).toContain(recommendation.rationale);
+    expect(guide.detail).toContain("metres from the left");
+    expect(guide.caption).not.toContain("metres");
     expect(guide.caption.length).toBeLessThan(240);
   });
 });

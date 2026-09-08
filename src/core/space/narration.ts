@@ -1,6 +1,6 @@
 import type { Recommendation, Scene } from "./schema";
 
-export const SPACE_GUIDE_NARRATION_VERSION = "space-guide-template-1.0.0" as const;
+export const SPACE_GUIDE_NARRATION_VERSION = "space-guide-template-1.1.0" as const;
 
 export type SpaceGuideNarration = Readonly<{
   objectId: string | null;
@@ -28,8 +28,8 @@ export function buildSpaceGuideNarration(
     : (ko ? "현장에서 확인할 지점을 표시했어요" : "I marked what to check in the real room");
   return {
     objectId: object?.id ?? null,
-    caption: ko ? `${location}, 함께 볼게요. ${verb}.` : `Let's look at ${location}. ${verb}.`,
-    detail: recommendation.rationale,
+    caption: ko ? `${object ? objectName : "방 전체"} 배치를 함께 볼게요. ${verb}.` : `Let's look at ${object ? objectName : "the room"}. ${verb}.`,
+    detail: `${location}. ${recommendation.rationale}`,
     templateId: `${SPACE_GUIDE_NARRATION_VERSION}:${recommendation.ruleId}:${action}`,
   };
 }

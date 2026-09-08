@@ -490,13 +490,13 @@ test("celebrity comparison uses sourced birth-date structures without identity p
   await page.getByRole("button", { name: "Compare public structures" }).click();
   await expect(page.getByText(/No public figure matches/)).toBeVisible();
   const professionQuery = page.locator("#celebrity-profession-query");
-  await professionQuery.evaluate((element: HTMLInputElement) => { element.value = "Marie Curie"; });
+  await professionQuery.fill("Marie Curie");
   await expect(professionQuery).toHaveValue("Marie Curie");
   await page.locator("#celebrity-field").selectOption("science");
   await page.getByRole("button", { name: "Compare public structures" }).click();
   const saveStory = page.getByRole("button", { name: "Save this action to Reality Check" });
   await expect(saveStory).toBeVisible({ timeout: 15_000 });
-  await saveStory.evaluate((element: HTMLButtonElement) => element.click());
+  await saveStory.click();
   await expect(page).toHaveURL(/\/en\/reality-check$/);
   await expect(page.getByText("Continued from success-pattern reality comparison", { exact: true })).toBeVisible();
   await expect(page.locator("#reality-category")).toHaveValue("work");

@@ -1,22 +1,15 @@
-/**
- * What a visitor is allowed to enter as their own birth date.
- *
- * This is a product policy, not an engine limit, and the difference matters. The
- * numerology engine calculates any valid date — the celebrity comparison depends on that,
- * since it reads public figures born well before 1900. The 사주 engine stops at 1900
- * because the Korean standard-time history it encodes does not reach further back. What
- * a *customer* may submit is narrower than either, and is stated here once.
- *
- * The upper bound is today rather than the engines' 2100: a birth date in the future is
- * always a typo. The lower bound is 1900, past the oldest year anyone alive was born in.
+/** Supported product input range, including historical comparison dates.
+ * Saju keeps its own narrower engine range. These are policy bounds, not a
+ * statement about today's date; keep them aligned with the bilingual form copy.
  */
 export const MIN_BIRTH_YEAR = 1100;
 export const MAX_BIRTH_YEAR = 2026;
 export const MIN_BIRTH_DATE = `${MIN_BIRTH_YEAR}-01-01`;
 export const MAX_BIRTH_DATE = `${MAX_BIRTH_YEAR}-12-31`;
 
-/** Today, in the visitor's own timezone. */
+/** Fixed product upper bound; legacy date argument retained for callers. */
 export function currentMaxBirthDate(_now: Date = new Date()): string {
+  void _now;
   return MAX_BIRTH_DATE;
 }
 

@@ -147,7 +147,7 @@ export function TaeryeongLanding({ locale, reviewCount, spaceAvailable }: Props)
           <Link className="td2-primary" href={`/${locale}/numerology`} onClick={track}>{t.heroPrimary}<Arrow /></Link>
           <a className="td2-secondary" href="#services">{t.heroSecondary}<Arrow /></a>
         </div>
-        <p className="td2-note">{t.heroNote}</p>
+        <p className="td2-note">{t.heroNote.split(" · ").map((part, index) => <span key={part}>{index > 0 ? " · " : ""}{part}</span>)}</p>
       </div>
       <div className="td2-hero-signature" aria-hidden="true"><span>태</span><span>령</span><span>당</span></div>
       <small className="td2-hero-art-note">{t.heroArtNote}</small>

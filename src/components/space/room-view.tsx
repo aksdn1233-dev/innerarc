@@ -16,9 +16,11 @@ type ComparisonMode = "current" | "recommended";
 type Runtime = { update(scene: Scene, comparison?: Scene, mode?: ComparisonMode): void; select(id: string | null): void; perspective(): void; top(): void; reset(): void; zoom(n: number): void; turn(): void; recommended(): void; profile(value: string): void; dispose(): void };
 type RenderResolution = { cssWidth: number; cssHeight: number; bufferWidth: number; bufferHeight: number; scale: number };
 export default function RoomView({ scene, comparisonScene, comparisonMode, locale, selectedId = null, onSelect, guide }: { scene: Scene; comparisonScene?: Scene; comparisonMode?: ComparisonMode; locale: "ko" | "en"; selectedId?: string | null; onSelect?: (id: string) => void; guide?: SpaceGuideNarrationData | null }) {
+  const guideMarker = useRef<HTMLSpanElement>(null), guideRef = useRef(guide);
   const host = useRef<HTMLDivElement>(null), runtime = useRef<Runtime | null>(null), latest = useRef(scene), latestComparison = useRef(comparisonScene), latestComparisonMode = useRef(comparisonMode), selectCallback = useRef(onSelect), latestSelected = useRef(selectedId);
   const [failed, setFailed] = useState(false), [ready, setReady] = useState(false), [attempt, setAttempt] = useState(0), [quality, setQuality] = useState("auto"), [assetLoading, setAssetLoading] = useState(false), [viewFallback, setViewFallback] = useState(false), [cameraChoice, setCameraChoice] = useState<"perspective" | "top" | "recommended">("perspective"), [resolution, setResolution] = useState<RenderResolution | null>(null);
   const ko = locale === "ko";
+  useEffect(() => { guideRef.current = guide; runtime.current?.select(latestSelected.current); }, [guide]);
   useEffect(() => { latest.current = scene; latestComparison.current = comparisonScene; latestComparisonMode.current = comparisonMode; runtime.current?.update(scene, comparisonScene, comparisonMode); }, [scene, comparisonScene, comparisonMode]);
   useEffect(() => { selectCallback.current = onSelect; latestSelected.current = selectedId; runtime.current?.select(selectedId); }, [onSelect, selectedId]);
   useEffect(() => {
@@ -28,7 +30,7 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
     async function mount() {
       const [T, { OrbitControls }, assets, { createAssetLibrary }, { loadPbrSurfaces }, { EffectComposer }, { RenderPass }, { GTAOPass }, { OutputPass }, { createContactShadows }, { RectAreaLightUniformsLib }] = await Promise.all([import("three"), import("three/addons/controls/OrbitControls.js"), import("./interior-assets"), import("./asset-library"), import("./pbr-surfaces"), import("three/addons/postprocessing/EffectComposer.js"), import("three/addons/postprocessing/RenderPass.js"), import("three/addons/postprocessing/GTAOPass.js"), import("three/addons/postprocessing/OutputPass.js"), import("./contact-shadows"), import("three/addons/lights/RectAreaLightUniformsLib.js")]);
       if (stopped || !container) return;
-      const resources = resourceScope(); partialCleanup = resources.dispose; const own = resources.add;
+      const resources = resourceScope(); partialCleanup = () => { abort.abort(); resources.dispose(); }; const own = resources.add;
       const abort = new AbortController(); own(() => abort.abort());
       const renderer = new T.WebGLRenderer({ antialias: true, alpha: false, powerPreference: "default" });
       const debugRenderer = renderer.getContext().getExtension("WEBGL_debug_renderer_info");
@@ -139,6 +141,20 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
         const interval = sampleFrame(now, !!transition); if (interval !== null) { if (tierWarmSamples > 0) tierWarmSamples--; else { intervals.push(interval); if (intervals.length > 60) intervals.shift(); } }
         container!.dataset.selectedObject = selected ?? "";
         if (selected && objects.has(selected)) { selection.box.setFromObject(objects.get(selected)!.group); selection.visible = true; } else selection.visible = false;
+        // Projection runs before render(), so refresh the camera matrix explicitly.
+        camera.updateMatrixWorld();
+        const anchor = guideRef.current?.objectId;
+        const anchored = anchor ? objects.get(anchor)?.group : undefined;
+        if (guideMarker.current) {
+          const point = anchored ? new T.Box3().setFromObject(anchored).getCenter(new T.Vector3()).project(camera) : null;
+          const visible = point && point.z >= -1 && point.z <= 1 && Math.abs(point.x) < .96 && Math.abs(point.y) < .96;
+          guideMarker.current.hidden = !visible;
+          if (point && visible) {
+            guideMarker.current.style.left = `${(point.x + 1) * 50}%`;
+            guideMarker.current.style.top = `${(1 - point.y) * 50}%`;
+            guideMarker.current.dataset.anchorObject = anchor!;
+          }
+        }
         cutaway(); renderer.info.reset(); const renderStarted = performance.now(); contact.render(); if (ao.enabled) composer.render(); else renderer.render(world, camera); const cpuMs = performance.now() - renderStarted; renderedFrames++; if (renderedFrames === 1) container!.dataset.firstRenderMs = cpuMs.toFixed(2); if (renderedFrames > 4) renderTimes.push(cpuMs); if (renderTimes.length > 60) renderTimes.shift();
         const renderP90 = [...renderTimes].sort((a,b) => a-b)[Math.floor(renderTimes.length * .9)] ?? 0; container!.dataset.renderMsP90 = renderP90.toFixed(2); container!.dataset.motion = transition ? "moving" : "settled";
         container!.dataset.textureCount = String(renderer.info.memory.textures); container!.dataset.geometryCount = String(renderer.info.memory.geometries); container!.dataset.textureBytesEstimate = String(Math.round(surfaces.textureBytesEstimate + 2 * 256 * 256 * 4));
@@ -167,7 +183,7 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
       function profile(value: string) {
         const tier = value === "auto" ? mobile ? "balanced" : "high" : value;
         tierWarmSamples = 2; intervals.length = 0; renderTimes.length = 0; delete container!.dataset.frameP90; delete container!.dataset.sampledFrames;
-        pixelRatio = tier === "ultra" ? Math.min(2.5, Math.max(2, devicePixelRatio)) : tier === "high" ? Math.min(2, Math.max(1.5, devicePixelRatio)) : tier === "balanced" ? Math.min(1.5, Math.max(1.25, devicePixelRatio)) : .7;
+        pixelRatio = tier === "ultra" ? Math.min(2.5, Math.max(2, devicePixelRatio)) : tier === "high" ? Math.min(2, Math.max(1.5, devicePixelRatio)) : tier === "balanced" ? Math.min(1.5, Math.max(1.25, devicePixelRatio)) : 1;
         windowFill.visible = current.windows.length > 0 && tier !== "performance"; world.environmentIntensity = tier === "ultra" ? .52 : tier === "high" ? .46 : tier === "balanced" ? .40 : .50;
         practical.visible = tier === "ultra" || tier === "high";
         const lightweight = tier === "performance";
@@ -287,8 +303,9 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
       <div ref={host} className={styles.canvas} hidden={failed} data-quality={quality} />
       {!failed && <div className={styles.compass} aria-label={`${ko ? "평면도 기준 북쪽" : "North relative to plan"}: ${scene.orientation.northDegrees}°`}><span style={{ transform: `rotate(${scene.orientation.northDegrees}deg)` }}>↑</span>{ko ? "북" : "N"}<small>{scene.orientation.northDegrees}° · {ko ? "평면도 기준" : "plan"}</small></div>}
       {!failed && resolution && <output className={styles.renderMeter} aria-label={ko ? "실제 3D 렌더 해상도" : "Actual 3D render resolution"}>{ko ? "실제 렌더" : "Actual render"} <strong>{resolution.bufferWidth}×{resolution.bufferHeight}</strong><small>{resolution.cssWidth}×{resolution.cssHeight} 화면 · {resolution.scale.toFixed(2)}×</small></output>}
-      {!failed && guide && <SpaceGuideNarration key={guide.templateId} guide={guide} locale={locale} />}
+      <span ref={guideMarker} className={styles.guideMarker} hidden aria-hidden="true">1</span>
     </div>
+    {!failed && guide && <SpaceGuideNarration guide={guide} locale={locale} />}
     <div className={styles.toolbar} aria-label={ko ? "3D 보기 조작" : "3D view controls"}>
       <label className={styles.qualityChoice}>{ko ? "화질" : "Quality"}<select value={quality} onChange={e => { setQuality(e.target.value); runtime.current?.profile(e.target.value); }}>{["auto", "ultra", "high", "balanced", "performance"].map(value => <option key={value} value={value}>{({auto:ko?"자동":"Auto",ultra:ko?"울트라 미리보기":"Ultra Preview",high:"High",balanced:"Balanced",performance:ko?"가벼운 효과":"Performance"})[value]}</option>)}</select></label>
       <button type="button" disabled={failed} aria-pressed={cameraChoice === "perspective"} onClick={() => { setCameraChoice("perspective"); runtime.current?.perspective(); }}>{ko ? "원근 시점" : "Perspective"}</button>

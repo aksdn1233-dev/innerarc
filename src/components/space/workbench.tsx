@@ -157,7 +157,7 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
   const activeGuide = analysis?.recommendations[activeRecommendation]
     ? buildSpaceGuideNarration(
       analysis.recommendations[activeRecommendation],
-      analysis.current,
+      compare ? analysis.recommended : analysis.current,
       kindName(analysis.current.objects.find(object => object.id === analysis.recommendations[activeRecommendation].action.objectId)?.kind ?? ""),
       locale,
     )

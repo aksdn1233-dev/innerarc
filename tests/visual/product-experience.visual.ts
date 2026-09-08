@@ -14,6 +14,7 @@ const prepareEvidenceCapture = async (page: import("@playwright/test").Page) => 
 const captureEvidence = async (page: import("@playwright/test").Page, locator: import("@playwright/test").Locator, name: string) => {
   await locator.scrollIntoViewIfNeeded();
   await prepareEvidenceCapture(page);
+  await expect.poll(() => locator.locator("img").evaluateAll(images => images.every(node => (node as HTMLImageElement).complete && (node as HTMLImageElement).naturalWidth > 0)), { timeout: 15000 }).toBe(true);
   const screenshot = await locator.screenshot({ animations: "disabled" });
   expect(screenshot).toMatchSnapshot(name, { threshold: .1, maxDiffPixelRatio: .001 });
 };
@@ -31,14 +32,15 @@ test.describe("premium product evidence", () => {
     await captureEvidence(page, page.locator("section").first(), `premium-${width}-space-landing.png`);
     const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "6", { timeout: 20_000 });
     await expect(page.getByLabel("실제 3D 렌더 해상도")).toContainText(/실제 렌더 \d+×\d+/);
-    for (const name of ["북쪽 방향을 확인했어요", "방·문·창·가구의 크기와 위치를 실제 공간과 비교했어요"]) await page.getByRole("checkbox", { name }).evaluate((element: HTMLInputElement) => element.click());
-    await page.getByRole("button", { name: "예시 방 분석", exact: true }).evaluate((element: HTMLButtonElement) => element.click());
+    for (const name of ["북쪽 방향을 확인했어요", "방·문·창·가구의 크기와 위치를 실제 공간과 비교했어요"]) await page.getByRole("checkbox", { name }).check();
+    await page.getByRole("button", { name: "예시 방 분석", exact: true }).click();
     const analysis = page.getByRole("region", { name: "공간 분석 결과" });
     await expect(analysis).toBeVisible();
     await analysis.scrollIntoViewIfNeeded();
     await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
     await captureEvidence(page, analysis, `premium-${width}-space-analysis.png`);
     await captureEvidence(page, view.locator(".."), `premium-${width}-space-before.png`);
+    await captureEvidence(page, page.getByLabel("3D 공간 안내"), `premium-${width}-space-guide.png`);
     await page.getByRole("button", { name: "추천 배치", exact: true }).click(); await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10_000 });
     await captureEvidence(page, view.locator(".."), `premium-${width}-space-after.png`);
 
@@ -52,5 +54,7 @@ test.describe("premium product evidence", () => {
     await captureEvidence(page, page.locator(".celebrity-intro"), `premium-${width}-success-landing.png`);
     await page.getByLabel("내 생년월일 (양력)").fill("1994-11-04"); await page.getByRole("button", { name: "공개 구조 비교", exact: true }).click();
     await captureEvidence(page, page.locator('[aria-labelledby="celebrity-feature-title"]'), `premium-${width}-success-result.png`);
+    await page.getByRole("button", { name: "이 행동을 Reality Check로 기록" }).click();
+    await captureEvidence(page, page.locator("main"), `premium-${width}-reality-check.png`);
   });
 });

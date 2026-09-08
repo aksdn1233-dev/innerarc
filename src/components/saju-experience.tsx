@@ -1,5 +1,6 @@
 "use client";
 
+import { HydrationGate } from "./hydration-gate";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -113,7 +114,7 @@ export function SajuExperience({ locale, price }: { locale: Locale; price: numbe
       </section>
 
       <div className="saju-intake-layout">
-      <form className="saju-form" onSubmit={submit} noValidate>
+      <form className="saju-form" onSubmit={submit} noValidate><HydrationGate locale={locale}>
         <div className="saju-form-head">
           <span>{locale === "ko" ? "01 · 원국 정보" : "01 · CHART DETAILS"}</span>
           <h2>{locale === "ko" ? "기억나는 만큼만 알려주세요" : "Share only what you remember"}</h2>
@@ -163,7 +164,7 @@ export function SajuExperience({ locale, price }: { locale: Locale; price: numbe
 
         <button className="saju-submit" type="submit">{submitLabel}</button>
         {error && <p className="saju-error" role="alert">{error}</p>}
-      </form>
+      </HydrationGate></form>
 
       <aside className="saju-shop-entry">
         <div><p className="eyebrow">SAJU ACCESSORY</p><h2>{locale === "ko" ? "내 사주 오행에 맞는 악세서리 방향" : "Accessory directions for your Saju phases"}</h2><p>{locale === "ko" ? "오행별 형태·색·소재 방향을 먼저 비교해 보세요. 물건이 운이나 결과를 바꾸는 것은 아닙니다." : "Compare form, palette, and material directions by phase. An object does not change luck or outcomes."}</p></div>

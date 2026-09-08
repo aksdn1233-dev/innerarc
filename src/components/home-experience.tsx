@@ -777,6 +777,8 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
               playback starts. `preload="none"` keeps it out of the initial payload; the
               effect below starts it once the page is idle, and never when the visitor has
               asked for reduced motion. */}
+          {/* Video poster must use the same direct asset as the video fallback. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             alt=""
             aria-hidden="true"

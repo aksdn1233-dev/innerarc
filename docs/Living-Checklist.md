@@ -295,3 +295,11 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Space narration is deterministic, object-ID anchored, muted by default, user-initiated, captioned and provider-free.
 - [x] New miniature runtime assets are standalone RGBA PNGs with a native-resolution manifest; concept-board screenshots are not shipped.
 - [x] Confirm local Pretendard WOFF2 load and actual rendered family in the five-width browser evidence before release.
+
+### Final quality pass — 2026-09-08
+
+- [x] Preserve current PR22, payments, historical entitlements and deterministic engines; no new migration or deployment.
+- [x] Guard personal forms before hydration; restore real pointer checks instead of DOM click workarounds.
+- [x] Harden device speech, readable guide fallback, world-coordinate marker and 1× minimum lightweight render density.
+- [x] Make flaky CI outcomes fail rather than silently pass on retry.
+- [x] Local release evidence completed: see `Final-Product-Quality-Pass.md`; hosted two-account storage/RLS, actual configured model access and physical phones remain separate from local emulation.
