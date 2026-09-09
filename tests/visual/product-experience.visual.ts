@@ -39,6 +39,10 @@ test.describe("premium product evidence", () => {
     await analysis.scrollIntoViewIfNeeded();
     await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
     await captureEvidence(page, analysis, `premium-${width}-space-analysis.png`);
+    await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10_000 });
+    await page.getByRole("button", { name: "방 안에서", exact: true }).click();
+    await expect(view).toHaveAttribute("data-camera-mode", /hero|interior/);
+    await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10_000 });
     await captureEvidence(page, view.locator(".."), `premium-${width}-space-before.png`);
     await captureEvidence(page, page.getByLabel("3D 공간 안내"), `premium-${width}-space-guide.png`);
     await page.getByRole("button", { name: "추천", exact: true }).click(); await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10_000 });
