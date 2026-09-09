@@ -1711,6 +1711,6 @@
 
 - Date: 2026-09-09
 - Decision: Remove decorative radial gradients and oversized ring pseudo-elements from the public home. Keep the four-step guide in its established clean blue palette, without decorative circular gradients. Preserve meaningful result diagrams and controls because they communicate data or interaction.
-- Image quality: Deliver the 1,672-pixel hero source directly with an explicit full-viewport size because the current production optimizer exposed only 1,254 effective pixels at a 1,440-pixel viewport. Do not use CSS zoom, scale transforms or browser upscaling tricks. Product preview images retain their intrinsic aspect ratios and responsive source sizing.
+- Image quality: Deliver the 1,672-pixel hero through the responsive image optimizer at quality 92 and verify the decoded response pixels rather than the browser's descriptor-normalized `naturalWidth`. Do not use CSS zoom, scale transforms or browser upscaling tricks. Product preview images retain their intrinsic aspect ratios and responsive source sizing.
 - Scope and economics: This is a presentation-only correction. It changes no route, calculation, payment, entitlement, provider, model call, runtime token cost, storage, personal data or migration.
 - Success and reversal: Require stable captures at the existing five visual widths, no horizontal overflow, readable guide contrast and green home regression checks. Revert this CSS/component commit to restore the prior treatment; no data rollback is required.

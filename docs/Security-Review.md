@@ -105,3 +105,7 @@ The upload boundary now permits at most 3.5 MB only to preserve useful 2048-pixe
 ## Guide and success-handoff boundary — 2026-09-08
 
 The miniature guide layer receives only already-validated recommendation text and an allowlisted object ID. It cannot mutate scene coordinates or submit an analysis. Speech synthesis is local, begins only from a button, and falls back to visible text. Success-story handoffs remain strict JSON, same-origin tab storage and short-lived; unexpected keys, mixed relationship/story context, wrong locale, future timestamps and expired payloads fail closed.
+
+# Dependency advisory follow-up — 2026-09-09
+
+The full-product release audit detected newly published advisories in Next.js, Sharp, js-yaml and Vitest. The release pins patched versions: Next.js and eslint-config-next 16.3.3, Sharp 0.35.4, js-yaml 4.3.2 and Vitest 4.1.11. `pnpm audit` now exits successfully with only the two previously reviewed workspace exclusions in `pnpm-workspace.yaml`.

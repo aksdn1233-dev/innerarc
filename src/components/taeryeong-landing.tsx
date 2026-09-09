@@ -232,33 +232,33 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
 
   return <main className="td2" id="main-content" tabIndex={-1}>
     <header className="td2-nav-shell">
-      <Link className="td2-brand" href={`/${locale}`} aria-label={locale === "ko" ? "태령당 홈" : "Taeryeongdang home"}>
+      <Link className="td2-brand" href={`/${locale}`} prefetch={false} aria-label={locale === "ko" ? "태령당 홈" : "Taeryeongdang home"}>
         <strong>태령당</strong><small>PERSONAL PATTERN INTELLIGENCE</small>
       </Link>
       <nav className="td2-nav" aria-label={t.navLabel}>
         <a href="#guide" onClick={(event) => { event.preventDefault(); openGuide(); }}>{t.guide}</a>
-        <Link href={`/${locale}/numerology`}>{t.analysis}</Link>
-        <Link href={`/${locale}/celebrity`}>{t.success}</Link>
-        <Link href={`/${locale}/compatibility`}>{t.relationship}</Link>
+        <Link href={`/${locale}/numerology`} prefetch={false}>{t.analysis}</Link>
+        <Link href={`/${locale}/celebrity`} prefetch={false}>{t.success}</Link>
+        <Link href={`/${locale}/compatibility`} prefetch={false}>{t.relationship}</Link>
         <Link href={`/${locale}/space`} prefetch={false}>{t.space}</Link>
         <Link href={`/${locale}/reading#evidence`} prefetch={false}>{reviewLabel}</Link>
       </nav>
       <div className="td2-nav-actions">
-        <Link className="td2-login" href={`/${locale}/orders`}>{t.login}</Link>
+        <Link className="td2-login" href={`/${locale}/orders`} prefetch={false}>{t.login}</Link>
         <Link className="td2-pill" href={`/${locale}/fortune`} prefetch={false}>{t.start}<Arrow /></Link>
         <Link className="td2-language" href={`/${locale === "ko" ? "en" : "ko"}`} prefetch={false}>{locale === "ko" ? "EN" : "한국어"}</Link>
       </div>
     </header>
 
     <section className="td2-hero" aria-labelledby="td2-hero-title">
-      <Image className="td2-hero-image" src="/images/brand/taeryeong-night-hero-v3.jpg" alt="" fill priority unoptimized sizes="100vw" />
+      <Image className="td2-hero-image" src="/images/brand/taeryeong-night-hero-v3.jpg" alt="" fill priority quality={92} sizes="100vw" />
       <div className="td2-hero-wash" aria-hidden="true" />
       <div className="td2-hero-copy">
         <p className="td2-kicker">{t.kicker}</p>
         <h1 id="td2-hero-title">{t.title}</h1>
         <p className="td2-lead">{t.heroBody}</p>
         <div className="td2-actions">
-          <Link className="td2-primary" href={`/${locale}/fortune`} onClick={track}>{t.heroPrimary}<Arrow /></Link>
+          <Link className="td2-primary" href={`/${locale}/fortune`} prefetch={false} onClick={track}>{t.heroPrimary}<Arrow /></Link>
           <a className="td2-secondary" href="#services">{t.heroSecondary}<Arrow /></a>
         </div>
         <p className="td2-note">{t.heroNote.split(" · ").map((part, index) => <span key={part}>{index > 0 ? " · " : ""}{part}</span>)}</p>
@@ -284,8 +284,8 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
         <span>{t.readBody}</span>
       </header>
       <div className="td2-service-bridges">
-        <Link href={`/${locale}/fortune`}>{t.sajuHub}<Arrow /></Link>
-        <Link href={`/${locale}/numerology`}>{t.freePattern}<Arrow /></Link>
+        <Link href={`/${locale}/fortune`} prefetch={false}>{t.sajuHub}<Arrow /></Link>
+        <Link href={`/${locale}/numerology`} prefetch={false}>{t.freePattern}<Arrow /></Link>
       </div>
       <div className="td2-pillar-grid">
         {pillars.map(([number, title, label, body, href]) => <Link href={href} className="td2-pillar" key={number} prefetch={false}>
@@ -352,7 +352,7 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
         <p className="td2-eyebrow">{t.previewEyebrow}</p>
         <h2 id="td2-preview-title">{t.previewTitle}</h2>
         <p>{t.previewBody}</p>
-        <Link className="td2-text-link" href={`/${locale}/numerology`} onClick={track}>{t.previewCta}<Arrow /></Link>
+        <Link className="td2-text-link" href={`/${locale}/numerology`} prefetch={false} onClick={track}>{t.previewCta}<Arrow /></Link>
       </div>
       <article className="td2-report-preview" aria-label={t.sample}>
         <header><div><small>{t.sample}</small><strong>{t.sampleDate}</strong></div><span aria-hidden="true">⌁</span></header>
@@ -375,7 +375,7 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
       <article className="td2-success" aria-labelledby="td2-success-title">
         <div className="td2-copy-column">
           <p className="td2-eyebrow">{t.successEyebrow}</p><h2 id="td2-success-title">{t.successTitle}</h2><p>{t.successBody}</p>
-          <Link className="td2-text-link" href={`/${locale}/celebrity`}>{t.successCta}<Arrow /></Link>
+          <Link className="td2-text-link" href={`/${locale}/celebrity`} prefetch={false}>{t.successCta}<Arrow /></Link>
         </div>
         <div className="td2-success-canvas" aria-hidden="true">
           <span className="td2-rank">01</span>
@@ -387,7 +387,7 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
       <article className="td2-relationship" aria-labelledby="td2-relationship-title">
         <div className="td2-copy-column">
           <p className="td2-eyebrow">{t.relationshipEyebrow}</p><h2 id="td2-relationship-title">{t.relationshipTitle}</h2><p>{t.relationshipBody}</p>
-          <Link className="td2-text-link" href={`/${locale}/relationship`}>{t.relationshipCta}<Arrow /></Link>
+          <Link className="td2-text-link" href={`/${locale}/relationship`} prefetch={false}>{t.relationshipCta}<Arrow /></Link>
         </div>
         <div className="td2-orbits" aria-hidden="true"><i /><i /><i /><div><span>A</span><span>B</span></div></div>
       </article>
@@ -415,20 +415,20 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
     </section>
 
     <section className="td2-reality" aria-labelledby="td2-reality-title">
-      <div><p className="td2-eyebrow">{t.realityEyebrow}</p><h2 id="td2-reality-title">{t.realityTitle}</h2><p>{t.realityBody}</p><Link className="td2-light-button" href={`/${locale}/reality-check`}>{t.realityCta}<Arrow /></Link></div>
+      <div><p className="td2-eyebrow">{t.realityEyebrow}</p><h2 id="td2-reality-title">{t.realityTitle}</h2><p>{t.realityBody}</p><Link className="td2-light-button" href={`/${locale}/reality-check`} prefetch={false}>{t.realityCta}<Arrow /></Link></div>
       <div className="td2-reality-orbit" aria-hidden="true"><i /><i /><span>{t.realityOrbit.split("\n").map(part => <b key={part}>{part}</b>)}</span><em /><em /></div>
     </section>
 
     <section className="td2-close" aria-labelledby="td2-close-title">
-      <div><h2 id="td2-close-title">{t.closeTitle}</h2><p>{t.closeBody}</p><Link className="td2-primary" href={`/${locale}/numerology`} onClick={track}>{t.closeCta}<Arrow /></Link></div>
+      <div><h2 id="td2-close-title">{t.closeTitle}</h2><p>{t.closeBody}</p><Link className="td2-primary" href={`/${locale}/numerology`} prefetch={false} onClick={track}>{t.closeCta}<Arrow /></Link></div>
       <ul>{t.benefits.map((item, index) => <li key={item}><span>{["♙", "⌁", "◴", "△"][index]}</span>{item}</li>)}</ul>
       <div className="td2-mountain" aria-hidden="true" />
       <div className="td2-close-signature" aria-hidden="true"><span>태</span><span>령</span><span>당</span></div>
     </section>
 
     <footer className="td2-footer">
-      <div><Link className="td2-brand" href={`/${locale}`}><strong>태령당</strong><small>TAERYEONGDANG</small></Link><p>{t.footerBody}</p></div>
-      <nav aria-label={locale === "ko" ? "법률 및 고객 지원" : "Legal and support"}><Link href={`/${locale}/terms`}>{locale === "ko" ? "이용조건" : "Terms"}</Link><Link href={`/${locale}/privacy`}>{locale === "ko" ? "개인정보" : "Privacy"}</Link><Link href={`/${locale}/orders`}>{t.login}</Link><Link href={`/${locale}/support`}>{locale === "ko" ? "고객 문의" : "Support"}</Link></nav>
+      <div><Link className="td2-brand" href={`/${locale}`} prefetch={false}><strong>태령당</strong><small>TAERYEONGDANG</small></Link><p>{t.footerBody}</p></div>
+      <nav aria-label={locale === "ko" ? "법률 및 고객 지원" : "Legal and support"}><Link href={`/${locale}/terms`} prefetch={false}>{locale === "ko" ? "이용조건" : "Terms"}</Link><Link href={`/${locale}/privacy`} prefetch={false}>{locale === "ko" ? "개인정보" : "Privacy"}</Link><Link href={`/${locale}/orders`} prefetch={false}>{t.login}</Link><Link href={`/${locale}/support`} prefetch={false}>{locale === "ko" ? "고객 문의" : "Support"}</Link></nav>
       <p className="td2-footer-boundary">{t.footerBoundary}</p><small>{t.copyright}</small>
     </footer>
   </main>;

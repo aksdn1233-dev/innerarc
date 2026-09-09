@@ -27,6 +27,15 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
     let stopped = false, partialCleanup = () => {};
     const container = host.current;
     if (!container) return;
+    const startupDeadline = setTimeout(() => {
+      if (stopped) return;
+      stopped = true;
+      partialCleanup();
+      runtime.current = null;
+      setAssetLoading(false);
+      setReady(false);
+      setFailed(true);
+    }, 25_000);
     async function mount() {
       const [T, { OrbitControls }, assets, { createAssetLibrary }, { loadPbrSurfaces }, { EffectComposer }, { RenderPass }, { GTAOPass }, { OutputPass }, { createContactShadows }, { RectAreaLightUniformsLib }] = await Promise.all([import("three"), import("three/addons/controls/OrbitControls.js"), import("./interior-assets"), import("./asset-library"), import("./pbr-surfaces"), import("three/addons/postprocessing/EffectComposer.js"), import("three/addons/postprocessing/RenderPass.js"), import("three/addons/postprocessing/GTAOPass.js"), import("three/addons/postprocessing/OutputPass.js"), import("./contact-shadows"), import("three/addons/lights/RectAreaLightUniformsLib.js")]);
       if (stopped || !container) return;
@@ -291,10 +300,10 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
       };
       await requestUpdate(latest.current, latestComparison.current, latestComparisonMode.current); if (stopped || contextLost || !runtime.current) return;
       profile("auto");
-      const w = container.clientWidth, h = container.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); composer.setSize(w, h); publishResolution(); reset(); readyAtLeastOnce = true; setReady(true);
+      const w = container.clientWidth, h = container.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); composer.setSize(w, h); publishResolution(); reset(); readyAtLeastOnce = true; clearTimeout(startupDeadline); setReady(true);
     }
     mount().catch(() => { partialCleanup(); if (!stopped) { runtime.current = null; setFailed(true); } });
-    return () => { stopped = true; partialCleanup(); runtime.current = null; };
+    return () => { stopped = true; clearTimeout(startupDeadline); partialCleanup(); runtime.current = null; };
   }, [ko, attempt]);
   return <div>
     {failed && <><p role="status">{ko ? "이 기기에서는 3D를 표시하지 못했습니다. 아래 객체 목록과 분석 결과로 계속 이용하세요." : "3D is unavailable on this device. Continue with the object list and text analysis below."}</p><button onClick={() => { setFailed(false); setReady(false); setQuality("auto"); setAttempt(value => value + 1); }}>{ko ? "3D 다시 시도" : "Retry 3D"}</button></>}

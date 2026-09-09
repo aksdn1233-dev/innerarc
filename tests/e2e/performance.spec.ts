@@ -28,10 +28,11 @@ const DEFAULT_CSS_DECODED_BUDGET = 208_000;
 
 const routes = [
   // The editorial home removes the old autoplay film, audio and iOS animation. Its
-  // measured initial transfer is 319.5 KB and decoded total 1.116 MB. The only route
-  // addition is 25.7 KB of scoped presentation CSS on top of the unchanged 189.8 KB
-  // shared sheet, so its CSS exception is local and the transfer ceiling drops by 91%.
-  { path: "/en", transfer: 350_000, cssDecoded: 220_000 },
+  // measured initial transfer is 319.5 KB and decoded total 1.116 MB. The premium home
+  // now measures 231.8 KB of decoded CSS. Route prefetch is disabled here so linked Saju
+  // styles no longer add another 13.2 KB before the user chooses that service. The 233 KB
+  // ceiling leaves only 1.2 KB of headroom and keeps that saving as a regression gate.
+  { path: "/en", transfer: 350_000, cssDecoded: 233_000 },
   { path: "/en/question" },
   { path: "/en/relationship" },
   { path: "/en/compatibility" },

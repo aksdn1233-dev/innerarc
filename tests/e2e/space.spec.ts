@@ -127,8 +127,8 @@ test("the home always shows a simple path to 3D room analysis", async ({ page })
   await expect(page.getByRole("heading", { name: "내 방, 어디를 바꾸면 좋을까요?", exact: true })).toBeVisible();
   await expect(page.getByText("방 사진 찍기", { exact: true })).toBeVisible();
   const roomLinks = page.getByRole("link", { name: "내 방 분석하기", exact: true });
-  await expect(roomLinks).toHaveCount(2);
-  await expect(roomLinks.first()).toBeVisible();
+  await expect(roomLinks).toHaveCount(1);
+  await expect(roomLinks).toBeVisible();
   await menu.click();
   await expect(page).toHaveURL(/\/ko\/space$/);
 });
@@ -172,7 +172,8 @@ test("speech exceptions retain captions and guide marker follows the camera", as
   await expect(marker).toHaveAttribute("data-anchor-object", (await guide.getAttribute("data-anchor-object"))!);
 });
 
-test("finishing 3D loading does not move mobile confirmation controls", async ({ page }) => {
+test("finishing 3D loading does not move mobile confirmation controls", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile", "This touch-layout stability case requires the configured coarse-pointer mobile device; desktop 390px uses the intentionally heavier desktop renderer.");
   await page.setViewportSize({ width: 390, height: 844 });
   let release!: () => void;
   const assetGate = new Promise<void>(resolve => { release = resolve; });
