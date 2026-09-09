@@ -1409,6 +1409,15 @@
 - Success, guardrails and reversal: Require readable Korean and English copy, three concrete report outcomes, 44-pixel mobile controls, no horizontal overflow, keyboard walkthrough behavior and green regression/visual checks. Revert this home-only component and CSS change if comprehension, accessibility, page weight or conversion worsens; no migration or stored user data is involved.
 - Status: Owner-authorized for production deployment.
 
+## D-092 - Match the supplied campaign page's large-scene interaction pattern
+
+- Date: 2026-09-09
+- Decision: Add a sticky three-part story navigator and turn the service list into five large, bright scroll scenes. Preserve original Taeryeongdang copy, colors, assets and service routes while matching the supplied reference's scale, whitespace, rounded navigation and one-feature-per-scene rhythm.
+- Demand and distribution: The owner rejected the prior interpretation as too loose and explicitly requested design-level parity. The public home remains the only distribution surface and every scene opens an existing product route.
+- Economics, privacy and safety: No price, model, provider, token call, storage, personal data or entitlement change. Existing symbolic-tool boundaries and factual labels remain visible.
+- Success and reversal: Require the three navigation anchors, five working service links, stable sticky behavior, no 320–1440px overflow, 44-pixel targets, reduced-motion compatibility and updated visual evidence. Revert the home component/CSS commit if usability, load performance or conversion worsens; there is no migration.
+- Status: Owner-authorized for production deployment.
+
 ## D-086 - Refine the compatibility intake without changing its privacy boundary
 
 - Date: 2026-08-31

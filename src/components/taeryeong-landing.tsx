@@ -238,6 +238,12 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
       <small className="td2-hero-art-note">{t.heroArtNote}</small>
     </section>
 
+    <nav className="td2-story-nav" aria-label={locale === "ko" ? "메인 소개 바로가기" : "Home story navigation"}>
+      <a className="is-current" href="#main-content">{locale === "ko" ? "태령당" : "Home"}</a>
+      <a href="#services">{locale === "ko" ? "살펴보기" : "Explore"}</a>
+      <a href="#guide">{locale === "ko" ? "경험하기" : "Try it"}</a>
+    </nav>
+
     <section className="td2-section td2-reading-map" id="services" aria-labelledby="td2-services-title">
       <header className="td2-heading">
         <div><p>{t.readEyebrow}</p><h2 id="td2-services-title">{t.readTitle}</h2></div>

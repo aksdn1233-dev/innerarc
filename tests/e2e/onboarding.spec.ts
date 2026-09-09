@@ -17,6 +17,9 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await expect(page.locator(".td2-hero").getByRole("link", { name: /무료로 나 알아보기/ })).toBeVisible();
   await expect(page.locator(".td2-hero").getByRole("link", { name: /내 방 분석하기/ })).toBeVisible();
   await expect(page.getByRole("button", { name: /처음이세요\? 1분 안내 보기/ })).toBeVisible();
+  await expect(page.locator(".td2-story-nav a")).toHaveCount(3);
+  await expect(page.locator(".td2-story-nav")).toContainText("살펴보기");
+  await expect(page.locator(".td2-story-nav")).toContainText("경험하기");
   await page.getByRole("button", { name: /처음이세요\? 1분 안내 보기/ }).click();
   await expect(page.locator("#guide")).toBeInViewport();
   await expect(page.locator("#guide [role='tab']")).toHaveCount(4);
