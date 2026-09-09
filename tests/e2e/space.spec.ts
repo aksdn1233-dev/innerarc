@@ -121,6 +121,7 @@ test("device speech failure keeps the anchored guide readable", async ({ page })
 
 test("the home always shows a simple path to 3D room analysis", async ({ page }) => {
   await page.goto("/ko");
+  await page.getByRole("button", { name: "안내 닫기" }).click();
   const menu = page.getByRole("navigation").getByRole("link", { name: "3D 공간운", exact: true });
   await expect(menu).toBeVisible();
   await expect(page.getByRole("heading", { name: "내 방, 어디를 바꾸면 좋을까요?", exact: true })).toBeVisible();
