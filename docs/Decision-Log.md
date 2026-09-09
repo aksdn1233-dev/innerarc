@@ -1,5 +1,43 @@
 # Decision Log
 
+## D-083 — Correct the Daily Healing home with a character-led visual rebuild
+
+- Date: 2026-09-10
+- Decision: Keep the header, navigation, opening hero, hero character, copy, and actions pixel
+  unchanged. Rebuild the sequence below that boundary with nine visibly different compositions:
+  a large Hoyeon listening scene, concern conversations, the canonical six-guide cast, character-led
+  service entries, a daylight transition, Taeryeong's Reality Check story, an open-book production
+  report preview, a 3D Space before/after scene led by Yundo, and an evening closing scene. Reuse the
+  approved first-party assets and canonical roles for Taeryeong, Yeonhui, Sahyeon, Hwayeon, Yundo,
+  and Hoyeon. If no publication-consented review exists, show the supported concern taxonomy rather
+  than invented social proof.
+- Demand evidence and distribution: The owner rejected D-082 because the middle and lower page did
+  not look sufficiently redesigned and the character world was not prominent enough. The corrective
+  pass directly follows the approved Daily Character Healing reference. Distribution remains the
+  official Naver blog, current organic entry, and existing campaigns; every action leads to a live
+  public product route.
+- Unit economics and costs: The 9,600 and 39,000 KRW report economics, prices, entitlements,
+  checkout, refunds, and fulfilment remain unchanged. The home uses local first-party images, CSS,
+  and an existing cached deterministic report sample. It makes no model request, provider transfer,
+  storage write, or per-visit paid call. Enlarged responsive image candidates are lazy below the fold
+  and are checked against their rendered width.
+- Safety, truth, and privacy: Saju, birth-date patterns, and feng shui remain symbolic reflection
+  tools; copy makes no prediction, diagnosis, treatment, scientific, accuracy, or outcome claim.
+  Deterministic engines, consent, account isolation, payments, history, and Reality Check records are
+  untouched. Reviews remain publication-consent gated and personal or uploaded data never appears on
+  the public home page.
+- Success and guardrails: Require an exact before/after hero image hash, zero dead service routes,
+  zero serious automated accessibility findings, zero console or hydration errors, zero horizontal
+  overflow, and no image served below its rendered CSS width at 360, 390, 430, 768, 1024, 1280, and
+  1440 px. Character and room images must not use a scale transform as a substitute for resolution.
+  Visual review targets are difference 9.5/10, character emotion 9.3/10, and overall 9.3/10.
+- Reversal conditions: Revert if the denser character page lowers free-result starts or Reality Check
+  returns after a representative measurement window, harms mobile load or reading, or any preview
+  diverges from delivered content. Corrective rollback reference: `d80e714`; the original pre-home
+  redesign reference remains `4c63177`.
+- Status: Implemented and validated on the isolated branch. Production deployment remains explicitly
+  excluded from this command.
+
 ## D-082 — Make the home page a calm daily-reflection entry after the preserved hero
 
 - Date: 2026-09-10

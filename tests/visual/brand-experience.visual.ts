@@ -5,13 +5,15 @@ const widths = [360, 390, 430, 768, 1024, 1280, 1440] as const;
 async function capture(page: import("@playwright/test").Page, selector: string, name: string) {
   const subject = page.locator(selector);
   await subject.scrollIntoViewIfNeeded();
+  await expect.poll(() => subject.locator('img[data-deferred="true"]').count()).toBe(0);
   await subject.locator("img").evaluateAll(async (images) => {
-    await Promise.all(images.map((node) => {
+    await Promise.all(images.map(async (node) => {
       const image = node as HTMLImageElement;
-      return image.complete ? Promise.resolve() : new Promise<void>((resolve) => {
-        image.addEventListener("load", () => resolve(), { once: true });
-        image.addEventListener("error", () => resolve(), { once: true });
-      });
+      if (image.complete) return;
+      await Promise.race([
+        image.decode().catch(() => undefined),
+        new Promise<void>((resolve) => window.setTimeout(resolve, 2_000)),
+      ]);
     }));
   });
   await page.evaluate(async (hideHeader) => {
@@ -63,9 +65,11 @@ test.describe("Taeryeong Daily Healing homepage", () => {
       expect(heroQuality.density).toBeGreaterThanOrEqual(1);
       expect(heroQuality.transform).toBe("none");
 
-      await capture(page, ".dh-concerns", `daily-${width}-concerns.png`);
-      await capture(page, ".dh-listening", `daily-${width}-listening.png`);
+      await capture(page, ".dh-character-entry", `daily-${width}-entry.png`);
+      await capture(page, ".dh-conversation", `daily-${width}-conversation.png`);
+      await capture(page, ".dh-guides", `daily-${width}-guides.png`);
       await capture(page, ".dh-services", `daily-${width}-services.png`);
+      await capture(page, ".dh-transition", `daily-${width}-transition.png`);
       await capture(page, ".dh-reality", `daily-${width}-reality.png`);
       await capture(page, ".dh-report", `daily-${width}-report.png`);
       await capture(page, ".dh-space", `daily-${width}-space.png`);
@@ -90,7 +94,7 @@ test.describe("Taeryeong Daily Healing homepage", () => {
 
     await expect(page.locator(".dh-guide-strip article")).toHaveCount(6);
     await expect(page.locator(".dh-service-grid > a")).toHaveCount(6);
-    await expect(page.locator(".dh-reality > ol li")).toHaveCount(5);
+    await expect(page.locator(".dh-reality-story ol li")).toHaveCount(5);
     await expect(page.locator(".dh-celestial-thread circle")).toHaveCount(0);
     await expect(flow).not.toContainText("타로");
     await expect(flow).not.toContainText(/120만|98%|★★★★★/);
@@ -107,10 +111,13 @@ test.describe("Taeryeong Daily Healing homepage", () => {
     const routeResponses = await Promise.all(servicePaths.map((path) => request.get(path)));
     routeResponses.forEach((response, index) => expect(response.status(), servicePaths[index]).toBeLessThan(400));
 
-    const media = page.locator(".dh-listening img, .dh-guide-strip img, .dh-space img");
+    const media = page.locator(".dh-character-entry img, .dh-conversation img, .dh-guide-strip img, .dh-service-grid img, .dh-transition img, .dh-space img, .dh-close img");
     for (let index = 0; index < await media.count(); index += 1) {
       const image = media.nth(index);
       await image.scrollIntoViewIfNeeded();
+      if (await image.getAttribute("data-deferred") !== null) {
+        await expect(image).toHaveAttribute("data-deferred", "false");
+      }
       await expect(image).toHaveJSProperty("complete", true);
       expect(await image.evaluate((node) => (node as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
     }
@@ -120,16 +127,25 @@ test.describe("Taeryeong Daily Healing homepage", () => {
       const response = await fetch(image.currentSrc);
       const bitmap = await createImageBitmap(await response.blob());
       const density = bitmap.width / box.width;
+      const transform = getComputedStyle(image).transform;
+      const matrix = new DOMMatrixReadOnly(transform === "none" ? undefined : transform);
       bitmap.close();
-      return { density, loaded: image.complete && image.naturalWidth > 0 };
+      return {
+        density,
+        loaded: image.complete && image.naturalWidth > 0,
+        scaleX: Math.hypot(matrix.m11, matrix.m12),
+        scaleY: Math.hypot(matrix.m21, matrix.m22),
+      };
     })));
     for (const item of imageQuality) {
       expect(item.loaded).toBe(true);
       expect(item.density).toBeGreaterThanOrEqual(1);
+      expect(item.scaleX).toBeLessThanOrEqual(1.001);
+      expect(item.scaleY).toBeLessThanOrEqual(1.001);
     }
 
-    await expect(page.locator(".dh-report-paper")).toContainText("18 CHAPTERS");
-    await expect(page.locator(".dh-report-paper")).toContainText("핵심 숫자");
-    await expect(page.locator(".dh-report-paper")).toContainText("지금 해볼 한 가지");
+    await expect(page.locator(".dh-report-book")).toContainText("18 CHAPTERS");
+    await expect(page.locator(".dh-report-book")).toContainText("핵심 숫자");
+    await expect(page.locator(".dh-report-book")).toContainText("지금 해볼 한 가지");
   });
 });

@@ -29,9 +29,9 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await expect(page.locator("#guide [role='tabpanel']")).toContainText("지금 궁금한 것을 고릅니다");
   await page.getByRole("button", { name: "안내 닫기" }).click();
   await expect(page.locator("#onboarding")).toHaveCount(0);
-  await expect(page.locator(".dh-report-chapters li")).toHaveCount(5);
-  await expect(page.locator(".dh-report-paper")).toContainText("지금 해볼 한 가지");
-  await expect(page.locator(".dh-report-paper")).toContainText("인생수");
+  await expect(page.locator(".dh-report-page.is-right li")).toHaveCount(5);
+  await expect(page.locator(".dh-report-book")).toContainText("지금 해볼 한 가지");
+  await expect(page.locator(".dh-report-book")).toContainText("인생수");
   await expect(page.locator(".dh-reality")).toContainText("실제로 어땠는지 기록해보세요");
   await expect(page.locator(".dh-footer")).toContainText("사업자등록번호");
   await expect(page.locator('.td2-nav a:has-text("이용 안내")')).toHaveAttribute("href", "#guide");
@@ -106,7 +106,7 @@ test("mobile home has no overflow and preserves the selling page behavior", asyn
     await expect(page.locator(".td2-hero").getByRole("link", { name: /무료 사주 보기/ })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
     await expect(page.locator(".mobile-purchase-bar")).toHaveCount(0);
-    await expect(page.locator(".dh-report-paper")).toHaveCount(1);
+    await expect(page.locator(".dh-report-book")).toHaveCount(1);
 
     await page.goto("/ko/reading");
     await expect(page.locator(".mobile-purchase-bar")).toHaveCount(0);
@@ -135,8 +135,8 @@ test("English page keeps the same calculated core meaning", async ({ page }) => 
   await expect(page.getByRole("heading", { level: 1, name: "There may be a reason the same patterns keep returning." })).toBeVisible();
   await expect(page.getByRole("link", { name: /See my patterns/ })).toBeVisible();
   await expect(page.locator(".dh-service-grid > a")).toHaveCount(6);
-  await expect(page.locator(".dh-report-chapters li")).toHaveCount(5);
-  await expect(page.locator(".dh-report-paper")).toContainText("Life Path");
+  await expect(page.locator(".dh-report-page.is-right li")).toHaveCount(5);
+  await expect(page.locator(".dh-report-book")).toContainText("Life Path");
   await expect(page.locator(".dh-footer > p")).toContainText("not scientific prediction");
   await page.goto("/en/profile");
   await expect(page).toHaveURL(`${E2E_ORIGIN}/en/profile`);
@@ -686,8 +686,8 @@ test("the whole funnel connects: home, free result, paid teaser, intake", async 
 
 test("editorial home shows real product evidence and clear claim boundaries", async ({ page }) => {
   await page.goto("/ko");
-  await expect(page.locator(".dh-space-visual img")).toHaveCount(2);
-  await expect(page.locator(".dh-space-visual img").first()).toHaveAttribute("alt", /현재 배치/);
+  await expect(page.locator(".dh-space-visual figure > img")).toHaveCount(2);
+  await expect(page.locator(".dh-space-visual figure > img").first()).toHaveAttribute("alt", /현재 배치/);
   await expect(page.locator(".dh-space-copy")).toContainText("사진");
   await expect(page.locator(".dh-space-copy")).toContainText("공간 구조");
   await expect(page.locator(".dh-space-copy")).toContainText("배치 제안");

@@ -18,6 +18,15 @@ Last updated: 2026-09-10
   capture, rejects page overflow and false metrics, verifies live links, and preserves exact hero
   screenshots. A failed first pass exposed a filled celestial SVG path, borderline color contrast,
   and stale-server capture; the CSS and test startup evidence were corrected before acceptance.
+- [x] Owner review rejected the first Daily Healing pass for weak visual differentiation and limited
+  character presence. The corrective pass now uses nine distinct below-hero compositions and all six
+  canonical guides. A production-image test failure found transformed character and room images being
+  served below their displayed width; responsive sizes now request adequate sources, service images
+  are included in the density check, and lazy-image waits have a bounded timeout. The first full
+  browser run also exposed two contrast misses, stale component selectors, and eager below-fold image
+  transfer; the palette, assertions, compressed first scene, and near-viewport character mounting now
+  guard those failures without raising the existing payload ceiling. The final resolution pass removed
+  all character scale transforms and now rejects future image scaling in visual tests.
 
 - [x] Home page reaches the funnel: value sentence, four-step guide, five question entry
   points, generated report outline, one action into `/{locale}/reading`, and the footer.

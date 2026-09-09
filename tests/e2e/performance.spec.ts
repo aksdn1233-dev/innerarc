@@ -29,8 +29,10 @@ const DEFAULT_CSS_DECODED_BUDGET = 208_000;
 const routes = [
   // The editorial home removes the old autoplay film, audio and iOS animation. Its
   // Daily Healing keeps the unchanged hero, adds the six-guide strip and the real report,
-  // Reality Check and 3D Space previews below it. The measured initial state is 23
-  // first-party resources, 427.7 KB transferred, 1.218 MB decoded, and 255.6 KB of CSS.
+  // Reality Check and 3D Space previews below it. The character-led correction keeps the first
+  // scene crisp with one optimized native-size asset and mounts later character rows only near
+  // the viewport. The measured desktop state is 17 first-party resources, 425.3 KB transferred,
+  // and 1.223 MB decoded.
   // These ceilings leave less than 3% headroom and still reject another unreviewed screen.
   { path: "/en", transfer: 440_000, decoded: 1_240_000, cssDecoded: 260_000 },
   { path: "/en/relationship" },
