@@ -34,11 +34,15 @@ test.describe("Taeryeong editorial brand evidence", () => {
       await page.getByRole("button", { name: "안내 닫기" }).click();
       await expect(page.getByRole("heading", { level: 1, name: "사람의 흐름을 읽어 더 나은 오늘을 만듭니다." })).toBeVisible();
       await capture(page, ".td2-hero", `brand-${width}-hero.png`);
-      const heroQuality = await page.locator(".td2-hero-image").evaluate((node) => {
+      const heroQuality = await page.locator(".td2-hero-image").evaluate(async (node) => {
         const image = node as HTMLImageElement;
         const box = image.getBoundingClientRect();
+        const response = await fetch(image.currentSrc);
+        const bitmap = await createImageBitmap(await response.blob());
+        const density = bitmap.width / box.width;
+        bitmap.close();
         return {
-          density: image.naturalWidth / box.width,
+          density,
           transform: getComputedStyle(image).transform,
         };
       });

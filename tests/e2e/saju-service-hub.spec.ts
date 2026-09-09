@@ -6,8 +6,8 @@ const krw = (value: number) => value.toLocaleString("en-US");
 
 test("main and free-pattern screens route to the separate Saju service hub", async ({ page }) => {
   await page.goto("/ko");
-  await expect(page.getByRole("link", { name: "사주 보기" })).toHaveAttribute("href", "/ko/fortune");
-  await expect(page.locator(".td2-nav").getByRole("link", { name: "나 알아보기", exact: true })).toHaveAttribute(
+  await expect(page.getByRole("link", { name: "사주 보기", exact: true })).toHaveAttribute("href", "/ko/fortune");
+  await expect(page.locator(".td2-nav").getByRole("link", { name: "수비학", exact: true })).toHaveAttribute(
     "href",
     "/ko/numerology",
   );

@@ -340,5 +340,18 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Restore the four-step guide's established blue palette without reintroducing circular decoration.
 - [x] Keep meaningful report diagrams intact and avoid CSS zoom or transform-based image enlargement.
 - [x] The first contrast rerun caught the success example's large rank number after its radial background was removed; the number now has AA large-text contrast on the clean solid surface.
-- [x] The five-width density check caught a 1,254-pixel optimized hero at the 1,440-pixel viewport; serve the 1,672-pixel source directly and keep the no-transform density assertion.
+- [x] Correct the five-width hero check to decode the actual response pixels instead of treating `srcset` descriptor-normalized `naturalWidth` as the physical bitmap width; retain optimized delivery and the no-transform assertion.
 - [x] Re-run five-width visual, accessibility, route and build checks; complete the production health check immediately after release.
+
+## 2026-09-09 full product user simulation
+
+- [x] Run all 252 browser scenarios sequentially across desktop Chromium and mobile emulation so resource-heavy 3D tests do not hide contention failures.
+- [x] Stop home-route prefetch from loading 13.2 KB of Saju CSS before the visitor chooses that service; retain a measured 233 KB home CSS ceiling with 1.2 KB headroom.
+- [x] Repair stale exact-link assertions after the home navigation redesign instead of weakening route checks.
+- [x] Add a 25-second 3D startup deadline that removes an indefinite loading state and preserves the existing text result plus retry path.
+- [x] Run the mobile loading-position check only with the configured coarse-pointer mobile project; a narrow desktop viewport intentionally selects the heavier desktop renderer and is not a phone simulation.
+- [x] Re-run the failed cases and complete browser matrix: 242 passed, 10 environment-gated skips and 0 failures across 252 cases.
+- [x] Re-run the dedicated 3D desktop/iPhone-emulation/Android-emulation matrix: 82 passed, 23 non-applicable skips and 0 failures across 105 cases; refresh the approved current-screen and 1.5x-render evidence.
+- [x] Remediate release-audit advisories with Next.js/eslint-config-next 16.3.3, Vitest 4.1.11, Sharp 0.35.4 and js-yaml 4.3.2; retain only the two existing reviewed audit exclusions.
+- [x] Complete dependency audit, validated 113-component CycloneDX SBOM and production-target build.
+- [ ] Complete production smoke checks immediately after release.
