@@ -53,6 +53,20 @@ test.describe("Taeryeong editorial brand evidence", () => {
       await capture(page, ".td2-editorial-pair", `brand-${width}-success-relationship.png`);
       await capture(page, ".td2-space", `brand-${width}-space.png`);
       await capture(page, ".td2-reality", `brand-${width}-reality.png`);
+      await capture(page, ".td2-pythagoras", `brand-${width}-pythagoras.png`);
+
+      await expect(page.locator(".td2-orbits, .td2-reality-orbit, .td2-radar")).toHaveCount(0);
+      const pythagorasQuality = await page.locator(".td2-pythagoras-image").evaluate(async (node) => {
+        const image = node as HTMLImageElement;
+        const box = image.getBoundingClientRect();
+        const response = await fetch(image.currentSrc);
+        const bitmap = await createImageBitmap(await response.blob());
+        const density = bitmap.width / box.width;
+        bitmap.close();
+        return { density, transform: getComputedStyle(image).transform };
+      });
+      expect(pythagorasQuality.density).toBeGreaterThanOrEqual(1);
+      expect(pythagorasQuality.transform).toBe("none");
 
       expect(await page.locator(".td2-room-comparison img").count()).toBe(2);
       await page.getByRole("link", { name: "이용 안내" }).click();
