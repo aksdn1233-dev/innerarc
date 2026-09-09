@@ -317,3 +317,5 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] The design-parity pass adds the reference's rounded three-part navigator and large one-feature-per-scene scrolling rhythm while preserving Taeryeongdang assets, routes and claim boundaries.
 - [x] The first design-parity browser run could not launch because the Playwright 1.62 browser cache had been removed after the dependency update; reinstall the pinned Chromium/WebKit binaries before rerunning rather than treating a missing executable as a product failure.
 - [x] The first accessibility pass caught the new story navigator at 4.48:1; its inactive labels now use darker ink and remain covered on Korean/English desktop and mobile.
+- [x] The four-step area now uses the supplied reference's blue gradient, translucent segmented control and white device frame; the real fixture clips are presented with a light UI treatment without changing or enlarging their source files.
+- [x] Keep the separate three-part home navigator below the hero so it cannot cover the four-step controls while the visitor reads or changes a step.
