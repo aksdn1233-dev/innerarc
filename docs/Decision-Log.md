@@ -1412,10 +1412,18 @@
 ## D-092 - Match the supplied campaign page's large-scene interaction pattern
 
 - Date: 2026-09-09
-- Decision: Add a sticky three-part story navigator and turn the service list into five large, bright scroll scenes. Preserve original Taeryeongdang copy, colors, assets and service routes while matching the supplied reference's scale, whitespace, rounded navigation and one-feature-per-scene rhythm.
+- Decision: Add a floating three-part story navigator below the hero and turn the service list into five large, bright scroll scenes. Preserve original Taeryeongdang copy, colors, assets and service routes while matching the supplied reference's scale, whitespace, rounded navigation and one-feature-per-scene rhythm.
 - Demand and distribution: The owner rejected the prior interpretation as too loose and explicitly requested design-level parity. The public home remains the only distribution surface and every scene opens an existing product route.
 - Economics, privacy and safety: No price, model, provider, token call, storage, personal data or entitlement change. Existing symbolic-tool boundaries and factual labels remain visible.
-- Success and reversal: Require the three navigation anchors, five working service links, stable sticky behavior, no 320–1440px overflow, 44-pixel targets, reduced-motion compatibility and updated visual evidence. Revert the home component/CSS commit if usability, load performance or conversion worsens; there is no migration.
+- Success and reversal: Require the three navigation anchors, five working service links, no overlap with the four-step controls, no 320–1440px overflow, 44-pixel targets, reduced-motion compatibility and updated visual evidence. Revert the home component/CSS commit if usability, load performance or conversion worsens; there is no migration.
+- Status: Owner-authorized for production deployment.
+
+## D-093 - Restyle the four-step walkthrough as the supplied bright experience scene
+
+- Date: 2026-09-09
+- Decision: Apply the supplied reference specifically to the four-step walkthrough: pale sky-blue to vivid blue background, frosted segmented step control, white device frame and light presentation of the recorded product screens. Keep all four existing steps, real fixture recordings, native 780-pixel display ceiling, keyboard behavior and reduced-motion posters.
+- Demand, distribution and economics: Direct owner correction identified the four-step area, rather than the surrounding home, as the requested target. The public home remains the distribution path. CSS treatment adds no model call, token use, provider fee, price or fulfillment change.
+- Privacy, safety and reversal: Recordings still contain scripted fixture data only. Symbolic and practical-result boundaries remain unchanged. Revert this home-only CSS block if readability, accessibility, performance or comprehension worsens; no migration or customer record is affected.
 - Status: Owner-authorized for production deployment.
 
 ## D-086 - Refine the compatibility intake without changing its privacy boundary
