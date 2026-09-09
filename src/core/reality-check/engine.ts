@@ -198,7 +198,7 @@ function nextAnalysisLanguage(
   return {
     guidance: guidance[signal][locale],
     uncertainty: locale === "ko"
-      ? "이 층은 수비학의 정확도를 높이거나 미래를 예측하지 않습니다. 저장된 개인 관련성 평가를 다음 성찰에서 어떻게 다룰지만 정합니다."
+      ? "이 층은 생년월일 패턴의 정확도를 높이거나 미래를 예측하지 않습니다. 저장된 개인 관련성 평가를 다음 성찰에서 어떻게 다룰지만 정합니다."
       : "This layer does not improve numerology accuracy or predict the future. It only determines how saved personal-relevance feedback should be treated in the next reflection.",
   };
 }

@@ -33,7 +33,6 @@ const routes = [
   // styles no longer add another 13.2 KB before the user chooses that service. The 233 KB
   // ceiling leaves only 1.2 KB of headroom and keeps that saving as a regression gate.
   { path: "/en", transfer: 350_000, cssDecoded: 233_000 },
-  { path: "/en/question" },
   { path: "/en/relationship" },
   { path: "/en/compatibility" },
   { path: "/en/celebrity" },

@@ -55,7 +55,7 @@ export function getRuleBasedProfile(lifePath: number, locale: Locale): ProfileCo
       risks: ["상징을 정답처럼 받아들이기", "한 번의 결과로 자신을 고정하기"],
       careers: "전략기획 · 콘텐츠 · 교육·상담",
       relationship: "혼자 생각할 시간과 솔직한 대화를 함께 확보할 때 관계가 안정되는 편으로 해석할 수 있습니다.",
-      symbolic: `전통적 수비학에서는 라이프 패스 ${lifePath}을(를) ${archetype}의 주제와 연결합니다.`,
+      symbolic: `전통적 생년월일 패턴에서는 라이프 패스 ${lifePath}을(를) ${archetype}의 주제와 연결합니다.`,
       inference: "현재 관심 분야를 실제 선택 기준과 연결해 보면 이 상징의 개인 관련성을 확인할 수 있습니다.",
       limitation: "이 문장은 숫자 상징을 일반화한 출발점이며 성격을 측정하거나 결과를 예측하지 않습니다.",
     };

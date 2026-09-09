@@ -224,7 +224,7 @@ export default async function PurchasedReportPage({
     locale === "ko" ? `제 ${index + 1} 장` : `Chapter ${String(index + 1).padStart(2, "0")}`;
   const patternPersistenceEnabled = stored.owner_user_id === auth.user?.id;
   const deterministicBasis = report.calculationBasis
-    ? `${locale === "ko" ? "결정론적 수비학 계산" : "Deterministic numerology calculation"} · ${report.contentVersion ?? "stored-report"}`
+    ? `${locale === "ko" ? "결정론적 생년월일 패턴 계산" : "Deterministic numerology calculation"} · ${report.contentVersion ?? "stored-report"}`
     : (locale === "ko" ? "저장된 리포트의 계산 근거" : "Stored report calculation basis");
   const traditionalBasis = `${locale === "ko" ? "전통 상징 해석 계층" : "Traditional symbolic interpretation layer"} · ${report.sectionPlan ?? "legacy"}`;
   const patternSections = report.sections.map((section, index) => ({ index, title: section.title }));

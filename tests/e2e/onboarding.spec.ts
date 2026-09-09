@@ -59,7 +59,7 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   // assistive technology, so a screen reader hears each line once.
   await expect(page.locator(".live-reactions-track:not([aria-hidden]) .live-reaction")).toHaveCount(7);
   await expect(page.locator('.live-reactions-track[aria-hidden="true"]')).toHaveCount(1);
-  await expect(page.locator(".live-reactions-intro")).toContainText("실시간 사주·타로 라이브 방송");
+  await expect(page.locator(".live-reactions-intro")).toContainText("실시간 사주 라이브 방송");
   await expect(page.locator(".live-reaction-bubble").first()).toContainText("정말 딱 맞네요 훌륭하십니다");
   await expect(page.locator(".live-reactions-boundary")).toContainText("웹사이트 리포트를 구매하고 남긴 후기와는 별개입니다");
   // The row drifts inside its own clipped strip, so a track wider than the phone never
@@ -255,54 +255,10 @@ test("invalid dates cannot be submitted through the engine flow", async ({ page 
   await expect(page.locator(".form-actions .error")).toContainText("real date");
 });
 
-test("question tarot draws three auditable cards for an ordinary question", async ({ page }) => {
+test("retired card-reading links return visitors to the personal pattern service", async ({ page }) => {
   await page.goto("/en/question");
-  await page.locator("#tarot-question").fill("What should I verify before choosing a new role?");
-  await page.getByRole("button", { name: "Draw cards" }).click();
-  await expect(page.locator(".tarot-card")).toHaveCount(3);
-  const audit = page.locator("details.tarot-audit");
-  await audit.locator("summary").evaluate((element: HTMLElement) => element.click());
-  await expect(audit).toHaveAttribute("open", "");
-  await expect(page.getByText("mulberry32-fisher-yates-1.0.0")).toBeVisible({ timeout: 15_000 });
-});
-
-test("physical tarot cards remain manual and saved history is session-only by default", async ({ page }) => {
-  await page.goto("/en/question");
-  await page.locator("#tarot-question").fill("What pattern should I reflect on today?");
-  await page.getByText("Enter physical cards", { exact: true }).click();
-  await page.locator("#manual-orientation-1").selectOption("reversed");
-  await page.getByRole("button", { name: "Draw cards" }).click();
-  await expect(page.locator(".tarot-card")).toHaveCount(3);
-  const audit = page.locator("details.tarot-audit");
-  await audit.locator("summary").evaluate((element: HTMLElement) => element.click());
-  await expect(audit).toHaveAttribute("open", "");
-  await expect(page.getByText("Entered by user")).toBeVisible({ timeout: 15_000 });
-  const saveReading = page.getByRole("button", { name: "Save this reading" });
-  await expect(saveReading).toBeVisible();
-  await saveReading.evaluate((element: HTMLButtonElement) => element.click());
-  await expect(page.locator(".history-list article")).toHaveCount(1, { timeout: 15_000 });
-  expect(await page.evaluate(() => localStorage.getItem("innerarc:tarot-history:v1"))).toBeNull();
-  await page.getByRole("button", { name: "Delete" }).click();
-  await expect(page.locator(".history-list article")).toHaveCount(0);
-});
-
-test("high-risk self-harm language does not draw cards", async ({ page }) => {
-  await page.goto("/en/question");
-  await page.locator("#tarot-question").fill("I want to kill myself. What do the cards say?");
-  await page.locator("#question-form button[type='submit']").click();
-  const safetyPanel = page.locator("#tarot-safety");
-  await expect(safetyPanel).toBeVisible();
-  await expect(safetyPanel).toBeFocused();
-  const safetySnapshot = await safetyPanel.evaluate((element) => ({
-    text: element.textContent ?? "",
-    hrefs: Array.from(element.querySelectorAll("a")).map((anchor) => anchor.getAttribute("href")),
-    tarotCardCount: element.ownerDocument.querySelectorAll(".tarot-card").length,
-  }));
-  expect(safetySnapshot.text).toContain("Safety comes before cards right now");
-  expect(safetySnapshot.text).toContain("We do not infer your country from language.");
-  expect(safetySnapshot.hrefs).toEqual(expect.arrayContaining(["tel:109", "tel:988"]));
-  expect(safetySnapshot.hrefs.filter((href) => href?.startsWith("https://"))).toHaveLength(2);
-  expect(safetySnapshot.tarotCardCount).toBe(0);
+  await expect(page).toHaveURL(/\/en\/numerology$/);
+  await expect(page.locator("#birthDate")).toBeVisible();
 });
 
 test("romantic insight shows meeting contexts without probability claims", async ({ page }) => {
@@ -717,7 +673,7 @@ test("privacy, terms, and support publish contacts while disclosing unresolved l
 test("the whole funnel connects: home, free result, paid teaser, intake", async ({ page }) => {
   await page.goto("/ko");
   await page.getByRole("button", { name: "안내 닫기" }).click();
-  await page.locator(".td2-nav").getByRole("link", { name: "수비학" }).click();
+  await page.locator(".td2-nav").getByRole("link", { name: "생년월일 패턴" }).click();
   await page.waitForURL("**/ko/numerology");
   await page.locator("#birthDate").fill("1994-11-04");
   await page.locator('input[name="privacyRequired"]').check();

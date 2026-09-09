@@ -62,7 +62,7 @@ export function ReportSampleExperience({
 
       <WebtoonPanel badge={ko ? "요약" : "Summary"} title={report.summary} tone="night">
         {report.characterLabel && <p className="webtoon-lead">{report.characterLabel}</p>}
-        {basis && <WebtoonOrbs items={orbItems} label={ko ? "수비학 계산 기준" : "Numerology calculation basis"} />}
+        {basis && <WebtoonOrbs items={orbItems} label={ko ? "생년월일 패턴 계산 기준" : "Numerology calculation basis"} />}
         <WebtoonCue />
       </WebtoonPanel>
 

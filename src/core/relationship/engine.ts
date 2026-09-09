@@ -374,7 +374,7 @@ export function createRelationshipInsight(
           ],
     uncertainty:
       locale === "ko"
-        ? "이 결과는 수비학 상징을 현실 행동 아이디어로 번역한 가설입니다. 실제 만남 가능성은 노출 빈도, 지역, 생활 방식, 상호 동의와 행동에 달려 있으며 장소·시기·결혼을 예측하지 않습니다."
+        ? "이 결과는 생년월일 패턴 상징을 현실 행동 아이디어로 번역한 가설입니다. 실제 만남 가능성은 노출 빈도, 지역, 생활 방식, 상호 동의와 행동에 달려 있으며 장소·시기·결혼을 예측하지 않습니다."
         : "This translates numerology symbolism into real-world reflection hypotheses. Actual opportunities depend on exposure, location, lifestyle, mutual consent, and behavior; it does not predict a place, time, or marriage.",
     evidenceRefs: allEvidence,
   };

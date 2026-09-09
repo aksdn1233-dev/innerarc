@@ -106,7 +106,7 @@ export function createFallbackInterpretation(
       {
         id: `lifePath:${lifePath}`,
         source: "calculation",
-        label: ko ? "결정론적 수비학 계산" : "Deterministic numerology calculation",
+        label: ko ? "결정론적 생년월일 패턴 계산" : "Deterministic numerology calculation",
       },
     ],
   };

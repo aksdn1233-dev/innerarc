@@ -15,9 +15,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
         alternates: { canonical: "/en/numerology", languages: { ko: "/ko/numerology", en: "/en/numerology" } },
       }
     : {
-        title: "수비학 운명수·인생수 리딩 | 태령당",
-        description: "생년월일로 인생수·태도수·개인연도를 계산 근거와 함께 확인하세요. 사주와 분리된 상징적 자기 성찰 수비학입니다.",
-        keywords: ["수비학", "운명수", "인생수", "생년월일 수비학", "개인연도"],
+        title: "생년월일 패턴 운명수·인생수 리딩 | 태령당",
+        description: "생년월일로 인생수·태도수·개인연도를 계산 근거와 함께 확인하세요. 사주와 분리된 상징적 자기 성찰 생년월일 패턴입니다.",
+        keywords: ["생년월일 패턴", "운명수", "인생수", "생년월일 생년월일 패턴", "개인연도"],
         alternates: { canonical: "/ko/numerology", languages: { ko: "/ko/numerology", en: "/en/numerology" } },
       };
 }

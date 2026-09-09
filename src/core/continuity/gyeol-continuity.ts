@@ -43,16 +43,6 @@ export function buildGyeolContinuity(input: GyeolContinuityInput): GyeolContinui
       href: `/${input.locale}/reality-check`,
     });
   }
-  if (input.tarotReadingCount > 0) {
-    actions.push({
-      kind: "tarot_history",
-      title: ko ? "지난 질문 다시 보기" : "Revisit a saved question",
-      description: ko
-        ? `기기에 저장한 타로 리딩 ${input.tarotReadingCount}개를 불러와 같은 질문을 다시 살펴볼 수 있어요.`
-        : `Load ${input.tarotReadingCount} readings saved on this device and revisit a prior question.`,
-      href: `/${input.locale}/question`,
-    });
-  }
   if (input.dailyFlowEnabled) {
     actions.push({
       kind: "daily_flow",
@@ -67,11 +57,11 @@ export function buildGyeolContinuity(input: GyeolContinuityInput): GyeolContinui
   if (actions.length === 0) {
     actions.push({
       kind: "first_reflection",
-      title: ko ? "첫 이야기를 남겨보기" : "Begin a first reflection",
+      title: ko ? "나의 패턴 알아보기" : "Discover my pattern",
       description: ko
-        ? "아직 이어갈 기록이 없어요. 질문 하나를 성찰하고 원할 때만 이 기기에 저장할 수 있어요."
-        : "There is no saved thread yet. Reflect on one question and save it on this device only if you choose.",
-      href: `/${input.locale}/question`,
+        ? "아직 이어갈 기록이 없어요. 생년월일로 기본 패턴부터 확인해보세요."
+        : "There is no saved thread yet. Start with your birth-date pattern.",
+      href: `/${input.locale}/numerology`,
     });
   }
 

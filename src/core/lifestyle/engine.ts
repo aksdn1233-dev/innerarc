@@ -270,7 +270,7 @@ export function createLifestyleRecommendations(
     music: musicLaneIds.map((laneId, index) =>
       music((index + 1) as 1 | 2 | 3, laneId, sources[index].value, sources[index].ref, locale)),
     uncertainty: locale === "ko"
-      ? "이 제안은 수비학 상징을 취향 실험으로 바꾼 것이며 실제 선호·문화·상황을 예측하지 않습니다. 맞지 않으면 버리는 것이 올바른 사용입니다."
+      ? "이 제안은 생년월일 패턴 상징을 취향 실험으로 바꾼 것이며 실제 선호·문화·상황을 예측하지 않습니다. 맞지 않으면 버리는 것이 올바른 사용입니다."
       : "These suggestions translate numerology symbolism into taste experiments; they do not predict your actual preferences, culture, or circumstances. Discarding a poor fit is correct use.",
     accessorySafetyNote: locale === "ko"
       ? "액세서리는 행운·보호·치유·연애·재정 효과를 주지 않습니다. 재료 안전, 편안함, 예산, 공급자 정보와 반품 조건을 상징보다 우선하세요."

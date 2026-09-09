@@ -19,7 +19,6 @@ const routes = [
   "/ko/me",
   "/ko/privacy",
   "/ko/terms",
-  "/ko/question",
   "/ko/relationship",
   "/ko/compatibility",
   "/ko/celebrity",
@@ -35,7 +34,6 @@ const routes = [
   "/en/me",
   "/en/privacy",
   "/en/terms",
-  "/en/question",
   "/en/relationship",
   "/en/compatibility",
   "/en/celebrity",
@@ -186,7 +184,7 @@ test("skip link and generated result move keyboard focus", async ({ page }, test
 
 test("mobile interactive targets meet the 44 pixel minimum", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/en/question");
+  await page.goto("/en/numerology");
   const undersized = await page.locator("button, summary, .bottom-nav a, .bottom-nav span, .locale-switch").evaluateAll((elements) =>
     elements
       .filter((element) => {

@@ -155,7 +155,7 @@ export function findCelebrityMatches(input: {
   return {
     ruleVersion: CELEBRITY_COMPARISON_RULE_VERSION,
     scopeLabel: input.locale === "ko"
-      ? "공개된 생년월일의 수비학 구조 기준 유사도"
+      ? "공개된 생년월일의 생년월일 패턴 구조 기준 유사도"
       : "Similarity based on the numerology structure of public birth dates",
     matches,
     uncertainty: input.locale === "ko"

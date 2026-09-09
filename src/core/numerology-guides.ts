@@ -39,7 +39,7 @@ export const NUMEROLOGY_GUIDES: readonly NumerologyGuide[] = [
     romanizedName: "TAERYEONG",
     role: { ko: "중심 해석자", en: "Lead interpreter" },
     specialties: {
-      ko: ["종합 해석", "핵심 수비학", "질문의 중심 정리"],
+      ko: ["종합 해석", "핵심 생년월일 패턴", "질문의 중심 정리"],
       en: ["Integrated reading", "Core numerology", "Central question framing"],
     },
     theme: {
@@ -137,7 +137,7 @@ export const NUMEROLOGY_GUIDES: readonly NumerologyGuide[] = [
     romanizedName: "HOYEON",
     role: { ko: "직관과 방향의 해석자", en: "Intuition and direction interpreter" },
     specialties: {
-      ko: ["직관·통찰", "수비학 패턴", "미래 흐름·선택 방향"],
+      ko: ["직관·통찰", "생년월일 패턴 패턴", "미래 흐름·선택 방향"],
       en: ["Intuition and insight", "Numerology patterns", "Future flow and choice direction"],
     },
     theme: {

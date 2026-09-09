@@ -1714,3 +1714,8 @@
 - Image quality: Deliver the 1,672-pixel hero through the responsive image optimizer at quality 92 and verify the decoded response pixels rather than the browser's descriptor-normalized `naturalWidth`. Do not use CSS zoom, scale transforms or browser upscaling tricks. Product preview images retain their intrinsic aspect ratios and responsive source sizing.
 - Scope and economics: This is a presentation-only correction. It changes no route, calculation, payment, entitlement, provider, model call, runtime token cost, storage, personal data or migration.
 - Success and reversal: Require stable captures at the existing five visual widths, no horizontal overflow, readable guide contrast and green home regression checks. Revert this CSS/component commit to restore the prior treatment; no data rollback is required.
+## D-101 — Retire the public tarot service and rename numerology in customer copy
+
+- Date: 2026-09-09
+- Decision: Remove tarot from the public home, service discovery, sitemap and continuation actions. Redirect historical `/{locale}/question` links permanently to the existing personal-pattern experience. Replace Korean customer-facing `수비학` wording with `생년월일 패턴`; keep internal route and deterministic engine identifiers stable to avoid data and entitlement migration risk.
+- Privacy and reversal: Existing saved question records remain exportable and deletable, but are no longer promoted or reopened as a service. Revert this change to restore public entry points; no database rollback is required.

@@ -18,7 +18,7 @@ const content = {
     navLabel: "태령당 주요 메뉴",
     services: "서비스",
     guide: "이용 안내",
-    analysis: "수비학",
+    analysis: "생년월일 패턴",
     success: "유명인 비교",
     relationship: "궁합",
     space: "3D 공간운",
@@ -27,7 +27,7 @@ const content = {
     start: "무료 사주",
     kicker: "PERSONAL PATTERN INTELLIGENCE",
     title: <>사람의 흐름을 읽어<br /><em>더 나은 오늘을 만듭니다.</em></>,
-    heroBody: "사주와 수비학의 계산 근거를 바탕으로, 반복되는 성향과 선택을 현실에 맞게 풀어드립니다.",
+    heroBody: "사주와 생년월일 패턴의 계산 근거를 바탕으로, 반복되는 성향과 선택을 현실에 맞게 풀어드립니다.",
     heroPrimary: "무료 사주 보기",
     heroSecondary: "서비스 둘러보기",
     heroNote: "무료로 시작 · 계산 과정 확인 · 나중에 다시 보기",
@@ -48,7 +48,7 @@ const content = {
     trustItems: [
       ["정확한 계산", "같은 입력은 같은 결과"],
       ["쉬운 해석", "생활에 맞춘 설명"],
-      ["다양한 분석", "사주·수비학·타로·궁합"],
+      ["다양한 분석", "사주·나의 패턴·궁합·공간운"],
       ["안전한 이용", "기록과 개인정보 직접 관리"],
     ],
     readEyebrow: "태령당에서 할 수 있는 것",
@@ -58,10 +58,9 @@ const content = {
     freePattern: "나 알아보기",
     pillars: [
       ["01", "타고난 기질과 흐름", "사주", "명식과 오행을 계산 근거와 함께 살펴봅니다.", "/ko/fortune"],
-      ["02", "반복되는 나의 패턴", "수비학", "생년월일에 담긴 핵심 수와 선택의 흐름을 봅니다.", "/ko/numerology"],
-      ["03", "지금 필요한 질문", "타로", "정답 대신 현재 상황을 바라볼 질문을 만듭니다.", "/ko/question"],
-      ["04", "두 사람의 차이와 조화", "궁합", "연인·가족·동료가 부딪히고 맞는 지점을 비교합니다.", "/ko/compatibility"],
-      ["05", "내 방의 흐름", "3D 공간운", "지금 배치와 추천 배치를 실제 3D로 비교합니다.", "/ko/space"],
+      ["02", "반복되는 나의 패턴", "생년월일 패턴", "생년월일에 담긴 핵심 수와 선택의 흐름을 봅니다.", "/ko/numerology"],
+      ["03", "두 사람의 차이와 조화", "궁합", "연인·가족·동료가 부딪히고 맞는 지점을 비교합니다.", "/ko/compatibility"],
+      ["04", "내 방의 흐름", "3D 공간운", "지금 배치와 추천 배치를 실제 3D로 비교합니다.", "/ko/space"],
     ],
     previewEyebrow: "개인 패턴 분석",
     previewTitle: <>왜 같은 선택을 반복하는지<br />한눈에 보여드려요.</>,
@@ -100,7 +99,7 @@ const content = {
     closeCta: "무료로 나 알아보기",
     benefits: ["쉽게 시작", "계산 과정 확인", "내 결과 보관", "나중에 다시 보기"],
     footerBody: "나와 관계, 공간의 흐름을 쉽게 살펴보는 곳.",
-    footerBoundary: "사주·수비학·타로·풍수는 성찰을 위한 상징적 도구이며 과학적 예측, 진단, 치료 또는 결과 보장이 아닙니다.",
+    footerBoundary: "사주·생년월일 패턴·풍수는 성찰을 위한 상징적 도구이며 과학적 예측, 진단, 치료 또는 결과 보장이 아닙니다.",
     copyright: "별루프 · 대표 박서준 · 사업자등록번호 482-12-03629 · 부산광역시 북구",
   },
   en: {
@@ -126,12 +125,12 @@ const content = {
     trustItems: [
       ["Auditable calculation", "The same input returns the same result"],
       ["Practical interpretation", "Clear language for everyday choices"],
-      ["Connected services", "Saju, numerology, tarot and compatibility"],
+      ["Connected services", "Saju, personal patterns, compatibility and space"],
       ["Private by design", "You control your records and data"],
     ],
     readEyebrow: "WHAT YOU CAN DO", readTitle: <>Start with what<br />you want to understand.</>, readBody: "Explore yourself, compare two people, and even review your room.", sajuHub: "Open Four Pillars services", freePattern: "View free pattern",
     pillars: [
-      ["01", "Read yourself.", "Saju · numerology · tarot", "Calculated evidence and symbolic interpretation stay distinct.", "/en/numerology"],
+      ["01", "Read yourself.", "Saju · birth-date patterns", "Calculated evidence and symbolic interpretation stay distinct.", "/en/numerology"],
       ["02", "Compare people.", "Success pattern comparison", "Only structures calculated from public birth dates are compared.", "/en/celebrity"],
       ["03", "Read relationships.", "Compatibility · relationships", "See how two people operate and where friction may arise.", "/en/relationship"],
       ["04", "Read the space.", "3D Space", "Compare room structure and circulation in a real 3D scene.", "/en/space"],
@@ -142,7 +141,7 @@ const content = {
     relationshipEyebrow: "RELATIONSHIP INTELLIGENCE", relationshipTitle: <>See where you diverge,<br />not just whether you match.</>, relationshipBody: "Compare how partners, family, friends, coworkers, or business partners operate across eight domains. No score decides whether a relationship is good or bad.", relationshipCta: "Start relationship analysis",
     spaceEyebrow: "3D SPACE", spaceTitle: <>Your room,<br /><span>what could work better?</span></>, spaceBody: "Add room photos to compare your current and suggested layouts side by side in 3D.", spaceSteps: ["Take 2–6 room photos", "Show which way is north", "Compare the suggested layout"], spaceCta: "Analyze my room", spaceDemo: "Try the 3D example", before: "Current", after: "Suggested", spaceBubble: "Try widening the path beside the bed.", spaceDisclosure: "Traditional feng shui and practical room advice are clearly separated.",
     realityEyebrow: "REALITY CHECK", realityTitle: <>Go beyond interpretation.<br />Check it against real life.</>, realityBody: "A later reflection becomes evidence for the next reading. Results that missed remain visible too.", realityCta: "Start Reality Check", realityOrbit: "Tested in\nreal life",
-    closeTitle: "Begin your story today.", closeBody: "Read where you are now, then return to see what matched real life.", closeCta: "Start free", benefits: ["Simple start", "Visible evidence", "Personal report", "Ongoing checks"], footerBody: "Personal Pattern Intelligence that turns symbols into real questions and checks them against lived experience.", footerBoundary: "Saju, numerology, tarot, and feng shui are symbolic reflection tools, not scientific prediction, diagnosis, treatment, or guaranteed outcomes.", copyright: "Byeolloof · Busan, Republic of Korea",
+    closeTitle: "Begin your story today.", closeBody: "Read where you are now, then return to see what matched real life.", closeCta: "Start free", benefits: ["Simple start", "Visible evidence", "Personal report", "Ongoing checks"], footerBody: "Personal Pattern Intelligence that turns symbols into real questions and checks them against lived experience.", footerBoundary: "Saju, birth-date patterns, and feng shui are symbolic reflection tools, not scientific prediction, diagnosis, treatment, or guaranteed outcomes.", copyright: "Byeolloof · Busan, Republic of Korea",
   },
 } as const;
 

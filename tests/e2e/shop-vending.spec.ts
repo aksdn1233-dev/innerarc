@@ -11,7 +11,7 @@ test("accessory concept vending switches locally without leaking result variable
   await expect(result.getByRole("img")).toHaveAttribute("src", /saju-metal\.jpg/);
   await expect(result.getByText("49,000~99,000원", { exact: true })).toBeVisible();
 
-  await page.getByRole("button", { name: "수비학 계산값" }).click();
+  await page.getByRole("button", { name: "생년월일 패턴 계산값" }).click();
   await page.getByRole("button", { name: "태도 수" }).click();
   await expect(result.getByRole("img")).toHaveAttribute("src", /numerology-attitude\.jpg/);
   await expect(result.getByText("19,000~35,000원", { exact: true })).toBeVisible();
@@ -24,7 +24,7 @@ test("accessory concept vending switches locally without leaking result variable
   await expect(page.getByRole("link", { name: "상품 상세보기" })).toHaveCount(24);
   await expect(page.locator(".shop-product-card").first().getByRole("img", { name: /솔잎 결 펜던트/ })).toBeVisible();
   await expect(page.getByRole("heading", { name: "사주 오행 상품 15개" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "수비학 결과 상품 9개" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "생년월일 패턴 결과 상품 9개" })).toBeVisible();
   expect(new URL(page.url()).search).toBe("");
 });
 
@@ -41,7 +41,7 @@ test("birth date curation recommends three products without persisting or changi
   await expect(edit.getByText("시그니처 모듈 팔찌", { exact: true })).toBeVisible();
   await expect(edit.getByText("컬러 블록 카드 참", { exact: true })).toBeVisible();
   await expect(edit.getByText("사이클 라인 트레이", { exact: true })).toBeVisible();
-  await expect(edit.getByText(/수비학 상징을 상품 형태와 연결한 선택 가이드/)).toBeVisible();
+  await expect(edit.getByText(/생년월일 패턴 상징을 상품 형태와 연결한 선택 가이드/)).toBeVisible();
   expect(new URL(page.url()).search).toBe("");
 
   await page.reload();

@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: { params: Promise<ProductPage
     title,
     description,
     keywords: locale === "ko"
-      ? [item.name, item.kind, "사주 악세서리", "수비학 악세서리", "자동 생성 상품 콘셉트"]
+      ? [item.name, item.kind, "사주 악세서리", "생년월일 패턴 악세서리", "자동 생성 상품 콘셉트"]
       : [item.name, item.kind, "Saju accessory", "numerology accessory", "generated product concept"],
     alternates: {
       canonical: `/${locale}/shop/${product.id}`,
