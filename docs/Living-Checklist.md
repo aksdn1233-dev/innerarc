@@ -1,6 +1,6 @@
 # Living Checklist
 
-Last updated: 2026-08-22
+Last updated: 2026-09-10
 
 ## Phase 0 - Workspace and baseline
 
@@ -10,6 +10,14 @@ Last updated: 2026-08-22
 - [x] Connect private GitHub repository `aksdn1233-dev/innerarc`, preserve the prior local bootstrap history, and verify normal non-force pushes from `main`.
 
 ## Phase 1 - Product foundation
+
+- [x] Daily Healing home redesign starts after the unchanged hero and uses only the six supported
+  concern domains, six canonical guides, live public services, deterministic report preview,
+  consented reviews, Reality Check, and 3D Space routes.
+- [x] Home visual coverage exercises 360/390/430/768/1024/1280/1440 px, waits for lazy media before
+  capture, rejects page overflow and false metrics, verifies live links, and preserves exact hero
+  screenshots. A failed first pass exposed a filled celestial SVG path, borderline color contrast,
+  and stale-server capture; the CSS and test startup evidence were corrected before acceptance.
 
 - [x] Home page reaches the funnel: value sentence, four-step guide, five question entry
   points, generated report outline, one action into `/{locale}/reading`, and the footer.
