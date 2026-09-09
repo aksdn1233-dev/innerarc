@@ -6,19 +6,20 @@ import { geometryIssues } from "@/core/space/engine";
 import { SpaceAssetCredits } from "./asset-credits";
 import { activeFrameTiming, isInViewport, isSoftwareRendererName, shouldReduceQuality, shouldUseImmediateMotion } from "./frame-timing";
 import { resourceScope } from "./resource-scope";
-import { roomCameraFit, interiorCameraFit } from "./camera-fit";
+import { roomCameraFit, interiorCameraFit, wideRoomCameraFit, heroRoomCameraFit } from "./camera-fit";
 import { spatialChanges } from "@/core/space/comparison";
+import { safeInteriorCamera } from "@/core/space/camera-safety";
 import styles from "./space.module.css";
 import type { SpaceGuideNarration as SpaceGuideNarrationData } from "@/core/space/narration";
 import { SpaceGuideNarration } from "./guide-narration";
 
-type ComparisonMode = "current" | "recommended";
-type Runtime = { update(scene: Scene, comparison?: Scene, mode?: ComparisonMode): void; select(id: string | null): void; perspective(): void; top(): void; reset(): void; zoom(n: number): void; turn(): void; recommended(): void; profile(value: string): void; dispose(): void };
+type ComparisonMode = "current" | "compare" | "recommended";
+type Runtime = { update(scene: Scene, comparison?: Scene, mode?: ComparisonMode): void; select(id: string | null): void; perspective(): void; top(): void; reset(): void; zoom(n: number): void; turn(): void; recommended(): void; detail(): void; lighting(value: "day" | "evening"): void; profile(value: string): void; dispose(): void };
 type RenderResolution = { cssWidth: number; cssHeight: number; bufferWidth: number; bufferHeight: number; scale: number };
 export default function RoomView({ scene, comparisonScene, comparisonMode, locale, selectedId = null, onSelect, guide }: { scene: Scene; comparisonScene?: Scene; comparisonMode?: ComparisonMode; locale: "ko" | "en"; selectedId?: string | null; onSelect?: (id: string) => void; guide?: SpaceGuideNarrationData | null }) {
   const guideMarker = useRef<HTMLSpanElement>(null), guideRef = useRef(guide);
   const host = useRef<HTMLDivElement>(null), runtime = useRef<Runtime | null>(null), latest = useRef(scene), latestComparison = useRef(comparisonScene), latestComparisonMode = useRef(comparisonMode), selectCallback = useRef(onSelect), latestSelected = useRef(selectedId);
-  const [failed, setFailed] = useState(false), [ready, setReady] = useState(false), [attempt, setAttempt] = useState(0), [quality, setQuality] = useState("auto"), [assetLoading, setAssetLoading] = useState(false), [viewFallback, setViewFallback] = useState(false), [cameraChoice, setCameraChoice] = useState<"perspective" | "top" | "recommended">("perspective"), [resolution, setResolution] = useState<RenderResolution | null>(null);
+  const [failed, setFailed] = useState(false), [ready, setReady] = useState(false), [attempt, setAttempt] = useState(0), [quality, setQuality] = useState("auto"), [lightChoice, setLightChoice] = useState<"day" | "evening">("day"), [assetLoading, setAssetLoading] = useState(false), [viewFallback, setViewFallback] = useState(false), [cameraChoice, setCameraChoice] = useState<"dollhouse" | "room" | "detail" | "top">("room"), [resolution, setResolution] = useState<RenderResolution | null>(null);
   const ko = locale === "ko";
   useEffect(() => { guideRef.current = guide; runtime.current?.select(latestSelected.current); }, [guide]);
   useEffect(() => { latest.current = scene; latestComparison.current = comparisonScene; latestComparisonMode.current = comparisonMode; runtime.current?.update(scene, comparisonScene, comparisonMode); }, [scene, comparisonScene, comparisonMode]);
@@ -45,28 +46,29 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
       const debugRenderer = renderer.getContext().getExtension("WEBGL_debug_renderer_info");
       const rendererName = debugRenderer ? String(renderer.getContext().getParameter(debugRenderer.UNMASKED_RENDERER_WEBGL)) : "";
       const softwareRenderer = isSoftwareRendererName(rendererName);
-      own(() => { renderer.dispose(); renderer.forceContextLoss(); renderer.domElement.remove(); for (const key of ["sceneState", "objectCount", "drawCalls", "triangles", "camera", "motion", "frameP90", "sampledFrames", "cssWidth", "cssHeight", "renderWidth", "renderHeight", "renderScale"]) delete container.dataset[key]; });
+      own(() => { renderer.dispose(); renderer.forceContextLoss(); renderer.domElement.remove(); for (const key of ["sceneState", "objectCount", "drawCalls", "triangles", "camera", "motion", "frameAverage", "frameP90", "frameP95", "frameP99", "averageFps", "onePercentLowFps", "sampledFrames", "cssWidth", "cssHeight", "renderWidth", "renderHeight", "renderScale"]) delete container.dataset[key]; });
       const mobile = matchMedia("(pointer: coarse)").matches, reduced = matchMedia("(prefers-reduced-motion: reduce)");
       let pixelRatio = mobile ? Math.min(1.5, Math.max(1.25, devicePixelRatio)) : Math.min(2, Math.max(1.5, devicePixelRatio)), qualityReduced = false, schedulerConstrained = false;
-      renderer.setPixelRatio(pixelRatio); renderer.setClearColor(0xd9d7d0);
-      renderer.outputColorSpace = T.SRGBColorSpace; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.02;
+      renderer.setPixelRatio(pixelRatio); renderer.setClearColor(0xe7e5df);
+      renderer.outputColorSpace = T.SRGBColorSpace; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.12;
       renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFShadowMap;
       renderer.domElement.setAttribute("aria-label", ko ? "선택하고 돌려볼 수 있는 방의 3D 모형" : "Interactive 3D room with selectable furniture"); renderer.domElement.setAttribute("role", "img"); container.appendChild(renderer.domElement);
-      const world = new T.Scene(); world.background = new T.Color(0xd7d5ce);
+      const world = new T.Scene(); world.background = new T.Color(0xe7e5df);
       own(() => assets.disposeGeometry(world));
       const materials = assets.interiorMaterials(renderer.capabilities.getMaxAnisotropy()); own(materials.dispose);
       const surfaces = await loadPbrSurfaces(materials, renderer, abort.signal); own(surfaces.dispose);
       if (stopped) return;
-      world.environment = surfaces.environment.texture; world.environmentIntensity = .42;
+      world.environment = surfaces.environment.texture; world.environmentIntensity = .30;
       const library = createAssetLibrary(abort.signal); own(library.dispose);
       const contact = createContactShadows(renderer, world, 512); own(contact.dispose);
       const camera = new T.PerspectiveCamera(38, 1, .05, 200), orbit = new OrbitControls(camera, renderer.domElement);
       own(() => orbit.dispose());
       orbit.enableDamping = false; orbit.screenSpacePanning = true; orbit.minDistance = 1; orbit.maxDistance = 65; orbit.maxPolarAngle = Math.PI / 2 - .01;
-      const sun = new T.DirectionalLight(0xffefd5, 1.45); sun.castShadow = true; sun.shadow.mapSize.set(mobile ? 1024 : 2048, mobile ? 1024 : 2048); sun.shadow.bias = -.00003; sun.shadow.normalBias = .001; sun.shadow.radius = 6; sun.shadow.blurSamples = 16; world.add(sun, sun.target);
-      RectAreaLightUniformsLib.init(); const windowFill = new T.RectAreaLight(0xe9f1ff, 4.2, 1, 1); world.add(windowFill);
-      const practical = new T.PointLight(0xffc98f, 2.8, 3, 2); practical.castShadow = false; practical.visible = false; world.add(practical);
-      world.add(new T.HemisphereLight(0xe5efff, 0x806b50, .34));
+      const sun = new T.DirectionalLight(0xfff4e5, 2.35); sun.castShadow = true; sun.shadow.mapSize.set(mobile ? 1024 : 2048, mobile ? 1024 : 2048); sun.shadow.bias = -.000025; sun.shadow.normalBias = .0015; sun.shadow.radius = 4; sun.shadow.blurSamples = 16; world.add(sun, sun.target);
+      RectAreaLightUniformsLib.init(); const windowFill = new T.RectAreaLight(0xe9f3ff, 7.2, 1, 1); world.add(windowFill);
+      const ceilingBounce = new T.RectAreaLight(0xfff1dc, 1.15, 3, 3); ceilingBounce.rotation.x = Math.PI / 2; world.add(ceilingBounce);
+      const practical = new T.PointLight(0xffc98f, 3.4, 3.5, 2); practical.castShadow = false; practical.visible = false; world.add(practical);
+      world.add(new T.HemisphereLight(0xeaf2f6, 0x6d6255, .18));
       const studioCanvas = document.createElement("canvas"); studioCanvas.width = studioCanvas.height = 256;
       const studioContext = studioCanvas.getContext("2d")!; const studioGradient = studioContext.createRadialGradient(128, 118, 8, 128, 128, 178);
       studioGradient.addColorStop(0, "#ece9e1"); studioGradient.addColorStop(.55, "#e2dfd7"); studioGradient.addColorStop(1, "#cbc9c3"); studioContext.fillStyle = studioGradient; studioContext.fillRect(0, 0, 256, 256);
@@ -111,15 +113,15 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
         const changes = alternate ? spatialChanges(mode === "recommended" ? alternate : active, mode === "recommended" ? active : alternate) : [];
         container!.dataset.comparisonChanges = String(changes.length);
         if (!alternate || !mode) return;
-        const lineMaterial = mode === "current" ? guideMaterials.current : guideMaterials.recommended;
-        const markerMaterial = mode === "current" ? guideMaterials.currentMarker : guideMaterials.recommendedMarker;
+        const lineMaterial = mode === "recommended" ? guideMaterials.recommended : guideMaterials.current;
+        const markerMaterial = mode === "recommended" ? guideMaterials.recommendedMarker : guideMaterials.currentMarker;
         for (const change of changes) {
           const object = active.objects.find(candidate => candidate.id === change.objectId);
           if (!object) continue;
-          const other = mode === "current" ? change.to : change.from;
+          const other = mode === "recommended" ? change.from : change.to;
           const outlineGeometry = new T.EdgesGeometry(new T.BoxGeometry(object.width * 1.035, object.height * 1.035, object.depth * 1.035));
           const outline = new T.LineSegments(outlineGeometry, lineMaterial); outline.position.set(other.x, object.height * .5175, other.z); outline.rotation.y = -other.rotation * Math.PI / 180; comparisonGuides.add(outline);
-          const activePosition = mode === "current" ? change.from : change.to;
+          const activePosition = mode === "recommended" ? change.to : change.from;
           const path = new T.Line(new T.BufferGeometry().setFromPoints([new T.Vector3(activePosition.x, .025, activePosition.z), new T.Vector3(other.x, .025, other.z)]), lineMaterial); comparisonGuides.add(path);
           const radius = Math.max(.07, Math.min(.14, Math.min(object.width, object.depth) * .12));
           const marker = new T.Mesh(new T.RingGeometry(radius * .72, radius, 32), markerMaterial); marker.rotation.x = -Math.PI / 2; marker.position.set(other.x, .032, other.z); comparisonGuides.add(marker);
@@ -170,7 +172,12 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
         container!.dataset.drawCalls = String(renderer.info.render.calls); container!.dataset.triangles = String(renderer.info.render.triangles); container!.dataset.camera = camera.position.toArray().map(n => n.toFixed(3)).join(",");
         if (committed) { container!.dataset.objectCount = String(objects.size); container!.dataset.sceneState = JSON.stringify(current.objects.map(o => ({ id: o.id, x: o.x, z: o.z, rotation: o.rotation }))); }
         if (intervals.length >= 4) {
-          const sorted = [...intervals].sort((a, b) => a - b), p90 = sorted[Math.floor(sorted.length * .9)]; if (intervals.length >= 12) { container!.dataset.frameP90 = p90.toFixed(1); container!.dataset.sampledFrames = String(intervals.length); }
+          const sorted = [...intervals].sort((a, b) => a - b), percentile = (ratio: number) => sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * ratio))], p90 = percentile(.9);
+          if (intervals.length >= 12) {
+            const average = intervals.reduce((total, value) => total + value, 0) / intervals.length, p95 = percentile(.95), p99 = percentile(.99);
+            container!.dataset.frameAverage = average.toFixed(1); container!.dataset.frameP90 = p90.toFixed(1); container!.dataset.frameP95 = p95.toFixed(1); container!.dataset.frameP99 = p99.toFixed(1);
+            container!.dataset.averageFps = (1000 / average).toFixed(1); container!.dataset.onePercentLowFps = (1000 / p99).toFixed(1); container!.dataset.sampledFrames = String(intervals.length);
+          }
           if (container!.dataset.effectiveQuality === "performance" && shouldUseImmediateMotion(p90, intervals.length)) {
             schedulerConstrained = true; container!.dataset.schedulerPolicy = "immediate";
             if (transition) { for (const move of transition.moves) { move.group.position.copy(move.to); move.group.rotation.y = move.toRotation; } transition = null; schedule(); }
@@ -191,15 +198,16 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
       }
       function profile(value: string) {
         const tier = value === "auto" ? mobile ? "balanced" : "high" : value;
-        tierWarmSamples = 2; intervals.length = 0; renderTimes.length = 0; delete container!.dataset.frameP90; delete container!.dataset.sampledFrames;
+        tierWarmSamples = 2; intervals.length = 0; renderTimes.length = 0;
+        for (const key of ["frameAverage", "frameP90", "frameP95", "frameP99", "averageFps", "onePercentLowFps", "sampledFrames"]) delete container!.dataset[key];
         pixelRatio = tier === "ultra" ? Math.min(2.5, Math.max(2, devicePixelRatio)) : tier === "high" ? Math.min(2, Math.max(1.5, devicePixelRatio)) : tier === "balanced" ? Math.min(1.5, Math.max(1.25, devicePixelRatio)) : 1;
-        windowFill.visible = current.windows.length > 0 && tier !== "performance"; world.environmentIntensity = tier === "ultra" ? .52 : tier === "high" ? .46 : tier === "balanced" ? .40 : .50;
+        windowFill.visible = current.windows.length > 0 && tier !== "performance"; world.environmentIntensity = tier === "ultra" ? .36 : tier === "high" ? .30 : tier === "balanced" ? .27 : .38;
         practical.visible = tier === "ultra" || tier === "high";
         const lightweight = tier === "performance";
         contact.enabled(!lightweight); contact.resolution(tier === "ultra" && !mobile ? 1024 : tier === "balanced" ? 256 : 512);
         ao.enabled = tier !== "performance"; aoScale = tier === "ultra" ? 1 : tier === "high" ? .8 : .55;
         ao.updateGtaoMaterial({ samples: tier === "ultra" ? 24 : tier === "high" ? 12 : 8 });
-        renderer.toneMappingExposure = tier === "ultra" ? 1.04 : tier === "high" ? 1.02 : 1;
+        renderer.toneMappingExposure = tier === "ultra" ? 1.16 : tier === "high" ? 1.12 : tier === "balanced" ? 1.08 : 1.04;
         renderer.setPixelRatio(pixelRatio); composer.setPixelRatio(pixelRatio); const shadowSize = tier === "ultra" && !mobile ? 4096 : tier === "ultra" || tier === "high" ? 2048 : 1024; sun.shadow.mapSize.set(shadowSize, shadowSize); sun.shadow.intensity = tier === "ultra" ? .52 : tier === "high" ? .46 : .38; sun.shadow.map?.dispose(); sun.shadow.map = null; sun.castShadow = !lightweight;
         container!.dataset.shadowMode = lightweight ? "performance-unshadowed" : "directional-contact";
         container!.dataset.previewProfile = tier === "ultra" ? "ultra-preview" : tier;
@@ -214,6 +222,7 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
           if (arch) { world.remove(arch.group); assets.disposeGeometry(arch.group); }
           arch = assets.architecture(next, materials); world.add(arch.group); archKey = key;
           const { width: w, depth: d, height: h } = next.room, span = Math.max(w, d);
+          ceilingBounce.position.set(w / 2, h - .08, d / 2); ceilingBounce.width = Math.min(w, 4.5); ceilingBounce.height = Math.min(d, 4.5);
           // Directional daylight enters the first observed window. It is illustrative light, not a sun-path claim.
           const opening = next.windows[0];
           const windowX = opening ? opening.wall === "left" ? 0 : opening.wall === "right" ? w : opening.offset + opening.width / 2 : w * .6;
@@ -276,7 +285,16 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
         if (root.userData.objectId) { selected = root.userData.objectId as string; selectCallback.current?.(selected); schedule(); }
       };
       const onLoss = (event: Event) => { event.preventDefault(); contextLost = true; resources.dispose(); if (!stopped) { runtime.current = null; setFailed(true); } };
-      renderer.domElement.addEventListener("pointerdown", onDown); renderer.domElement.addEventListener("pointerup", onUp); renderer.domElement.addEventListener("webglcontextlost", onLoss); const onOrbit = () => { camera.position.y = Math.max(.18, camera.position.y); orbit.target.y = Math.max(0, Math.min(current.room.height, orbit.target.y)); schedule(); }; orbit.addEventListener("change", onOrbit);
+      const lastSafeCamera = camera.position.clone(); let constrainingCamera = false;
+      renderer.domElement.addEventListener("pointerdown", onDown); renderer.domElement.addEventListener("pointerup", onUp); renderer.domElement.addEventListener("webglcontextlost", onLoss); const onOrbit = () => {
+        if (constrainingCamera) return;
+        if (interiorView) {
+          const safe = safeInteriorCamera(current, camera.position, lastSafeCamera);
+          if (camera.position.distanceToSquared(new T.Vector3(safe.x, safe.y, safe.z)) > .000001) { constrainingCamera = true; camera.position.set(safe.x, safe.y, safe.z); orbit.update(); constrainingCamera = false; }
+          lastSafeCamera.copy(camera.position);
+        } else camera.position.y = Math.max(.18, camera.position.y);
+        orbit.target.x = Math.max(0, Math.min(current.room.width, orbit.target.x)); orbit.target.y = Math.max(0, Math.min(current.room.height, orbit.target.y)); orbit.target.z = Math.max(0, Math.min(current.room.depth, orbit.target.z)); schedule();
+      }; orbit.addEventListener("change", onOrbit);
       let readyAtLeastOnce = false;
       const resize = new ResizeObserver(() => { const w = container.clientWidth, h = container.clientHeight; if (!w || !h) return; const changed = Math.abs(camera.aspect - w / h) > .1; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); composer.setSize(w, h); publishResolution(); if (changed || !readyAtLeastOnce) reset(); else schedule(); }); resize.observe(container);
       own(() => { if (frame) cancelAnimationFrame(frame); resize.disconnect(); orbit.removeEventListener("change", onOrbit); renderer.domElement.removeEventListener("pointerdown", onDown); renderer.domElement.removeEventListener("pointerup", onUp); renderer.domElement.removeEventListener("webglcontextlost", onLoss); sun.shadow.map?.dispose(); });
@@ -287,20 +305,33 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
         finally { if (!stopped && version === updateVersion) setAssetLoading(false); }
       }
       function inside() {
-        const fitted = interiorCameraFit(current, camera.aspect); camera.fov = fitted.fov; camera.updateProjectionMatrix(); camera.position.copy(fitted.position); orbit.target.copy(fitted.target);
-        interiorView = fitted.mode === "interior"; setViewFallback(!interiorView); container!.dataset.cameraMode = fitted.mode; orbit.update(); schedule();
+        if (current.objects.some(object => object.kind === "dining_table")) {
+          const wide = wideRoomCameraFit(current.room, camera.aspect); camera.fov = wide.fov; camera.updateProjectionMatrix(); camera.position.copy(wide.position); orbit.target.copy(wide.target); interiorView = false; setViewFallback(false); container!.dataset.cameraMode = wide.mode; orbit.update(); schedule(); return;
+        }
+        const fitted = heroRoomCameraFit(current, camera.aspect); camera.fov = fitted.fov; camera.updateProjectionMatrix(); camera.position.copy(fitted.position); orbit.target.copy(fitted.target);
+        interiorView = fitted.mode === "interior" || fitted.mode === "hero"; setViewFallback(!interiorView); container!.dataset.cameraMode = fitted.mode; lastSafeCamera.copy(camera.position); orbit.update(); schedule();
+      }
+      function detail() {
+        const object = (selected ? current.objects.find(item => item.id === selected) : undefined) ?? current.objects.find(item => item.kind === "bed" || item.kind === "sofa") ?? current.objects[0];
+        const distance = Math.max(1.25, Math.max(object.width, object.depth) * 1.65), angle = -object.rotation * Math.PI / 180 + Math.PI * .72;
+        const requested = { x: object.x + Math.sin(angle) * distance, y: Math.min(current.room.height - .18, Math.max(.9, object.height * .78)), z: object.z + Math.cos(angle) * distance };
+        const safe = safeInteriorCamera(current, requested, interiorCameraFit(current, camera.aspect).position);
+        camera.fov = 48; camera.updateProjectionMatrix(); camera.position.set(safe.x, safe.y, safe.z); orbit.target.set(object.x, object.height * .48, object.z); interiorView = true; lastSafeCamera.copy(camera.position); setViewFallback(false); container!.dataset.cameraMode = "detail"; orbit.update(); schedule();
+      }
+      function lighting(value: "day" | "evening") {
+        const evening = value === "evening"; sun.intensity = evening ? .42 : 2.35; windowFill.intensity = evening ? .65 : 7.2; ceilingBounce.intensity = evening ? .42 : 1.15; practical.visible = evening || (!!current.objects.find(object => object.kind === "lighting") && ["high", "ultra"].includes(container!.dataset.effectiveQuality ?? "")); practical.intensity = evening ? 5.2 : 3.4; world.background = new T.Color(evening ? 0x2e3540 : 0xe7e5df); renderer.toneMappingExposure = evening ? 1.28 : 1.12; container!.dataset.lightingMode = value; schedule();
       }
       runtime.current = { update(next, comparison, mode) { void requestUpdate(next, comparison, mode); }, profile, select(id) { selected = id; schedule(); }, reset,
         perspective() { fit(false); },
         top() { fit(true); },
-        recommended: inside,
+        recommended: inside, detail, lighting,
         zoom(n) { camera.position.sub(orbit.target).multiplyScalar(n).add(orbit.target); orbit.update(); schedule(); },
         turn() { camera.position.sub(orbit.target).applyAxisAngle(new T.Vector3(0, 1, 0), Math.PI / 8).add(orbit.target); orbit.update(); schedule(); },
         dispose: resources.dispose,
       };
       await requestUpdate(latest.current, latestComparison.current, latestComparisonMode.current); if (stopped || contextLost || !runtime.current) return;
       profile("auto");
-      const w = container.clientWidth, h = container.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); composer.setSize(w, h); publishResolution(); reset(); readyAtLeastOnce = true; clearTimeout(startupDeadline); setReady(true);
+      const w = container.clientWidth, h = container.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); composer.setSize(w, h); publishResolution(); inside(); readyAtLeastOnce = true; clearTimeout(startupDeadline); setReady(true);
     }
     mount().catch(() => { partialCleanup(); if (!stopped) { runtime.current = null; setFailed(true); } });
     return () => { stopped = true; clearTimeout(startupDeadline); partialCleanup(); runtime.current = null; };
@@ -316,14 +347,16 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
     </div>
     {!failed && guide && <SpaceGuideNarration guide={guide} locale={locale} />}
     <div className={styles.toolbar} aria-label={ko ? "3D 보기 조작" : "3D view controls"}>
-      <label className={styles.qualityChoice}>{ko ? "화질" : "Quality"}<select value={quality} onChange={e => { setQuality(e.target.value); runtime.current?.profile(e.target.value); }}>{["auto", "ultra", "high", "balanced", "performance"].map(value => <option key={value} value={value}>{({auto:ko?"자동":"Auto",ultra:ko?"울트라 미리보기":"Ultra Preview",high:"High",balanced:"Balanced",performance:ko?"가벼운 효과":"Performance"})[value]}</option>)}</select></label>
-      <button type="button" disabled={failed} aria-pressed={cameraChoice === "perspective"} onClick={() => { setCameraChoice("perspective"); runtime.current?.perspective(); }}>{ko ? "원근 시점" : "Perspective"}</button>
-      <button type="button" disabled={failed} aria-pressed={cameraChoice === "top"} onClick={() => { setCameraChoice("top"); runtime.current?.top(); }}>{ko ? "위에서" : "Top"}</button>
-      <button type="button" disabled={failed} aria-pressed={cameraChoice === "recommended"} onClick={() => { setCameraChoice("recommended"); runtime.current?.recommended(); }}>{ko ? "추천 시점" : "Recommended"}</button>
-      <button type="button" disabled={failed} onClick={() => { setCameraChoice("perspective"); runtime.current?.reset(); }}>{ko ? "시점 초기화" : "Reset"}</button>
-      <button type="button" disabled={failed} onClick={() => runtime.current?.turn()}>{ko ? "회전" : "Rotate view"}</button>
-      <button type="button" disabled={failed} aria-label={ko ? "확대" : "Zoom in"} onClick={() => runtime.current?.zoom(.85)}>＋</button>
-      <button type="button" disabled={failed} aria-label={ko ? "축소" : "Zoom out"} onClick={() => runtime.current?.zoom(1.15)}>−</button>
+      <button type="button" disabled={failed || !ready} aria-pressed={cameraChoice === "dollhouse"} onClick={() => { setCameraChoice("dollhouse"); runtime.current?.perspective(); }}>{ko ? "전체 보기" : "Dollhouse"}</button>
+      <button type="button" disabled={failed || !ready} aria-pressed={cameraChoice === "room"} onClick={() => { setCameraChoice("room"); runtime.current?.recommended(); }}>{ko ? "방 안에서" : "Inside room"}</button>
+      <button type="button" disabled={failed || !ready} aria-pressed={cameraChoice === "detail"} onClick={() => { setCameraChoice("detail"); runtime.current?.detail(); }}>{ko ? "가구 자세히" : "Detail"}</button>
+      <button type="button" disabled={failed || !ready} aria-pressed={cameraChoice === "top"} onClick={() => { setCameraChoice("top"); runtime.current?.top(); }}>{ko ? "위에서" : "Top"}</button>
+      <button type="button" disabled={failed || !ready} onClick={() => { setCameraChoice("dollhouse"); runtime.current?.reset(); }}>{ko ? "시점 초기화" : "Reset"}</button>
+      <button type="button" disabled={failed || !ready} onClick={() => runtime.current?.turn()}>{ko ? "회전" : "Rotate view"}</button>
+      <button type="button" disabled={failed || !ready} aria-label={ko ? "확대" : "Zoom in"} onClick={() => runtime.current?.zoom(.85)}>＋</button>
+      <button type="button" disabled={failed || !ready} aria-label={ko ? "축소" : "Zoom out"} onClick={() => runtime.current?.zoom(1.15)}>−</button>
+      <span className={styles.lightSwitch}><button type="button" disabled={failed || !ready} aria-pressed={lightChoice === "day"} onClick={() => { setLightChoice("day"); runtime.current?.lighting("day"); }}>{ko ? "낮" : "Day"}</button><button type="button" disabled={failed || !ready} aria-pressed={lightChoice === "evening"} onClick={() => { setLightChoice("evening"); runtime.current?.lighting("evening"); }}>{ko ? "저녁" : "Evening"}</button></span>
+      <details className={styles.qualityChoice}><summary>{ko ? "화질 설정" : "Quality"}</summary><select aria-label={ko ? "3D 화질" : "3D quality"} value={quality} onChange={e => { setQuality(e.target.value); runtime.current?.profile(e.target.value); }}>{["auto", "ultra", "high", "balanced", "performance"].map(value => <option key={value} value={value}>{({auto:ko?"자동":"Auto",ultra:ko?"최고 화질":"Ultra",high:"High",balanced:"Balanced",performance:ko?"가볍게":"Performance"})[value]}</option>)}</select></details>
     </div>
     {viewFallback && <p role="status" className={styles.hint}>{ko ? "이 배치를 방 안에서 한눈에 담기 어려워 전체 보기로 전환했습니다." : "This layout cannot fit in a clear inside view. Showing the full room instead."}</p>}
     <p className={styles.hint}>{ko ? "가구를 누르면 선택 · 한 손가락 회전 · 두 손가락 확대·이동. 문·창 높이를 입력하지 않으면 표준 크기로 표현합니다." : "Tap furniture to select · One finger orbit · Two fingers zoom/pan. Unmeasured door/window heights use labelled standard estimates."}</p>

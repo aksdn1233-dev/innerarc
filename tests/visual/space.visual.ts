@@ -13,7 +13,7 @@ test("failed material load releases the canvas and retry restores one renderer",
   await page.route("**/space/assets/oak-floor-color.jpg", route => route.fulfill({ status: 503, body: "synthetic outage" })); await page.goto("/en/space");
   await expect(page.getByRole("button", { name: "Retry 3D" })).toBeVisible({ timeout: 20000 }); expect(await page.locator("canvas").count()).toBe(0);
   await page.unroute("**/space/assets/oak-floor-color.jpg"); await page.getByRole("button", { name: "Retry 3D" }).click();
-  await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "6", { timeout: 30000 }); expect(await page.locator("canvas").count()).toBe(1);
+  await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "8", { timeout: 30000 }); expect(await page.locator("canvas").count()).toBe(1);
 });
 
 for (const example of SPACE_EXAMPLES) test(`visual geometry fixture: ${example}`, async ({ page }, testInfo) => {
@@ -24,36 +24,38 @@ for (const example of SPACE_EXAMPLES) test(`visual geometry fixture: ${example}`
   const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-scene-state", JSON.stringify(spaceExample(example).objects.map(o => ({ id: o.id, x: o.x, z: o.z, rotation: o.rotation }))), { timeout: 20000 });
   await expect(view).toHaveAttribute("data-triangles", /[1-9]\d*/);
   const metrics = { readyMs: Date.now() - loadStarted, ...await view.evaluate(element => ({ calls: Number((element as HTMLElement).dataset.drawCalls), triangles: Number((element as HTMLElement).dataset.triangles), textureCount: Number((element as HTMLElement).dataset.textureCount) })) };
-  expect(metrics.triangles).toBeGreaterThan(1000); expect(metrics.calls).toBeLessThan(180); expect(metrics.triangles).toBeLessThan(400_000);
+  // The furnished hero fixtures intentionally carry more objects than the sparse
+  // analysis fixture; keep a hard ceiling that still catches accidental fan-out.
+  expect(metrics.triangles).toBeGreaterThan(1000); expect(metrics.calls).toBeLessThan(230); expect(metrics.triangles).toBeLessThan(430_000);
   await testInfo.attach("scene-render-budget", { body: JSON.stringify(metrics), contentType: "application/json" });
   expect(failures).toEqual([]);
   await expect(view.locator("..")).toHaveScreenshot(`${example}.png`, { animations: "disabled", threshold: .10, maxDiffPixelRatio: .05 });
 });
 test("selection, validated adjustment, undo and same-camera comparison", async ({ page }) => {
   await page.goto("/en/space"); await page.getByRole("combobox", { name: "Select furniture", exact: true }).selectOption("desk_1");
-  const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "6", { timeout: 20000 }); await expect(view).toHaveAttribute("data-triangles", /[1-9]/);
+  const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "8", { timeout: 20000 }); await expect(view).toHaveAttribute("data-triangles", /[1-9]/);
   await expect(view).toHaveAttribute("data-selected-object", "desk_1");
   const camera = await view.getAttribute("data-camera");
   await page.getByRole("button", { name: "Move furniture → 10cm", exact: true }).click();
-  await expect(view).toHaveAttribute("data-scene-state", /"x":3.1/);
+  await expect(view).toHaveAttribute("data-scene-state", /"x":1.2/);
   await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 });
   await expect(view).toHaveAttribute("data-motion-policy", "offscreen-snap");
-  await page.getByRole("button", { name: "Undo edit", exact: true }).click(); await expect(view).toHaveAttribute("data-scene-state", /"x":3,/);
+  await page.getByRole("button", { name: "Undo edit", exact: true }).click(); await expect(view).toHaveAttribute("data-scene-state", /"x":1.1/);
   await page.getByRole("checkbox", { name: "I checked north" }).check();
   await page.getByRole("checkbox", { name: "I checked the room and furniture" }).check();
   await page.getByRole("button", { name: "See suggested layout", exact: true }).click();
   const before = await view.getAttribute("data-scene-state");
   await expect(view).toHaveAttribute("data-motion", "settled");
-  await page.getByRole("button", { name: "Suggested layout", exact: true }).click();
+  await page.getByRole("button", { name: "Suggested", exact: true }).click();
   await expect(view).not.toHaveAttribute("data-scene-state", before!); await expect(view).toHaveAttribute("data-camera", camera!);
   await expect(view).toHaveAttribute("data-comparison-changes", /[1-9]/);
   await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 });
-  await page.getByRole("button", { name: "Current layout", exact: true }).click(); await expect(view).toHaveAttribute("data-scene-state", before!);
+  await page.getByRole("button", { name: "Current", exact: true }).click(); await expect(view).toHaveAttribute("data-scene-state", before!);
   await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 });
   await expect(view.locator("..")).toHaveScreenshot("current-layout.png", { animations: "disabled", threshold: .10, maxDiffPixelRatio: .05 });
   await view.locator("xpath=../../..").evaluate(element => element.scrollIntoView({ block: "start" }));
   await expect(page).toHaveScreenshot("current-layout-panel.png", { animations: "disabled", threshold: .10, maxDiffPixelRatio: .05 });
-  await page.getByRole("button", { name: "Suggested layout", exact: true }).click(); await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 });
+  await page.getByRole("button", { name: "Suggested", exact: true }).click(); await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 });
   await expect(view).toHaveAttribute("data-camera", camera!);
   await expect(view.locator("..")).toHaveScreenshot("recommended-layout.png", { animations: "disabled", threshold: .10, maxDiffPixelRatio: .05 });
   await expect(page).toHaveScreenshot("recommended-layout-panel.png", { animations: "disabled", threshold: .10, maxDiffPixelRatio: .05 });
@@ -61,8 +63,9 @@ test("selection, validated adjustment, undo and same-camera comparison", async (
 
 test("Ultra Preview exposes its real render profile", async ({ page }) => {
   await page.goto("/en/space");
-  const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "6", { timeout: 20000 });
-  await page.getByRole("combobox", { name: "Quality", exact: true }).selectOption("ultra");
+  const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "8", { timeout: 20000 });
+  await page.getByText("Quality", { exact: true }).click();
+  await page.getByRole("combobox", { name: "3D quality", exact: true }).selectOption("ultra");
   await expect(view).toHaveAttribute("data-effective-quality", "ultra");
   await expect(view).toHaveAttribute("data-preview-profile", "ultra-preview");
   await expect(view).toHaveAttribute("data-render-scale", /^(2\.00|2\.50)$/);
@@ -70,8 +73,8 @@ test("Ultra Preview exposes its real render profile", async ({ page }) => {
   const dimensions = await view.evaluate(element => ({ css: [Number((element as HTMLElement).dataset.cssWidth), Number((element as HTMLElement).dataset.cssHeight)], render: [Number((element as HTMLElement).dataset.renderWidth), Number((element as HTMLElement).dataset.renderHeight)] }));
   expect(dimensions.render[0]).toBeGreaterThanOrEqual(dimensions.css[0] * 1.99); expect(dimensions.render[1]).toBeGreaterThanOrEqual(dimensions.css[1] * 1.99);
   await expect(page.getByLabel("Actual 3D render resolution")).toContainText(/Actual render \d+×\d+/);
-  await page.getByRole("button", { name: "Recommended", exact: true }).click();
-  await expect(page.getByRole("button", { name: "Recommended", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "Inside room", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Inside room", exact: true })).toHaveAttribute("aria-pressed", "true");
   // Ultra deliberately renders at a higher internal resolution. Allow a constrained
   // CI software renderer to finish the same pixel comparison without weakening it.
   await expect(view.locator("..")).toHaveScreenshot("ultra-preview.png", { animations: "disabled", threshold: .10, maxDiffPixelRatio: .05, timeout: 15000 });
@@ -82,13 +85,13 @@ test("lightweight tier stays within the active-frame budget", async ({ page }, t
   // The first real WebGL context and bounded assets use the same 30-second
   // reconstruction allowance as fault recovery. Frame timing starts only after
   // this exact scene is ready, so this does not relax the performance ceiling.
-  const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "6", { timeout: 30000 }); await expect(view).toHaveAttribute("data-triangles", /[1-9]/);
+  const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "8", { timeout: 30000 }); await expect(view).toHaveAttribute("data-triangles", /[1-9]/);
   const setSelect = async (name: string, value: string) => page.getByRole("combobox", { name, exact: true }).evaluate((element, next) => {
     const select = element as HTMLSelectElement; select.value = next; select.dispatchEvent(new Event("change", { bubbles: true }));
   }, value);
   // The fixed-tier benchmark is not a select actionability test. Dispatch the same
   // change event without Playwright scrolling the canvas and waiting for it to settle.
-  await setSelect("Select furniture", "desk_1"); await setSelect("Quality", "performance");
+  await setSelect("Select furniture", "desk_1"); await page.locator('select[aria-label="3D quality"]').evaluate((element, next) => { const select = element as HTMLSelectElement; select.value = next; select.dispatchEvent(new Event("change", { bubbles: true })); }, "performance");
   await expect(view).toHaveAttribute("data-effective-quality", "performance");
   await expect(view).toHaveAttribute("data-shadow-mode", "performance-unshadowed");
   const gpu = await view.locator("canvas").evaluate(canvas => { const gl = (canvas as HTMLCanvasElement).getContext("webgl2"); const extension = gl?.getExtension("WEBGL_debug_renderer_info"); return gl && extension ? gl.getParameter(extension.UNMASKED_RENDERER_WEBGL) as string : "unavailable"; });
@@ -111,14 +114,14 @@ test("lightweight tier stays within the active-frame budget", async ({ page }, t
   }), expected);
   let responseMs = 0, adaptive = false;
   if (software) {
-    responseMs = Math.max(await commit(move, '"x":3.1'), await commit(undo, '"x":3,'));
+    responseMs = Math.max(await commit(move, '"x":1.2'), await commit(undo, '"x":1.1'));
     await expect(view).toHaveAttribute("data-motion-policy", "software-snap");
   } else {
     for (let i = 0; i < 8; i++) {
-      const moveMs = await commit(move, '"x":3.1'); const movePolicy = await view.getAttribute("data-motion-policy");
+      const moveMs = await commit(move, '"x":1.2'); const movePolicy = await view.getAttribute("data-motion-policy");
       if (movePolicy === "adaptive-snap") { adaptive = true; responseMs = Math.max(responseMs, moveMs); }
       else { expect(movePolicy).toBe("animated"); await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 }); }
-      const undoMs = await commit(undo, '"x":3,'); const undoPolicy = await view.getAttribute("data-motion-policy");
+      const undoMs = await commit(undo, '"x":1.1'); const undoPolicy = await view.getAttribute("data-motion-policy");
       if (undoPolicy === "adaptive-snap") { adaptive = true; responseMs = Math.max(responseMs, undoMs); }
       else { expect(undoPolicy).toBe("animated"); await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 }); }
       if (adaptive || (i >= 1 && Number(await view.getAttribute("data-sampled-frames")) >= 12)) break;
@@ -126,7 +129,7 @@ test("lightweight tier stays within the active-frame budget", async ({ page }, t
     if (adaptive) { await expect(view).toHaveAttribute("data-scheduler-policy", "immediate"); await expect(view).toHaveAttribute("data-motion-policy", "adaptive-snap"); }
     else await expect(view).toHaveAttribute("data-sampled-frames", /[1-9]/);
   }
-  const measured = await view.evaluate((element, snapMs) => { const canvas = element.querySelector("canvas")!, rect = canvas.getBoundingClientRect(); return { p90Ms: Number((element as HTMLElement).dataset.frameP90), responseMs: snapMs, cpuRenderP90Ms: Number((element as HTMLElement).dataset.renderMsP90), drawCalls: Number((element as HTMLElement).dataset.drawCalls), triangles: Number((element as HTMLElement).dataset.triangles), textureCount: Number((element as HTMLElement).dataset.textureCount), textureBytesEstimate: Number((element as HTMLElement).dataset.textureBytesEstimate), quality: (element as HTMLElement).dataset.quality, shadowMode: (element as HTMLElement).dataset.shadowMode, motionPolicy: (element as HTMLElement).dataset.motionPolicy, schedulerPolicy: (element as HTMLElement).dataset.schedulerPolicy, canvasScale: canvas.width / rect.width, canvasPixels: canvas.width, cssPixels: rect.width, beforeFallbackFrameP90Ms: Number((element as HTMLElement).dataset.beforeFallbackFrameP90 || 0) }; }, responseMs);
+  const measured = await view.evaluate((element, snapMs) => { const canvas = element.querySelector("canvas")!, rect = canvas.getBoundingClientRect(), data = (element as HTMLElement).dataset; return { averageFps: Number(data.averageFps), onePercentLowFps: Number(data.onePercentLowFps), averageFrameMs: Number(data.frameAverage), p90Ms: Number(data.frameP90), p95Ms: Number(data.frameP95), p99Ms: Number(data.frameP99), responseMs: snapMs, cpuRenderP90Ms: Number(data.renderMsP90), drawCalls: Number(data.drawCalls), triangles: Number(data.triangles), textureCount: Number(data.textureCount), textureBytesEstimate: Number(data.textureBytesEstimate), quality: data.quality, shadowMode: data.shadowMode, motionPolicy: data.motionPolicy, schedulerPolicy: data.schedulerPolicy, canvasScale: canvas.width / rect.width, canvasPixels: canvas.width, cssPixels: rect.width, beforeFallbackFrameP90Ms: Number(data.beforeFallbackFrameP90 || 0) }; }, responseMs);
   await testInfo.attach("active-frame-timing", { body: JSON.stringify(measured), contentType: "application/json" });
   expect(measured.shadowMode).toBe("performance-unshadowed");
   // Canvas dimensions are integral; fractional CSS widths may round down < 1px.
@@ -140,7 +143,7 @@ test("lightweight tier stays within the active-frame budget", async ({ page }, t
   expect.soft(software || measured.motionPolicy === "adaptive-snap" ? measured.responseMs : measured.p90Ms).toBeLessThan(100);
 });
 test("irregular room is explicitly unsupported and never silently reshaped", async ({ page }) => {
-  await page.goto("/en/space"); const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "6", { timeout: 20000 }); await expect(view).toHaveAttribute("data-triangles", /[1-9]/); const before = await view.getAttribute("data-scene-state");
+  await page.goto("/en/space"); const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "8", { timeout: 20000 }); await expect(view).toHaveAttribute("data-triangles", /[1-9]/); const before = await view.getAttribute("data-scene-state");
   await page.getByRole("combobox", { name: "Example space", exact: true }).selectOption("irregular_room"); await expect(page.locator("main").getByRole("alert")).toContainText("Irregular rooms are not supported"); await expect(view).toHaveAttribute("data-scene-state", before!);
 });
 
@@ -148,8 +151,8 @@ for (const example of ["small_bedroom", "living_room"] as const) test(`interior 
   const failures: string[] = []; page.on("console", msg => { if (msg.type() === "error") failures.push(msg.text()); }); page.on("pageerror", error => failures.push(error.message));
   await page.emulateMedia({ reducedMotion: "reduce" }); await page.goto("/en/space");
   await page.getByRole("combobox", { name: "Example space", exact: true }).selectOption(example);
-  const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", example === "small_bedroom" ? "6" : "7", { timeout: 20000 }); await expect(view).toHaveAttribute("data-triangles", /[1-9]/);
-  await page.getByRole("button", { name: "Recommended", exact: true }).click();
+  const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", example === "small_bedroom" ? "8" : "9", { timeout: 20000 }); await expect(view).toHaveAttribute("data-triangles", /[1-9]/);
+  await expect(view).toHaveAttribute("data-camera-mode", /hero|interior/);
   await expect(view.locator("..")).toHaveScreenshot(`${example}-interior.png`, { animations: "disabled", threshold: .10, maxDiffPixelRatio: .05, timeout: 15_000 });
   expect(failures).toEqual([]);
 });
@@ -173,9 +176,9 @@ test("a GPU draw exception releases the frozen scene and exposes retry", async (
       return context;
     } as typeof original;
   });
-  await page.goto("/en/space"); await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "6", { timeout: 20000 });
+  await page.goto("/en/space"); await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "8", { timeout: 20000 });
   await page.evaluate(() => { document.documentElement.dataset.syntheticDrawFailure = "1"; });
   await page.getByRole("button", { name: "Rotate view", exact: true }).click();
   await expect(page.getByRole("button", { name: "Retry 3D", exact: true })).toBeVisible(); expect(await page.locator("canvas").count()).toBe(0);
-  await page.getByRole("button", { name: "Retry 3D", exact: true }).click(); await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "6", { timeout: 20000 });
+  await page.getByRole("button", { name: "Retry 3D", exact: true }).click(); await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "8", { timeout: 20000 });
 });

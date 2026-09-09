@@ -3,7 +3,7 @@ test("3D assets stay off home and entry transfer sizes are recorded", async ({ p
   await page.goto("/ko");
   expect(await page.evaluate(() => performance.getEntriesByType("resource").filter(item => new URL(item.name).pathname.startsWith("/space/assets/")).length)).toBe(0);
   await page.goto("/en/space");
-  await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "6", { timeout: 20000 });
+  await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "8", { timeout: 20000 });
   const budget = await page.evaluate(() => {
     const entries = performance.getEntriesByType("resource") as PerformanceResourceTiming[];
     const scripts = entries.filter(item => new URL(item.name).pathname.endsWith(".js")), assets = entries.filter(item => new URL(item.name).pathname.startsWith("/space/assets/"));

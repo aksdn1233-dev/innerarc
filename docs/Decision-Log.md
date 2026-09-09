@@ -1719,3 +1719,9 @@
 - Date: 2026-09-09
 - Decision: Remove tarot from the public home, service discovery, sitemap and continuation actions. Redirect historical `/{locale}/question` links permanently to the existing personal-pattern experience. Replace Korean customer-facing `수비학` wording with `생년월일 패턴`; keep internal route and deterministic engine identifiers stable to avoid data and entitlement migration risk.
 - Privacy and reversal: Existing saved question records remain exportable and deletable, but are no longer promoted or reopened as a service. Revert this change to restore public entry points; no database rollback is required.
+
+## 2026-09-09 — 3D 공간운은 검증된 단일 방 품질부터 강화
+- 기존 Scene JSON과 결정론적 분석을 유지하고 DB migration 없이 카메라 안전과 비교 표현을 추가한다.
+- 여러 방을 연결한 Dollhouse는 구조 추정·권한·저장 모델이 준비될 때까지 지원 범위로 표시하지 않는다.
+- 실내 시점은 가구 및 벽 경계를 통과하지 못하며 안전한 시야가 없으면 전체 보기로 복귀한다.
+- 되돌림 조건: 모바일 조작 회귀, 장면 기하 오류, 렌더 예산 초과가 확인되면 기능 플래그로 분석을 중지하고 직전 브랜치 커밋으로 UI 변경을 되돌린다.

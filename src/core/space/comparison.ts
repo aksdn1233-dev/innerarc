@@ -15,7 +15,7 @@ export function spatialChanges(current: Scene, recommended: Scene): SpatialChang
   return current.objects.flatMap((object) => {
     const target = next.get(object.id);
     if (!target) return [];
-    const distance = Math.hypot(target.x - object.x, target.z - object.z);
+    const distance = Math.round(Math.hypot(target.x - object.x, target.z - object.z) * 1_000_000) / 1_000_000;
     const rotationDelta = (target.rotation - object.rotation + 360) % 360;
     if (distance <= 0.001 && rotationDelta === 0) return [];
     return [{

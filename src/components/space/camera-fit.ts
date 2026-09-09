@@ -1,5 +1,6 @@
 import type { Scene } from "@/core/space/schema";
 import { footprint } from "@/core/space/geometry";
+import { safeInteriorCamera } from "@/core/space/camera-safety";
 import { Box3, Ray, Vector3 } from "three";
 
 /** Fit every architectural corner in both screen axes, including portrait screens. */
@@ -19,6 +20,37 @@ export function roomCameraFit(room: { width: number; depth: number; height: numb
   // optical margin keeps portrait rooms prominent without cropping their shell.
   const opticalMargin = top ? 1.035 : aspect < 1 ? 1.025 : 1.05;
   return { target, position: direction.multiplyScalar(distance * opticalMargin).add(target) };
+}
+
+/** A lower, photography-like composition for open living/dining rooms. */
+export function wideRoomCameraFit(room: { width: number; depth: number; height: number }, aspect: number) {
+  const { width: w, depth: d, height: h } = room, target = new Vector3(w / 2, h * .36, d / 2);
+  const direction = (aspect < 1 ? new Vector3(.35, .9, 1.5) : new Vector3(1.05, .52, 1.28)).normalize();
+  const right = new Vector3().crossVectors(new Vector3(0, 1, 0), direction).normalize(), up = new Vector3().crossVectors(direction, right).normalize();
+  const fov = 46, tanV = Math.tan(fov * Math.PI / 360), tanH = tanV * Math.max(.1, aspect); let distance = 1;
+  for (const x of [-.08, w + .08]) for (const y of [0, h + .06]) for (const z of [-.08, d + .08]) {
+    const point = new Vector3(x, y, z).sub(target), depth = point.dot(direction);
+    distance = Math.max(distance, Math.abs(point.dot(right)) / tanH + depth, Math.abs(point.dot(up)) / tanV + depth);
+  }
+  return { target, position: direction.multiplyScalar(distance * 1.015).add(target), fov, mode: "wide" as const };
+}
+
+/** A wider first frame that reads like an interior photograph while staying in the verified room. */
+export function heroRoomCameraFit(scene: Scene, aspect: number) {
+  if (aspect < 1) return interiorCameraFit(scene, aspect);
+  const fallback = interiorCameraFit(scene, aspect);
+  const primary = scene.objects.find(object => object.kind === "bed" || object.kind === "sofa") ?? scene.objects[0];
+  const requested = { x: primary.x < scene.room.width / 2 ? scene.room.width - .2 : .2, y: Math.min(scene.room.height - .2, 1.55), z: scene.room.depth - .2 };
+  const safe = safeInteriorCamera(scene, requested, { x: fallback.position.x, y: fallback.position.y, z: fallback.position.z });
+  const subject = scene.objects.filter(object => object.kind !== "rug" && object.kind !== "lighting");
+  const average = subject.reduce((total, object) => ({ x: total.x + object.x, z: total.z + object.z }), { x: 0, z: 0 });
+  const count = Math.max(1, subject.length);
+  const target = new Vector3(
+    Math.max(scene.room.width * .4, Math.min(scene.room.width * .62, average.x / count)),
+    scene.objects.some(object => object.kind === "bed") ? .92 : .82,
+    Math.max(scene.room.depth * .34, Math.min(scene.room.depth * .54, average.z / count)),
+  );
+  return { target, position: new Vector3(safe.x, safe.y, safe.z), fov: 62, mode: "hero" as const };
 }
 
 /** Choose an unobstructed room corner and prove the subject fits before offering an inside view. */

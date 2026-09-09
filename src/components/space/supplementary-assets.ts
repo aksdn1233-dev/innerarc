@@ -11,10 +11,11 @@ export function supplementaryFurniture(g: T.Group, object: SpatialObject, m: Int
   const kind = object.kind;
   if (kind === "nightstand" || kind === "cabinet" || kind === "wardrobe" || kind === "bookshelf") {
     const tall = kind === "wardrobe" || kind === "bookshelf", base = tall ? .035 : .14;
-    for (const x of [-.42, .42]) for (const z of [-.40, .40]) cylinder(m.walnut, .025, .019, base, x, base / 2, z);
-    box(m.oak, 1, .035, 1, 0, .9825, 0); box(m.walnut, .96, .03, .94, 0, base + .015, 0);
-    for (const x of [-.4775, .4775]) box(m.oak, .045, .95 - base, .98, x, (1 + base) / 2 - .025, 0);
-    box(m.walnut, .96, .94 - base, .025, 0, (1 + base) / 2 - .025, -.4725);
+    const joinery = kind === "wardrobe" ? m.oak : m.walnut;
+    for (const x of [-.42, .42]) for (const z of [-.40, .40]) cylinder(joinery, .025, .019, base, x, base / 2, z);
+    box(joinery, 1, .035, 1, 0, .9825, 0); box(joinery, .96, .03, .94, 0, base + .015, 0);
+    for (const x of [-.4775, .4775]) box(joinery, .045, .95 - base, .98, x, (1 + base) / 2 - .025, 0);
+    box(joinery, .96, .94 - base, .025, 0, (1 + base) / 2 - .025, -.4725);
     if (kind === "bookshelf") {
       for (let row = 1; row <= 4; row++) {
         const y = base + row * .18; box(m.oak, .92, .024, .92, 0, y, 0);
@@ -34,11 +35,14 @@ export function supplementaryFurniture(g: T.Group, object: SpatialObject, m: Int
       }
     } else {
       const doors = kind === "cabinet" ? 3 : 2;
+      box(m.dark, .86, .055, .08, 0, base + .02, .43, .008);
+      box(m.walnut, .98, .026, .94, 0, .955, .01, .008);
       for (let i = 0; i < doors; i++) {
         const w = .92 / doors, x = -.46 + w * (i + .5);
-        box(m.oak, w - .012, .93 - base, .03, x, (1 + base) / 2 - .025, .465, .003);
+        box(joinery, w - .012, .93 - base, .03, x, (1 + base) / 2 - .025, .465, .006);
         // Recessed center panel and slim brass pulls break up the door plane.
-        box(m.oak, w - .07, .81 - base, .011, x, (1 + base) / 2 - .025, .485, .003);
+        box(kind === "wardrobe" ? m.linen : m.oak, w - .075, .79 - base, .011, x, (1 + base) / 2 - .025, .485, .008);
+        for (const edge of [-1, 1]) box(joinery, .014, .79 - base, .018, x + edge * (w - .06) / 2, (1 + base) / 2 - .025, .488, .003);
         box(m.bronze, .012, tall ? .12 : .045, .025, x + w * .27, .60, .48, .004);
       }
     }

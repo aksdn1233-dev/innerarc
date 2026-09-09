@@ -4,7 +4,7 @@ exports[`records the actual optimized procedural geometry budget 1`] = `
 {
   "bed": 23524,
   "bookshelf": 8012,
-  "cabinet": 4712,
+  "cabinet": 7112,
   "coffee_table": 1152,
   "desk": 4200,
   "dining_chair": 2440,
@@ -16,6 +16,6 @@ exports[`records the actual optimized procedural geometry budget 1`] = `
   "rug": 2124,
   "storage": 3600,
   "tv": 1328,
-  "wardrobe": 3812,
+  "wardrobe": 5612,
 }
 `;
