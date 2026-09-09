@@ -15,10 +15,10 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await guideDialog.getByRole("button", { name: "안내 닫기" }).click();
   await expect(page.getByRole("heading", {
     level: 1,
-    name: "나와 내 삶을 조금 더 쉽게 알아보세요.",
+    name: "사람의 흐름을 읽어 더 나은 오늘을 만듭니다.",
   })).toBeVisible();
-  await expect(page.locator(".td2-hero").getByRole("link", { name: /무료로 나 알아보기/ })).toBeVisible();
-  await expect(page.locator(".td2-hero").getByRole("link", { name: /내 방 분석하기/ })).toBeVisible();
+  await expect(page.locator(".td2-hero").getByRole("link", { name: /무료 사주 보기/ })).toBeVisible();
+  await expect(page.locator(".td2-hero").getByRole("link", { name: /서비스 둘러보기/ })).toBeVisible();
   await expect(page.getByRole("button", { name: /처음이세요\? 1분 안내 보기/ })).toBeVisible();
   await expect(page.locator(".td2-story-nav a")).toHaveCount(3);
   await expect(page.locator(".td2-story-nav")).toContainText("살펴보기");
@@ -37,10 +37,10 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await expect(page.locator(".td2-success-canvas")).toContainText("출처가 있는 실제 경력 사건");
   await expect(page.locator(".td2-reality")).toContainText("한 달 뒤에 돌아와");
   await expect(page.locator(".td2-footer")).toContainText("사업자등록번호");
-  await expect(page.locator('.td2-nav a:has-text("처음 안내")')).toHaveAttribute("href", "#guide");
+  await expect(page.locator('.td2-nav a:has-text("이용 안내")')).toHaveAttribute("href", "#guide");
   await expect(page.locator('.td2-nav a:has-text("이용 후기")')).toHaveAttribute("href", "/ko/reading#evidence");
-  await page.locator(".td2-hero").getByRole("link", { name: /무료로 나 알아보기/ }).click();
-  await page.waitForURL("**/ko/numerology");
+  await page.locator(".td2-hero").getByRole("link", { name: /무료 사주 보기/ }).click();
+  await page.waitForURL("**/ko/fortune");
 
   await page.goto("/ko/reading");
   await expect(page.locator(".report-outline")).toContainText("실제 생성한 상세 리딩입니다");
@@ -89,7 +89,7 @@ test("every home visit opens the guide as a dismissible modal and navigation can
   await page.reload();
   await expect(dialog).toBeVisible();
   await dialog.getByRole("button", { name: "안내 닫기" }).click();
-  await page.getByRole("link", { name: "처음 안내" }).click();
+  await page.getByRole("link", { name: "이용 안내" }).click();
   await expect(dialog).toBeVisible();
 });
 
@@ -103,8 +103,8 @@ test("mobile home has no overflow and preserves the selling page behavior", asyn
     await page.goto("/ko");
     const guideClose = page.getByRole("button", { name: "안내 닫기" });
     if (await guideClose.count()) await guideClose.click();
-    await expect(page.getByRole("heading", { level: 1, name: "나와 내 삶을 조금 더 쉽게 알아보세요." })).toBeVisible();
-    await expect(page.locator(".td2-hero").getByRole("link", { name: /무료로 나 알아보기/ })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: "사람의 흐름을 읽어 더 나은 오늘을 만듭니다." })).toBeVisible();
+    await expect(page.locator(".td2-hero").getByRole("link", { name: /무료 사주 보기/ })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
     await expect(page.locator(".mobile-purchase-bar")).toHaveCount(0);
     await expect(page.locator(".td2-report-preview")).toHaveCount(1);
@@ -714,7 +714,8 @@ test("privacy, terms, and support publish contacts while disclosing unresolved l
 
 test("the whole funnel connects: home, free result, paid teaser, intake", async ({ page }) => {
   await page.goto("/ko");
-  await page.locator(".td2-hero").getByRole("link", { name: /무료로 나 알아보기/ }).click();
+  await page.getByRole("button", { name: "안내 닫기" }).click();
+  await page.locator(".td2-nav").getByRole("link", { name: "수비학" }).click();
   await page.waitForURL("**/ko/numerology");
   await page.locator("#birthDate").fill("1994-11-04");
   await page.locator('input[name="privacyRequired"]').check();

@@ -323,3 +323,13 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Replace the section-only contrast patch with a site-wide hierarchy pass: compact 3+2 service cards, consistent spacing/radii/shadows, shared cool-white/navy tokens, and original-color walkthrough recordings with no CSS inversion.
 - [x] Move the four-step guide out of the page flow into a first-visit modal, retain navigation reopening and keyboard dismissal/focus containment, and replace the dark recordings with native bright product previews that add no media or token cost.
 - [x] Open the dismissible four-step guide on every new public-home load, keep its hero cue and navigation reopen path visible, and avoid storing a seen marker.
+
+## 2026-09-09 premium Korean editorial redesign
+
+- [x] Preserve the existing routes, deterministic engines, payment catalogue, auth, reports, Reality Check, privacy controls, analytics and Space implementation.
+- [x] Replace the public-home hero with one disclosed, text-free cinematic Korean night asset and keep all product evidence in real UI modules.
+- [x] Apply the verified charcoal, warm-ivory, restrained-gold and burgundy tokens across shared public surfaces without changing business logic.
+- [x] Make the home navigation and service map reflect active routes: Saju, numerology, tarot, compatibility, public comparison and 3D Space.
+- [x] Add four supportable trust statements without user-count, satisfaction, accuracy or prediction claims.
+- [x] Keep the always-open visit guide dismissible, keyboard-contained and warm-ivory for clear contrast against the night hero.
+- [x] Complete responsive visual and functional release checks before merge and production deployment.
