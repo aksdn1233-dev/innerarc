@@ -96,11 +96,11 @@ const content = {
     realityBody: "한 달 뒤에 돌아와 결과가 맞았는지 간단히 기록할 수 있어요.",
     realityCta: "기록 남기기",
     realitySteps: ["오늘의 해석 저장", "생활에서 확인", "다음 분석에 반영"],
-    pythagorasEyebrow: "생년월일 패턴의 바탕",
-    pythagorasTitle: <>숫자는 답이 아니라,<br />나를 살펴보는 출발점입니다.</>,
-    pythagorasBody: "피타고라스의 수 전통에서 가져온 상징과 태령당의 계산 결과를 구분해 보여드려요. 같은 생년월일은 언제나 같은 값으로 계산됩니다.",
-    pythagorasCta: "내 숫자 계산해보기",
-    pythagorasAlt: "밝은 서재에서 수학 도형이 그려진 종이를 살펴보는 피타고라스의 상상화",
+    proportionEyebrow: "사람과 수의 비례",
+    proportionTitle: <>숫자는 답이 아니라,<br />나를 살펴보는 기준입니다.</>,
+    proportionBody: "레오나르도 다 빈치의 인체 비례 연구에서 영감을 받은 기하학 도판입니다. 태령당은 상징 해석과 계산값을 구분하고, 같은 생년월일은 언제나 같은 값으로 계산합니다.",
+    proportionCta: "내 숫자 계산해보기",
+    proportionAlt: "직선과 비례선 안에 사람의 신체 비율을 표시한 고전 기하학 연구 도판",
     closeTitle: "궁금한 것부터 시작해보세요.",
     closeBody: "기본 분석은 무료로 바로 볼 수 있어요.",
     closeCta: "무료로 나 알아보기",
@@ -150,17 +150,54 @@ const content = {
     relationshipAxes: ["How you communicate", "How quickly you decide", "Time you need alone"],
     spaceEyebrow: "3D SPACE", spaceTitle: <>Your room,<br /><span>what could work better?</span></>, spaceBody: "Add room photos to compare your current and suggested layouts side by side in 3D.", spaceSteps: ["Take 2–6 room photos", "Show which way is north", "Compare the suggested layout"], spaceCta: "Analyze my room", spaceDemo: "Try the 3D example", before: "Current", after: "Suggested", spaceBubble: "Try widening the path beside the bed.", spaceDisclosure: "Traditional feng shui and practical room advice are clearly separated.",
     realityEyebrow: "REALITY CHECK", realityTitle: <>Go beyond interpretation.<br />Check it against real life.</>, realityBody: "A later reflection becomes evidence for the next reading. Results that missed remain visible too.", realityCta: "Start Reality Check", realitySteps: ["Save today's reading", "Check it in daily life", "Use it in the next reading"],
-    pythagorasEyebrow: "WHERE BIRTH-DATE PATTERNS BEGIN",
-    pythagorasTitle: <>Numbers are a starting point<br />for reflection, not an answer.</>,
-    pythagorasBody: "We clearly separate symbolism drawn from the Pythagorean number tradition from Taeryeongdang's deterministic calculations. The same birth date always returns the same calculated values.",
-    pythagorasCta: "Calculate my numbers",
-    pythagorasAlt: "An imagined portrait of Pythagoras studying a sheet with a geometric figure in a bright study",
+    proportionEyebrow: "HUMAN PROPORTION AND NUMBER",
+    proportionTitle: <>Numbers are a reference<br />for reflection, not an answer.</>,
+    proportionBody: "This geometric study is inspired by Leonardo da Vinci's work on human proportion. Taeryeongdang separates symbolic interpretation from calculated values, and the same birth date always returns the same calculation.",
+    proportionCta: "Calculate my numbers",
+    proportionAlt: "A classical geometry study showing human proportions with straight measurement lines",
     closeTitle: "Begin your story today.", closeBody: "Read where you are now, then return to see what matched real life.", closeCta: "Start free", benefits: ["Simple start", "Visible evidence", "Personal report", "Ongoing checks"], footerBody: "Personal Pattern Intelligence that turns symbols into real questions and checks them against lived experience.", footerBoundary: "Saju, birth-date patterns, and feng shui are symbolic reflection tools, not scientific prediction, diagnosis, treatment, or guaranteed outcomes.", copyright: "Byeolloof · Busan, Republic of Korea",
   },
 } as const;
 
 function Arrow() {
   return <span aria-hidden="true">→</span>;
+}
+
+function ProportionStudy({ label, locale }: { label: string; locale: Locale }) {
+  return <figure className="td2-proportion-study">
+    <svg aria-label={label} role="img" viewBox="0 0 680 560">
+      <title>{label}</title>
+      <g className="td2-study-grid" aria-hidden="true">
+        {[100, 160, 220, 280, 340, 400, 460, 520, 580].map((x) => <line key={`x-${x}`} x1={x} x2={x} y1="42" y2="510" />)}
+        {[50, 110, 170, 230, 290, 350, 410, 470].map((y) => <line key={`y-${y}`} x1="80" x2="600" y1={y} y2={y} />)}
+      </g>
+      <g className="td2-study-frame" aria-hidden="true">
+        <rect height="460" width="440" x="120" y="50" />
+        <path d="M120 510 340 50 560 510Z" />
+        <path d="M120 50 560 510M560 50 120 510" />
+        <line x1="340" x2="340" y1="34" y2="526" />
+        <line x1="100" x2="580" y1="276" y2="276" />
+      </g>
+      <g className="td2-study-figure" aria-hidden="true">
+        <ellipse cx="340" cy="127" rx="27" ry="34" />
+        <path d="M326 158 315 177 291 198 280 285 299 351 340 369 381 351 400 285 389 198 365 177 354 158" />
+        <path d="M315 177 340 194 365 177M291 198 340 216 389 198M300 351 340 333 380 351" />
+        <path d="M291 201 216 228 126 276M389 201 464 228 554 276" />
+        <path d="M291 204 205 180 132 120M389 204 475 180 548 120" />
+        <path d="M299 350 272 420 235 508M381 350 408 420 445 508" />
+        <path d="M310 358 301 430 299 510M370 358 379 430 381 510" />
+        <path d="M324 211 316 282 325 334M356 211 364 282 355 334M316 282 364 282" />
+      </g>
+      <g className="td2-study-measures" aria-hidden="true">
+        <path d="M92 50H108M92 110H108M92 170H108M92 230H108M92 290H108M92 350H108M92 410H108M92 470H108M92 510H108" />
+        <path d="M120 526V542M180 526V542M240 526V542M300 526V542M360 526V542M420 526V542M480 526V542M540 526V542M560 526V542" />
+      </g>
+      <text className="td2-study-label" x="82" y="30">HUMAN PROPORTION · 01</text>
+      <text className="td2-study-label" x="478" y="30">1 : √2</text>
+      <text className="td2-study-label" x="82" y="552">BODY / LINE / MEASURE</text>
+    </svg>
+    <figcaption>{locale === "ko" ? "고전 인체 비례 연구에서 영감을 받은 벡터 도판" : "A vector study inspired by classical research on human proportion"}</figcaption>
+  </figure>;
 }
 
 function GuideScreenPreview({ locale, step, label }: { locale: Locale; step: number; label: string }) {
@@ -433,11 +470,9 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
       <ol className="td2-reality-steps">{t.realitySteps.map((step, index) => <li key={step}><small>0{index + 1}</small><strong>{step}</strong></li>)}</ol>
     </section>
 
-    <section className="td2-pythagoras" aria-labelledby="td2-pythagoras-title">
-      <Image className="td2-pythagoras-image" src="/images/brand/pythagoras-editorial-v1.webp" alt={t.pythagorasAlt} fill quality={88} sizes="100vw" />
-      <div className="td2-pythagoras-wash" aria-hidden="true" />
-      <div className="td2-pythagoras-copy"><p className="td2-eyebrow">{t.pythagorasEyebrow}</p><h2 id="td2-pythagoras-title">{t.pythagorasTitle}</h2><p>{t.pythagorasBody}</p><Link className="td2-primary" href={`/${locale}/numerology`} prefetch={false}>{t.pythagorasCta}<Arrow /></Link></div>
-      <small className="td2-pythagoras-credit">{locale === "ko" ? "피타고라스 상상화 · 생성형 이미지" : "Imagined portrait of Pythagoras · generated image"}</small>
+    <section className="td2-proportion" aria-labelledby="td2-proportion-title">
+      <div className="td2-proportion-copy"><p className="td2-eyebrow">{t.proportionEyebrow}</p><h2 id="td2-proportion-title">{t.proportionTitle}</h2><p>{t.proportionBody}</p><Link className="td2-primary" href={`/${locale}/numerology`} prefetch={false}>{t.proportionCta}<Arrow /></Link></div>
+      <ProportionStudy label={t.proportionAlt} locale={locale} />
     </section>
 
     <section className="td2-close" aria-labelledby="td2-close-title">

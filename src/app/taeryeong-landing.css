@@ -278,14 +278,19 @@
 .td2-reality-steps small { color: #d6c090; font-size: .7rem; font-weight: 850; letter-spacing: .12em; }
 .td2-reality-steps strong { color: #f1eee7; font: 500 clamp(1.15rem,2vw,1.55rem)/1.35 var(--td-display); }
 
-.td2-pythagoras { position: relative; display: flex; min-height: 680px; align-items: center; overflow: hidden; background: #efe9dd; }
-.td2-pythagoras-image { object-fit: cover; object-position: center; }
-.td2-pythagoras-wash { position: absolute; inset: 0; background: linear-gradient(90deg,rgba(250,248,243,.98) 0%,rgba(250,248,243,.9) 34%,rgba(250,248,243,.2) 60%,transparent 76%); }
-.td2-pythagoras-copy { position: relative; z-index: 2; width: min(100% - 56px,1280px); margin: 0 auto; }
-.td2-pythagoras-copy h2 { max-width: 12ch; margin: 0; color: #1c1b1a; font: 500 clamp(2.35rem,3.7vw,3.9rem)/1.22 var(--td-display); letter-spacing: -.06em; }
-.td2-pythagoras-copy > p:not(.td2-eyebrow) { max-width: 49ch; margin: 26px 0 0; color: #625c55; font-size: 1rem; line-height: 1.85; }
-.td2-pythagoras-copy .td2-primary { margin-top: 28px; }
-.td2-pythagoras-credit { position: absolute; right: 22px; bottom: 16px; color: rgba(34,31,27,.68); font-size: .65rem; }
+.td2-proportion { display: grid; min-height: 680px; grid-template-columns: minmax(340px,.72fr) minmax(520px,1.28fr); align-items: center; gap: clamp(54px,7vw,104px); padding: clamp(78px,8vw,112px) max(28px,calc((100vw - 1280px)/2)); overflow: hidden; scroll-margin-top: 90px; background: #efe9dd; }
+.td2-proportion-copy h2 { max-width: 12ch; margin: 0; color: #1c1b1a; font: 500 clamp(2.35rem,3.7vw,3.9rem)/1.22 var(--td-display); letter-spacing: -.06em; }
+.td2-proportion-copy > p:not(.td2-eyebrow) { max-width: 49ch; margin: 26px 0 0; color: #625c55; font-size: 1rem; line-height: 1.85; }
+.td2-proportion-copy .td2-primary { margin-top: 28px; }
+.td2-proportion-study { position: relative; width: min(100%,720px); margin: 0; justify-self: end; padding: clamp(18px,3vw,38px); border: 1px solid rgba(75,55,35,.24); background: linear-gradient(135deg,#e7dbc5,#f8f0df 58%,#e1d1b5); box-shadow: 0 24px 70px rgba(58,43,27,.14); }
+.td2-proportion-study::before { position: absolute; inset: 12px; border: 1px solid rgba(98,72,43,.18); content: ""; pointer-events: none; }
+.td2-proportion-study svg { position: relative; display: block; width: 100%; height: auto; color: #513a29; filter: drop-shadow(0 1px 0 rgba(255,255,255,.4)); }
+.td2-study-grid line { stroke: rgba(93,66,40,.12); stroke-width: 1; }
+.td2-study-frame rect,.td2-study-frame path,.td2-study-frame line { fill: none; stroke: rgba(91,58,34,.42); stroke-width: 1.15; }
+.td2-study-figure ellipse,.td2-study-figure path { fill: rgba(121,83,54,.035); stroke: #65462f; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.2; }
+.td2-study-measures path { fill: none; stroke: rgba(84,55,32,.65); stroke-width: 1.4; }
+.td2-study-label { fill: rgba(74,49,29,.72); font: 700 11px/1 var(--td-body); letter-spacing: 1.8px; }
+.td2-proportion-study figcaption { margin-top: 14px; color: #6f5d4c; font-size: .67rem; line-height: 1.55; text-align: right; }
 
 .td2-close { position: relative; min-height: 500px; padding: 94px max(28px,calc((100vw - 1280px)/2)) 58px; overflow: hidden; background: linear-gradient(180deg,#fff,#f3f6fa); }
 .td2-close > div:first-child { position: relative; z-index: 2; max-width: 750px; }
@@ -343,8 +348,9 @@
   .td2-reality { grid-template-columns: 1fr; min-height: 680px; }
   .td2-reality-steps { width: 100%; justify-self: stretch; }
   .td2-reality > div:first-child { position: relative; z-index: 2; }
-  .td2-pythagoras { min-height: 640px; }
-  .td2-pythagoras-image { object-position: 62% center; }
+  .td2-proportion { grid-template-columns: 1fr; }
+  .td2-proportion-copy { max-width: 720px; }
+  .td2-proportion-study { width: min(100%,680px); justify-self: center; }
 }
 
 @media (max-width: 640px) {
@@ -418,13 +424,12 @@
   .td2-guide p { max-width: 190px; padding: 12px 14px 12px 21px; font-size: .7rem; }
   .td2-reality { min-height: 0; padding: 86px 20px; }
   .td2-reality-steps { margin-top: 38px; }
-  .td2-pythagoras { min-height: 720px; align-items: flex-start; }
-  .td2-pythagoras-image { object-position: 68% center; }
-  .td2-pythagoras-wash { background: linear-gradient(180deg,rgba(250,248,243,.98) 0%,rgba(250,248,243,.9) 48%,rgba(250,248,243,.16) 76%,transparent 90%); }
-  .td2-pythagoras-copy { width: calc(100% - 40px); padding-top: 72px; }
-  .td2-pythagoras-copy h2 { font-size: clamp(2.15rem,10.5vw,3.2rem); }
-  .td2-pythagoras-copy > p:not(.td2-eyebrow) { max-width: 29ch; font-size: .9rem; }
-  .td2-pythagoras-credit { right: 14px; bottom: 10px; font-size: .56rem; }
+  .td2-proportion { min-height: 0; gap: 48px; padding: 220px 20px 82px; scroll-margin-top: 150px; }
+  .td2-proportion-copy h2 { font-size: clamp(2.15rem,10.5vw,3.2rem); }
+  .td2-proportion-copy > p:not(.td2-eyebrow) { max-width: 31ch; font-size: .9rem; }
+  .td2-proportion-study { margin-inline: -8px; width: calc(100% + 16px); padding: 14px; }
+  .td2-proportion-study::before { inset: 7px; }
+  .td2-proportion-study figcaption { padding-inline: 5px; text-align: left; }
   .td2-close { min-height: 680px; padding: 88px 20px 52px; }
   .td2-close ul { grid-template-columns: repeat(2,1fr); gap: 26px 20px; margin-top: 60px; }
   .td2-mountain { right: 0; width: 100%; height: 40%; opacity: .35; }

@@ -53,20 +53,24 @@ test.describe("Taeryeong editorial brand evidence", () => {
       await capture(page, ".td2-editorial-pair", `brand-${width}-success-relationship.png`);
       await capture(page, ".td2-space", `brand-${width}-space.png`);
       await capture(page, ".td2-reality", `brand-${width}-reality.png`);
-      await capture(page, ".td2-pythagoras", `brand-${width}-pythagoras.png`);
+      await capture(page, ".td2-proportion", `brand-${width}-proportion.png`);
 
       await expect(page.locator(".td2-orbits, .td2-reality-orbit, .td2-radar")).toHaveCount(0);
-      const pythagorasQuality = await page.locator(".td2-pythagoras-image").evaluate(async (node) => {
-        const image = node as HTMLImageElement;
-        const box = image.getBoundingClientRect();
-        const response = await fetch(image.currentSrc);
-        const bitmap = await createImageBitmap(await response.blob());
-        const density = bitmap.width / box.width;
-        bitmap.close();
-        return { density, transform: getComputedStyle(image).transform };
+      await expect(page.locator(".td2-proportion img")).toHaveCount(0);
+      const proportionStudy = await page.locator(".td2-proportion-study svg").evaluate((node) => {
+        const svg = node as SVGSVGElement;
+        const box = svg.getBoundingClientRect();
+        return {
+          height: box.height,
+          pathCount: svg.querySelectorAll("path, line, rect, ellipse").length,
+          viewBox: svg.getAttribute("viewBox"),
+          width: box.width,
+        };
       });
-      expect(pythagorasQuality.density).toBeGreaterThanOrEqual(1);
-      expect(pythagorasQuality.transform).toBe("none");
+      expect(proportionStudy.width).toBeGreaterThan(280);
+      expect(proportionStudy.height).toBeGreaterThan(220);
+      expect(proportionStudy.pathCount).toBeGreaterThan(30);
+      expect(proportionStudy.viewBox).toBe("0 0 680 560");
 
       expect(await page.locator(".td2-room-comparison img").count()).toBe(2);
       await page.getByRole("link", { name: "이용 안내" }).click();
