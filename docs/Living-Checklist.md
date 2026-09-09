@@ -355,3 +355,10 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Remediate release-audit advisories with Next.js/eslint-config-next 16.3.3, Vitest 4.1.11, Sharp 0.35.4 and js-yaml 4.3.2; retain only the two existing reviewed audit exclusions.
 - [x] Complete dependency audit, validated 113-component CycloneDX SBOM and production-target build.
 - [x] Production version `3ba9f6c2-678a-4141-8c15-54ddad2add28` reports site/database healthy and payments open; live Korean home and Space route checks passed 2/2. Roll back to `bb146f86-6b32-4ce7-ad0b-7bedc879d227` if required.
+## 2026-09-09 tarot retirement and plain-language naming
+
+- [x] Remove tarot from the public home, service map, sitemap and continuation recommendations.
+- [x] Permanently redirect old localized question links to the personal-pattern route.
+- [x] Replace customer-facing Korean `수비학` wording with `생년월일 패턴` while preserving deterministic engine and route identifiers.
+- [x] Preserve export and deletion of previously saved question records.
+- [x] Verify 1,039 unit/integration cases, 232 passing browser flows with 10 environment-gated skips, and five responsive home visual widths after retirement.

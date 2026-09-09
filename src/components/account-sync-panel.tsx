@@ -43,7 +43,7 @@ const copy = {
     download: "서버 기록을 이 기기로 가져오기",
     export: "서버 기록 JSON 내보내기",
     delete: "서버에 저장된 내 기록 삭제",
-    deleteConfirm: "서버의 프로필, 동의 기록, 타로 기록, Reality Check, 3D 공간과 사진을 삭제할까요? 로그인 계정 자체는 유지됩니다.",
+    deleteConfirm: "서버의 프로필, 동의 기록, 이전 질문 기록, Reality Check, 3D 공간과 사진을 삭제할까요? 로그인 계정 자체는 유지됩니다.",
     synced: "기기 기록이 서버와 동기화되었습니다.",
     restored: "서버 기록을 검증한 뒤 이 기기에 저장했습니다.",
     deleted: "서버에 저장된 기록을 삭제했습니다. 로그인 계정은 유지됩니다.",

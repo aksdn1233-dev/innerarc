@@ -17,7 +17,7 @@ export function enhancePaidReport(report: PaidReport, input: PaidReadingInput): 
     const questions = (input.questions?.length ? input.questions : input.concern ? [input.concern] : []).slice(0, 2);
     questions.forEach((question, index) => {
       supplements.push(`${ko ? `개인 질문 ${index + 1} 직접 답변` : `Personal question ${index + 1}`}\n${ko
-          ? `질문: ${question}\n\n수비학 계산 근거: 생명수 ${profile.lifePath.value}, 개인년 ${profile.personalYear.value}.\n\n답변: ${preview.fullBody} 이것은 결과를 보장하는 예측이 아니라 선택 조건을 점검하기 위한 수비학 해석입니다. 이번 주에는 질문과 관련된 사실, 추측, 다음 행동을 각각 한 문장으로 적어 확인하세요.`
+          ? `질문: ${question}\n\n생년월일 패턴 계산 근거: 생명수 ${profile.lifePath.value}, 개인년 ${profile.personalYear.value}.\n\n답변: ${preview.fullBody} 이것은 결과를 보장하는 예측이 아니라 선택 조건을 점검하기 위한 생년월일 패턴 해석입니다. 이번 주에는 질문과 관련된 사실, 추측, 다음 행동을 각각 한 문장으로 적어 확인하세요.`
           : `Question: ${question}\n\nBasis: Life Path ${profile.lifePath.value}, Personal Year ${profile.personalYear.value}.\n\nAnswer: ${preview.fullBody} This is a decision reflection, not a guaranteed prediction. Write one observed fact, one assumption, and one next action this week.`}`);
     });
     if (input.companion) {

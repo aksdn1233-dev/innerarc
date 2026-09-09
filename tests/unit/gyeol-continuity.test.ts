@@ -10,7 +10,7 @@ describe("GYEOL continuity", () => {
       realityCheckCount: 3,
       tarotReadingCount: 4,
       dailyFlowEnabled: true,
-    }).map((item) => item.kind)).toEqual(["paid_report", "reality_check", "tarot_history"]);
+    }).map((item) => item.kind)).toEqual(["paid_report", "reality_check", "daily_flow"]);
   });
 
   it("does not fabricate change when only deterministic Daily Flow is available", () => {
@@ -33,6 +33,6 @@ describe("GYEOL continuity", () => {
       tarotReadingCount: 0,
       dailyFlowEnabled: false,
     });
-    expect(action).toMatchObject({ kind: "first_reflection", href: "/en/question" });
+    expect(action).toMatchObject({ kind: "first_reflection", href: "/en/numerology" });
   });
 });

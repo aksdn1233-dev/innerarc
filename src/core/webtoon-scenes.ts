@@ -168,7 +168,7 @@ export function selectWebtoonScene(
     propPath: `${WEBTOON_ASSET_ROOT}/shared/props-effects/${decor.prop}`,
     backgroundPath: `${WEBTOON_ASSET_ROOT}/shared/backgrounds/${decor.background}`,
     effectPath: `${WEBTOON_ASSET_ROOT}/shared/props-effects/${decor.effect}`,
-    altText: `${withParticle(character.nameKo, "subject")} 수비학 결과를 설명하는 모습`,
+    altText: `${withParticle(character.nameKo, "subject")} 생년월일 패턴 결과를 설명하는 모습`,
     objectPosition: "center bottom",
   };
 }

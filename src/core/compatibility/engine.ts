@@ -131,7 +131,7 @@ export function createCompatibilityInsight(input: {
     relationshipType: input.relationshipType,
     relationshipLabel: pick(type.label, locale),
     summary: ko
-      ? `${pick(type.label, locale)} 관계를 두 수비학 구조의 공통점과 차이로 살펴보되, 실제 행동과 상호 동의를 판단 기준으로 두는 성찰 지도입니다.`
+      ? `${pick(type.label, locale)} 관계를 두 생년월일 패턴 구조의 공통점과 차이로 살펴보되, 실제 행동과 상호 동의를 판단 기준으로 두는 성찰 지도입니다.`
       : `A reflection map for ${pick(type.label, locale)} using shared and contrasting numerology structures while keeping real behavior and mutual consent as the decision criteria.`,
     roleOrderNote: type.roleNote ? pick(type.roleNote, locale) : undefined,
     sections,

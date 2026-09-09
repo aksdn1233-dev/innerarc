@@ -135,9 +135,9 @@ export function NumerologyWebtoonReading({ locale, result, context, archetype, s
   ];
 
   return (
-    <section aria-label={ko ? "캐릭터와 함께 보는 수비학 결과" : "Numerology result with 태령당 characters"} className={styles.reading}>
+    <section aria-label={ko ? "캐릭터와 함께 보는 생년월일 패턴 결과" : "Numerology result with 태령당 characters"} className={styles.reading}>
       <header className={styles.heading}>
-        <p>{ko ? "태령당 수비학 웹툰 리딩" : "태령당 numerology webtoon reading"}</p>
+        <p>{ko ? "태령당 생년월일 패턴 웹툰 리딩" : "태령당 numerology webtoon reading"}</p>
         <h2>{ko ? "계산 결과를 장면별로 살펴보세요" : "Walk through your calculation, scene by scene"}</h2>
         <span>{ko ? "대사는 이미지가 아닌 웹 텍스트이며, 숫자 계산값은 캐릭터 선택과 무관합니다." : "Dialogue is selectable web text. Characters never change your calculated numbers."}</span>
       </header>
@@ -146,7 +146,7 @@ export function NumerologyWebtoonReading({ locale, result, context, archetype, s
       </div>
       <p className={`${styles.boundary} paper-island`}>
         {ko
-          ? "수비학은 상징을 활용한 자기 성찰 도구이며, 과학적 예측·진단·치료 또는 전문적인 조언을 대신하지 않습니다."
+          ? "생년월일 패턴은 상징을 활용한 자기 성찰 도구이며, 과학적 예측·진단·치료 또는 전문적인 조언을 대신하지 않습니다."
           : "Numerology is a symbolic reflection tool, not scientific prediction, diagnosis, treatment, or professional advice."}
       </p>
     </section>

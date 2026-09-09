@@ -57,7 +57,7 @@ const privacyKo: LegalPageCopy = {
         "3D 공간운을 이용하면 직접 저장한 방 치수·방향·가구·분석·적용 여부·생활 확인 기록을 계정별로 보관합니다. 선택한 사진은 메타데이터를 제거한 축소본만 비공개 저장하고 24시간 뒤 접근을 차단합니다. 이후 시간별 삭제 작업이 처리하며 장애나 대기열이 있으면 파일 삭제가 늦어질 수 있습니다. 방 삭제·계정 전체 삭제와 내보내기를 지원합니다.",
         "방 사진을 OpenAI에 보내는 AI 구조 읽기는 별도 동의가 필요합니다. 제공자 응답 저장은 끄며 생년월일·이름·개인 기록은 이 사진 요청에 넣지 않습니다. 제공자 자체 보존 정책은 적용될 수 있습니다. 메타데이터 제거는 사진 안에 보이는 얼굴·주소를 가리지 않으므로 업로드 전에 가려 주세요. 직접 입력한 방 분석에는 AI 전송이 필요하지 않습니다.",
         "게스트의 생년월일, 선택 입력 이름, 관심사와 고민은 현재 분석을 위해 브라우저 메모리에서 사용되며 사용자가 저장을 선택하지 않으면 새로고침 시 사라집니다.",
-        "이메일 로그인을 선택하면 Supabase가 인증 이메일, 계정 식별자와 세션 정보를 처리합니다. 사용자가 명시적으로 동기화한 환경설정·타로 기록·Reality Check 기록만 계정에 저장됩니다.",
+        "이메일 로그인을 선택하면 Supabase가 인증 이메일, 계정 식별자와 세션 정보를 처리합니다. 사용자가 명시적으로 동기화한 환경설정·이전 질문 기록·Reality Check 기록만 계정에 저장됩니다.",
         `결제 시 주문번호, 상품코드, 결제금액, 통화, 결제수단, 결제상태와 이용권 만료일을 보관합니다. 결제 안내에 필요한 휴대폰 번호와 카드번호·계좌 비밀번호·휴대폰 인증정보는 ${brandNameKo} 서버에 저장하지 않고 결제대행사 페이앱이 처리합니다.`,
         "로그인 사용자가 명시적으로 Reality Check나 실제 삶의 사건을 저장하면 패턴 프로필·가설·응답·근거 사건·결과·신뢰도 변경 이력과 연결 관계가 계정별로 저장됩니다. 원문은 입력 목적에 필요한 범위로 제한합니다.",
         "서비스 운영을 위해 날짜·언어·화면 동작 종류별 조회·버튼·입력·결제 합계만 저장합니다. 이 집계에는 이름, 생년월일, 질문, 휴대폰 번호, IP 주소, 계정·세션 식별자를 넣지 않으며 개인별 이용기록이나 고유 방문자 수를 만들지 않습니다.",
@@ -132,7 +132,7 @@ const privacyEn: LegalPageCopy = {
         "3D Space stores room dimensions, orientation, furniture, analysis, applied changes and experience checks under your account after you choose to save. Selected photos are resized, metadata-stripped private derivatives. Access expires after 24 hours; hourly cleanup removes files, with possible delays during outages or backlogs. Room/account deletion and data export are supported.",
         "Sending room photos to OpenAI for structure extraction requires separate consent. Provider response storage is disabled; birth dates, names and personal records are excluded from photo requests. The provider's own retention policy may still apply. Metadata removal does not hide visible faces or addresses; redact those before upload. Manual room analysis needs no AI transfer.",
         "A guest's birth date, optional name, interests, and concern are used in browser memory for the current analysis and disappear on refresh unless the person explicitly saves them.",
-        "If email sign-in is selected, Supabase handles the authentication email, account identifier, and session. Only preferences, tarot records, and Reality Check records explicitly synchronized by the person are stored with the account.",
+        "If email sign-in is selected, Supabase handles the authentication email, account identifier, and session. Only preferences, saved question records, and Reality Check records explicitly synchronized by the person are stored with the account.",
         `${brandNameKo} retains the order ID, product code, amount, currency, method, status, and access expiry. PayApp handles payment-instruction phone and payment credentials; ${brandNameKo} does not store those credential values.`,
         "When a signed-in person explicitly saves a Reality Check or life event, account-scoped pattern profiles, hypotheses, responses, evidence events, outcomes, confidence revisions, and graph links are stored.",
         `For ordinary service analytics, ${brandNameKo} stores only daily totals by language and interaction type. These totals exclude names, birth dates, questions, phone numbers, IP addresses, account IDs, and session IDs.`,
@@ -205,7 +205,7 @@ const termsKo: LegalPageCopy = {
     {
       title: "서비스의 성격",
       paragraphs: [
-        "태령당은 생년월일의 흐름과 타로 상징을 자기성찰 가설로 제공합니다. 미래, 관계 성공, 성격의 본질, 질병, 법률 결과, 투자 수익을 보장하거나 과학적으로 예측하지 않습니다.",
+        "태령당은 생년월일의 흐름과 생년월일 상징을 자기성찰 가설로 제공합니다. 미래, 관계 성공, 성격의 본질, 질병, 법률 결과, 투자 수익을 보장하거나 과학적으로 예측하지 않습니다.",
       ],
     },
     {
@@ -273,7 +273,7 @@ const termsEn: LegalPageCopy = {
     {
       title: "Nature of the service",
       paragraphs: [
-        `${brandNameKo} uses birth-date themes and tarot symbols as self-reflection hypotheses. It does not guarantee or scientifically predict the future, relationship success, identity, illness, legal outcomes, or investment returns.`,
+        `${brandNameKo} uses birth-date themes and birth-date symbols as self-reflection hypotheses. It does not guarantee or scientifically predict the future, relationship success, identity, illness, legal outcomes, or investment returns.`,
       ],
     },
     {

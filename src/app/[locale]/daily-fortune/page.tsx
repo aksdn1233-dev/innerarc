@@ -14,8 +14,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       }
     : {
         title: "오늘의 운세·하루 흐름 | 태령당",
-        description: "현지 날짜에 맞춰 하루 한 번 갱신되는 무료 수비학 성찰입니다. 결과를 예언하지 않고 오늘의 흐름과 질문을 제안합니다.",
-        keywords: ["오늘의 운세", "무료 운세", "하루 운세", "수비학", "오늘의 흐름"],
+        description: "현지 날짜에 맞춰 하루 한 번 갱신되는 무료 생년월일 패턴 성찰입니다. 결과를 예언하지 않고 오늘의 흐름과 질문을 제안합니다.",
+        keywords: ["오늘의 운세", "무료 운세", "하루 운세", "생년월일 패턴", "오늘의 흐름"],
         alternates: { canonical: "/ko/daily-fortune", languages: { ko: "/ko/daily-fortune", en: "/en/daily-fortune" } },
       };
 }

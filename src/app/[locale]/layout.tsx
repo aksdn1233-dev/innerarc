@@ -54,7 +54,7 @@ export async function generateMetadata({
           "운세",
           "오늘의 운세",
           "운명수",
-          "수비학",
+          "생년월일 패턴",
           "궁합",
           "관계 리딩",
         ]

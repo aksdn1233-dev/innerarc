@@ -48,7 +48,7 @@ export const evidenceCopy = {
     // who cannot tell the difference has been misled even by true sentences.
     liveTitle: "라이브 리딩 중에 올라온 반응",
     liveIntro:
-      "운영자가 진행한 실시간 사주·타로 라이브 방송에서 시청자분들이 채팅으로 남긴 말들입니다. 오타까지 원문 그대로이고, 닉네임은 방송 화면에 공개되어 있던 그대로입니다.",
+      "운영자가 진행한 실시간 사주 라이브 방송에서 시청자분들이 채팅으로 남긴 말들입니다. 오타까지 원문 그대로이고, 닉네임은 방송 화면에 공개되어 있던 그대로입니다.",
     liveBoundary:
       "웹사이트 리포트를 구매하고 남긴 후기와는 별개입니다. 구매 후기는 결제·열람이 확인된 분에게만 요청하며, 공개 승인을 거친 뒤 위에 표시됩니다.",
     liveLabel: "라이브 채팅",
@@ -92,7 +92,7 @@ export const evidenceCopy = {
     summaryChanged: "{n} of {total} published reviews said the reading changed a planned action.",
     liveTitle: "Said during a live reading",
     liveIntro:
-      "Messages viewers typed into the chat during the operator's live Korean fortune and tarot broadcasts. They are reproduced exactly as written, in Korean, with a translation underneath; the handles are the public ones the broadcast showed.",
+      "Messages viewers typed into the chat during the operator's live Korean fortune broadcasts. They are reproduced exactly as written, in Korean, with a translation underneath; the handles are the public ones the broadcast showed.",
     liveBoundary:
       "These are not reviews of a purchased report. Purchase feedback is requested only from people whose payment and access were confirmed, and appears above once approved.",
     liveLabel: "Live chat",

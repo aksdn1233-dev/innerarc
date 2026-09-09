@@ -46,7 +46,7 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
     ["공유도 해야 응모되나요?", "공유 버튼은 행사 소식을 원하는 사람에게 직접 보낼 수 있도록 마련했습니다. 외부 앱에서 실제로 전송했는지는 결이 추적하거나 저장하지 않으므로 추첨 응모 조건은 후기 제출과 별도 응모 동의입니다."],
     ["당첨자는 어떻게 확인하나요?", `${drawLabel} 이후 이 페이지에 주문번호 일부를 가려 게시합니다. 당첨자는 게시일로부터 7일 안에 고객지원으로 연락해 해당 리포트의 소유를 확인하면 됩니다. 기한 내 확인되지 않으면 다시 추첨합니다.`],
     ["친구 초대 쿠폰과 같이 쓸 수 있나요?", "1,500원으로 할인된 사주 원국과 상세 리딩에는 중복 적용되지 않습니다. 행사에서 제외된 79,000원 프리미엄 심층 리딩에는 기존 쿠폰 조건을 충족하면 사용할 수 있습니다."],
-    ["리딩이 미래를 보장하나요?", "아닙니다. 결의 수비학과 사주는 자기 성찰을 돕는 상징적 도구이며 과학적 예측, 진단, 치료, 법률·의료·재무 등 전문적 조언을 대신하지 않습니다."],
+    ["리딩이 미래를 보장하나요?", "아닙니다. 결의 생년월일 패턴과 사주는 자기 성찰을 돕는 상징적 도구이며 과학적 예측, 진단, 치료, 법률·의료·재무 등 전문적 조언을 대신하지 않습니다."],
   ] : [
     ["Which products are ₩1,500?", "The Four Pillars chart (regular ₩5,500) and Detailed reading (regular ₩39,000) each cost ₩1,500 during the campaign. The Premium in-depth reading is excluded and remains ₩79,000; accessories and physical products are also excluded."],
     ["When does it end?", `The campaign ends automatically at ${endLabel}. The regular price shown at checkout applies afterward.`],

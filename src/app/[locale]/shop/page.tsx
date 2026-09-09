@@ -14,9 +14,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
         alternates: { canonical: "/en/shop", languages: { ko: "/ko/shop", en: "/en/shop" } },
       }
     : {
-        title: "사주·수비학 악세서리 콘셉트 상점 | 태령당",
-        description: "사주 오행과 수비학 결과를 분리해 살펴보는 자동 생성 악세서리 콘셉트 상점입니다. 현재 결제는 열려 있지 않습니다.",
-        keywords: ["사주 악세서리", "수비학 악세서리", "오행 악세서리", "주문 제작 악세서리"],
+        title: "사주·생년월일 패턴 악세서리 콘셉트 상점 | 태령당",
+        description: "사주 오행과 생년월일 패턴 결과를 분리해 살펴보는 자동 생성 악세서리 콘셉트 상점입니다. 현재 결제는 열려 있지 않습니다.",
+        keywords: ["사주 악세서리", "생년월일 패턴 악세서리", "오행 악세서리", "주문 제작 악세서리"],
         alternates: { canonical: "/ko/shop", languages: { ko: "/ko/shop", en: "/en/shop" } },
       };
 }

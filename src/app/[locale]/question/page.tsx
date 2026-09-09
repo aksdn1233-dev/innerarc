@@ -1,16 +1,14 @@
-import { notFound } from "next/navigation";
-import { QuestionTarotExperience } from "@/components/question-tarot-experience";
+import { notFound, permanentRedirect } from "next/navigation";
 import { isLocale } from "@/i18n/config";
-import { questionCopy } from "@/i18n/question-copy";
 
 export const dynamic = "force-dynamic";
 
-export default async function QuestionPage({
+export default async function RetiredQuestionPage({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  return <QuestionTarotExperience locale={locale} copy={questionCopy[locale]} />;
+  permanentRedirect(`/${locale}/numerology`);
 }
