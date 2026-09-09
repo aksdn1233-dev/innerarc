@@ -79,6 +79,8 @@ const content = {
     relationshipTitle: <>둘이 어디서 잘 맞고<br />어디서 부딪힐까요?</>,
     relationshipBody: "연인, 가족, 친구, 동료와 생각하고 행동하는 방식을 비교해요.",
     relationshipCta: "둘의 관계 보기",
+    relationshipCompare: "둘의 차이를 나란히 봅니다",
+    relationshipAxes: ["말하는 방식", "결정하는 속도", "혼자 필요한 시간"],
     spaceEyebrow: "3D 공간운",
     spaceTitle: <>내 방, 어디를<br /><span>바꾸면 좋을까요?</span></>,
     spaceBody: "방을 찍으면 지금 모습과 바꾼 모습을 3D로 비교해요.",
@@ -93,7 +95,12 @@ const content = {
     realityTitle: <>나중에 다시 보고,<br />실제로 어땠는지 남겨요.</>,
     realityBody: "한 달 뒤에 돌아와 결과가 맞았는지 간단히 기록할 수 있어요.",
     realityCta: "기록 남기기",
-    realityOrbit: "현실에서\n검증된 해석",
+    realitySteps: ["오늘의 해석 저장", "생활에서 확인", "다음 분석에 반영"],
+    pythagorasEyebrow: "생년월일 패턴의 바탕",
+    pythagorasTitle: <>숫자는 답이 아니라,<br />나를 살펴보는 출발점입니다.</>,
+    pythagorasBody: "피타고라스의 수 전통에서 가져온 상징과 태령당의 계산 결과를 구분해 보여드려요. 같은 생년월일은 언제나 같은 값으로 계산됩니다.",
+    pythagorasCta: "내 숫자 계산해보기",
+    pythagorasAlt: "밝은 서재에서 수학 도형이 그려진 종이를 살펴보는 피타고라스의 상상화",
     closeTitle: "궁금한 것부터 시작해보세요.",
     closeBody: "기본 분석은 무료로 바로 볼 수 있어요.",
     closeCta: "무료로 나 알아보기",
@@ -139,8 +146,15 @@ const content = {
     previewEyebrow: "PERSONAL PATTERN ANALYSIS", previewTitle: <>See why the same choices<br />keep returning.</>, previewBody: "Your strengths, recurring friction, and one practical change are shown with the calculation behind them.", previewCta: "Start free analysis", sample: "Sample result", sampleDate: "4 November 1994", sampleHeadline: "You think deeply and notice people well, but may spend too long deciding alone.", samplePoints: ["What comes naturally", "The choice that repeats", "One thing to try now"], chartLabels: ["Thinking", "Expression", "Action", "Connection", "Recovery", "Adaptation"],
     successEyebrow: "SUCCESS PATTERN COMPARISON", successTitle: <>Look past matching numbers<br />to how lives diverged.</>, successBody: "We use public birth dates and sourced career events. A public figure's life does not determine your future.", successCta: "Compare my success pattern",
     relationshipEyebrow: "RELATIONSHIP INTELLIGENCE", relationshipTitle: <>See where you diverge,<br />not just whether you match.</>, relationshipBody: "Compare how partners, family, friends, coworkers, or business partners operate across eight domains. No score decides whether a relationship is good or bad.", relationshipCta: "Start relationship analysis",
+    relationshipCompare: "See the differences side by side",
+    relationshipAxes: ["How you communicate", "How quickly you decide", "Time you need alone"],
     spaceEyebrow: "3D SPACE", spaceTitle: <>Your room,<br /><span>what could work better?</span></>, spaceBody: "Add room photos to compare your current and suggested layouts side by side in 3D.", spaceSteps: ["Take 2–6 room photos", "Show which way is north", "Compare the suggested layout"], spaceCta: "Analyze my room", spaceDemo: "Try the 3D example", before: "Current", after: "Suggested", spaceBubble: "Try widening the path beside the bed.", spaceDisclosure: "Traditional feng shui and practical room advice are clearly separated.",
-    realityEyebrow: "REALITY CHECK", realityTitle: <>Go beyond interpretation.<br />Check it against real life.</>, realityBody: "A later reflection becomes evidence for the next reading. Results that missed remain visible too.", realityCta: "Start Reality Check", realityOrbit: "Tested in\nreal life",
+    realityEyebrow: "REALITY CHECK", realityTitle: <>Go beyond interpretation.<br />Check it against real life.</>, realityBody: "A later reflection becomes evidence for the next reading. Results that missed remain visible too.", realityCta: "Start Reality Check", realitySteps: ["Save today's reading", "Check it in daily life", "Use it in the next reading"],
+    pythagorasEyebrow: "WHERE BIRTH-DATE PATTERNS BEGIN",
+    pythagorasTitle: <>Numbers are a starting point<br />for reflection, not an answer.</>,
+    pythagorasBody: "We clearly separate symbolism drawn from the Pythagorean number tradition from Taeryeongdang's deterministic calculations. The same birth date always returns the same calculated values.",
+    pythagorasCta: "Calculate my numbers",
+    pythagorasAlt: "An imagined portrait of Pythagoras studying a sheet with a geometric figure in a bright study",
     closeTitle: "Begin your story today.", closeBody: "Read where you are now, then return to see what matched real life.", closeCta: "Start free", benefits: ["Simple start", "Visible evidence", "Personal report", "Ongoing checks"], footerBody: "Personal Pattern Intelligence that turns symbols into real questions and checks them against lived experience.", footerBoundary: "Saju, birth-date patterns, and feng shui are symbolic reflection tools, not scientific prediction, diagnosis, treatment, or guaranteed outcomes.", copyright: "Byeolloof · Busan, Republic of Korea",
   },
 } as const;
@@ -354,16 +368,14 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
         <Link className="td2-text-link" href={`/${locale}/numerology`} prefetch={false} onClick={track}>{t.previewCta}<Arrow /></Link>
       </div>
       <article className="td2-report-preview" aria-label={t.sample}>
-        <header><div><small>{t.sample}</small><strong>{t.sampleDate}</strong></div><span aria-hidden="true">⌁</span></header>
+        <header><div><small>{t.sample}</small><strong>{t.sampleDate}</strong></div></header>
         <nav aria-label={locale === "ko" ? "예시 리포트 목차" : "Sample report sections"}><b>{locale === "ko" ? "전체 성향" : "Overview"}</b><span>{locale === "ko" ? "강점" : "Strengths"}</span><span>{locale === "ko" ? "주의점" : "Cautions"}</span><span>{locale === "ko" ? "인생 흐름" : "Rhythm"}</span></nav>
         <h3>{t.sampleHeadline}</h3>
         <ol className="td2-report-points">
           {t.samplePoints.map((point, index) => <li key={point}><small>{String(index + 1).padStart(2, "0")}</small><strong>{point}</strong></li>)}
         </ol>
-        <div className="td2-radar-row">
-          <div className="td2-radar" role="img" aria-label={t.chartLabels.map((label, index) => `${label} ${[82,72,64,88,76,69][index]}`).join(", ")}>
-            <span /><span /><span /><i />
-          </div>
+        <div className="td2-score-row">
+          <div className="td2-score-summary" aria-hidden="true"><small>{locale === "ko" ? "핵심 항목" : "CORE AREAS"}</small><strong>6</strong><span>{locale === "ko" ? "계산값을 나란히 비교" : "calculated values compared"}</span></div>
           <dl>{t.chartLabels.map((label, index) => <div key={label}><dt>{label}</dt><dd><span style={{ width: `${[82,72,64,88,76,69][index]}%` }} /></dd></div>)}</dl>
         </div>
         <footer><span>{locale === "ko" ? "계산 근거" : "Calculation"}<b>11 · 4 · 6 · 7</b></span><span>{locale === "ko" ? "해석 구분" : "Evidence labels"}<b>{locale === "ko" ? "계산 · 상징 · 현실" : "fact · symbol · reality"}</b></span></footer>
@@ -388,7 +400,10 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
           <p className="td2-eyebrow">{t.relationshipEyebrow}</p><h2 id="td2-relationship-title">{t.relationshipTitle}</h2><p>{t.relationshipBody}</p>
           <Link className="td2-text-link" href={`/${locale}/relationship`} prefetch={false}>{t.relationshipCta}<Arrow /></Link>
         </div>
-        <div className="td2-orbits" aria-hidden="true"><i /><i /><i /><div><span>A</span><span>B</span></div></div>
+        <div className="td2-relationship-compare" aria-hidden="true">
+          <header><span>{locale === "ko" ? "나" : "ME"}</span><b>{t.relationshipCompare}</b><span>{locale === "ko" ? "상대" : "THEM"}</span></header>
+          {t.relationshipAxes.map((axis, index) => <div key={axis}><strong>{axis}</strong><span style={{ width: `${74 - index * 9}%` }} /><i /><span style={{ width: `${48 + index * 12}%` }} /></div>)}
+        </div>
       </article>
     </section>
 
@@ -415,7 +430,14 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
 
     <section className="td2-reality" aria-labelledby="td2-reality-title">
       <div><p className="td2-eyebrow">{t.realityEyebrow}</p><h2 id="td2-reality-title">{t.realityTitle}</h2><p>{t.realityBody}</p><Link className="td2-light-button" href={`/${locale}/reality-check`} prefetch={false}>{t.realityCta}<Arrow /></Link></div>
-      <div className="td2-reality-orbit" aria-hidden="true"><i /><i /><span>{t.realityOrbit.split("\n").map(part => <b key={part}>{part}</b>)}</span><em /><em /></div>
+      <ol className="td2-reality-steps">{t.realitySteps.map((step, index) => <li key={step}><small>0{index + 1}</small><strong>{step}</strong></li>)}</ol>
+    </section>
+
+    <section className="td2-pythagoras" aria-labelledby="td2-pythagoras-title">
+      <Image className="td2-pythagoras-image" src="/images/brand/pythagoras-editorial-v1.webp" alt={t.pythagorasAlt} fill quality={88} sizes="100vw" />
+      <div className="td2-pythagoras-wash" aria-hidden="true" />
+      <div className="td2-pythagoras-copy"><p className="td2-eyebrow">{t.pythagorasEyebrow}</p><h2 id="td2-pythagoras-title">{t.pythagorasTitle}</h2><p>{t.pythagorasBody}</p><Link className="td2-primary" href={`/${locale}/numerology`} prefetch={false}>{t.pythagorasCta}<Arrow /></Link></div>
+      <small className="td2-pythagoras-credit">{locale === "ko" ? "피타고라스 상상화 · 생성형 이미지" : "Imagined portrait of Pythagoras · generated image"}</small>
     </section>
 
     <section className="td2-close" aria-labelledby="td2-close-title">

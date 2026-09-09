@@ -64,7 +64,7 @@ const copy = {
     download: "Restore server records to this device",
     export: "Export server records as JSON",
     delete: "Delete my server records",
-    deleteConfirm: "Delete your server profile, consent receipts, tarot history, Reality Checks, and 3D rooms and photos? Your login identity will remain.",
+    deleteConfirm: "Delete your server profile, consent receipts, saved question history, Reality Checks, and 3D rooms and photos? Your login identity will remain.",
     synced: "Device records were synchronized with the server.",
     restored: "Server records were validated and saved on this device.",
     deleted: "Server records were deleted. Your login identity remains.",
