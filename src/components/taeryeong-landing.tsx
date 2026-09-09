@@ -17,19 +17,19 @@ const content = {
   ko: {
     navLabel: "태령당 주요 메뉴",
     services: "서비스",
-    guide: "처음 안내",
-    analysis: "나 알아보기",
-    success: "성공 비교",
-    relationship: "관계 보기",
+    guide: "이용 안내",
+    analysis: "수비학",
+    success: "유명인 비교",
+    relationship: "궁합",
     space: "3D 공간운",
     reviews: "이용 후기",
     login: "구매 내역",
-    start: "내 방 분석",
-    kicker: "나부터 내 방까지",
-    title: <>나와 내 삶을<br />조금 더 쉽게<br /><em>알아보세요.</em></>,
-    heroBody: "생년월일을 넣으면 나, 관계, 일, 공간의 흐름을 차근차근 보여드려요.",
-    heroPrimary: "무료로 나 알아보기",
-    heroSecondary: "내 방 분석하기",
+    start: "무료 사주",
+    kicker: "PERSONAL PATTERN INTELLIGENCE",
+    title: <>사람의 흐름을 읽어<br /><em>더 나은 오늘을 만듭니다.</em></>,
+    heroBody: "사주와 수비학의 계산 근거를 바탕으로, 반복되는 성향과 선택을 현실에 맞게 풀어드립니다.",
+    heroPrimary: "무료 사주 보기",
+    heroSecondary: "서비스 둘러보기",
     heroNote: "무료로 시작 · 계산 과정 확인 · 나중에 다시 보기",
     heroArtNote: "브랜드 연출 이미지 · 생성형 이미지",
     guideCue: "처음이세요? 1분 안내 보기",
@@ -45,17 +45,23 @@ const content = {
     ],
     guideAction: "결과 예시 보기",
     guideClose: "안내 닫기",
+    trustItems: [
+      ["정확한 계산", "같은 입력은 같은 결과"],
+      ["쉬운 해석", "생활에 맞춘 설명"],
+      ["다양한 분석", "사주·수비학·타로·궁합"],
+      ["안전한 이용", "기록과 개인정보 직접 관리"],
+    ],
     readEyebrow: "태령당에서 할 수 있는 것",
     readTitle: <>지금 궁금한 걸<br />바로 볼 수 있어요.</>,
     readBody: "나를 알아보고, 둘을 비교하고, 내 방까지 살펴볼 수 있어요.",
     sajuHub: "사주 보기",
     freePattern: "나 알아보기",
     pillars: [
-      ["01", "나는 어떤 사람일까?", "사주 · 수비학 · 타로", "내 성향과 자주 반복하는 선택을 살펴봐요.", "/ko/numerology"],
-      ["02", "성공한 사람과 뭐가 다를까?", "성공 비교", "닮은 점과 다른 점을 실제 기록과 함께 봐요.", "/ko/celebrity"],
-      ["03", "우리는 어디서 부딪힐까?", "관계 보기", "두 사람의 차이와 잘 맞는 부분을 찾아봐요.", "/ko/relationship"],
-      ["04", "내 방은 어떻게 바꿀까?", "3D 공간운", "지금 배치와 추천 배치를 3D로 비교해요.", "/ko/space"],
-      ["05", "결과가 실제로 맞았을까?", "다시 확인하기", "시간이 지난 뒤 실제 경험을 남겨봐요.", "/ko/reality-check"],
+      ["01", "타고난 기질과 흐름", "사주", "명식과 오행을 계산 근거와 함께 살펴봅니다.", "/ko/fortune"],
+      ["02", "반복되는 나의 패턴", "수비학", "생년월일에 담긴 핵심 수와 선택의 흐름을 봅니다.", "/ko/numerology"],
+      ["03", "지금 필요한 질문", "타로", "정답 대신 현재 상황을 바라볼 질문을 만듭니다.", "/ko/question"],
+      ["04", "두 사람의 차이와 조화", "궁합", "연인·가족·동료가 부딪히고 맞는 지점을 비교합니다.", "/ko/compatibility"],
+      ["05", "내 방의 흐름", "3D 공간운", "지금 배치와 추천 배치를 실제 3D로 비교합니다.", "/ko/space"],
     ],
     previewEyebrow: "개인 패턴 분석",
     previewTitle: <>왜 같은 선택을 반복하는지<br />한눈에 보여드려요.</>,
@@ -117,6 +123,12 @@ const content = {
     ],
     guideAction: "See a sample result",
     guideClose: "Close guide",
+    trustItems: [
+      ["Auditable calculation", "The same input returns the same result"],
+      ["Practical interpretation", "Clear language for everyday choices"],
+      ["Connected services", "Saju, numerology, tarot and compatibility"],
+      ["Private by design", "You control your records and data"],
+    ],
     readEyebrow: "WHAT YOU CAN DO", readTitle: <>Start with what<br />you want to understand.</>, readBody: "Explore yourself, compare two people, and even review your room.", sajuHub: "Open Four Pillars services", freePattern: "View free pattern",
     pillars: [
       ["01", "Read yourself.", "Saju · numerology · tarot", "Calculated evidence and symbolic interpretation stay distinct.", "/en/numerology"],
@@ -221,7 +233,7 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
   return <main className="td2" id="main-content" tabIndex={-1}>
     <header className="td2-nav-shell">
       <Link className="td2-brand" href={`/${locale}`} aria-label={locale === "ko" ? "태령당 홈" : "Taeryeongdang home"}>
-        <strong>태령당</strong><small>TAERYEONGDANG</small>
+        <strong>태령당</strong><small>PERSONAL PATTERN INTELLIGENCE</small>
       </Link>
       <nav className="td2-nav" aria-label={t.navLabel}>
         <a href="#guide" onClick={(event) => { event.preventDefault(); openGuide(); }}>{t.guide}</a>
@@ -239,21 +251,25 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
     </header>
 
     <section className="td2-hero" aria-labelledby="td2-hero-title">
-      <Image className="td2-hero-image" src="/images/brand/taeryeong-editorial-hero-v2.png" alt="" fill priority sizes="100vw" />
+      <Image className="td2-hero-image" src="/images/brand/taeryeong-night-hero-v3.jpg" alt="" fill priority sizes="100vw" />
       <div className="td2-hero-wash" aria-hidden="true" />
       <div className="td2-hero-copy">
         <p className="td2-kicker">{t.kicker}</p>
         <h1 id="td2-hero-title">{t.title}</h1>
         <p className="td2-lead">{t.heroBody}</p>
         <div className="td2-actions">
-          <Link className="td2-primary" href={`/${locale}/numerology`} onClick={track}>{t.heroPrimary}<Arrow /></Link>
-          <Link className="td2-secondary" href={`/${locale}/space`} prefetch={false}>{t.heroSecondary}<Arrow /></Link>
+          <Link className="td2-primary" href={`/${locale}/fortune`} onClick={track}>{t.heroPrimary}<Arrow /></Link>
+          <a className="td2-secondary" href="#services">{t.heroSecondary}<Arrow /></a>
         </div>
         <p className="td2-note">{t.heroNote.split(" · ").map((part, index) => <span key={part}>{index > 0 ? " · " : ""}{part}</span>)}</p>
         <button className="td2-guide-cue" onClick={openGuide} type="button">{t.guideCue}<Arrow /></button>
       </div>
       <div className="td2-hero-signature" aria-hidden="true"><span>태</span><span>령</span><span>당</span></div>
       <small className="td2-hero-art-note">{t.heroArtNote}</small>
+    </section>
+
+    <section className="td2-trust-strip" aria-label={locale === "ko" ? "태령당 이용 원칙" : "Taeryeongdang service principles"}>
+      {t.trustItems.map(([title, body]) => <div key={title}><strong>{title}</strong><span>{body}</span></div>)}
     </section>
 
     <nav className="td2-story-nav" aria-label={locale === "ko" ? "메인 소개 바로가기" : "Home story navigation"}>

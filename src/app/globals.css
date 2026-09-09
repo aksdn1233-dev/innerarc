@@ -1,25 +1,25 @@
 @import "./campaign-events.css";
 
 :root {
-  --paper: #f6f8fb;
-  --paper-deep: #edf2f7;
-  --ink: #172033;
+  --paper: #f7f3ea;
+  --paper-deep: #efe8dc;
+  --ink: #171717;
   /* Both tones carry small, heavy label text — eyebrows, kickers, disclaimers — and both
      were just under AA on this paper: clay measured 4.33:1 on --paper and 3.86:1 on
      --paper-deep, muted 4.81 and 4.29, against the 4.5 those sizes need. Darkened only far
      enough to clear it on every ground the site paints, terracotta and grey intact. */
-  --muted: #5b6575;
+  --muted: #6b655e;
   /* Two darker body-text shades that fifteen rules had written as literals. Same values
      as before; they are tokens now so a ground change can reach them. */
-  --ink-soft: #3f4a5d;
-  --ink-quiet: #536074;
+  --ink-soft: #423e39;
+  --ink-quiet: #5b554f;
   --gold-ink: #8a6232;
   --clay-ink: #95523b;
-  --line: #dce3eb;
-  --sage: #526b8f;
-  --sage-dark: #1c2d49;
-  --clay: #4569a5;
-  --white: #ffffff;
+  --line: #ded5c7;
+  --sage: #746a58;
+  --sage-dark: #1c1b1a;
+  --clay: #7d272e;
+  --white: #fbf8f2;
   --radius-sm: 12px;
   --radius-md: 18px;
   --shadow: 0 12px 34px rgba(35, 50, 74, 0.08);
