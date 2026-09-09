@@ -1691,3 +1691,10 @@
 - Decision: Remove the four-step guide from the home document flow. Open it as an accessible modal on the first visit, remember dismissal with the existing local boolean, and let the permanent `처음 안내` navigation item reopen it. Escape, backdrop, close button, body scroll lock and keyboard focus containment are required.
 - Visual and cost decision: Replace the legacy dark MP4 presentation on this route with four lightweight HTML/CSS product previews for question choice, birth-date intake, free result and detailed report. The previews use the shipped light design tokens and real product concepts without customer data. This removes guide video downloads and avoids color filters that distort text and status colors.
 - Safety and reversal: No calculation, payment, auth, report, provider, token, storage or claim behavior changes. Revert the modal component/CSS and restore the in-flow guide if first-visit comprehension, accessibility or conversion worsens; no migration exists.
+
+## D-098 - Open the four-step guide on every public-home visit
+
+- Date: 2026-09-09
+- Decision: Open the dismissible four-step guide whenever the Korean or English public home is newly loaded. Remove the seen marker and keep the hero cue plus header navigation available so the guide remains easy to find after dismissal.
+- Demand and distribution: This directly follows the owner's request for permanent exposure. Distribution remains the existing public home; no price, payment, provider, model, token, calculation, account, report or 3D behavior changes.
+- Guardrails and reversal: The dialog still closes by its button, Escape or backdrop and does not reopen during the same mounted page session. Accessibility, mobile overflow and home regression tests must remain green. Revert this decision to restore one-time storage-based exposure if repeat-visit interruption harms completion or conversion.

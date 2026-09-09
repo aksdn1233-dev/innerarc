@@ -11,7 +11,6 @@ type Props = {
   reviewCount: number | null;
 };
 
-const GUIDE_SEEN_KEY = "gyeol.guide.seen.v1";
 const GUIDE_SCREENS = ["questions", "intake", "free-result", "report"] as const;
 
 const content = {
@@ -176,7 +175,6 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
     : t.reviews;
 
   const track = () => captureConversionEvent("primary_cta_click", locale, { location: "hero" });
-  const [showGuideCue, setShowGuideCue] = useState(false);
   const [guideOpen, setGuideOpen] = useState(false);
   const [guideStep, setGuideStep] = useState(0);
   const guideRef = useRef<HTMLElement>(null);
@@ -184,14 +182,7 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
   const guideCloseRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      try {
-        const firstVisit = window.localStorage.getItem(GUIDE_SEEN_KEY) !== "1";
-        setShowGuideCue(firstVisit);
-        setGuideOpen(firstVisit);
-      }
-      catch { setShowGuideCue(true); setGuideOpen(true); }
-    }, 0);
+    const timer = window.setTimeout(() => setGuideOpen(true), 0);
     return () => window.clearTimeout(timer);
   }, []);
 
@@ -220,13 +211,10 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
   }, [guideOpen]);
 
   function openGuide() {
-    try { window.localStorage.setItem(GUIDE_SEEN_KEY, "1"); } catch { /* non-blocking */ }
     setGuideOpen(true);
   }
 
   function closeGuide() {
-    try { window.localStorage.setItem(GUIDE_SEEN_KEY, "1"); } catch { /* non-blocking */ }
-    setShowGuideCue(false);
     setGuideOpen(false);
   }
 
@@ -262,7 +250,7 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
           <Link className="td2-secondary" href={`/${locale}/space`} prefetch={false}>{t.heroSecondary}<Arrow /></Link>
         </div>
         <p className="td2-note">{t.heroNote.split(" · ").map((part, index) => <span key={part}>{index > 0 ? " · " : ""}{part}</span>)}</p>
-        {showGuideCue && <button className="td2-guide-cue" onClick={openGuide} type="button">{t.guideCue}<Arrow /></button>}
+        <button className="td2-guide-cue" onClick={openGuide} type="button">{t.guideCue}<Arrow /></button>
       </div>
       <div className="td2-hero-signature" aria-hidden="true"><span>태</span><span>령</span><span>당</span></div>
       <small className="td2-hero-art-note">{t.heroArtNote}</small>
