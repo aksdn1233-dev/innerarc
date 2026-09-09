@@ -39,6 +39,8 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await expect(page.locator(".td2-footer")).toContainText("사업자등록번호");
   await expect(page.locator('.td2-nav a:has-text("이용 안내")')).toHaveAttribute("href", "#guide");
   await expect(page.locator('.td2-nav a:has-text("이용 후기")')).toHaveAttribute("href", "/ko/reading#evidence");
+  await expect(page.locator('.td2-nav a:has-text("궁합")')).toHaveAttribute("href", "/ko/compatibility");
+  await expect(page.locator(".td2-nav-actions").getByRole("link", { name: /무료 사주/ })).toHaveAttribute("href", "/ko/fortune");
   await page.locator(".td2-hero").getByRole("link", { name: /무료 사주 보기/ }).click();
   await page.waitForURL("**/ko/fortune");
 
