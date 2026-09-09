@@ -319,3 +319,4 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] The first accessibility pass caught the new story navigator at 4.48:1; its inactive labels now use darker ink and remain covered on Korean/English desktop and mobile.
 - [x] The four-step area now uses the supplied reference's blue gradient, translucent segmented control and white device frame; the real fixture clips are presented with a light UI treatment without changing or enlarging their source files.
 - [x] Keep the separate three-part home navigator below the hero so it cannot cover the four-step controls while the visitor reads or changes a step.
+- [x] Normalize the final home palette: cool-white base, restrained blue walkthrough, opaque white device surface, one navy action hierarchy and a single intentional dark Reality Check chapter.

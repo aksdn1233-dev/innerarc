@@ -1426,6 +1426,15 @@
 - Privacy, safety and reversal: Recordings still contain scripted fixture data only. Symbolic and practical-result boundaries remain unchanged. Revert this home-only CSS block if readability, accessibility, performance or comprehension worsens; no migration or customer record is affected.
 - Status: Owner-authorized for production deployment.
 
+## D-094 - Normalize the public home's light and dark hierarchy
+
+- Date: 2026-09-09
+- Decision: Reduce the walkthrough's saturated blue and purple cast, strengthen its white device surface and text contrast, and unify the surrounding home around cool white, mist blue and restrained blush surfaces. Reserve near-black for primary actions and the deliberate Reality Check chapter.
+- Demand and distribution: Direct owner visual review found the completed page's tonal hierarchy unnatural. The home remains the only distribution surface; no content or route is removed.
+- Economics, privacy and safety: CSS-only presentation change with no price, provider, model, token, storage, customer data, payment, entitlement or claim change.
+- Success and reversal: Require visual review at 390–1440px, automated contrast in Korean and English, no mobile overflow, and stable existing product paths. Revert this CSS-only commit if legibility or engagement worsens; no migration is involved.
+- Status: Owner-authorized for production deployment.
+
 ## D-086 - Refine the compatibility intake without changing its privacy boundary
 
 - Date: 2026-08-31
