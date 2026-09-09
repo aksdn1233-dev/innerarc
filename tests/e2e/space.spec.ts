@@ -37,7 +37,9 @@ test("space demo confirms, analyzes, compares, applies and invalidates edits", a
   await expect(page.getByRole("button", { name: "다시 듣기", exact: true })).toBeEnabled();
   await page.getByRole("button", { name: "자막", exact: true }).click();
   await expect(page.getByRole("button", { name: "자막", exact: true })).toHaveAttribute("aria-pressed", "false");
-  const compare = page.getByRole("button", { name: "추천 배치", exact: true });
+  await page.getByRole("button", { name: "한눈에 비교", exact: true }).click();
+  await expect(page.getByRole("button", { name: "한눈에 비교", exact: true })).toHaveAttribute("aria-pressed", "true");
+  const compare = page.getByRole("button", { name: "추천", exact: true });
   await compare.click(); await expect(compare).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("region", { name: "공간 분석 결과" }).locator("article")).toHaveCount(3);
   await page.getByRole("button", { name: "3D에서 안내 보기", exact: true }).first().click();
@@ -77,6 +79,10 @@ test("space mobile layout, reduced motion and accessibility stay usable", async 
   });
   expect(typography.loaded).toBe(true);
   expect(typography.family).toContain("Pretendard Local");
+  await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "6", { timeout: 20_000 });
+  await expect(page.getByRole("button", { name: "전체 보기", exact: true })).toBeEnabled();
+  await page.getByRole("button", { name: "방 안에서", exact: true }).click();
+  await expect(page.locator("[data-camera-mode]")).toHaveAttribute("data-camera-mode", /interior|overview_fallback/);
   await expect(page.getByRole("button", { name: "위에서", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "위에서", exact: true }).click();
   await page.getByRole("button", { name: "확대", exact: true }).click();

@@ -362,3 +362,10 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Replace customer-facing Korean `수비학` wording with `생년월일 패턴` while preserving deterministic engine and route identifiers.
 - [x] Preserve export and deletion of previously saved question records.
 - [x] Verify 1,039 unit/integration cases, 232 passing browser flows with 10 environment-gated skips, and five responsive home visual widths after retirement.
+
+### 3D 공간운 상용 품질 강화 (2026-09-09)
+- [x] 전체/실내/위 시점을 사용자가 이해하는 말로 구분
+- [x] 실내 카메라가 벽과 높은 가구를 통과하지 않는 단위 테스트
+- [x] 현재/한눈에 비교/추천의 세 상태와 실제 좌표 기반 안내
+- [x] 거실+주방 및 창이 많은 침실 대표 장면 추가
+- [x] 비정형·다중 방은 지원된다고 과장하지 않고 기존 중단 경계 유지

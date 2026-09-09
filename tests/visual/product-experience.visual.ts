@@ -41,7 +41,7 @@ test.describe("premium product evidence", () => {
     await captureEvidence(page, analysis, `premium-${width}-space-analysis.png`);
     await captureEvidence(page, view.locator(".."), `premium-${width}-space-before.png`);
     await captureEvidence(page, page.getByLabel("3D 공간 안내"), `premium-${width}-space-guide.png`);
-    await page.getByRole("button", { name: "추천 배치", exact: true }).click(); await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10_000 });
+    await page.getByRole("button", { name: "추천", exact: true }).click(); await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10_000 });
     await captureEvidence(page, view.locator(".."), `premium-${width}-space-after.png`);
 
     await page.goto("/ko/space/workspace");

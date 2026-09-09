@@ -8,17 +8,18 @@ import { activeFrameTiming, isInViewport, isSoftwareRendererName, shouldReduceQu
 import { resourceScope } from "./resource-scope";
 import { roomCameraFit, interiorCameraFit } from "./camera-fit";
 import { spatialChanges } from "@/core/space/comparison";
+import { safeInteriorCamera } from "@/core/space/camera-safety";
 import styles from "./space.module.css";
 import type { SpaceGuideNarration as SpaceGuideNarrationData } from "@/core/space/narration";
 import { SpaceGuideNarration } from "./guide-narration";
 
-type ComparisonMode = "current" | "recommended";
+type ComparisonMode = "current" | "compare" | "recommended";
 type Runtime = { update(scene: Scene, comparison?: Scene, mode?: ComparisonMode): void; select(id: string | null): void; perspective(): void; top(): void; reset(): void; zoom(n: number): void; turn(): void; recommended(): void; profile(value: string): void; dispose(): void };
 type RenderResolution = { cssWidth: number; cssHeight: number; bufferWidth: number; bufferHeight: number; scale: number };
 export default function RoomView({ scene, comparisonScene, comparisonMode, locale, selectedId = null, onSelect, guide }: { scene: Scene; comparisonScene?: Scene; comparisonMode?: ComparisonMode; locale: "ko" | "en"; selectedId?: string | null; onSelect?: (id: string) => void; guide?: SpaceGuideNarrationData | null }) {
   const guideMarker = useRef<HTMLSpanElement>(null), guideRef = useRef(guide);
   const host = useRef<HTMLDivElement>(null), runtime = useRef<Runtime | null>(null), latest = useRef(scene), latestComparison = useRef(comparisonScene), latestComparisonMode = useRef(comparisonMode), selectCallback = useRef(onSelect), latestSelected = useRef(selectedId);
-  const [failed, setFailed] = useState(false), [ready, setReady] = useState(false), [attempt, setAttempt] = useState(0), [quality, setQuality] = useState("auto"), [assetLoading, setAssetLoading] = useState(false), [viewFallback, setViewFallback] = useState(false), [cameraChoice, setCameraChoice] = useState<"perspective" | "top" | "recommended">("perspective"), [resolution, setResolution] = useState<RenderResolution | null>(null);
+  const [failed, setFailed] = useState(false), [ready, setReady] = useState(false), [attempt, setAttempt] = useState(0), [quality, setQuality] = useState("auto"), [assetLoading, setAssetLoading] = useState(false), [viewFallback, setViewFallback] = useState(false), [cameraChoice, setCameraChoice] = useState<"dollhouse" | "room" | "top">("dollhouse"), [resolution, setResolution] = useState<RenderResolution | null>(null);
   const ko = locale === "ko";
   useEffect(() => { guideRef.current = guide; runtime.current?.select(latestSelected.current); }, [guide]);
   useEffect(() => { latest.current = scene; latestComparison.current = comparisonScene; latestComparisonMode.current = comparisonMode; runtime.current?.update(scene, comparisonScene, comparisonMode); }, [scene, comparisonScene, comparisonMode]);
@@ -111,15 +112,15 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
         const changes = alternate ? spatialChanges(mode === "recommended" ? alternate : active, mode === "recommended" ? active : alternate) : [];
         container!.dataset.comparisonChanges = String(changes.length);
         if (!alternate || !mode) return;
-        const lineMaterial = mode === "current" ? guideMaterials.current : guideMaterials.recommended;
-        const markerMaterial = mode === "current" ? guideMaterials.currentMarker : guideMaterials.recommendedMarker;
+        const lineMaterial = mode === "recommended" ? guideMaterials.recommended : guideMaterials.current;
+        const markerMaterial = mode === "recommended" ? guideMaterials.recommendedMarker : guideMaterials.currentMarker;
         for (const change of changes) {
           const object = active.objects.find(candidate => candidate.id === change.objectId);
           if (!object) continue;
-          const other = mode === "current" ? change.to : change.from;
+          const other = mode === "recommended" ? change.from : change.to;
           const outlineGeometry = new T.EdgesGeometry(new T.BoxGeometry(object.width * 1.035, object.height * 1.035, object.depth * 1.035));
           const outline = new T.LineSegments(outlineGeometry, lineMaterial); outline.position.set(other.x, object.height * .5175, other.z); outline.rotation.y = -other.rotation * Math.PI / 180; comparisonGuides.add(outline);
-          const activePosition = mode === "current" ? change.from : change.to;
+          const activePosition = mode === "recommended" ? change.to : change.from;
           const path = new T.Line(new T.BufferGeometry().setFromPoints([new T.Vector3(activePosition.x, .025, activePosition.z), new T.Vector3(other.x, .025, other.z)]), lineMaterial); comparisonGuides.add(path);
           const radius = Math.max(.07, Math.min(.14, Math.min(object.width, object.depth) * .12));
           const marker = new T.Mesh(new T.RingGeometry(radius * .72, radius, 32), markerMaterial); marker.rotation.x = -Math.PI / 2; marker.position.set(other.x, .032, other.z); comparisonGuides.add(marker);
@@ -276,7 +277,16 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
         if (root.userData.objectId) { selected = root.userData.objectId as string; selectCallback.current?.(selected); schedule(); }
       };
       const onLoss = (event: Event) => { event.preventDefault(); contextLost = true; resources.dispose(); if (!stopped) { runtime.current = null; setFailed(true); } };
-      renderer.domElement.addEventListener("pointerdown", onDown); renderer.domElement.addEventListener("pointerup", onUp); renderer.domElement.addEventListener("webglcontextlost", onLoss); const onOrbit = () => { camera.position.y = Math.max(.18, camera.position.y); orbit.target.y = Math.max(0, Math.min(current.room.height, orbit.target.y)); schedule(); }; orbit.addEventListener("change", onOrbit);
+      const lastSafeCamera = camera.position.clone(); let constrainingCamera = false;
+      renderer.domElement.addEventListener("pointerdown", onDown); renderer.domElement.addEventListener("pointerup", onUp); renderer.domElement.addEventListener("webglcontextlost", onLoss); const onOrbit = () => {
+        if (constrainingCamera) return;
+        if (interiorView) {
+          const safe = safeInteriorCamera(current, camera.position, lastSafeCamera);
+          if (camera.position.distanceToSquared(new T.Vector3(safe.x, safe.y, safe.z)) > .000001) { constrainingCamera = true; camera.position.set(safe.x, safe.y, safe.z); orbit.update(); constrainingCamera = false; }
+          lastSafeCamera.copy(camera.position);
+        } else camera.position.y = Math.max(.18, camera.position.y);
+        orbit.target.x = Math.max(0, Math.min(current.room.width, orbit.target.x)); orbit.target.y = Math.max(0, Math.min(current.room.height, orbit.target.y)); orbit.target.z = Math.max(0, Math.min(current.room.depth, orbit.target.z)); schedule();
+      }; orbit.addEventListener("change", onOrbit);
       let readyAtLeastOnce = false;
       const resize = new ResizeObserver(() => { const w = container.clientWidth, h = container.clientHeight; if (!w || !h) return; const changed = Math.abs(camera.aspect - w / h) > .1; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); composer.setSize(w, h); publishResolution(); if (changed || !readyAtLeastOnce) reset(); else schedule(); }); resize.observe(container);
       own(() => { if (frame) cancelAnimationFrame(frame); resize.disconnect(); orbit.removeEventListener("change", onOrbit); renderer.domElement.removeEventListener("pointerdown", onDown); renderer.domElement.removeEventListener("pointerup", onUp); renderer.domElement.removeEventListener("webglcontextlost", onLoss); sun.shadow.map?.dispose(); });
@@ -288,7 +298,7 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
       }
       function inside() {
         const fitted = interiorCameraFit(current, camera.aspect); camera.fov = fitted.fov; camera.updateProjectionMatrix(); camera.position.copy(fitted.position); orbit.target.copy(fitted.target);
-        interiorView = fitted.mode === "interior"; setViewFallback(!interiorView); container!.dataset.cameraMode = fitted.mode; orbit.update(); schedule();
+        interiorView = fitted.mode === "interior"; setViewFallback(!interiorView); container!.dataset.cameraMode = fitted.mode; lastSafeCamera.copy(camera.position); orbit.update(); schedule();
       }
       runtime.current = { update(next, comparison, mode) { void requestUpdate(next, comparison, mode); }, profile, select(id) { selected = id; schedule(); }, reset,
         perspective() { fit(false); },
@@ -316,14 +326,14 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
     </div>
     {!failed && guide && <SpaceGuideNarration guide={guide} locale={locale} />}
     <div className={styles.toolbar} aria-label={ko ? "3D 보기 조작" : "3D view controls"}>
-      <label className={styles.qualityChoice}>{ko ? "화질" : "Quality"}<select value={quality} onChange={e => { setQuality(e.target.value); runtime.current?.profile(e.target.value); }}>{["auto", "ultra", "high", "balanced", "performance"].map(value => <option key={value} value={value}>{({auto:ko?"자동":"Auto",ultra:ko?"울트라 미리보기":"Ultra Preview",high:"High",balanced:"Balanced",performance:ko?"가벼운 효과":"Performance"})[value]}</option>)}</select></label>
-      <button type="button" disabled={failed} aria-pressed={cameraChoice === "perspective"} onClick={() => { setCameraChoice("perspective"); runtime.current?.perspective(); }}>{ko ? "원근 시점" : "Perspective"}</button>
-      <button type="button" disabled={failed} aria-pressed={cameraChoice === "top"} onClick={() => { setCameraChoice("top"); runtime.current?.top(); }}>{ko ? "위에서" : "Top"}</button>
-      <button type="button" disabled={failed} aria-pressed={cameraChoice === "recommended"} onClick={() => { setCameraChoice("recommended"); runtime.current?.recommended(); }}>{ko ? "추천 시점" : "Recommended"}</button>
-      <button type="button" disabled={failed} onClick={() => { setCameraChoice("perspective"); runtime.current?.reset(); }}>{ko ? "시점 초기화" : "Reset"}</button>
-      <button type="button" disabled={failed} onClick={() => runtime.current?.turn()}>{ko ? "회전" : "Rotate view"}</button>
-      <button type="button" disabled={failed} aria-label={ko ? "확대" : "Zoom in"} onClick={() => runtime.current?.zoom(.85)}>＋</button>
-      <button type="button" disabled={failed} aria-label={ko ? "축소" : "Zoom out"} onClick={() => runtime.current?.zoom(1.15)}>−</button>
+      <button type="button" disabled={failed || !ready} aria-pressed={cameraChoice === "dollhouse"} onClick={() => { setCameraChoice("dollhouse"); runtime.current?.perspective(); }}>{ko ? "전체 보기" : "Dollhouse"}</button>
+      <button type="button" disabled={failed || !ready} aria-pressed={cameraChoice === "room"} onClick={() => { setCameraChoice("room"); runtime.current?.recommended(); }}>{ko ? "방 안에서" : "Inside room"}</button>
+      <button type="button" disabled={failed || !ready} aria-pressed={cameraChoice === "top"} onClick={() => { setCameraChoice("top"); runtime.current?.top(); }}>{ko ? "위에서" : "Top"}</button>
+      <button type="button" disabled={failed || !ready} onClick={() => { setCameraChoice("dollhouse"); runtime.current?.reset(); }}>{ko ? "시점 초기화" : "Reset"}</button>
+      <button type="button" disabled={failed || !ready} onClick={() => runtime.current?.turn()}>{ko ? "회전" : "Rotate view"}</button>
+      <button type="button" disabled={failed || !ready} aria-label={ko ? "확대" : "Zoom in"} onClick={() => runtime.current?.zoom(.85)}>＋</button>
+      <button type="button" disabled={failed || !ready} aria-label={ko ? "축소" : "Zoom out"} onClick={() => runtime.current?.zoom(1.15)}>−</button>
+      <details className={styles.qualityChoice}><summary>{ko ? "화질 설정" : "Quality"}</summary><select aria-label={ko ? "3D 화질" : "3D quality"} value={quality} onChange={e => { setQuality(e.target.value); runtime.current?.profile(e.target.value); }}>{["auto", "ultra", "high", "balanced", "performance"].map(value => <option key={value} value={value}>{({auto:ko?"자동":"Auto",ultra:ko?"최고 화질":"Ultra",high:"High",balanced:"Balanced",performance:ko?"가볍게":"Performance"})[value]}</option>)}</select></details>
     </div>
     {viewFallback && <p role="status" className={styles.hint}>{ko ? "이 배치를 방 안에서 한눈에 담기 어려워 전체 보기로 전환했습니다." : "This layout cannot fit in a clear inside view. Showing the full room instead."}</p>}
     <p className={styles.hint}>{ko ? "가구를 누르면 선택 · 한 손가락 회전 · 두 손가락 확대·이동. 문·창 높이를 입력하지 않으면 표준 크기로 표현합니다." : "Tap furniture to select · One finger orbit · Two fingers zoom/pan. Unmeasured door/window heights use labelled standard estimates."}</p>
