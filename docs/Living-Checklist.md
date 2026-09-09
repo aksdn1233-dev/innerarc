@@ -320,3 +320,4 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] The four-step area now uses the supplied reference's blue gradient, translucent segmented control and white device frame; the real fixture clips are presented with a light UI treatment without changing or enlarging their source files.
 - [x] Keep the separate three-part home navigator below the hero so it cannot cover the four-step controls while the visitor reads or changes a step.
 - [x] Normalize the final home palette: cool-white base, restrained blue walkthrough, opaque white device surface, one navy action hierarchy and a single intentional dark Reality Check chapter.
+- [x] Replace the section-only contrast patch with a site-wide hierarchy pass: compact 3+2 service cards, consistent spacing/radii/shadows, shared cool-white/navy tokens, and original-color walkthrough recordings with no CSS inversion.

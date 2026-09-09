@@ -1676,3 +1676,11 @@
 - Privacy, safety and claims: The seen marker is one local boolean and contains no identity, birth input or behavior history. Recordings use scripted fixture screens, not customer data. Existing symbolic-tool and no-guaranteed-outcome boundaries remain unchanged.
 - Success, guardrails and reversal: Require a one-time first-visit cue, permanent navigation access, keyboard tabs, reduced-motion posters, no video upscaling above 780 CSS pixels, no mobile overflow, green five-width visual evidence and unchanged payment/calculation regressions. Revert the walkthrough component block and route-scoped CSS to return to the prior editorial home; no migration or stored user record is involved.
 - Status: Owner-authorized for production deployment.
+
+## D-096 - Rebuild the site-wide visual hierarchy instead of tuning one section
+
+- Date: 2026-09-09
+- Decision: Treat the owner's contrast report as a system problem. Use one cool-white, navy and restrained blue foundation across the public product, reduce oversized headings and empty vertical space, convert the home service catalogue into a scannable 3+2 card grid, and align report, comparison, Space, Reality Check and footer surfaces to the same border, radius and shadow rules. The four-step walkthrough keeps the recorded product UI in its original colors; CSS color inversion is prohibited because it changes text, imagery and semantic status colors together.
+- Demand and distribution: This follows direct owner review of the production home and applies to the public home plus shared global page tokens. Existing routes, navigation and calls to action remain the distribution path. No conversion claim is made until production evidence exists.
+- Economics and safety: This is CSS and visual-regression evidence only. It changes no price, payment, entitlement, provider, token use, calculation, storage, personal data or claim boundary. Existing symbolic-tool and no-guaranteed-outcome language remains visible.
+- Success and reversal: Require stable captures at 390, 430, 768, 1024 and 1440 pixels, mobile overflow and accessibility checks, production build, and unchanged service routes. Revert this decision's CSS and snapshots if reading order, accessibility, route behavior or conversion worsens; there is no migration.

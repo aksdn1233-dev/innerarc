@@ -1,28 +1,28 @@
 @import "./campaign-events.css";
 
 :root {
-  --paper: #f5f1e8;
-  --paper-deep: #ebe4d7;
-  --ink: #20231f;
+  --paper: #f6f8fb;
+  --paper-deep: #edf2f7;
+  --ink: #172033;
   /* Both tones carry small, heavy label text — eyebrows, kickers, disclaimers — and both
      were just under AA on this paper: clay measured 4.33:1 on --paper and 3.86:1 on
      --paper-deep, muted 4.81 and 4.29, against the 4.5 those sizes need. Darkened only far
      enough to clear it on every ground the site paints, terracotta and grey intact. */
-  --muted: #5f625a;
+  --muted: #5b6575;
   /* Two darker body-text shades that fifteen rules had written as literals. Same values
      as before; they are tokens now so a ground change can reach them. */
-  --ink-soft: #444840;
-  --ink-quiet: #555950;
+  --ink-soft: #3f4a5d;
+  --ink-quiet: #536074;
   --gold-ink: #8a6232;
   --clay-ink: #95523b;
-  --line: #d7d0c3;
-  --sage: #637563;
-  --sage-dark: #3f5142;
-  --clay: #955039;
-  --white: #fffdf8;
+  --line: #dce3eb;
+  --sage: #526b8f;
+  --sage-dark: #1c2d49;
+  --clay: #4569a5;
+  --white: #ffffff;
   --radius-sm: 12px;
   --radius-md: 18px;
-  --shadow: 0 8px 24px rgba(49, 43, 35, 0.06);
+  --shadow: 0 12px 34px rgba(35, 50, 74, 0.08);
   --content: 1120px;
   --body-font: -apple-system, BlinkMacSystemFont, "Segoe UI Variable", "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
   --display-font: -apple-system, BlinkMacSystemFont, "Segoe UI Variable", "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
@@ -1147,7 +1147,7 @@ body:has(.night-ground) {
 body {
   margin: 0;
   background:
-    radial-gradient(circle at 14% 4%, rgba(166, 116, 82, 0.1), transparent 34rem),
+    radial-gradient(circle at 14% 4%, rgba(87, 126, 185, 0.09), transparent 34rem),
     var(--paper);
   color: var(--ink);
   font-family: var(--body-font);
@@ -1232,7 +1232,7 @@ a:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(87, 79, 67, 0.15);
+  border-bottom: 1px solid rgba(42, 61, 88, 0.13);
 }
 
 .brand {
