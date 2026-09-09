@@ -26,5 +26,6 @@ The production bundle is exercised as a guest on desktop Chromium and mobile emu
 - Dedicated Space matrix across desktop Chromium, iPhone WebKit emulation and Android Chromium emulation: 82 passed, 23 non-applicable cases skipped, 0 failed (105 total).
 - No major design change was required. The visual baselines now describe the already approved screen and its higher internal render resolution.
 - The release audit found newly published Next.js, Sharp, js-yaml and Vitest advisories. Next.js/eslint-config-next moved to 16.3.3, Vitest to 4.1.11, and the workspace pins Sharp 0.35.4 plus js-yaml 4.3.2. The remaining two high findings are the existing reviewed audit exclusions.
+- Production release `3ba9f6c2-678a-4141-8c15-54ddad2add28` passed health (`site: ok`, `database: ok`, `payments: open`) and 2/2 live home/Space smoke checks. The immediate rollback version is `bb146f86-6b32-4ce7-ad0b-7bedc879d227`.
 
 No calculation, price, payment entitlement, authentication, stored record, database schema, provider or visual system changes are included.

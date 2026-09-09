@@ -354,4 +354,4 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Re-run the dedicated 3D desktop/iPhone-emulation/Android-emulation matrix: 82 passed, 23 non-applicable skips and 0 failures across 105 cases; refresh the approved current-screen and 1.5x-render evidence.
 - [x] Remediate release-audit advisories with Next.js/eslint-config-next 16.3.3, Vitest 4.1.11, Sharp 0.35.4 and js-yaml 4.3.2; retain only the two existing reviewed audit exclusions.
 - [x] Complete dependency audit, validated 113-component CycloneDX SBOM and production-target build.
-- [ ] Complete production smoke checks immediately after release.
+- [x] Production version `3ba9f6c2-678a-4141-8c15-54ddad2add28` reports site/database healthy and payments open; live Korean home and Space route checks passed 2/2. Roll back to `bb146f86-6b32-4ce7-ad0b-7bedc879d227` if required.
