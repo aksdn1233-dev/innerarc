@@ -21,6 +21,19 @@ export function roomCameraFit(room: { width: number; depth: number; height: numb
   return { target, position: direction.multiplyScalar(distance * opticalMargin).add(target) };
 }
 
+/** A lower, photography-like composition for open living/dining rooms. */
+export function wideRoomCameraFit(room: { width: number; depth: number; height: number }, aspect: number) {
+  const { width: w, depth: d, height: h } = room, target = new Vector3(w / 2, h * .36, d / 2);
+  const direction = (aspect < 1 ? new Vector3(.35, .9, 1.5) : new Vector3(1.05, .52, 1.28)).normalize();
+  const right = new Vector3().crossVectors(new Vector3(0, 1, 0), direction).normalize(), up = new Vector3().crossVectors(direction, right).normalize();
+  const fov = 46, tanV = Math.tan(fov * Math.PI / 360), tanH = tanV * Math.max(.1, aspect); let distance = 1;
+  for (const x of [-.08, w + .08]) for (const y of [0, h + .06]) for (const z of [-.08, d + .08]) {
+    const point = new Vector3(x, y, z).sub(target), depth = point.dot(direction);
+    distance = Math.max(distance, Math.abs(point.dot(right)) / tanH + depth, Math.abs(point.dot(up)) / tanV + depth);
+  }
+  return { target, position: direction.multiplyScalar(distance * 1.015).add(target), fov, mode: "wide" as const };
+}
+
 /** Choose an unobstructed room corner and prove the subject fits before offering an inside view. */
 export function interiorCameraFit(scene: Scene, aspect: number) {
   const primary = scene.objects.find(o => o.kind === "bed" || o.kind === "sofa") ?? scene.objects[0];

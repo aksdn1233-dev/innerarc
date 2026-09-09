@@ -84,6 +84,11 @@ test("space mobile layout, reduced motion and accessibility stay usable", async 
   await page.getByRole("button", { name: "방 안에서", exact: true }).click();
   await expect(page.locator("[data-camera-mode]")).toHaveAttribute("data-camera-mode", /interior|overview_fallback/);
   await expect(page.getByRole("button", { name: "위에서", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "가구 자세히", exact: true }).click();
+  await expect(page.locator("[data-camera-mode]")).toHaveAttribute("data-camera-mode", "detail");
+  await page.getByRole("button", { name: "저녁", exact: true }).click();
+  await expect(page.locator("[data-lighting-mode]" )).toHaveAttribute("data-lighting-mode", "evening");
+  await page.getByRole("button", { name: "낮", exact: true }).click();
   await page.getByRole("button", { name: "위에서", exact: true }).click();
   await page.getByRole("button", { name: "확대", exact: true }).click();
   await page.addScriptTag({ content: axe });

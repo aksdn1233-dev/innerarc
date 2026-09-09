@@ -44,16 +44,16 @@ test("selection, validated adjustment, undo and same-camera comparison", async (
   await page.getByRole("button", { name: "See suggested layout", exact: true }).click();
   const before = await view.getAttribute("data-scene-state");
   await expect(view).toHaveAttribute("data-motion", "settled");
-  await page.getByRole("button", { name: "Suggested layout", exact: true }).click();
+  await page.getByRole("button", { name: "Suggested", exact: true }).click();
   await expect(view).not.toHaveAttribute("data-scene-state", before!); await expect(view).toHaveAttribute("data-camera", camera!);
   await expect(view).toHaveAttribute("data-comparison-changes", /[1-9]/);
   await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 });
-  await page.getByRole("button", { name: "Current layout", exact: true }).click(); await expect(view).toHaveAttribute("data-scene-state", before!);
+  await page.getByRole("button", { name: "Current", exact: true }).click(); await expect(view).toHaveAttribute("data-scene-state", before!);
   await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 });
   await expect(view.locator("..")).toHaveScreenshot("current-layout.png", { animations: "disabled", threshold: .10, maxDiffPixelRatio: .05 });
   await view.locator("xpath=../../..").evaluate(element => element.scrollIntoView({ block: "start" }));
   await expect(page).toHaveScreenshot("current-layout-panel.png", { animations: "disabled", threshold: .10, maxDiffPixelRatio: .05 });
-  await page.getByRole("button", { name: "Suggested layout", exact: true }).click(); await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 });
+  await page.getByRole("button", { name: "Suggested", exact: true }).click(); await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 });
   await expect(view).toHaveAttribute("data-camera", camera!);
   await expect(view.locator("..")).toHaveScreenshot("recommended-layout.png", { animations: "disabled", threshold: .10, maxDiffPixelRatio: .05 });
   await expect(page).toHaveScreenshot("recommended-layout-panel.png", { animations: "disabled", threshold: .10, maxDiffPixelRatio: .05 });
@@ -62,7 +62,8 @@ test("selection, validated adjustment, undo and same-camera comparison", async (
 test("Ultra Preview exposes its real render profile", async ({ page }) => {
   await page.goto("/en/space");
   const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "6", { timeout: 20000 });
-  await page.getByRole("combobox", { name: "Quality", exact: true }).selectOption("ultra");
+  await page.getByText("Quality", { exact: true }).click();
+  await page.getByRole("combobox", { name: "3D quality", exact: true }).selectOption("ultra");
   await expect(view).toHaveAttribute("data-effective-quality", "ultra");
   await expect(view).toHaveAttribute("data-preview-profile", "ultra-preview");
   await expect(view).toHaveAttribute("data-render-scale", /^(2\.00|2\.50)$/);
@@ -70,8 +71,8 @@ test("Ultra Preview exposes its real render profile", async ({ page }) => {
   const dimensions = await view.evaluate(element => ({ css: [Number((element as HTMLElement).dataset.cssWidth), Number((element as HTMLElement).dataset.cssHeight)], render: [Number((element as HTMLElement).dataset.renderWidth), Number((element as HTMLElement).dataset.renderHeight)] }));
   expect(dimensions.render[0]).toBeGreaterThanOrEqual(dimensions.css[0] * 1.99); expect(dimensions.render[1]).toBeGreaterThanOrEqual(dimensions.css[1] * 1.99);
   await expect(page.getByLabel("Actual 3D render resolution")).toContainText(/Actual render \d+×\d+/);
-  await page.getByRole("button", { name: "Recommended", exact: true }).click();
-  await expect(page.getByRole("button", { name: "Recommended", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "Inside room", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Inside room", exact: true })).toHaveAttribute("aria-pressed", "true");
   // Ultra deliberately renders at a higher internal resolution. Allow a constrained
   // CI software renderer to finish the same pixel comparison without weakening it.
   await expect(view.locator("..")).toHaveScreenshot("ultra-preview.png", { animations: "disabled", threshold: .10, maxDiffPixelRatio: .05, timeout: 15000 });
@@ -88,7 +89,7 @@ test("lightweight tier stays within the active-frame budget", async ({ page }, t
   }, value);
   // The fixed-tier benchmark is not a select actionability test. Dispatch the same
   // change event without Playwright scrolling the canvas and waiting for it to settle.
-  await setSelect("Select furniture", "desk_1"); await setSelect("Quality", "performance");
+  await setSelect("Select furniture", "desk_1"); await page.locator('select[aria-label="3D quality"]').evaluate((element, next) => { const select = element as HTMLSelectElement; select.value = next; select.dispatchEvent(new Event("change", { bubbles: true })); }, "performance");
   await expect(view).toHaveAttribute("data-effective-quality", "performance");
   await expect(view).toHaveAttribute("data-shadow-mode", "performance-unshadowed");
   const gpu = await view.locator("canvas").evaluate(canvas => { const gl = (canvas as HTMLCanvasElement).getContext("webgl2"); const extension = gl?.getExtension("WEBGL_debug_renderer_info"); return gl && extension ? gl.getParameter(extension.UNMASKED_RENDERER_WEBGL) as string : "unavailable"; });

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import * as T from "three";
-import { roomCameraFit, interiorCameraFit } from "@/components/space/camera-fit";
+import { roomCameraFit, interiorCameraFit, wideRoomCameraFit } from "@/components/space/camera-fit";
 import { SPACE_EXAMPLES, spaceExample } from "@/core/space/examples";
 import { geometryIssues } from "@/core/space/engine";
 describe("architectural framing and representative geometry", () => {
@@ -61,4 +61,13 @@ it("the small-bedroom subject camera avoids the desk-side corner", () => {
   expect(fitted.position.x).toBeLessThan(scene.room.width / 2);
   const desk = scene.objects.find(object => object.kind === "desk")!;
   expect(fitted.position.distanceTo(new T.Vector3(desk.x, fitted.position.y, desk.z))).toBeGreaterThan(2);
+});
+
+it("the combined living and dining room uses a lower wide composition without cropping", () => {
+  const scene = spaceExample("living_kitchen"), fitted = wideRoomCameraFit(scene.room, 1.25), camera = new T.PerspectiveCamera(fitted.fov, 1.25, .05, 200);
+  camera.position.copy(fitted.position); camera.lookAt(fitted.target); camera.updateMatrixWorld();
+  for (const x of [0, scene.room.width]) for (const y of [0, scene.room.height]) for (const z of [0, scene.room.depth]) {
+    const p = new T.Vector3(x, y, z).project(camera); expect(Math.abs(p.x)).toBeLessThan(.99); expect(Math.abs(p.y)).toBeLessThan(.99);
+  }
+  expect(fitted.position.y - fitted.target.y).toBeLessThan(Math.max(scene.room.width, scene.room.depth));
 });
