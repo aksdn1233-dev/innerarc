@@ -53,24 +53,29 @@ test.describe("Taeryeong editorial brand evidence", () => {
       await capture(page, ".td2-editorial-pair", `brand-${width}-success-relationship.png`);
       await capture(page, ".td2-space", `brand-${width}-space.png`);
       await capture(page, ".td2-reality", `brand-${width}-reality.png`);
-      await capture(page, ".td2-proportion", `brand-${width}-proportion.png`);
+      await capture(page, ".td2-celestial", `brand-${width}-celestial.png`);
 
       await expect(page.locator(".td2-orbits, .td2-reality-orbit, .td2-radar")).toHaveCount(0);
-      await expect(page.locator(".td2-proportion img")).toHaveCount(0);
-      const proportionStudy = await page.locator(".td2-proportion-study svg").evaluate((node) => {
+      await expect(page.locator(".td2-celestial img")).toHaveCount(0);
+      await expect(page.locator(".td2-celestial-study circle")).toHaveCount(0);
+      await expect(page.locator(".td2-celestial-study")).toContainText("年柱");
+      await expect(page.locator(".td2-celestial-study")).toContainText("月柱");
+      await expect(page.locator(".td2-celestial-study")).toContainText("日柱");
+      await expect(page.locator(".td2-celestial-study")).toContainText("時柱");
+      const celestialStudy = await page.locator(".td2-celestial-study svg").evaluate((node) => {
         const svg = node as SVGSVGElement;
         const box = svg.getBoundingClientRect();
         return {
           height: box.height,
-          pathCount: svg.querySelectorAll("path, line, rect, ellipse").length,
+          detailCount: svg.querySelectorAll("path, line, rect, text").length,
           viewBox: svg.getAttribute("viewBox"),
           width: box.width,
         };
       });
-      expect(proportionStudy.width).toBeGreaterThan(280);
-      expect(proportionStudy.height).toBeGreaterThan(220);
-      expect(proportionStudy.pathCount).toBeGreaterThan(30);
-      expect(proportionStudy.viewBox).toBe("0 0 680 560");
+      expect(celestialStudy.width).toBeGreaterThan(280);
+      expect(celestialStudy.height).toBeGreaterThan(220);
+      expect(celestialStudy.detailCount).toBeGreaterThan(60);
+      expect(celestialStudy.viewBox).toBe("0 0 680 560");
 
       expect(await page.locator(".td2-room-comparison img").count()).toBe(2);
       await page.getByRole("link", { name: "이용 안내" }).click();
