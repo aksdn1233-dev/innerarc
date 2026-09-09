@@ -251,7 +251,7 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
     </header>
 
     <section className="td2-hero" aria-labelledby="td2-hero-title">
-      <Image className="td2-hero-image" src="/images/brand/taeryeong-night-hero-v3.jpg" alt="" fill priority sizes="100vw" />
+      <Image className="td2-hero-image" src="/images/brand/taeryeong-night-hero-v3.jpg" alt="" fill priority unoptimized sizes="100vw" />
       <div className="td2-hero-wash" aria-hidden="true" />
       <div className="td2-hero-copy">
         <p className="td2-kicker">{t.kicker}</p>

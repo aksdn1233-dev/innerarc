@@ -333,3 +333,12 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Add four supportable trust statements without user-count, satisfaction, accuracy or prediction claims.
 - [x] Keep the always-open visit guide dismissible, keyboard-contained and warm-ivory for clear contrast against the night hero.
 - [x] Complete responsive visual and functional release checks before merge and production deployment.
+
+## 2026-09-09 clarity and guide-color correction
+
+- [x] Remove decorative radial gradients and oversized ring patterns from the public home.
+- [x] Restore the four-step guide's established blue palette without reintroducing circular decoration.
+- [x] Keep meaningful report diagrams intact and avoid CSS zoom or transform-based image enlargement.
+- [x] The first contrast rerun caught the success example's large rank number after its radial background was removed; the number now has AA large-text contrast on the clean solid surface.
+- [x] The five-width density check caught a 1,254-pixel optimized hero at the 1,440-pixel viewport; serve the 1,672-pixel source directly and keep the no-transform density assertion.
+- [x] Re-run five-width visual, accessibility, route and build checks; complete the production health check immediately after release.
