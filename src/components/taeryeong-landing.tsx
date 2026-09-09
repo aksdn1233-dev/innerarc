@@ -239,13 +239,13 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
         <a href="#guide" onClick={(event) => { event.preventDefault(); openGuide(); }}>{t.guide}</a>
         <Link href={`/${locale}/numerology`}>{t.analysis}</Link>
         <Link href={`/${locale}/celebrity`}>{t.success}</Link>
-        <Link href={`/${locale}/relationship`}>{t.relationship}</Link>
+        <Link href={`/${locale}/compatibility`}>{t.relationship}</Link>
         <Link href={`/${locale}/space`} prefetch={false}>{t.space}</Link>
         <Link href={`/${locale}/reading#evidence`} prefetch={false}>{reviewLabel}</Link>
       </nav>
       <div className="td2-nav-actions">
         <Link className="td2-login" href={`/${locale}/orders`}>{t.login}</Link>
-        <Link className="td2-pill" href={`/${locale}/space`} prefetch={false}>{t.start}<Arrow /></Link>
+        <Link className="td2-pill" href={`/${locale}/fortune`} prefetch={false}>{t.start}<Arrow /></Link>
         <Link className="td2-language" href={`/${locale === "ko" ? "en" : "ko"}`} prefetch={false}>{locale === "ko" ? "EN" : "한국어"}</Link>
       </div>
     </header>
