@@ -55,11 +55,11 @@ it("a tall wardrobe between the corner and bed forces another unobstructed viewp
   expect(new T.Ray(fitted.position, fitted.target.clone().sub(fitted.position).normalize()).intersectBox(blocker, new T.Vector3())).toBeNull();
 });
 
-it("the small-bedroom subject camera avoids the desk-side corner", () => {
+it("the small-bedroom subject camera chooses the room half opposite the desk", () => {
   const scene = spaceExample("small_bedroom"), fitted = interiorCameraFit(scene, 1.25);
   expect(fitted.mode).toBe("interior");
-  expect(fitted.position.x).toBeLessThan(scene.room.width / 2);
   const desk = scene.objects.find(object => object.kind === "desk")!;
+  expect((fitted.position.x - scene.room.width / 2) * (desk.x - scene.room.width / 2)).toBeLessThan(0);
   expect(fitted.position.distanceTo(new T.Vector3(desk.x, fitted.position.y, desk.z))).toBeGreaterThan(2);
 });
 

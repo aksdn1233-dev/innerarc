@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "reviewed_at": "2026-09-07",
+  "reviewed_at": "2026-09-10",
   "license_notice": "Third-party assets retain their listed licenses; the site content-protection notice does not restrict those rights.",
   "assets": [
     {
@@ -332,7 +332,7 @@
         "tile": 2.1
       },
       "polygon_count": 0,
-      "texture_resolution": "1024\u00d71024",
+      "texture_resolution": "1024×1024",
       "lod_availability": false,
       "compression_status": "JPEG; mipmaps; anisotropic filtering; no KTX2/WASM requirement",
       "files": [
@@ -364,7 +364,7 @@
         "tile": 1
       },
       "polygon_count": 0,
-      "texture_resolution": "1024\u00d71024",
+      "texture_resolution": "1024×1024",
       "lod_availability": false,
       "compression_status": "JPEG; mipmaps; anisotropic filtering; no KTX2/WASM requirement",
       "files": [
@@ -396,7 +396,7 @@
         "tile": 0.4
       },
       "polygon_count": 0,
-      "texture_resolution": "1024\u00d71024",
+      "texture_resolution": "1024×1024",
       "lod_availability": false,
       "compression_status": "JPEG; mipmaps; anisotropic filtering; no KTX2/WASM requirement",
       "files": [
@@ -413,6 +413,24 @@
       ]
     },
     {
+      "asset_id": "taeryeongdang-curtain-v1",
+      "category": "curtain",
+      "visual_style": "Full-height neutral linen panels with gathered folds and restrained bronze rail",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": "derived from observed window",
+        "height": "derived from verified ceiling and opening"
+      },
+      "dimension_policy": "Presentation treatment around a verified opening; excluded from collision and recommendations",
+      "original_polygon_count": 0,
+      "polygon_count": 1664,
+      "texture_resolution": "512×512 generated linen surface",
+      "lod_availability": false,
+      "compression_status": "Merged per-wall material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/interior-assets.ts"
+    },
+    {
       "asset_id": "studio-small-09-v1",
       "category": "environment",
       "visual_style": "Neutral soft studio reflections used only for material illumination",
@@ -421,7 +439,7 @@
       "license": "CC0-1.0",
       "dimensions_m": null,
       "polygon_count": 0,
-      "texture_resolution": "1024\u00d7512",
+      "texture_resolution": "1024×512",
       "lod_availability": false,
       "compression_status": "RGBE HDR converted once to PMREM",
       "path": "/space/assets/studio-environment.hdr",
@@ -438,7 +456,7 @@
         "tile": 1
       },
       "polygon_count": 0,
-      "texture_resolution": "512\u00d7512",
+      "texture_resolution": "512×512",
       "lod_availability": false,
       "compression_status": "Generated once; mipmaps and anisotropic filtering; base color + linear roughness + subtle plaster micro-bump"
     }

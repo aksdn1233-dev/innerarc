@@ -13,12 +13,12 @@ describe("space comparison presentation", () => {
     expect(spatialChanges(current, recommended)).toEqual([{
       objectId: "bed_1",
       kind: "bed",
-      from: { x: 1, z: 2, rotation: 0 },
-      to: { x: 1.4, z: 1.7, rotation: 90 },
+      from: { x: 1.8, z: 2.1, rotation: 0 },
+      to: { x: 2.2, z: 1.8, rotation: 90 },
       distance: 0.5,
       rotationDelta: 90,
     }]);
-    expect(current.objects.find((object) => object.id === "bed_1")?.x).toBe(1);
+    expect(current.objects.find((object) => object.id === "bed_1")?.x).toBe(1.8);
   });
 
   it("ignores sub-millimetre display noise", () => {

@@ -6,7 +6,7 @@ import { geometryIssues } from "@/core/space/engine";
 import { SpaceAssetCredits } from "./asset-credits";
 import { activeFrameTiming, isInViewport, isSoftwareRendererName, shouldReduceQuality, shouldUseImmediateMotion } from "./frame-timing";
 import { resourceScope } from "./resource-scope";
-import { roomCameraFit, interiorCameraFit, wideRoomCameraFit } from "./camera-fit";
+import { roomCameraFit, interiorCameraFit, wideRoomCameraFit, heroRoomCameraFit } from "./camera-fit";
 import { spatialChanges } from "@/core/space/comparison";
 import { safeInteriorCamera } from "@/core/space/camera-safety";
 import styles from "./space.module.css";
@@ -46,7 +46,7 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
       const debugRenderer = renderer.getContext().getExtension("WEBGL_debug_renderer_info");
       const rendererName = debugRenderer ? String(renderer.getContext().getParameter(debugRenderer.UNMASKED_RENDERER_WEBGL)) : "";
       const softwareRenderer = isSoftwareRendererName(rendererName);
-      own(() => { renderer.dispose(); renderer.forceContextLoss(); renderer.domElement.remove(); for (const key of ["sceneState", "objectCount", "drawCalls", "triangles", "camera", "motion", "frameP90", "sampledFrames", "cssWidth", "cssHeight", "renderWidth", "renderHeight", "renderScale"]) delete container.dataset[key]; });
+      own(() => { renderer.dispose(); renderer.forceContextLoss(); renderer.domElement.remove(); for (const key of ["sceneState", "objectCount", "drawCalls", "triangles", "camera", "motion", "frameAverage", "frameP90", "frameP95", "frameP99", "averageFps", "onePercentLowFps", "sampledFrames", "cssWidth", "cssHeight", "renderWidth", "renderHeight", "renderScale"]) delete container.dataset[key]; });
       const mobile = matchMedia("(pointer: coarse)").matches, reduced = matchMedia("(prefers-reduced-motion: reduce)");
       let pixelRatio = mobile ? Math.min(1.5, Math.max(1.25, devicePixelRatio)) : Math.min(2, Math.max(1.5, devicePixelRatio)), qualityReduced = false, schedulerConstrained = false;
       renderer.setPixelRatio(pixelRatio); renderer.setClearColor(0xe7e5df);
@@ -172,7 +172,12 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
         container!.dataset.drawCalls = String(renderer.info.render.calls); container!.dataset.triangles = String(renderer.info.render.triangles); container!.dataset.camera = camera.position.toArray().map(n => n.toFixed(3)).join(",");
         if (committed) { container!.dataset.objectCount = String(objects.size); container!.dataset.sceneState = JSON.stringify(current.objects.map(o => ({ id: o.id, x: o.x, z: o.z, rotation: o.rotation }))); }
         if (intervals.length >= 4) {
-          const sorted = [...intervals].sort((a, b) => a - b), p90 = sorted[Math.floor(sorted.length * .9)]; if (intervals.length >= 12) { container!.dataset.frameP90 = p90.toFixed(1); container!.dataset.sampledFrames = String(intervals.length); }
+          const sorted = [...intervals].sort((a, b) => a - b), percentile = (ratio: number) => sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * ratio))], p90 = percentile(.9);
+          if (intervals.length >= 12) {
+            const average = intervals.reduce((total, value) => total + value, 0) / intervals.length, p95 = percentile(.95), p99 = percentile(.99);
+            container!.dataset.frameAverage = average.toFixed(1); container!.dataset.frameP90 = p90.toFixed(1); container!.dataset.frameP95 = p95.toFixed(1); container!.dataset.frameP99 = p99.toFixed(1);
+            container!.dataset.averageFps = (1000 / average).toFixed(1); container!.dataset.onePercentLowFps = (1000 / p99).toFixed(1); container!.dataset.sampledFrames = String(intervals.length);
+          }
           if (container!.dataset.effectiveQuality === "performance" && shouldUseImmediateMotion(p90, intervals.length)) {
             schedulerConstrained = true; container!.dataset.schedulerPolicy = "immediate";
             if (transition) { for (const move of transition.moves) { move.group.position.copy(move.to); move.group.rotation.y = move.toRotation; } transition = null; schedule(); }
@@ -193,7 +198,8 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
       }
       function profile(value: string) {
         const tier = value === "auto" ? mobile ? "balanced" : "high" : value;
-        tierWarmSamples = 2; intervals.length = 0; renderTimes.length = 0; delete container!.dataset.frameP90; delete container!.dataset.sampledFrames;
+        tierWarmSamples = 2; intervals.length = 0; renderTimes.length = 0;
+        for (const key of ["frameAverage", "frameP90", "frameP95", "frameP99", "averageFps", "onePercentLowFps", "sampledFrames"]) delete container!.dataset[key];
         pixelRatio = tier === "ultra" ? Math.min(2.5, Math.max(2, devicePixelRatio)) : tier === "high" ? Math.min(2, Math.max(1.5, devicePixelRatio)) : tier === "balanced" ? Math.min(1.5, Math.max(1.25, devicePixelRatio)) : 1;
         windowFill.visible = current.windows.length > 0 && tier !== "performance"; world.environmentIntensity = tier === "ultra" ? .36 : tier === "high" ? .30 : tier === "balanced" ? .27 : .38;
         practical.visible = tier === "ultra" || tier === "high";
@@ -302,8 +308,8 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
         if (current.objects.some(object => object.kind === "dining_table")) {
           const wide = wideRoomCameraFit(current.room, camera.aspect); camera.fov = wide.fov; camera.updateProjectionMatrix(); camera.position.copy(wide.position); orbit.target.copy(wide.target); interiorView = false; setViewFallback(false); container!.dataset.cameraMode = wide.mode; orbit.update(); schedule(); return;
         }
-        const fitted = interiorCameraFit(current, camera.aspect); camera.fov = fitted.fov; camera.updateProjectionMatrix(); camera.position.copy(fitted.position); orbit.target.copy(fitted.target);
-        interiorView = fitted.mode === "interior"; setViewFallback(!interiorView); container!.dataset.cameraMode = fitted.mode; lastSafeCamera.copy(camera.position); orbit.update(); schedule();
+        const fitted = heroRoomCameraFit(current, camera.aspect); camera.fov = fitted.fov; camera.updateProjectionMatrix(); camera.position.copy(fitted.position); orbit.target.copy(fitted.target);
+        interiorView = fitted.mode === "interior" || fitted.mode === "hero"; setViewFallback(!interiorView); container!.dataset.cameraMode = fitted.mode; lastSafeCamera.copy(camera.position); orbit.update(); schedule();
       }
       function detail() {
         const object = (selected ? current.objects.find(item => item.id === selected) : undefined) ?? current.objects.find(item => item.kind === "bed" || item.kind === "sofa") ?? current.objects[0];

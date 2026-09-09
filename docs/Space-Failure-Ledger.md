@@ -266,3 +266,10 @@ Run 34243058630 passed all 85 Space gates without retries but rejected two mobil
 ### 2026-09-09 — reduced-motion regression asserted an obsolete option name
 
 Run 34245234966 passed 239 general cases and all 85 Space cases without flakes, but the two reduced-motion checks required the literal `auto` after form feedback intentionally changed to `instant`. The old test also replaced scrolling with a no-op, so it could not verify real motion. It now forwards to native scrolling and checks that the result is focused, immediately in the viewport and stable within one pixel at the next frame, as well as the explicit instant option. This strengthens behavior coverage without reverting the input fix or allowing smooth scrolling.
+
+### 2026-09-10 — wider hero fixtures invalidated camera and comparison assumptions
+
+- **Symptom:** the first browser run rejected the new `hero` camera label, a material-review test waited for the removed `Recommended` button, and one comparison unit test expected the former sample bed coordinates.
+- **Cause:** the furnished bedroom and living-room fixtures changed room dimensions, object counts and initial camera semantics while three tests still encoded the prior six-object scene and old control name.
+- **Fix:** assertions now verify the eight/nine-object scenes, accept the explicit safe `hero` mode, use the already-active interior frame, and derive stable comparison values with micrometre rounding.
+- **Prevention:** fixture changes must update geometry, camera, state-transition, recovery, mobile and same-camera visual checks together. GitHub Actions remains unable to start because the account billing/spending gate rejects every job before steps execute; local Node 24 evidence is required until that external block is cleared.

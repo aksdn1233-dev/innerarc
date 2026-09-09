@@ -60,7 +60,7 @@ export function interiorMaterials(anisotropy: number) {
     ceramic: new T.MeshStandardMaterial({ color: 0xddd0b7, roughness: .65 }),
     leaf: new T.MeshStandardMaterial({ color: 0x426647, roughness: .8 }),
     stone: new T.MeshStandardMaterial({ color: 0xffffff, map: marble, roughnessMap: marbleRoughness, bumpMap: plasterBump, bumpScale: .0003, roughness: .32 }),
-    screen: new T.MeshPhysicalMaterial({ color: 0x141e22, metalness: .15, roughness: .12, clearcoat: .8, clearcoatRoughness: .08 }),
+    screen: new T.MeshPhysicalMaterial({ color: 0x293638, emissive: 0x142024, emissiveIntensity: .14, metalness: .12, roughness: .18, clearcoat: .8, clearcoatRoughness: .08 }),
     lampshade: new T.MeshStandardMaterial({ color: 0xf1e5ce, map: linen, roughness: .9, side: T.DoubleSide }),
     bulb: new T.MeshStandardMaterial({ color: 0xffe6bd, emissive: 0xffc77d, emissiveIntensity: 1.8, roughness: .35 }),
     rug: new T.MeshStandardMaterial({ color: 0xcbc4b5, map: linen, bumpMap: linenBump, bumpScale: .002, roughness: 1 }),
@@ -238,6 +238,23 @@ export function architecture(scene: Scene, m: InteriorMaterials) {
         for (const x of [o.offset + .05, o.offset + o.width - .05]) block(g, m.dark, .025, o.top - o.bottom - .06, .04, x, (o.bottom + o.top) / 2, -.025 * inward, .003);
         block(g, m.exterior, o.width - .09, o.top - o.bottom - .09, .006, o.offset + o.width / 2, (o.top + o.bottom) / 2, .035 * inward, 0);
         block(g, m.glass, o.width - .07, o.top - o.bottom - .07, .008, o.offset + o.width / 2, (o.top + o.bottom) / 2, 0, 0);
+        // Curtains are a presentation treatment, not an inferred spatial object.
+        // Their soft folds make the verified opening read at human scale while
+        // staying outside collision and recommendation calculations.
+        const curtainZ = inward * .13, curtainTop = Math.min(h - .08, o.top + .18);
+        cylinder(g, m.bronze, .012, .012, o.width + .38, o.offset + o.width / 2, curtainTop, curtainZ).rotation.z = Math.PI / 2;
+        for (const side of [-1, 1]) {
+          const panelWidth = Math.min(.46, o.width * .28), panelHeight = curtainTop - .12;
+          const geometry = new T.PlaneGeometry(panelWidth, panelHeight, 14, 28), positions = geometry.getAttribute("position");
+          for (let i = 0; i < positions.count; i++) {
+            const localX = positions.getX(i), localY = positions.getY(i), u = localX / panelWidth + .5;
+            const gather = .014 * Math.sin(u * Math.PI * 8) + .006 * Math.sin(u * Math.PI * 15);
+            positions.setXYZ(i, localX, localY, gather * inward);
+          }
+          geometry.computeVertexNormals();
+          const panel = mesh(g, geometry, m.linen, o.offset + o.width / 2 + side * (o.width / 2 + .04), panelHeight / 2, curtainZ);
+          panel.userData.clothUv = { width: panelWidth, depth: panelHeight };
+        }
       } else {
         // A closed reference door sits in the opening plane; swing is not inferred.
         block(g, m.oak, o.width - .06, o.top - .04, .036, o.offset + o.width / 2, (o.top - .04) / 2, wall === "bottom" || wall === "left" ? -.03 : .03, .006);

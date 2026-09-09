@@ -79,10 +79,10 @@ test("space mobile layout, reduced motion and accessibility stay usable", async 
   });
   expect(typography.loaded).toBe(true);
   expect(typography.family).toContain("Pretendard Local");
-  await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "6", { timeout: 20_000 });
+  await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "8", { timeout: 20_000 });
   await expect(page.getByRole("button", { name: "전체 보기", exact: true })).toBeEnabled();
   await page.getByRole("button", { name: "방 안에서", exact: true }).click();
-  await expect(page.locator("[data-camera-mode]")).toHaveAttribute("data-camera-mode", /interior|overview_fallback/);
+  await expect(page.locator("[data-camera-mode]")).toHaveAttribute("data-camera-mode", /hero|interior|overview_fallback/);
   await expect(page.getByRole("button", { name: "위에서", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "가구 자세히", exact: true }).click();
   await expect(page.locator("[data-camera-mode]")).toHaveAttribute("data-camera-mode", "detail");
