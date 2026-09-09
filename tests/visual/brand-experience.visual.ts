@@ -29,9 +29,11 @@ test.describe("Taeryeong editorial brand evidence", () => {
       await page.goto("/ko", { waitUntil: "networkidle" });
 
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+      await expect(page.getByRole("dialog", { name: "결과를 보는 방법부터 알려드릴게요." })).toBeVisible();
+      await capture(page, ".td2-walkthrough", `brand-${width}-guide.png`);
+      await page.getByRole("button", { name: "안내 닫기" }).click();
       await expect(page.getByRole("heading", { level: 1, name: "나와 내 삶을 조금 더 쉽게 알아보세요." })).toBeVisible();
       await capture(page, ".td2-hero", `brand-${width}-hero.png`);
-      await capture(page, ".td2-walkthrough", `brand-${width}-guide.png`);
       await capture(page, ".td2-reading-map", `brand-${width}-services.png`);
       await capture(page, ".td2-product-section", `brand-${width}-personal.png`);
       await capture(page, ".td2-editorial-pair", `brand-${width}-success-relationship.png`);
@@ -39,7 +41,8 @@ test.describe("Taeryeong editorial brand evidence", () => {
       await capture(page, ".td2-reality", `brand-${width}-reality.png`);
 
       expect(await page.locator(".td2-room-comparison img").count()).toBe(2);
-      await expect(page.locator(".td2-walkthrough video")).toHaveCount(4);
+      await page.getByRole("link", { name: "처음 안내" }).click();
+      await expect(page.locator(".td2-guide-screen")).toHaveCount(1);
       const guideFrame = await page.locator(".td2-walkthrough .guide-stage").boundingBox();
       expect(guideFrame?.width ?? 0).toBeLessThanOrEqual(780);
       const previewQuality = await page.locator(".td2-room-comparison img").evaluateAll((images) => images.map((node) => {

@@ -1684,3 +1684,10 @@
 - Demand and distribution: This follows direct owner review of the production home and applies to the public home plus shared global page tokens. Existing routes, navigation and calls to action remain the distribution path. No conversion claim is made until production evidence exists.
 - Economics and safety: This is CSS and visual-regression evidence only. It changes no price, payment, entitlement, provider, token use, calculation, storage, personal data or claim boundary. Existing symbolic-tool and no-guaranteed-outcome language remains visible.
 - Success and reversal: Require stable captures at 390, 430, 768, 1024 and 1440 pixels, mobile overflow and accessibility checks, production build, and unchanged service routes. Revert this decision's CSS and snapshots if reading order, accessibility, route behavior or conversion worsens; there is no migration.
+
+## D-097 - Present the four-step guide as a first-visit modal with native light previews
+
+- Date: 2026-09-09
+- Decision: Remove the four-step guide from the home document flow. Open it as an accessible modal on the first visit, remember dismissal with the existing local boolean, and let the permanent `처음 안내` navigation item reopen it. Escape, backdrop, close button, body scroll lock and keyboard focus containment are required.
+- Visual and cost decision: Replace the legacy dark MP4 presentation on this route with four lightweight HTML/CSS product previews for question choice, birth-date intake, free result and detailed report. The previews use the shipped light design tokens and real product concepts without customer data. This removes guide video downloads and avoids color filters that distort text and status colors.
+- Safety and reversal: No calculation, payment, auth, report, provider, token, storage or claim behavior changes. Revert the modal component/CSS and restore the in-flow guide if first-visit comprehension, accessibility or conversion worsens; no migration exists.

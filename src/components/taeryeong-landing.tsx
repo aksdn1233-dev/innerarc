@@ -13,7 +13,6 @@ type Props = {
 
 const GUIDE_SEEN_KEY = "gyeol.guide.seen.v1";
 const GUIDE_SCREENS = ["questions", "intake", "free-result", "report"] as const;
-const GUIDE_FRAME = { width: 780, height: 1062 } as const;
 
 const content = {
   ko: {
@@ -46,6 +45,7 @@ const content = {
       ["더 자세히 보기", "필요할 때 상세 리딩을 고릅니다", "가격과 내용을 확인한 뒤 선택할 수 있어요."],
     ],
     guideAction: "결과 예시 보기",
+    guideClose: "안내 닫기",
     readEyebrow: "태령당에서 할 수 있는 것",
     readTitle: <>지금 궁금한 걸<br />바로 볼 수 있어요.</>,
     readBody: "나를 알아보고, 둘을 비교하고, 내 방까지 살펴볼 수 있어요.",
@@ -117,6 +117,7 @@ const content = {
       ["Go deeper if needed", "Choose a detailed reading only if needed", "Review the contents and price before deciding."],
     ],
     guideAction: "See a sample result",
+    guideClose: "Close guide",
     readEyebrow: "WHAT YOU CAN DO", readTitle: <>Start with what<br />you want to understand.</>, readBody: "Explore yourself, compare two people, and even review your room.", sajuHub: "Open Four Pillars services", freePattern: "View free pattern",
     pillars: [
       ["01", "Read yourself.", "Saju · numerology · tarot", "Calculated evidence and symbolic interpretation stay distinct.", "/en/numerology"],
@@ -138,6 +139,35 @@ function Arrow() {
   return <span aria-hidden="true">→</span>;
 }
 
+function GuideScreenPreview({ locale, step, label }: { locale: Locale; step: number; label: string }) {
+  const ko = locale === "ko";
+  return <div aria-label={label} className="td2-guide-screen" role="img">
+    <header><span>태령당</span><small>{ko ? `이용 안내 ${step + 1}/4` : `QUICK GUIDE ${step + 1}/4`}</small></header>
+    {step === 0 && <div className="td2-guide-questions">
+      <p>{ko ? "어떤 게 제일 궁금한가요?" : "What is on your mind?"}</p>
+      {[ko ? "연애·관계" : "Love & relationships", ko ? "일·진로" : "Work & direction", ko ? "돈·사업" : "Money & business"].map((item, index) => <div className={index === 0 ? "is-picked" : undefined} key={item}><b>{String(index + 1).padStart(2, "0")}</b><span>{item}</span><Arrow /></div>)}
+    </div>}
+    {step === 1 && <div className="td2-guide-intake">
+      <small>{ko ? "생년월일" : "BIRTH DATE"}</small><strong>1994. 11. 04</strong>
+      <div><span>{ko ? "양력" : "SOLAR"}</span><span>{ko ? "태어난 시간 모름" : "TIME UNKNOWN"}</span></div>
+      <label><i>✓</i>{ko ? "분석을 위해 입력한 정보를 확인했어요." : "I reviewed the information for this analysis."}</label>
+      <button type="button" tabIndex={-1}>{ko ? "무료 결과 보기" : "See free result"}<Arrow /></button>
+    </div>}
+    {step === 2 && <div className="td2-guide-result">
+      <small>{ko ? "나의 핵심 패턴" : "MY CORE PATTERN"}</small><div className="td2-guide-number">11</div>
+      <h3>{ko ? "깊이 보고, 의미를 연결하는 사람" : "You look deeper and connect meaning."}</h3>
+      <div className="td2-guide-metrics"><span><b>82</b>{ko ? "사고력" : "Thinking"}</span><span><b>88</b>{ko ? "관계감각" : "Connection"}</span><span><b>76</b>{ko ? "회복력" : "Recovery"}</span></div>
+      <p>{ko ? "계산 근거와 상징 해석을 나눠서 보여드려요." : "Calculations and symbolic interpretation stay separate."}</p>
+    </div>}
+    {step === 3 && <div className="td2-guide-report">
+      <div className="td2-guide-report-nav"><b>{ko ? "핵심 요약" : "Summary"}</b><span>{ko ? "강점" : "Strengths"}</span><span>{ko ? "주의점" : "Cautions"}</span></div>
+      <h3>{ko ? "결과를 생활에서 어떻게 써볼지 정리했어요." : "See how to use the result in daily life."}</h3>
+      {[ko ? "자주 반복되는 선택" : "Recurring choices", ko ? "지금 바꿔볼 한 가지" : "One change to try", ko ? "나중에 확인할 질문" : "A question to revisit"].map((item, index) => <div className="td2-guide-report-row" key={item}><b>0{index + 1}</b><span>{item}</span><i style={{ width: `${82 - index * 13}%` }} /></div>)}
+      <footer><span>{ko ? "계산" : "FACT"}</span><span>{ko ? "상징" : "SYMBOL"}</span><span>{ko ? "현실 확인" : "REALITY"}</span></footer>
+    </div>}
+  </div>;
+}
+
 export function TaeryeongLanding({ locale, reviewCount }: Props) {
   const t = content[locale];
   const pillars = t.pillars;
@@ -147,57 +177,57 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
 
   const track = () => captureConversionEvent("primary_cta_click", locale, { location: "hero" });
   const [showGuideCue, setShowGuideCue] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(false);
   const [guideStep, setGuideStep] = useState(0);
-  const [guideReady, setGuideReady] = useState(false);
-  const [guideVisible, setGuideVisible] = useState(false);
   const guideRef = useRef<HTMLElement>(null);
   const guideTabsRef = useRef<HTMLDivElement>(null);
-  const guideStageRef = useRef<HTMLDivElement>(null);
-  const guideClipRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const guideCloseRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
-      try { setShowGuideCue(window.localStorage.getItem(GUIDE_SEEN_KEY) !== "1"); }
-      catch { setShowGuideCue(true); }
+      try {
+        const firstVisit = window.localStorage.getItem(GUIDE_SEEN_KEY) !== "1";
+        setShowGuideCue(firstVisit);
+        setGuideOpen(firstVisit);
+      }
+      catch { setShowGuideCue(true); setGuideOpen(true); }
     }, 0);
     return () => window.clearTimeout(timer);
   }, []);
 
   useEffect(() => {
-    const guide = guideRef.current;
-    const stage = guideStageRef.current;
-    if (!guide || !stage) return;
-    const seenObserver = new IntersectionObserver(([entry]) => {
-      if (!entry?.isIntersecting) return;
-      try { window.localStorage.setItem(GUIDE_SEEN_KEY, "1"); } catch { /* show again next visit */ }
-    }, { threshold: 0.35 });
-    const stageObserver = new IntersectionObserver(([entry]) => {
-      if (!entry) return;
-      setGuideVisible(entry.isIntersecting);
-      if (entry.isIntersecting) setGuideReady(true);
-    }, { threshold: 0.05 });
-    seenObserver.observe(guide);
-    stageObserver.observe(stage);
-    return () => { seenObserver.disconnect(); stageObserver.disconnect(); };
-  }, []);
-
-  useEffect(() => {
-    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    guideTabsRef.current?.style.setProperty("--guide-progress", "0");
-    guideClipRefs.current.forEach((clip, index) => {
-      if (!clip) return;
-      if (still || !guideReady || !guideVisible || index !== guideStep) {
-        clip.pause();
-        return;
-      }
-      clip.currentTime = 0;
-      void clip.play().catch(() => { /* poster remains visible */ });
-    });
-  }, [guideReady, guideStep, guideVisible]);
+    if (!guideOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const focusTimer = window.setTimeout(() => guideCloseRef.current?.focus(), 0);
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeGuide();
+      if (event.key !== "Tab") return;
+      const controls = [...(guideRef.current?.querySelectorAll<HTMLElement>("button, a[href], [tabindex='0']") ?? [])]
+        .filter((control) => !control.hasAttribute("disabled") && control.offsetParent !== null);
+      const first = controls[0];
+      const last = controls.at(-1);
+      if (!first || !last) return;
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      window.clearTimeout(focusTimer);
+      window.removeEventListener("keydown", closeOnEscape);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [guideOpen]);
 
   function openGuide() {
     try { window.localStorage.setItem(GUIDE_SEEN_KEY, "1"); } catch { /* non-blocking */ }
-    document.getElementById("guide")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    setGuideOpen(true);
+  }
+
+  function closeGuide() {
+    try { window.localStorage.setItem(GUIDE_SEEN_KEY, "1"); } catch { /* non-blocking */ }
+    setShowGuideCue(false);
+    setGuideOpen(false);
   }
 
   return <main className="td2" id="main-content" tabIndex={-1}>
@@ -206,7 +236,7 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
         <strong>태령당</strong><small>TAERYEONGDANG</small>
       </Link>
       <nav className="td2-nav" aria-label={t.navLabel}>
-        <a href="#guide">{t.guide}</a>
+        <a href="#guide" onClick={(event) => { event.preventDefault(); openGuide(); }}>{t.guide}</a>
         <Link href={`/${locale}/numerology`}>{t.analysis}</Link>
         <Link href={`/${locale}/celebrity`}>{t.success}</Link>
         <Link href={`/${locale}/relationship`}>{t.relationship}</Link>
@@ -260,7 +290,9 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
       </div>
     </section>
 
-    <section className="td2-walkthrough" id="guide" aria-labelledby="td2-guide-title" ref={guideRef}>
+    {guideOpen && <div className="td2-guide-modal" onMouseDown={(event) => { if (event.target === event.currentTarget) closeGuide(); }}>
+    <section aria-modal="true" className="td2-walkthrough" id="guide" aria-labelledby="td2-guide-title" ref={guideRef} role="dialog">
+      <button aria-label={t.guideClose} className="td2-guide-close" onClick={closeGuide} ref={guideCloseRef} type="button">×</button>
       <header>
         <p className="td2-eyebrow">{t.guideEyebrow}</p>
         <h2 id="td2-guide-title">{t.guideTitle}</h2>
@@ -277,7 +309,6 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
             if (!delta) return;
             event.preventDefault();
             const next = (guideStep + delta + GUIDE_SCREENS.length) % GUIDE_SCREENS.length;
-            setGuideReady(true);
             setGuideStep(next);
             guideTabsRef.current?.querySelectorAll("button")[next]?.focus();
           }}
@@ -288,8 +319,7 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
             className={guideStep === index ? "is-current" : undefined}
             id={`td2-guide-tab-${index}`}
             key={label}
-            onClick={() => { setGuideReady(true); setGuideStep(index); }}
-            onFocus={() => setGuideReady(true)}
+            onClick={() => setGuideStep(index)}
             role="tab"
             tabIndex={guideStep === index ? 0 : -1}
             type="button"
@@ -304,30 +334,14 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
           tabIndex={0}
         >
           <div className="guide-stage-title"><strong>{t.guideSteps[guideStep]![1]}</strong><span>{t.guideSteps[guideStep]![2]}</span></div>
-          <div className="guide-stage" ref={guideStageRef}>
-            {GUIDE_SCREENS.map((screen, index) => <video
-              aria-label={t.guideSteps[index]![1]}
-              className="guide-stage-clip"
-              hidden={guideStep !== index}
-              key={screen}
-              muted
-              playsInline
-              poster={guideReady ? `/images/guide/${screen}.jpg` : undefined}
-              preload={guideReady && (index === guideStep || index === (guideStep + 1) % GUIDE_SCREENS.length) ? "auto" : "none"}
-              onEnded={() => setGuideStep((step) => (step + 1) % GUIDE_SCREENS.length)}
-              onTimeUpdate={(event) => {
-                if (index !== guideStep) return;
-                const { currentTime, duration } = event.currentTarget;
-                guideTabsRef.current?.style.setProperty("--guide-progress", duration ? String(currentTime / duration) : "0");
-              }}
-              ref={(node) => { guideClipRefs.current[index] = node; }}
-              style={{ aspectRatio: `${GUIDE_FRAME.width} / ${GUIDE_FRAME.height}` }}
-            ><source src={`/images/guide/${screen}.mp4`} type="video/mp4" /></video>)}
+          <div className="guide-stage">
+            <GuideScreenPreview label={t.guideSteps[guideStep]![1]} locale={locale} step={guideStep} />
           </div>
         </div>
       </div>
-      <button className="journey-guide-action" onClick={() => document.querySelector(".td2-product-section")?.scrollIntoView({ behavior: "smooth" })} type="button">{t.guideAction}<Arrow /></button>
+      <button className="journey-guide-action" onClick={() => { closeGuide(); window.setTimeout(() => document.querySelector(".td2-product-section")?.scrollIntoView({ behavior: "smooth" }), 0); }} type="button">{t.guideAction}<Arrow /></button>
     </section>
+    </div>}
 
     <section className="td2-section td2-product-section" aria-labelledby="td2-preview-title">
       <div className="td2-copy-column">

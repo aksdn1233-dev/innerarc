@@ -75,16 +75,17 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await expect(page.getByText("1 + 9 + 9 + 4 + 1 + 1 + 0 + 4 = 29 → 11")).toBeVisible();
 });
 
-test("first-visit guide cue appears once while the real walkthrough remains available", async ({ page }) => {
+test("first visit opens the real guide as a dismissible modal and navigation can reopen it", async ({ page }) => {
   await page.goto("/ko");
-  const cue = page.getByRole("button", { name: /처음이세요\? 1분 안내 보기/ });
-  await expect(cue).toBeVisible();
-  await cue.click();
-  await expect(page.locator("#guide")).toBeInViewport();
+  const dialog = page.getByRole("dialog", { name: "결과를 보는 방법부터 알려드릴게요." });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole("tab")).toHaveCount(4);
+  await dialog.getByRole("button", { name: "안내 닫기" }).click();
+  await expect(dialog).toHaveCount(0);
   await page.reload();
-  await expect(cue).toHaveCount(0);
-  await expect(page.locator("#guide")).toBeAttached();
-  await expect(page.locator("#guide [role='tab']")).toHaveCount(4);
+  await expect(dialog).toHaveCount(0);
+  await page.getByRole("link", { name: "처음 안내" }).click();
+  await expect(dialog).toBeVisible();
 });
 
 test("mobile home has no overflow and preserves the selling page behavior", async ({ page }) => {
@@ -95,6 +96,8 @@ test("mobile home has no overflow and preserves the selling page behavior", asyn
   for (const width of [320, 360, 375, 390, 430]) {
     await page.setViewportSize({ width, height: 844 });
     await page.goto("/ko");
+    const guideClose = page.getByRole("button", { name: "안내 닫기" });
+    if (await guideClose.count()) await guideClose.click();
     await expect(page.getByRole("heading", { level: 1, name: "나와 내 삶을 조금 더 쉽게 알아보세요." })).toBeVisible();
     await expect(page.locator(".td2-hero").getByRole("link", { name: /무료로 나 알아보기/ })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
