@@ -322,3 +322,4 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Normalize the final home palette: cool-white base, restrained blue walkthrough, opaque white device surface, one navy action hierarchy and a single intentional dark Reality Check chapter.
 - [x] Replace the section-only contrast patch with a site-wide hierarchy pass: compact 3+2 service cards, consistent spacing/radii/shadows, shared cool-white/navy tokens, and original-color walkthrough recordings with no CSS inversion.
 - [x] Move the four-step guide out of the page flow into a first-visit modal, retain navigation reopening and keyboard dismissal/focus containment, and replace the dark recordings with native bright product previews that add no media or token cost.
+- [x] Open the dismissible four-step guide on every new public-home load, keep its hero cue and navigation reopen path visible, and avoid storing a seen marker.

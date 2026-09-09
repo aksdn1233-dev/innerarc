@@ -10,6 +10,9 @@ function localMonthOffset(offset: number): string {
 
 test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await page.goto("/ko");
+  const guideDialog = page.getByRole("dialog", { name: "결과를 보는 방법부터 알려드릴게요." });
+  await expect(guideDialog).toBeVisible();
+  await guideDialog.getByRole("button", { name: "안내 닫기" }).click();
   await expect(page.getByRole("heading", {
     level: 1,
     name: "나와 내 삶을 조금 더 쉽게 알아보세요.",
@@ -23,8 +26,9 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await page.getByRole("button", { name: /처음이세요\? 1분 안내 보기/ }).click();
   await expect(page.locator("#guide")).toBeInViewport();
   await expect(page.locator("#guide [role='tab']")).toHaveCount(4);
-  await expect(page.locator("#guide video")).toHaveCount(4);
+  await expect(page.locator("#guide .td2-guide-screen")).toHaveCount(1);
   await expect(page.locator("#guide [role='tabpanel']")).toContainText("지금 궁금한 것을 고릅니다");
+  await page.getByRole("button", { name: "안내 닫기" }).click();
   await expect(page.locator("#onboarding")).toHaveCount(0);
   expect(await page.locator("#services .td2-pillar").count()).toBeGreaterThanOrEqual(4);
   await expect(page.locator(".td2-report-points li")).toHaveCount(3);
@@ -75,7 +79,7 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await expect(page.getByText("1 + 9 + 9 + 4 + 1 + 1 + 0 + 4 = 29 → 11")).toBeVisible();
 });
 
-test("first visit opens the real guide as a dismissible modal and navigation can reopen it", async ({ page }) => {
+test("every home visit opens the guide as a dismissible modal and navigation can reopen it", async ({ page }) => {
   await page.goto("/ko");
   const dialog = page.getByRole("dialog", { name: "결과를 보는 방법부터 알려드릴게요." });
   await expect(dialog).toBeVisible();
@@ -83,7 +87,8 @@ test("first visit opens the real guide as a dismissible modal and navigation can
   await dialog.getByRole("button", { name: "안내 닫기" }).click();
   await expect(dialog).toHaveCount(0);
   await page.reload();
-  await expect(dialog).toHaveCount(0);
+  await expect(dialog).toBeVisible();
+  await dialog.getByRole("button", { name: "안내 닫기" }).click();
   await page.getByRole("link", { name: "처음 안내" }).click();
   await expect(dialog).toBeVisible();
 });

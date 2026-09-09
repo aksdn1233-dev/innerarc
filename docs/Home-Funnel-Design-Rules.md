@@ -260,14 +260,13 @@ time either changed, and the label would quietly become a lie. Preview markup is
 **inert** — no `<input>`, `<button>`, or link inside it — so a preview never puts a dead
 control in the keyboard path.
 
-First-visit guidance is a nudge, never a gate.
+Home-visit guidance is a dismissible introduction, never a gate.
 
-- The guide itself stays on the page for everyone; only the one-line cue pointing at it is
-  first-visit-only (`gyeol.guide.seen.v1` in `localStorage`).
-- Never a modal on arrival, never a forced sequence, never a blocked interaction, never a
-  second interruption for a returning visitor.
-- A browser that refuses storage must degrade to showing the cue again — never to breaking.
-- The reopen path ("이용 방법") stays in the header navigation and the guide keeps its own
+- Open the four-step guide whenever the public home is newly loaded. Closing it keeps the
+  current page usable, while a reload or later visit opens it again.
+- Do not store a seen marker. The behavior must be identical across private browsing and
+  browsers that refuse storage.
+- The persistent cue and reopen path ("이용 방법") stay available, and the guide keeps its own
   heading, so it is findable without the cue.
 
 ## 6. Free / detailed / premium
