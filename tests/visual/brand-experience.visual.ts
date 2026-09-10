@@ -111,7 +111,7 @@ test.describe("Taeryeong Daily Healing homepage", () => {
     const routeResponses = await Promise.all(servicePaths.map((path) => request.get(path)));
     routeResponses.forEach((response, index) => expect(response.status(), servicePaths[index]).toBeLessThan(400));
 
-    const media = page.locator(".dh-character-entry img, .dh-conversation img, .dh-guide-strip img, .dh-service-grid img, .dh-transition img, .dh-space img, .dh-close img");
+    const media = page.locator(".dh-character-entry img, .dh-conversation img, .dh-guide-strip img, .dh-service-grid img, .dh-transition img, .dh-space img");
     for (let index = 0; index < await media.count(); index += 1) {
       const image = media.nth(index);
       await image.scrollIntoViewIfNeeded();
@@ -147,5 +147,12 @@ test.describe("Taeryeong Daily Healing homepage", () => {
     await expect(page.locator(".dh-report-book")).toContainText("18 CHAPTERS");
     await expect(page.locator(".dh-report-book")).toContainText("핵심 숫자");
     await expect(page.locator(".dh-report-book")).toContainText("지금 해볼 한 가지");
+
+    const closing = page.locator(".dh-close");
+    await expect(closing.locator("video")).toHaveAttribute("poster", "/images/taeyul-hero.jpg");
+    await expect(closing.locator("video source")).toHaveAttribute("src", /\/videos\/taeyul-hero\.mp4/);
+    await expect.poll(() => closing.locator("video").evaluate((node) => (node as HTMLVideoElement).videoWidth)).toBeGreaterThan(0);
+    await expect(closing.getByRole("link", { name: "무료 보기" })).toHaveAttribute("href", "/ko/numerology");
+    await expect(closing.getByRole("link", { name: "사주 보기" })).toHaveAttribute("href", "/ko/fortune");
   });
 });
