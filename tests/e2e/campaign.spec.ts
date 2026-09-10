@@ -10,7 +10,7 @@ test("campaign popup and checkout follow the active or expired schedule", async 
   // page and reached its closing section, so nothing covers the questions on the way.
   const dialog = page.getByRole("dialog", { name: /사주 원국·상세 리딩, 지금 1,500원/ });
   await expect(dialog).toHaveCount(0);
-  await page.locator(".td2-close").scrollIntoViewIfNeeded();
+  await page.locator(".dh-close").scrollIntoViewIfNeeded();
   if (pricing.campaign) {
     await expect(dialog).toBeVisible();
     await expect(dialog).toContainText("후기·공유 이벤트 진행 중");

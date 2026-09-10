@@ -135,9 +135,9 @@ test("the home always shows a simple path to 3D room analysis", async ({ page })
   await page.getByRole("button", { name: "안내 닫기" }).click();
   const menu = page.getByRole("navigation").getByRole("link", { name: "3D 공간운", exact: true });
   await expect(menu).toBeVisible();
-  await expect(page.getByRole("heading", { name: "내 방, 어디를 바꾸면 좋을까요?", exact: true })).toBeVisible();
-  await expect(page.getByText("방 사진 찍기", { exact: true })).toBeVisible();
-  const roomLinks = page.getByRole("link", { name: "내 방 분석하기", exact: true });
+  await expect(page.getByRole("heading", { name: "내가 머무는 공간도 하나의 흐름입니다.", exact: true })).toBeVisible();
+  await expect(page.locator(".dh-space-copy")).toContainText("공간 구조");
+  const roomLinks = page.getByRole("link", { name: "내 방 살펴보기", exact: true });
   await expect(roomLinks).toHaveCount(1);
   await expect(roomLinks).toBeVisible();
   await menu.click();

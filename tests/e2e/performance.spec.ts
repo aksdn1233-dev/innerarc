@@ -28,11 +28,13 @@ const DEFAULT_CSS_DECODED_BUDGET = 208_000;
 
 const routes = [
   // The editorial home removes the old autoplay film, audio and iOS animation. Its
-  // measured initial transfer is 319.5 KB and decoded total 1.116 MB. The premium home
-  // now measures 231.8 KB of decoded CSS. Route prefetch is disabled here so linked Saju
-  // styles no longer add another 13.2 KB before the user chooses that service. The 233 KB
-  // ceiling leaves only 1.2 KB of headroom and keeps that saving as a regression gate.
-  { path: "/en", transfer: 350_000, cssDecoded: 233_000 },
+  // Daily Healing keeps the unchanged hero, adds the six-guide strip and the real report,
+  // Reality Check and 3D Space previews below it. The character-led correction keeps the first
+  // scene crisp with one optimized native-size asset and mounts later character rows only near
+  // the viewport. The measured desktop state is 17 first-party resources, 425.3 KB transferred,
+  // and 1.223 MB decoded.
+  // These ceilings leave less than 3% headroom and still reject another unreviewed screen.
+  { path: "/en", transfer: 440_000, decoded: 1_240_000, cssDecoded: 260_000 },
   { path: "/en/relationship" },
   { path: "/en/compatibility" },
   { path: "/en/celebrity" },

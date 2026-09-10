@@ -3,11 +3,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { DailyHealingHome, type DailyHealingReportPreview } from "@/components/daily-healing-home";
 import { captureConversionEvent } from "@/core/analytics";
+import type { PublicReview } from "@/core/reviews";
 import type { Locale } from "@/i18n/config";
 
 type Props = {
   locale: Locale;
+  reportPreview: DailyHealingReportPreview;
+  reviews: readonly PublicReview[];
   reviewCount: number | null;
 };
 
@@ -163,61 +167,6 @@ function Arrow() {
   return <span aria-hidden="true">→</span>;
 }
 
-function CelestialSajuStudy({ label, locale }: { label: string; locale: Locale }) {
-  const pillarLabels = locale === "ko"
-    ? [["年柱", "연주"], ["月柱", "월주"], ["日柱", "일주"], ["時柱", "시주"]]
-    : [["年柱", "YEAR"], ["月柱", "MONTH"], ["日柱", "DAY"], ["時柱", "HOUR"]];
-  const dipperStars = [[170, 165], [225, 137], [281, 162], [327, 126], [379, 104], [432, 123], [472, 83]] as const;
-
-  return <figure className="td2-celestial-study">
-    <svg aria-label={label} role="img" viewBox="0 0 680 560">
-      <title>{label}</title>
-      <g className="td2-celestial-grid" aria-hidden="true">
-        {[82, 142, 202, 262, 322, 382, 442, 502, 562, 622].map((x) => <line key={`x-${x}`} x1={x} x2={x} y1="46" y2="516" />)}
-        {[48, 108, 168, 228, 288, 348, 408, 468, 516].map((y) => <line key={`y-${y}`} x1="58" x2="622" y1={y} y2={y} />)}
-      </g>
-      <g className="td2-celestial-frame" aria-hidden="true">
-        <rect height="470" width="564" x="58" y="46" />
-        <path d="M58 74H622M58 344H622M58 516H622" />
-        <path d="M82 46V66M142 46V58M202 46V66M262 46V58M322 46V66M382 46V58M442 46V66M502 46V58M562 46V66M622 46V66" />
-        <path d="M58 108H72M58 168H78M58 228H72M58 288H78M58 348H72M58 408H78M58 468H72" />
-      </g>
-      <g className="td2-celestial-paths" aria-hidden="true">
-        <path d="M92 306C154 228 224 207 300 221C379 236 438 214 500 156C537 122 566 106 600 102" />
-        <path d="M94 323C164 260 237 246 310 258C394 272 468 239 550 166" />
-        <path d="M107 285 138 289 155 266 178 276 194 248M495 260 518 241 539 248 558 224 588 228" />
-        <path d="M104 96 126 84 148 96M535 307 558 294 582 307" />
-      </g>
-      <g className="td2-dipper" aria-hidden="true">
-        <path d="M170 165 225 137 281 162 327 126 379 104 432 123 472 83" />
-        {dipperStars.map(([x, y], index) => <path className={index === 0 || index === 6 ? "is-major" : undefined} d={`M${x} ${y - 8} ${x + 8} ${y} ${x} ${y + 8} ${x - 8} ${y}Z`} key={`${x}-${y}`} />)}
-      </g>
-      <g className="td2-season-labels" aria-hidden="true">
-        <text x="92" y="298">立春</text><text x="188" y="237">春分</text><text x="304" y="246">夏至</text><text x="430" y="219">秋分</text><text x="552" y="158">冬至</text>
-      </g>
-      <g className="td2-cardinal-labels" aria-hidden="true">
-        <text x="334" y="92">北</text><text x="588" y="212">東</text><text x="334" y="328">南</text><text x="78" y="212">西</text>
-      </g>
-      <g className="td2-four-pillars" aria-hidden="true">
-        {pillarLabels.map(([hanja, caption], index) => {
-          const x = 82 + index * 135;
-          return <g key={hanja}>
-            <rect height="126" width="112" x={x} y="368" />
-            <path d={`M${x} 408H${x + 112}M${x} 464H${x + 112}`} />
-            <text className="td2-pillar-hanja" x={x + 56} y="398">{hanja}</text>
-            <text className="td2-pillar-stem" x={x + 56} y="449">天 · 地</text>
-            <text className="td2-pillar-caption" x={x + 56} y="485">{caption}</text>
-          </g>;
-        })}
-      </g>
-      <text className="td2-celestial-label" x="58" y="28">CELESTIAL CALENDAR · FOUR PILLARS</text>
-      <text className="td2-celestial-label td2-celestial-index" x="552" y="28">天文 01</text>
-      <g className="td2-celestial-seal" aria-hidden="true"><rect height="28" width="28" x="586" y="302" /><text x="600" y="322">命</text></g>
-    </svg>
-    <figcaption>{locale === "ko" ? "북두칠성 · 24절기 · 연월일시의 구조를 담은 벡터 도판" : "A vector study of the Big Dipper, seasonal calendar, and Four Pillars"}</figcaption>
-  </figure>;
-}
-
 function GuideScreenPreview({ locale, step, label }: { locale: Locale; step: number; label: string }) {
   const ko = locale === "ko";
   return <div aria-label={label} className="td2-guide-screen" role="img">
@@ -247,9 +196,8 @@ function GuideScreenPreview({ locale, step, label }: { locale: Locale; step: num
   </div>;
 }
 
-export function TaeryeongLanding({ locale, reviewCount }: Props) {
+export function TaeryeongLanding({ locale, reportPreview, reviews, reviewCount }: Props) {
   const t = content[locale];
-  const pillars = t.pillars;
   const reviewLabel = reviewCount && reviewCount > 0
     ? `${t.reviews} ${reviewCount}`
     : t.reviews;
@@ -336,32 +284,6 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
       <small className="td2-hero-art-note">{t.heroArtNote}</small>
     </section>
 
-    <section className="td2-trust-strip" aria-label={locale === "ko" ? "태령당 이용 원칙" : "Taeryeongdang service principles"}>
-      {t.trustItems.map(([title, body]) => <div key={title}><strong>{title}</strong><span>{body}</span></div>)}
-    </section>
-
-    <nav className="td2-story-nav" aria-label={locale === "ko" ? "메인 소개 바로가기" : "Home story navigation"}>
-      <a className="is-current" href="#main-content">{locale === "ko" ? "태령당" : "Home"}</a>
-      <a href="#services">{locale === "ko" ? "살펴보기" : "Explore"}</a>
-      <a href="#guide">{locale === "ko" ? "경험하기" : "Try it"}</a>
-    </nav>
-
-    <section className="td2-section td2-reading-map" id="services" aria-labelledby="td2-services-title">
-      <header className="td2-heading">
-        <div><p>{t.readEyebrow}</p><h2 id="td2-services-title">{t.readTitle}</h2></div>
-        <span>{t.readBody}</span>
-      </header>
-      <div className="td2-service-bridges">
-        <Link href={`/${locale}/fortune`} prefetch={false}>{t.sajuHub}<Arrow /></Link>
-        <Link href={`/${locale}/numerology`} prefetch={false}>{t.freePattern}<Arrow /></Link>
-      </div>
-      <div className="td2-pillar-grid">
-        {pillars.map(([number, title, label, body, href]) => <Link href={href} className="td2-pillar" key={number} prefetch={false}>
-          <small>{number}</small><h3>{title}</h3><strong>{label}</strong><p>{body}</p><Arrow />
-        </Link>)}
-      </div>
-    </section>
-
     {guideOpen && <div className="td2-guide-modal" onMouseDown={(event) => { if (event.target === event.currentTarget) closeGuide(); }}>
     <section aria-modal="true" className="td2-walkthrough" id="guide" aria-labelledby="td2-guide-title" ref={guideRef} role="dialog">
       <button aria-label={t.guideClose} className="td2-guide-close" onClick={closeGuide} ref={guideCloseRef} type="button">×</button>
@@ -415,95 +337,6 @@ export function TaeryeongLanding({ locale, reviewCount }: Props) {
     </section>
     </div>}
 
-    <section className="td2-section td2-product-section" aria-labelledby="td2-preview-title">
-      <div className="td2-copy-column">
-        <p className="td2-eyebrow">{t.previewEyebrow}</p>
-        <h2 id="td2-preview-title">{t.previewTitle}</h2>
-        <p>{t.previewBody}</p>
-        <Link className="td2-text-link" href={`/${locale}/numerology`} prefetch={false} onClick={track}>{t.previewCta}<Arrow /></Link>
-      </div>
-      <article className="td2-report-preview" aria-label={t.sample}>
-        <header><div><small>{t.sample}</small><strong>{t.sampleDate}</strong></div></header>
-        <nav aria-label={locale === "ko" ? "예시 리포트 목차" : "Sample report sections"}><b>{locale === "ko" ? "전체 성향" : "Overview"}</b><span>{locale === "ko" ? "강점" : "Strengths"}</span><span>{locale === "ko" ? "주의점" : "Cautions"}</span><span>{locale === "ko" ? "인생 흐름" : "Rhythm"}</span></nav>
-        <h3>{t.sampleHeadline}</h3>
-        <ol className="td2-report-points">
-          {t.samplePoints.map((point, index) => <li key={point}><small>{String(index + 1).padStart(2, "0")}</small><strong>{point}</strong></li>)}
-        </ol>
-        <div className="td2-score-row">
-          <div className="td2-score-summary" aria-hidden="true"><small>{locale === "ko" ? "핵심 항목" : "CORE AREAS"}</small><strong>6</strong><span>{locale === "ko" ? "계산값을 나란히 비교" : "calculated values compared"}</span></div>
-          <dl>{t.chartLabels.map((label, index) => <div key={label}><dt>{label}</dt><dd><span style={{ width: `${[82,72,64,88,76,69][index]}%` }} /></dd></div>)}</dl>
-        </div>
-        <footer><span>{locale === "ko" ? "계산 근거" : "Calculation"}<b>11 · 4 · 6 · 7</b></span><span>{locale === "ko" ? "해석 구분" : "Evidence labels"}<b>{locale === "ko" ? "계산 · 상징 · 현실" : "fact · symbol · reality"}</b></span></footer>
-      </article>
-    </section>
-
-    <section className="td2-editorial-pair">
-      <article className="td2-success" aria-labelledby="td2-success-title">
-        <div className="td2-copy-column">
-          <p className="td2-eyebrow">{t.successEyebrow}</p><h2 id="td2-success-title">{t.successTitle}</h2><p>{t.successBody}</p>
-          <Link className="td2-text-link" href={`/${locale}/celebrity`} prefetch={false}>{t.successCta}<Arrow /></Link>
-        </div>
-        <div className="td2-success-canvas" aria-hidden="true">
-          <span className="td2-rank">01</span>
-          <div><small>{locale === "ko" ? "공공 리더십" : "PUBLIC LEADERSHIP"}</small><strong>{locale === "ko" ? "버락 오바마" : "Barack Obama"}</strong><p>{locale === "ko" ? "두드러진 구조 겹침" : "Strong structural overlap"}</p></div>
-          <aside><small>{locale === "ko" ? "출처가 있는 실제 경력 사건" : "Sourced career event"}</small><time>2009-01-20</time><p>{locale === "ko" ? "미국 제44대 대통령으로 취임했습니다." : "Inaugurated as the 44th U.S. President."}</p></aside>
-        </div>
-      </article>
-
-      <article className="td2-relationship" aria-labelledby="td2-relationship-title">
-        <div className="td2-copy-column">
-          <p className="td2-eyebrow">{t.relationshipEyebrow}</p><h2 id="td2-relationship-title">{t.relationshipTitle}</h2><p>{t.relationshipBody}</p>
-          <Link className="td2-text-link" href={`/${locale}/relationship`} prefetch={false}>{t.relationshipCta}<Arrow /></Link>
-        </div>
-        <div className="td2-relationship-compare" aria-hidden="true">
-          <header><span>{locale === "ko" ? "나" : "ME"}</span><b>{t.relationshipCompare}</b><span>{locale === "ko" ? "상대" : "THEM"}</span></header>
-          {t.relationshipAxes.map((axis, index) => <div key={axis}><strong>{axis}</strong><span style={{ width: `${74 - index * 9}%` }} /><i /><span style={{ width: `${48 + index * 12}%` }} /></div>)}
-        </div>
-      </article>
-    </section>
-
-    <section className="td2-space" aria-labelledby="td2-space-title">
-      <div className="td2-space-copy">
-        <p className="td2-eyebrow">{t.spaceEyebrow}</p><h2 id="td2-space-title">{t.spaceTitle}</h2><p>{t.spaceBody}</p>
-        <ol className="td2-space-steps">{t.spaceSteps.map((step, index) => <li key={step}><b>{index + 1}</b><span>{step}</span></li>)}</ol>
-        <div className="td2-actions"><Link className="td2-primary" href={`/${locale}/space`} prefetch={false}>{t.spaceCta}<Arrow /></Link><Link className="td2-space-link" href={`/${locale}/space#space-demo`} prefetch={false}>{t.spaceDemo}</Link></div>
-        <small>{t.spaceDisclosure}</small>
-      </div>
-      <div className="td2-space-stage">
-        <div className="td2-space-tabs" aria-hidden="true"><b>{locale === "ko" ? "전체 분석" : "Overview"}</b><span>{locale === "ko" ? "가구 배치" : "Layout"}</span><span>{locale === "ko" ? "채광·환기" : "Light"}</span><span>{locale === "ko" ? "생활 동선" : "Flow"}</span></div>
-        <div className="td2-room-comparison">
-          <figure><Image src="/images/space/previews/bedroom-before-v1.png" alt={locale === "ko" ? "태령당 3D 예시 방의 현재 배치" : "Current layout in the real 3D room example"} width={1354} height={1082} sizes="(max-width: 760px) 100vw, (max-width: 1100px) 46vw, 34vw" /><figcaption>{t.before}</figcaption></figure>
-          <figure><Image src="/images/space/previews/bedroom-after-v1.png" alt={locale === "ko" ? "태령당 3D 예시 방의 추천 배치" : "Suggested layout in the real 3D room example"} width={1354} height={1082} sizes="(max-width: 760px) 100vw, (max-width: 1100px) 46vw, 34vw" /><figcaption>{t.after}</figcaption></figure>
-          <span className="td2-compare-arrow" aria-hidden="true">→</span>
-        </div>
-        <div className="td2-guide">
-          <Image src="/assets/gyeol-webtoon/characters/taeryeong/taeryeong_explain_calm_01.png" alt="" width={130} height={130} />
-          <p>{t.spaceBubble}</p>
-        </div>
-      </div>
-    </section>
-
-    <section className="td2-reality" aria-labelledby="td2-reality-title">
-      <div><p className="td2-eyebrow">{t.realityEyebrow}</p><h2 id="td2-reality-title">{t.realityTitle}</h2><p>{t.realityBody}</p><Link className="td2-light-button" href={`/${locale}/reality-check`} prefetch={false}>{t.realityCta}<Arrow /></Link></div>
-      <ol className="td2-reality-steps">{t.realitySteps.map((step, index) => <li key={step}><small>0{index + 1}</small><strong>{step}</strong></li>)}</ol>
-    </section>
-
-    <section className="td2-celestial" aria-labelledby="td2-celestial-title">
-      <div className="td2-celestial-copy"><p className="td2-eyebrow">{t.celestialEyebrow}</p><h2 id="td2-celestial-title">{t.celestialTitle}</h2><p>{t.celestialBody}</p><Link className="td2-primary" href={`/${locale}/fortune`} prefetch={false}>{t.celestialCta}<Arrow /></Link></div>
-      <CelestialSajuStudy label={t.celestialAlt} locale={locale} />
-    </section>
-
-    <section className="td2-close" aria-labelledby="td2-close-title">
-      <div><h2 id="td2-close-title">{t.closeTitle}</h2><p>{t.closeBody}</p><Link className="td2-primary" href={`/${locale}/numerology`} prefetch={false} onClick={track}>{t.closeCta}<Arrow /></Link></div>
-      <ul>{t.benefits.map((item, index) => <li key={item}><span>{["♙", "⌁", "◴", "△"][index]}</span>{item}</li>)}</ul>
-      <div className="td2-mountain" aria-hidden="true" />
-      <div className="td2-close-signature" aria-hidden="true"><span>태</span><span>령</span><span>당</span></div>
-    </section>
-
-    <footer className="td2-footer">
-      <div><Link className="td2-brand" href={`/${locale}`} prefetch={false}><strong>태령당</strong><small>TAERYEONGDANG</small></Link><p>{t.footerBody}</p></div>
-      <nav aria-label={locale === "ko" ? "법률 및 고객 지원" : "Legal and support"}><Link href={`/${locale}/terms`} prefetch={false}>{locale === "ko" ? "이용조건" : "Terms"}</Link><Link href={`/${locale}/privacy`} prefetch={false}>{locale === "ko" ? "개인정보" : "Privacy"}</Link><Link href={`/${locale}/orders`} prefetch={false}>{t.login}</Link><Link href={`/${locale}/support`} prefetch={false}>{locale === "ko" ? "고객 문의" : "Support"}</Link></nav>
-      <p className="td2-footer-boundary">{t.footerBoundary}</p><small>{t.copyright}</small>
-    </footer>
+    <DailyHealingHome locale={locale} reportPreview={reportPreview} reviewCount={reviewCount} reviews={reviews} />
   </main>;
 }
