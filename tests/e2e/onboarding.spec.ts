@@ -32,7 +32,7 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await expect(page.locator(".dh-report-page.is-right li")).toHaveCount(5);
   await expect(page.locator(".dh-report-book")).toContainText("지금 해볼 한 가지");
   await expect(page.locator(".dh-report-book")).toContainText("인생수");
-  await expect(page.locator(".dh-reality")).toContainText("실제로 어땠는지 기록해보세요");
+  await expect(page.locator(".dh-reality")).toContainText("기억이 흐려지기 전에 남겨보세요");
   await expect(page.locator(".dh-footer")).toContainText("사업자등록번호");
   await expect(page.locator('.td2-nav a:has-text("이용 안내")')).toHaveAttribute("href", "#guide");
   await expect(page.locator('.td2-nav a:has-text("이용 후기")')).toHaveAttribute("href", "/ko/reading#evidence");
@@ -90,6 +90,28 @@ test("every home visit opens the guide as a dismissible modal and navigation can
   await dialog.getByRole("button", { name: "안내 닫기" }).click();
   await page.getByRole("link", { name: "이용 안내" }).click();
   await expect(dialog).toBeVisible();
+});
+
+test("the first-visit guide advances every six seconds and closes after the last step", async ({ page }) => {
+  await page.goto("/ko");
+
+  const dialog = page.getByRole("dialog", { name: "결과를 보는 방법부터 알려드릴게요." });
+  const selectedTab = dialog.locator('[role="tab"][aria-selected="true"]');
+  await expect(dialog).toBeVisible();
+  await expect(selectedTab).toHaveText(/질문 고르기/);
+
+  await page.waitForTimeout(6_200);
+  await expect(selectedTab).toHaveText(/생년월일 넣기/);
+  await page.waitForTimeout(6_200);
+  await expect(selectedTab).toHaveText(/무료 결과 보기/);
+  await page.waitForTimeout(6_200);
+  await expect(selectedTab).toHaveText(/더 자세히 보기/);
+  await page.waitForTimeout(6_200);
+  await expect(dialog).toHaveCount(0);
+
+  await page.getByRole("link", { name: "이용 안내" }).click();
+  await expect(dialog).toBeVisible();
+  await expect(selectedTab).toHaveText(/질문 고르기/);
 });
 
 test("mobile home has no overflow and preserves the selling page behavior", async ({ page }) => {
@@ -689,7 +711,7 @@ test("editorial home shows real product evidence and clear claim boundaries", as
   await expect(page.locator(".dh-space-visual figure > img")).toHaveCount(2);
   await expect(page.locator(".dh-space-visual figure > img").first()).toHaveAttribute("alt", /현재 배치/);
   await expect(page.locator(".dh-space-copy")).toContainText("사진");
-  await expect(page.locator(".dh-space-copy")).toContainText("공간 구조");
-  await expect(page.locator(".dh-space-copy")).toContainText("배치 제안");
+  await expect(page.locator(".dh-space-copy")).toContainText("방 구조 확인");
+  await expect(page.locator(".dh-space-copy")).toContainText("바꿀 자리 보기");
   await expect(page.locator(".dh-footer > p")).toContainText("과학적 예측, 진단, 치료 또는 결과 보장이 아닙니다");
 });

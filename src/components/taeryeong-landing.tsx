@@ -16,6 +16,7 @@ type Props = {
 };
 
 const GUIDE_SCREENS = ["questions", "intake", "free-result", "report"] as const;
+const GUIDE_STEP_DURATION_MS = 6_000;
 
 const content = {
   ko: {
@@ -238,7 +239,20 @@ export function TaeryeongLanding({ locale, reportPreview, reviews, reviewCount }
     };
   }, [guideOpen]);
 
+  useEffect(() => {
+    if (!guideOpen) return;
+    const timer = window.setTimeout(() => {
+      if (guideStep === GUIDE_SCREENS.length - 1) {
+        setGuideOpen(false);
+        return;
+      }
+      setGuideStep(guideStep + 1);
+    }, GUIDE_STEP_DURATION_MS);
+    return () => window.clearTimeout(timer);
+  }, [guideOpen, guideStep]);
+
   function openGuide() {
+    setGuideStep(0);
     setGuideOpen(true);
   }
 
