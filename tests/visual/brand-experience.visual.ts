@@ -72,6 +72,11 @@ test.describe("Taeryeong Daily Healing homepage", () => {
       await capture(page, ".dh-transition", `daily-${width}-transition.png`);
       await capture(page, ".dh-reality", `daily-${width}-reality.png`);
       await capture(page, ".dh-report", `daily-${width}-report.png`);
+      if (await page.locator(".dh-common-concerns").count()) {
+        await capture(page, ".dh-common-concerns", `daily-${width}-concerns.png`);
+      } else {
+        await capture(page, ".dh-reviews", `daily-${width}-reviews.png`);
+      }
       await capture(page, ".dh-space", `daily-${width}-space.png`);
       await capture(page, ".dh-close", `daily-${width}-closing.png`);
 
@@ -152,7 +157,7 @@ test.describe("Taeryeong Daily Healing homepage", () => {
     await expect(closing.locator("video")).toHaveAttribute("poster", "/images/taeyul-hero.jpg");
     await expect(closing.locator("video source")).toHaveAttribute("src", /\/videos\/taeyul-hero\.mp4/);
     await expect.poll(() => closing.locator("video").evaluate((node) => (node as HTMLVideoElement).videoWidth)).toBeGreaterThan(0);
-    await expect(closing.getByRole("link", { name: "무료 보기" })).toHaveAttribute("href", "/ko/numerology");
-    await expect(closing.getByRole("link", { name: "사주 보기" })).toHaveAttribute("href", "/ko/fortune");
+    await expect(closing.getByRole("link", { name: "무료로 내 패턴 보기" })).toHaveAttribute("href", "/ko/numerology");
+    await expect(closing.getByRole("link", { name: "무료 사주 원국 보기" })).toHaveAttribute("href", "/ko/fortune");
   });
 });
