@@ -122,10 +122,10 @@ const copy = {
     spaceAction: "내 방 살펴보기",
     before: "현재 배치",
     after: "추천 배치",
-    closeTitle: <>오늘 마음에 걸렸던 것,<br />그냥 지나치지 않아도 됩니다.</>,
-    closeBody: "조금 더 알고 나면, 다음 선택은 달라질 수 있으니까요.",
-    closeAction: "무료 기본 리포트 시작하기",
-    closeHistory: "내 기록 보기",
+    closeTitle: "궁금한 것부터 시작해보세요.",
+    closeBody: "기본 분석과 사주 원국은 무료로 바로 볼 수 있어요.",
+    closeAction: "무료 보기",
+    closeSajuAction: "사주 보기",
     footerBody: "오늘의 고민을 살펴보고, 실제 삶에서 다시 확인하는 개인 패턴 기록.",
     footerBoundary: "사주·생년월일 패턴·풍수는 성찰을 위한 상징적 도구이며 과학적 예측, 진단, 치료 또는 결과 보장이 아닙니다.",
     copyright: "별루프 · 대표 박서준 · 사업자등록번호 482-12-03629 · 부산광역시 북구",
@@ -193,10 +193,10 @@ const copy = {
     spaceAction: "Review my room",
     before: "Current",
     after: "Suggested",
-    closeTitle: <>You do not have to ignore<br />what stayed on your mind today.</>,
-    closeBody: "Understanding a little more can change the choice that comes next.",
-    closeAction: "Start the free report",
-    closeHistory: "View my records",
+    closeTitle: "Begin with what you want to know.",
+    closeBody: "Your basic pattern and Four Pillars chart are available free.",
+    closeAction: "View free",
+    closeSajuAction: "View Four Pillars",
     footerBody: "A place to reflect on today's concern and check it again against real life.",
     footerBoundary: "Saju, birth-date patterns, and feng shui are symbolic reflection tools, not scientific prediction, diagnosis, treatment, or guaranteed outcomes.",
     copyright: "Byeolloof · Busan, Republic of Korea",
@@ -306,7 +306,23 @@ export function DailyHealingHome({ locale, reportPreview, reviews, reviewCount }
       <div className="dh-space-copy"><p className="dh-eyebrow">{t.spaceEyebrow}</p><h2 id="dh-space-title">{t.spaceTitle}</h2><p>{t.spaceBody}</p><ol>{t.spaceFlow.map((step, index) => <li key={step}><small>{String(index + 1).padStart(2, "0")}</small>{step}</li>)}</ol><Link href={`/${locale}/space`} prefetch={false}>{t.spaceAction}<Arrow /></Link></div>
     </section>
 
-    <section className="dh-close" aria-labelledby="dh-close-title"><div className="dh-close-art" aria-hidden="true"><Image alt="" fill sizes="(max-width: 760px) 100vw, 48vw" src="/assets/gyeol-webtoon/shared/backgrounds/closing-dusk-terrace_01.png" /><Image alt="" className="dh-close-character" height={384} src="/assets/gyeol-webtoon/characters/taeryeong/taeryeong_reach-hand_welcoming_01.png" width={384} sizes="384px" /></div><div className="dh-close-copy"><p className="dh-eyebrow">TAERYEONGDANG</p><h2 id="dh-close-title">{t.closeTitle}</h2><p>{t.closeBody}</p><div><Link href={`/${locale}/numerology`} prefetch={false}>{t.closeAction}<Arrow /></Link><Link href={`/${locale}/reality-check`} prefetch={false}>{t.closeHistory}</Link></div></div></section>
+    <section className="dh-close" aria-labelledby="dh-close-title">
+      <div className="dh-close-art" aria-hidden="true">
+        <Image alt="" className="dh-close-video-fallback" fill sizes="(max-width: 760px) 100vw, 48vw" src="/images/taeyul-hero.jpg" />
+        <video autoPlay className="dh-close-video" loop muted playsInline poster="/images/taeyul-hero.jpg" preload="metadata">
+          <source src="/videos/taeyul-hero.mp4?v=20260815-fluid1" type="video/mp4" />
+        </video>
+      </div>
+      <div className="dh-close-copy">
+        <p className="dh-eyebrow">TAERYEONGDANG</p>
+        <h2 id="dh-close-title">{t.closeTitle}</h2>
+        <p>{t.closeBody}</p>
+        <div>
+          <Link href={`/${locale}/numerology`} onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "product_free" })} prefetch={false}>{t.closeAction}<Arrow /></Link>
+          <Link href={`/${locale}/fortune`} onClick={() => captureConversionEvent("primary_cta_click", locale, { location: "saju_crosslink" })} prefetch={false}>{t.closeSajuAction}<Arrow /></Link>
+        </div>
+      </div>
+    </section>
 
     <footer className="dh-footer">
       <div><Link href={`/${locale}`} prefetch={false}><strong>태령당</strong><small>TAERYEONGDANG</small></Link><p>{t.footerBody}</p></div>
