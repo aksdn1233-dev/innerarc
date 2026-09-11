@@ -2,7 +2,17 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { PaidReport } from "@/core/paid-reading";
-import { buildDetailEditorialModel, type EditorialPattern, type EditorialTextBlock } from "@/core/detail-editorial";
+import {
+  buildDetailEditorialModel,
+  buildPremiumEditorialModel,
+  type EditorialPattern,
+  type EditorialTextBlock,
+} from "@/core/detail-editorial";
+import {
+  accessoryDetailBoards,
+  localizeAccessoryProduct,
+  recommendAccessoryProductsByBirthDate,
+} from "@/core/commerce/accessory-recommendations";
 import type { Locale } from "@/i18n/config";
 import { ReportRealityCheck } from "@/components/pattern-intelligence/report-reality-check";
 import { EvidenceEventCapture } from "@/components/pattern-intelligence/evidence-event-capture";
@@ -61,6 +71,17 @@ function PatternBlock({ item, index, locale }: { item: EditorialPattern; index: 
   );
 }
 
+function PremiumFeature({ item, label, locale }: { item: EditorialTextBlock; label: string; locale: Locale }) {
+  return (
+    <article className="ed-premium-feature">
+      <small>{label}</small>
+      <h3>{item.title}</h3>
+      <p className="ed-reading-lead">{item.lead}</p>
+      <ReadingDetails item={item} label={locale === "ko" ? "심층 내용 읽기" : "Read the deeper analysis"} />
+    </article>
+  );
+}
+
 export function DetailEditorialReport({
   report,
   locale,
@@ -81,6 +102,13 @@ export function DetailEditorialReport({
   const model = buildDetailEditorialModel(report);
   if (!model) return null;
   const ko = locale === "ko";
+  const premium = buildPremiumEditorialModel(report);
+  const isPremium = Boolean(premium);
+  const accessories = isPremium
+    ? recommendAccessoryProductsByBirthDate(model.birthDate, model.years[0]?.year ?? new Date().getFullYear())
+    : [];
+  const boundaryChapter = isPremium ? 23 : 19;
+  const closingChapter = isPremium ? 24 : 20;
   const date = new Intl.DateTimeFormat(ko ? "ko-KR" : "en-US", { dateStyle: "long" }).format(new Date(model.generatedDate));
   const genderTime = [model.genderLabel, model.birthTime ? `${ko ? "출생 시각" : "Birth time"} ${model.birthTime}` : (ko ? "출생 시각 미기재" : "Birth time not provided")].join(" · ");
   const deterministicBasis = ko
@@ -107,12 +135,12 @@ export function DetailEditorialReport({
   });
   const patternSections = report.sections.map((section, index) => ({ index, title: section.title }));
   return (
-    <main className={`editorial-report${sample ? " editorial-report-sample" : ""}`} id="main-content">
+    <main className={`editorial-report${sample ? " editorial-report-sample" : ""}${isPremium ? " editorial-report-premium" : ""}`} id="main-content">
       {sample && (
         <header className="ed-sample-head">
           <Link className="brand" href={`/${locale}`} prefetch={false}><strong>{ko ? "태령당" : "Taeryeongdang"}</strong></Link>
           <div>
-            <p className="eyebrow">{ko ? "941104 남성 · 결과 리포트 예시" : "1994-11-04 male · report sample"}</p>
+            <p className="eyebrow">{ko ? `941104 남성 · ${isPremium ? "프리미엄 " : ""}결과 리포트 예시` : `1994-11-04 male · ${isPremium ? "premium " : ""}report sample`}</p>
             <p className="sample-report-notice">{ko ? "실제 계산기와 리포트 구조로 만든 고정 예시입니다. 결제·주문·저장은 발생하지 않습니다." : "A fixed sample made with the production calculator. It creates no payment, order, or storage."}</p>
           </div>
           {sampleNavigation}
@@ -124,8 +152,8 @@ export function DetailEditorialReport({
         <div className="ed-cover-shade" aria-hidden="true" />
         <div className="ed-cover-brand"><strong>{ko ? "태령당" : "TAERYEONGDANG"}</strong><span>PERSONAL PATTERN INTELLIGENCE</span></div>
         <div className="ed-cover-copy">
-          <p>{ko ? "사람의 길을 읽는 당신만의 인생 리포트" : "A personal report for reading the path you repeat"}</p>
-          <h1 id="ed-cover-title">{ko ? <>개인 패턴<br />인텔리전스<br />리포트</> : <>Personal Pattern<br />Intelligence Report</>}</h1>
+          <p>{ko ? (isPremium ? "가능성부터 실행 기준까지 깊게 읽는 리포트" : "사람의 길을 읽는 당신만의 인생 리포트") : (isPremium ? "A deeper report from possibility to action" : "A personal report for reading the path you repeat")}</p>
+          <h1 id="ed-cover-title">{ko ? (isPremium ? <>프리미엄<br />개인 패턴<br />리포트</> : <>개인 패턴<br />인텔리전스<br />리포트</>) : (isPremium ? <>Premium Personal<br />Pattern Report</> : <>Personal Pattern<br />Intelligence Report</>)}</h1>
           {report.customerName && <p className="ed-customer-name">{ko ? `${report.customerName}님의 리포트` : `Prepared for ${report.customerName}`}</p>}
           <div className="ed-symbol-mark" aria-hidden="true"><span /></div>
           <h2>{model.symbol.name}</h2>
@@ -144,6 +172,8 @@ export function DetailEditorialReport({
         <a href="#ed-patterns">{ko ? "반복 패턴" : "Patterns"}</a>
         <a href="#ed-life">{ko ? "돈·일·관계" : "Life"}</a>
         <a href="#ed-flow">{ko ? "3년 흐름" : "3-year flow"}</a>
+        {isPremium && <a href="#ed-premium">{ko ? "심층 판단" : "Deep reading"}</a>}
+        {isPremium && <a href="#ed-accessories">{ko ? "추천 소품" : "Accessories"}</a>}
         <a href="#ed-reality">Reality Check</a>
       </nav>
 
@@ -283,8 +313,83 @@ export function DetailEditorialReport({
         <ol className="ed-action-list">{model.actions.map((action, index) => <li key={action}><strong>{String(index + 1).padStart(2, "0")}</strong><p>{action}</p></li>)}</ol>
       </section>
 
+      {premium && (
+        <>
+          <section className="ed-ink-section ed-premium-synthesis" id="ed-premium" aria-labelledby="ed-premium-title">
+            <ChapterNumber value={19} />
+            <p className="ed-kicker">PREMIUM SYNTHESIS</p>
+            <h2 id="ed-premium-title">{ko ? "숫자를 따로 보지 않고, 한 사람으로 읽습니다" : "The numbers are read together as one person"}</h2>
+            <div className="ed-premium-feature-grid">
+              <PremiumFeature item={premium.synthesis} label={ko ? "종합 해석" : "SYNTHESIS"} locale={locale} />
+              <PremiumFeature item={premium.paradox} label={ko ? "강점의 역설" : "PARADOX"} locale={locale} />
+              <PremiumFeature item={premium.longTerm} label={ko ? "장기 전략" : "LONG-TERM"} locale={locale} />
+              <PremiumFeature item={premium.verdict} label={ko ? "종합 판단" : "VERDICT"} locale={locale} />
+            </div>
+          </section>
+
+          <section className="ed-paper-section ed-premium-scenarios" aria-labelledby="ed-scenarios-title">
+            <ChapterNumber value={20} />
+            <p className="ed-kicker">BEST / LIKELY / RISK</p>
+            <h2 id="ed-scenarios-title">{ko ? "한 가지 미래를 단정하지 않습니다" : "The report does not claim one fixed future"}</h2>
+            <div className="ed-dual-grid">
+              <PremiumFeature item={premium.scenarios} label={ko ? "가능한 흐름" : "POSSIBLE PATHS"} locale={locale} />
+              <PremiumFeature item={premium.signals} label={ko ? "확인할 신호" : "EVIDENCE SIGNALS"} locale={locale} />
+            </div>
+          </section>
+
+          <section className="ed-paper-section ed-premium-manual" aria-labelledby="ed-manual-title">
+            <ChapterNumber value={21} />
+            <p className="ed-kicker">DECISION MANUAL</p>
+            <h2 id="ed-manual-title">{ko ? "결정을 내리고, 실제로 움직이는 방법" : "A practical way to decide and act"}</h2>
+            <div className="ed-dual-grid">
+              <PremiumFeature item={premium.decisionFramework} label={ko ? "판단 기준" : "DECISION RULES"} locale={locale} />
+              <PremiumFeature item={premium.manual} label={ko ? "6단계 실행" : "SIX STEPS"} locale={locale} />
+            </div>
+          </section>
+
+          <section className="ed-paper-section ed-accessory-section" id="ed-accessories" aria-labelledby="ed-accessories-title">
+            <ChapterNumber value={22} />
+            <p className="ed-kicker">PERSONAL EDIT</p>
+            <h2 id="ed-accessories-title">{ko ? "당신의 숫자에서 고른 생활 소품" : "Everyday accessories selected from your numbers"}</h2>
+            <p className="ed-accessory-intro">{ko ? "운을 바꾸는 물건이 아닙니다. 계산된 세 가지 숫자를 색과 형태로 옮긴, 취향을 위한 제작 제안입니다." : "These objects do not change luck. They translate three calculated numbers into color and form as personal design suggestions."}</p>
+            <div className="ed-accessory-grid">
+              {accessories.map((recommendation, index) => {
+                const item = localizeAccessoryProduct(recommendation.product, locale);
+                const factLabels = ko
+                  ? { lifePath: "운명수", attitude: "태도수", personalYear: "개인년" }
+                  : { lifePath: "Life path", attitude: "Attitude", personalYear: "Personal year" };
+                return (
+                  <article key={recommendation.fact}>
+                    <div className="ed-accessory-image">
+                      <Image
+                        alt={`${item.name} · ${ko ? "제작 콘셉트" : "design concept"}`}
+                        height={1254}
+                        sizes="(max-width: 720px) 88vw, 30vw"
+                        src={accessoryDetailBoards[recommendation.product.directionId]}
+                        style={{ height: "300%", left: `-${recommendation.product.slot * 100}%`, maxWidth: "none", top: 0, width: "300%" }}
+                        unoptimized
+                        width={1254}
+                      />
+                      <span>{ko ? "제작 준비 중" : "IN DEVELOPMENT"}</span>
+                    </div>
+                    <div className="ed-accessory-copy">
+                      <small>{factLabels[recommendation.fact]} {recommendation.value} · {index === 0 ? (ko ? "첫 번째 제안" : "PRIMARY EDIT") : (ko ? "함께 볼 제안" : "SUPPORTING EDIT")}</small>
+                      <h3>{item.name}</h3>
+                      <p>{item.description}</p>
+                      <p className="ed-accessory-meta">{item.kind} · {item.priceRange}</p>
+                      <Link href={`/${locale}/shop/${recommendation.product.id}`}>{ko ? "디자인 자세히 보기" : "View the design"}</Link>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+            <p className="ed-accessory-boundary">{ko ? "표시 가격은 제작 검토용 예상 범위입니다. 현재 리포트 화면에서 주문이나 결제는 진행되지 않습니다." : "Prices are planning ranges. No order or payment is taken from this report page."}</p>
+          </section>
+        </>
+      )}
+
       <section className="ed-paper-section ed-safety-section">
-        <ChapterNumber value={19} />
+        <ChapterNumber value={boundaryChapter} />
         <p className="ed-kicker">{ko ? "해석의 경계" : "BOUNDARY"}</p>
         <h2>{ko ? "결정은 현실의 사실과 함께 내립니다" : "Decisions belong with real-world facts"}</h2>
         {report.cautions.length > 0 && <ul>{report.cautions.map((item) => <li key={item}>{item}</li>)}</ul>}
@@ -294,7 +399,7 @@ export function DetailEditorialReport({
       <section className="ed-closing" aria-labelledby="ed-closing-title">
         <Image alt="" aria-hidden="true" fill sizes="100vw" src="/assets/gyeol-webtoon/shared/backgrounds/closing-dusk-terrace_01.png" />
         <div aria-hidden="true" className="ed-closing-shade" />
-        <div><ChapterNumber value={20} /><p className="ed-kicker">{ko ? "마지막 한마디" : "A LAST NOTE"}</p><h2 id="ed-closing-title">{model.closing}</h2><p>{ko ? "당신이 남긴 실제 기록이 다음 해석을 더 정확한 질문으로 바꿉니다." : "The record you leave turns the next reading into a better question."}</p><strong>{ko ? "태령당" : "TAERYEONGDANG"}</strong></div>
+        <div><ChapterNumber value={closingChapter} /><p className="ed-kicker">{ko ? "마지막 한마디" : "A LAST NOTE"}</p><h2 id="ed-closing-title">{model.closing}</h2><p>{ko ? "당신이 남긴 실제 기록이 다음 해석을 더 정확한 질문으로 바꿉니다." : "The record you leave turns the next reading into a better question."}</p><strong>{ko ? "태령당" : "TAERYEONGDANG"}</strong></div>
       </section>
 
       {footer}

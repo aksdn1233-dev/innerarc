@@ -6,18 +6,19 @@ const css = await readFile("src/app/globals.css", "utf8");
 const download = await readFile("src/app/api/reports/[orderId]/download/route.ts", "utf8");
 const intake = await readFile("src/components/home-experience.tsx", "utf8");
 
-describe("DETAIL_39000 renderer", () => {
-  it("routes only the 39,000원 report through the shared editorial renderer", async () => {
+describe("DETAIL_39000 and PREMIUM_79000 renderer", () => {
+  it("routes the current detail and premium reports through the shared editorial renderer", async () => {
     const editorial = await readFile("src/components/detail-editorial-report.tsx", "utf8");
     const model = await readFile("src/core/detail-editorial.ts", "utf8");
     const scopedCss = css.slice(css.indexOf("39,000원 상세 리포트"), css.indexOf("@media print", css.indexOf("39,000원 상세 리포트")));
 
-    expect(page).toContain("if (detailV2)");
+    expect(page).toContain("if (detailV2 || premiumV2)");
     expect(page).toContain("<DetailEditorialReport");
-    expect(editorial).toContain('value={20}');
+    expect(editorial).toContain("closingChapter");
+    expect(editorial).toContain("ed-accessory-grid");
     expect(editorial).toContain("ReportRealityCheck");
     expect(editorial).toContain("EvidenceEventCapture");
-    expect(model).toContain('report.productCode !== "pro_30d"');
+    expect(model).toContain('report.productCode !== "pro_30d" && report.productCode !== "premium_pdf"');
     expect(scopedCss).not.toMatch(/(?:linear|radial)-gradient/u);
   });
 

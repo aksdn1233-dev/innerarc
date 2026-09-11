@@ -51,6 +51,17 @@ export type DetailEditorialModel = Readonly<{
   closing: string;
 }>;
 
+export type PremiumEditorialModel = Readonly<{
+  synthesis: EditorialTextBlock;
+  paradox: EditorialTextBlock;
+  scenarios: EditorialTextBlock;
+  signals: EditorialTextBlock;
+  decisionFramework: EditorialTextBlock;
+  manual: EditorialTextBlock;
+  longTerm: EditorialTextBlock;
+  verdict: EditorialTextBlock;
+}>;
+
 const KO_NUMBER_MEANINGS: Readonly<Record<number, string>> = {
   1: "스스로 방향을 정하고 시작하는 힘",
   2: "사람 사이의 온도와 균형을 읽는 힘",
@@ -208,7 +219,7 @@ function strengthTitle(value: number, locale: Locale): string {
  */
 export function buildDetailEditorialModel(report: PaidReport): DetailEditorialModel | null {
   const basis = report.calculationBasis;
-  if (!basis || report.productCode !== "pro_30d") return null;
+  if (!basis || (report.productCode !== "pro_30d" && report.productCode !== "premium_pdf")) return null;
   const ko = report.locale === "ko";
   const meanings = ko ? KO_NUMBER_MEANINGS : EN_NUMBER_MEANINGS;
   const symbol = SYMBOLS[basis.lifePath] ?? SYMBOLS[9]!;
@@ -385,5 +396,27 @@ export function buildDetailEditorialModel(report: PaidReport): DetailEditorialMo
       : `Has “${statement}” repeated in your real choices?`),
     actions: report.actions.slice(0, 3),
     closing: closingOf(closing?.body ?? report.summary),
+  };
+}
+
+/**
+ * Keeps the premium-only report chapters tied to the stored deterministic report.
+ * Older premium reports without the v2 chapters continue through the legacy view.
+ */
+export function buildPremiumEditorialModel(report: PaidReport): PremiumEditorialModel | null {
+  if (report.productCode !== "premium_pdf" || report.sectionPlan !== "premium-79000-v2") return null;
+  const ko = report.locale === "ko";
+  const required = <T extends readonly RegExp[]>(patterns: T, titleKo: string, titleEn: string) =>
+    block(ko ? titleKo : titleEn, findSection(report, patterns), report.summary);
+
+  return {
+    synthesis: required([/네 숫자를 하나로 읽는 종합 해석/u, /Cross-number synthesis/u], "네 숫자를 하나로 읽는 종합 해석", "Reading the four numbers together"),
+    paradox: required([/강점이 실패를 만드는 역설/u, /When strength creates failure/u], "강점이 실패를 만드는 순간", "When strength creates failure"),
+    scenarios: required([/최선·현실·위험 시나리오/u, /Best, likely, and risk scenarios/u], "가능한 세 가지 흐름", "Three possible paths"),
+    signals: required([/시나리오 확인 신호/u, /Signals that confirm or contradict/u], "무엇을 보고 판단할까요?", "What evidence should guide the decision?"),
+    decisionFramework: required([/고객별 의사결정 기준/u, /Personal decision framework/u], "내 결정을 지키는 기준", "A framework for your decision"),
+    manual: required([/6단계 실행 매뉴얼/u, /Six-step execution manual/u], "생각을 행동으로 옮기는 6단계", "Six steps from thought to action"),
+    longTerm: required([/장기 전략/u, /Long-term strategy/u], "길게 가져갈 전략", "A longer-term strategy"),
+    verdict: required([/최종 종합 판단/u, /Consultant verdict/u], "프리미엄 종합 판단", "Premium synthesis"),
   };
 }

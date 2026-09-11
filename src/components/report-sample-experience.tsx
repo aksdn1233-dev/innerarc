@@ -49,7 +49,7 @@ export function ReportSampleExperience({
     </nav>
   );
 
-  if (kind === "detail") {
+  if (kind === "detail" || kind === "premium") {
     return (
       <DetailEditorialReport
         locale={locale}
