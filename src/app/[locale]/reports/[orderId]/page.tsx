@@ -31,13 +31,15 @@ export default async function PurchasedReportPage({
   params: Promise<{ locale: string; orderId: string }>;
   searchParams: Promise<{ access?: string; proof?: string; t?: string }>;
 }) {
-  const [{ locale, orderId }, query, auth, cookieStore] = await Promise.all([
+  const [{ locale: requestedLocale, orderId }, query, auth, cookieStore] = await Promise.all([
     params,
     searchParams,
     requireSupabaseUser(),
     cookies(),
   ]);
-  if (!isLocale(locale) || !/^[A-Za-z0-9_-]{6,64}$/.test(orderId)) notFound();
+  if ((!isLocale(requestedLocale) && requestedLocale !== "ja") || !/^[A-Za-z0-9_-]{6,64}$/.test(orderId)) notFound();
+  const locale = requestedLocale === "ja" ? "en" : requestedLocale;
+  const requestedJapanese = requestedLocale === "ja";
   const admin = getSupabaseAdminClient();
   if (!admin) notFound();
   // A buyer coming back from the payment app carries the ticket in the return URL, and
@@ -61,48 +63,48 @@ export default async function PurchasedReportPage({
     return (
       <main className="shell paid-report-shell" id="main-content">
         {stored.status === "pending_payment" ? (
-          <PaymentStatusWaiting locale={locale} />
+          <PaymentStatusWaiting locale={requestedJapanese ? "ja" : locale} />
         ) : stored.status === "revoked" ? (
           <>
-            <p className="eyebrow">{locale === "ko" ? "결제 취소됨" : "Payment cancelled"}</p>
+            <p className="eyebrow">{requestedJapanese ? "決済キャンセル" : locale === "ko" ? "결제 취소됨" : "Payment cancelled"}</p>
             <h1>
-              {locale === "ko"
+              {requestedJapanese ? "決済がキャンセルされたため、レポートの閲覧は終了しました。" : locale === "ko"
                 ? "결제가 취소되어 리포트 열람이 종료되었습니다."
                 : "This payment was cancelled, so the report is closed."}
             </h1>
             <p>
-              {locale === "ko"
+              {requestedJapanese ? "返金は元の決済手段に戻ります。反映まで数日かかる場合があります。" : locale === "ko"
                 ? "환불은 결제하신 수단으로 처리됩니다. 반영까지 며칠 걸릴 수 있어요. 다시 보고 싶으시면 새로 결제해 주세요."
                 : "The refund returns to your original payment method and can take a few days. Purchase again to receive a new report."}
             </p>
             <p className="report-link-order">
-              {locale === "ko" ? "주문번호" : "Order number"} <code>{orderId}</code>
+              {requestedJapanese ? "注文番号" : locale === "ko" ? "주문번호" : "Order number"} <code>{orderId}</code>
             </p>
           </>
         ) : (
           <>
-            <p className="eyebrow">{locale === "ko" ? "리포트 준비" : "Preparing report"}</p>
+            <p className="eyebrow">{requestedJapanese ? "レポート準備" : locale === "ko" ? "리포트 준비" : "Preparing report"}</p>
             <h1>
-              {locale === "ko"
+              {requestedJapanese ? "レポートの作成中に問題が発生しました。" : locale === "ko"
                 ? "리포트를 만드는 중에 문제가 생겼습니다."
                 : "Something went wrong while building the report."}
             </h1>
             <p>
-              {locale === "ko"
+              {requestedJapanese ? "決済は完了しています。下の注文番号を添えてお問い合わせください。" : locale === "ko"
                 ? "결제는 정상 처리되었습니다. 아래 주문번호로 문의해 주시면 바로 도와드리겠습니다."
                 : "Your payment went through. Please contact support with the order number below."}
             </p>
             <p className="report-link-order">
-              {locale === "ko" ? "주문번호" : "Order number"} <code>{orderId}</code>
+              {requestedJapanese ? "注文番号" : locale === "ko" ? "주문번호" : "Order number"} <code>{orderId}</code>
             </p>
           </>
         )}
         <p className="payment-result-links">
           <Link className="link-button" href={`/${locale}/support`}>
-            {locale === "ko" ? "문의하기" : "Contact support"}
+            {requestedJapanese ? "お問い合わせ" : locale === "ko" ? "문의하기" : "Contact support"}
           </Link>
           <Link className="link-button" href={`/${locale}`}>
-            {locale === "ko" ? "홈으로" : "Home"}
+            {requestedJapanese ? "ホーム" : locale === "ko" ? "홈으로" : "Home"}
           </Link>
         </p>
       </main>
@@ -110,6 +112,7 @@ export default async function PurchasedReportPage({
   }
 
   const report = stored.report;
+  const japanese = requestedJapanese || report.displayLocale === "ja";
   // The reader has a completed reading open, which is the only moment asking for
   // feedback is fair. A missing review table (migration not yet applied) simply hides
   // the panel rather than failing the page the buyer paid for.
@@ -222,7 +225,7 @@ export default async function PurchasedReportPage({
       ]
     : [];
   const chapterBadge = (index: number) =>
-    locale === "ko" ? `제 ${index + 1} 장` : `Chapter ${String(index + 1).padStart(2, "0")}`;
+    japanese ? `第 ${index + 1} 章` : locale === "ko" ? `제 ${index + 1} 장` : `Chapter ${String(index + 1).padStart(2, "0")}`;
   const patternPersistenceEnabled = stored.owner_user_id === auth.user?.id;
   const deterministicBasis = report.calculationBasis
     ? `${locale === "ko" ? "결정론적 생년월일 패턴 계산" : "Deterministic numerology calculation"} · ${report.contentVersion ?? "stored-report"}`
@@ -281,16 +284,16 @@ export default async function PurchasedReportPage({
           <div className="cinema-hero-veil" aria-hidden="true" />
 
           <div className="cinema-hero-copy webtoon-cover-copy">
-            <Link className="brand webtoon-cover-brand" href={`/${locale}`}>
+            <Link className="brand webtoon-cover-brand" href={`/${requestedJapanese ? "ja" : locale}`}>
               <strong>{brandNameForLocale(locale)}</strong>
             </Link>
             <p className="cinema-kicker">
-              {report.tierLabel ?? (locale === "ko" ? "구매 리포트" : "Purchased report")}
+              {report.tierLabel ?? (japanese ? "購入レポート" : locale === "ko" ? "구매 리포트" : "Purchased report")}
             </p>
             <h1 className="cinema-title">{report.title}</h1>
             {report.customerName && <p className="cinema-quote">{report.customerName}</p>}
             <small className="webtoon-cover-date">
-              {new Intl.DateTimeFormat(locale === "ko" ? "ko-KR" : "en-US").format(new Date(report.createdAt))}
+              {new Intl.DateTimeFormat(japanese ? "ja-JP" : locale === "ko" ? "ko-KR" : "en-US").format(new Date(report.createdAt))}
             </small>
           </div>
           <WebtoonCue />
@@ -313,7 +316,7 @@ export default async function PurchasedReportPage({
           </WebtoonPanel>
         ) : (
           <WebtoonPanel
-            badge={locale === "ko" ? "요약" : "Summary"}
+            badge={japanese ? "要約" : locale === "ko" ? "요약" : "Summary"}
             title={report.summary}
             tone="paper"
           >
@@ -390,10 +393,10 @@ export default async function PurchasedReportPage({
         ))}
 
         <WebtoonPanel
-          badge={locale === "ko" ? "실행" : "Action"}
+          badge={japanese ? "実行" : locale === "ko" ? "실행" : "Action"}
           title={detailV2 || premiumV2
             ? (locale === "ko" ? "우선 실행 계획" : "Prioritized execution plan")
-            : (locale === "ko" ? "지금 해볼 일" : "Next actions")}
+            : (japanese ? "今から試すこと" : locale === "ko" ? "지금 해볼 일" : "Next actions")}
           tone="gold"
         >
           <ol className="webtoon-steps">{report.actions.map((item) => <li key={item}><ReportEmphasis>{item}</ReportEmphasis></li>)}</ol>
@@ -465,8 +468,8 @@ export default async function PurchasedReportPage({
 
         {!structuredV2 && (
           <WebtoonPanel
-            badge={locale === "ko" ? "주의" : "Caution"}
-            title={locale === "ko" ? "이럴 때는 조심하세요" : "Situations to watch"}
+            badge={japanese ? "注意" : locale === "ko" ? "주의" : "Caution"}
+            title={japanese ? "このような時は立ち止まってください" : locale === "ko" ? "이럴 때는 조심하세요" : "Situations to watch"}
             tone="warn"
           >
             <ul>{report.cautions.map((item) => <li key={item}><ReportEmphasis>{item}</ReportEmphasis></li>)}</ul>
@@ -485,18 +488,18 @@ export default async function PurchasedReportPage({
 
         {proTier && (
           <WebtoonPanel
-            badge={locale === "ko" ? "함께 볼 수 있어요" : "Also included"}
-            title={locale === "ko" ? "두 사람 궁합" : "Two-person compatibility"}
+            badge={japanese ? "含まれる機能" : locale === "ko" ? "함께 볼 수 있어요" : "Also included"}
+            title={japanese ? "二人の相性" : locale === "ko" ? "두 사람 궁합" : "Two-person compatibility"}
             tone="gold"
           >
             <p>
-              {locale === "ko"
+              {japanese ? "この商品には二人の相性リーディングが含まれています。相手の生年月日があれば利用できます。" : locale === "ko"
                 ? "이 상품에는 두 사람 궁합 보기가 포함되어 있어요. 상대방 생년월일만 있으면 바로 볼 수 있습니다."
                 : "This purchase includes two-person compatibility. You only need the other person's birth date."}
             </p>
             <p className="payment-result-links">
               <a className="primary-button" href={compatibilityUrl}>
-                {locale === "ko" ? "궁합 보러 가기" : "Open compatibility"}
+                {japanese ? "相性を見る" : locale === "ko" ? "궁합 보러 가기" : "Open compatibility"}
               </a>
             </p>
           </WebtoonPanel>
@@ -508,16 +511,16 @@ export default async function PurchasedReportPage({
           <div className="webtoon-inner">
             <p className="disclaimer">{report.disclaimer}</p>
             <EvidenceEventCapture
-              locale={locale}
+              locale={japanese ? "ja" : locale}
               orderId={orderId}
               sections={patternSections}
               signedIn={patternPersistenceEnabled}
             />
             <ReportActions
-              locale={locale}
+              locale={japanese ? "ja" : locale}
               downloadUrl={`/api/reports/${orderId}/download${accessQuery}`}
             />
-            {existingAcquisitionSurvey.available && (
+            {!japanese && existingAcquisitionSurvey.available && (
               <AcquisitionSurveyPanel
                 access={query.access}
                 initialSurvey={existingAcquisitionSurvey.data}
@@ -527,7 +530,7 @@ export default async function PurchasedReportPage({
                 ticket={query.t}
               />
             )}
-            {existingReview.available && (
+            {!japanese && existingReview.available && (
               <ReviewRequestPanel
                 access={query.access}
                 existing={existingReview.data ? toOwnReviewState(existingReview.data) : null}
@@ -538,13 +541,13 @@ export default async function PurchasedReportPage({
               />
             )}
             <p className="paid-report-account-note">
-              {locale === "ko"
+              {japanese ? "このページのURLとダウンロードしたファイルを保管してください。URLを失っても、注文番号と決済時の電話番号で探せます。" : locale === "ko"
                 ? "이 페이지 주소와 내려받은 파일을 보관해 주세요. 주소를 잃어버려도 주문번호와 결제하신 휴대폰 번호로 다시 찾을 수 있어요."
                 : "Keep this page address and the downloaded file. If you lose the address, you can find it again with your order number and the phone number used at checkout."}
             </p>
             <p className="payment-result-links">
               <Link className="link-button" href={`/${locale}/orders`}>
-                {locale === "ko" ? "구매 내역 확인" : "Find a purchase"}
+                {japanese ? "購入履歴を確認" : locale === "ko" ? "구매 내역 확인" : "Find a purchase"}
               </Link>
             </p>
           </div>
@@ -552,8 +555,8 @@ export default async function PurchasedReportPage({
       </main>
       <WebtoonCta
         href={`/api/reports/${orderId}/download${accessQuery}`}
-        label={locale === "ko" ? "리포트 파일 내려받기" : "Download the report"}
-        note={locale === "ko" ? `주문번호 ${orderId}` : `Order ${orderId}`}
+        label={japanese ? "レポートをダウンロード" : locale === "ko" ? "리포트 파일 내려받기" : "Download the report"}
+        note={japanese ? `注文番号 ${orderId}` : locale === "ko" ? `주문번호 ${orderId}` : `Order ${orderId}`}
       />
     </>
   );

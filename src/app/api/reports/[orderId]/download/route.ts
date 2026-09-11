@@ -41,6 +41,7 @@ export async function GET(
     return NextResponse.json({ error: "REPORT_NOT_FOUND" }, { status: 404 });
   }
   const report = stored.report;
+  const japanese = report.displayLocale === "ja";
   const provenance = createReportProvenance({
     reportId: orderId,
     ownerScope: stored.owner_user_id ?? stored.guest_access_token_hash ?? `guest:${orderId}`,
@@ -107,7 +108,7 @@ export async function GET(
   const question = report.concern ? `<blockquote>${escapeHtml(report.concern)}</blockquote>` : "";
   const cautions = basicV2 || (detailV2 && report.cautions.length === 0)
     ? ""
-    : `<section><h2>${report.locale === "ko" ? "이럴 때는 조심하세요" : "Situations to watch"}</h2>${list(report.cautions)}</section>`;
+    : `<section><h2>${japanese ? "このような時は立ち止まってください" : report.locale === "ko" ? "이럴 때는 조심하세요" : "Situations to watch"}</h2>${list(report.cautions)}</section>`;
   const stop = stopSection
     ? `<section class="stop"><h2>${escapeHtml(stopSection.title)}</h2><p>${escapeHtml(stopSection.body)}</p></section>`
     : "";
@@ -122,8 +123,8 @@ export async function GET(
     : "";
   const actionTitle = detailV2 || premiumV2
     ? (report.locale === "ko" ? "우선 실행 계획" : "Prioritized execution plan")
-    : (report.locale === "ko" ? "지금 해볼 일" : "Next actions");
-  const html = `<!doctype html><html lang="${report.locale}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="robots" content="noindex,nofollow,noarchive,nosnippet">${provenance ? provenanceMetaTags(provenance) : ""}<title>${escapeHtml(report.title)}</title><style>body{max-width:760px;margin:40px auto;padding:0 22px;color:#20231f;background:#fffdf8;font:18px/1.8 system-ui,sans-serif}h1,h2{font-family:serif;line-height:1.35}section{margin:38px 0;padding-top:20px;border-top:1px solid #d7d0c3}section p{white-space:pre-wrap}.key-sentence{margin:20px 0 24px;padding:18px 20px;border-left:4px solid #76506f;border-radius:0 14px 14px 0;background:#f4edf3;color:#27172c;font:700 1.2em/1.55 serif;letter-spacing:-.02em}blockquote{padding:18px;background:#f5f1e8;border-left:4px solid #9b7651}.basis,.note{color:#686b63;font-size:14px}.stop{padding:24px;background:#fff7f2;border-radius:16px}.manual{padding:24px;background:#f4f1e8;border-radius:16px}.final{padding:24px;background:#f5f1e8;border-radius:16px}@media print{body{margin:0}}</style></head><body><h1>${escapeHtml(report.title)}</h1>${basis}<p>${escapeHtml(report.summary)}</p>${question}${sections}<section><h2>${actionTitle}</h2>${list(report.actions)}</section>${premiumManual}${stop}${premiumStop}${premiumExtensions}${final}${cautions}<p class="note">${escapeHtml(report.disclaimer)}</p></body></html>`;
+    : (japanese ? "今から試すこと" : report.locale === "ko" ? "지금 해볼 일" : "Next actions");
+  const html = `<!doctype html><html lang="${japanese ? "ja" : report.locale}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="robots" content="noindex,nofollow,noarchive,nosnippet">${provenance ? provenanceMetaTags(provenance) : ""}<title>${escapeHtml(report.title)}</title><style>body{max-width:760px;margin:40px auto;padding:0 22px;color:#20231f;background:#fffdf8;font:18px/1.8 system-ui,sans-serif}h1,h2{font-family:serif;line-height:1.35}section{margin:38px 0;padding-top:20px;border-top:1px solid #d7d0c3}section p{white-space:pre-wrap}.key-sentence{margin:20px 0 24px;padding:18px 20px;border-left:4px solid #76506f;border-radius:0 14px 14px 0;background:#f4edf3;color:#27172c;font:700 1.2em/1.55 serif;letter-spacing:-.02em}blockquote{padding:18px;background:#f5f1e8;border-left:4px solid #9b7651}.basis,.note{color:#686b63;font-size:14px}.stop{padding:24px;background:#fff7f2;border-radius:16px}.manual{padding:24px;background:#f4f1e8;border-radius:16px}.final{padding:24px;background:#f5f1e8;border-radius:16px}@media print{body{margin:0}}</style></head><body><h1>${escapeHtml(report.title)}</h1>${basis}<p>${escapeHtml(report.summary)}</p>${question}${sections}<section><h2>${actionTitle}</h2>${list(report.actions)}</section>${premiumManual}${stop}${premiumStop}${premiumExtensions}${final}${cautions}<p class="note">${escapeHtml(report.disclaimer)}</p></body></html>`;
   return new NextResponse(html, {
     headers: {
       "Content-Type": "text/html; charset=utf-8",

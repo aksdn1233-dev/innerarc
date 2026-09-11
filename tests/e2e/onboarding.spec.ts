@@ -99,6 +99,8 @@ test("the first-visit guide advances every six seconds and closes after the last
   const selectedTab = dialog.locator('[role="tab"][aria-selected="true"]');
   await expect(dialog).toBeVisible();
   await expect(selectedTab).toHaveText(/질문 고르기/);
+  await expect(dialog.getByRole("progressbar", { name: "다음 화면까지 남은 시간" })).toBeVisible();
+  await expect(dialog.getByText(/초 뒤 다음 화면/)).toBeVisible();
 
   await page.waitForTimeout(6_200);
   await expect(selectedTab).toHaveText(/생년월일 넣기/);

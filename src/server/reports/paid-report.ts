@@ -5,10 +5,12 @@ import { createBasicPaidReport } from "@/server/reports/basic-report";
 import { createDetailPaidReport } from "@/server/reports/detail-report";
 import { createPremiumPaidReport } from "@/server/reports/premium-report";
 import { createSajuChartReport } from "@/server/reports/saju-chart-report";
+import { createJapanesePaidReport } from "@/server/reports/japanese-paid-report";
 import { enhancePaidReport } from "@/server/reports/enhance-report";
 
 export function createPaidReport(orderId: string, rawInput: unknown): PaidReport {
   const input = PaidReadingInputSchema.parse(rawInput);
+  if (input.displayLocale === "ja") return createJapanesePaidReport(orderId, input);
   if (input.productCode === "plus_30d" && input.readingKind === "saju_chart") {
     return createSajuChartReport(orderId, input);
   }

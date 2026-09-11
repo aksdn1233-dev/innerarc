@@ -168,7 +168,37 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
     if (change.rotationDelta) parts.push(`${words("회전", "rotate")} ${change.rotationDelta}°`);
     return parts.join(" · ");
   };
+  const tutorialStep = analysis
+    ? 3
+    : (!demo && photos.length + remoteAssets < 2)
+      ? 0
+      : !scene.orientation.confirmed
+        ? 1
+        : !scene.confirmed
+          ? 2
+          : 3;
+  const tutorialItems = [
+    { id: "space-guide-photos", label: words("사진 준비", "Add photos"), detail: words("같은 방을 반대쪽에서도 찍어요", "Include the opposite side") },
+    { id: "space-guide-north", label: words("북쪽 확인", "Confirm north"), detail: words("나침반 각도를 넣고 확인해요", "Enter and confirm the compass angle") },
+    { id: "space-guide-room", label: words("방 구조 확인", "Check the room"), detail: words("3D와 실제 방을 비교해요", "Compare the 3D draft with your room") },
+    { id: analysis ? "space-guide-results" : "space-guide-north", label: words("추천 보기", "See suggestions"), detail: words("분석 후 현재와 추천을 비교해요", "Analyze and compare layouts") },
+  ] as const;
   return <fieldset className={styles.workbench} disabled={busy || !hydrated} data-ready={hydrated}>
+    <section className={styles.tutorial} aria-labelledby={demo ? "space-demo-guide" : "space-workspace-guide"}>
+      <div className={styles.tutorialLead}>
+        <span className={styles.badge}>{words("처음 사용 안내", "QUICK START")}</span>
+        <h2 id={demo ? "space-demo-guide" : "space-workspace-guide"}>{words("화살표 순서대로 따라오세요.", "Follow the arrows in order.")}</h2>
+        <p>{words("지금 해야 할 단계는 진하게 표시됩니다.", "Your next step is highlighted.")}</p>
+      </div>
+      <ol className={styles.tutorialSteps}>
+        {tutorialItems.map((item, index) => <li data-current={tutorialStep === index} data-complete={tutorialStep > index} key={item.label}>
+          <button type="button" onClick={() => document.getElementById(item.id)?.scrollIntoView({ behavior: "smooth", block: "center" })}>
+            <small>{tutorialStep > index ? "✓" : String(index + 1)}</small><span><b>{item.label}</b><em>{item.detail}</em></span>
+          </button>
+          {index < tutorialItems.length - 1 && <i aria-hidden="true">→</i>}
+        </li>)}
+      </ol>
+    </section>
     {demo && <label>{words("예시 공간", "Example space")}<select defaultValue="small_bedroom" onChange={e => { if (e.target.value === "irregular_room") { setError(words("비정형 방은 아직 지원하지 않습니다. 직사각형 구역 하나의 치수를 직접 입력하세요. 자동으로 직사각형으로 바꾸지 않습니다.", "Irregular rooms are not supported yet. Enter one measured rectangular zone; we will not silently reshape your room.")); return; } const next = spaceExample(e.target.value as SpaceExample); edit(next); setSource("example"); originalScene.current = next; setUndo([]); setSelectedId(null); setError(""); }}>{SPACE_EXAMPLES.map(name => <option key={name} value={name}>{({ small_bedroom: words("작은 침실", "Small bedroom"), large_bedroom: words("넓은 침실", "Large bedroom"), living_room: words("거실", "Living room"), living_kitchen: words("거실과 주방", "Living room and kitchen"), difficult_window: words("창이 많은 침실", "Bedroom with difficult windows"), narrow_room: words("긴 방", "Narrow room"), dense_room: words("가구가 많은 방", "Dense furniture"), sparse_room: words("가구가 적은 방", "Sparse furniture") })[name]}</option>)}<option value="irregular_room">{words("비정형 방 · 지원 범위 확인", "Irregular room · check support")}</option></select></label>}
     {!demo && <section className={styles.panel} aria-label={words("저장된 방", "Saved rooms")}>
       <div className={styles.actions}><label>{words("저장된 방", "Saved rooms")}<select value={projectId ?? ""} disabled={busy} onChange={e => { if (e.target.value) void task(() => load(e.target.value)); }}><option value="">{words("방 선택", "Choose a room")}</option>{projects.map(p => <option key={p.id} value={p.id}>{p.title}</option>)}</select></label>
@@ -181,7 +211,7 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
     {!enabled && !demo && <p className={styles.status}>{words("새 분석은 일시 중지되어 있습니다. 기존 기록 확인과 삭제는 가능합니다.", "New analysis is paused. Existing records can still be viewed or deleted.")}</p>}
     <div className={styles.layout}>
       <div>
-        <section className={styles.panel}>
+        <section className={styles.panel} id="space-guide-room">
           <div className={styles.actions}><span className={styles.badge}>{source === "example" ? words("연습용 방", "Example room") : source === "photo" ? words("사진으로 만든 방", "Room from photos") : source === "saved" ? words("저장한 방", "Saved room") : words("직접 만든 방", "Manual room")}</span>
             {analysis && <div className={styles.compareSwitch} aria-label={words("현재와 추천 배치 비교", "Compare current and suggested layouts")}><button aria-pressed={comparisonMode === "current"} onClick={() => setComparisonMode("current")}>{words("현재", "Current")}</button><button aria-pressed={comparisonMode === "compare"} onClick={() => setComparisonMode("compare")}>{words("한눈에 비교", "Compare")}</button><button aria-pressed={comparisonMode === "recommended"} onClick={() => setComparisonMode("recommended")}>{words("추천", "Suggested")}</button></div>}
           </div>
@@ -198,7 +228,7 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
           <div className={styles.toolbar}><button disabled={!undo.length} onClick={() => { const prior = undo.at(-1)!; setUndo(undo.slice(0, -1)); setScene({ ...prior, confirmed: false }); setAnalysis(null); setComparisonMode("current"); setRunId(null); }}>{words("한 단계 되돌리기", "Undo edit")}</button><button onClick={() => edit(originalScene.current)}>{words("불러온 배치로 복원", "Reset loaded layout")}</button></div>
           <p className={styles.hint}>{words("직사각형 방 한 개의 대략적인 배치입니다. 실제 치수와 문 여는 방향을 확인하세요.", "An approximate layout of one rectangular room. Verify actual measurements and door swing.")}</p>
         </section>
-        {analysis && <section className={styles.panel} aria-label={words("공간 분석 결과", "Space analysis results")}>
+        {analysis && <section className={styles.panel} id="space-guide-results" aria-label={words("공간 분석 결과", "Space analysis results")}>
           <h2>{words("생활에서 확인할 개선안", "Changes to try in everyday life")}</h2>
           {analysis.warnings.map(w => <p className={styles.error} key={w}>{w}</p>)}
           {analysis.recommendations.map((rec, index) => <article className={styles.recommendation} key={rec.id} data-active={index === activeRecommendation}>
@@ -225,7 +255,7 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
         </section>}
       </div>
       <div>
-        <section className={styles.panel}>
+        <section className={styles.panel} id="space-guide-photos">
           <h2>{words(demo ? "예시 방" : "1. 방과 사진 준비", demo ? "Example room" : "1. Room & photos")}</h2>
           <label>{words("방 이름", "Room name")}<input maxLength={60} value={title} disabled={!!projectId || busy} onChange={e => setTitle(e.target.value)} /></label>
           {!demo && !projectId && <button disabled={busy || !enabled || !title.trim()} onClick={() => void task(async () => { await ensureProject(); setMessage(words("방을 만들었습니다. 사진을 올리거나 직접 구조를 입력하세요.", "Room created. Add photos or enter its structure manually.")); })}>{words("이 이름으로 방 만들기", "Create this room")}</button>}
@@ -245,7 +275,7 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
             <p className={styles.hint}>{words("제공자 응답 저장을 끄지만 제공자 자체 보존 정책은 적용될 수 있습니다. 동의하지 않아도 아래에서 직접 입력할 수 있습니다.", "Response storage is disabled, but the provider's own retention policy may apply. Manual input remains available without consent.")}</p>
           </> : <p>{words("개인정보 없이 먼저 써보는 연습용 방이에요.", "Try this example room without sharing personal data.")}</p>}
         </section>
-        <section className={styles.panel}>
+        <section className={styles.panel} id="space-guide-north">
           <h2>{words(demo ? "추천 배치 보기" : "2. 방향과 구조 확인", demo ? "See a suggested layout" : "2. Check direction & structure")}</h2>
           <p className={styles.hint}>{words(demo ? "북쪽을 확인한 뒤 아래 두 곳에 체크해 주세요." : "휴대폰 나침반으로 북쪽을 확인해 주세요. 도면 위쪽은 0°, 오른쪽은 90°입니다.", demo ? "Check north, then tick the two boxes below." : "Check north with your phone compass. Plan top is 0° and right is 90°.")}</p>
           <label>{words("북쪽 각도 (0~359°)", "North angle (0–359°)")}<input type="number" min={0} max={359} value={scene.orientation.northDegrees} onChange={e => edit({ ...scene, orientation: { northDegrees: Number(e.target.value), source: "manual", confirmed: false } })} /></label>

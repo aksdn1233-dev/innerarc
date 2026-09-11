@@ -18,7 +18,7 @@ test("every public report sample stays readable on desktop and mobile", async ({
       await expect(page.getByRole("heading", { level: 1 })).toContainText(label);
       await expect(page.locator(".sample-report-notice")).toContainText("결제·주문·저장은 발생하지 않습니다");
       await expect(page.locator(".sample-report-tabs a")).toHaveCount(3);
-      await expect(page.locator(`[href="/ko/samples/${kind}"]`)).toHaveAttribute("aria-current", "page");
+      await expect(page.locator(`.sample-report-tabs [href="/ko/samples/${kind}"]`)).toHaveAttribute("aria-current", "page");
       const readingPanels = kind === "detail" || kind === "premium"
         ? await page.locator(".ed-paper-section, .ed-ink-section, .ed-reality-section, .ed-closing").count()
         : await page.locator("[data-webtoon-panel]").count();
@@ -35,6 +35,21 @@ test("every public report sample stays readable on desktop and mobile", async ({
     }
   }
   expect(pageErrors).toEqual([]);
+});
+
+test("all public result samples have complete Japanese pages and language switches", async ({ page }) => {
+  for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(viewport);
+    for (const [kind] of samples) {
+      await page.goto(`/ja/samples/${kind}`);
+      await expect(page.locator("main[lang='ja']")).toBeVisible();
+      await expect(page.getByRole("heading", { level: 1 })).toContainText("結果レポート");
+      await expect(page.getByRole("navigation", { name: "レポート言語" }).getByRole("link")).toHaveCount(3);
+      await expect(page.getByRole("navigation", { name: "レポート例を選ぶ" }).getByRole("link")).toHaveCount(3);
+      await expect(page.getByText("科学的な予測・診断・治療・結果の保証ではありません。")).toBeVisible();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+    }
+  }
 });
 
 test("79,000원 premium sample uses the editorial report and deterministic accessory edit", async ({ page }) => {

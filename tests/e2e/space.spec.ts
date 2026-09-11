@@ -15,6 +15,12 @@ test("space demo confirms, analyzes, compares, applies and invalidates edits", a
   await page.goto("/ko/space");
   await expect(page.locator("fieldset[data-ready]")).toHaveAttribute("data-ready", "true", { timeout: 10_000 });
   await expect(page.getByRole("heading", { name: "내 방을 찍고, 더 편한 배치를 찾아보세요.", exact: true })).toBeVisible();
+  await expect(page.getByText("풍수학 · 3D 공간 분석", { exact: true })).toBeVisible();
+  const tutorial = page.getByRole("region", { name: "화살표 순서대로 따라오세요." });
+  await expect(tutorial).toBeVisible();
+  await expect(tutorial.getByRole("button")).toHaveCount(4);
+  await expect(tutorial.locator("li[data-current='true']")).toContainText("북쪽 확인");
+  expect(await page.locator("main").evaluate((node) => getComputedStyle(node).backgroundColor)).toBe("rgb(243, 248, 244)");
   const analyze = page.getByRole("button", { name: "추천 배치 보기", exact: true });
   await expect(analyze).toBeDisabled();
   for (const name of ["북쪽 방향을 확인했어요", "방과 가구 위치를 확인했어요"]) {
@@ -68,7 +74,8 @@ test("private workspace is login-gated and noindex; shared footer remains", asyn
   await expect(page.getByText(/콘텐츠 보호 안내/)).toBeVisible();
   await expect(page.locator('input[type="file"]')).toHaveCount(0);
 });
-test("space mobile layout, reduced motion and accessibility stay usable", async ({ page }) => {
+test("space mobile layout, reduced motion and accessibility stay usable", async ({ page }, testInfo) => {
+  test.skip(!testInfo.project.use.isMobile, "This validates the coarse-pointer mobile renderer, not a narrow desktop window.");
   await page.emulateMedia({ reducedMotion: "reduce" }); await page.goto("/ko/space");
   const typography = await page.evaluate(async () => {
     await document.fonts.ready;
@@ -133,7 +140,7 @@ test("device speech failure keeps the anchored guide readable", async ({ page })
 test("the home always shows a simple path to 3D room analysis", async ({ page }) => {
   await page.goto("/ko");
   await page.getByRole("button", { name: "안내 닫기" }).click();
-  const menu = page.getByRole("navigation").getByRole("link", { name: "3D 공간운", exact: true });
+  const menu = page.getByRole("navigation").getByRole("link", { name: "풍수학", exact: true });
   await expect(menu).toBeVisible();
   await expect(page.getByRole("heading", { name: "침대와 책상, 지금 자리가 맞을까요?", exact: true })).toBeVisible();
   await expect(page.locator(".dh-space-copy")).toContainText("방 구조 확인");

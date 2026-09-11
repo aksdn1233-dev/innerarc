@@ -7,7 +7,7 @@ export function ReportActions({
   locale,
 }: {
   downloadUrl: string;
-  locale: "ko" | "en";
+  locale: "ko" | "en" | "ja";
 }) {
   const [giftConsent, setGiftConsent] = useState(false);
   const [shareStatus, setShareStatus] = useState<"idle" | "shared" | "copied" | "failed">("idle");
@@ -26,7 +26,21 @@ export function ReportActions({
         copied: "선물 링크를 복사했습니다.",
         failed: "공유하지 못했습니다. 링크 복사를 이용해 주세요.",
       }
-    : {
+    : locale === "ja"
+      ? {
+          subject: "あなたのための태령당リーディング",
+          body: "あなたのために用意した태령당リーディングです。下のURLからご覧ください。",
+          giftTitle: "このリーディングを贈る",
+          giftBody: "相手の同意を確認してから、メールまたは端末の共有メニューで送れます。個人的な内容を含むため、信頼できる相手にだけ共有してください。",
+          consent: "生年月日などを入力し、この結果を送ることについて相手の同意を得ました。",
+          email: "メールで送る",
+          kakao: "共有メニューで送る",
+          copy: "リンクをコピー",
+          shared: "共有メニューを開きました。",
+          copied: "リンクをコピーしました。",
+          failed: "共有できませんでした。リンクのコピーをお試しください。",
+        }
+      : {
         subject: "A 태령당 reading for you",
         body: "I prepared this 태령당 reading for you. Open it at the address below.",
         giftTitle: "Gift this reading to someone else",
@@ -75,10 +89,10 @@ export function ReportActions({
     <>
       <div className="report-actions">
         <a className="primary-button" href={downloadUrl}>
-          {locale === "ko" ? "리포트 파일 내려받기" : "Download report"}
+          {locale === "ko" ? "리포트 파일 내려받기" : locale === "ja" ? "レポートをダウンロード" : "Download report"}
         </a>
         <button className="secondary-button" type="button" onClick={() => window.print()}>
-          {locale === "ko" ? "인쇄·PDF로 저장" : "Print or save as PDF"}
+          {locale === "ko" ? "인쇄·PDF로 저장" : locale === "ja" ? "印刷・PDFで保存" : "Print or save as PDF"}
         </button>
       </div>
       <section className="report-gift-panel" aria-labelledby="report-gift-title">

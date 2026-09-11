@@ -23,6 +23,7 @@ const companionSchema = z.object({
 export const PaidReadingInputSchema = z.object({
   version: z.literal(1),
   locale: z.enum(["ko", "en"]),
+  displayLocale: z.literal("ja").optional(),
   productCode: z.enum(paidReadingProductCodes),
   readingKind: z.enum(["numerology", "saju_chart"]).optional(),
   birthDate: z.string().refine(isAcceptedBirthDate, "UNSUPPORTED_BIRTH_DATE"),
@@ -46,6 +47,8 @@ export type PaidReport = Readonly<{
   orderId: string;
   productCode: PaidReadingInput["productCode"];
   locale: PaidReadingInput["locale"];
+  /** Optional presentation language while operational locale remains ko/en. */
+  displayLocale?: "ja";
   title: string;
   customerName: string | null;
   createdAt: string;

@@ -20,7 +20,9 @@ export function JapaneseReadingIntake() {
     const payload = {
       version: 1,
       locale: "en",
+      displayLocale: "ja",
       productCode,
+      readingKind: productCode === "plus_30d" ? "saju_chart" : "numerology",
       birthDate: String(form.get("birthDate")),
       birthTime: String(form.get("birthTime") ?? "").trim() || undefined,
       name: String(form.get("name") ?? "").trim(),
