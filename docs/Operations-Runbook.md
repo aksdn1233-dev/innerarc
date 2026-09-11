@@ -418,3 +418,8 @@ Production source is merge commit `0ac66570c3a882ae9fe0e2dd0f93883343e3b474`. Cl
 The customer UI must never ask for a raw north degree. It stores one of the existing internal quarter-turn values after the user chooses the side of the screen. The 3D compass must show all four cardinal labels together. If a new electronics kind fails geometry or draw-budget checks, remove that kind from both `OBJECT_KINDS` and the manifest/prompt as one change; never let an unvalidated provider string enter the scene.
 
 A manual electronics add runs only local deterministic placement and consumes no provider token. `electronics_rest_check_v1` is an observation prompt, not an efficacy or health claim. A spike in `NO_CLEAR_PLACEMENT` means users should correct room/furniture dimensions before placement thresholds are changed. On a provider or cost incident, set `SPACE_AI_ENABLED=false`; on a wider write incident, set `SPACE_ENABLED=false`. Keep owner reads, export, deletion, image expiry, and cleanup active.
+
+Production source is PR #59 merge `7590397334e332465477761667f8e4efbf4a8074`.
+Cloudflare Worker version `048554ea-a59a-4e77-9427-802cff69a59d` serves `mygyeol.kr`,
+and public Sites version 103 serves `https://innerarc-gyeol.qkrehgus5886.chatgpt.site`.
+The immediate rollback targets are Worker `9ac9d69f-e6c3-48fb-883c-979b7d0c3abd` and Sites 102.
