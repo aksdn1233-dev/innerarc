@@ -200,6 +200,14 @@ Rollback reference: production base `ee4ae5038e34e0715456b837cbe7c7f2db5591c4`; 
 - [ ] Run the complete Node 24 CI matrix and inspect generated five-width captures before merge.
 - [ ] Keep PR #22 unmerged and Space flags off until its existing hosted, physical-device, and owner-acceptance gates pass.
 
+## Feng Shui guide and Japanese reports — 2026-09-12
+
+- [x] Popup progress and six-second advance, clickable Feng Shui tutorial, bright responsive presentation, Japanese samples, purchase handoff, protected reports, downloads, and Reality Check labels are covered.
+- [x] Deterministic calculations remain authoritative; no model name, provider call, token cost, price, entitlement, database migration, or Space API contract changed.
+- [x] Lint has zero errors, typecheck and 134-route production build pass, 1,064 unit tests pass, browser E2E passes 243 with 11 intentional skips, and the dedicated 3D matrix passes 90 with 30 intentional skips.
+- [x] Merge commit `0ac66570c3a882ae9fe0e2dd0f93883343e3b474` is deployed as Cloudflare Worker version `9ac9d69f-e6c3-48fb-883c-979b7d0c3abd` and Sites version 102; both live origins passed post-deploy route checks.
+- [ ] GitHub Actions run 34625549247 did not start because of the account payment/spending limit; restore the account limit before relying on hosted CI evidence.
+
 ## Success story and miniature guide hardening — 2026-09-08
 
 - [x] Seven public records have validated HTTPS story sources, evidence status, context, unknowns, transferability and one bounded action.

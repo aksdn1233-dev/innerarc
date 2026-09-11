@@ -408,3 +408,7 @@ Monitor guide assets as static route resources: a missing asset or font must not
 ### PR22 final quality pass (2026-09-08)
 
 Use the Node 24 runtime required by package.json for release checks. Preserve Worker `innerarc`, its `mygyeol.kr` route, IMAGES binding and deployed secrets. Local Worker smoke checks must use `--local`; do not infer hosted RLS or provider access from local PGlite/mock success. The quality pass applies no migrations and authorizes no deployment. Rollback reference before any later release remains `52a70b80da6287693e09f17c9f8d3945c893c6be`; disable SPACE_ENABLED / SPACE_AI_ENABLED independently when needed. CI retries are diagnostic: flaky outcomes fail the gate. See `Final-Product-Quality-Pass.md` for the final bounded evidence and external launch gates.
+
+### Feng Shui guide and Japanese reports release — 2026-09-12
+
+Production source is merge commit `0ac66570c3a882ae9fe0e2dd0f93883343e3b474`. Cloudflare Worker version `9ac9d69f-e6c3-48fb-883c-979b7d0c3abd` serves `mygyeol.kr`; Sites version 102 serves `https://innerarc-gyeol.qkrehgus5886.chatgpt.site`. Both origins returned 200 for home, Feng Shui, and Japanese premium sample checks after deployment. Roll back Cloudflare to `3d091a5e-e3fa-47ac-8f72-1c5fc1662490` and Sites to version 101 if the guide, localized report, or payment handoff regresses. This release has no migration and adds no LLM call; disable the existing Space flags only for a Space incident.
