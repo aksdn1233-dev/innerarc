@@ -396,6 +396,7 @@ export function PlansExperience({
           productCode,
           expectedAmount: selectedProduct.amount - (!campaignDiscounted && couponCode.trim() ? 5_000 : 0),
           locale: systemLocale,
+          returnLocale: locale === "ja" ? "ja" : undefined,
           readingInput: selectedReadingInput,
           depositorName: paymentProvider === "manual_transfer"
             ? depositorName.trim()

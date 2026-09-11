@@ -50,3 +50,43 @@
 .sceneLoading{position:absolute;z-index:4;inset:4rem 1rem auto;margin:0;padding:.8rem;background:#131f30;color:#f7f2e8;border:1px solid #788599;border-radius:8px;pointer-events:none}
 
 .comparisonSummary[data-comparison-mode=compare]{border-color:#9a845c;background:#202838}
+
+/* Daylight Feng Shui palette: calm, readable and consistent across landing/workspace. */
+.surface{--sp-bg:#f3f8f4;--sp-panel:#fffefa;--sp-line:#cfddd5;--sp-text:#20312f;--sp-muted:#5c6f69;--sp-gold:#337c6c;background:#f3f8f4;color:var(--sp-text)}
+.surface a{color:#286d60}
+.panel{background:#fffefa;border-color:#cfddd5;box-shadow:0 14px 36px rgba(49,85,73,.08)}
+.surface button,.surface .linkButton{border-color:#bfd1c8;background:#edf5f0;color:#20312f}
+.surface button:hover,.surface .linkButton:hover{border-color:#6ca291;background:#e4f0e9}
+.surface .primary,.surface button[aria-pressed=true]{border-color:#337c6c;background:#337c6c;color:#fff}
+.surface input,.surface select,.surface textarea{border-color:#b9cbc2;background:#fff;color:#20312f}
+.surface :focus-visible{outline-color:#2b7b8c}
+.hint{color:#5c6f69}.status{border-left-color:#4b9484;background:#e1f0e9;color:#234c44}.error{color:#8c302c;background:#fff1ef}
+.heroCopy{border-left-color:#57a38f}.heroVisual{box-shadow:0 32px 72px rgba(35,62,53,.2)}
+.proofStrip li,.proofStrip li:nth-child(2),.proofStrip li:nth-child(3){border-color:#cbdcd3;background:#fffefa;color:#31453f}
+.proofStrip li::before{background:#55a28e}.proofStrip li:nth-child(2)::before{background:#e3a15f}.proofStrip li:nth-child(3)::before{background:#7b93bd}
+.story{border-top-color:#cfddd5}.storyLead{border-top-color:#55a28e}
+.storySteps{position:relative}.storySteps article,.storySteps article:nth-child(2),.storySteps article:nth-child(3){margin-inline:0;border-color:#c8ddd3;border-left-color:#55a28e;background:#fffefa;box-shadow:0 12px 28px rgba(49,85,73,.07)}
+.storySteps article:nth-of-type(2){border-left-color:#e0a05f;background:#fffaf1}.storySteps article:nth-of-type(3){border-left-color:#8298bd;background:#f7f9ff}
+.storySteps article>b{color:#337c6c}.storySteps article:nth-of-type(2)>b{color:#a9682f}.storySteps article:nth-of-type(3)>b{color:#596f9a}.storySteps p{color:#5c6f69}
+.storyArrow{display:grid;width:42px;height:42px;place-items:center;margin:-.45rem auto;border:1px solid #b9d1c7;border-radius:50%;background:#e7f3ed;color:#337c6c;font-size:1.25rem;font-weight:800}
+.demoIntro{border-top-color:#b9cdc3;border-left-color:#e0a05f;background:#fff9ef}.demoIntro p{color:#5c6f69}
+.advancedEditor{border-color:#cbdad3;background:#fbfdfb}.advancedEditor>summary{color:#286d60}
+.captureGuide>div{display:grid;gap:.2rem;align-content:start;min-height:88px;padding:.75rem;border:1px solid #cadbd3;border-radius:11px;background:#f4f9f6;color:#5c6f69;font-size:.78rem}.captureGuide b{color:#337c6c}
+.captureTruth{border-left-color:#4c9d90;background:#e5f3ee;color:#234c44}.captureConfirm{border-color:#c0d3ca;background:#f6faf7}
+.photoList>div{border-color:#cfddd5;background:#fafcfb}.photoList span,.photoList small{color:#5c6f69}
+.compareSwitch{border-color:#c7d7d0;background:#edf4f0}.compareSwitch button[aria-pressed=true]{background:#337c6c!important;color:#fff!important;box-shadow:none}
+.comparisonSummary,.comparisonSummary[data-comparison-mode=compare]{border-color:#d9c59d;background:#fff8e9;box-shadow:none}.comparisonSummary>div span{color:#6f6249}.comparisonSummary li{border-color:#d7e2dc;background:#fff;color:#20312f}.comparisonSummary[data-comparison-mode=recommended]{border-color:#8dc1b5;background:#ecf7f3}.comparisonSummary[data-comparison-mode=recommended]>div span{color:#356c62}
+.recommendation[data-active="true"]{background:#eef7f2}.recommendationFacts dd{color:#20312f}
+.lightSwitch{border-color:#c8d8d1}.lightSwitch button[aria-pressed=true]{background:#337c6c;color:#fff}
+.sceneLoading{border-color:#ccd9d3;background:#fffefa;color:#20312f}
+.tutorial{display:grid;grid-template-columns:minmax(210px,.58fr) minmax(0,1.42fr);gap:1.25rem;align-items:center;margin:1rem 0 1.4rem;padding:1.15rem;border:1px solid #c9ddd4;border-radius:18px;background:#fffefa;box-shadow:0 16px 38px rgba(49,85,73,.08)}
+.tutorialLead h2{margin:.25rem 0;font-size:1.35rem}.tutorialLead p{margin:.2rem 0;color:#5c6f69;font-size:.85rem}
+.tutorialSteps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.5rem;margin:0;padding:0!important;list-style:none}
+.tutorialSteps li{position:relative;display:flex;align-items:center;min-width:0;margin:0}.tutorialSteps button{display:grid;width:100%;min-height:92px;grid-template-columns:28px 1fr;align-items:center;gap:.55rem;padding:.7rem;text-align:left}
+.tutorialSteps button small{display:grid;width:28px;height:28px;place-items:center;border-radius:50%;background:#dfeae5;color:#47635b;font-style:normal;font-weight:850}
+.tutorialSteps button span{display:grid;gap:.18rem;min-width:0}.tutorialSteps button b{font-size:.82rem}.tutorialSteps button em{color:#4f625c;font-size:.7rem;font-style:normal;line-height:1.35}
+.tutorialSteps li>i{position:absolute;z-index:2;right:-.55rem;display:grid;width:20px;height:20px;place-items:center;border-radius:50%;background:#fffefa;color:#6d9186;font-style:normal;font-weight:900}
+.tutorialSteps li[data-current="true"] button{border-color:#337c6c;background:#e8f5ef;box-shadow:0 0 0 2px rgba(51,124,108,.12)}
+.tutorialSteps li[data-current="true"] button small{background:#337c6c;color:#fff}.tutorialSteps li[data-complete="true"] button small{background:#dcefe7;color:#286d60}
+@media(max-width:900px){.tutorial{grid-template-columns:1fr}.tutorialSteps{overflow-x:auto;padding-bottom:.3rem!important}.tutorialSteps li{min-width:180px}}
+@media(max-width:540px){.tutorial{margin-inline:-2px;padding:.9rem}.tutorialSteps{grid-template-columns:1fr;overflow:visible}.tutorialSteps li{min-width:0}.tutorialSteps button{min-height:70px}.tutorialSteps li>i{right:auto;bottom:-.52rem;left:50%;transform:rotate(90deg)}}

@@ -130,6 +130,10 @@
 .td2-walkthrough .guide-steps-tabs button.is-current small { color: #a9cfff; }
 .td2-walkthrough .guide-steps-tabs button.is-current::after { display: none; }
 .td2-walkthrough .guide-stage { border: 8px solid #fff; border-radius: 28px; background: #fff; box-shadow: 0 24px 60px rgba(33,55,87,.16); }
+.td2-guide-timer { display: grid; grid-template-columns: minmax(120px,1fr) auto; align-items: center; gap: 12px; margin: 10px 2px 14px; }
+.td2-guide-progress { height: 7px; overflow: hidden; border-radius: 999px; background: rgba(47,85,139,.14); }
+.td2-guide-progress > span { display: block; height: 100%; border-radius: inherit; background: #426eb1; transition: width .1s linear; }
+.td2-guide-timer small { color: #405779; font-size: .72rem; font-weight: 800; white-space: nowrap; }
 .td2-guide-screen { min-height: 570px; padding: clamp(30px,4vw,50px); background: linear-gradient(155deg,#fff 0%,#f8fbff 60%,#eef5fc 100%); color: var(--td-ink); }
 .td2-guide-screen > header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 22px; border-bottom: 1px solid var(--td-line); }
 .td2-guide-screen > header span { font: 600 1.35rem/1 var(--td-display); }
@@ -617,5 +621,7 @@
   .td2-trust-strip strong { font-size: .88rem; }
   .td2-trust-strip span { font-size: .7rem; }
   .td2-story-nav { margin-top: 22px; }
+  .td2-guide-timer { grid-template-columns: 1fr; gap: 6px; }
+  .td2-guide-timer small { justify-self: end; }
   .td2-pillar,.td2-pillar:nth-child(n+4) { min-height: 238px; }
 }

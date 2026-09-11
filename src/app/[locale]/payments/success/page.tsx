@@ -14,11 +14,13 @@ export default async function PaymentSuccessPage({
 
   const portOnePaymentId = typeof query.paymentId === "string" ? query.paymentId : "";
   const guestAccessToken = typeof query.access === "string" ? query.access : undefined;
+  const reportLocale = query.displayLocale === "ja" ? "ja" : undefined;
   if (/^[A-Za-z0-9]{6,64}$/.test(portOnePaymentId)) {
     return (
       <main className="shell payment-result-shell" id="main-content">
         <PaymentSuccessClient
           locale={locale}
+          reportLocale={reportLocale}
           confirmation={{ provider: "portone", paymentId: portOnePaymentId, accessToken: guestAccessToken }}
         />
       </main>
@@ -42,6 +44,7 @@ export default async function PaymentSuccessPage({
     <main className="shell payment-result-shell" id="main-content">
       <PaymentSuccessClient
         locale={locale}
+        reportLocale={reportLocale}
         confirmation={{ provider: "toss", paymentKey, orderId, amount, accessToken: guestAccessToken }}
       />
     </main>

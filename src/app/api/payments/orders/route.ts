@@ -26,6 +26,7 @@ const bodySchema = z.object({
   productCode: z.enum(purchasablePaymentProductCodes),
   expectedAmount: z.number().int().min(100).max(10_000_000),
   locale: z.string().refine(isLocale),
+  returnLocale: z.literal("ja").optional(),
   readingInput: PaidReadingInputSchema,
   depositorName: z.string().trim().min(2).max(80).optional(),
   customerPhone: z.string().trim().regex(/^01[016789]-?\d{3,4}-?\d{4}$/).optional(),
@@ -171,11 +172,13 @@ export async function POST(request: Request) {
     });
   }
   const locale = parsed.data.locale;
+  const returnLocale = parsed.data.returnLocale ?? locale;
   const successUrl = new URL(`/${locale}/payments/success`, baseUrl).toString();
   const failUrl = new URL(`/${locale}/payments/fail`, baseUrl).toString();
   const success = new URL(successUrl);
   if (guestAccessToken) success.searchParams.set("access", guestAccessToken);
-  const reportUrl = new URL(`/${locale}/reports/${orderId}`, baseUrl);
+  if (returnLocale === "ja") success.searchParams.set("displayLocale", "ja");
+  const reportUrl = new URL(`/${returnLocale}/reports/${orderId}`, baseUrl);
   if (guestAccessToken) reportUrl.searchParams.set("access", guestAccessToken);
   if (readiness.config.provider === "manual_transfer") {
     return NextResponse.json({
@@ -194,7 +197,7 @@ export async function POST(request: Request) {
   }
   if (readiness.config.provider === "payapp") {
     const returnUrl = new URL("/api/payments/payapp/return", baseUrl);
-    returnUrl.searchParams.set("locale", locale);
+    returnUrl.searchParams.set("locale", returnLocale);
     returnUrl.searchParams.set("orderId", orderId);
     // Carried through the provider so the buyer lands on their report on return,
     // whatever browsing context the payment app sends them back in.

@@ -26,7 +26,7 @@ const content = {
     analysis: "생년월일 패턴",
     success: "유명인 비교",
     relationship: "궁합",
-    space: "3D 공간운",
+    space: "풍수학",
     reviews: "이용 후기",
     login: "구매 내역",
     start: "무료 사주",
@@ -65,7 +65,7 @@ const content = {
       ["01", "타고난 기질과 흐름", "사주", "명식과 오행을 계산 근거와 함께 살펴봅니다.", "/ko/fortune"],
       ["02", "반복되는 나의 패턴", "생년월일 패턴", "생년월일에 담긴 핵심 수와 선택의 흐름을 봅니다.", "/ko/numerology"],
       ["03", "두 사람의 차이와 조화", "궁합", "연인·가족·동료가 부딪히고 맞는 지점을 비교합니다.", "/ko/compatibility"],
-      ["04", "내 방의 흐름", "3D 공간운", "지금 배치와 추천 배치를 실제 3D로 비교합니다.", "/ko/space"],
+      ["04", "내 방의 흐름", "풍수학", "지금 배치와 추천 배치를 실제 3D로 비교합니다.", "/ko/space"],
     ],
     previewEyebrow: "개인 패턴 분석",
     previewTitle: <>왜 같은 선택을 반복하는지<br />한눈에 보여드려요.</>,
@@ -86,7 +86,7 @@ const content = {
     relationshipCta: "둘의 관계 보기",
     relationshipCompare: "둘의 차이를 나란히 봅니다",
     relationshipAxes: ["말하는 방식", "결정하는 속도", "혼자 필요한 시간"],
-    spaceEyebrow: "3D 공간운",
+    spaceEyebrow: "풍수학 · 3D 공간 분석",
     spaceTitle: <>내 방, 어디를<br /><span>바꾸면 좋을까요?</span></>,
     spaceBody: "방을 찍으면 지금 모습과 바꾼 모습을 3D로 비교해요.",
     spaceSteps: ["방 사진 찍기", "북쪽 알려주기", "바꾼 모습 보기"],
@@ -116,7 +116,7 @@ const content = {
   },
   en: {
     navLabel: "Taeryeongdang main navigation",
-    services: "Services", guide: "First visit", analysis: "Pattern analysis", success: "Success patterns", relationship: "Relationships", space: "3D Space", reviews: "Reviews", login: "Purchases", start: "Start now",
+    services: "Services", guide: "First visit", analysis: "Pattern analysis", success: "Success patterns", relationship: "Relationships", space: "Feng Shui", reviews: "Reviews", login: "Purchases", start: "Start now",
     kicker: "People, relationships, spaces, and lived experience",
     title: <>There may be a reason<br />the same patterns<br /><em>keep returning.</em></>,
     heroBody: "Taeryeongdang connects symbolic traditions, deterministic calculations, and what you record from real life.",
@@ -145,7 +145,7 @@ const content = {
       ["01", "Read yourself.", "Saju · birth-date patterns", "Calculated evidence and symbolic interpretation stay distinct.", "/en/numerology"],
       ["02", "Compare people.", "Success pattern comparison", "Only structures calculated from public birth dates are compared.", "/en/celebrity"],
       ["03", "Read relationships.", "Compatibility · relationships", "See how two people operate and where friction may arise.", "/en/relationship"],
-      ["04", "Read the space.", "3D Space", "Compare room structure and circulation in a real 3D scene.", "/en/space"],
+      ["04", "Read the space.", "Feng Shui", "Compare room structure and circulation in a real 3D scene.", "/en/space"],
       ["05", "Check real life.", "Reality Check", "Record whether an interpretation held up and revisit it later.", "/en/reality-check"],
     ],
     previewEyebrow: "PERSONAL PATTERN ANALYSIS", previewTitle: <>See why the same choices<br />keep returning.</>, previewBody: "Your strengths, recurring friction, and one practical change are shown with the calculation behind them.", previewCta: "Start free analysis", sample: "Sample result", sampleDate: "4 November 1994", sampleHeadline: "You think deeply and notice people well, but may spend too long deciding alone.", samplePoints: ["What comes naturally", "The choice that repeats", "One thing to try now"], chartLabels: ["Thinking", "Expression", "Action", "Connection", "Recovery", "Adaptation"],
@@ -153,7 +153,7 @@ const content = {
     relationshipEyebrow: "RELATIONSHIP INTELLIGENCE", relationshipTitle: <>See where you diverge,<br />not just whether you match.</>, relationshipBody: "Compare how partners, family, friends, coworkers, or business partners operate across eight domains. No score decides whether a relationship is good or bad.", relationshipCta: "Start relationship analysis",
     relationshipCompare: "See the differences side by side",
     relationshipAxes: ["How you communicate", "How quickly you decide", "Time you need alone"],
-    spaceEyebrow: "3D SPACE", spaceTitle: <>Your room,<br /><span>what could work better?</span></>, spaceBody: "Add room photos to compare your current and suggested layouts side by side in 3D.", spaceSteps: ["Take 2–6 room photos", "Show which way is north", "Compare the suggested layout"], spaceCta: "Analyze my room", spaceDemo: "Try the 3D example", before: "Current", after: "Suggested", spaceBubble: "Try widening the path beside the bed.", spaceDisclosure: "Traditional feng shui and practical room advice are clearly separated.",
+    spaceEyebrow: "FENG SHUI · 3D ROOM", spaceTitle: <>Your room,<br /><span>what could work better?</span></>, spaceBody: "Add room photos to compare your current and suggested layouts side by side in 3D.", spaceSteps: ["Take 2–6 room photos", "Show which way is north", "Compare the suggested layout"], spaceCta: "Analyze my room", spaceDemo: "Try the 3D example", before: "Current", after: "Suggested", spaceBubble: "Try widening the path beside the bed.", spaceDisclosure: "Traditional feng shui and practical room advice are clearly separated.",
     realityEyebrow: "REALITY CHECK", realityTitle: <>Go beyond interpretation.<br />Check it against real life.</>, realityBody: "A later reflection becomes evidence for the next reading. Results that missed remain visible too.", realityCta: "Start Reality Check", realitySteps: ["Save today's reading", "Check it in daily life", "Use it in the next reading"],
     celestialEyebrow: "SKY · SEASONS · FOUR PILLARS",
     celestialTitle: <>We read the season of the sky<br />with the moment you were born.</>,
@@ -170,7 +170,7 @@ function Arrow() {
 
 function GuideScreenPreview({ locale, step, label }: { locale: Locale; step: number; label: string }) {
   const ko = locale === "ko";
-  return <div aria-label={label} className="td2-guide-screen" role="img">
+  return <div aria-label={label} className="td2-guide-screen" role="group">
     <header><span>태령당</span><small>{ko ? `이용 안내 ${step + 1}/4` : `QUICK GUIDE ${step + 1}/4`}</small></header>
     {step === 0 && <div className="td2-guide-questions">
       <p>{ko ? "어떤 게 제일 궁금한가요?" : "What is on your mind?"}</p>
@@ -206,6 +206,7 @@ export function TaeryeongLanding({ locale, reportPreview, reviews, reviewCount }
   const track = () => captureConversionEvent("primary_cta_click", locale, { location: "hero" });
   const [guideOpen, setGuideOpen] = useState(false);
   const [guideStep, setGuideStep] = useState(0);
+  const [guideElapsedMs, setGuideElapsedMs] = useState(0);
   const guideRef = useRef<HTMLElement>(null);
   const guideTabsRef = useRef<HTMLDivElement>(null);
   const guideCloseRef = useRef<HTMLButtonElement>(null);
@@ -241,17 +242,26 @@ export function TaeryeongLanding({ locale, reportPreview, reviews, reviewCount }
 
   useEffect(() => {
     if (!guideOpen) return;
+    const startedAt = Date.now();
+    const progressTimer = window.setInterval(() => {
+      setGuideElapsedMs(Math.min(GUIDE_STEP_DURATION_MS, Date.now() - startedAt));
+    }, 100);
     const timer = window.setTimeout(() => {
       if (guideStep === GUIDE_SCREENS.length - 1) {
         setGuideOpen(false);
         return;
       }
+      setGuideElapsedMs(0);
       setGuideStep(guideStep + 1);
     }, GUIDE_STEP_DURATION_MS);
-    return () => window.clearTimeout(timer);
+    return () => {
+      window.clearInterval(progressTimer);
+      window.clearTimeout(timer);
+    };
   }, [guideOpen, guideStep]);
 
   function openGuide() {
+    setGuideElapsedMs(0);
     setGuideStep(0);
     setGuideOpen(true);
   }
@@ -317,6 +327,7 @@ export function TaeryeongLanding({ locale, reportPreview, reviews, reviewCount }
             if (!delta) return;
             event.preventDefault();
             const next = (guideStep + delta + GUIDE_SCREENS.length) % GUIDE_SCREENS.length;
+            setGuideElapsedMs(0);
             setGuideStep(next);
             guideTabsRef.current?.querySelectorAll("button")[next]?.focus();
           }}
@@ -327,13 +338,28 @@ export function TaeryeongLanding({ locale, reportPreview, reviews, reviewCount }
             className={guideStep === index ? "is-current" : undefined}
             id={`td2-guide-tab-${index}`}
             key={label}
-            onClick={() => setGuideStep(index)}
+            onClick={() => { setGuideElapsedMs(0); setGuideStep(index); }}
             role="tab"
             tabIndex={guideStep === index ? 0 : -1}
             type="button"
           ><small aria-hidden="true">{String(index + 1).padStart(2, "0")}</small><span>{label}</span></button>)}
         </div>
         <p className="guide-stage-eyebrow">{t.guideScreenLabel}</p>
+        <div className="td2-guide-timer">
+          <div
+            aria-label={locale === "ko" ? "다음 화면까지 남은 시간" : "Time until the next screen"}
+            aria-valuemax={GUIDE_STEP_DURATION_MS}
+            aria-valuemin={0}
+            aria-valuenow={guideElapsedMs}
+            className="td2-guide-progress"
+            role="progressbar"
+          ><span style={{ width: `${Math.min(100, (guideElapsedMs / GUIDE_STEP_DURATION_MS) * 100)}%` }} /></div>
+          <small aria-live="polite">
+            {locale === "ko"
+              ? `${Math.max(1, Math.ceil((GUIDE_STEP_DURATION_MS - guideElapsedMs) / 1_000))}초 뒤 ${guideStep === GUIDE_SCREENS.length - 1 ? "안내가 닫혀요" : "다음 화면"}`
+              : `${Math.max(1, Math.ceil((GUIDE_STEP_DURATION_MS - guideElapsedMs) / 1_000))}s until ${guideStep === GUIDE_SCREENS.length - 1 ? "the guide closes" : "the next screen"}`}
+          </small>
+        </div>
         <div
           aria-labelledby={`td2-guide-tab-${guideStep}`}
           className="guide-walk-body"

@@ -8,10 +8,10 @@ import { DetailEditorialReport } from "@/components/detail-editorial-report";
 
 type SampleKind = "detail" | "premium" | "saju";
 
-const sampleLinks: ReadonlyArray<{ kind: SampleKind; ko: string; en: string }> = [
-  { kind: "detail", ko: "상세 리딩", en: "Detailed reading" },
-  { kind: "premium", ko: "프리미엄", en: "Premium" },
-  { kind: "saju", ko: "사주 원국", en: "Four Pillars" },
+const sampleLinks: ReadonlyArray<{ kind: SampleKind; ko: string; en: string; ja: string }> = [
+  { kind: "detail", ko: "상세 리딩", en: "Detailed reading", ja: "詳細リーディング" },
+  { kind: "premium", ko: "프리미엄", en: "Premium", ja: "プレミアム" },
+  { kind: "saju", ko: "사주 원국", en: "Four Pillars", ja: "四柱命式" },
 ];
 
 export function ReportSampleExperience({
@@ -33,7 +33,12 @@ export function ReportSampleExperience({
     { label: ko ? "연도수" : "Birth year", value: numberValue(basis.birthYear) },
     { label: ko ? "개인년" : "Personal year", value: numberValue(basis.personalYear), note: String(basis.serviceYear) },
   ] : [];
-  const sampleNavigation = (
+  const sampleNavigation = (<>
+    <nav aria-label={ko ? "결과 예시 언어" : "Report sample language"} className="sample-report-language-tabs">
+      <Link aria-current={locale === "ko" ? "page" : undefined} href={`/ko/samples/${kind}`} prefetch={false}>한국어</Link>
+      <Link aria-current={locale === "en" ? "page" : undefined} href={`/en/samples/${kind}`} prefetch={false}>English</Link>
+      <Link href={`/ja/samples/${kind}`} lang="ja" prefetch={false}>日本語</Link>
+    </nav>
     <nav aria-label={ko ? "결과 예시 선택" : "Choose a report sample"} className="sample-report-tabs">
       {sampleLinks.map((item) => (
         <Link
@@ -47,6 +52,7 @@ export function ReportSampleExperience({
         </Link>
       ))}
     </nav>
+  </>
   );
 
   if (kind === "detail" || kind === "premium") {

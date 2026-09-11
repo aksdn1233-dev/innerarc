@@ -9,9 +9,11 @@ type State = "confirming" | "done" | "waiting" | "failed";
 
 export function PaymentSuccessClient({
   locale,
+  reportLocale,
   confirmation,
 }: {
   locale: Locale;
+  reportLocale?: "ja";
   confirmation:
     | Readonly<{ provider: "toss"; paymentKey: string; orderId: string; amount: number; accessToken?: string }>
     | Readonly<{ provider: "portone"; paymentId: string; accessToken?: string }>;
@@ -83,20 +85,27 @@ export function PaymentSuccessClient({
         failed: "Payment verification could not finish. Do not retry payment; contact support with the order ID.",
         home: "Open report",
       };
+  const visibleMessages = reportLocale === "ja" ? {
+    confirming: "決済を確認しています。",
+    done: "決済が確認され、レポートを開けます。",
+    waiting: "入金の確認を待っています。確認後にレポートが開きます。",
+    failed: "決済確認を完了できませんでした。再決済せず、注文番号を添えてお問い合わせください。",
+    home: "結果レポートを開く",
+  } : messages;
 
   return (
     <section className="payment-result-card" aria-live="polite">
-      <h1>{messages[state]}</h1>
-      <p>{locale === "ko" ? "주문번호" : "Order ID"}: <code>{orderId}</code></p>
+      <h1>{visibleMessages[state]}</h1>
+      <p>{reportLocale === "ja" ? "注文番号" : locale === "ko" ? "주문번호" : "Order ID"}: <code>{orderId}</code></p>
       <Link
         className="primary-button link-button"
-        href={`/${locale}/reports/${orderId}${
+        href={`/${reportLocale ?? locale}/reports/${orderId}${
           confirmation.accessToken
             ? `?access=${encodeURIComponent(confirmation.accessToken)}`
             : ""
         }`}
       >
-        {messages.home}
+        {visibleMessages.home}
       </Link>
     </section>
   );

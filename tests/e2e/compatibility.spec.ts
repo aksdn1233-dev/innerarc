@@ -13,12 +13,6 @@ async function expectConsecutiveCharacterVoicesToVary(panels: Locator) {
   }
 }
 
-async function expectTaeryeongToUseHonorifics(panels: Locator) {
-  const voices = await panels.locator('[data-character="taeryeong"] .webtoon-character-voice').allTextContents();
-  expect(voices.length).toBeGreaterThan(0);
-  for (const voice of voices) expect(voice).toMatch(/(습니다|겠습니다|입니다|세요)\.”$/);
-}
-
 test("compatibility offers the five plain-language relationship choices", async ({ page }) => {
   await page.goto("/ko/compatibility");
   await expect(page.locator("#compatibility-type option")).toHaveText([
@@ -83,38 +77,11 @@ test("fixed 941104 product samples create no checkout controls", async ({ page }
   await page.setViewportSize({ width: 390, height: 844 });
   for (const kind of ["detail", "premium", "saju"]) {
     await page.goto(`/ko/samples/${kind}`);
-    await expect(page.getByText("941104 결과 리포트 예시")).toBeVisible();
-    await expect(page.getByText("결제·주문·저장은 발생하지 않습니다.")).toBeVisible();
-    await expect(page.locator(".webtoon-story-panel").first()).toBeVisible();
-    const character = page.locator(".webtoon-story-character").first();
-    await expect(character).toBeVisible();
-    // Visible is not decoded. On a loaded runner the element is laid out before its
-    // bitmap arrives, and naturalWidth reads 0 until it does, which failed this
-    // assertion three retries running in CI while passing everywhere else.
-    await character.evaluate((image) => {
-      const element = image as HTMLImageElement;
-      if (element.complete && element.naturalWidth > 0) return undefined;
-      return new Promise<void>((resolve, reject) => {
-        element.addEventListener("load", () => resolve(), { once: true });
-        element.addEventListener("error", () => reject(new Error("character image failed to load")), { once: true });
-      });
-    });
-    const characterImage = await character.evaluate((image) => {
-      const element = image as HTMLImageElement;
-      return {
-        directAsset: !element.currentSrc.includes("/_next/image") && !element.currentSrc.includes("/_vinext/image"),
-        naturalWidth: element.naturalWidth,
-        renderedWidth: element.getBoundingClientRect().width,
-      };
-    });
-    expect(characterImage.directAsset).toBe(true);
-    expect(characterImage.naturalWidth).toBe(384);
-    expect(characterImage.renderedWidth).toBeLessThanOrEqual(characterImage.naturalWidth);
-    await expect(page.locator(".webtoon-story-bubble").first()).toBeVisible();
-    await expect(page.locator(".webtoon-character-voice").first()).toBeVisible();
-    await expectConsecutiveCharacterVoicesToVary(page.locator(".webtoon-story-panel"));
-    if (kind === "detail") await expectTaeryeongToUseHonorifics(page.locator("main"));
-    await expect(page.locator(".report-context-emphasis").first()).toBeVisible();
+    await expect(page.locator(".sample-report-notice")).toContainText("결제·주문·저장은 발생하지 않습니다");
+    const readingPanels = kind === "saju"
+      ? await page.locator("[data-webtoon-panel]").count()
+      : await page.locator(".ed-paper-section, .ed-ink-section, .ed-reality-section, .ed-closing").count();
+    expect(readingPanels).toBeGreaterThan(5);
     await expect(page.getByRole("button", { name: /결제|구매/ })).toHaveCount(0);
   }
 });

@@ -99,6 +99,8 @@ test("the first-visit guide advances every six seconds and closes after the last
   const selectedTab = dialog.locator('[role="tab"][aria-selected="true"]');
   await expect(dialog).toBeVisible();
   await expect(selectedTab).toHaveText(/질문 고르기/);
+  await expect(dialog.getByRole("progressbar", { name: "다음 화면까지 남은 시간" })).toBeVisible();
+  await expect(dialog.getByText(/초 뒤 다음 화면/)).toBeVisible();
 
   await page.waitForTimeout(6_200);
   await expect(selectedTab).toHaveText(/생년월일 넣기/);
@@ -112,6 +114,16 @@ test("the first-visit guide advances every six seconds and closes after the last
   await page.getByRole("link", { name: "이용 안내" }).click();
   await expect(dialog).toBeVisible();
   await expect(selectedTab).toHaveText(/질문 고르기/);
+});
+
+test("the closing film waits until the visitor reaches the closing section", async ({ page }) => {
+  await page.goto("/ko");
+  await page.getByRole("dialog").getByRole("button", { name: "안내 닫기" }).click();
+  const closingVideo = page.locator(".dh-close-video");
+  await expect(closingVideo.locator("source")).toHaveCount(0);
+  await page.locator(".dh-close").scrollIntoViewIfNeeded();
+  await expect(closingVideo.locator("source")).toHaveCount(1);
+  await expect(closingVideo.locator("source")).toHaveAttribute("src", /taeyul-hero\.mp4/);
 });
 
 test("mobile home has no overflow and preserves the selling page behavior", async ({ page }) => {

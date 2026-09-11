@@ -12,7 +12,7 @@ import {
 } from "@/server/order-pass";
 
 const returnSchema = z.object({
-  locale: z.string().refine(isLocale),
+  locale: z.string().refine((value) => isLocale(value) || value === "ja"),
   orderId: z.string().regex(/^[A-Za-z0-9_-]{6,64}$/),
   rt: z.string().max(300).optional(),
 });
@@ -41,7 +41,7 @@ async function returnToReport(request: Request) {
   // Without a valid ticket, fall back to the client hand-off, which can still recover
   // the link from this browser or explain how to find the order.
   if (ticketOrderId !== orderId) {
-    const handoff = new URL(`/${locale}/payments/payapp-return`, baseUrl);
+    const handoff = new URL(`/${locale === "ja" ? "en" : locale}/payments/payapp-return`, baseUrl);
     handoff.searchParams.set("orderId", orderId);
     return NextResponse.redirect(handoff, 303);
   }

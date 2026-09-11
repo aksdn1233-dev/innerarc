@@ -8672,6 +8672,15 @@ summary {
   background: var(--clay);
   color: #fff;
 }
+.sample-report-language-tabs { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.sample-report-language-tabs a { min-height: 36px; padding: 8px 11px; border: 1px solid rgba(77,70,61,.22); border-radius: 999px; color: inherit; font-size: .75rem; font-weight: 760; text-decoration: none; }
+.sample-report-language-tabs a[aria-current="page"] { border-color: #7a6240; background: #eee4d5; color: #33281c; }
+.japanese-report-sample { font-family: var(--body-font), "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; }
+.japanese-report-sample .ed-sample-head { flex-wrap: wrap; }
+.japanese-report-sample .sample-report-tabs { flex-basis: 100%; }
+.japanese-report-sample .sample-report-body { font-size: clamp(1rem,1.35vw,1.13rem); line-height: 2; }
+.japanese-report-sample .ed-number-grid article small { display: block; color: var(--ed-muted); font-weight: 760; }
+.japanese-report-sample .ed-number-grid article strong { margin: 18px 0; }
 
 .sample-report-head .brand { color: #fff9ee; }
 .sample-report-head .eyebrow { color: #f1c67b; }

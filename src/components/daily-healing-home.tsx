@@ -58,6 +58,31 @@ function DeferredImage({ alt, src, unoptimized, ...props }: ComponentProps<typeo
   return <Image {...props} alt={alt} data-deferred={isVisible ? "false" : "true"} ref={imageRef} src={isVisible ? src : TRANSPARENT_PIXEL} unoptimized={!isVisible || unoptimized} />;
 }
 
+function DeferredClosingVideo() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const Observer = (window as Window & { IntersectionObserver?: typeof IntersectionObserver }).IntersectionObserver;
+    if (!Observer) return;
+    const observer = new Observer(([entry]) => {
+      if (!entry?.isIntersecting) return;
+      setShouldLoad(true);
+      observer.disconnect();
+    }, { rootMargin: "300px 0px" });
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <video autoPlay={shouldLoad} className="dh-close-video" loop muted playsInline poster="/images/taeyul-hero.jpg" preload="none" ref={videoRef}>
+      {shouldLoad && <source src="/videos/taeyul-hero.mp4?v=20260815-fluid1" type="video/mp4" />}
+    </video>
+  );
+}
+
 const copy = {
   ko: {
     concernEyebrow: "오늘의 고민",
@@ -89,7 +114,7 @@ const copy = {
       ["궁합", "우리는 어디서 잘 맞고 부딪힐까?", "연인·가족·동료가 생각하고 행동하는 차이를 나란히 봅니다.", "compatibility", "둘의 차이와 조화", "둘의 궁합 보기"],
       ["오늘의 흐름", "오늘, 무엇부터 돌아보면 좋을까?", "생일의 월·일을 기준으로 오늘 나에게 필요한 질문을 받습니다.", "daily-fortune", "가볍게 매일", "오늘의 질문 받기"],
       ["Reality Check", "지난 해석, 실제로도 맞았을까?", "맞았던 점과 달랐던 점을 남겨 반복되는 흐름을 다시 봅니다.", "reality-check", "생활에서 확인", "지난 해석 확인하기"],
-      ["3D 공간운", "침대와 책상, 어디를 바꾸면 편할까?", "방 사진으로 현재 배치와 바꿔볼 배치를 3D로 비교합니다.", "space", "공간도 하나의 패턴", "내 방 3D로 보기"],
+      ["풍수학", "침대와 책상, 어디를 바꾸면 편할까?", "방 사진으로 현재 배치와 바꿔볼 배치를 3D로 비교합니다.", "space", "공간도 하나의 패턴", "내 방 분석하기"],
     ] as const,
     realityEyebrow: "해석보다 중요한 것",
     realityTitle: <>그때 읽은 말,<br />실제로 맞았을까요?</>,
@@ -114,7 +139,7 @@ const copy = {
     reviewsEyebrow: "먼저 써본 사람들의 이야기",
     reviewsTitle: <>다른 사람들은<br />무엇을 확인했을까요?</>,
     reviewsBody: "공개에 동의하고 운영자가 확인한 후기만 그대로 보여드립니다.",
-    spaceEyebrow: "3D 공간운",
+    spaceEyebrow: "풍수학 · 3D 공간 분석",
     spaceTitle: <>침대와 책상,<br />지금 자리가 맞을까요?</>,
     spaceBody: "방 사진을 올리면 걸어 다니는 길과 가구 간격을 확인해, 현재 배치와 바꿔볼 배치를 3D로 비교해드려요.",
     spaceFlow: ["사진 올리기", "방 구조 확인", "현재·추천 비교", "바꿀 자리 보기", "써보고 기록"],
@@ -159,7 +184,7 @@ const copy = {
       ["Compatibility", "Where do we connect and clash?", "Compare how partners, family, or coworkers think and act.", "compatibility", "Differences and balance", "View our compatibility"],
       ["Daily Flow", "What should I reflect on today?", "Receive one question based on your birth month and day.", "daily-fortune", "A light daily check-in", "Get today's question"],
       ["Reality Check", "Did the last reading hold up?", "Keep what matched and what differed to revisit the recurring pattern.", "reality-check", "Check against life", "Check my last reading"],
-      ["3D Space", "Would another bed or desk position feel better?", "Use room photos to compare your current layout with a practical alternative in 3D.", "space", "Space is a pattern too", "View my room in 3D"],
+      ["Feng Shui", "Would another bed or desk position feel better?", "Use room photos to compare your current layout with a practical alternative in 3D.", "space", "Space is a pattern too", "Analyze my room"],
     ] as const,
     realityEyebrow: "WHAT MATTERS AFTER A READING",
     realityTitle: <>Did the last reading<br />hold up in real life?</>,
@@ -184,7 +209,7 @@ const copy = {
     reviewsEyebrow: "FROM PEOPLE WHO TRIED IT",
     reviewsTitle: <>What did other readers<br />recognize in their lives?</>,
     reviewsBody: "Only consented reviews checked by an operator are shown as written.",
-    spaceEyebrow: "3D SPACE",
+    spaceEyebrow: "FENG SHUI · 3D ROOM",
     spaceTitle: <>Are your bed and desk<br />in the right place?</>,
     spaceBody: "Add room photos to check walking paths and furniture spacing, then compare the current and suggested layouts in 3D.",
     spaceFlow: ["Add photos", "Check structure", "Compare layouts", "See what to move", "Try and record"],
@@ -297,8 +322,8 @@ export function DailyHealingHome({ locale, reportPreview, reviews, reviewCount }
 
     <section className="dh-space" aria-labelledby="dh-space-title">
       <div className="dh-space-visual">
-        <figure><Image alt={locale === "ko" ? "3D 공간운 현재 배치 예시" : "Current 3D Space example"} height={1082} src="/images/space/previews/bedroom-before-v1.png" width={1354} sizes="(max-width: 760px) 100vw, 50vw" /><figcaption>{t.before}</figcaption></figure>
-        <figure><Image alt={locale === "ko" ? "3D 공간운 추천 배치 예시" : "Suggested 3D Space example"} height={1082} src="/images/space/previews/bedroom-after-v1.png" width={1354} sizes="(max-width: 760px) 100vw, 50vw" /><figcaption>{t.after}</figcaption></figure>
+        <figure><Image alt={locale === "ko" ? "풍수학 현재 배치 예시" : "Current Feng Shui layout example"} height={1082} src="/images/space/previews/bedroom-before-v1.png" width={1354} sizes="(max-width: 760px) 100vw, 50vw" /><figcaption>{t.before}</figcaption></figure>
+        <figure><Image alt={locale === "ko" ? "풍수학 추천 배치 예시" : "Suggested Feng Shui layout example"} height={1082} src="/images/space/previews/bedroom-after-v1.png" width={1354} sizes="(max-width: 760px) 100vw, 50vw" /><figcaption>{t.after}</figcaption></figure>
         <Image alt="" className="dh-space-guide" height={384} src="/assets/gyeol-webtoon/characters/yundo/yundo_explain_calm_01.png" width={384} sizes="384px" />
       </div>
       <div className="dh-space-copy"><p className="dh-eyebrow">{t.spaceEyebrow}</p><h2 id="dh-space-title">{t.spaceTitle}</h2><p>{t.spaceBody}</p><ol>{t.spaceFlow.map((step, index) => <li key={step}><small>{String(index + 1).padStart(2, "0")}</small>{step}</li>)}</ol><Link href={`/${locale}/space`} prefetch={false}>{t.spaceAction}<Arrow /></Link></div>
@@ -307,9 +332,7 @@ export function DailyHealingHome({ locale, reportPreview, reviews, reviewCount }
     <section className="dh-close" aria-labelledby="dh-close-title">
       <div className="dh-close-art" aria-hidden="true">
         <Image alt="" className="dh-close-video-fallback" fill sizes="(max-width: 760px) 100vw, 48vw" src="/images/taeyul-hero.jpg" />
-        <video autoPlay className="dh-close-video" loop muted playsInline poster="/images/taeyul-hero.jpg" preload="metadata">
-          <source src="/videos/taeyul-hero.mp4?v=20260815-fluid1" type="video/mp4" />
-        </video>
+        <DeferredClosingVideo />
       </div>
       <div className="dh-close-copy">
         <p className="dh-eyebrow">TAERYEONGDANG</p>
