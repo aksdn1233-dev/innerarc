@@ -27,9 +27,11 @@ describe("PREMIUM_79000 editorial model", () => {
 
     expect(base?.numbers.map((item) => item.value)).toEqual(["11/2", "4", "6", "23/5"]);
     expect(premium).not.toBeNull();
-    expect(Object.values(premium ?? {})).toHaveLength(8);
-    expect(new Set(Object.values(premium ?? {}).map((item) => item.title)).size).toBe(8);
-    expect(JSON.stringify(premium)).not.toMatch(/undefined|NaN|미래를 정확|반드시 성공/u);
+    expect(Object.values(premium ?? {})).toHaveLength(10);
+    expect(new Set(Object.values(premium ?? {}).map((item) => item.title)).size).toBe(10);
+    expect(premium?.riskChecklist.body).toContain("최대 손실");
+    expect(premium?.stopConditions.body).toContain("중단");
+    expect(JSON.stringify(premium)).not.toMatch(/undefined|NaN|미래를 정확|반드시 성공|프리미엄 확장|을\(를\)|이\(가\)/u);
   });
 
   it("selects three stable accessory concepts without claiming a sale or outcome", () => {

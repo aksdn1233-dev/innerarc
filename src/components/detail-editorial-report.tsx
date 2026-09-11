@@ -22,10 +22,13 @@ function ChapterNumber({ value }: { value: number }) {
 }
 
 function detailParagraphs(item: EditorialTextBlock): string[] {
-  const lead = item.lead.trim();
-  let detail = item.body.trim();
+  const removeInternalLabel = (value: string) => value
+    .replace(/\[(?:프리미엄 확장|Premium extension)\s*·\s*[^\]]+\]\s*/giu, "")
+    .trim();
+  const lead = removeInternalLabel(item.lead);
+  let detail = removeInternalLabel(item.body);
   if (detail === lead) return [];
-  if (detail.startsWith(lead)) detail = detail.slice(lead.length).trim();
+  if (lead && detail.includes(lead)) detail = detail.replace(lead, "").trim();
   else {
     const firstSentence = detail.match(/^.*?[.!?。](?:\s|$)/u)?.[0].trim();
     if (firstSentence && lead.includes(firstSentence)) detail = detail.slice(firstSentence.length).trim();
@@ -37,6 +40,49 @@ function ReadingDetails({ item, label, className }: { item: EditorialTextBlock; 
   const paragraphs = detailParagraphs(item);
   if (paragraphs.length === 0) return null;
   return <details className={className}><summary>{label}</summary>{paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</details>;
+}
+
+const premiumFieldLabels = [
+  "중심 동력", "실행 강점", "첫인상과 접근 방식", "오래 반복되는 바탕",
+  "촉발 조건", "예상 행동", "가능한 결과", "확인 신호", "대응", "전환 기준",
+  "긍정 신호", "경고 신호", "현재 해석을 반박하는 신호", "재평가 시점",
+  "목표", "행동", "완료 기준", "위험", "다음 관문",
+  "Core drive", "Execution strength", "First impression and approach", "Long-running base",
+  "Trigger", "Expected behavior", "Possible result", "Confirmation signal", "Response", "Transition rule",
+  "Positive", "Warning", "Contradiction", "Reassess",
+] as const;
+
+function splitPremiumProse(value: string): string[] {
+  const normalized = value.trim();
+  if (normalized.length < 190) return [normalized];
+  const sentences = normalized.match(/[^.!?。]+(?:[.!?。]+|$)/gu)?.map((sentence) => sentence.trim()).filter(Boolean) ?? [normalized];
+  const groups: string[] = [];
+  for (const sentence of sentences) {
+    const last = groups.at(-1);
+    if (last && `${last} ${sentence}`.length <= 165) groups[groups.length - 1] = `${last} ${sentence}`;
+    else groups.push(sentence);
+  }
+  return groups;
+}
+
+function splitPremiumLines(paragraph: string): string[] {
+  let normalized = paragraph.replace(/\s+/gu, " ").trim();
+  if (!normalized) return [];
+  if (normalized.includes("□")) return normalized.split(/\s*(?=□)/u).filter(Boolean);
+  if ((normalized.match(/(?:^|\s)\d+[.)]\s+/gu) ?? []).length > 1) {
+    return normalized.split(/\s+(?=\d+[.)]\s+)/u).filter(Boolean).flatMap(splitPremiumLines);
+  }
+  if ((normalized.match(/[①-⑩]/gu) ?? []).length > 1) {
+    return normalized.split(/\s+(?=[①-⑩])/u).filter(Boolean).flatMap(splitPremiumLines);
+  }
+
+  normalized = normalized
+    .replace(/^(\d+[.)]\s+(?:최선 시나리오|가장 현실적인 시나리오|위험 시나리오|Best scenario|Most likely scenario|Risk scenario))\s+/iu, "$1\n")
+    .replace(new RegExp(`\\s+·\\s*(?=(?:${premiumFieldLabels.join("|")}):)`, "giu"), "\n")
+    .replace(new RegExp(`(?<!\\d[.)])(?<=[.!?。])\\s+(?=(?:${premiumFieldLabels.join("|")}):)`, "giu"), "\n");
+  const structured = normalized.split(/\n+/u).map((line) => line.trim()).filter(Boolean);
+  if (structured.length > 1) return structured;
+  return splitPremiumProse(normalized);
 }
 
 function ReadingBlock({ item, label, locale }: { item: EditorialTextBlock; label: string; locale: Locale }) {
@@ -72,12 +118,40 @@ function PatternBlock({ item, index, locale }: { item: EditorialPattern; index: 
 }
 
 function PremiumFeature({ item, label, locale }: { item: EditorialTextBlock; label: string; locale: Locale }) {
+  const paragraphs = detailParagraphs(item);
   return (
     <article className="ed-premium-feature">
       <small>{label}</small>
       <h3>{item.title}</h3>
       <p className="ed-reading-lead">{item.lead}</p>
-      <ReadingDetails item={item} label={locale === "ko" ? "심층 내용 읽기" : "Read the deeper analysis"} />
+      {paragraphs.length > 0 && (
+        <div className="ed-premium-body" aria-label={locale === "ko" ? `${item.title} 상세 내용` : `${item.title} details`}>
+          {paragraphs.map((paragraph, paragraphIndex) => {
+            const sourceLines = splitPremiumLines(paragraph);
+            const lines = sourceLines.length === 1 && paragraph.includes(" · ")
+              ? paragraph.split(/\s+·\s+/u).map((line) => line.trim()).filter(Boolean)
+              : sourceLines;
+            const structured = lines.length > 1 || lines.some((line) => /^(?:□|[①-⑩]|\d+[.)])\s*/u.test(line));
+            if (!structured) return <p key={`${paragraphIndex}-${paragraph}`}>{paragraph}</p>;
+
+            return (
+              <div className="ed-premium-detail-group" key={`${paragraphIndex}-${paragraph}`}>
+                {lines.map((line, lineIndex) => {
+                  const heading = line.match(/^\d+[.)]\s+((?:최선|가장 현실적인|위험) 시나리오|(?:Best|Most likely|Risk) scenario)$/iu);
+                  if (heading) return <h4 key={`${lineIndex}-${line}`}>{heading[1]}</h4>;
+                  const checkpoint = line.match(/^□\s*(.+)$/u);
+                  if (checkpoint) return <p className="ed-premium-check" key={`${lineIndex}-${line}`}><span aria-hidden="true">✓</span>{checkpoint[1]}</p>;
+                  const field = line.match(/^(?:([①-⑩]|\d+[.)])\s*)?([^:]{1,28}):\s*(.+)$/u);
+                  if (field) return <div className="ed-premium-field" key={`${lineIndex}-${line}`}><strong>{field[1] ? `${field[1]} ` : ""}{field[2]}</strong><div className="ed-premium-field-copy">{splitPremiumProse(field[3]).map((text) => <p key={text}>{text}</p>)}</div></div>;
+                  const numbered = line.match(/^(\d+)[.)]\s+(.+)$/u);
+                  if (numbered) return <p className="ed-premium-numbered" key={`${lineIndex}-${line}`}><span aria-hidden="true">{numbered[1]}</span>{numbered[2]}</p>;
+                  return <p key={`${lineIndex}-${line}`}>{line}</p>;
+                })}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </article>
   );
 }
@@ -107,8 +181,8 @@ export function DetailEditorialReport({
   const accessories = isPremium
     ? recommendAccessoryProductsByBirthDate(model.birthDate, model.years[0]?.year ?? new Date().getFullYear())
     : [];
-  const boundaryChapter = isPremium ? 23 : 19;
-  const closingChapter = isPremium ? 24 : 20;
+  const boundaryChapter = isPremium ? 24 : 19;
+  const closingChapter = isPremium ? 25 : 20;
   const date = new Intl.DateTimeFormat(ko ? "ko-KR" : "en-US", { dateStyle: "long" }).format(new Date(model.generatedDate));
   const genderTime = [model.genderLabel, model.birthTime ? `${ko ? "출생 시각" : "Birth time"} ${model.birthTime}` : (ko ? "출생 시각 미기재" : "Birth time not provided")].join(" · ");
   const deterministicBasis = ko
@@ -173,6 +247,7 @@ export function DetailEditorialReport({
         <a href="#ed-life">{ko ? "돈·일·관계" : "Life"}</a>
         <a href="#ed-flow">{ko ? "3년 흐름" : "3-year flow"}</a>
         {isPremium && <a href="#ed-premium">{ko ? "심층 판단" : "Deep reading"}</a>}
+        {isPremium && <a href="#ed-risk">{ko ? "중단 기준" : "Risk checks"}</a>}
         {isPremium && <a href="#ed-accessories">{ko ? "추천 소품" : "Accessories"}</a>}
         <a href="#ed-reality">Reality Check</a>
       </nav>
@@ -347,8 +422,18 @@ export function DetailEditorialReport({
             </div>
           </section>
 
-          <section className="ed-paper-section ed-accessory-section" id="ed-accessories" aria-labelledby="ed-accessories-title">
+          <section className="ed-paper-section ed-premium-risk" id="ed-risk" aria-labelledby="ed-risk-title">
             <ChapterNumber value={22} />
+            <p className="ed-kicker">CHECK BEFORE YOU COMMIT</p>
+            <h2 id="ed-risk-title">{ko ? "계속할 때와 멈출 때를 미리 정합니다" : "Set the conditions to continue or stop in advance"}</h2>
+            <div className="ed-dual-grid">
+              <PremiumFeature item={premium.riskChecklist} label={ko ? "결정 전 확인" : "BEFORE DECIDING"} locale={locale} />
+              <PremiumFeature item={premium.stopConditions} label={ko ? "보류·중단·전환" : "HOLD, STOP, OR PIVOT"} locale={locale} />
+            </div>
+          </section>
+
+          <section className="ed-paper-section ed-accessory-section" id="ed-accessories" aria-labelledby="ed-accessories-title">
+            <ChapterNumber value={23} />
             <p className="ed-kicker">PERSONAL EDIT</p>
             <h2 id="ed-accessories-title">{ko ? "당신의 숫자에서 고른 생활 소품" : "Everyday accessories selected from your numbers"}</h2>
             <p className="ed-accessory-intro">{ko ? "운을 바꾸는 물건이 아닙니다. 계산된 세 가지 숫자를 색과 형태로 옮긴, 취향을 위한 제작 제안입니다." : "These objects do not change luck. They translate three calculated numbers into color and form as personal design suggestions."}</p>
