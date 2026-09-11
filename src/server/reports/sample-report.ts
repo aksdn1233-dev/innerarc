@@ -22,7 +22,7 @@ function sampleInput(kind: SampleReportKind, locale: Locale): PaidReadingInput {
     name: "",
     focusId: "growth",
     concern: "",
-    gender: "female",
+    gender: "male",
     midnightConvention: "야자시",
     createdAt: "2026-08-21T00:00:00.000Z",
   };

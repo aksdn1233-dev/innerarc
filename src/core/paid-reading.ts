@@ -88,6 +88,16 @@ export type PaidReport = Readonly<{
     birthYear: number;
     personalYear: number;
   }>;
+  /**
+   * Display facts copied from the bounded purchase input. Optional so historical
+   * reports remain readable. The report UI never tries to reconstruct a missing
+   * birth time or gender.
+   */
+  profileFacts?: Readonly<{
+    birthDate: string;
+    birthTime?: string;
+    gender?: "female" | "male" | "unstated";
+  }>;
   /** Internal provenance for audits. Renderers must not expose these identifiers. */
   contentReferences?: readonly string[];
   /** Machine-readable tier inheritance evidence used by regression audits. */

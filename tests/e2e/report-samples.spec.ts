@@ -1,7 +1,8 @@
 import { expect, test } from "@playwright/test";
+import axe from "axe-core";
 
 const samples = [
-  ["detail", "상세 리딩"],
+  ["detail", "개인 패턴"],
   ["premium", "프리미엄"],
   ["saju", "사주 원국"],
 ] as const;
@@ -18,7 +19,10 @@ test("every public report sample stays readable on desktop and mobile", async ({
       await expect(page.locator(".sample-report-notice")).toContainText("결제·주문·저장은 발생하지 않습니다");
       await expect(page.locator(".sample-report-tabs a")).toHaveCount(3);
       await expect(page.locator(`[href="/ko/samples/${kind}"]`)).toHaveAttribute("aria-current", "page");
-      expect(await page.locator("[data-webtoon-panel]").count()).toBeGreaterThan(5);
+      const readingPanels = kind === "detail"
+        ? await page.locator(".ed-paper-section, .ed-ink-section, .ed-reality-section, .ed-closing").count()
+        : await page.locator("[data-webtoon-panel]").count();
+      expect(readingPanels).toBeGreaterThan(5);
       await expect(page.getByRole("link", { name: "홈으로" })).toBeVisible();
 
       const quality = await page.evaluate(() => ({
@@ -31,4 +35,25 @@ test("every public report sample stays readable on desktop and mobile", async ({
     }
   }
   expect(pageErrors).toEqual([]);
+});
+
+test("39,000원 editorial sample keeps its reading and accessibility contract", async ({ page }) => {
+  await page.goto("/ko/samples/detail");
+  await expect(page.locator(".ed-cover-facts dd")).toContainText(["1994-11-04", "남성"]);
+  await expect(page.locator(".ed-strength-list > li")).toHaveCount(5);
+  await expect(page.locator(".ed-shadow-list > article")).toHaveCount(5);
+  await expect(page.locator(".ed-year-grid > article")).toHaveCount(3);
+  await expect(page.locator(".ed-reality-section > ol > li")).toHaveCount(6);
+  await expect(page.locator(".ed-action-list > li")).toHaveCount(3);
+  await expect(page.locator(".ed-paper-section, .ed-ink-section, .ed-reality-section, .ed-closing")).toHaveCount(20);
+  await expect(page.locator(".ed-closing h2")).not.toBeEmpty();
+
+  await page.addScriptTag({ content: axe.source });
+  const violations = await page.locator(".editorial-report").evaluate(async (context) => {
+    const result = await (window as unknown as { axe: { run: (root: Element, options: object) => Promise<{ violations: { id: string; impact: string | null }[] }> } }).axe.run(context, {
+      runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa"] },
+    });
+    return result.violations.filter((item) => item.impact === "serious" || item.impact === "critical");
+  });
+  expect(violations).toEqual([]);
 });

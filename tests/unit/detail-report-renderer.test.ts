@@ -7,6 +7,20 @@ const download = await readFile("src/app/api/reports/[orderId]/download/route.ts
 const intake = await readFile("src/components/home-experience.tsx", "utf8");
 
 describe("DETAIL_39000 renderer", () => {
+  it("routes only the 39,000원 report through the shared editorial renderer", async () => {
+    const editorial = await readFile("src/components/detail-editorial-report.tsx", "utf8");
+    const model = await readFile("src/core/detail-editorial.ts", "utf8");
+    const scopedCss = css.slice(css.indexOf("39,000원 상세 리포트"), css.indexOf("@media print", css.indexOf("39,000원 상세 리포트")));
+
+    expect(page).toContain("if (detailV2)");
+    expect(page).toContain("<DetailEditorialReport");
+    expect(editorial).toContain('value={20}');
+    expect(editorial).toContain("ReportRealityCheck");
+    expect(editorial).toContain("EvidenceEventCapture");
+    expect(model).toContain('report.productCode !== "pro_30d"');
+    expect(scopedCss).not.toMatch(/(?:linear|radial)-gradient/u);
+  });
+
   it("puts the paid tier, question, answer, and character before calculation disclosure", () => {
     const tier = page.indexOf("report.tierLabel");
     const question = page.indexOf("{report.concern && <blockquote>{report.concern}</blockquote>}");
