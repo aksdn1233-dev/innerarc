@@ -15,6 +15,18 @@ test("the 941104 Saju sample reads as long-form character webtoon dialogue", asy
   const storyPanels = page.locator("[data-webtoon-panel][data-character]");
   await expect(storyPanels).toHaveCount(19);
   await expect(storyPanels.first().locator(".webtoon-story-character")).toBeVisible();
+  const characterImages = storyPanels.locator(".webtoon-story-character");
+  await expect(characterImages).toHaveCount(19);
+  await expect(characterImages.first()).toHaveAttribute("srcset", /-hd-v2-2x\.webp 2x, .*-hd-v2-3x\.webp 3x/);
+  const densityCoverage = await characterImages.evaluateAll((images) =>
+    images.filter((image) => image.getAttribute("srcset")?.includes("-hd-v2-3x.webp 3x")).length);
+  expect(densityCoverage).toBe(19);
+  const selectedDensity = await characterImages.first().evaluate((image: HTMLImageElement) => ({
+    currentSrc: image.currentSrc,
+    devicePixelRatio,
+  }));
+  if (selectedDensity.devicePixelRatio > 1) expect(selectedDensity.currentSrc).toContain("-hd-v2-");
+  else expect(selectedDensity.currentSrc).toMatch(/\.png$/);
   const coreBubble = page.getByRole("heading", { name: "원국이 먼저 보여주는 당신의 중심" }).locator("..");
   await expect(coreBubble).toContainText("큰 나무처럼");
   const keySentences = page.locator(".report-key-sentence");
