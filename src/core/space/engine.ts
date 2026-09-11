@@ -25,7 +25,7 @@ export function geometryIssues(candidate: unknown): string[] {
   for (let i = 0; i < scene.objects.length; i++) {
     const obj = scene.objects[i], box = footprint(obj);
     if (obj.kind === "rug" ? obj.height > .03 : obj.height < .1) issues.push(`INVALID_OBJECT_HEIGHT:${obj.id}`);
-    if (box.left < -EPS || box.top < -EPS || box.right > scene.room.width + EPS || box.bottom > scene.room.depth + EPS || obj.height > scene.room.height) issues.push(`OUT_OF_BOUNDS:${obj.id}`);
+    if (box.left < -EPS || box.top < -EPS || box.right > scene.room.width + EPS || box.bottom > scene.room.depth + EPS || (obj.elevation ?? 0) + obj.height > scene.room.height + EPS) issues.push(`OUT_OF_BOUNDS:${obj.id}`);
     for (let j = i + 1; j < scene.objects.length; j++) if (solidPair(obj, scene.objects[j]) && overlaps(box, footprint(scene.objects[j]))) issues.push(`COLLISION:${obj.id}:${scene.objects[j].id}`);
   }
   return issues;
@@ -55,6 +55,16 @@ export function applyAction(scene: Scene, candidate: unknown): Scene {
 export function headGap(scene: Scene, object: SpatialObject): number {
   const b = footprint(object);
   return object.rotation === 0 ? b.top : object.rotation === 90 ? scene.room.width - b.right : object.rotation === 180 ? scene.room.depth - b.bottom : b.left;
+}
+
+function facesPoint(source: SpatialObject, x: number, z: number, maximumDistance = 4): boolean {
+  const dx = x - source.x, dz = z - source.z, distance = Math.hypot(dx, dz);
+  if (distance < .1 || distance > maximumDistance) return false;
+  const [fx, fz] = source.rotation === 0 ? [0, 1] : source.rotation === 90 ? [-1, 0] : source.rotation === 180 ? [0, -1] : [1, 0];
+  return (dx * fx + dz * fz) / distance >= .82;
+}
+function facesObject(source: SpatialObject, target: SpatialObject, maximumDistance = 4): boolean {
+  return facesPoint(source, target.x, target.z, maximumDistance);
 }
 export const MAX_PLACEMENT_GRID = 24;
 
@@ -135,6 +145,40 @@ export function analyzeSpace(candidate: unknown, goal: Goal, locale: "ko" | "en"
       if (move) add("bed_wall_support_v1", "traditional", ko ? "전통 풍수에서는 침대 주변 벽의 지지를 중시합니다. 벽 가까운 배치를 비교해 보세요. 운이나 수면 개선을 보장하지 않습니다." : "Traditional feng shui values wall support around the bed. Compare this near-wall arrangement; it does not guarantee luck or better sleep.", move, 0.5);
     }
   }
+  const mirror = current.objects.find(object => object.kind === "mirror");
+  const originalBed = current.objects.find(object => object.kind === "bed");
+  if (mirror && originalBed && facesObject(mirror, originalBed)) add("mirror_bed_reflection_v1", "traditional", ko ? "거울이 침대를 정면으로 비추는 배치입니다. 전통 풍수에서는 이 구도를 피하기도 합니다. 실제로 거울 반사와 빛이 거슬리는지 먼저 확인하고, 필요하면 거울 방향만 바꿔 비교해 보세요. 수면 효과를 보장하지 않습니다." : "The mirror faces the bed. Traditional feng shui sometimes avoids this arrangement. First check whether reflections or light bother you, then compare a turned mirror if needed. This does not guarantee a sleep effect.", observe, .5);
+  else if (mirror) {
+    const facingDoor = current.doors.some(door => {
+      const horizontal = door.wall === "top" || door.wall === "bottom";
+      const x = horizontal ? door.offset + door.width / 2 : door.wall === "left" ? 0 : current.room.width;
+      const z = horizontal ? door.wall === "top" ? 0 : current.room.depth : door.offset + door.width / 2;
+      return facesPoint(mirror, x, z);
+    });
+    if (facingDoor) add("mirror_door_reflection_v1", "traditional", ko ? "거울이 출입문 쪽을 향합니다. 전통 풍수에서 확인하는 구도지만 길흉이나 효과를 뜻하지 않습니다. 문을 열었을 때 눈부심·놀람·동선 불편이 있는지만 직접 확인하세요." : "The mirror faces an entrance. This is a traditional feng shui checkpoint, not evidence of luck or an effect. Check only for glare, surprise or access problems when the door opens.", observe, .5);
+  }
+  const stove = current.objects.find(object => object.kind === "stove");
+  const sink = current.objects.find(object => object.kind === "sink");
+  if (stove && sink && Math.hypot(stove.x - sink.x, stove.z - sink.z) < .9) add("stove_sink_separation_v1", "traditional", ko ? "화구와 싱크대가 가까이 있습니다. 전통 풍수에서는 불과 물의 간격을 살펴봅니다. 배관·전기·환기와 실제 주방 안전 기준을 먼저 확인하고, 사이 작업 공간이 불편한지만 비교하세요." : "The stove and sink are close. Traditional feng shui considers spacing between fire and water. Check plumbing, electrical, ventilation and kitchen-safety requirements first, then compare whether the work gap is inconvenient.", observe, .5);
+  const aquarium = current.objects.find(object => object.kind === "aquarium");
+  if (aquarium) add("aquarium_support_check_v1", "practical", ko ? `${aquarium.id}: 어항은 물의 상징으로 해석되기도 하지만 재물운 효과를 보장하지 않습니다. 바닥 하중·전기선·누수 위험과 관리 동선을 먼저 확인하세요.` : `${aquarium.id}: An aquarium may be interpreted as a water symbol, but it does not guarantee financial luck. Check floor load, power cables, spill risk and maintenance access first.`, observe, 1);
+  const clock = current.objects.find(object => object.kind === "clock");
+  if (clock && goal === "rest") add("clock_rest_check_v1", "practical", ko ? `${clock.id}: 잠들기 전 시계의 빛과 초침 소리가 실제로 거슬리는지 확인해 보세요. 가리거나 위치를 바꾼 날과 평소를 기록해 비교할 수 있습니다.` : `${clock.id}: Check whether the clock light or ticking actually bothers you at bedtime. Compare a day with it covered or moved against your usual routine.`, observe, 1);
+  const curtain = current.objects.find(object => object.kind === "curtain");
+  if (curtain && goal === "rest") add("curtain_light_check_v1", "practical", ko ? `${curtain.id}: 커튼을 닫았을 때와 열었을 때 아침 빛·사생활·환기가 어떻게 달라지는지 확인하세요. 빛 차단이 필요한지는 생활 기록으로 비교합니다.` : `${curtain.id}: Compare morning light, privacy and ventilation with the curtain open and closed. Use your own routine record to decide whether light blocking helps.`, observe, 1);
+  const wasteBin = current.objects.find(object => object.kind === "waste_bin");
+  if (wasteBin) add("waste_bin_route_v1", "practical", ko ? `${wasteBin.id}: 쓰레기통이 문·침대·책상 사용을 방해하지 않는지 확인하고, 쉽게 비울 수 있는 위치인지 살펴보세요. 청결과 동선에 대한 생활 점검입니다.` : `${wasteBin.id}: Check that the bin does not interfere with the door, bed or desk and remains easy to empty. This is a practical cleanliness and access check.`, observe, 1);
+  const shoeRack = current.objects.find(object => object.kind === "shoe_rack");
+  if (shoeRack) add("shoe_rack_entrance_v1", "practical", ko ? `${shoeRack.id}: 신발장이 문을 여는 공간과 첫 통로를 좁히지 않는지 확인하세요. 신발을 넣고 꺼낼 때 막히지 않는 위치가 우선입니다.` : `${shoeRack.id}: Check that the shoe rack does not narrow the door swing or first walking route. Easy access when putting shoes away comes first.`, observe, 1);
+  const artwork = current.objects.find(object => object.kind === "artwork");
+  if (artwork && goal === "rest") add("artwork_rest_reflection_v1", "practical", ko ? `${artwork.id}: 침대에서 그림을 봤을 때 편안한지, 시선이 자꾸 머무는지 직접 확인하세요. 그림의 길흉을 정하는 대신 실제 느낌을 기록합니다.` : `${artwork.id}: From the bed, notice whether the artwork feels calm or repeatedly draws your attention. Record your actual response instead of assigning luck to the image.`, observe, 1);
+  const divider = current.objects.find(object => object.kind === "room_divider");
+  if (divider && originalBed && current.objects.some(object => object.kind === "desk")) add("rest_work_zone_v1", "practical", ko ? `${divider.id}: 가림막이 휴식 공간과 작업 공간을 구분하면서 통로와 채광을 막지 않는지 확인하세요.` : `${divider.id}: Check whether the divider separates rest and work areas without blocking the walking route or daylight.`, observe, 1);
+  const beam = current.objects.find(object => object.kind === "ceiling_beam");
+  const underBeam = beam && current.objects.find(object => ["bed", "desk", "dining_table"].includes(object.kind) && overlaps(footprint(beam), footprint(object)));
+  if (beam && underBeam) add("ceiling_beam_position_v1", "traditional", ko ? `${underBeam.id}: 침대나 책상 위의 천장 보는 전통 풍수에서 확인하는 요소입니다. 불안감이나 답답함을 느끼는지 직접 살펴보고, 구조 안전은 전문가에게 확인하세요. 운이나 건강 영향을 확정하지 않습니다.` : `${underBeam.id}: A ceiling beam above a bed or table is a traditional feng shui checkpoint. Notice whether it feels uncomfortable and use a qualified professional for structural concerns. It does not establish luck or health effects.`, observe, .5);
+  const column = current.objects.find(object => object.kind === "column");
+  if (column && current.objects.some(object => ["bed", "desk", "dining_table"].includes(object.kind) && Math.hypot(column.x - object.x, column.z - object.z) < 1.2)) add("column_clearance_v1", "practical", ko ? `${column.id}: 자주 앉거나 눕는 자리 가까이에 기둥이 있습니다. 모서리에 부딪히지 않는지와 의자·침대 사용 공간을 직접 확인하세요.` : `${column.id}: A column is close to a place used for sitting or sleeping. Check bump risk and usable chair or bed clearance in the actual room.`, observe, 1);
   for (const id of blockedDoors(result.recommended)) {
     const warning = ko ? `${id}: 문 앞 공간을 직접 확인하고 비워 주세요.` : `${id}: Check and clear the doorway in the actual room.`;
     if (result.warnings.length < 20) result.warnings.push(warning);

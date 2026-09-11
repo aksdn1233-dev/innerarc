@@ -235,3 +235,12 @@ Rollback reference: production base `ee4ae5038e34e0715456b837cbe7c7f2db5591c4`; 
   and health checks. Roll back to Worker `9ac9d69f-e6c3-48fb-883c-979b7d0c3abd` and Sites 102.
 - [ ] GitHub Actions run 34644017812 created no executable steps because the account payment/spending
   limit remains active; restore it before treating hosted CI as release evidence.
+
+## Feng Shui significant room details — 2026-09-12
+
+- [x] Twelve new room details are present in schema, labels, strict extraction, manual correction, 3D rendering and manifest provenance.
+- [x] Elevation, bounds, collision, door clearance, route/window access and each bounded recommendation have regression coverage.
+- [x] Existing upload privacy, retention/deletion, authentication, payment, reports, prices, Reality Check and calculation engines are unchanged.
+- [x] No new model identifier, provider request, retry, token cap, runtime AI cost or database migration was introduced.
+- [x] Typecheck, lint with zero errors, 134-route production build, focused 217 tests and the 120-case Space browser/visual matrix pass (90 run, 30 intentional skips).
+- [x] Full unit suite passed 1,160 of 1,160 cases. Fill the final PR/merge, Cloudflare version, Sites version and post-deploy checks after release.

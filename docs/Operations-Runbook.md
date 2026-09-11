@@ -423,3 +423,11 @@ Production source is PR #59 merge `7590397334e332465477761667f8e4efbf4a8074`.
 Cloudflare Worker version `048554ea-a59a-4e77-9427-802cff69a59d` serves `mygyeol.kr`,
 and public Sites version 103 serves `https://innerarc-gyeol.qkrehgus5886.chatgpt.site`.
 The immediate rollback targets are Worker `9ac9d69f-e6c3-48fb-883c-979b7d0c3abd` and Sites 102.
+
+### Significant Feng Shui object release — 2026-09-12
+
+New photo labels are accepted only through the strict closed catalogue. A provider must return `elevation: null` when height above floor is not supported by the supplied views; the server removes null before storing the scene. Never infer a hidden mirror, beam, appliance or compass direction. If invalid-object or geometry failures rise, keep manual correction available and disable `SPACE_AI_ENABLED` before changing validation limits.
+
+All new recommendations are deterministic and capped with the existing five-result limit. A mirror or beam rule is an interpretation prompt, while electrical, structural, load, plumbing, ventilation, glare and access checks are practical observations. Do not convert either into an outcome promise. Manual additions and rule evaluation consume no model tokens, and extraction retains the existing request, retry and cost caps.
+
+Rollback source before this release is `29a06e2c621be41cc7481a75a298b2e4b199e784`; no migration is involved. Revert catalogue, provider schema/prompt, asset manifest, renderer and rules as one unit so historical object kinds are not left without rendering or validation support.

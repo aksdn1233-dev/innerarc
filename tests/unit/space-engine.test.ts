@@ -2,6 +2,7 @@ import { spatialAccessIssues } from "@/core/space/navigation";
 import { describe, expect, it } from "vitest";
 import { addObjectAtOpenPosition, analyzeSpace, applyAction, blockedDoors, footprint, geometryIssues, headGap, MAX_PLACEMENT_GRID } from "@/core/space/engine";
 import { manualScene, SceneSchema, type Scene } from "@/core/space/schema";
+import { FENG_SHUI_DETAIL_KINDS, FURNITURE_CATALOG } from "@/core/space/catalog";
 function room(): Scene { const scene = manualScene(); scene.confirmed = true; scene.orientation.confirmed = true; return scene; }
 describe("space deterministic geometry and interpretation", () => {
   it("replays a normal room without mutating source", () => { const scene = room(), snapshot = JSON.stringify(scene); expect(analyzeSpace(scene, "balance", "ko")).toEqual(analyzeSpace(scene, "balance", "ko")); expect(JSON.stringify(scene)).toBe(snapshot); });
@@ -66,6 +67,51 @@ describe("space deterministic geometry and interpretation", () => {
     expect(result.recommendations.find(item => item.ruleId === "orientation_context_v1")?.rationale).toContain("북쪽은 오른쪽");
     expect(result.recommendations.find(item => item.ruleId === "orientation_context_v1")?.rationale).not.toMatch(/\d+°/u);
     expect(result.recommendations.find(item => item.ruleId === "electronics_rest_check_v1")?.rationale).toContain("화면·표시등·작동 소리");
+  });
+  it.each(FENG_SHUI_DETAIL_KINDS)("safely adds the Feng Shui detail %s", kind => {
+    const s = room(), item = FURNITURE_CATALOG[kind];
+    const next = addObjectAtOpenPosition(s, { id: `${kind}_1`, kind, x: 0, z: 0, width: item.width, depth: item.depth, height: item.height, ...(item.elevation === undefined ? {} : { elevation: item.elevation }), rotation: 0, confidence: 1, movable: true });
+    expect(next.objects.at(-1)?.kind).toBe(kind);
+    expect(geometryIssues(next)).toEqual([]);
+  });
+  it("checks mirrors, nearby stove and sink, and overhead beams without inventing outcomes", () => {
+    const s = room();
+    s.objects.push(
+      { id: "mirror_1", kind: "mirror", x: 1, z: .6, width: .75, depth: .18, height: 1.7, rotation: 0, confidence: 1, movable: true },
+      { id: "stove_1", kind: "stove", x: 2.2, z: 1, width: .7, depth: .65, height: .9, rotation: 0, confidence: 1, movable: true },
+      { id: "sink_1", kind: "sink", x: 3, z: 1, width: .8, depth: .65, height: .9, rotation: 0, confidence: 1, movable: true },
+      { id: "beam_1", kind: "ceiling_beam", x: 1, z: 2, width: 1.8, depth: .3, height: .25, elevation: 2.25, rotation: 0, confidence: 1, movable: false },
+    );
+    expect(geometryIssues(s)).toEqual([]);
+    const result = analyzeSpace(s, "rest", "ko");
+    expect(result.recommendations.map(item => item.ruleId)).toEqual(expect.arrayContaining(["mirror_bed_reflection_v1", "stove_sink_separation_v1", "ceiling_beam_position_v1"]));
+    expect(result.recommendations).toHaveLength(5);
+    expect(result.recommendations.map(item => item.rationale).join(" ")).toContain("보장하지 않습니다");
+  });
+  it("rejects a ceiling detail above the room height", () => {
+    const s = room();
+    s.objects.push({ id: "beam_1", kind: "ceiling_beam", x: 2, z: 2, width: 2, depth: .3, height: .3, elevation: 2.3, rotation: 0, confidence: 1, movable: false });
+    expect(geometryIssues(s)).toContain("OUT_OF_BOUNDS:beam_1");
+  });
+  it.each([
+    ["aquarium", "aquarium_support_check_v1"],
+    ["clock", "clock_rest_check_v1"],
+    ["curtain", "curtain_light_check_v1"],
+    ["waste_bin", "waste_bin_route_v1"],
+    ["shoe_rack", "shoe_rack_entrance_v1"],
+    ["artwork", "artwork_rest_reflection_v1"],
+    ["room_divider", "rest_work_zone_v1"],
+  ] as const)("applies the bounded %s check", (kind, ruleId) => {
+    const s = room(), item = FURNITURE_CATALOG[kind];
+    const next = addObjectAtOpenPosition(s, { id: `${kind}_1`, kind, x: 0, z: 0, width: item.width, depth: item.depth, height: item.height, rotation: 0, confidence: 1, movable: true });
+    next.confirmed = true;
+    expect(analyzeSpace(next, "rest", "en").recommendations.some(item => item.ruleId === ruleId)).toBe(true);
+  });
+  it("checks a nearby structural column while preserving clear geometry", () => {
+    const s = room();
+    s.objects.push({ id: "column_1", kind: "column", x: 1.9, z: 2, width: .35, depth: .35, height: 2.5, rotation: 0, confidence: 1, movable: false });
+    expect(geometryIssues(s)).toEqual([]);
+    expect(analyzeSpace(s, "balance", "en").recommendations.some(item => item.ruleId === "column_clearance_v1")).toBe(true);
   });
   it("uses exact quarter-turn footprints", () => { const obj = room().objects[1]; expect(footprint({ ...obj, rotation: 90 }).right - footprint({ ...obj, rotation: 90 }).left).toBeCloseTo(obj.depth); });
 });

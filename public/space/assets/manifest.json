@@ -503,8 +503,8 @@
       ]
     },
     {
-      "asset_id": "taeryeongdang-curtain-v1",
-      "category": "curtain",
+      "asset_id": "taeryeongdang-window-treatment-v1",
+      "category": "window_treatment",
       "visual_style": "Full-height neutral linen panels with gathered folds and restrained bronze rail",
       "source": "Original project procedural geometry",
       "license": "Project-owned",
@@ -549,6 +549,223 @@
       "texture_resolution": "512×512",
       "lod_availability": false,
       "compression_status": "Generated once; mipmaps and anisotropic filtering; base color + linear roughness + subtle plaster micro-bump"
+    },
+    {
+      "asset_id": "taeryeongdang-mirror-v1",
+      "category": "mirror",
+      "visual_style": "Warm timber-framed standing mirror with a restrained reflective plane",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 0.75,
+        "depth": 0.18,
+        "height": 1.7
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 1500,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/supplementary-assets.ts"
+    },
+    {
+      "asset_id": "taeryeongdang-artwork-v1",
+      "category": "artwork",
+      "visual_style": "Floor-supported warm timber frame with abstract sage and sand artwork",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 0.9,
+        "depth": 0.12,
+        "height": 1.2
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 1628,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/supplementary-assets.ts"
+    },
+    {
+      "asset_id": "taeryeongdang-clock-v1",
+      "category": "clock",
+      "visual_style": "Warm timber standing clock with a clear neutral face and brass rim",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 0.45,
+        "depth": 0.18,
+        "height": 1.65
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 2348,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/supplementary-assets.ts"
+    },
+    {
+      "asset_id": "taeryeongdang-curtain-v1",
+      "category": "curtain",
+      "visual_style": "Full-height neutral fabric panels with gathered folds and slim bronze rail",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 1.4,
+        "depth": 0.18,
+        "height": 2.2
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 3128,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/supplementary-assets.ts"
+    },
+    {
+      "asset_id": "taeryeongdang-waste-bin-v1",
+      "category": "waste_bin",
+      "visual_style": "Compact lidded sage waste bin with a restrained brass handle",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 0.35,
+        "depth": 0.35,
+        "height": 0.48
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 556,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/supplementary-assets.ts"
+    },
+    {
+      "asset_id": "taeryeongdang-shoe-rack-v1",
+      "category": "shoe_rack",
+      "visual_style": "Open warm-timber shoe rack with four accessible shelves",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 1,
+        "depth": 0.35,
+        "height": 1
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 3300,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/supplementary-assets.ts"
+    },
+    {
+      "asset_id": "taeryeongdang-aquarium-v1",
+      "category": "aquarium",
+      "visual_style": "Supported glass aquarium with a dark lid, sand bed and simple plants",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 1.2,
+        "depth": 0.48,
+        "height": 1.2
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 2012,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/supplementary-assets.ts"
+    },
+    {
+      "asset_id": "taeryeongdang-stove-v1",
+      "category": "stove",
+      "visual_style": "Compact neutral kitchen range with dark cooktop and four visible burners",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 0.7,
+        "depth": 0.65,
+        "height": 0.9
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 1624,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/supplementary-assets.ts"
+    },
+    {
+      "asset_id": "taeryeongdang-sink-v1",
+      "category": "sink",
+      "visual_style": "Warm cabinet sink with a visible basin and curved bronze faucet",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 0.8,
+        "depth": 0.65,
+        "height": 0.9
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 1520,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/supplementary-assets.ts"
+    },
+    {
+      "asset_id": "taeryeongdang-room-divider-v1",
+      "category": "room_divider",
+      "visual_style": "Lightweight three-panel linen and timber room divider",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 1.5,
+        "depth": 0.2,
+        "height": 1.8
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 2400,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/supplementary-assets.ts"
+    },
+    {
+      "asset_id": "taeryeongdang-column-v1",
+      "category": "column",
+      "visual_style": "Plain structural column with restrained timber base and cap",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 0.35,
+        "depth": 0.35,
+        "height": 2.5
+      },
+      "dimension_policy": "Default class dimensions; validated user dimensions are authoritative",
+      "polygon_count": 900,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/supplementary-assets.ts"
+    },
+    {
+      "asset_id": "taeryeongdang-ceiling-beam-v1",
+      "category": "ceiling_beam",
+      "visual_style": "Simple dark timber ceiling beam represented at verified elevation",
+      "source": "Original project procedural geometry",
+      "license": "Project-owned",
+      "dimensions_m": {
+        "width": 2,
+        "depth": 0.3,
+        "height": 0.25,
+        "elevation": 2.25
+      },
+      "dimension_policy": "Default overhead elevation is user-correctable and must remain within the confirmed room height",
+      "polygon_count": 300,
+      "texture_resolution": "1024 maximum PBR; original color details 512",
+      "lod_availability": false,
+      "compression_status": "Material batches; demand-generated geometry; no network model",
+      "geometry_source": "src/components/space/supplementary-assets.ts"
     }
   ]
 }

@@ -477,3 +477,13 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] 데스크톱·아이폰·안드로이드 3D 기능·시각 회귀 120건에서 90건 통과, 비대상 30건 건너뜀, 실패 0건
 - [x] PR #59 병합 커밋 `7590397`을 Cloudflare Worker `048554ea-a59a-4e77-9427-802cff69a59d`와 Sites 버전 103으로 배포하고 두 운영 주소의 핵심 다국어 경로와 상태 응답을 확인
 - [ ] GitHub Actions 런 34644017812는 기존 계정 결제/지출 한도가 복구된 뒤 원격 재실행 필요
+
+## Feng Shui significant room details — 2026-09-12
+
+- [x] Mirror, framed art, clock, curtain/blind, waste bin, shoe rack, aquarium, stove/range, sink, room divider, column and ceiling beam are closed schema kinds with bounded dimensions and reviewed procedural 3D assets.
+- [x] Photo output remains strict and required-field-only: elevation is nullable at the provider boundary, normalized locally, and rejected when object height exceeds room height.
+- [x] Manual additions search validated open space; collision, room bounds, door swing, walking route and window access remain authoritative.
+- [x] Deterministic rules separate traditional interpretation from practical living checks and make no guaranteed luck, health, wealth or sleep claim.
+- [x] The full guide now tells users to verify mirrors, artwork, curtains, clocks, plants, lighting, aquariums, stove/sink and electronics before analysis.
+- [x] Dedicated Space visual matrix passed 90 of 120 cases with 30 intentional project skips and zero failures; desktop and 1440 review added four new detail objects with zero console/page errors.
+- [x] Full unit suite: 1,160 passed with zero failures. Record the final PR, merge and two production deployment identifiers below after release.

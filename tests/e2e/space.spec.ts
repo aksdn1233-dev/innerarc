@@ -35,7 +35,7 @@ test("space demo confirms, analyzes, compares, applies and invalidates edits", a
   await expect(tutorial.getByRole("heading", { name: "북쪽이 있는 쪽만 누르면 돼요." })).toBeVisible();
   await tutorial.getByRole("group", { name: "방에서 북쪽이 있는 방향" }).getByRole("button", { name: "오른쪽", exact: true }).click();
   await tutorial.getByRole("button", { name: "다음 →" }).click();
-  await expect(tutorial.getByText("✓ TV", { exact: true })).toBeVisible();
+  await expect(tutorial.getByText("✓ 거울·액자", { exact: true })).toBeVisible();
   await tutorial.getByRole("button", { name: "다음 →" }).click();
   await tutorial.getByRole("button", { name: "내 방으로 시작하기 →" }).click();
   await expect(tutorial).toHaveCount(0);
@@ -45,8 +45,11 @@ test("space demo confirms, analyzes, compares, applies and invalidates edits", a
   await expect(page.locator("[data-direction=east]")).toContainText("동 E");
   await expect(page.locator("[data-direction=south]")).toContainText("남 S");
   await expect(page.locator("[data-direction=west]")).toContainText("서 W");
-  await page.getByLabel("전자기기 추가", { exact: true }).selectOption("monitor");
+  await page.getByLabel("빠진 물건 추가", { exact: true }).selectOption("mirror");
   await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "9");
+  await expect(page.getByText(/거울을 빈자리에 추가했습니다/)).toBeVisible();
+  await page.getByLabel("빠진 물건 추가", { exact: true }).selectOption("monitor");
+  await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "10");
   await expect(page.getByText(/모니터를 빈자리에 추가했습니다/)).toBeVisible();
   const analyze = page.getByRole("button", { name: "추천 배치 보기", exact: true });
   await expect(analyze).toBeDisabled();

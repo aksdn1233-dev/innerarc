@@ -10,6 +10,7 @@ export const SpatialObjectSchema = z.object({
   id: ID, kind: z.enum(OBJECT_KINDS),
   x: z.number().finite().min(0).max(20), z: z.number().finite().min(0).max(20),
   width: metre, depth: metre, height: z.number().min(0.005).max(4),
+  elevation: z.number().finite().min(0).max(4).optional(),
   rotation: z.union([z.literal(0), z.literal(90), z.literal(180), z.literal(270)]),
   dimensionSource: z.enum(["estimated", "confirmed", "user_corrected"]).optional(),
   movable: z.boolean(), confidence: z.number().min(0).max(1),
@@ -43,7 +44,7 @@ export const SceneSchema = z.object({
 // No actions or arbitrary text enter this provider contract. Geometry is checked separately.
 export const ObservationSchema = z.object({
   room: RoomSchema.nullable(), doors: z.array(OpeningSchema.omit({ height: true, sill: true })).max(4), windows: z.array(OpeningSchema.omit({ height: true, sill: true })).max(8),
-  objects: z.array(SpatialObjectSchema.omit({ dimensionSource: true })).max(20), confidence: z.number().min(0).max(1),
+  objects: z.array(SpatialObjectSchema.omit({ dimensionSource: true, elevation: true }).extend({ elevation: z.number().finite().min(0).max(4).nullable() }).strict()).max(20), confidence: z.number().min(0).max(1),
   imageEvidence: z.array(ImageEvidenceSchema).min(2).max(6),
   crossView: CrossViewEvidenceSchema,
   missing: z.array(z.enum(["dimensions", "door", "window", "objects", "multiple_rooms", "irregular_room", "cross_view", "low_light", "blur", "occlusion", "perspective", "scale_reference"])).max(8),

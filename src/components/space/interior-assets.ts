@@ -196,7 +196,7 @@ export function furnitureAsset(object: SpatialObject, m: InteriorMaterials) {
   }
   if (!["bed", "desk", "storage", "plant"].includes(object.kind)) supplementaryFurniture(g, object, m);
   optimize(g, object, m); g.name = object.id; g.userData.objectId = object.id;
-  g.scale.set(object.width, object.height, object.depth); g.position.set(object.x, 0, object.z); g.rotation.y = -object.rotation * Math.PI / 180;
+  g.scale.set(object.width, object.height, object.depth); g.position.set(object.x, object.elevation ?? 0, object.z); g.rotation.y = -object.rotation * Math.PI / 180;
   return g;
 }
 function mergeWallParts(group: T.Group) {
