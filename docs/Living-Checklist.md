@@ -191,6 +191,7 @@ Last updated: 2026-09-10
 - [x] Desktop/mobile browser, accessibility, performance, security-header, secret-scan, dependency-audit, and recovery regression coverage.
 - [x] CI configured for Chromium and mobile WebKit.
 - [x] Public Cloudflare/Sites deployment includes dynamic server routes, PayApp callbacks, health check, administrator login/console, manifest, robots, sitemap, and production icon.
+- [x] Sites release packaging refreshes `dist` with `pnpm build:sites` after the generic Next build and verifies the current CSS fingerprint before saving a version; a successful deployment status alone is not release evidence.
 - [x] Published AI crawler tokens are denied in both `robots.txt` and the Worker before app/static
   handling; ordinary Google/Naver search and social previews remain reachable, and user-agent spoofing
   is documented as a residual risk rather than presented as a guarantee.
