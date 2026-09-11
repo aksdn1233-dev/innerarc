@@ -229,4 +229,9 @@ Rollback reference: production base `ee4ae5038e34e0715456b837cbe7c7f2db5591c4`; 
   and 1,087 unit tests pass. The payment-enabled full browser run passed 249 of 254 cases with three
   intentional skips; its only two failures are the existing closed-payment-copy assertions that
   intentionally conflict with `E2E_PAYMENT_CHECKOUT=1`, while the payment flow itself passed.
-- [ ] Record final merge commit, Cloudflare Worker version, Sites version, health/routes, and exact rollback versions after deployment.
+- [x] PR #59 merge `7590397334e332465477761667f8e4efbf4a8074` is deployed as Cloudflare
+  Worker version `048554ea-a59a-4e77-9427-802cff69a59d` and public Sites version 103.
+  Both live origins returned 200 for Korean home/Feng Shui, English Feng Shui, Japanese Premium,
+  and health checks. Roll back to Worker `9ac9d69f-e6c3-48fb-883c-979b7d0c3abd` and Sites 102.
+- [ ] GitHub Actions run 34644017812 created no executable steps because the account payment/spending
+  limit remains active; restore it before treating hosted CI as release evidence.
