@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 
 type ProductCode = "plus_30d" | "pro_30d" | "premium_pdf";
 
 export function JapaneseReadingIntake() {
+  const router = useRouter();
   const [productCode, setProductCode] = useState<ProductCode>("pro_30d");
   const [readingFor, setReadingFor] = useState<"self" | "gift">("self");
   const [error, setError] = useState("");
@@ -33,7 +35,7 @@ export function JapaneseReadingIntake() {
       createdAt: new Date().toISOString(),
     };
     window.sessionStorage.setItem("innerarc.checkoutDraft.v1", JSON.stringify(payload));
-    window.location.assign(`/ja/plans?product=${productCode}`);
+    router.push(`/ja/plans?product=${productCode}`);
   }
 
   return (

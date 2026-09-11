@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { PaidReadingInputSchema } from "@/core/paid-reading";
+import { selectCheckoutReadingInput } from "@/core/checkout-ui";
 import { createPaidReport } from "@/server/reports/paid-report";
 
 const base = {
@@ -17,6 +18,11 @@ const base = {
 describe("Japanese paid reports", () => {
   it("keeps the operational locale bounded while accepting Japanese presentation", () => {
     expect(PaidReadingInputSchema.parse({ ...base, productCode: "pro_30d" }).displayLocale).toBe("ja");
+    expect(selectCheckoutReadingInput({ ...base, productCode: "pro_30d" }, "premium_pdf")).toMatchObject({
+      locale: "en",
+      displayLocale: "ja",
+      productCode: "premium_pdf",
+    });
   });
 
   it("generates Japanese bodies from the same deterministic calculations for every tier", () => {
