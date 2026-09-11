@@ -54,8 +54,8 @@ export function SpaceOnboardingTour({ locale, step, northDegrees, northConfirmed
     {
       image: "/images/space/space-intelligence-hero.png",
       eyebrow: ko ? "3 · 빠진 물건 확인" : "3 · Check missing objects",
-      title: ko ? "가구와 전자기기를 3D에서 확인해요." : "Check furniture and electronics in 3D.",
-      body: ko ? "TV·모니터·컴퓨터·공기청정기·냉장고·스피커가 빠졌다면 목록에서 바로 추가할 수 있어요." : "Add a TV, monitor, computer, air purifier, refrigerator or speaker when the draft misses one.",
+      title: ko ? "중요한 물건을 3D에서 확인해요." : "Check important room details in 3D.",
+      body: ko ? "거울·액자·커튼·어항·주방 설비와 전자기기가 빠졌다면 목록에서 바로 추가할 수 있어요." : "Add mirrors, art, curtains, aquariums, kitchen fixtures or electronics when the draft misses them.",
     },
     {
       image: "/images/space/previews/bedroom-after-v1.png",
@@ -86,7 +86,7 @@ export function SpaceOnboardingTour({ locale, step, northDegrees, northConfirmed
           <h2 id="space-tour-title">{item.title}</h2>
           <p id="space-tour-body">{item.body}</p>
           {step === 1 && <><strong className={styles.pickerQuestion}>{ko ? "북쪽은 화면에서 어느 쪽인가요?" : "Which side of the screen is north?"}</strong><CardinalDirectionPicker locale={locale} northDegrees={northDegrees} confirmed={northConfirmed} onPick={onPickNorth} /></>}
-          {step === 2 && <ul className={styles.electronicList}>{(ko ? ["TV", "모니터", "컴퓨터", "공기청정기", "냉장고", "스피커"] : ["TV", "Monitor", "Computer", "Air purifier", "Refrigerator", "Speaker"]).map(name => <li key={name}>✓ {name}</li>)}</ul>}
+          {step === 2 && <ul className={styles.electronicList}>{(ko ? ["거울·액자", "커튼·시계", "식물·조명", "어항", "화구·싱크대", "전자기기"] : ["Mirror · art", "Curtain · clock", "Plant · lighting", "Aquarium", "Stove · sink", "Electronics"]).map(name => <li key={name}>✓ {name}</li>)}</ul>}
         </div>
       </div>
       <footer className={styles.tourActions}>

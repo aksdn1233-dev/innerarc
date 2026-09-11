@@ -247,12 +247,12 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
         const moves: Motion["moves"] = [];
         for (const [id, value] of objects) if (!next.objects.some(o => o.id === id)) { world.remove(value.group); assets.disposeGeometry(value.group); objects.delete(id); }
         for (const object of next.objects) {
-          const signature = JSON.stringify([object.kind, object.width, object.depth, object.height]); let entry = objects.get(object.id);
+          const signature = JSON.stringify([object.kind, object.width, object.depth, object.height, object.elevation ?? 0]); let entry = objects.get(object.id);
           if (!entry || entry.key !== signature) {
             if (entry) { world.remove(entry.group); assets.disposeGeometry(entry.group); }
             const group = library.make(object, materials); world.add(group); entry = { group, key: signature }; objects.set(object.id, entry);
           } else {
-            const from = entry.group.position.clone(), to = new T.Vector3(object.x, 0, object.z), fromRotation = entry.group.rotation.y, toRotation = -object.rotation * Math.PI / 180;
+            const from = entry.group.position.clone(), to = new T.Vector3(object.x, object.elevation ?? 0, object.z), fromRotation = entry.group.rotation.y, toRotation = -object.rotation * Math.PI / 180;
             // Only tween a verified clear straight translation; rotations and blocked paths snap.
             const source = previous.objects.find(o => o.id === object.id);
             const clear = !!source && source.rotation === object.rotation && !reduced.matches && clearTranslation(previous, source, object.x, object.z);

@@ -107,6 +107,67 @@ export function supplementaryFurniture(g: T.Group, object: SpatialObject, m: Int
       const cone = cylinder(m.screen, radius * .7, radius * .2, .018, 0, y, .388); cone.rotation.x = Math.PI / 2;
     }
     for (const x of [-.25, .25]) box(m.dark, .08, .04, .45, x, .02, 0, .01);
+  } else if (kind === "mirror") {
+    box(m.walnut, .92, .96, .12, 0, .52, 0, .035);
+    box(m.glass, .82, .84, .018, 0, .57, .071, .008);
+    for (const x of [-.36, .36]) box(m.walnut, .07, .13, .26, x, .065, 0, .018);
+    box(m.bronze, .48, .025, .34, 0, .0125, 0, .008);
+  } else if (kind === "artwork") {
+    box(m.walnut, .96, .86, .12, 0, .55, 0, .025);
+    box(m.linen, .86, .74, .018, 0, .57, .071, .006);
+    box(m.sage, .28, .34, .012, -.18, .61, .082, .012);
+    const sun = cylinder(m.sand, .12, .12, .012, .19, .70, .085); sun.rotation.x = Math.PI / 2;
+    for (const x of [-.34, .34]) box(m.walnut, .055, .15, .20, x, .075, -.015, .012);
+  } else if (kind === "clock") {
+    box(m.walnut, .72, .82, .16, 0, .57, 0, .04);
+    const face = cylinder(m.linen, .33, .33, .03, 0, .66, .095); face.rotation.x = Math.PI / 2;
+    const rim = new T.TorusGeometry(.34, .025, 10, 36); const ring = add(rim, m.bronze, 0, .66, .115); ring.rotation.x = Math.PI / 2;
+    box(m.dark, .018, .19, .015, 0, .72, .125, .003).rotation.z = -.42;
+    box(m.dark, .15, .016, .015, .055, .66, .126, .003).rotation.z = .35;
+    for (const x of [-.22, .22]) box(m.walnut, .08, .18, .24, x, .09, 0, .015);
+  } else if (kind === "curtain") {
+    cylinder(m.bronze, .014, .014, .98, 0, .985, 0).rotation.z = Math.PI / 2;
+    for (let i = 0; i < 10; i++) {
+      const x = -.44 + i * .098, depth = .10 + (i % 2) * .08;
+      box(i % 2 ? m.sand : m.linen, .105, .94, depth, x, .47, 0, .025);
+    }
+  } else if (kind === "waste_bin") {
+    cylinder(m.sage, .38, .30, .82, 0, .41, 0);
+    cylinder(m.dark, .39, .39, .055, 0, .8475, 0);
+    box(m.bronze, .20, .035, .08, 0, .89, 0, .012);
+  } else if (kind === "shoe_rack") {
+    for (const x of [-.40, .40]) for (const z of [-.34, .34]) box(m.walnut, .06, .08, .08, x, .04, z, .012);
+    for (const x of [-.46, .46]) box(m.walnut, .07, .96, .86, x, .52, 0, .012);
+    for (let row = 0; row < 4; row++) box(m.oak, .96, .045, .90, 0, .08 + row * .25, 0, .012);
+    box(m.oak, .98, .05, .94, 0, .975, 0, .015);
+  } else if (kind === "aquarium") {
+    box(m.walnut, .94, .36, .92, 0, .18, 0, .025);
+    box(m.glass, .92, .58, .86, 0, .67, 0, .012);
+    box(m.screen, .87, .44, .80, 0, .64, 0, .008);
+    box(m.sand, .86, .055, .78, 0, .425, 0, .006);
+    for (const x of [-.30, -.08, .20, .35]) cylinder(m.leaf, .025, .05, .22 + (x + .3) * .18, x, .51, -.12 + x * .2);
+    box(m.dark, .98, .035, .94, 0, .9825, 0, .012);
+  } else if (kind === "stove") {
+    box(m.linen, .96, .88, .94, 0, .44, 0, .028);
+    box(m.dark, .98, .045, .96, 0, .9225, 0, .008);
+    for (const x of [-.25, .25]) for (const z of [-.25, .25]) cylinder(m.bronze, .14, .14, .025, x, .9575, z);
+    for (let i = 0; i < 4; i++) cylinder(m.dark, .025, .025, .025, -.3 + i * .2, .82, .47);
+  } else if (kind === "sink") {
+    box(m.oak, .96, .86, .94, 0, .43, 0, .025);
+    box(m.linen, .99, .05, .98, 0, .895, 0, .008);
+    box(m.dark, .65, .025, .55, 0, .9275, .03, .012);
+    box(m.screen, .55, .035, .45, 0, .935, .03, .01);
+    tube(m.bronze, [[.28, .94, -.02], [.28, .97, -.02], [.12, .97, -.02], [.12, .94, .02]], .015);
+  } else if (kind === "room_divider") {
+    for (const x of [-.48, 0, .48]) box(m.walnut, .025, .96, .16, x, .52, 0, .006);
+    for (let i = 0; i < 3; i++) box(i === 1 ? m.sage : m.linen, .30, .82, .07, -.32 + i * .32, .56, 0, .012);
+    for (const x of [-.41, .41]) box(m.walnut, .14, .04, .75, x, .02, 0, .01);
+  } else if (kind === "column") {
+    box(m.wall, .92, 1, .92, 0, .5, 0, .035);
+    box(m.oak, 1, .035, 1, 0, .0175, 0, .008);
+    box(m.oak, 1, .035, 1, 0, .9825, 0, .008);
+  } else if (kind === "ceiling_beam") {
+    box(m.walnut, 1, 1, 1, 0, .5, 0, .025);
   } else if (kind === "lighting") {
     cylinder(m.bronze, .22, .26, .035, 0, .0175, 0);
     cylinder(m.bronze, .017, .022, .80, 0, .425, 0);

@@ -6,7 +6,7 @@ const config: SpaceAIConfig = spaceAIConfig({ SPACE_ENABLED: "true", SPACE_AI_EN
 const images = ["data:image/jpeg;base64,AA==", "data:image/jpeg;base64,AA=="];
 const scene = manualScene();
 const observation = {
-  room: scene.room, doors: scene.doors, windows: scene.windows, objects: scene.objects, confidence: 0.8,
+  room: scene.room, doors: scene.doors, windows: scene.windows, objects: scene.objects.map(object => ({ ...object, elevation: null })), confidence: 0.8,
   imageEvidence: [
     { imageIndex: 0, usable: true, view: "overview", observesRoomBoundary: true, observedObjectIds: scene.objects.map(object => object.id) },
     { imageIndex: 1, usable: true, view: "opposite", observesRoomBoundary: true, observedObjectIds: scene.objects.map(object => object.id) },

@@ -20,5 +20,5 @@ export function doorClearance(scene: Scene, opening: Opening): Box {
 
 // Thin flexible floor coverings do not obstruct walking or furniture footprints.
 // Rug-on-rug overlap is still rejected; rugs remain bounded and below 3 cm thick.
-export const isObstacle = (object: SpatialObject) => object.kind !== "rug";
+export const isObstacle = (object: SpatialObject) => object.kind !== "rug" && object.kind !== "ceiling_beam";
 export const solidPair = (a: SpatialObject, b: SpatialObject) => a.kind === "rug" && b.kind === "rug" || isObstacle(a) && isObstacle(b);

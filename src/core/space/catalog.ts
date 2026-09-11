@@ -1,8 +1,9 @@
 // Shared closed catalog: AI selects classes only; every placement is still validated.
-export const OBJECT_KINDS = ["bed", "nightstand", "desk", "office_chair", "sofa", "coffee_table", "dining_table", "dining_chair", "wardrobe", "cabinet", "bookshelf", "tv", "monitor", "computer", "air_purifier", "refrigerator", "speaker", "lighting", "plant", "lounge_chair", "rug", "storage"] as const;
+export const OBJECT_KINDS = ["bed", "nightstand", "desk", "office_chair", "sofa", "coffee_table", "dining_table", "dining_chair", "wardrobe", "cabinet", "bookshelf", "tv", "monitor", "computer", "air_purifier", "refrigerator", "speaker", "mirror", "artwork", "clock", "curtain", "waste_bin", "shoe_rack", "aquarium", "stove", "sink", "room_divider", "column", "ceiling_beam", "lighting", "plant", "lounge_chair", "rug", "storage"] as const;
 export type ObjectKind = typeof OBJECT_KINDS[number];
 export const ELECTRONIC_KINDS = ["tv", "monitor", "computer", "air_purifier", "refrigerator", "speaker"] as const satisfies readonly ObjectKind[];
-export const FURNITURE_CATALOG: Record<ObjectKind, { ko: string; en: string; width: number; depth: number; height: number }> = {
+export const FENG_SHUI_DETAIL_KINDS = ["mirror", "artwork", "clock", "curtain", "waste_bin", "shoe_rack", "aquarium", "stove", "sink", "room_divider", "column", "ceiling_beam", "plant", "lighting", "rug"] as const satisfies readonly ObjectKind[];
+export const FURNITURE_CATALOG: Record<ObjectKind, { ko: string; en: string; width: number; depth: number; height: number; elevation?: number }> = {
   bed: { ko: "침대", en: "Bed", width: 1.5, depth: 2.1, height: 1.05 },
   nightstand: { ko: "협탁", en: "Nightstand", width: .5, depth: .4, height: .55 },
   desk: { ko: "책상", en: "Desk", width: 1.3, depth: .65, height: .76 },
@@ -20,6 +21,18 @@ export const FURNITURE_CATALOG: Record<ObjectKind, { ko: string; en: string; wid
   air_purifier: { ko: "공기청정기", en: "Air purifier", width: .42, depth: .42, height: .75 },
   refrigerator: { ko: "냉장고", en: "Refrigerator", width: .9, depth: .75, height: 1.85 },
   speaker: { ko: "스피커", en: "Speaker", width: .28, depth: .3, height: .85 },
+  mirror: { ko: "거울", en: "Mirror", width: .75, depth: .18, height: 1.7 },
+  artwork: { ko: "액자·그림", en: "Framed art", width: .9, depth: .12, height: 1.2 },
+  clock: { ko: "시계", en: "Clock", width: .45, depth: .18, height: 1.65 },
+  curtain: { ko: "커튼·블라인드", en: "Curtain or blind", width: 1.4, depth: .18, height: 2.2 },
+  waste_bin: { ko: "쓰레기통", en: "Waste bin", width: .35, depth: .35, height: .48 },
+  shoe_rack: { ko: "신발장", en: "Shoe rack", width: 1, depth: .35, height: 1 },
+  aquarium: { ko: "어항·수조", en: "Aquarium", width: 1.2, depth: .48, height: 1.2 },
+  stove: { ko: "화구·레인지", en: "Stove or range", width: .7, depth: .65, height: .9 },
+  sink: { ko: "싱크대", en: "Sink", width: .8, depth: .65, height: .9 },
+  room_divider: { ko: "파티션·가림막", en: "Room divider", width: 1.5, depth: .2, height: 1.8 },
+  column: { ko: "기둥", en: "Column", width: .35, depth: .35, height: 2.5 },
+  ceiling_beam: { ko: "천장 보", en: "Ceiling beam", width: 2, depth: .3, height: .25, elevation: 2.25 },
   lighting: { ko: "플로어 조명", en: "Floor lamp", width: .45, depth: .45, height: 1.6 },
   plant: { ko: "식물", en: "Plant", width: .55, depth: .55, height: 1.2 },
   lounge_chair: { ko: "라운지 체어", en: "Lounge chair", width: .827, depth: .57, height: .686 },
