@@ -78,6 +78,35 @@ export function supplementaryFurniture(g: T.Group, object: SpatialObject, m: Int
     cylinder(m.dark, .035, .045, .39, 0, .205, -.10);
     box(m.dark, .65, .035, .94, 0, .0175, 0, .015);
     box(m.bronze, .03, .008, .008, 0, .397, -.072, .003);
+  } else if (kind === "monitor") {
+    box(m.dark, .94, .56, .08, 0, .68, -.04, .018);
+    box(m.screen, .89, .50, .012, 0, .68, .006, .008);
+    box(m.bronze, .035, .42, .05, 0, .23, -.04, .012);
+    box(m.dark, .48, .04, .54, 0, .02, 0, .018);
+  } else if (kind === "computer") {
+    box(m.dark, .72, .94, .86, 0, .51, 0, .035);
+    box(m.screen, .03, .70, .65, -.366, .56, .02, .006);
+    for (let i = 0; i < 5; i++) box(m.bronze, .025, .025, .52, .366, .76 - i * .115, 0, .004);
+    for (const x of [-.24, .24]) box(m.dark, .10, .04, .64, x, .02, 0, .01);
+  } else if (kind === "air_purifier") {
+    cylinder(m.linen, .40, .44, .90, 0, .45, 0);
+    cylinder(m.dark, .36, .36, .035, 0, .9475, 0);
+    cylinder(m.bronze, .12, .12, .012, 0, .967, 0);
+    for (let i = 0; i < 12; i++) { const a = i * Math.PI / 6; box(m.dark, .018, .21, .035, Math.sin(a) * .405, .25, Math.cos(a) * .405, .005).rotation.y = a; }
+  } else if (kind === "refrigerator") {
+    box(m.linen, .94, .96, .90, 0, .5, 0, .035);
+    box(m.dark, .012, .91, .80, -.476, .52, .02, .004);
+    box(m.bronze, .025, .35, .05, .32, .69, .465, .008);
+    box(m.bronze, .025, .22, .05, .32, .25, .465, .008);
+    box(m.dark, .86, .012, .03, 0, .44, .466, .003);
+    for (const x of [-.32, .32]) box(m.dark, .08, .04, .58, x, .02, 0, .01);
+  } else if (kind === "speaker") {
+    box(m.walnut, .72, .92, .72, 0, .5, 0, .025);
+    for (const [y, radius] of [[.72, .14], [.46, .22], [.2, .16]] as const) {
+      const driver = cylinder(m.dark, radius, radius, .025, 0, y, .371); driver.rotation.x = Math.PI / 2;
+      const cone = cylinder(m.screen, radius * .7, radius * .2, .018, 0, y, .388); cone.rotation.x = Math.PI / 2;
+    }
+    for (const x of [-.25, .25]) box(m.dark, .08, .04, .45, x, .02, 0, .01);
   } else if (kind === "lighting") {
     cylinder(m.bronze, .22, .26, .035, 0, .0175, 0);
     cylinder(m.bronze, .017, .022, .80, 0, .425, 0);

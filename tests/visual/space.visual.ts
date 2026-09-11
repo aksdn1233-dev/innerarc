@@ -2,6 +2,11 @@ import { expect, test } from "@playwright/test";
 import { SPACE_EXAMPLES, spaceExample } from "../../src/core/space/examples";
 import { isSoftwareRendererName } from "../../src/components/space/frame-timing";
 
+async function closeTour(page: import("@playwright/test").Page) {
+  const dialog = page.getByRole("dialog");
+  if (await dialog.isVisible().catch(() => false)) await dialog.getByRole("button", { name: "Close guided start" }).click();
+}
+
 // WebGL lighting and antialiasing vary slightly across GPU/browser backends.
 // Keep a 5% pixel-noise allowance here while the assertions below continue to
 // enforce exact scene state, object counts, geometry budgets and render scale.
@@ -10,7 +15,7 @@ test("failed material load releases the canvas and retry restores one renderer",
   // Run recovery before the fixture gallery creates many short-lived WebGL
   // contexts in the same constrained browser process. The product timeout and
   // exact fresh-scene assertion remain unchanged.
-  await page.route("**/space/assets/oak-floor-color.jpg", route => route.fulfill({ status: 503, body: "synthetic outage" })); await page.goto("/en/space");
+  await page.route("**/space/assets/oak-floor-color.jpg", route => route.fulfill({ status: 503, body: "synthetic outage" })); await page.goto("/en/space"); await closeTour(page);
   await expect(page.getByRole("button", { name: "Retry 3D" })).toBeVisible({ timeout: 20000 }); expect(await page.locator("canvas").count()).toBe(0);
   await page.unroute("**/space/assets/oak-floor-color.jpg"); await page.getByRole("button", { name: "Retry 3D" }).click();
   await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "8", { timeout: 30000 }); expect(await page.locator("canvas").count()).toBe(1);
@@ -19,7 +24,7 @@ test("failed material load releases the canvas and retry restores one renderer",
 for (const example of SPACE_EXAMPLES) test(`visual geometry fixture: ${example}`, async ({ page }, testInfo) => {
   const loadStarted = Date.now();
   const failures: string[] = []; page.on("console", msg => { if (msg.type() === "error") failures.push(msg.text()); }); page.on("pageerror", error => failures.push(error.message));
-  await page.emulateMedia({ reducedMotion: "reduce" }); await page.goto("/en/space");
+  await page.emulateMedia({ reducedMotion: "reduce" }); await page.goto("/en/space"); await closeTour(page);
   await page.getByRole("combobox", { name: "Example space", exact: true }).selectOption(example);
   const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-scene-state", JSON.stringify(spaceExample(example).objects.map(o => ({ id: o.id, x: o.x, z: o.z, rotation: o.rotation }))), { timeout: 20000 });
   await expect(view).toHaveAttribute("data-triangles", /[1-9]\d*/);
@@ -32,7 +37,7 @@ for (const example of SPACE_EXAMPLES) test(`visual geometry fixture: ${example}`
   await expect(view.locator("..")).toHaveScreenshot(`${example}.png`, { animations: "disabled", threshold: .10, maxDiffPixelRatio: .05 });
 });
 test("selection, validated adjustment, undo and same-camera comparison", async ({ page }) => {
-  await page.goto("/en/space"); await page.getByRole("combobox", { name: "Select furniture", exact: true }).selectOption("desk_1");
+  await page.goto("/en/space"); await closeTour(page); await page.getByRole("combobox", { name: "Select furniture", exact: true }).selectOption("desk_1");
   const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "8", { timeout: 20000 }); await expect(view).toHaveAttribute("data-triangles", /[1-9]/);
   await expect(view).toHaveAttribute("data-selected-object", "desk_1");
   const camera = await view.getAttribute("data-camera");
@@ -41,8 +46,8 @@ test("selection, validated adjustment, undo and same-camera comparison", async (
   await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 });
   await expect(view).toHaveAttribute("data-motion-policy", "offscreen-snap");
   await page.getByRole("button", { name: "Undo edit", exact: true }).click(); await expect(view).toHaveAttribute("data-scene-state", /"x":1.1/);
-  await page.getByRole("checkbox", { name: "I checked north" }).check();
-  await page.getByRole("checkbox", { name: "I checked the room and furniture" }).check();
+  await page.getByRole("group", { name: "Where north is in the room" }).getByRole("button", { name: "Top", exact: true }).click();
+  await page.getByRole("checkbox", { name: "I checked that the 3D draft resembles the room" }).check();
   await page.getByRole("button", { name: "See suggested layout", exact: true }).click();
   const before = await view.getAttribute("data-scene-state");
   await expect(view).toHaveAttribute("data-motion", "settled");
@@ -62,7 +67,7 @@ test("selection, validated adjustment, undo and same-camera comparison", async (
 });
 
 test("Ultra Preview exposes its real render profile", async ({ page }) => {
-  await page.goto("/en/space");
+  await page.goto("/en/space"); await closeTour(page);
   const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "8", { timeout: 20000 });
   await page.getByText("Quality", { exact: true }).click();
   await page.getByRole("combobox", { name: "3D quality", exact: true }).selectOption("ultra");
@@ -81,7 +86,7 @@ test("Ultra Preview exposes its real render profile", async ({ page }) => {
 });
 
 test("lightweight tier stays within the active-frame budget", async ({ page }, testInfo) => {
-  await page.goto("/en/space");
+  await page.goto("/en/space"); await closeTour(page);
   // The first real WebGL context and bounded assets use the same 30-second
   // reconstruction allowance as fault recovery. Frame timing starts only after
   // this exact scene is ready, so this does not relax the performance ceiling.
@@ -143,13 +148,13 @@ test("lightweight tier stays within the active-frame budget", async ({ page }, t
   expect.soft(software || measured.motionPolicy === "adaptive-snap" ? measured.responseMs : measured.p90Ms).toBeLessThan(100);
 });
 test("irregular room is explicitly unsupported and never silently reshaped", async ({ page }) => {
-  await page.goto("/en/space"); const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "8", { timeout: 20000 }); await expect(view).toHaveAttribute("data-triangles", /[1-9]/); const before = await view.getAttribute("data-scene-state");
+  await page.goto("/en/space"); await closeTour(page); const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "8", { timeout: 20000 }); await expect(view).toHaveAttribute("data-triangles", /[1-9]/); const before = await view.getAttribute("data-scene-state");
   await page.getByRole("combobox", { name: "Example space", exact: true }).selectOption("irregular_room"); await expect(page.locator("main").getByRole("alert")).toContainText("Irregular rooms are not supported"); await expect(view).toHaveAttribute("data-scene-state", before!);
 });
 
 for (const example of ["small_bedroom", "living_room"] as const) test(`interior material and asset review: ${example}`, async ({ page }) => {
   const failures: string[] = []; page.on("console", msg => { if (msg.type() === "error") failures.push(msg.text()); }); page.on("pageerror", error => failures.push(error.message));
-  await page.emulateMedia({ reducedMotion: "reduce" }); await page.goto("/en/space");
+  await page.emulateMedia({ reducedMotion: "reduce" }); await page.goto("/en/space"); await closeTour(page);
   await page.getByRole("combobox", { name: "Example space", exact: true }).selectOption(example);
   const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", example === "small_bedroom" ? "8" : "9", { timeout: 20000 }); await expect(view).toHaveAttribute("data-triangles", /[1-9]/);
   await expect(view).toHaveAttribute("data-camera-mode", /hero|interior/);
@@ -160,7 +165,7 @@ test("a stalled asset reaches retry without leaving a half-mounted renderer", as
   let release: (() => void) | undefined;
   await page.route("**/space/assets/oak-floor-color.jpg", async route => { await new Promise<void>(resolve => { release = resolve; }); await route.abort().catch(() => {}); });
   try {
-    await page.goto("/en/space");
+    await page.goto("/en/space"); await closeTour(page);
     await expect(page.getByRole("button", { name: "Retry 3D" })).toBeVisible({ timeout: 22000 }); expect(await page.locator("canvas").count()).toBe(0);
   } finally { release?.(); }
 });
@@ -176,7 +181,7 @@ test("a GPU draw exception releases the frozen scene and exposes retry", async (
       return context;
     } as typeof original;
   });
-  await page.goto("/en/space"); await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "8", { timeout: 20000 });
+  await page.goto("/en/space"); await closeTour(page); await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "8", { timeout: 20000 });
   await page.evaluate(() => { document.documentElement.dataset.syntheticDrawFailure = "1"; });
   await page.getByRole("button", { name: "Rotate view", exact: true }).click();
   await expect(page.getByRole("button", { name: "Retry 3D", exact: true })).toBeVisible(); expect(await page.locator("canvas").count()).toBe(0);

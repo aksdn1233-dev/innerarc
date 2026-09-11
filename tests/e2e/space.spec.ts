@@ -2,6 +2,14 @@ import { expect, test } from "@playwright/test";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 const axe = readFileSync(path.resolve("node_modules/axe-core/axe.min.js"), "utf8");
+async function closeSpaceTour(page: import("@playwright/test").Page) {
+  const dialog = page.getByRole("dialog");
+  if (await dialog.isVisible().catch(() => false)) await dialog.getByRole("button", { name: /사용 안내 닫기|Close guided start/ }).click();
+}
+async function chooseNorth(page: import("@playwright/test").Page, locale: "ko" | "en" = "en") {
+  const group = page.getByRole("group", { name: locale === "ko" ? "방에서 북쪽이 있는 방향" : "Where north is in the room" });
+  await group.getByRole("button", { name: locale === "ko" ? "위쪽" : "Top", exact: true }).click();
+}
 
 test("space demo confirms, analyzes, compares, applies and invalidates edits", async ({ page }) => {
   // This integration case boots the real WebGL scene and then exercises the full
@@ -16,18 +24,35 @@ test("space demo confirms, analyzes, compares, applies and invalidates edits", a
   await expect(page.locator("fieldset[data-ready]")).toHaveAttribute("data-ready", "true", { timeout: 10_000 });
   await expect(page.getByRole("heading", { name: "내 방을 찍고, 더 편한 배치를 찾아보세요.", exact: true })).toBeVisible();
   await expect(page.getByText("풍수학 · 3D 공간 분석", { exact: true })).toBeVisible();
-  const tutorial = page.getByRole("region", { name: "화살표 순서대로 따라오세요." });
+  const tutorial = page.getByRole("dialog");
   await expect(tutorial).toBeVisible();
-  await expect(tutorial.getByRole("button")).toHaveCount(4);
-  await expect(tutorial.locator("li[data-current='true']")).toContainText("북쪽 확인");
+  await page.addScriptTag({ content: axe });
+  const tourViolations = await tutorial.evaluate(async (node) => (await (window as unknown as { axe: { run(target: Element, options: unknown): Promise<{ violations: { id: string }[] }> } }).axe.run(node, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa"] } })).violations);
+  expect(tourViolations).toEqual([]);
+  await expect(tutorial.getByRole("heading", { name: "방 전체를 두 방향에서 찍어요." })).toBeVisible();
+  await expect(tutorial.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "1");
+  await tutorial.getByRole("button", { name: "다음 →" }).click();
+  await expect(tutorial.getByRole("heading", { name: "북쪽이 있는 쪽만 누르면 돼요." })).toBeVisible();
+  await tutorial.getByRole("group", { name: "방에서 북쪽이 있는 방향" }).getByRole("button", { name: "오른쪽", exact: true }).click();
+  await tutorial.getByRole("button", { name: "다음 →" }).click();
+  await expect(tutorial.getByText("✓ TV", { exact: true })).toBeVisible();
+  await tutorial.getByRole("button", { name: "다음 →" }).click();
+  await tutorial.getByRole("button", { name: "내 방으로 시작하기 →" }).click();
+  await expect(tutorial).toHaveCount(0);
   expect(await page.locator("main").evaluate((node) => getComputedStyle(node).backgroundColor)).toBe("rgb(243, 248, 244)");
+  await expect(page.locator("[data-direction]")).toHaveCount(4);
+  await expect(page.locator("[data-direction=north]")).toContainText("북 N");
+  await expect(page.locator("[data-direction=east]")).toContainText("동 E");
+  await expect(page.locator("[data-direction=south]")).toContainText("남 S");
+  await expect(page.locator("[data-direction=west]")).toContainText("서 W");
+  await page.getByLabel("전자기기 추가", { exact: true }).selectOption("monitor");
+  await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "9");
+  await expect(page.getByText(/모니터를 빈자리에 추가했습니다/)).toBeVisible();
   const analyze = page.getByRole("button", { name: "추천 배치 보기", exact: true });
   await expect(analyze).toBeDisabled();
-  for (const name of ["북쪽 방향을 확인했어요", "방과 가구 위치를 확인했어요"]) {
-    const checkbox = page.getByRole("checkbox", { name });
-    await checkbox.check();
-    await expect(checkbox).toBeChecked();
-  }
+  const confirmation = page.getByRole("checkbox", { name: "3D가 실제 방과 비슷한지 확인했어요" });
+  await confirmation.check();
+  await expect(confirmation).toBeChecked();
   await expect(analyze).toBeEnabled();
   await analyze.click();
   await expect(page.getByRole("region", { name: "공간 분석 결과" })).toBeVisible({ timeout: 15_000 });
@@ -57,12 +82,12 @@ test("space demo confirms, analyzes, compares, applies and invalidates edits", a
   await expect(page.getByRole("region", { name: "공간 분석 결과" })).toHaveCount(0);
   await expect(analyze).toBeDisabled(); expect(remote).toEqual([]);
 });
-test("invalid north and bounds block the room and explain the error", async ({ page }) => {
+test("cardinal direction replaces raw angles and bounds still block the room", async ({ page }) => {
   await page.goto("/ko/space");
-  await page.getByLabel("북쪽 각도 (0~359°)").fill("360");
-  await expect(page.getByText(/크기·위치 또는 겹침을 확인하세요/)).toBeVisible();
+  await closeSpaceTour(page);
+  await expect(page.getByLabel("북쪽 각도 (0~359°)")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "추천 배치 보기", exact: true })).toBeDisabled();
-  await page.getByLabel("북쪽 각도 (0~359°)").fill("0");
+  await chooseNorth(page, "ko");
   await page.getByText("방 크기와 가구 직접 고치기 (선택)", { exact: true }).click();
   await page.getByLabel("방 가로 (m)", { exact: true }).fill("2");
   await expect(page.getByText(/OUT_OF_BOUNDS/)).toBeVisible();
@@ -77,6 +102,9 @@ test("private workspace is login-gated and noindex; shared footer remains", asyn
 test("space mobile layout, reduced motion and accessibility stay usable", async ({ page }, testInfo) => {
   test.skip(!testInfo.project.use.isMobile, "This validates the coarse-pointer mobile renderer, not a narrow desktop window.");
   await page.emulateMedia({ reducedMotion: "reduce" }); await page.goto("/ko/space");
+  const tourBox = await page.getByRole("dialog").boundingBox();
+  expect(tourBox?.width).toBeLessThanOrEqual((await page.evaluate(() => innerWidth)) + 1);
+  await closeSpaceTour(page);
   const typography = await page.evaluate(async () => {
     await document.fonts.ready;
     return {
@@ -108,9 +136,9 @@ test("space mobile layout, reduced motion and accessibility stay usable", async 
 });
 test("WebGL failure retains text analysis and offers retry", async ({ page }) => {
   await page.addInitScript(() => { const original = HTMLCanvasElement.prototype.getContext; HTMLCanvasElement.prototype.getContext = function(this: HTMLCanvasElement, kind: string, ...args: unknown[]) { if (kind.includes("webgl")) return null; return Reflect.apply(original, this, [kind, ...args]); } as typeof original; });
-  await page.goto("/en/space"); await expect(page.getByRole("button", { name: "Retry 3D" })).toBeVisible();
-  await page.getByRole("checkbox", { name: "I checked north" }).check();
-  await page.getByRole("checkbox", { name: "I checked the room and furniture" }).check();
+  await page.goto("/en/space"); await closeSpaceTour(page); await expect(page.getByRole("button", { name: "Retry 3D" })).toBeVisible();
+  await chooseNorth(page);
+  await page.getByRole("checkbox", { name: "I checked that the 3D draft resembles the room" }).check();
   await page.getByRole("button", { name: "See suggested layout", exact: true }).click();
   await expect(page.getByRole("region", { name: "Space analysis results" })).toBeVisible();
 });
@@ -121,12 +149,12 @@ test("device speech failure keeps the anchored guide readable", async ({ page })
     Object.defineProperty(window, "speechSynthesis", { configurable: true, value: undefined });
   });
   await page.goto("/en/space");
+  await closeSpaceTour(page);
   await expect(page.locator("fieldset[data-ready]")).toHaveAttribute("data-ready", "true", { timeout: 10_000 });
-  for (const name of ["I checked north", "I checked the room and furniture"]) {
-    const checkbox = page.getByRole("checkbox", { name });
-    await checkbox.check();
-    await expect(checkbox).toBeChecked();
-  }
+  await chooseNorth(page);
+  const confirmation = page.getByRole("checkbox", { name: "I checked that the 3D draft resembles the room" });
+  await confirmation.check();
+  await expect(confirmation).toBeChecked();
   await page.getByRole("button", { name: "See suggested layout", exact: true }).click();
   await expect(page.getByLabel("3D space guide")).toBeVisible();
   await page.getByRole("button", { name: "Unmute", exact: true }).click();
@@ -158,8 +186,9 @@ test("speech exceptions retain captions and guide marker follows the camera", as
     } });
   });
   await page.goto("/en/space");
-  await page.getByRole("checkbox", { name: "I checked north" }).check();
-  await page.getByRole("checkbox", { name: "I checked the room and furniture" }).check();
+  await closeSpaceTour(page);
+  await chooseNorth(page);
+  await page.getByRole("checkbox", { name: "I checked that the 3D draft resembles the room" }).check();
   await page.getByRole("button", { name: "See suggested layout", exact: true }).click();
   const guide = page.getByLabel("3D space guide");
   await guide.getByRole("button", { name: "Unmute", exact: true }).click();
@@ -185,7 +214,7 @@ test("speech exceptions retain captions and guide marker follows the camera", as
   const marker = page.locator('span[data-anchor-object]');
   await expect(marker).toBeVisible();
   const before = await marker.getAttribute("style");
-  await page.getByRole("button", { name: "Top", exact: true }).click();
+  await page.getByLabel("3D view controls").getByRole("button", { name: "Top", exact: true }).click();
   await expect(marker).not.toHaveAttribute("style", before!);
   await expect(marker).toHaveAttribute("data-anchor-object", (await guide.getAttribute("data-anchor-object"))!);
 });
@@ -198,9 +227,10 @@ test("finishing 3D loading does not move mobile confirmation controls", async ({
   await page.route("**/space/assets/oak-floor-color.jpg", async route => { await assetGate; await route.continue(); });
   try {
     await page.goto("/en/space");
+    await closeSpaceTour(page);
     await expect(page.locator("[data-space-loading]")).toBeVisible();
-    await page.getByRole("checkbox", { name: "I checked north" }).check();
-    const confirmation = page.getByRole("checkbox", { name: "I checked the room and furniture" });
+    await chooseNorth(page);
+    const confirmation = page.getByRole("checkbox", { name: "I checked that the 3D draft resembles the room" });
     await confirmation.scrollIntoViewIfNeeded();
     const before = await confirmation.evaluate(element => element.getBoundingClientRect().top + scrollY);
     release();

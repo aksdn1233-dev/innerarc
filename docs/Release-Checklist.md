@@ -217,3 +217,16 @@ Rollback reference: production base `ee4ae5038e34e0715456b837cbe7c7f2db5591c4`; 
 - [x] New guide images are native 1254×1254 RGBA assets and are never upscaled beyond their 3× DPR safe display size.
 - [x] Capture 390/430/768/1024/1440 success result and Space analysis after the asset/font load gate passes.
 - [ ] Owner accepts the actual captures. This remains separate from CI and does not authorize merge or deployment.
+
+## Feng Shui cardinal guide and electronics — 2026-09-12
+
+- [x] No customer-facing north-degree input; four plain side choices and all four 3D cardinal labels are covered by browser tests.
+- [x] Five new electronics have schema, dimensions, reviewed procedural geometry, manifest provenance, strict photo-classification prompt, collision-safe manual placement, and deterministic rest-check coverage.
+- [x] Responsive four-step popup uses existing non-customer room images, remains reopenable, and has WCAG AA automated coverage with no nested controls.
+- [x] No database migration, price, payment, entitlement, report, auth, storage-retention, attempt cap, token cap, or model identifier changed.
+- [x] Dedicated desktop/iPhone/Android Space matrix: 90 passed, 30 intentionally skipped, 0 failed across 120 cases.
+- [x] Local release checks: lint has zero errors, typecheck and the 134-route production build pass,
+  and 1,087 unit tests pass. The payment-enabled full browser run passed 249 of 254 cases with three
+  intentional skips; its only two failures are the existing closed-payment-copy assertions that
+  intentionally conflict with `E2E_PAYMENT_CHECKOUT=1`, while the payment flow itself passed.
+- [ ] Record final merge commit, Cloudflare Worker version, Sites version, health/routes, and exact rollback versions after deployment.

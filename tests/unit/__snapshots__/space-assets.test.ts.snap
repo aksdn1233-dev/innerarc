@@ -2,18 +2,23 @@
 
 exports[`records the actual optimized procedural geometry budget 1`] = `
 {
+  "air_purifier": 3984,
   "bed": 23524,
   "bookshelf": 8012,
   "cabinet": 7112,
   "coffee_table": 1152,
+  "computer": 2700,
   "desk": 4200,
   "dining_chair": 2440,
   "dining_table": 2100,
   "lighting": 1432,
+  "monitor": 1200,
   "nightstand": 3812,
   "office_chair": 4208,
   "plant": 2072,
+  "refrigerator": 2100,
   "rug": 2124,
+  "speaker": 1668,
   "storage": 3600,
   "tv": 1328,
   "wardrobe": 5612,

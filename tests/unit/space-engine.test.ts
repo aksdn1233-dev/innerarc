@@ -1,6 +1,6 @@
 import { spatialAccessIssues } from "@/core/space/navigation";
 import { describe, expect, it } from "vitest";
-import { analyzeSpace, applyAction, blockedDoors, footprint, geometryIssues, headGap, MAX_PLACEMENT_GRID } from "@/core/space/engine";
+import { addObjectAtOpenPosition, analyzeSpace, applyAction, blockedDoors, footprint, geometryIssues, headGap, MAX_PLACEMENT_GRID } from "@/core/space/engine";
 import { manualScene, SceneSchema, type Scene } from "@/core/space/schema";
 function room(): Scene { const scene = manualScene(); scene.confirmed = true; scene.orientation.confirmed = true; return scene; }
 describe("space deterministic geometry and interpretation", () => {
@@ -40,6 +40,32 @@ describe("space deterministic geometry and interpretation", () => {
     const result = analyzeSpace(room(), "focus", "en", { ...personal, systems: [...personal.systems] });
     const rec = result.recommendations.find(r => r.evidence_type === "personal")!;
     expect(rec.ruleId).toBe("personal_context_uncertain_v1"); expect(rec.rationale).toContain("Life Path 7"); expect(rec.rationale).toContain("2 were mismatched"); expect(rec.confidence).toBe(0.3);
+  });
+  it("adds an electronic device only in a bounded, clear position", () => {
+    const s = room();
+    const next = addObjectAtOpenPosition(s, { id: "monitor_1", kind: "monitor", x: 0, z: 0, width: .7, depth: .28, height: .72, rotation: 0, confidence: 1, movable: true });
+    expect(next.objects).toHaveLength(s.objects.length + 1);
+    expect(next.objects.at(-1)?.kind).toBe("monitor");
+    expect(next.confirmed).toBe(false);
+    expect(geometryIssues(next)).toEqual([]);
+    expect(blockedDoors(next)).toEqual([]);
+  });
+  it("rejects an electronic device when no safe position exists", () => {
+    const s = room();
+    s.room = { width: 2, depth: 2, height: 2.5 };
+    s.doors = [{ id: "door", wall: "bottom", offset: 0, width: 2 }];
+    s.windows = [];
+    s.objects = [{ ...s.objects[0], x: 1, z: 1, width: 1.8, depth: 1.8 }];
+    expect(() => addObjectAtOpenPosition(s, { id: "tv_1", kind: "tv", x: 0, z: 0, width: 1.25, depth: .35, height: 1.1, rotation: 0, confidence: 1, movable: true })).toThrow("NO_CLEAR_PLACEMENT");
+  });
+  it("describes cardinal direction without exposing degree input and checks electronics for rest", () => {
+    const s = room();
+    s.orientation.northDegrees = 90;
+    s.objects.push({ id: "speaker_1", kind: "speaker", x: 3.5, z: 3.5, width: .28, depth: .3, height: .85, rotation: 0, confidence: 1, movable: true });
+    const result = analyzeSpace(s, "rest", "ko");
+    expect(result.recommendations.find(item => item.ruleId === "orientation_context_v1")?.rationale).toContain("북쪽은 오른쪽");
+    expect(result.recommendations.find(item => item.ruleId === "orientation_context_v1")?.rationale).not.toMatch(/\d+°/u);
+    expect(result.recommendations.find(item => item.ruleId === "electronics_rest_check_v1")?.rationale).toContain("화면·표시등·작동 소리");
   });
   it("uses exact quarter-turn footprints", () => { const obj = room().objects[1]; expect(footprint({ ...obj, rotation: 90 }).right - footprint({ ...obj, rotation: 90 }).left).toBeCloseTo(obj.depth); });
 });

@@ -1,4 +1,5 @@
-import { ActionSchema, AnalysisSchema, SceneSchema, SPACE_VERSION, type Action, type Analysis, type Goal, type Scene, type SpatialObject } from "./schema";
+import { ActionSchema, AnalysisSchema, SceneSchema, SpatialObjectSchema, SPACE_VERSION, type Action, type Analysis, type Goal, type Scene, type SpatialObject } from "./schema";
+import { ELECTRONIC_KINDS } from "./catalog";
 
 import { footprint, overlaps, doorClearance, isObstacle, solidPair } from "./geometry";
 import { spatialAccessIssues } from "./navigation";
@@ -56,6 +57,27 @@ export function headGap(scene: Scene, object: SpatialObject): number {
   return object.rotation === 0 ? b.top : object.rotation === 90 ? scene.room.width - b.right : object.rotation === 180 ? scene.room.depth - b.bottom : b.left;
 }
 export const MAX_PLACEMENT_GRID = 24;
+
+export function addObjectAtOpenPosition(candidate: unknown, nextObject: unknown): Scene {
+  const scene = SceneSchema.parse(candidate), object = SpatialObjectSchema.parse(nextObject);
+  if (scene.objects.some(item => item.id === object.id)) throw new Error("DUPLICATE_ID");
+  const zero = footprint({ ...object, x: 0, z: 0 });
+  const minX = -zero.left + .1, minZ = -zero.top + .1;
+  const maxX = scene.room.width - minX, maxZ = scene.room.depth - minZ;
+  if (minX > maxX || minZ > maxZ) throw new Error("NO_CLEAR_PLACEMENT");
+  const priorAccess = new Set(spatialAccessIssues(scene));
+  for (let iz = 0; iz <= MAX_PLACEMENT_GRID; iz++) for (let ix = 0; ix <= MAX_PLACEMENT_GRID; ix++) {
+    const placed = { ...object, x: Math.round((minX + (maxX - minX) * ix / MAX_PLACEMENT_GRID) * 1000) / 1000, z: Math.round((minZ + (maxZ - minZ) * iz / MAX_PLACEMENT_GRID) * 1000) / 1000 };
+    const box = footprint(placed);
+    if (scene.objects.some(other => solidPair(other, placed) && overlaps(footprint(other), box, .1))) continue;
+    if (scene.doors.some(door => overlaps(box, doorClearance(scene, door)))) continue;
+    const result = { ...scene, objects: [...scene.objects, placed], confirmed: false };
+    if (geometryIssues(result).length) continue;
+    if (spatialAccessIssues(result).some(issue => !priorAccess.has(issue))) continue;
+    return SceneSchema.parse(result);
+  }
+  throw new Error("NO_CLEAR_PLACEMENT");
+}
 function findSafeMove(scene: Scene, object: SpatialObject, wallPreferred: boolean): Action | null {
   const candidates: { x: number; z: number; rank: number }[] = [];
   const footprintAtZero = footprint({ ...object, x: 0, z: 0 });
@@ -117,8 +139,13 @@ export function analyzeSpace(candidate: unknown, goal: Goal, locale: "ko" | "en"
     const warning = ko ? `${id}: 문 앞 공간을 직접 확인하고 비워 주세요.` : `${id}: Check and clear the doorway in the actual room.`;
     if (result.warnings.length < 20) result.warnings.push(warning);
   }
-  const north = current.orientation.northDegrees;
-  if (!personal?.sources.length) add("orientation_context_v1", "traditional", ko ? `북쪽은 도면 위쪽에서 시계 방향 ${north}°입니다. 방향은 전통 해석의 참고값이며 길흉 점수나 효과의 증거가 아닙니다.` : `North is ${north}° clockwise from the plan's top. This is a traditional reference, not a luck score or evidence of an effect.`, observe, 0.5);
+  const compassSides = ko
+    ? ["위쪽", "오른쪽 위", "오른쪽", "오른쪽 아래", "아래쪽", "왼쪽 아래", "왼쪽", "왼쪽 위"]
+    : ["top", "upper right", "right", "lower right", "bottom", "lower left", "left", "upper left"];
+  const northSide = compassSides[Math.round(current.orientation.northDegrees / 45) % 8];
+  if (!personal?.sources.length) add("orientation_context_v1", "traditional", ko ? `이 도면에서 북쪽은 ${northSide}입니다. 동·서·남·북 방향은 전통 해석을 위한 참고이며 길흉 점수나 효과의 증거가 아닙니다.` : `North is at the ${northSide} of this plan. Cardinal directions are traditional reference points, not luck scores or evidence of an effect.`, observe, 0.5);
+  const electronics = current.objects.filter(object => (ELECTRONIC_KINDS as readonly string[]).includes(object.kind));
+  if (electronics.length && goal === "rest") add("electronics_rest_check_v1", "practical", ko ? `${electronics.map(item => item.id).join(", ")}: 잠들기 전 화면·표시등·작동 소리가 휴식을 방해하는지 직접 확인해 보세요. 전원을 끄거나 가린 날과 평소를 기록해 비교하는 생활 제안입니다.` : `${electronics.map(item => item.id).join(", ")}: Check whether screens, indicator lights or operating noise disturb rest. Compare a day with them off or covered against your usual routine.`, observe, 1);
   add(`goal_${goal}_v1`, "practical", ko ? (goal === "focus" ? "책상에 앉아 창의 눈부심과 출입 동선을 확인하세요. 작업에 필요 없는 물건은 옮길 후보로 표시해 보세요." : goal === "rest" ? "휴식할 때 빛·소음과 출입 동선을 직접 살펴보세요. 가구를 옮긴 뒤 생활의 변화를 기록할 수 있습니다." : "일어나기·앉기·수납하기를 실제로 해 보며 동선을 확인하세요. 이 도면은 실측이나 안전 진단을 대신하지 않습니다.") : "Check glare, noise, storage and walking routes in the actual room for your selected goal. The plan is not a measured survey or safety inspection.", observe, 1);
   if (personal?.sources.length) {
     const cautious = (personal.mismatchCount ?? 0) > 0;
