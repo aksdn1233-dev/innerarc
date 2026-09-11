@@ -174,6 +174,35 @@ function compactSceneSubject(title: string): string {
   return compact.length > 28 ? `${compact.slice(0, 27)}…` : compact;
 }
 
+export const RESTORED_WEBTOON_CHARACTER_ASSETS = [
+  "sahyeon/sahyeon_analyze_focused_01.png",
+  "sahyeon/sahyeon_assure_confident_01.png",
+  "sahyeon/sahyeon_explain_calm_01.png",
+  "sahyeon/sahyeon_read-chart_focused_01.png",
+  "sahyeon/sahyeon_result-card_confident_01.png",
+  "taeryeong/taeryeong_analyze_focused_01.png",
+  "taeryeong/taeryeong_assure_confident_01.png",
+  "taeryeong/taeryeong_result-card_confident_01.png",
+  "yeonhui/yeonhui_explain_calm_01.png",
+  "yeonhui/yeonhui_read-chart_focused_01.png",
+  "yeonhui/yeonhui_result-card_confident_01.png",
+] as const;
+
+const restoredCharacterAssets = new Set<string>(RESTORED_WEBTOON_CHARACTER_ASSETS);
+
+/** Keeps the 384px originals as the low-bandwidth 1x source while serving restored art
+ * at the real pixel density of modern phones and laptops. */
+export function getWebtoonCharacterImageSources(assetPath: string): { src: string; srcSet?: string } {
+  const relativePath = assetPath.split("/characters/")[1];
+  if (!relativePath || !restoredCharacterAssets.has(relativePath)) return { src: assetPath };
+
+  const basePath = assetPath.replace(/\.png$/, "");
+  return {
+    src: assetPath,
+    srcSet: `${assetPath} 1x, ${basePath}-hd-v2-2x.webp 2x, ${basePath}-hd-v2-3x.webp 3x`,
+  };
+}
+
 /** A real scene beat: art, character acting, narration and an HTML speech bubble. */
 export function CharacterWebtoonPanel({
   badge,
@@ -207,6 +236,7 @@ export function CharacterWebtoonPanel({
   const voicePool = characterVoices[scene.character][voiceLocale];
   const voiceSeed = `${scene.character}:${titleText}:${typeof badge === "string" ? badge : ""}:${tone}`;
   const characterVoice = voicePool[stableVoiceIndex(voiceSeed, voicePool.length)](compactSceneSubject(titleText));
+  const characterImage = getWebtoonCharacterImageSources(scene.assetPath);
 
   return (
     <section
@@ -218,9 +248,8 @@ export function CharacterWebtoonPanel({
       <div aria-hidden="true" className="webtoon-story-art">
         <Image className="webtoon-story-background" fill sizes="(max-width: 900px) 100vw, 900px" src={scene.backgroundPath} alt="" />
         {scene.effectPath && <Image className="webtoon-story-effect" fill sizes="(max-width: 900px) 100vw, 900px" src={scene.effectPath} alt="" />}
-        {/* Native character PNGs must not receive responsive srcset density descriptors:
-            their source canvas is 384px and browsers otherwise enlarge a falsely declared
-            640/750w candidate. Backgrounds still use the optimized Image component. */}
+        {/* Character density candidates are authored assets rather than optimizer-enlarged
+            copies. The 1x original stays available for low-density screens. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           alt=""
@@ -229,7 +258,8 @@ export function CharacterWebtoonPanel({
           draggable={false}
           height={384}
           loading="lazy"
-          src={scene.assetPath}
+          src={characterImage.src}
+          srcSet={characterImage.srcSet}
           width={384}
         />
       </div>
