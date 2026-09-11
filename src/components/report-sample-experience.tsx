@@ -61,7 +61,6 @@ export function ReportSampleExperience({
         footer={(
           <section className="webtoon-panel webtoon-paper webtoon-outro">
             <div className="webtoon-inner">
-              <p className="disclaimer">{report.disclaimer}</p>
               <Link className="primary-button" href={`/${locale}`} prefetch={false}>{ko ? "홈으로" : "Home"}</Link>
               <AcquisitionSurveyPanel locale={locale} preview />
             </div>

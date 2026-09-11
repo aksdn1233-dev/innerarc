@@ -48,6 +48,45 @@ test("39,000원 editorial sample keeps its reading and accessibility contract", 
   await expect(page.locator(".ed-paper-section, .ed-ink-section, .ed-reality-section, .ed-closing")).toHaveCount(20);
   await expect(page.locator(".ed-closing h2")).not.toBeEmpty();
 
+  const copyQuality = await page.evaluate(() => {
+    const text = (selector: string) => [...document.querySelectorAll(selector)]
+      .map((node) => node.textContent?.replace(/\s+/gu, " ").trim() ?? "")
+      .filter(Boolean);
+    const money = text(".ed-money-grid > article > p");
+    const love = text(".ed-love-grid > article > p");
+    const shadows = text(".ed-shadow-list > article p");
+    const yearFocus = text(".ed-year-grid > article dd");
+    const yearActions = text(".ed-year-action");
+    const substantive = text(".editorial-report p, .editorial-report h3, .editorial-report dd, .editorial-report blockquote")
+      .map((item) => item.replace(/^[“”"]+|[“”"]+$/gu, ""))
+      .filter((item) => item.length >= 20);
+    const substantiveCounts = new Map<string, number>();
+    substantive.forEach((item) => substantiveCounts.set(item, (substantiveCounts.get(item) ?? 0) + 1));
+    const patternDetails = [...document.querySelectorAll(".ed-pattern-block dl")].map((list) =>
+      [...list.querySelectorAll("dd")].map((node) => node.textContent?.replace(/\s+/gu, " ").trim() ?? "").filter(Boolean),
+    );
+    return {
+      moneyDistinct: new Set(money).size === money.length,
+      loveDistinct: new Set(love).size === love.length,
+      shadowsDistinct: new Set(shadows).size === shadows.length,
+      yearFocusDistinct: new Set(yearFocus).size === yearFocus.length,
+      yearActionsDistinct: new Set(yearActions).size === yearActions.length,
+      patternDetailsDistinct: patternDetails.every((items) => new Set(items).size === items.length),
+      futureCardsSayThisYear: text(".ed-year-grid > article").slice(1).filter((item) => item.includes("올해는")).length,
+      duplicateSubstantive: [...substantiveCounts].filter(([, count]) => count > 1).map(([item]) => item),
+    };
+  });
+  expect(copyQuality).toEqual({
+    moneyDistinct: true,
+    loveDistinct: true,
+    shadowsDistinct: true,
+    yearFocusDistinct: true,
+    yearActionsDistinct: true,
+    patternDetailsDistinct: true,
+    futureCardsSayThisYear: 0,
+    duplicateSubstantive: [],
+  });
+
   await page.addScriptTag({ content: axe.source });
   const violations = await page.locator(".editorial-report").evaluate(async (context) => {
     const result = await (window as unknown as { axe: { run: (root: Element, options: object) => Promise<{ violations: { id: string; impact: string | null }[] }> } }).axe.run(context, {
