@@ -58,6 +58,8 @@ export type PremiumEditorialModel = Readonly<{
   signals: EditorialTextBlock;
   decisionFramework: EditorialTextBlock;
   manual: EditorialTextBlock;
+  riskChecklist: EditorialTextBlock;
+  stopConditions: EditorialTextBlock;
   longTerm: EditorialTextBlock;
   verdict: EditorialTextBlock;
 }>;
@@ -235,7 +237,7 @@ export function buildDetailEditorialModel(report: PaidReport): DetailEditorialMo
   const family = findSection(report, [/가족|자녀|아이/u, /Family|child/u]);
   const stress = findSection(report, [/압박을 받을 때/u, /Under pressure/u]);
   const current = findSection(report, [/\d{4}년 핵심 흐름/u, /\d{4} direction/u]);
-  const closing = findSection(report, [/최종 결론/u, /Final conclusion/u]);
+  const closing = findSection(report, [/현실적인 조언과 마무리/u, /Grounded closing advice/u, /최종 결론/u, /Final conclusion/u]);
   const definition = findSection(report, [/직접적인 인물 정의/u, /질문에 대한 직접 결론/u, /Direct person definition/u, /Direct answer/u]);
 
   const numberInputs = [
@@ -406,17 +408,27 @@ export function buildDetailEditorialModel(report: PaidReport): DetailEditorialMo
 export function buildPremiumEditorialModel(report: PaidReport): PremiumEditorialModel | null {
   if (report.productCode !== "premium_pdf" || report.sectionPlan !== "premium-79000-v2") return null;
   const ko = report.locale === "ko";
-  const required = <T extends readonly RegExp[]>(patterns: T, titleKo: string, titleEn: string) =>
-    block(ko ? titleKo : titleEn, findSection(report, patterns), report.summary);
+  const required = <T extends readonly RegExp[]>(
+    patterns: T,
+    titleKo: string,
+    titleEn: string,
+    leadKo: string,
+    leadEn: string,
+  ) => {
+    const result = block(ko ? titleKo : titleEn, findSection(report, patterns), report.summary);
+    return { ...result, lead: ko ? leadKo : leadEn };
+  };
 
   return {
-    synthesis: required([/네 숫자를 하나로 읽는 종합 해석/u, /Cross-number synthesis/u], "네 숫자를 하나로 읽는 종합 해석", "Reading the four numbers together"),
-    paradox: required([/강점이 실패를 만드는 역설/u, /When strength creates failure/u], "강점이 실패를 만드는 순간", "When strength creates failure"),
-    scenarios: required([/최선·현실·위험 시나리오/u, /Best, likely, and risk scenarios/u], "가능한 세 가지 흐름", "Three possible paths"),
-    signals: required([/시나리오 확인 신호/u, /Signals that confirm or contradict/u], "무엇을 보고 판단할까요?", "What evidence should guide the decision?"),
-    decisionFramework: required([/고객별 의사결정 기준/u, /Personal decision framework/u], "내 결정을 지키는 기준", "A framework for your decision"),
-    manual: required([/6단계 실행 매뉴얼/u, /Six-step execution manual/u], "생각을 행동으로 옮기는 6단계", "Six steps from thought to action"),
-    longTerm: required([/장기 전략/u, /Long-term strategy/u], "길게 가져갈 전략", "A longer-term strategy"),
-    verdict: required([/최종 종합 판단/u, /Consultant verdict/u], "프리미엄 종합 판단", "Premium synthesis"),
+    synthesis: required([/네 숫자를 하나로 읽는 종합 해석/u, /Cross-number synthesis/u], "네 숫자를 하나로 읽는 종합 해석", "Reading the four numbers together", "네 숫자가 서로 밀고 당기는 지점까지 함께 봅니다.", "See how the four numbers reinforce and pull against one another."),
+    paradox: required([/강점이 실패를 만드는 역설/u, /When strength creates failure/u], "강점이 실패를 만드는 순간", "When strength creates failure", "잘하는 방식이 언제 발목을 잡는지 조건을 찾습니다.", "Identify when a proven strength begins to work against you."),
+    scenarios: required([/최선·현실·위험 시나리오/u, /Best, likely, and risk scenarios/u], "가능한 세 가지 흐름", "Three possible paths", "좋을 때, 애매할 때, 위험할 때를 나눠 대응합니다.", "Prepare separately for favorable, mixed, and risky conditions."),
+    signals: required([/시나리오 확인 신호/u, /Signals that confirm or contradict/u], "무엇을 보고 판단할까요?", "What evidence should guide the decision?", "느낌보다 반복되는 행동과 결과를 기준으로 봅니다.", "Use repeated behavior and outcomes instead of feeling alone."),
+    decisionFramework: required([/고객별 의사결정 기준/u, /Personal decision framework/u], "내 결정을 지키는 기준", "A framework for your decision", "사실과 기대를 나누고, 감당할 손실과 검토일을 정합니다.", "Separate facts from hopes, then set downside and a review date."),
+    manual: required([/6단계 실행 매뉴얼/u, /Six-step execution manual/u], "생각을 행동으로 옮기는 6단계", "Six steps from thought to action", "한 번에 한 단계씩 확인한 뒤 다음 단계로 넘어갑니다.", "Complete one evidence gate before moving to the next."),
+    riskChecklist: required([/이 질문의 위험 방지 체크리스트/u, /Risk-prevention checklist/u], "결정 전에 확인할 일곱 가지", "Seven checks before deciding", "큰 결정을 내리기 전에 빠진 사실과 위험을 확인합니다.", "Check missing facts and risks before a major decision."),
+    stopConditions: required([/보류·중단·전환 기준 6가지/u, /Six hold, stop, or pivot conditions/u], "멈추거나 방향을 바꿀 여섯 가지 신호", "Six signals to hold, stop, or pivot", "계속하는 용기만큼 멈추는 기준도 미리 정합니다.", "Define when to stop with the same care used to begin."),
+    longTerm: required([/장기 전략/u, /Long-term strategy/u], "길게 가져갈 전략", "A longer-term strategy", "지금의 선택이 오래 버틸 구조인지 확인합니다.", "Check whether today's choice can remain sound over time."),
+    verdict: required([/최종 종합 판단/u, /Consultant verdict/u], "프리미엄 종합 판단", "Premium synthesis", "가능성보다 진행과 보류의 조건을 먼저 봅니다.", "Judge the conditions to proceed or hold before possibility."),
   };
 }

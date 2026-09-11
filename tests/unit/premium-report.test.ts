@@ -113,6 +113,7 @@ describe("PREMIUM_79000 strict tier inheritance", () => {
     expect((manual.match(/완료 기준:/gu) ?? [])).toHaveLength(6);
     expect((manual.match(/다음 관문:/gu) ?? [])).toHaveLength(6);
     expect((stops.match(/\d\./gu) ?? [])).toHaveLength(6);
+    expect(JSON.stringify(report)).not.toMatch(/프리미엄 확장|Premium extension|을\(를\)|이\(가\)/u);
   });
 
   it("routes sensitive domains safely without guarantees or private-fact invention", () => {

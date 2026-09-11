@@ -5,6 +5,7 @@ import {
 } from "@/core/numerology";
 import type { PaidReadingInput, PaidReport } from "@/core/paid-reading";
 import { createIntegratedProfile, describeIntegratedNumber } from "@/core/profile";
+import { withParticle } from "@/core/korean-particles";
 import { describePersonalYear } from "@/core/profile/personal-year-theme";
 import { pickSharpInsights } from "@/core/profile/sharp-insights";
 import {
@@ -238,14 +239,9 @@ function enrichBody(
   category: DetailCoverageCategory,
   body: string,
   addition: string,
-  locale: Locale,
 ): string {
-  const bridge = localized(
-    locale,
-    `\n\n[프리미엄 확장 · ${category}] ${addition}`,
-    `\n\n[Premium extension · ${category}] ${addition}`,
-  );
-  return `${body}${bridge}`;
+  void category;
+  return `${body}\n\n${addition}`;
 }
 
 function categoryForTitle(title: string, index: number): DetailCoverageCategory {
@@ -366,7 +362,7 @@ export function createPremiumPaidReport(
     decision_pattern: localized(locale, `판단할 때는 사실·해석·가정을 세 칸으로 나누세요. 사실은 ${strategy.proof}, 해석은 현재 가장 가능성 높은 설명, 가정은 아직 확인하지 못한 기대입니다. 사실 두 개가 모이기 전에는 되돌리기 어려운 결정을 확정하지 않는 것이 좋습니다.`, `Separate facts, interpretation, and assumptions. Require two independent facts before an irreversible decision.`),
     strongest_ability: localized(locale, `이 능력을 오래 쓰려면 '내가 해결한 결과'보다 '다른 사람도 반복할 수 있는 기준'을 남겨야 합니다. 규모가 커질수록 직접 처리량보다 의사결정 기준의 전달력이 성과를 결정합니다.`, "Make the strength repeatable by leaving criteria other people can use."),
     failure_mechanisms: localized(locale, `관찰 가능한 경고 신호는 일정이 계속 밀리고, 설명 없이 일을 다시 가져오고, 휴식 중에도 확인을 멈추지 못하는 것입니다. 세 신호 중 두 개가 2주 이어지면 의지 문제가 아니라 구조 문제로 보고 범위를 줄이세요.`, "Treat two persistent warning signs as a structural problem, not a willpower problem."),
-    main_domain: localized(locale, `${strategy.subject}에서는 ${strategy.proof}을(를) 판단표의 맨 위에 두세요. 유리한 해석을 고르는 대신 매주 같은 항목을 확인해야 실제 변화와 희망 섞인 기대를 구분할 수 있습니다.`, `In ${strategy.subject}, place ${strategy.proof} at the top of the decision record.`),
+    main_domain: localized(locale, `${strategy.subject}에서는 ${withParticle(strategy.proof, "object")} 판단표의 맨 위에 두세요. 유리한 해석을 고르는 대신 매주 같은 항목을 확인해야 실제 변화와 희망 섞인 기대를 구분할 수 있습니다.`, `In ${strategy.subject}, place ${strategy.proof} at the top of the decision record.`),
     work_business: localized(locale, `직업·사업에서는 직함이나 가능성보다 책임과 권한의 균형, 반복 수익 또는 완료 증거를 보세요. 혼자 메운 성과가 늘수록 시스템은 강해진 것이 아니라 본인 의존도가 커진 것일 수 있습니다.`, "In work and business, compare responsibility with authority and repeatable outcomes."),
     money_resources: localized(locale, `돈은 낙관·불안을 잠재우는 수단이 아니라 선택의 여유를 지키는 자원입니다. 투입 전 최대 손실, 회수 시점, 중단 조건을 한 문장씩 적고 생활 안전자금과 분리하세요.`, "Set maximum loss, recovery timing, and exit conditions before committing resources."),
     people_collaboration: localized(locale, `협업에서는 상대의 성의보다 완료 기준·책임자·검수일을 보세요. 설명하지 않은 기대를 능력 평가로 바꾸지 말고, 기준을 문서로 넘긴 뒤 결과를 판단해야 합니다.`, "Use written completion criteria, ownership, and review dates instead of unspoken expectations."),
@@ -390,7 +386,7 @@ export function createPremiumPaidReport(
       : section.title;
     return {
       title: renamed,
-      body: enrichBody(category, section.body, addedByCategory[category], locale),
+      body: enrichBody(category, section.body, addedByCategory[category]),
     };
   });
 
@@ -409,7 +405,6 @@ export function createPremiumPaidReport(
             "보호자의 기대보다 집·학교·활동 환경에서 반복되는 행동을 함께 기록하고, 일상 기능 저하가 이어지면 교사나 적절한 전문가와 확인하세요.",
             "Compare repeated behavior across home, school, and activities, and seek appropriate professional help when daily function declines.",
           ),
-          locale,
         ),
       }
     : {
@@ -425,15 +420,14 @@ export function createPremiumPaidReport(
             )),
           ].join("\n\n"),
           addedByCategory.work_business,
-          locale,
         ),
       };
   const domainFoundation = hasQuestion
     ? [
         careerSection,
-        { title: localized(locale, "재물과 자원 흐름", "Money and resources"), body: enrichBody("money_resources", integrated.domains.find((item) => item.id === "money")?.personalizedInference ?? integrated.summary, addedByCategory.money_resources, locale) },
-        { title: localized(locale, "인간관계와 협업", "People and collaboration"), body: enrichBody("people_collaboration", integrated.domains.find((item) => item.id === "relationships")?.personalizedInference ?? integrated.summary, addedByCategory.people_collaboration, locale) },
-        { title: localized(locale, "연애·가족 등 가까운 관계", "Love, family, and close relationships"), body: enrichBody("close_relationships", integrated.domains.find((item) => item.id === "relationships")?.realityCheck ?? integrated.uncertainty, addedByCategory.close_relationships, locale) },
+        { title: localized(locale, "재물과 자원 흐름", "Money and resources"), body: enrichBody("money_resources", integrated.domains.find((item) => item.id === "money")?.personalizedInference ?? integrated.summary, addedByCategory.money_resources) },
+        { title: localized(locale, "인간관계와 협업", "People and collaboration"), body: enrichBody("people_collaboration", integrated.domains.find((item) => item.id === "relationships")?.personalizedInference ?? integrated.summary, addedByCategory.people_collaboration) },
+        { title: localized(locale, "연애·가족 등 가까운 관계", "Love, family, and close relationships"), body: enrichBody("close_relationships", integrated.domains.find((item) => item.id === "relationships")?.realityCheck ?? integrated.uncertainty, addedByCategory.close_relationships) },
       ]
     : [
         {
@@ -449,7 +443,6 @@ export function createPremiumPaidReport(
               )),
             ].join("\n\n"),
             addedByCategory.work_business,
-            locale,
           ),
         },
       ];
@@ -457,8 +450,8 @@ export function createPremiumPaidReport(
   const scenarioBody = localized(
     locale,
     [
-      `1. 최선 시나리오\n촉발 조건: ${strategy.positive}.\n예상 행동: 범위를 한 단계만 넓히고 합의와 수치를 기록합니다.\n가능한 결과: 성과와 관계 안정이 함께 커집니다.\n확인 신호: ${strategy.proof}이(가) 2회 이상 좋아집니다.\n대응: 다음 단계에 자원의 20%만 추가합니다.\n전환 기준: 긍정 신호가 두 검토 주기 연속 유지될 때만 확대합니다.`,
-      `2. 가장 현실적인 시나리오\n촉발 조건: 좋은 신호와 ${strategy.warning}이(가) 함께 보입니다.\n예상 행동: 진행은 하되 기간·비용·약속 범위를 절반으로 줄입니다.\n가능한 결과: 큰 손실 없이 실제 적합성을 확인합니다.\n확인 신호: 말보다 완료 행동이 조금씩 늘어납니다.\n대응: 한 번에 하나의 가설만 검증합니다.\n전환 기준: 2주 또는 한 계약 주기 뒤 증거표를 다시 평가합니다.`,
+      `1. 최선 시나리오\n촉발 조건: ${strategy.positive}.\n예상 행동: 범위를 한 단계만 넓히고 합의와 수치를 기록합니다.\n가능한 결과: 성과와 관계 안정이 함께 커집니다.\n확인 신호: ${withParticle(strategy.proof, "subject")} 2회 이상 좋아집니다.\n대응: 다음 단계에 자원의 20%만 추가합니다.\n전환 기준: 긍정 신호가 두 검토 주기 연속 유지될 때만 확대합니다.`,
+      `2. 가장 현실적인 시나리오\n촉발 조건: 좋은 신호와 ${withParticle(strategy.warning, "subject")} 함께 보입니다.\n예상 행동: 진행은 하되 기간·비용·약속 범위를 절반으로 줄입니다.\n가능한 결과: 큰 손실 없이 실제 적합성을 확인합니다.\n확인 신호: 말보다 완료 행동이 조금씩 늘어납니다.\n대응: 한 번에 하나의 가설만 검증합니다.\n전환 기준: 2주 또는 한 계약 주기 뒤 증거표를 다시 평가합니다.`,
       `3. 위험 시나리오\n촉발 조건: ${strategy.contradiction}.\n예상 행동: 불안을 덮으려고 더 많은 돈·시간·설명을 투입합니다.\n가능한 결과: 손실과 피로가 커지고 철회가 어려워집니다.\n확인 신호: ${strategy.warning}.\n대응: 신규 투입과 되돌리기 어려운 약속을 즉시 멈춥니다.\n전환 기준: ${strategy.threshold}이면 현재 방법을 중단하고 사실 확인부터 다시 시작합니다.`,
     ].join("\n\n"),
     [
@@ -469,29 +462,29 @@ export function createPremiumPaidReport(
   );
   const signals = localized(
     locale,
-    `긍정 신호: ${strategy.positive}.\n\n경고 신호: ${strategy.warning}.\n\n현재 해석을 반박하는 신호: ${strategy.contradiction}.\n\n재평가 시점: 2주, 한 시험 주기, 한 계약 주기 중 먼저 오는 때에 ${strategy.proof}을(를) 같은 기준으로 다시 확인합니다.`,
+    `긍정 신호: ${strategy.positive}.\n\n경고 신호: ${strategy.warning}.\n\n현재 해석을 반박하는 신호: ${strategy.contradiction}.\n\n재평가 시점: 2주, 한 시험 주기, 한 계약 주기 중 먼저 오는 때에 ${withParticle(strategy.proof, "object")} 같은 기준으로 다시 확인합니다.`,
     `Positive: ${strategy.positive}.\n\nWarning: ${strategy.warning}.\n\nContradiction: ${strategy.contradiction}.\n\nReassess after two weeks or one natural decision cycle.`,
   );
   const decisionFramework = localized(
     locale,
-    `① 확인된 사실은 무엇인가: ${strategy.proof}을(를) 숫자·날짜·행동으로 적습니다.\n\n② 아직 추측인 것은 무엇인가: 상대의 마음, 미래 결과, 승인 여부처럼 확인 전인 내용을 분리합니다.\n\n③ 내가 감당할 수 있는 최대 손실은 얼마인가: 돈·시간·관계 비용을 각각 정합니다.\n\n④ 되돌릴 수 있는가: 되돌릴 수 없을수록 증거를 두 배 요구합니다.\n\n⑤ 다음 검토일은 언제인가: 그날 전에는 불안 때문에 기준을 바꾸지 않습니다.`,
+    `① 확인된 사실은 무엇인가: ${withParticle(strategy.proof, "object")} 숫자·날짜·행동으로 적습니다.\n\n② 아직 추측인 것은 무엇인가: 상대의 마음, 미래 결과, 승인 여부처럼 확인 전인 내용을 분리합니다.\n\n③ 내가 감당할 수 있는 최대 손실은 얼마인가: 돈·시간·관계 비용을 각각 정합니다.\n\n④ 되돌릴 수 있는가: 되돌릴 수 없을수록 증거를 두 배 요구합니다.\n\n⑤ 다음 검토일은 언제인가: 그날 전에는 불안 때문에 기준을 바꾸지 않습니다.`,
     "1) Record facts. 2) Separate assumptions. 3) Set maximum downside. 4) Demand more evidence for irreversible choices. 5) Set a review date.",
   );
   const actions = localized(
     locale,
     [
       `1. 목표: 질문을 검증 가능한 한 문장으로 바꾸기 · 행동: '${strategy.subject}에서 2주 안에 확인할 한 가지'를 씁니다. · 완료 기준: 예/아니오로 답할 문장이 생김 · 위험: 목표를 너무 크게 잡음 · 다음 관문: 측정 항목 선택`,
-      `2. 목표: 기준선 확보 · 행동: 현재 ${strategy.proof}을(를) 숫자·날짜·행동으로 기록합니다. · 완료 기준: 최소 3개 사실 확보 · 위험: 느낌을 사실로 적음 · 다음 관문: 가설 분리`,
+      `2. 목표: 기준선 확보 · 행동: 현재 ${withParticle(strategy.proof, "object")} 숫자·날짜·행동으로 기록합니다. · 완료 기준: 최소 3개 사실 확보 · 위험: 느낌을 사실로 적음 · 다음 관문: 가설 분리`,
       `3. 목표: 작은 검증 실행 · 행동: 비용과 범위를 절반으로 줄인 시험을 한 번 합니다. · 완료 기준: 시작·종료일과 결과가 남음 · 위험: 여러 가설을 동시에 바꿈 · 다음 관문: 신호 판정`,
       `4. 목표: 결과 판정 · 행동: 긍정·경고·반증 신호로 나눠 적습니다. · 완료 기준: 각 칸에 최소 1개 증거 · 위험: 원하는 결과만 고름 · 다음 관문: 유지·수정·중단 선택`,
-      `5. 목표: 경계 설정 · 행동: ${strategy.threshold}을(를) 중단 조건으로 일정과 관련자에게 명시합니다. · 완료 기준: 조건과 책임자가 기록됨 · 위험: 정 때문에 기준을 미룸 · 다음 관문: 두 번째 검증`,
+      `5. 목표: 경계 설정 · 행동: ${withParticle(strategy.threshold, "object")} 중단 조건으로 일정과 관련자에게 명시합니다. · 완료 기준: 조건과 책임자가 기록됨 · 위험: 정 때문에 기준을 미룸 · 다음 관문: 두 번째 검증`,
       `6. 목표: 다음 선택 확정 · 행동: 같은 기준으로 한 번 더 검토해 확대·유지·축소 중 하나를 고릅니다. · 완료 기준: 이유와 다음 검토일을 한 문장으로 기록 · 위험: 결론 없이 계속 분석 · 다음 관문: 실행 또는 종료`,
     ].join("\n\n"),
     "1. Rewrite the goal as one testable sentence.\n\n2. Record three baseline facts.\n\n3. Run one half-sized test.\n\n4. Classify positive, warning, and contradictory signs.\n\n5. Record the stop threshold and owner.\n\n6. Choose expand, maintain, or stop and set the next review date.",
   );
   const checklist = localized(
     locale,
-    `□ 이 질문에서 확인된 사실과 바라는 해석을 분리했는가?\n□ ${strategy.proof}을(를) 같은 방식으로 두 번 이상 확인했는가?\n□ 최대 손실과 철회 비용을 적었는가?\n□ 상대의 마음·진단·승인·수익을 사실처럼 단정하지 않았는가?\n□ 수면 부족이나 공포·흥분 상태에서 큰 결정을 확정하지 않았는가?\n□ 계약·의료·법률·대출 문제는 자격 있는 전문가나 공식 문서로 확인했는가?\n□ 중단 조건과 다음 검토일이 정해졌는가?`,
+    `□ 이 질문에서 확인된 사실과 바라는 해석을 분리했는가?\n□ ${withParticle(strategy.proof, "object")} 같은 방식으로 두 번 이상 확인했는가?\n□ 최대 손실과 철회 비용을 적었는가?\n□ 상대의 마음·진단·승인·수익을 사실처럼 단정하지 않았는가?\n□ 수면 부족이나 공포·흥분 상태에서 큰 결정을 확정하지 않았는가?\n□ 계약·의료·법률·대출 문제는 자격 있는 전문가나 공식 문서로 확인했는가?\n□ 중단 조건과 다음 검토일이 정해졌는가?`,
     "□ Facts and hopes are separated.\n□ Evidence is checked twice.\n□ Maximum downside is written.\n□ Private facts or outcomes are not assumed.\n□ No major decision is made under acute pressure.\n□ Professional matters are formally checked.\n□ Stop condition and review date are set.",
   );
   const stops = localized(
@@ -502,7 +495,7 @@ export function createPremiumPaidReport(
       `3. 되돌릴 수 없는 비용·계약·관계 약속의 핵심 조건이 문서로 확인되지 않으면 보류합니다.`,
       `4. 수면·식사·업무·학업 같은 일상 기능이 2주 이상 뚜렷하게 나빠지면 속도를 낮추고 필요한 도움을 받습니다.`,
       `5. 모욕·위협·강요·감시·경계 침해가 나타나면 해석보다 안전 확보와 공식 지원을 우선합니다.`,
-      `6. 두 번의 검토 주기에도 ${strategy.proof}이(가) 개선되지 않으면 목표를 버리기 전에 방법·범위·시점을 바꿉니다.`,
+      `6. 두 번의 검토 주기에도 ${withParticle(strategy.proof, "subject")} 개선되지 않으면 목표를 버리기 전에 방법·범위·시점을 바꿉니다.`,
     ].join("\n\n"),
     `1. Stop at this threshold: ${strategy.threshold}.\n\n2. Rewrite the assumption when evidence contradicts it.\n\n3. Hold irreversible commitments without written terms.\n\n4. Reduce pace when daily function worsens for two weeks.\n\n5. Prioritize safety when boundaries are violated.\n\n6. Pivot the method after two cycles without evidence.`,
   );

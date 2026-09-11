@@ -41,18 +41,35 @@ test("79,000원 premium sample uses the editorial report and deterministic acces
   await page.goto("/ko/samples/premium");
   await expect(page.locator(".editorial-report-premium")).toBeVisible();
   await expect(page.locator(".ed-cover h1")).toContainText("프리미엄");
-  await expect(page.locator(".ed-premium-feature")).toHaveCount(8);
+  await expect(page.locator(".ed-premium-feature")).toHaveCount(10);
+  await expect(page.locator(".ed-premium-body")).toHaveCount(10);
+  await expect(page.locator(".ed-premium-feature details")).toHaveCount(0);
+  await expect(page.locator(".editorial-report-premium")).not.toContainText("프리미엄 확장");
+  await expect(page.locator(".editorial-report-premium")).not.toContainText("을(를)");
+  await expect(page.locator(".editorial-report-premium")).not.toContainText("이(가)");
   await expect(page.locator(".ed-accessory-grid > article")).toHaveCount(3);
   await expect(page.locator(".ed-accessory-grid > article small")).toContainText(["운명수 11", "태도수 6", "개인년 7"]);
   await expect(page.locator(".ed-accessory-grid a")).toHaveCount(3);
   await expect(page.locator(".ed-accessory-boundary")).toContainText("주문이나 결제는 진행되지 않습니다");
-  await expect(page.locator(".ed-paper-section, .ed-ink-section, .ed-reality-section, .ed-closing")).toHaveCount(24);
+  await expect(page.locator(".ed-paper-section, .ed-ink-section, .ed-reality-section, .ed-closing")).toHaveCount(25);
 
   const quality = await page.evaluate(() => ({
     brokenImages: [...document.images].filter((image) => image.currentSrc && image.complete && image.naturalWidth === 0).length,
     overflow: document.documentElement.scrollWidth - window.innerWidth,
+    longestPremiumParagraph: Math.max(...[...document.querySelectorAll(".ed-premium-feature p")].map((node) => node.textContent?.trim().length ?? 0)),
+    duplicatePremiumParagraphs: (() => {
+      const texts = [...document.querySelectorAll(".ed-premium-feature p")]
+        .map((node) => node.textContent?.replace(/\s+/gu, " ").trim() ?? "")
+        // Short evidence signals intentionally recur between the scenario and verification chapters.
+        // Catch duplicated explanatory copy while allowing those shared facts to stay consistent.
+        .filter((text) => text.length >= 60);
+      return texts.filter((text, index) => texts.indexOf(text) !== index);
+    })(),
   }));
-  expect(quality).toEqual({ brokenImages: 0, overflow: 0 });
+  expect(quality.brokenImages).toBe(0);
+  expect(quality.overflow).toBe(0);
+  expect(quality.longestPremiumParagraph).toBeLessThanOrEqual(190);
+  expect(quality.duplicatePremiumParagraphs).toEqual([]);
 });
 
 test("39,000원 editorial sample keeps its reading and accessibility contract", async ({ page }) => {
