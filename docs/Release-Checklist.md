@@ -244,3 +244,13 @@ Rollback reference: production base `ee4ae5038e34e0715456b837cbe7c7f2db5591c4`; 
 - [x] No new model identifier, provider request, retry, token cap, runtime AI cost or database migration was introduced.
 - [x] Typecheck, lint with zero errors, 134-route production build, focused 217 tests and the 120-case Space browser/visual matrix pass (90 run, 30 intentional skips).
 - [x] Full unit suite passed 1,160 of 1,160 cases. PR #61 merge `78214839114fb66f20b47e334e5a1a48e8667b60` is live as Worker `69ff79b4-2120-4934-b191-be24fdd9e606`; Sites version 105 packages the same application code with its own canonical origin. Both origins return 200 for home, Korean/English Feng Shui, Japanese Premium and health, and live object-add checks pass without overflow.
+## Korean residential template engine — release held
+
+- [x] Existing Scene renderer receives a validated living-room/kitchen scene; current photo/manual/recommendation/Reality Check paths remain available.
+- [x] Synthetic provenance, zero real-complex coverage, MATCH_SCORE wording, conflict states, fixed fixtures, mirror/expansion transforms, and pinned versions have automated coverage.
+- [x] Owner selection/correction RLS, no global overwrite, export, and project cascade have local PostgreSQL coverage.
+- [ ] Licensed real-complex dataset and verification owner (not required for generic V1; required for any complex-specific claim).
+- [ ] Staging migration, hosted RLS/export/delete, existing 120-case Space browser matrix, and physical iPhone/Android checks.
+- [ ] Production merge, migration, flag enablement, and deployment authorization. This branch must remain review-only.
+- [x] Clean production rebuild after temporary visual-inspection route removal generated the expected 134 routes; no preview route remains in source or build output.
+- [x] Dedicated Space behavior matrix: 23 passed and four intentional device skips. Five unrelated homepage image snapshots differed by about 1%; baselines were not rewritten to hide the discrepancy.

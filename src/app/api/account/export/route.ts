@@ -68,11 +68,11 @@ export async function GET() {
   // Keep space data exportable when the feature flag is off. Never silently truncate it.
   const spaceData: Record<string, unknown[]> = {};
   let spaceMigrationPending = false;
-  for (const table of ["space_projects", "space_rooms", "space_assets", "space_analysis_runs", "space_applied_changes", "space_reality_checks"]) {
+  for (const table of ["space_projects", "space_rooms", "space_assets", "space_analysis_runs", "space_applied_changes", "space_reality_checks", "space_template_selections", "space_template_corrections"]) {
     const rows: unknown[] = [];
     for (let offset = 0; ; offset += 500) {
       const select = table === "space_assets" ? "id,project_id,status,byte_size,expires_at,created_at" : "*";
-      let query = auth.client.from(table).select(select).eq("owner_user_id", auth.user.id).order(table === "space_rooms" ? "project_id" : table === "space_applied_changes" ? "run_id" : "id");
+      let query = auth.client.from(table).select(select).eq("owner_user_id", auth.user.id).order(["space_rooms", "space_template_selections"].includes(table) ? "project_id" : table === "space_applied_changes" ? "run_id" : "id");
       if (table === "space_applied_changes") query = query.order("recommendation_id");
       const result = await query.range(offset, offset + 499);
       if (result.error) {

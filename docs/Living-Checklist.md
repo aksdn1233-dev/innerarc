@@ -487,3 +487,13 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] The full guide now tells users to verify mirrors, artwork, curtains, clocks, plants, lighting, aquariums, stove/sink and electronics before analysis.
 - [x] Dedicated Space visual matrix passed 90 of 120 cases with 30 intentional project skips and zero failures; desktop and 1440 review added four new detail objects with zero console/page errors.
 - [x] Full unit suite: 1,160 passed with zero failures. PR #61 merged as `78214839114fb66f20b47e334e5a1a48e8667b60`; Worker version `69ff79b4-2120-4934-b191-be24fdd9e606` and Sites version 105 are the final production targets.
+## 2026-09-12 — Korean residential template engine
+
+- [x] Add 25 synthetic apartment structure samples plus five generic residence fallbacks with no real-complex claim.
+- [x] Pin template version/variant and preserve owner-isolated selection, correction, export, and project/account deletion paths.
+- [x] Transform rooms, openings, kitchen/service points, orientation, camera, and action coordinates for mirror/expansion variants.
+- [x] Prevent fixed kitchen/built-in elements from entering move/rotate recommendations.
+- [x] Keep matching deterministic, questions capped at three, conflict visible, and photos/measurement authoritative for correction.
+- [x] Keep current renderer, photo flow, auth, payments, reports, deterministic engines, and Reality Check additive and unchanged.
+- [ ] Acquire and review a licensed real-complex source before any complex-specific coverage claim.
+- [ ] Apply the migration in staging, verify hosted RLS/export/delete, rerun physical iPhone/Android tests, and obtain release authorization.

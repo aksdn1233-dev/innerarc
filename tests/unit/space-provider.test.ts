@@ -29,6 +29,11 @@ describe("space model boundary", () => {
   it("builds a strict required-fields-only schema recursively", () => {
     const walk = (value: unknown) => { if (!value || typeof value !== "object") return; const v = value as Record<string, unknown>; if (v.type === "object") { expect(v.additionalProperties).toBe(false); expect(v.required).toEqual(Object.keys(v.properties as object)); } Object.values(v).forEach(child => Array.isArray(child) ? child.forEach(walk) : walk(child)); }; walk(SPACE_OBSERVATION_JSON_SCHEMA);
   });
+  it("classifies observed plumbing fixtures in deterministic code rather than trusting model movability", async () => {
+    const sink={...scene.objects[0],id:"sink_seen",kind:"sink",movable:true,elevation:null};
+    const result=await extractSpace(images,scene.orientation,config,transport(()=>Response.json(output(JSON.stringify({...observation,objects:[sink]})))));
+    expect(result.scene?.objects[0]).toMatchObject({kind:"sink",movable:false,mobility:"fixed"});
+  });
   it("counts exact image input before generation and never stores provider responses", async () => {
     const fetch = transport((body) => { expect(body.store).toBe(false); expect(body.max_output_tokens).toBe(4096); expect(JSON.stringify(body)).not.toContain("image_url\":{\"url"); expect(body).not.toHaveProperty("tools"); return Response.json(output()); });
     const result = await extractSpace(images, scene.orientation, config, fetch); expect(result.scene?.confirmed).toBe(false); expect(result.telemetry.model).toBe("synthetic-fallback"); expect(result.telemetry.costMicros).toBe(1200); expect(fetch.mock.calls[1][0]).toContain("input_tokens");

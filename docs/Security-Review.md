@@ -109,3 +109,6 @@ The miniature guide layer receives only already-validated recommendation text an
 # Dependency advisory follow-up — 2026-09-09
 
 The full-product release audit detected newly published advisories in Next.js, Sharp, js-yaml and Vitest. The release pins patched versions: Next.js and eslint-config-next 16.3.3, Sharp 0.35.4, js-yaml 4.3.2 and Vitest 4.1.11. `pnpm audit` now exits successfully with only the two previously reviewed workspace exclusions in `pnpm-workspace.yaml`.
+## Residential template additive review — 2026-09-12
+
+The new migration keeps shared revision definitions and candidate aggregation inaccessible to browser roles. Authenticated users receive owner-RLS read access only to their selection/correction rows; service-role RPCs recheck project ownership and idempotency. Template inputs use closed Zod schemas and bounded JSON sizes. The existing Scene schema, geometry/collision checks, action validation, account export, project cascade, Space flags, provider consent, and cost controls remain in force. Local PGlite tests cover cross-owner denial and prove that private corrections do not mutate shared revisions. Hosted migration/RLS, physical-device, and production enablement remain release gates.

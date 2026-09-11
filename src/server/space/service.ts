@@ -8,6 +8,7 @@ import { SPACE_BUCKET, SPACE_IMAGE_MAX_BYTES } from "./config";
 import { prepareSpaceImage, readBounded, readJson } from "./io";
 import { spaceRoutingState } from "./routing-store";
 import { extractSpace } from "./provider";
+import { TemplateCorrectionInputSchema, TemplateSelectionInputSchema } from "@/core/space/residential-template";
 
 const StoredPhotoQualitySchema = z.object({
   width: z.number().int().positive(), height: z.number().int().positive(), megapixels: z.number().nonnegative(),
@@ -42,26 +43,40 @@ export async function project(request: Request, projectId: string) {
     // The scheduled worker owns cleanup; never drain other owners' queue in this response.
     return spaceResponse({ deleted: true, imageDeletionPending: true });
   }
-  const [room, assets, runs, changes, checks, reports] = await Promise.all([
+  const [room, assets, runs, changes, checks, templateSelection, reports] = await Promise.all([
     ctx.client.from("space_rooms").select("scene").eq("project_id", projectId).eq("owner_user_id", ctx.owner).maybeSingle(),
     ctx.client.from("space_assets").select("id,status,expires_at,pixel_width,pixel_height,quality").eq("project_id", projectId).eq("owner_user_id", ctx.owner).gt("expires_at", new Date().toISOString()),
     ctx.client.from("space_analysis_runs").select("id,kind,status,result,telemetry,created_at").eq("project_id", projectId).eq("owner_user_id", ctx.owner).order("created_at", { ascending: false }).limit(20),
     ctx.client.from("space_applied_changes").select("run_id,recommendation_id,applied").eq("project_id", projectId).eq("owner_user_id", ctx.owner),
     ctx.client.from("space_reality_checks").select("id,run_id,outcome,note,days,created_at").eq("project_id", projectId).eq("owner_user_id", ctx.owner).limit(100),
+    ctx.client.from("space_template_selections").select("template_id,template_version,variant,match_score,evidence_status,private_residence,updated_at").eq("project_id",projectId).eq("owner_user_id",ctx.owner).maybeSingle(),
     ctx.admin.from("purchased_reports").select("order_id,report").eq("owner_user_id", ctx.owner).eq("status", "ready").limit(20),
   ]);
-  if (room.error || assets.error || runs.error || changes.error || checks.error) throw new SpaceError("STORAGE_UNAVAILABLE", 503);
+  if (room.error || assets.error || runs.error || changes.error || checks.error || templateSelection.error) throw new SpaceError("STORAGE_UNAVAILABLE", 503);
   return spaceResponse({ project: owned.data, scene: room.data?.scene ?? null, assets: assets.data, runs: runs.data, changes: changes.data, checks: checks.data,
+    templateSelection: templateSelection.data,
     reports: (reports.data ?? []).map(r => ({ id: r.order_id, title: typeof r.report?.title === "string" ? r.report.title : "Report" })) });
 }
 export async function projectOperation(request: Request, projectId: string, operation: string) {
   z.uuid().parse(projectId);
-  if (!["uploads", "extract", "analyze", "changes", "checks"].includes(operation)) throw new SpaceError("NOT_FOUND", 404);
+  if (!["uploads", "extract", "analyze", "changes", "checks", "template", "template-corrections"].includes(operation)) throw new SpaceError("NOT_FOUND", 404);
   const ctx = await spaceAccess(request, { write: true, costly: operation === "extract" });
   const owned = await ctx.client.from("space_projects").select("id,goal,locale").eq("id", projectId).eq("owner_user_id", ctx.owner).maybeSingle();
   if (owned.error) throw new SpaceError("STORAGE_UNAVAILABLE", 503);
   if (!owned.data) throw new SpaceError("PROJECT_NOT_FOUND", 404);
   const owner = ctx.owner;
+  if (operation === "template") {
+    const selection = TemplateSelectionInputSchema.parse(await readJson(request));
+    const saved = await ctx.admin.rpc("space_save_template_selection", { p_owner: owner, p_project: projectId, p_selection: selection });
+    if (saved.error) throw new SpaceError("SAVE_FAILED", 503);
+    return spaceResponse({ saved: true });
+  }
+  if (operation === "template-corrections") {
+    const correction = TemplateCorrectionInputSchema.parse(await readJson(request));
+    const saved = await ctx.admin.rpc("space_save_template_correction", { p_owner: owner, p_project: projectId, p_request: correction.requestId, p_template: correction.templateId, p_version: correction.templateVersion, p_correction: correction.correction });
+    if (saved.error) throw new SpaceError("SAVE_FAILED", 503);
+    return spaceResponse({ saved: true });
+  }
   if (operation === "uploads") {
     // One bounded file/request; never buffer a 6-file multipart body in a Worker.
     const prepared = prepareSpaceImage(await readBounded(request.body, SPACE_IMAGE_MAX_BYTES), request.headers.get("content-type"));

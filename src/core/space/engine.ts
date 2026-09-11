@@ -38,7 +38,7 @@ export function applyAction(scene: Scene, candidate: unknown): Scene {
   if (geometryIssues(scene).length) throw new Error("INVALID_SCENE");
   if (action.type !== "move" && action.type !== "rotate") return structuredClone(scene);
   const object = scene.objects.find(obj => obj.id === action.objectId);
-  if (!object || !object.movable) throw new Error("INVALID_ACTION_TARGET");
+  if (!object || !object.movable || object.mobility === "fixed") throw new Error("INVALID_ACTION_TARGET");
   if (action.type === "move" && (action.x === null || action.z === null)) throw new Error("MISSING_COORDINATES");
   if (action.type === "rotate" && action.rotation === null) throw new Error("MISSING_ROTATION");
   const next = structuredClone(scene);
@@ -134,11 +134,11 @@ export function analyzeSpace(candidate: unknown, goal: Goal, locale: "ko" | "en"
   for (const id of blockedDoors(current)) {
     if (result.recommendations.length >= 2) break;
     const object = result.recommended.objects.find(o => o.id === id)!;
-    const action = object.movable ? findSafeMove(result.recommended, object, false) : null;
+    const action = object.movable && object.mobility !== "fixed" ? findSafeMove(result.recommended, object, false) : null;
     if (action) add("door_clearance_v1", "practical", ko ? "문 앞 여유 공간과 가구가 겹칩니다. 문을 열고 지나갈 공간을 비우는 배치입니다. 실제 문 여는 방향과 통로는 현장에서 확인하세요." : "Furniture occupies the doorway clearance. This placement frees that area; verify the door swing and walking route in the actual room.", action, 1);
     else result.warnings.push(ko ? `${id}: 문 앞 공간을 비우는 배치를 찾지 못했습니다. 직접 조정하세요.` : `${id}: No safe doorway placement found. Adjust manually.`);
   }
-  const bed = result.recommended.objects.find(o => o.kind === "bed" && o.movable);
+  const bed = result.recommended.objects.find(o => o.kind === "bed" && o.movable && o.mobility !== "fixed");
   if (bed && result.recommendations.length < 4) {
     if (headGap(result.recommended, bed) > 0.4) {
       const move = findSafeMove(result.recommended, bed, true);

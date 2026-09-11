@@ -94,7 +94,8 @@ export async function extractSpace(images: string[], orientation: Scene["orienta
           observation.crossView.lightingRisk > .8 || observation.crossView.perspectiveRisk > .8 || observation.crossView.occlusionRisk > .8;
         if (crossViewInsufficient || observation.missing.some(value => ["cross_view", "low_light", "blur", "occlusion", "perspective"].includes(value))) return finish(null, "INSUFFICIENT_CAPTURE_EVIDENCE");
         if (!observation.room || observation.confidence < 0.5 || observation.missing.some(value => ["dimensions", "multiple_rooms", "irregular_room", "door", "objects"].includes(value)) || !observation.doors.length || !observation.objects.length) return finish(null, "INSUFFICIENT_EVIDENCE");
-        const objects = observation.objects.map(({ elevation, ...object }) => elevation === null ? object : { ...object, elevation });
+        const isMovable = (kind:string)=>!(["sink","stove","column","ceiling_beam"] as string[]).includes(kind);
+        const objects = observation.objects.map(({ elevation, ...object }) => ({ ...object, movable: object.kind === "refrigerator" ? object.movable : object.movable && isMovable(object.kind), ...(object.kind === "refrigerator" ? { mobility:"semi_fixed" as const } : isMovable(object.kind) ? {} : { mobility:"fixed" as const }), ...(elevation === null ? {} : { elevation }) }));
         const scene = SceneSchema.parse({ version: SPACE_VERSION, room: observation.room, measurements: estimatedMeasurements("photo", observation.confidence), walls: ["top", "right", "bottom", "left"], doors: observation.doors, windows: observation.windows, objects, orientation, confirmed: false });
         if (geometryIssues(scene).length) throw new Error("INVALID_GEOMETRY");
         return finish(scene, null);
