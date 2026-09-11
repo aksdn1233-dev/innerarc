@@ -1,4 +1,5 @@
 import { calculateNumerologyProfile } from "@/core/numerology";
+import { withParticle } from "@/core/korean-particles";
 import type { PaidReport } from "@/core/paid-reading";
 import { describePersonalYear } from "@/core/profile/personal-year-theme";
 
@@ -18,6 +19,11 @@ export type EditorialPattern = EditorialTextBlock & Readonly<{
   correction: string;
 }>;
 
+export type EditorialContrast = EditorialTextBlock & Readonly<{
+  first: string;
+  second: string;
+}>;
+
 export type DetailEditorialModel = Readonly<{
   reportId: string;
   birthDate: string;
@@ -26,15 +32,16 @@ export type DetailEditorialModel = Readonly<{
   generatedDate: string;
   symbol: Readonly<{ name: string; meaning: string }>;
   coreLine: string;
+  innateSummary: string;
   numbers: readonly Readonly<{ label: string; value: string; meaning: string }>[];
   outerInner: readonly EditorialTextBlock[];
   strengths: readonly EditorialTextBlock[];
   shadows: readonly EditorialTextBlock[];
   recurringPatterns: readonly EditorialPattern[];
   relationships: EditorialTextBlock;
-  money: EditorialTextBlock;
+  money: EditorialContrast;
   career: EditorialTextBlock;
-  love: EditorialTextBlock;
+  love: EditorialContrast;
   family?: EditorialTextBlock;
   stress: EditorialTextBlock;
   currentFlow: EditorialTextBlock;
@@ -127,6 +134,60 @@ function closingOf(text: string): string {
   return result.length <= 320 ? result : `${result.slice(0, 317).trimEnd()}…`;
 }
 
+function distinctSentences(text: string): string[] {
+  const seen = new Set<string>();
+  return sentences(text).filter((sentence) => {
+    const key = sentence.toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function contrastBlock(
+  item: EditorialTextBlock,
+  firstSentenceCount: number,
+  fallbackSecond: string,
+): EditorialContrast {
+  const parts = distinctSentences(item.body);
+  const splitAt = Math.min(Math.max(1, firstSentenceCount), Math.max(1, parts.length - 1));
+  const first = parts.slice(0, splitAt).join(" ") || item.lead;
+  const second = parts.slice(splitAt).join(" ") || fallbackSecond;
+  return { ...item, first, second: second === first ? fallbackSecond : second };
+}
+
+function compoundBirthYearDisplay(birthDate: string, reduced: number): string {
+  const year = birthDate.slice(0, 4);
+  const compound = [...year].reduce((sum, digit) => sum + Number(digit), 0);
+  if (!Number.isFinite(compound) || compound <= 9 || compound === reduced || [11, 22, 33].includes(reduced)) {
+    return numberDisplay(reduced);
+  }
+  return `${compound}/${reduced}`;
+}
+
+const KO_SHADOW_CORRECTIONS = [
+  "진행 중인 일의 개수와 이번 달에 끝낸 결과를 함께 적어보세요. 새 일을 시작하기 전 완료할 한 가지가 보입니다.",
+  "새 아이디어는 바로 시작하지 말고 보류 목록에 적어두세요. 현재 일의 완료 기준을 통과한 뒤 다시 판단합니다.",
+  "직감, 확인된 사실, 아직 시험하지 않은 가정을 세 칸으로 나눠 적으세요. 결정은 확인된 사실에서 시작합니다.",
+  "사람을 믿는 마음과 권한을 맡기는 일은 분리하세요. 기한 준수와 완료 결과를 확인한 뒤 범위를 넓힙니다.",
+  "압박이 커질수록 할 일을 늘리지 말고 직접 해야 할 한 가지와 맡길 일을 나누세요. 줄이는 결정이 먼저입니다.",
+] as const;
+
+const EN_SHADOW_CORRECTIONS = [
+  "Track work in progress beside what actually finished this month. Complete one item before opening another.",
+  "Put a new idea on a hold list instead of starting it immediately. Revisit it after the current completion rule is met.",
+  "Separate intuition, observed facts, and untested assumptions into three columns. Begin the decision with observed facts.",
+  "Separate trusting a person from expanding their authority. Widen the scope after deadlines and completed work are visible.",
+  "When pressure rises, divide the one task only you can do from work that can be assigned. Reduce the load before adding to it.",
+] as const;
+
+function futureYearReading(timing: string, year: number, serviceYear: number, ko: boolean): string {
+  if (year === serviceYear) return timing;
+  return ko
+    ? timing.replace(/^올해는/u, `${year}년은`).replace(/^올해/u, `${year}년`)
+    : timing.replace(/^This year\b/u, `In ${year}`).replace(/^This cycle\b/u, `The ${year} cycle`);
+}
+
 function strengthTitle(value: number, locale: Locale): string {
   const labels: Readonly<Record<number, readonly [string, string]>> = {
     1: ["방향을 여는 추진력", "Direction-setting drive"], 2: ["사이를 읽는 감각", "Relational awareness"],
@@ -167,12 +228,12 @@ export function buildDetailEditorialModel(report: PaidReport): DetailEditorialMo
   const definition = findSection(report, [/직접적인 인물 정의/u, /질문에 대한 직접 결론/u, /Direct person definition/u, /Direct answer/u]);
 
   const numberInputs = [
-    [ko ? "운명수" : "Life path", basis.lifePath],
-    [ko ? "생일수" : "Birthday", basis.birthday],
-    [ko ? "태도수" : "Attitude", basis.attitude],
-    [ko ? "출생연도수" : "Birth year", basis.birthYear],
+    { label: ko ? "운명수" : "Life path", value: basis.lifePath, display: numberDisplay(basis.lifePath) },
+    { label: ko ? "생일수" : "Birthday", value: basis.birthday, display: numberDisplay(basis.birthday) },
+    { label: ko ? "태도수" : "Attitude", value: basis.attitude, display: numberDisplay(basis.attitude) },
+    { label: ko ? "출생연도수" : "Birth year", value: basis.birthYear, display: compoundBirthYearDisplay(basis.birthDate, basis.birthYear) },
   ] as const;
-  const numbers = numberInputs.map(([label, value]) => ({ label, value: numberDisplay(value), meaning: meanings[value] ?? meanings[9]! }));
+  const numbers = numberInputs.map(({ label, value, display }) => ({ label, value: display, meaning: meanings[value] ?? meanings[9]! }));
   const strengthValues = [basis.lifePath, basis.birthday, basis.attitude, basis.birthYear];
   const strengthBodies = [
     ability?.body ?? meanings[basis.lifePath]!,
@@ -180,11 +241,17 @@ export function buildDetailEditorialModel(report: PaidReport): DetailEditorialMo
     decision?.body ?? meanings[basis.attitude]!,
     work?.body ?? meanings[basis.birthYear]!,
   ];
-  const strengths: EditorialTextBlock[] = strengthValues.map((value, index) => ({
-    title: strengthTitle(value, report.locale),
-    lead: meanings[value] ?? meanings[9]!,
-    body: paragraphAt(strengthBodies[index]!, 0),
-  }));
+  const strengths: EditorialTextBlock[] = strengthValues.map((value, index) => {
+    const title = strengthTitle(value, report.locale);
+    const meaning = meanings[value] ?? meanings[9]!;
+    return {
+      title,
+      lead: ko
+        ? `${numberDisplay(value)}의 ‘${meaning}’이 실제 선택에서 드러나는 강점입니다.`
+        : `${numberDisplay(value)} turns “${meaning}” into a strength used in real choices.`,
+      body: strengthBodies[index]!,
+    };
+  });
   strengths.push({
     title: ko ? "직감과 현실성을 같이 쓰는 능력" : "Using intuition with realism",
     lead: ko ? `${numberDisplay(basis.lifePath)}의 감각을 ${numberDisplay(basis.birthday)}의 실행 기준으로 옮깁니다.` : `Moves the signal of ${numberDisplay(basis.lifePath)} into the execution standard of ${numberDisplay(basis.birthday)}.`,
@@ -192,26 +259,58 @@ export function buildDetailEditorialModel(report: PaidReport): DetailEditorialMo
   });
 
   const sharp = (report.sharpInsights ?? []).slice(0, 5);
+  const shadowCorrections = ko ? KO_SHADOW_CORRECTIONS : EN_SHADOW_CORRECTIONS;
   const shadows = Array.from({ length: 5 }, (_, index) => {
     const text = sharp[index] ?? paragraphAt(failures?.body ?? contradiction?.body ?? report.summary, index);
     return {
       title: ko ? `강점이 과해질 때 ${String(index + 1).padStart(2, "0")}` : `When a strength runs long ${String(index + 1).padStart(2, "0")}`,
       lead: text,
-      body: ko ? `이 모습이 반복되는 조건을 기록해보세요. 손실이 커지기 전에 멈출 기준 하나를 정하면 강점은 다시 제자리로 돌아옵니다.` : "Record the condition that makes this repeat. One clear stop rule helps return the strength to useful range.",
+      body: shadowCorrections[index]!,
     };
   });
 
   const patternSources = [decision, failures, contradiction].filter(Boolean) as PaidReport["sections"][number][];
-  const recurringPatterns = patternSources.map((section, index) => ({
-    title: ko ? ["결정이 커질 때", "끝내기 직전에", "두 마음이 충돌할 때"][index]! : ["When a decision grows", "Just before completion", "When two motives collide"][index]!,
-    lead: leadOf(section.body, section.title),
-    body: section.body,
-    why: sentences(paragraphAt(section.body, 0))[0] ?? section.title,
-    realLife: paragraphAt(section.body, 0),
-    trigger: sentences(paragraphAt(section.body, 0))[1] ?? leadOf(section.body, section.title),
-    risk: paragraphAt(section.body, 1),
-    correction: report.actions[index] ?? report.actions[0] ?? (ko ? "다음 선택 전에 사실과 기대를 한 줄씩 나눠 적습니다." : "Before the next choice, write one observed fact and one expectation separately."),
-  }));
+  const patternAvoid = new Set([
+    ...sharp,
+    ...[temperament, contradiction, ability, work, teamwork, stress]
+      .filter(Boolean)
+      .map((section) => leadOf(section!.body, section!.title)),
+  ]);
+  const recurringPatterns = patternSources.map((section, index) => {
+    const title = ko ? ["결정이 커질 때", "끝내기 직전에", "두 마음이 충돌할 때"][index]! : ["When a decision grows", "Just before completion", "When two motives collide"][index]!;
+    const parts = distinctSentences(section.body);
+    const fallback = ko
+      ? [
+          `${title}에는 느낌과 확인된 사실을 먼저 구분합니다.`,
+          `${withParticle(title, "with")} 비슷한 최근 장면을 하나 떠올려봅니다.`,
+          `${withParticle(title, "subject")} 시작되는 순간의 말과 행동을 확인합니다.`,
+          `${withParticle(title, "subject")} 계속되면 시간과 책임이 한곳에 몰릴 수 있습니다.`,
+        ]
+      : [
+          `During ${title.toLocaleLowerCase()}, separate signals from observed facts.`,
+          `Recall one recent situation that followed ${title.toLocaleLowerCase()}.`,
+          `Notice the words and actions that start ${title.toLocaleLowerCase()}.`,
+          `If ${title.toLocaleLowerCase()} continues, time and responsibility can concentrate in one place.`,
+        ];
+    const used = new Set<string>();
+    const take = (preferredIndex: number, fallbackText: string) => {
+      const candidate = parts.find((part, partIndex) => partIndex >= preferredIndex && !used.has(part) && !patternAvoid.has(part))
+        ?? parts.find((part) => !used.has(part) && !patternAvoid.has(part))
+        ?? fallbackText;
+      used.add(candidate);
+      return candidate;
+    };
+    const lead = take(0, section.title);
+    const why = take(1, fallback[0]!);
+    const realLife = take(2, fallback[1]!);
+    const trigger = take(3, fallback[2]!);
+    const risk = take(4, fallback[3]!);
+    const action = report.actions[index] ?? report.actions[0];
+    const correction = take(5, action
+      ? (ko ? `이 패턴을 끊는 첫 조치로 다음 행동을 사용합니다: ${action}` : `Use this as the first interruption: ${action}`)
+      : (ko ? `${withParticle(title, "subject")} 보이면 사실과 기대를 한 줄씩 나눠 적습니다.` : `When ${title.toLocaleLowerCase()} appears, write one observed fact and one expectation separately.`));
+    return { title, lead, body: section.body, why, realLife, trigger, risk, correction };
+  });
 
   const years = [basis.serviceYear, basis.serviceYear + 1, basis.serviceYear + 2].map((year) => {
     const profile = calculateNumerologyProfile({ birthDate: basis.birthDate, name: "", personalYear: year });
@@ -220,25 +319,31 @@ export function buildDetailEditorialModel(report: PaidReport): DetailEditorialMo
       year,
       number: numberDisplay(profile.personalYear.value),
       keyword: theme.phase,
-      reading: theme.timing,
+      reading: futureYearReading(theme.timing, year, basis.serviceYear, ko),
       focus: ko ? [
-        { label: "돈", text: profile.personalYear.value >= 8 ? "성과와 보존 기준을 함께 세웁니다." : "먼저 지킬 금액과 쓸 범위를 나눕니다." },
+        { label: "돈", text: profile.personalYear.value >= 8 ? `${theme.phase}에는 성과와 보존 기준을 함께 세웁니다.` : `${theme.phase}에는 먼저 지킬 금액과 쓸 범위를 나눕니다.` },
         { label: "일", text: `${theme.phase}에 맞는 완료 기준 하나를 정합니다.` },
-        { label: "관계", text: profile.personalYear.value === 2 || profile.personalYear.value === 6 ? "말보다 약속과 돌봄의 균형을 봅니다." : "기대와 책임을 짧게 확인합니다." },
-        { label: "변화", text: profile.personalYear.value === 1 || profile.personalYear.value === 5 ? "작게 시작해 실제 반응을 확인합니다." : "되돌릴 수 있는 범위에서 조정합니다." },
+        { label: "관계", text: profile.personalYear.value === 2 || profile.personalYear.value === 6 ? `${theme.phase}에는 말보다 약속과 돌봄의 균형을 봅니다.` : `${theme.phase}에는 기대와 책임을 짧게 확인합니다.` },
+        { label: "변화", text: profile.personalYear.value === 1 || profile.personalYear.value === 5 ? `${theme.phase}에는 작게 시작해 실제 반응을 확인합니다.` : `${theme.phase}에는 되돌릴 수 있는 범위에서 조정합니다.` },
       ] : [
-        { label: "Money", text: profile.personalYear.value >= 8 ? "Set outcome and preservation rules together." : "Separate protected cash from planned spending." },
+        { label: "Money", text: profile.personalYear.value >= 8 ? `During ${theme.phase}, set outcome and preservation rules together.` : `During ${theme.phase}, separate protected cash from planned spending.` },
         { label: "Work", text: `Choose one completion standard for a ${theme.phase} cycle.` },
-        { label: "Relationships", text: profile.personalYear.value === 2 || profile.personalYear.value === 6 ? "Check the balance between promises and care." : "Clarify expectations and responsibility." },
-        { label: "Change", text: profile.personalYear.value === 1 || profile.personalYear.value === 5 ? "Start small and watch the real response." : "Adjust within a reversible range." },
+        { label: "Relationships", text: profile.personalYear.value === 2 || profile.personalYear.value === 6 ? `During ${theme.phase}, check the balance between promises and care.` : `During ${theme.phase}, clarify expectations and responsibility.` },
+        { label: "Change", text: profile.personalYear.value === 1 || profile.personalYear.value === 5 ? `During ${theme.phase}, start small and watch the real response.` : `During ${theme.phase}, adjust within a reversible range.` },
       ],
-      action: ko ? "이 흐름을 확정된 미래로 보지 말고, 실제 일정과 결과를 함께 확인하세요." : "Treat this as a reflection prompt, then check it against real schedules and outcomes.",
+      action: ko ? `${year}년의 흐름을 확정된 미래로 보지 말고, 그해의 실제 일정과 결과를 함께 확인하세요.` : `Treat the ${year} theme as a reflection prompt, then check it against that year's real schedules and outcomes.`,
     };
   });
 
   const gender = report.profileFacts?.gender;
   const genderLabel = gender === "male" ? (ko ? "남성" : "Male") : gender === "female" ? (ko ? "여성" : "Female") : (ko ? "미기재" : "Not provided");
   const coreLine = leadOf(definition?.body ?? report.summary, report.summary);
+  const innateSummary = ko
+    ? `핵심 성향은 ‘${strengthTitle(basis.lifePath, report.locale)}’이고, 실행할 때는 ‘${strengthTitle(basis.birthday, report.locale)}’을 함께 씁니다.`
+    : `The core tendency is “${strengthTitle(basis.lifePath, report.locale)},” supported in execution by “${strengthTitle(basis.birthday, report.locale)}.”`;
+  const moneyBlock = block(ko ? "돈이 붙는 방식과 빠지는 방식" : "How money stays and leaks", money, paragraphAt(work?.body ?? report.summary, 0));
+  const loveBlock = block(ko ? "끌리는 사람과 오래 맞는 사람" : "Attraction and long-term fit", love, teamwork?.body ?? report.summary);
+  const stressBlock = block(ko ? "평소의 나와 압박받을 때의 나" : "My usual pattern and stress loop", stress, failures?.body ?? report.summary);
 
   return {
     reportId: report.orderId,
@@ -248,6 +353,7 @@ export function buildDetailEditorialModel(report: PaidReport): DetailEditorialMo
     generatedDate: report.createdAt,
     symbol: { name: ko ? symbol.ko : symbol.en, meaning: ko ? symbol.koMeaning : symbol.enMeaning },
     coreLine,
+    innateSummary,
     numbers,
     outerInner: [
       block(ko ? "겉으로 보이는 나" : "How I appear", temperament, report.summary),
@@ -257,11 +363,14 @@ export function buildDetailEditorialModel(report: PaidReport): DetailEditorialMo
     shadows,
     recurringPatterns,
     relationships: block(ko ? "사람을 볼 때 반복되는 기준" : "The pattern in reading people", teamwork, paragraphAt(temperament?.body ?? report.summary, 1)),
-    money: block(ko ? "돈이 붙는 방식과 빠지는 방식" : "How money stays and leaks", money, paragraphAt(work?.body ?? report.summary, 0)),
+    money: contrastBlock(moneyBlock, 1, ko ? "수입과 이익을 나눠 적고, 검증 전에는 고정비를 늘리지 않는 보존 기준이 필요합니다." : "Separate revenue from profit and keep fixed costs unchanged until the result is verified."),
     career: block(ko ? "일에서 맞는 역할과 피할 구조" : "Work roles that fit and structures to avoid", work, ability?.body ?? report.summary),
-    love: block(ko ? "끌리는 사람과 오래 맞는 사람" : "Attraction and long-term fit", love, teamwork?.body ?? report.summary),
+    love: contrastBlock(loveBlock, 2, ko ? "마음의 크기보다 함께 보낸 시간, 지킨 약속, 갈등 뒤의 설명을 확인해야 합니다." : "Check shared time, kept promises, and explanations after conflict rather than relying on the size of a feeling."),
     ...(family ? { family: block(ko ? "가족 관계에서 확인할 것" : "What to check in family relationships", family, family.body) } : {}),
-    stress: block(ko ? "평소의 나와 압박받을 때의 나" : "My usual pattern and stress loop", stress, failures?.body ?? report.summary),
+    stress: {
+      ...stressBlock,
+      lead: ko ? `압박이 커질 때 먼저 확인할 신호입니다. ${stressBlock.lead}` : `This is the first signal to check as pressure rises. ${stressBlock.lead}`,
+    },
     currentFlow: block(ko ? "타고난 성향과 지금의 흐름은 다릅니다" : "Innate traits and the current cycle are different", current, report.summary),
     years,
     realityQuestions: [

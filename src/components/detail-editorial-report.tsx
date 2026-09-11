@@ -11,18 +11,31 @@ function ChapterNumber({ value }: { value: number }) {
   return <span aria-hidden="true" className="ed-chapter-number">{String(value).padStart(2, "0")}</span>;
 }
 
+function detailParagraphs(item: EditorialTextBlock): string[] {
+  const lead = item.lead.trim();
+  let detail = item.body.trim();
+  if (detail === lead) return [];
+  if (detail.startsWith(lead)) detail = detail.slice(lead.length).trim();
+  else {
+    const firstSentence = detail.match(/^.*?[.!?。](?:\s|$)/u)?.[0].trim();
+    if (firstSentence && lead.includes(firstSentence)) detail = detail.slice(firstSentence.length).trim();
+  }
+  return detail.split(/\n{2,}/u).map((paragraph) => paragraph.trim()).filter(Boolean);
+}
+
+function ReadingDetails({ item, label, className }: { item: EditorialTextBlock; label: string; className?: string }) {
+  const paragraphs = detailParagraphs(item);
+  if (paragraphs.length === 0) return null;
+  return <details className={className}><summary>{label}</summary>{paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}</details>;
+}
+
 function ReadingBlock({ item, label, locale }: { item: EditorialTextBlock; label: string; locale: Locale }) {
   return (
     <article className="ed-reading-block">
       <small>{label}</small>
       <h3>{item.title}</h3>
       <p className="ed-reading-lead">{item.lead}</p>
-      {item.body !== item.lead && (
-        <details>
-          <summary>{locale === "ko" ? "자세히 읽기" : "Read more"}</summary>
-          {item.body.split(/\n{2,}/u).map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-        </details>
-      )}
+      <ReadingDetails item={item} label={locale === "ko" ? "이어지는 내용 읽기" : "Continue reading"} />
     </article>
   );
 }
@@ -35,13 +48,13 @@ function PatternBlock({ item, index, locale }: { item: EditorialPattern; index: 
       <h3>{item.title}</h3>
       <p className="ed-reading-lead">{item.lead}</p>
       <details>
-        <summary>{ko ? "반복되는 순서 보기" : "See the repeating sequence"}</summary>
+        <summary>{ko ? `패턴 ${index + 1}의 이어지는 순서` : `How pattern ${index + 1} unfolds`}</summary>
         <dl>
-          <div><dt>WHY</dt><dd>{item.why}</dd></div>
-          <div><dt>REAL LIFE</dt><dd>{item.realLife}</dd></div>
-          <div><dt>TRIGGER</dt><dd>{item.trigger}</dd></div>
-          <div><dt>RISK</dt><dd>{item.risk}</dd></div>
-          <div><dt>CORRECTION</dt><dd>{item.correction}</dd></div>
+          <div><dt>{ko ? "이유" : "WHY"}</dt><dd>{item.why}</dd></div>
+          <div><dt>{ko ? "실제 장면" : "REAL LIFE"}</dt><dd>{item.realLife}</dd></div>
+          <div><dt>{ko ? "시작 신호" : "TRIGGER"}</dt><dd>{item.trigger}</dd></div>
+          <div><dt>{ko ? "그대로 둘 때" : "RISK"}</dt><dd>{item.risk}</dd></div>
+          <div><dt>{ko ? "바로잡는 방법" : "CORRECTION"}</dt><dd>{item.correction}</dd></div>
         </dl>
       </details>
     </article>
@@ -93,9 +106,6 @@ export function DetailEditorialReport({
     return safeIndex;
   });
   const patternSections = report.sections.map((section, index) => ({ index, title: section.title }));
-  const moneyParts = model.money.body.split(/\n{2,}/u).filter(Boolean);
-  const loveParts = model.love.body.split(/\n{2,}/u).filter(Boolean);
-
   return (
     <main className={`editorial-report${sample ? " editorial-report-sample" : ""}`} id="main-content">
       {sample && (
@@ -164,7 +174,7 @@ export function DetailEditorialReport({
         <ChapterNumber value={4} />
         <p className="ed-kicker">{ko ? "잘하는 데에는 이유가 있습니다" : "Your strengths have a structure"}</p>
         <h2 id="ed-strengths-title">{ko ? "당신의 강점 5가지" : "Five strengths"}</h2>
-        <ol className="ed-strength-list">{model.strengths.map((item, index) => <li key={`${item.title}-${index}`}><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{item.title}</h3><p>{item.lead}</p><details><summary>{ko ? "근거 읽기" : "Read the basis"}</summary><p>{item.body}</p></details></div></li>)}</ol>
+        <ol className="ed-strength-list">{model.strengths.map((item, index) => <li key={`${item.title}-${index}`}><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{item.title}</h3><p>{item.lead}</p></div></li>)}</ol>
       </section>
 
       <section className="ed-ink-section" aria-labelledby="ed-shadows-title">
@@ -186,19 +196,17 @@ export function DetailEditorialReport({
         <section className="ed-paper-section ed-domain-section">
           <ChapterNumber value={8} /><p className="ed-kicker">{ko ? "재물" : "MONEY"}</p><h2>{model.money.title}</h2>
           <div className="ed-dual-grid ed-money-grid">
-            <article><small>{ko ? "돈이 붙는 방식" : "HOW MONEY STAYS"}</small><p>{moneyParts[0] ?? model.money.lead}</p></article>
-            <article><small>{ko ? "돈이 빠지는 방식" : "HOW MONEY LEAKS"}</small><p>{moneyParts[1] ?? model.money.body}</p></article>
+            <article><small>{ko ? "돈을 만드는 감각" : "HOW MONEY IS MADE"}</small><p>{model.money.first}</p></article>
+            <article><small>{ko ? "돈이 새는 지점" : "WHERE MONEY LEAKS"}</small><p>{model.money.second}</p></article>
           </div>
-          <details className="ed-basis"><summary>{ko ? "전체 재물 해석 읽기" : "Read the full money analysis"}</summary><p>{model.money.body}</p></details>
         </section>
         <section className="ed-paper-section ed-domain-section"><ChapterNumber value={9} /><ReadingBlock item={model.career} label={ko ? "일·사업" : "WORK & BUSINESS"} locale={locale} /></section>
         <section className="ed-paper-section ed-domain-section">
           <ChapterNumber value={10} /><p className="ed-kicker">{ko ? "연애·배우자" : "LOVE & PARTNERSHIP"}</p><h2>{model.love.title}</h2>
           <div className="ed-dual-grid ed-love-grid">
-            <article><small>{ko ? "마음이 끌릴 때" : "ATTRACTION"}</small><p>{loveParts[0] ?? model.love.lead}</p></article>
-            <article><small>{ko ? "오래 맞으려면" : "LONG-TERM FIT"}</small><p>{loveParts[1] ?? model.love.body}</p></article>
+            <article><small>{ko ? "가까워진 뒤 놓치기 쉬운 것" : "WHAT CAN BE MISSED AFTER CLOSENESS"}</small><p>{model.love.first}</p></article>
+            <article><small>{ko ? "오래 맞으려면" : "LONG-TERM FIT"}</small><p>{model.love.second}</p></article>
           </div>
-          <details className="ed-basis"><summary>{ko ? "전체 관계 해석 읽기" : "Read the full relationship analysis"}</summary><p>{model.love.body}</p></details>
         </section>
       </div>
 
@@ -218,18 +226,18 @@ export function DetailEditorialReport({
           <article><small>STRESS</small><p>{ko ? "생각 증가 → 해결책 증가 → 할 일 증가 → 직접 수정 → 피로" : "More thoughts → more solutions → more tasks → taking work back → fatigue"}</p></article>
         </div>
         <p className="ed-reading-lead">{model.stress.lead}</p>
-        <details className="ed-basis"><summary>{ko ? "압박 패턴 자세히 읽기" : "Read the stress pattern"}</summary><p>{model.stress.body}</p></details>
+        <ReadingDetails className="ed-basis" item={model.stress} label={ko ? "압박 패턴 이어서 읽기" : "Continue reading the stress pattern"} />
       </section>
 
       <section className="ed-paper-section" id="ed-flow">
         <ChapterNumber value={13} />
-        <p className="ed-kicker">{ko ? "타고난 성향 / 현재 흐름" : "INNATE / CURRENT"}</p>
-        <h2>{model.currentFlow.title}</h2>
+        <p className="ed-kicker">{ko ? "타고난 성향 / 작성 시점의 흐름" : "INNATE / REPORT-TIME CYCLE"}</p>
+        <h2>{ko ? "타고난 성향과 작성 시점의 흐름은 다릅니다" : model.currentFlow.title}</h2>
         <div className="ed-dual-grid ed-current-grid">
-          <article><small>{ko ? "원래 이런 사람" : "INNATE"}</small><p>{model.coreLine}</p></article>
+          <article><small>{ko ? "타고난 조합" : "INNATE"}</small><p>{model.innateSummary}</p></article>
           <article><small>{model.years[0]?.year}</small><p>{model.currentFlow.lead}</p></article>
         </div>
-        <details className="ed-basis"><summary>{ko ? "올해 흐름 자세히 읽기" : "Read the current cycle"}</summary><p>{model.currentFlow.body}</p></details>
+        <ReadingDetails className="ed-basis" item={model.currentFlow} label={ko ? "작성 시점의 흐름 이어서 읽기" : "Continue reading the report-time cycle"} />
       </section>
 
       <section className="ed-paper-section" aria-labelledby="ed-years-title">
@@ -244,7 +252,7 @@ export function DetailEditorialReport({
         <p className="ed-kicker">REALITY CHECK</p>
         <h2 id="ed-reality-title">{ko ? "읽고 끝내지 말고, 실제 나와 비교해보세요" : "Compare the reading with your real life"}</h2>
         {sample ? (
-          <ol>{model.realityQuestions.map((question, index) => <li key={question}><span>{String(index + 1).padStart(2, "0")}</span><div><p>{question}</p><small>{ko ? "맞음 · 애매함 · 아님" : "Matches · Unclear · Doesn't match"}</small></div></li>)}</ol>
+          <><p>{ko ? "각 문장을 읽고 ‘맞음·애매함·아님’ 중 하나로 기록할 수 있습니다." : "Each statement can be recorded as Matches, Unclear, or Doesn't match."}</p><ol>{model.realityQuestions.map((question, index) => <li key={question}><span>{String(index + 1).padStart(2, "0")}</span><div><p>{question}</p></div></li>)}</ol></>
         ) : (
           <div className="ed-reality-actions">
             {realityLinks.map((index, position) => <ReportRealityCheck deterministicBasis={deterministicBasis} editorial key={`${index}-${position}`} locale={locale} orderId={orderId} personalized={Boolean(report.concern)} question={model.realityQuestions[position]} sectionIndex={index} signedIn={signedIn} traditionalBasis={traditionalBasis} />)}
