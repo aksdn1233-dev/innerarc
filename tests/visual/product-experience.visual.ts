@@ -29,10 +29,13 @@ test.describe("premium product evidence", () => {
     await page.goto("/ko/space");
     await prepareEvidenceCapture(page);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+    await captureEvidence(page, page.getByRole("dialog"), `premium-${width}-space-guided-start.png`);
+    await page.getByRole("dialog").getByRole("button", { name: "사용 안내 닫기" }).click();
     await captureEvidence(page, page.locator("section").first(), `premium-${width}-space-landing.png`);
     const view = page.locator("[data-scene-state]"); await expect(view).toHaveAttribute("data-object-count", "8", { timeout: 20_000 });
     await expect(page.getByLabel("실제 3D 렌더 해상도")).toContainText(/실제 렌더 \d+×\d+/);
-    for (const name of ["북쪽 방향을 확인했어요", "방과 가구 위치를 확인했어요"]) await page.getByRole("checkbox", { name }).check();
+    await page.getByRole("group", { name: "방에서 북쪽이 있는 방향" }).getByRole("button", { name: "위쪽", exact: true }).click();
+    await page.getByRole("checkbox", { name: "3D가 실제 방과 비슷한지 확인했어요" }).check();
     await page.getByRole("button", { name: "추천 배치 보기", exact: true }).click();
     const analysis = page.getByRole("region", { name: "공간 분석 결과" });
     await expect(analysis).toBeVisible();

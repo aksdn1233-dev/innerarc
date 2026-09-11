@@ -341,7 +341,16 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
     <div className={styles.sceneFrame}>
       {(!ready || assetLoading) && !failed && <p className={styles.sceneLoading} data-space-loading role="status">{ko ? "방의 재질과 3D 가구를 불러오고 있습니다…" : "Loading room materials and 3D furniture…"}</p>}
       <div ref={host} className={styles.canvas} hidden={failed} data-quality={quality} />
-      {!failed && <div className={styles.compass} aria-label={`${ko ? "평면도 기준 북쪽" : "North relative to plan"}: ${scene.orientation.northDegrees}°`}><span style={{ transform: `rotate(${scene.orientation.northDegrees}deg)` }}>↑</span>{ko ? "북" : "N"}<small>{scene.orientation.northDegrees}° · {ko ? "평면도 기준" : "plan"}</small></div>}
+      {!failed && <div className={styles.compass} aria-label={ko ? "평면도 방향: 북·동·남·서" : "Plan directions: north, east, south and west"}>
+        <div className={styles.compassRose} style={{ transform: `rotate(${scene.orientation.northDegrees}deg)` }}>
+          {([
+            ["north", ko ? "북 N" : "N"],
+            ["east", ko ? "동 E" : "E"],
+            ["south", ko ? "남 S" : "S"],
+            ["west", ko ? "서 W" : "W"],
+          ] as const).map(([direction, label]) => <b data-direction={direction} key={direction}><span style={{ transform: `rotate(${-scene.orientation.northDegrees}deg)` }}>{label}</span></b>)}
+        </div>
+      </div>}
       {!failed && resolution && <output className={styles.renderMeter} aria-label={ko ? "실제 3D 렌더 해상도" : "Actual 3D render resolution"}>{ko ? "실제 렌더" : "Actual render"} <strong>{resolution.bufferWidth}×{resolution.bufferHeight}</strong><small>{resolution.cssWidth}×{resolution.cssHeight} 화면 · {resolution.scale.toFixed(2)}×</small></output>}
       <span ref={guideMarker} className={styles.guideMarker} hidden aria-hidden="true">1</span>
     </div>

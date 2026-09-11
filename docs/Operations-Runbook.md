@@ -412,3 +412,9 @@ Use the Node 24 runtime required by package.json for release checks. Preserve Wo
 ### Feng Shui guide and Japanese reports release — 2026-09-12
 
 Production source is merge commit `0ac66570c3a882ae9fe0e2dd0f93883343e3b474`. Cloudflare Worker version `9ac9d69f-e6c3-48fb-883c-979b7d0c3abd` serves `mygyeol.kr`; Sites version 102 serves `https://innerarc-gyeol.qkrehgus5886.chatgpt.site`. Both origins returned 200 for home, Feng Shui, and Japanese premium sample checks after deployment. Roll back Cloudflare to `3d091a5e-e3fa-47ac-8f72-1c5fc1662490` and Sites to version 101 if the guide, localized report, or payment handoff regresses. This release has no migration and adds no LLM call; disable the existing Space flags only for a Space incident.
+
+### Feng Shui guided-cardinal and electronics release — 2026-09-12
+
+The customer UI must never ask for a raw north degree. It stores one of the existing internal quarter-turn values after the user chooses the side of the screen. The 3D compass must show all four cardinal labels together. If a new electronics kind fails geometry or draw-budget checks, remove that kind from both `OBJECT_KINDS` and the manifest/prompt as one change; never let an unvalidated provider string enter the scene.
+
+A manual electronics add runs only local deterministic placement and consumes no provider token. `electronics_rest_check_v1` is an observation prompt, not an efficacy or health claim. A spike in `NO_CLEAR_PLACEMENT` means users should correct room/furniture dimensions before placement thresholds are changed. On a provider or cost incident, set `SPACE_AI_ENABLED=false`; on a wider write incident, set `SPACE_ENABLED=false`. Keep owner reads, export, deletion, image expiry, and cleanup active.
