@@ -486,4 +486,4 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Deterministic rules separate traditional interpretation from practical living checks and make no guaranteed luck, health, wealth or sleep claim.
 - [x] The full guide now tells users to verify mirrors, artwork, curtains, clocks, plants, lighting, aquariums, stove/sink and electronics before analysis.
 - [x] Dedicated Space visual matrix passed 90 of 120 cases with 30 intentional project skips and zero failures; desktop and 1440 review added four new detail objects with zero console/page errors.
-- [x] Full unit suite: 1,160 passed with zero failures. PR #61 merged as `78214839114fb66f20b47e334e5a1a48e8667b60`; Worker version `96cd0a5a-760e-4a38-a300-df56b58a65e7` and Sites version 105 are the final production targets.
+- [x] Full unit suite: 1,160 passed with zero failures. PR #61 merged as `78214839114fb66f20b47e334e5a1a48e8667b60`; Worker version `69ff79b4-2120-4934-b191-be24fdd9e606` and Sites version 105 are the final production targets.
