@@ -103,6 +103,13 @@ check timed out. If it does not, the error text on that step is the right place 
   `dist` together with `.openai/hosting.json` from the repository root; never archive the
   contents of `dist` as the archive root, which changes the entrypoint to unsupported
   `server/index.js`.
+- The generic Sites `build-site.mjs` helper runs `pnpm build`, which refreshes `.next` but
+  does not refresh this repository's deployable `dist` directory. Before `package-site.mjs`,
+  always run `NEXT_PUBLIC_APP_URL=https://mygyeol.kr pnpm build:sites` from the exact pushed
+  commit and confirm the archive contains the newly generated `dist/client/assets/index-*.css`.
+  On 2026-09-11, Sites version 96 packaged an older `dist` after only the generic build; the
+  live report check caught it before that artifact was treated as a verified release. Do not
+  use that version as a rollback target.
 - Before publishing, smoke-test `/_vinext/image` once with Sites image bindings and once without
   them. The no-binding path must redirect only to a same-origin source asset;
   remote and protocol-relative source URLs must return 400 instead of reaching a network fetch.
