@@ -386,9 +386,13 @@ For isolated checkout UI evidence, run `E2E_PAYMENT_CHECKOUT=1 pnpm test:e2e tes
 
 Run the final Vitest suite without a concurrent lint, typecheck, build or browser matrix. The full premium-report question matrix has a deliberate 5-second ceiling and exceeded it under a three-way local CPU run while passing in the isolated suite; concurrency is not evidence of a product calculation failure.
 
+### 39,000원 editorial report rollback — 2026-09-11
+
+The editorial renderer is presentation and deterministic local composition only. If protected access, downloads, mobile completion, Reality Check section linkage or historical-report rendering regresses, revert the `DetailEditorialReport` route branches, `detail-editorial` view model and scoped `.ed-*` styles to base `419b42fa401b593dec1ba6ecbe20365b410efd39`. Do not rewrite stored reports, product codes, prices, entitlements, payment rows or confidence history as part of a presentation rollback. A missing historical birth time or gender must stay visibly unprovided; never infer it from report prose. Public sample checks must confirm no order/payment/write and protected-report checks must still use the existing two-account IDOR matrix before release.
+
 ### Editorial capture runner notes — 2026-09-08
 
-`pnpm start -- -p <port>` passes `-p` as a project directory in this repository's script shape. Start an explicit review server with `pnpm exec next start -p <port>`. For interactive browser checks, use the same hostname printed by the server. A Next development server opened as `localhost` but driven through `127.0.0.1` refuses cross-origin HMR and can leave forms as plain HTML submissions; that is not product-hydration evidence. Build first and use the production server for final interaction, console, and screenshot checks. Import Chromium from `@playwright/test`; the standalone `playwright` package is not installed. These command failures do not justify skipping the same production-server checks.
+`pnpm start -- -p <port>` passes `-p` as a project directory in this repository's script shape. Start an explicit review server with `pnpm exec next start -p <port>`. For interactive browser checks, use the same hostname printed by the server. A Next development server opened as `localhost` but driven through `127.0.0.1` refuses cross-origin HMR and can leave forms as plain HTML submissions; that is not product-hydration evidence. Build first and use the production server for final interaction, console, and screenshot checks. Import Chromium from `@playwright/test`; the standalone `playwright` package is not installed. These command failures do not justify skipping the same production-server checks. Place one-off Playwright modules inside the repository (or otherwise resolve dependencies from it); a module written under `/tmp` can fail with `ERR_MODULE_NOT_FOUND` even when the pinned package is installed.
 
 ## Guide assets and public-story sources — 2026-09-08
 

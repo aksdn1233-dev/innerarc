@@ -10,6 +10,7 @@ import { ReviewRequestPanel } from "@/components/review-request-panel";
 import { AcquisitionSurveyPanel } from "@/components/acquisition-survey-panel";
 import { ReportRealityCheck } from "@/components/pattern-intelligence/report-reality-check";
 import { EvidenceEventCapture } from "@/components/pattern-intelligence/evidence-event-capture";
+import { DetailEditorialReport } from "@/components/detail-editorial-report";
 import { CharacterWebtoonPanel as WebtoonPanel, ReportEmphasis, WebtoonCta, WebtoonCue, WebtoonOrbs } from "@/components/webtoon";
 import { WebtoonReveal } from "@/components/webtoon-reveal";
 import { toOwnReviewState } from "@/core/reviews";
@@ -228,6 +229,37 @@ export default async function PurchasedReportPage({
     : (locale === "ko" ? "저장된 리포트의 계산 근거" : "Stored report calculation basis");
   const traditionalBasis = `${locale === "ko" ? "전통 상징 해석 계층" : "Traditional symbolic interpretation layer"} · ${report.sectionPlan ?? "legacy"}`;
   const patternSections = report.sections.map((section, index) => ({ index, title: section.title }));
+  if (detailV2) {
+    return (
+      <>
+        <ReportViewBeacon locale={locale} productCode={report.productCode} />
+        <DetailEditorialReport
+          locale={locale}
+          orderId={orderId}
+          report={report}
+          signedIn={patternPersistenceEnabled}
+          footer={(
+            <section className="webtoon-panel webtoon-paper webtoon-outro">
+              <div className="webtoon-inner">
+                <section>
+                  <p className="eyebrow">{locale === "ko" ? "포함된 기능" : "Included"}</p>
+                  <h2>{locale === "ko" ? "두 사람의 관계도 이어서 볼 수 있어요" : "Continue with a two-person relationship reading"}</h2>
+                  <p>{locale === "ko" ? "상대방 생년월일을 입력하면 두 사람이 부딪히는 지점과 맞춰갈 조건을 확인합니다." : "Enter the other person's birth date to see friction points and practical conditions."}</p>
+                  <p className="payment-result-links"><a className="primary-button" href={compatibilityUrl}>{locale === "ko" ? "궁합 보러 가기" : "Open compatibility"}</a></p>
+                </section>
+                <ReportActions locale={locale} downloadUrl={`/api/reports/${orderId}/download${accessQuery}`} />
+                {existingAcquisitionSurvey.available && <AcquisitionSurveyPanel access={query.access} initialSurvey={existingAcquisitionSurvey.data} locale={locale} orderId={orderId} proof={query.proof} ticket={query.t} />}
+                {existingReview.available && <ReviewRequestPanel access={query.access} existing={existingReview.data ? toOwnReviewState(existingReview.data) : null} locale={locale} orderId={orderId} proof={query.proof} ticket={query.t} />}
+                <p className="paid-report-account-note">{locale === "ko" ? "이 페이지 주소와 내려받은 파일을 보관해 주세요. 주소를 잃어버려도 주문번호와 결제하신 휴대폰 번호로 다시 찾을 수 있어요." : "Keep this page address and downloaded file. You can recover it with the order number and checkout phone number."}</p>
+                <p className="payment-result-links"><Link className="link-button" href={`/${locale}/orders`}>{locale === "ko" ? "구매 내역 확인" : "Find a purchase"}</Link></p>
+              </div>
+            </section>
+          )}
+        />
+        <WebtoonCta href={`/api/reports/${orderId}/download${accessQuery}`} label={locale === "ko" ? "리포트 파일 내려받기" : "Download the report"} note={locale === "ko" ? `주문번호 ${orderId}` : `Order ${orderId}`} />
+      </>
+    );
+  }
   return (
     <>
       <main

@@ -23,12 +23,21 @@ export function ReportRealityCheck(props: {
   deterministicBasis: string;
   traditionalBasis: string;
   personalized: boolean;
+  question?: string;
+  editorial?: boolean;
 }) {
   const ko = props.locale === "ko";
   const [note, setNote] = useState("");
   const [selected, setSelected] = useState<PatternRealityCheckResponse | null>(null);
   const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [label, setLabel] = useState<string | null>(null);
+  const visibleResponses = props.editorial
+    ? [
+        { value: "MATCH" as const, ko: "맞음", en: "Matches" },
+        { value: "CONTEXT_DEPENDENT" as const, ko: "애매함", en: "Unclear" },
+        { value: "MISMATCH" as const, ko: "아님", en: "Doesn't match" },
+      ]
+    : responses;
 
   async function save(response: PatternRealityCheckResponse) {
     setSelected(response);
@@ -65,7 +74,7 @@ export function ReportRealityCheck(props: {
           <div><dt>{ko ? "검증 상태" : "Validation state"}</dt><dd>{label ?? (ko ? "검증 중" : "Being checked")}</dd></div>
         </dl>
       </details>
-      <p><strong>{ko ? "이 내용은 실제 나와 얼마나 비슷했나요?" : "How closely did this match your real experience?"}</strong></p>
+      <p><strong>{props.question ?? (ko ? "이 내용은 실제 나와 얼마나 비슷했나요?" : "How closely did this match your real experience?")}</strong></p>
       {!props.signedIn ? (
         <p className="pattern-sign-in-note">
           {ko ? "로그인하면 이 응답을 내 패턴 기록에 안전하게 저장할 수 있어요." : "Sign in to save this response to your private pattern record."}{" "}
@@ -74,7 +83,7 @@ export function ReportRealityCheck(props: {
       ) : (
         <>
           <div className="pattern-feedback-actions">
-            {responses.map((item) => (
+            {visibleResponses.map((item) => (
               <button
                 aria-pressed={selected === item.value}
                 disabled={status === "saving"}

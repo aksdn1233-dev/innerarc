@@ -686,6 +686,11 @@ export function createDetailPaidReport(
       birthYear,
       personalYear: profile.personalYear.value,
     },
+    profileFacts: {
+      birthDate: input.birthDate,
+      ...(input.birthTime ? { birthTime: input.birthTime } : {}),
+      ...(input.gender ? { gender: input.gender } : {}),
+    },
     contentReferences: [
       exact ? `detail-exact:${combinationKey(profile, birthYear)}` : "detail-profile:fallback",
       `topic:${topic.id}`,
