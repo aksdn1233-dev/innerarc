@@ -431,3 +431,8 @@ New photo labels are accepted only through the strict closed catalogue. A provid
 All new recommendations are deterministic and capped with the existing five-result limit. A mirror or beam rule is an interpretation prompt, while electrical, structural, load, plumbing, ventilation, glare and access checks are practical observations. Do not convert either into an outcome promise. Manual additions and rule evaluation consume no model tokens, and extraction retains the existing request, retry and cost caps.
 
 Rollback source before this release is `29a06e2c621be41cc7481a75a298b2e4b199e784`; no migration is involved. Revert catalogue, provider schema/prompt, asset manifest, renderer and rules as one unit so historical object kinds are not left without rendering or validation support.
+
+
+Production application source for this release is PR #61 merge `78214839114fb66f20b47e334e5a1a48e8667b60`. Cloudflare Worker version `96cd0a5a-760e-4a38-a300-df56b58a65e7` serves `mygyeol.kr`; rollback is Worker `048554ea-a59a-4e77-9427-802cff69a59d`. Sites version 105 serves the public mirror with its own canonical origin; rollback is Sites 103. The initial source-only Sites build failed after registry download errors and chose the wrong build command; uploading the already validated `build:sites` archive removed that dependency.
+
+GitHub Actions run 34649773809 created no executable steps because the account payment/spending limit remained active. This is not a product test result; use the recorded local 1,160-unit and 120-case Space matrices until hosted billing is restored.
