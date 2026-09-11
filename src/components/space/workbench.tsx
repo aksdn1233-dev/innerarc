@@ -15,16 +15,19 @@ import { ELECTRONIC_KINDS, FENG_SHUI_DETAIL_KINDS, FURNITURE_CATALOG, OBJECT_KIN
 import { buildSpaceGuideNarration } from "@/core/space/narration";
 import { withParticle } from "@/core/korean-particles";
 import { CardinalDirectionPicker, SpaceOnboardingTour } from "./onboarding-tour";
+import { matchResidentialTemplates, templateToScene, verifyTemplateAgainstObservation, type ResidentialMatchInput, type TemplateCandidate } from "@/core/space/residential-template";
 
 const RoomView = dynamic(() => import("./room-view"), { ssr: false, loading: () => <p role="status">3D…</p> });
 const ProjectSchema = z.object({ id: z.uuid(), title: z.string(), goal: z.enum(["rest", "focus", "balance"]), locale: z.enum(["ko", "en"]) });
 type Project = z.infer<typeof ProjectSchema>;
+const TemplateSelectionDetailSchema=z.object({template_id:z.string(),template_version:z.string(),variant:z.enum(["standard","mirrored","balcony_expanded","mirrored_balcony_expanded"]),match_score:z.number(),evidence_status:z.enum(["CONFIRMED","LIKELY","ESTIMATED","CONFLICT","UNKNOWN"]),private_residence:z.object({complexName:z.string().optional(),buildingLabel:z.string().optional(),unitType:z.string().optional()}).passthrough(),updated_at:z.string()});
 const DetailSchema = z.object({
   project: ProjectSchema, scene: SceneSchema.nullable(), assets: z.array(z.object({ id: z.uuid(), status: z.string(), expires_at: z.string(), pixel_width: z.number().nullable().optional(), pixel_height: z.number().nullable().optional(), quality: z.unknown().optional() })),
   runs: z.array(z.object({ id: z.uuid(), kind: z.string(), status: z.string(), result: z.unknown(), created_at: z.string() })),
   changes: z.array(z.object({ run_id: z.uuid(), recommendation_id: z.string(), applied: z.boolean() })),
   checks: z.array(z.object({ id: z.uuid(), run_id: z.uuid(), outcome: z.string(), note: z.string(), days: z.number(), created_at: z.string() })),
   reports: z.array(z.object({ id: z.string(), title: z.string() })),
+  templateSelection: TemplateSelectionDetailSchema.nullable().optional(),
 });
 type Photo = { name: string; blob: Blob; assetId: string | null; quality: PhotoQuality };
 const errorCopy: Record<string, [string, string]> = {
@@ -67,7 +70,7 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
   const [selectedId, setSelectedId] = useState<string | null>(null), [undo, setUndo] = useState<Scene[]>([]);
   const originalScene = useRef<Scene>(demo ? spaceExample("small_bedroom") : manualScene());
   const [referenceAxis, setReferenceAxis] = useState<"width" | "depth">("width"), [referenceLength, setReferenceLength] = useState(4);
-  const [source, setSource] = useState<"example" | "manual" | "photo" | "saved">("example");
+  const [source, setSource] = useState<"example" | "manual" | "photo" | "saved" | "template">("example");
   const [goal, setGoal] = useState<Goal>("balance"), [title, setTitle] = useState(ko ? "나의 방" : "My room");
   const [photos, setPhotos] = useState<Photo[]>([]), [remoteAssets, setRemoteAssets] = useState(0);
   const [consent, setConsent] = useState(false), [captureConfirmed, setCaptureConfirmed] = useState(false), [patternConsent, setPatternConsent] = useState(false), [reportId, setReportId] = useState("");
@@ -81,6 +84,10 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
   const [busy, setBusy] = useState(false), [message, setMessage] = useState(""), [error, setError] = useState("");
   const [tourOpen, setTourOpen] = useState(true), [tourPage, setTourPage] = useState(0);
   const [now, setNow] = useState(() => Date.now());
+  const [residenceInput, setResidenceInput] = useState<ResidentialMatchInput>({ residenceType: "apartment", areaClass: 84 });
+  const [complexName, setComplexName] = useState(""), [buildingLabel, setBuildingLabel] = useState(""), [unitType, setUnitType] = useState("");
+  const [templateMatches, setTemplateMatches] = useState<ReturnType<typeof matchResidentialTemplates> | null>(null);
+  const [templateCorrections,setTemplateCorrections]=useState<Set<"opening"|"fixed_fixture"|"measurement"|"other">>(new Set());
   const problems = geometryIssues(scene);
   const requiresReference = scene.measurements?.origin === "photo" && !scene.measurements.reference;
   const validScene = SceneSchema.safeParse(scene).success;
@@ -90,7 +97,7 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
     low_contrast: words("대비 부족", "low contrast"), likely_blur: words("흐림 가능성", "possible blur"), low_information: words("공간 정보 부족", "insufficient visual information"),
   })[issue];
   async function task(work: () => Promise<void>) {
-    setBusy(true); setError(""); setNow(Date.now());
+    setBusy(true); setError(""); setNow(Number(new Date()));
     try { await work(); } catch (e) {
       const code = e instanceof Error ? e.message : "FAILED";
       setError(errorCopy[code]?.[ko ? 0 : 1] ?? (code === "PHOTO_FORMAT" ? words("JPEG·PNG·WebP 사진만 가능하며, 한 장은 8MB 이하여야 합니다. HEIC는 JPEG로 변환해 주세요.", "Use JPEG, PNG or WebP up to 8 MB each. Convert HEIC to JPEG.") : words("처리하지 못했습니다. 입력을 확인하고 다시 시도하세요. 저장 중이었다면 방을 다시 열어 결과를 확인하세요.", "Could not finish. Check the input and retry. Reopen your room to check whether a save completed.")));
@@ -102,7 +109,7 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
     api("").then(value => { const list = z.object({ projects: z.array(ProjectSchema) }).parse(value); if (!disposed) setProjects(list.projects); }).catch(() => { if (!disposed) setError(ko ? "저장된 방을 불러오지 못했습니다. 다시 불러오기를 눌러 주세요." : "Could not load saved rooms. Use Reload."); });
     return () => { disposed = true; };
   }, [demo, ko]);
-  function edit(next: Scene) { if (!geometryIssues(scene).length) setUndo(items => [...items, scene].slice(-20)); setScene({ ...next, calibrationSource: undefined, confirmed: false }); setAnalysis(null); setComparisonMode("current"); setRunId(null); setSource("manual"); }
+  function edit(next: Scene, correction?:"opening"|"fixed_fixture"|"measurement"|"other") { if (!geometryIssues(scene).length) setUndo(items => [...items, scene].slice(-20)); setScene({ ...next, calibrationSource: undefined, confirmed: false }); if(scene.residentialTemplate&&correction)setTemplateCorrections(current=>new Set([...current,correction])); setAnalysis(null); setComparisonMode("current"); setRunId(null); setSource("manual"); }
   function pickNorth(northDegrees: 0 | 90 | 180 | 270) {
     setScene(current => ({ ...current, orientation: { northDegrees, source: "manual", confirmed: true }, confirmed: false }));
     setAnalysis(null); setComparisonMode("current"); setRunId(null);
@@ -110,10 +117,26 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
   function addMissingObject(kind: ObjectKind) {
     const id = `${kind}_${crypto.randomUUID().slice(0, 8)}`, item = FURNITURE_CATALOG[kind];
     const next = addObjectAtOpenPosition(scene, { id, kind, x: 0, z: 0, width: item.width, depth: item.depth, height: item.height, ...(item.elevation === undefined ? {} : { elevation: Math.min(item.elevation, scene.room.height - item.height) }), rotation: 0, confidence: 1, movable: true });
-    edit(next); setSelectedId(id); setMessage(words(`${withParticle(item.ko, "object")} 빈자리에 추가했습니다. 3D에서 위치를 확인해 주세요.`, `${item.en} added to an open area. Check its position in 3D.`));
+    edit(next,"other"); setSelectedId(id); setMessage(words(`${withParticle(item.ko, "object")} 빈자리에 추가했습니다. 3D에서 위치를 확인해 주세요.`, `${item.en} added to an open area. Check its position in 3D.`));
   }
-  function clearPrivateDraft() { setUndo([]); setSelectedId(null); originalScene.current = manualScene(); setNote(""); setOutcome("unchanged"); setDays(30); setReportId(""); setPatternConsent(false); setConsent(false); setCaptureConfirmed(false); setRunDate(null); }
-  function editObject(id: string, patch: Partial<SpatialObject>) { if (patch.width !== undefined || patch.depth !== undefined || patch.height !== undefined) patch.dimensionSource = "user_corrected"; edit({ ...scene, objects: scene.objects.map(o => o.id === id ? { ...o, ...patch } : o) }); }
+  function clearPrivateDraft() { setUndo([]); setSelectedId(null); originalScene.current = manualScene(); setNote(""); setOutcome("unchanged"); setDays(30); setReportId(""); setPatternConsent(false); setConsent(false); setCaptureConfirmed(false); setRunDate(null); setTemplateCorrections(new Set()); }
+  function editObject(id: string, patch: Partial<SpatialObject>) { if (patch.width !== undefined || patch.depth !== undefined || patch.height !== undefined) patch.dimensionSource = "user_corrected"; edit({ ...scene, objects: scene.objects.map(o => o.id === id ? { ...o, ...patch } : o) },scene.objects.find(o=>o.id===id)?.mobility==="fixed"?"fixed_fixture":"other"); }
+  function findTemplates(next: ResidentialMatchInput = residenceInput) { const normalized = { ...next, ...(unitType.trim() ? { unitType: unitType.trim() } : {}) }; setResidenceInput(normalized); setTemplateMatches(matchResidentialTemplates(normalized)); }
+  function answerTemplateQuestion(id: string, value: string) {
+    const next: ResidentialMatchInput = { ...residenceInput };
+    if (id === "mirror") next.mirrored = value === "unknown" ? undefined : value === "left";
+    if (id === "expansion") next.expanded = value === "unknown" ? undefined : value === "yes";
+    if (id === "kitchen") next.kitchenLayout = value as ResidentialMatchInput["kitchenLayout"];
+    if (id === "utility") next.roomCount = Number(value);
+    findTemplates(next);
+  }
+  async function applyTemplateCandidate(candidate: TemplateCandidate) {
+    const next = templateToScene(candidate.template, candidate.variant, candidate.matchScore, candidate.evidenceStatus);
+    originalScene.current = next; edit(next); setScene(next); setSource("template"); setUndo([]); setSelectedId(null); setTemplateCorrections(new Set());
+    const id = await ensureProject();
+    const saved = z.object({ saved: z.literal(true) }).parse(await api(`/${id}/template`, { templateId: candidate.template.id, templateVersion: candidate.template.version, variant: candidate.variant, matchScore: candidate.matchScore, evidenceStatus: candidate.evidenceStatus, privateResidence: { complexName: complexName.trim(), buildingLabel: buildingLabel.trim(), unitType: unitType.trim() } }));
+    if (saved.saved) setMessage(words("가장 가까운 구조로 3D 초안을 만들었습니다. 실제 사진과 치수로 확인해 주세요.", "A 3D draft was created from the closest structure. Verify it with photos and measurements."));
+  }
   async function ensureProject() {
     if (projectId) return projectId;
     const result = z.object({ project: ProjectSchema }).parse(await api("", { title, goal, locale }));
@@ -125,6 +148,7 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
     const detail = DetailSchema.parse(await api(`/${id}`));
     clearPrivateDraft();
     setProjectId(id); setTitle(detail.project.title); setGoal(detail.project.goal); setPhotos([]); setRemoteAssets(detail.assets.filter(a => a.status === "ready").length); setReports(detail.reports); setChecks(detail.checks);
+    setComplexName(detail.templateSelection?.private_residence.complexName??""); setBuildingLabel(detail.templateSelection?.private_residence.buildingLabel??""); setUnitType(detail.templateSelection?.private_residence.unitType??"");
     const extraction = detail.runs.find(r => r.kind === "extract" && r.status === "complete");
     const savedAnalysis = detail.runs.find(r => r.kind === "analyze" && r.status === "complete");
     const extractionNewer = !!extraction && (!savedAnalysis || extraction.created_at > savedAnalysis.created_at);
@@ -155,15 +179,21 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
     if (!response.result.scene) {
       setScene(current => ({ ...current, confirmed: false }));
       setSource("manual"); setMessage(words("사진을 신뢰할 수 있는 구조로 읽지 못했습니다. 아래 예시를 실제 방에 맞게 수정해 주세요. 사진 분석 결과로 표시하지 않습니다.", "The photos could not be read reliably. Edit the example to match your room; it is not a photo reconstruction."));
-    } else { originalScene.current = response.result.scene; setScene(response.result.scene); setUndo([]); setSource("photo"); setMessage(words("사진에서 읽은 초안입니다. 크기·문·가구 위치를 확인하고 잘못된 부분을 수정해 주세요.", "This is a draft from your photos. Verify measurements, doors and furniture before proceeding.")); }
+    } else {
+      const verification = scene.residentialTemplate ? verifyTemplateAgainstObservation(scene, response.result.scene) : null;
+      const draft = verification?.scene ?? response.result.scene; originalScene.current = draft; setScene(draft); setUndo([]); setSource("photo");
+      if(verification&&draft.residentialTemplate) await api(`/${id}/template`,{templateId:draft.residentialTemplate.templateId,templateVersion:draft.residentialTemplate.templateVersion,variant:draft.residentialTemplate.variant,matchScore:draft.residentialTemplate.matchScore,evidenceStatus:draft.residentialTemplate.evidenceStatus,privateResidence:{complexName:complexName.trim(),buildingLabel:buildingLabel.trim(),unitType:unitType.trim()}});
+      setMessage(verification?.evidenceStatus === "CONFLICT" ? words("사진과 선택한 구조가 다릅니다. 템플릿에 맞추지 않고 사진 초안을 열었습니다. 실제 치수와 문·창 위치를 확인해 주세요.", "The photos conflict with the selected layout. The photo draft is open without forcing the template. Check measurements, doors and windows.") : verification?.variant !== scene.residentialTemplate?.variant ? words("사진을 비교해 좌우가 반대인 구조로 바꿨습니다. 실제 치수로 한 번 더 확인해 주세요.", "The photos better match the mirrored layout. Verify it once more with a real measurement.") : words("사진과 구조를 함께 확인한 초안입니다. 크기·문·가구 위치를 확인해 주세요.", "This draft combines the selected layout with photo checks. Verify dimensions, doors and furniture."));
+    }
     setAnalysis(null); setRunId(null); setComparisonMode("current");
   }
   async function analyze() {
     const local = analyzeSpace(scene, goal, locale);
     if (demo) { setAnalysis(local); setRunId(null); setApplied({}); setMessage(words("예시 분석입니다. 계정에 저장되지 않습니다.", "Demo analysis; nothing is saved to an account.")); return; }
     const id = await ensureProject();
+    if(scene.residentialTemplate) for(const field of templateCorrections) await api(`/${id}/template-corrections`,{templateId:scene.residentialTemplate.templateId,templateVersion:scene.residentialTemplate.templateVersion,requestId:crypto.randomUUID(),correction:{field,note:`User corrected ${field} before analysis`}});
     const response = z.object({ runId: z.uuid(), result: AnalysisSchema }).parse(await api(`/${id}/analyze`, { scene, requestId: crypto.randomUUID(), reportId: reportId || null, usePatterns: patternConsent }));
-    setAnalysis(response.result); setRunId(response.runId); setRunDate(new Date().toISOString()); setApplied({}); setMessage(words("분석과 방 구조를 내 계정에 저장했습니다.", "Analysis and room structure saved to your account."));
+    setAnalysis(response.result); setRunId(response.runId); setRunDate(new Date().toISOString()); setApplied({}); setTemplateCorrections(new Set()); setMessage(words("분석과 방 구조를 내 계정에 저장했습니다.", "Analysis and room structure saved to your account."));
   }
   const kindName = (kind: string) => FURNITURE_CATALOG[kind as ObjectKind]?.[ko ? "ko" : "en"] ?? kind;
   const comparisonChanges = analysis ? spatialChanges(analysis.current, analysis.recommended) : [];
@@ -203,11 +233,34 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
       </div>
     </section>}
     {!enabled && !demo && <p className={styles.status}>{words("새 분석은 일시 중지되어 있습니다. 기존 기록 확인과 삭제는 가능합니다.", "New analysis is paused. Existing records can still be viewed or deleted.")}</p>}
+    {!demo && <section className={`${styles.panel} ${styles.residentialTemplate}`} aria-labelledby="residential-template-title">
+      <div className={styles.templateLead}><span>01</span><div><h2 id="residential-template-title">{words("우리 집 구조부터 빠르게 맞춰볼게요", "Start with the closest home layout")}</h2><p>{words("아는 것만 고르세요. 가까운 구조를 먼저 만든 뒤 사진과 실측으로 바로잡습니다.", "Choose only what you know. Start with a close layout, then correct it with photos and measurements.")}</p></div></div>
+      <div className={styles.templateFields}>
+        <label>{words("주거 형태", "Home type")}<select value={residenceInput.residenceType} onChange={e => { setResidenceInput({ residenceType: e.target.value as ResidentialMatchInput["residenceType"], areaClass: residenceInput.areaClass }); setTemplateMatches(null); }}><option value="apartment">{words("아파트", "Apartment")}</option><option value="villa">{words("빌라·다세대", "Villa")}</option><option value="officetel">{words("오피스텔", "Officetel")}</option><option value="detached_house">{words("단독주택", "Detached house")}</option><option value="studio">{words("원룸", "Studio")}</option><option value="one_bedroom">{words("투룸·1베드", "One bedroom")}</option></select></label>
+        <label>{words("전용면적", "Area")}<select value={residenceInput.areaClass ?? 84} onChange={e => { setResidenceInput(current => ({ ...current, areaClass: Number(e.target.value) as ResidentialMatchInput["areaClass"] })); setTemplateMatches(null); }}>{[39,49,59,74,84,101,114].map(area=><option key={area} value={area}>{area}㎡</option>)}</select></label>
+        <label>{words("타입 (선택)", "Unit type (optional)")}<input value={unitType} maxLength={40} placeholder={words("예: 84A", "e.g. 84A")} onChange={e=>{setUnitType(e.target.value);setTemplateMatches(null);}} /></label>
+        <label>{words("단지명 (선택·비공개)", "Complex (optional, private)")}<input value={complexName} maxLength={60} onChange={e=>setComplexName(e.target.value)} /></label>
+        <label>{words("동 (선택·비공개)", "Building (optional, private)")}<input value={buildingLabel} maxLength={20} onChange={e=>setBuildingLabel(e.target.value)} /></label>
+      </div>
+      <button type="button" className={styles.primary} disabled={busy || !enabled} onClick={()=>findTemplates()}>{words("가까운 구조 찾기", "Find close layouts")}</button>
+      <p className={styles.h}>{words("단지·동 정보는 내 프로젝트에만 저장하며 공개 템플릿 이름이나 지도에 쓰지 않습니다.", "Complex and building details stay in your private project and are never used as public template or map labels.")}</p>
+      {templateMatches && <div className={styles.templateResults}>
+        {templateMatches.questions.length>0&&<div className={styles.templateQuestions}><strong>{words("두 가지만 더 확인할게요", "A couple more checks")}</strong>{templateMatches.questions.map(question=><label key={question.id}>{ko?question.ko:question.en}<select defaultValue="" onChange={e=>{if(e.target.value)answerTemplateQuestion(question.id,e.target.value);}}><option value="" disabled>{words("선택", "Choose")}</option>{question.options.map(option=><option key={option.value} value={option.value}>{ko?option.ko:option.en}</option>)}</select></label>)}</div>}
+        <div className={styles.templateCandidates}>{templateMatches.candidates.map((candidate,index)=><article key={candidate.template.id}>
+          <small>{words(`구조 후보 ${index+1}`,`Layout ${index+1}`)}</small><h3>{candidate.template.areaClass}㎡ · {candidate.template.rooms.filter(room=>room.kind==="bedroom").length}{words("개 방", " bedrooms")}</h3>
+          <p>{words(candidate.template.planShape==="slab"?"맞통풍형":candidate.template.planShape==="tower"?"코너형":"혼합형",candidate.template.planShape)} · {words(candidate.template.kitchen.layout==="one_wall"?"한 줄 주방":candidate.template.kitchen.layout==="galley"?"두 줄 주방":candidate.template.kitchen.layout==="l_shape"?"ㄱ자 주방":candidate.template.kitchen.layout==="u_shape"?"ㄷ자 주방":"아일랜드 주방",candidate.template.kitchen.layout)}</p>
+          <div className={styles.matchMeter}><span style={{width:`${candidate.matchScore}%`}}/><b>{words("구조 일치", "Match")} {candidate.matchScore}/100</b></div>
+          {candidate.conflicts.length>0&&<p className={styles.templateConflict}>{words("입력과 다른 부분이 있어 사진 확인이 필요해요.","Some details conflict. Photo verification is needed.")}</p>}
+          <button type="button" onClick={()=>void task(()=>applyTemplateCandidate(candidate))}>{words("이 구조로 3D 시작", "Start 3D with this")}</button>
+        </article>)}</div>
+        <p className={styles.hint}>{words("일치 점수는 입력한 항목이 구조와 같은지 세는 값이며 실제 집일 확률이 아닙니다. 현재 후보는 실단지 도면이 아닌 내부 구조 예시입니다.", "The match score counts matching fields; it is not the probability that this is your home. Current candidates are internal structural examples, not real-complex plans.")}</p>
+      </div>}
+    </section>}
     <div className={styles.layout}>
       <div>
         <section className={styles.panel} data-tour-current={tutorialStep === 2 || (tutorialStep === 3 && !analysis)} id="space-guide-room">
           {(tutorialStep === 2 || (tutorialStep === 3 && !analysis)) && <p className={styles.stepPointer}><b aria-hidden="true">↓</b>{tutorialStep === 2 ? words("지금은 3D와 실제 방을 비교하세요.", "Now compare the 3D draft with your room.") : words("확인이 끝났어요. 아래 분석 버튼을 누르세요.", "Checks are complete. Use the analysis button below.")}</p>}
-          <div className={styles.actions}><span className={styles.badge}>{source === "example" ? words("연습용 방", "Example room") : source === "photo" ? words("사진으로 만든 방", "Room from photos") : source === "saved" ? words("저장한 방", "Saved room") : words("직접 만든 방", "Manual room")}</span>
+          <div className={styles.actions}><span className={styles.badge}>{source === "example" ? words("연습용 방", "Example room") : source === "photo" ? words("사진으로 만든 방", "Room from photos") : source === "saved" ? words("저장한 방", "Saved room") : source === "template" ? words("주거 구조로 만든 방", "Room from home layout") : words("직접 만든 방", "Manual room")}</span>
             {analysis && <div className={styles.compareSwitch} aria-label={words("현재와 추천 배치 비교", "Compare current and suggested layouts")}><button aria-pressed={comparisonMode === "current"} onClick={() => setComparisonMode("current")}>{words("현재", "Current")}</button><button aria-pressed={comparisonMode === "compare"} onClick={() => setComparisonMode("compare")}>{words("한눈에 비교", "Compare")}</button><button aria-pressed={comparisonMode === "recommended"} onClick={() => setComparisonMode("recommended")}>{words("추천", "Suggested")}</button></div>}
           </div>
           {analysis && <div className={styles.comparisonSummary} data-comparison-mode={comparisonMode}>
@@ -221,10 +274,10 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
             <label><span>{words("빠진 물건 추가", "Add a missing object")}</span><select aria-label={words("빠진 물건 추가", "Add a missing object")} disabled={scene.objects.length >= 20} value="" onChange={e => { const kind = e.target.value as ObjectKind; if (kind) void task(async () => addMissingObject(kind)); }}><option value="">{words("종류 선택", "Choose type")}</option><optgroup label={words("풍수·생활 확인 요소", "Feng Shui and living details")}>{FENG_SHUI_DETAIL_KINDS.map(kind => <option key={kind} value={kind}>{kindName(kind)}</option>)}</optgroup><optgroup label={words("전자기기", "Electronics")}>{ELECTRONIC_KINDS.map(kind => <option key={kind} value={kind}>{kindName(kind)}</option>)}</optgroup></select></label>
           </div>
           {selectedId && <div className={styles.toolbar} aria-label={words("선택한 가구 조정", "Adjust selected furniture")}>
-            {([["←", -.1, 0], ["→", .1, 0], ["↑", 0, -.1], ["↓", 0, .1]] as const).map(([label, dx, dz]) => <button key={label} disabled={comparisonMode !== "current" || !scene.objects.find(o => o.id === selectedId)?.movable} aria-label={words(`가구 ${label} 10cm`, `Move furniture ${label} 10cm`)} onClick={() => void task(async () => { const object = scene.objects.find(o => o.id === selectedId)!; edit(applyAction(scene, { type: "move", objectId: selectedId, x: Math.round((object.x + dx) * 1000) / 1000, z: Math.round((object.z + dz) * 1000) / 1000, rotation: null })); })}>{label} 10cm</button>)}
-            <button disabled={comparisonMode !== "current" || !scene.objects.find(o => o.id === selectedId)?.movable} onClick={() => void task(async () => { const object = scene.objects.find(o => o.id === selectedId)!; edit(applyAction(scene, { type: "rotate", objectId: selectedId, x: null, z: null, rotation: (object.rotation + 90) % 360 })); })}>{words("가구 90° 회전", "Rotate furniture 90°")}</button>
+            {([["←", -.1, 0], ["→", .1, 0], ["↑", 0, -.1], ["↓", 0, .1]] as const).map(([label, dx, dz]) => <button key={label} disabled={comparisonMode !== "current" || !scene.objects.find(o => o.id === selectedId)?.movable} aria-label={words(`가구 ${label} 10cm`, `Move furniture ${label} 10cm`)} onClick={() => void task(async () => { const object = scene.objects.find(o => o.id === selectedId)!; edit(applyAction(scene, { type: "move", objectId: selectedId, x: Math.round((object.x + dx) * 1000) / 1000, z: Math.round((object.z + dz) * 1000) / 1000, rotation: null }),"other"); })}>{label} 10cm</button>)}
+            <button disabled={comparisonMode !== "current" || !scene.objects.find(o => o.id === selectedId)?.movable} onClick={() => void task(async () => { const object = scene.objects.find(o => o.id === selectedId)!; edit(applyAction(scene, { type: "rotate", objectId: selectedId, x: null, z: null, rotation: (object.rotation + 90) % 360 }),"other"); })}>{words("가구 90° 회전", "Rotate furniture 90°")}</button>
           </div>}
-          <div className={styles.toolbar}><button disabled={!undo.length} onClick={() => { const prior = undo.at(-1)!; setUndo(undo.slice(0, -1)); setScene({ ...prior, confirmed: false }); setAnalysis(null); setComparisonMode("current"); setRunId(null); }}>{words("한 단계 되돌리기", "Undo edit")}</button><button onClick={() => edit(originalScene.current)}>{words("불러온 배치로 복원", "Reset loaded layout")}</button></div>
+          <div className={styles.toolbar}><button disabled={!undo.length} onClick={() => { const prior = undo.at(-1)!; setUndo(undo.slice(0, -1)); setScene({ ...prior, confirmed: false }); setAnalysis(null); setComparisonMode("current"); setRunId(null); }}>{words("한 단계 되돌리기", "Undo edit")}</button><button onClick={() => {edit(originalScene.current);setTemplateCorrections(new Set());}}>{words("불러온 배치로 복원", "Reset loaded layout")}</button></div>
           <p className={styles.hint}>{words("직사각형 방 한 개의 대략적인 배치입니다. 실제 치수와 문 여는 방향을 확인하세요.", "An approximate layout of one rectangular room. Verify actual measurements and door swing.")}</p>
           {!!problems.length && <p className={styles.error} role="status">{words("크기·위치 또는 겹침을 확인하세요: ", "Check dimensions, positions or overlaps: ")}{problems.join(", ")}</p>}
           <label className={styles.sceneConfirm}><input type="checkbox" checked={scene.confirmed} disabled={!!problems.length || !scene.orientation.confirmed} onChange={e => { const checked = e.currentTarget.checked; setScene(current => ({ ...current, confirmed: checked })); }} />{words(demo ? "3D가 실제 방과 비슷한지 확인했어요" : "3D의 방·문·창과 빠진 물건까지 실제 공간과 비슷한지 확인했어요", demo ? "I checked that the 3D draft resembles the room" : "I checked the 3D room, openings and missing objects against the actual space")}</label>
@@ -291,27 +344,27 @@ export function SpaceWorkbench({ locale, demo = false, enabled = true, aiReady =
           {!demo && <><button className={styles.primary} disabled={busy || !enabled || !aiReady || !consent || !captureConfirmed || !scene.orientation.confirmed || (photos.length >= 2 && !usablePhotoSet(photos.map(photo => photo.quality)))} onClick={() => void task(extract)}>{words("사진 교차 확인 후 3D 초안 만들기", "Cross-check photos and build 3D draft")}</button>{!aiReady && <p className={styles.hint}>{words("사진 자동 읽기 연결을 준비 중입니다. 직접 입력으로 계속할 수 있습니다.", "Photo reading is not connected. Continue with manual input.")}</p>}</>}
           <details className={styles.advancedEditor}>
           <summary>{words("방 크기와 가구 직접 고치기 (선택)", "Edit room and furniture (optional)")}</summary>
-          <div className={styles.fields}>{(["width", "depth", "height"] as const).map(key => <label key={key}>{key === "width" ? words("방 가로 (m)", "Room width (m)") : key === "depth" ? words("방 세로 (m)", "Room depth (m)") : words("방 높이 (m)", "Room height (m)")}<input type="number" min={2} max={key === "height" ? 4 : 20} step={0.1} value={scene.room[key]} onChange={e => edit({ ...scene, room: { ...scene.room, [key]: Number(e.target.value) }, measurements: { ...(scene.measurements ?? estimatedMeasurements("manual")), [key]: { status: "user_corrected", confidence: 1 } } })} /></label>)}</div>
+          <div className={styles.fields}>{(["width", "depth", "height"] as const).map(key => <label key={key}>{key === "width" ? words("방 가로 (m)", "Room width (m)") : key === "depth" ? words("방 세로 (m)", "Room depth (m)") : words("방 높이 (m)", "Room height (m)")}<input type="number" min={2} max={key === "height" ? 4 : 20} step={0.1} value={scene.room[key]} onChange={e => edit({ ...scene, room: { ...scene.room, [key]: Number(e.target.value) }, measurements: { ...(scene.measurements ?? estimatedMeasurements("manual")), [key]: { status: "user_corrected", confidence: 1 } } },"measurement")} /></label>)}</div>
           <p className={styles.hint}>{words("치수 상태: ", "Measurement status: ")}{(["width", "depth", "height"] as const).map(key => `${ko ? {width:"가로",depth:"세로",height:"높이"}[key] : key}: ${scene.measurements?.[key].status === "user_corrected" ? words("사용자 수정", "user-corrected") : scene.measurements?.[key].status === "confirmed" ? words("실측 확인", "confirmed") : words("추정", "estimated")}`).join(" · ")}</p>
           <p className={styles.hint}>{words("사진만으로 정확한 길이를 알 수 없습니다. 한 벽의 실제 길이를 입력하면 비율을 다시 맞춥니다. 다른 치수는 추정으로 남으며 직접 수정할 수 있습니다.", "Photos alone cannot establish exact dimensions. Enter one measured wall length to recalibrate proportions. Other dimensions remain estimated until corrected.")}</p>
           <div className={styles.fields}><label>{words("기준 벽", "Reference wall")}<select value={referenceAxis} onChange={e => setReferenceAxis(e.target.value as "width" | "depth")}><option value="width">{words("가로 벽", "Width wall")}</option><option value="depth">{words("세로 벽", "Depth wall")}</option></select></label><label>{words("이 벽의 실제 길이 (m)", "Measured wall length (m)")}<input type="number" min={2} max={20} step={0.01} value={referenceLength} onChange={e => setReferenceLength(Number(e.target.value))} /></label></div>
-          <button onClick={() => void task(async () => { const calibrated = calibrateScene(scene, referenceAxis, referenceLength); edit(calibrated); setScene(calibrated); setMessage(words("입력한 벽 길이를 기준으로 비율을 맞췄습니다. 다른 치수와 가구 크기도 실측해 확인하세요.", "Recalibrated against your wall measurement. Measure and verify the remaining dimensions and furniture.")); })}>{words("실제 길이로 비율 맞추기", "Calibrate to measurement")}</button>
+          <button onClick={() => void task(async () => { const calibrated = calibrateScene(scene, referenceAxis, referenceLength); edit(calibrated,"measurement"); setScene(calibrated); setMessage(words("입력한 벽 길이를 기준으로 비율을 맞췄습니다. 다른 치수와 가구 크기도 실측해 확인하세요.", "Recalibrated against your wall measurement. Measure and verify the remaining dimensions and furniture.")); })}>{words("실제 길이로 비율 맞추기", "Calibrate to measurement")}</button>
           {(["doors", "windows"] as const).map(category => <details className={styles.object} key={category}><summary>{category === "doors" ? words("문", "Doors") : words("창문", "Windows")} ({scene[category].length})</summary>
             {scene[category].map((opening, index) => <div key={opening.id} className={styles.fields}>
-              <label>{words("벽", "Wall")} {index + 1}<select value={opening.wall} onChange={e => edit({ ...scene, [category]: scene[category].map((o, i) => i === index ? { ...o, wall: e.target.value } : o) })}>{["top", "right", "bottom", "left"].map((wall, i) => <option value={wall} key={wall}>{ko ? ["위쪽", "오른쪽", "아래쪽", "왼쪽"][i] : wall}</option>)}</select></label>
-              <label>{words("시작점 (m)", "Offset (m)")}<input type="number" min={0} step={0.1} value={opening.offset} onChange={e => edit({ ...scene, [category]: scene[category].map((o, i) => i === index ? { ...o, offset: Number(e.target.value) } : o) })} /></label>
-              <label>{words("폭 (m)", "Width (m)")}<input type="number" min={0.4} step={0.1} value={opening.width} onChange={e => edit({ ...scene, [category]: scene[category].map((o, i) => i === index ? { ...o, width: Number(e.target.value) } : o) })} /></label>
-              <label>{words("개구부 높이 (m, 기본값은 추정)", "Opening height (m; default estimated)")}<input type="number" min={.4} max={3} step={.05} value={opening.height ?? (category === "doors" ? Math.min(scene.room.height, 2.1) : 1.2)} onChange={e => edit({ ...scene, [category]: scene[category].map((o, i) => i === index ? { ...o, height: Number(e.target.value) } : o) })} /></label>
-              {category === "windows" && <label>{words("창턱 높이 (m, 기본값은 추정)", "Window sill (m; default estimated)")}<input type="number" min={0} max={2} step={.05} value={opening.sill ?? .85} onChange={e => edit({ ...scene, windows: scene.windows.map((o, i) => i === index ? { ...o, sill: Number(e.target.value) } : o) })} /></label>}
-              <button disabled={category === "doors" && scene.doors.length === 1} onClick={() => edit({ ...scene, [category]: scene[category].filter(o => o.id !== opening.id) })}>{words("삭제", "Remove")}</button>
-            </div>)}<button disabled={scene[category].length >= (category === "doors" ? 4 : 8)} onClick={() => edit({ ...scene, [category]: [...scene[category], { id: `${category}_${crypto.randomUUID().slice(0, 8)}`, wall: "top", offset: 0, width: 0.9 }] })}>{words("추가", "Add")}</button>
+              <label>{words("벽", "Wall")} {index + 1}<select value={opening.wall} onChange={e => edit({ ...scene, [category]: scene[category].map((o, i) => i === index ? { ...o, wall: e.target.value } : o) },"opening")}>{["top", "right", "bottom", "left"].map((wall, i) => <option value={wall} key={wall}>{ko ? ["위쪽", "오른쪽", "아래쪽", "왼쪽"][i] : wall}</option>)}</select></label>
+              <label>{words("시작점 (m)", "Offset (m)")}<input type="number" min={0} step={0.1} value={opening.offset} onChange={e => edit({ ...scene, [category]: scene[category].map((o, i) => i === index ? { ...o, offset: Number(e.target.value) } : o) },"opening")} /></label>
+              <label>{words("폭 (m)", "Width (m)")}<input type="number" min={0.4} step={0.1} value={opening.width} onChange={e => edit({ ...scene, [category]: scene[category].map((o, i) => i === index ? { ...o, width: Number(e.target.value) } : o) },"opening")} /></label>
+              <label>{words("개구부 높이 (m, 기본값은 추정)", "Opening height (m; default estimated)")}<input type="number" min={.4} max={3} step={.05} value={opening.height ?? (category === "doors" ? Math.min(scene.room.height, 2.1) : 1.2)} onChange={e => edit({ ...scene, [category]: scene[category].map((o, i) => i === index ? { ...o, height: Number(e.target.value) } : o) },"opening")} /></label>
+              {category === "windows" && <label>{words("창턱 높이 (m, 기본값은 추정)", "Window sill (m; default estimated)")}<input type="number" min={0} max={2} step={.05} value={opening.sill ?? .85} onChange={e => edit({ ...scene, windows: scene.windows.map((o, i) => i === index ? { ...o, sill: Number(e.target.value) } : o) },"opening")} /></label>}
+              <button disabled={category === "doors" && scene.doors.length === 1} onClick={() => edit({ ...scene, [category]: scene[category].filter(o => o.id !== opening.id) },"opening")}>{words("삭제", "Remove")}</button>
+            </div>)}<button disabled={scene[category].length >= (category === "doors" ? 4 : 8)} onClick={() => edit({ ...scene, [category]: [...scene[category], { id: `${category}_${crypto.randomUUID().slice(0, 8)}`, wall: "top", offset: 0, width: 0.9 }] },"opening")}>{words("추가", "Add")}</button>
           </details>)}
           {scene.objects.map(object => <details className={styles.object} key={object.id}><summary>{kindName(object.kind)} · x {object.x} / z {object.z}m · {object.rotation}°</summary>
-            <div className={styles.fields}>{(["x", "z", "width", "depth", "height"] as const).map(key => <label key={key}>{({ x: "x (m)", z: "z (m)", width: words("가로 (m)", "Width (m)"), depth: words("세로 (m)", "Depth (m)"), height: words("높이 (m)", "Height (m)") })[key]}<input type="number" min={0} max={20} step={0.1} value={object[key]} onChange={e => editObject(object.id, { [key]: Number(e.target.value) })} /></label>)}
+            <div className={styles.fields}>{(["x", "z", "width", "depth", "height"] as const).map(key => <label key={key}>{({ x: "x (m)", z: "z (m)", width: words("가로 (m)", "Width (m)"), depth: words("세로 (m)", "Depth (m)"), height: words("높이 (m)", "Height (m)") })[key]}<input type="number" min={0} max={20} step={0.1} value={object[key]} disabled={object.mobility==="fixed"} onChange={e => editObject(object.id, { [key]: Number(e.target.value) })} /></label>)}
               {object.elevation !== undefined && <label>{words("바닥에서 띄운 높이 (m)", "Height above floor (m)")}<input type="number" min={0} max={scene.room.height} step={0.05} value={object.elevation} onChange={e => editObject(object.id, { elevation: Number(e.target.value) })} /></label>}
-              <label>{words("가구 방향", "Rotation")}<select value={object.rotation} onChange={e => editObject(object.id, { rotation: Number(e.target.value) as SpatialObject["rotation"] })}>{[0, 90, 180, 270].map(angle => <option key={angle} value={angle}>{angle}°</option>)}</select></label>
-            </div><label><input type="checkbox" checked={object.movable} onChange={e => editObject(object.id, { movable: e.target.checked })} />{words("옮길 수 있어요", "Movable")}</label>
-            <button disabled={scene.objects.length <= 1} onClick={() => edit({ ...scene, objects: scene.objects.filter(o => o.id !== object.id) })}>{words("가구 삭제", "Remove object")}</button>
+              <label>{words("가구 방향", "Rotation")}<select value={object.rotation} disabled={object.mobility==="fixed"} onChange={e => editObject(object.id, { rotation: Number(e.target.value) as SpatialObject["rotation"] })}>{[0, 90, 180, 270].map(angle => <option key={angle} value={angle}>{angle}°</option>)}</select></label>
+            </div>{object.mobility==="fixed"?<p className={styles.hint}>{words("배관·환기와 연결된 고정 설비라 위치를 추천으로 옮기지 않습니다.","This fixed fixture is connected to utilities and is not moved by recommendations.")}</p>:<label><input type="checkbox" checked={object.movable} onChange={e => editObject(object.id, { movable: e.target.checked })} />{words("옮길 수 있어요", "Movable")}</label>}
+            <button disabled={scene.objects.length <= 1} onClick={() => edit({ ...scene, objects: scene.objects.filter(o => o.id !== object.id) },"other")}>{words("가구 삭제", "Remove object")}</button>
           </details>)}
           <label>{words("가구 추가", "Add furniture")}<select value="" disabled={scene.objects.length >= 20} onChange={e => { const kind = e.target.value as ObjectKind; if (kind) void task(async () => addMissingObject(kind)); }}><option value="">{words("종류 선택", "Choose type")}</option>{OBJECT_KINDS.map(kind => <option key={kind} value={kind}>{kindName(kind)}</option>)}</select></label>
           </details>

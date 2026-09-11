@@ -13,7 +13,7 @@ export const SpatialObjectSchema = z.object({
   elevation: z.number().finite().min(0).max(4).optional(),
   rotation: z.union([z.literal(0), z.literal(90), z.literal(180), z.literal(270)]),
   dimensionSource: z.enum(["estimated", "confirmed", "user_corrected"]).optional(),
-  movable: z.boolean(), confidence: z.number().min(0).max(1),
+  movable: z.boolean(), mobility: z.enum(["movable", "semi_fixed", "fixed"]).optional(), confidence: z.number().min(0).max(1),
 }).strict();
 export const OpeningSchema = z.object({ id: ID, wall: WallSchema, offset: z.number().min(0).max(20), width: z.number().min(0.4).max(10), height: z.number().min(0.4).max(3).optional(), sill: z.number().min(0).max(2).optional() }).strict();
 export const RoomSchema = z.object({ width: z.number().min(2).max(20), depth: z.number().min(2).max(20), height: z.number().min(2).max(4) }).strict();
@@ -35,16 +35,24 @@ export const CrossViewEvidenceSchema = z.object({
   occlusionRisk: z.number().min(0).max(1),
   scaleEvidence: z.enum(["none", "visual", "measured_reference", "plan"]),
 }).strict();
+export const ResidentialTemplateContextSchema = z.object({
+  templateId: ID,
+  templateVersion: z.string().regex(/^\d+\.\d+\.\d+$/),
+  variant: z.enum(["standard", "mirrored", "balcony_expanded", "mirrored_balcony_expanded"]),
+  matchScore: z.number().int().min(0).max(100),
+  evidenceStatus: z.enum(["CONFIRMED", "LIKELY", "ESTIMATED", "CONFLICT", "UNKNOWN"]),
+  selectedAt: z.string().datetime(),
+}).strict();
 export const SceneSchema = z.object({
   version: z.literal(SPACE_VERSION), room: RoomSchema, measurements: MeasurementsSchema.optional(), calibrationSource: CalibrationSourceSchema.optional(),
   walls: z.array(WallSchema).length(4), doors: z.array(OpeningSchema).min(1).max(4), windows: z.array(OpeningSchema).max(8),
   objects: z.array(SpatialObjectSchema).min(1).max(20), orientation: OrientationSchema,
-  confirmed: z.boolean(),
+  confirmed: z.boolean(), residentialTemplate: ResidentialTemplateContextSchema.optional(),
 }).strict();
 // No actions or arbitrary text enter this provider contract. Geometry is checked separately.
 export const ObservationSchema = z.object({
   room: RoomSchema.nullable(), doors: z.array(OpeningSchema.omit({ height: true, sill: true })).max(4), windows: z.array(OpeningSchema.omit({ height: true, sill: true })).max(8),
-  objects: z.array(SpatialObjectSchema.omit({ dimensionSource: true, elevation: true }).extend({ elevation: z.number().finite().min(0).max(4).nullable() }).strict()).max(20), confidence: z.number().min(0).max(1),
+  objects: z.array(SpatialObjectSchema.omit({ dimensionSource: true, elevation: true, mobility: true }).extend({ elevation: z.number().finite().min(0).max(4).nullable() }).strict()).max(20), confidence: z.number().min(0).max(1),
   imageEvidence: z.array(ImageEvidenceSchema).min(2).max(6),
   crossView: CrossViewEvidenceSchema,
   missing: z.array(z.enum(["dimensions", "door", "window", "objects", "multiple_rooms", "irregular_room", "cross_view", "low_light", "blur", "occlusion", "perspective", "scale_reference"])).max(8),

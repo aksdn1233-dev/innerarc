@@ -24,12 +24,26 @@ beforeAll(async () => {
   for (const t of ["notification_preferences", "daily_notification_deliveries", "report_acquisition_surveys"]) await db.exec(`create table public.${t}(owner_user_id uuid); alter table public.${t} enable row level security; create policy owner_all on public.${t} for all to authenticated using(auth.uid()=owner_user_id); grant select,delete on public.${t} to authenticated;`);
   await db.exec(migration("20260830000100_personal_pattern_intelligence_p0.sql"));
   await db.exec(migration("20260907000100_space_intelligence_v1.sql"));
+  await db.exec(migration("20260912000100_korean_residential_template_engine.sql"));
   const p = await db.query<{ id: string }>("select (public.space_create_project($1,'Synthetic room','balance','en')).id", [owner]); projectId = p.rows[0].id;
 }, 30_000);
 afterAll(async () => { await db?.close(); });
 describe.sequential("space PostgreSQL migration and owner isolation", () => {
   it("creates an explicitly private JPEG-only bucket", async () => { const result = await db.query<{ public: boolean; allowed_mime_types: string[] }>("select * from storage.buckets where id='space-private'"); expect(result.rows[0].public).toBe(false); expect(result.rows[0].allowed_mime_types).toEqual(["image/jpeg"]); });
   it("allows owner reads and denies foreign reads under actual RLS", async () => { await asOwner(other); expect((await db.query("select * from space_projects")).rows).toHaveLength(0); await asOwner(owner); expect((await db.query("select * from space_projects")).rows).toHaveLength(1); await admin(); });
+  it("pins one versioned template while keeping private residence metadata owner isolated", async () => {
+    await admin();
+    await db.query("select public.space_save_template_selection($1,$2,$3)", [owner, projectId, JSON.stringify({ templateId:"kr_internal_20",templateVersion:"1.0.0",variant:"mirrored",matchScore:82,evidenceStatus:"LIKELY",privateResidence:{complexName:"비공개 단지",buildingLabel:"A",unitType:"84A"} })]);
+    await asOwner(other); expect((await db.query("select * from space_template_selections")).rows).toHaveLength(0);
+    await asOwner(owner); const selected=await db.query<{template_version:string;private_residence:{complexName:string}}>("select template_version,private_residence from space_template_selections"); expect(selected.rows[0]).toMatchObject({template_version:"1.0.0",private_residence:{complexName:"비공개 단지"}}); await admin();
+  });
+  it("stores corrections per owner/project and never rewrites a global revision", async () => {
+    const request="44444444-4444-4444-8444-444444444444";
+    await db.query("select public.space_save_template_correction($1,$2,$3,$4,$5,$6)",[owner,projectId,request,"kr_internal_20","1.0.0",JSON.stringify({field:"opening",note:"창 위치를 직접 수정"})]);
+    expect((await db.query("select * from space_template_corrections where owner_user_id=$1",[owner])).rows).toHaveLength(1);
+    expect((await db.query("select * from residential_template_revisions")).rows).toHaveLength(0);
+    expect((await db.query("select * from residential_template_revision_candidates")).rows).toHaveLength(0);
+  });
   it("denies browser direct writes and privileged RPC calls", async () => { await asOwner(owner); await expect(db.query("insert into space_projects(owner_user_id,title,goal,locale) values($1,'Bypass','rest','en')", [owner])).rejects.toThrow(/permission denied/); await expect(db.query("select public.space_reserve_asset($1,$2)", [owner, projectId])).rejects.toThrow(/permission denied/); await admin(); });
   it("refuses cross-owner child association", async () => { await expect(db.query("insert into space_rooms(project_id,owner_user_id,scene) values($1,$2,'{}')", [projectId, other])).rejects.toThrow(/foreign key/); });
   it("reserves exactly six upload slots with server-generated private keys", async () => { for (let i = 0; i < 6; i++) { const row = await db.query<{ object_path: string }>("select (public.space_reserve_asset($1,$2)).object_path", [owner, projectId]); expect(row.rows[0].object_path).toMatch(new RegExp(`^${owner}/${projectId}/.*\\.jpg$`)); } await expect(db.query("select public.space_reserve_asset($1,$2)", [owner, projectId])).rejects.toThrow("asset limit"); });
@@ -81,7 +95,7 @@ describe.sequential("space PostgreSQL migration and owner isolation", () => {
     await asOwner(owner);
     await db.query("select public.delete_account_data('delete-space-test-0001','all_data')");
     expect((await db.query("select * from space_projects")).rows).toHaveLength(0);
-    await admin(); for (const table of ["pattern_hypotheses", "pattern_reality_checks", "evidence_events", "confidence_revisions", "pattern_graph_edges"]) expect((await db.query(`select * from ${table} where owner_user_id=$1`, [owner])).rows).toHaveLength(0); expect((await db.query("select * from space_assets")).rows).toHaveLength(0); expect((await db.query("select * from space_cleanup_queue")).rows).toHaveLength(6);
+    await admin(); for (const table of ["pattern_hypotheses", "pattern_reality_checks", "evidence_events", "confidence_revisions", "pattern_graph_edges", "space_template_selections", "space_template_corrections"]) expect((await db.query(`select * from ${table} where owner_user_id=$1`, [owner])).rows).toHaveLength(0); expect((await db.query("select * from space_assets")).rows).toHaveLength(0); expect((await db.query("select * from space_cleanup_queue")).rows).toHaveLength(6);
     expect((await db.query("select * from space_projects where owner_user_id=$1", [other])).rows).toHaveLength(1);
   });
 });

@@ -174,3 +174,6 @@ The browser removes EXIF by canvas re-encoding and the server decodes and re-enc
 A success-story action can be copied into Reality Check through the same 30-minute `sessionStorage` handoff used by relationship context. It contains a public story ID, bounded public interpretation, transfer label and action text. The user's birth date, name and calculated structures are excluded. No record exists until the user edits and saves the draft.
 
 Optional Space voice uses the browser's device speech engine only after a user action. The application sends no narration text, voice recording or audio file to an external service and stores no speech preference or audio cache.
+## Residential template privacy boundary — 2026-09-12
+
+Bundled structure samples contain no real complex, building, address, unit number, map coordinate, or resident data. Optional complex/building/unit-type labels entered in the authenticated workbench are private project metadata protected by the same owner boundary as Space rooms. They are included in account export and deleted by project/account cascade. Public structure identity stays independent of brand. Private corrections remain scoped to the owner/project and cannot alter a global revision; any future aggregation requires a separate reviewed, threshold-controlled process that excludes private labels.
