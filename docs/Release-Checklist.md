@@ -243,4 +243,4 @@ Rollback reference: production base `ee4ae5038e34e0715456b837cbe7c7f2db5591c4`; 
 - [x] Existing upload privacy, retention/deletion, authentication, payment, reports, prices, Reality Check and calculation engines are unchanged.
 - [x] No new model identifier, provider request, retry, token cap, runtime AI cost or database migration was introduced.
 - [x] Typecheck, lint with zero errors, 134-route production build, focused 217 tests and the 120-case Space browser/visual matrix pass (90 run, 30 intentional skips).
-- [x] Full unit suite passed 1,160 of 1,160 cases. Fill the final PR/merge, Cloudflare version, Sites version and post-deploy checks after release.
+- [x] Full unit suite passed 1,160 of 1,160 cases. PR #61 merge `78214839114fb66f20b47e334e5a1a48e8667b60` is live as Worker `96cd0a5a-760e-4a38-a300-df56b58a65e7`; Sites version 105 packages the same application code with its own canonical origin. Both origins return 200 for home, Korean/English Feng Shui, Japanese Premium and health, and live object-add checks pass without overflow.
