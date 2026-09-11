@@ -58,6 +58,31 @@ function DeferredImage({ alt, src, unoptimized, ...props }: ComponentProps<typeo
   return <Image {...props} alt={alt} data-deferred={isVisible ? "false" : "true"} ref={imageRef} src={isVisible ? src : TRANSPARENT_PIXEL} unoptimized={!isVisible || unoptimized} />;
 }
 
+function DeferredClosingVideo() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const Observer = (window as Window & { IntersectionObserver?: typeof IntersectionObserver }).IntersectionObserver;
+    if (!Observer) return;
+    const observer = new Observer(([entry]) => {
+      if (!entry?.isIntersecting) return;
+      setShouldLoad(true);
+      observer.disconnect();
+    }, { rootMargin: "300px 0px" });
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <video autoPlay={shouldLoad} className="dh-close-video" loop muted playsInline poster="/images/taeyul-hero.jpg" preload="none" ref={videoRef}>
+      {shouldLoad && <source src="/videos/taeyul-hero.mp4?v=20260815-fluid1" type="video/mp4" />}
+    </video>
+  );
+}
+
 const copy = {
   ko: {
     concernEyebrow: "오늘의 고민",
@@ -307,9 +332,7 @@ export function DailyHealingHome({ locale, reportPreview, reviews, reviewCount }
     <section className="dh-close" aria-labelledby="dh-close-title">
       <div className="dh-close-art" aria-hidden="true">
         <Image alt="" className="dh-close-video-fallback" fill sizes="(max-width: 760px) 100vw, 48vw" src="/images/taeyul-hero.jpg" />
-        <video autoPlay className="dh-close-video" loop muted playsInline poster="/images/taeyul-hero.jpg" preload="metadata">
-          <source src="/videos/taeyul-hero.mp4?v=20260815-fluid1" type="video/mp4" />
-        </video>
+        <DeferredClosingVideo />
       </div>
       <div className="dh-close-copy">
         <p className="dh-eyebrow">TAERYEONGDANG</p>

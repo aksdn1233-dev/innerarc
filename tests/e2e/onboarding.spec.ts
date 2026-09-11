@@ -116,6 +116,16 @@ test("the first-visit guide advances every six seconds and closes after the last
   await expect(selectedTab).toHaveText(/질문 고르기/);
 });
 
+test("the closing film waits until the visitor reaches the closing section", async ({ page }) => {
+  await page.goto("/ko");
+  await page.getByRole("dialog").getByRole("button", { name: "안내 닫기" }).click();
+  const closingVideo = page.locator(".dh-close-video");
+  await expect(closingVideo.locator("source")).toHaveCount(0);
+  await page.locator(".dh-close").scrollIntoViewIfNeeded();
+  await expect(closingVideo.locator("source")).toHaveCount(1);
+  await expect(closingVideo.locator("source")).toHaveAttribute("src", /taeyul-hero\.mp4/);
+});
+
 test("mobile home has no overflow and preserves the selling page behavior", async ({ page }) => {
   // Five widths each exercise Home, Reading, the sticky purchase boundary and
   // both route-wide target scans. Keep the full matrix while giving the remote

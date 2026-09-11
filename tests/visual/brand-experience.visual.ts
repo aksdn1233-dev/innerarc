@@ -155,6 +155,7 @@ test.describe("Taeryeong Daily Healing homepage", () => {
 
     const closing = page.locator(".dh-close");
     await expect(closing.locator("video")).toHaveAttribute("poster", "/images/taeyul-hero.jpg");
+    await closing.scrollIntoViewIfNeeded();
     await expect(closing.locator("video source")).toHaveAttribute("src", /\/videos\/taeyul-hero\.mp4/);
     await expect.poll(() => closing.locator("video").evaluate((node) => (node as HTMLVideoElement).videoWidth)).toBeGreaterThan(0);
     await expect(closing.getByRole("link", { name: "무료로 내 패턴 보기" })).toHaveAttribute("href", "/ko/numerology");
