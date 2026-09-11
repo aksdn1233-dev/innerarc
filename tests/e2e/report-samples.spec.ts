@@ -19,7 +19,7 @@ test("every public report sample stays readable on desktop and mobile", async ({
       await expect(page.locator(".sample-report-notice")).toContainText("결제·주문·저장은 발생하지 않습니다");
       await expect(page.locator(".sample-report-tabs a")).toHaveCount(3);
       await expect(page.locator(`[href="/ko/samples/${kind}"]`)).toHaveAttribute("aria-current", "page");
-      const readingPanels = kind === "detail"
+      const readingPanels = kind === "detail" || kind === "premium"
         ? await page.locator(".ed-paper-section, .ed-ink-section, .ed-reality-section, .ed-closing").count()
         : await page.locator("[data-webtoon-panel]").count();
       expect(readingPanels).toBeGreaterThan(5);
@@ -35,6 +35,24 @@ test("every public report sample stays readable on desktop and mobile", async ({
     }
   }
   expect(pageErrors).toEqual([]);
+});
+
+test("79,000원 premium sample uses the editorial report and deterministic accessory edit", async ({ page }) => {
+  await page.goto("/ko/samples/premium");
+  await expect(page.locator(".editorial-report-premium")).toBeVisible();
+  await expect(page.locator(".ed-cover h1")).toContainText("프리미엄");
+  await expect(page.locator(".ed-premium-feature")).toHaveCount(8);
+  await expect(page.locator(".ed-accessory-grid > article")).toHaveCount(3);
+  await expect(page.locator(".ed-accessory-grid > article small")).toContainText(["운명수 11", "태도수 6", "개인년 7"]);
+  await expect(page.locator(".ed-accessory-grid a")).toHaveCount(3);
+  await expect(page.locator(".ed-accessory-boundary")).toContainText("주문이나 결제는 진행되지 않습니다");
+  await expect(page.locator(".ed-paper-section, .ed-ink-section, .ed-reality-section, .ed-closing")).toHaveCount(24);
+
+  const quality = await page.evaluate(() => ({
+    brokenImages: [...document.images].filter((image) => image.currentSrc && image.complete && image.naturalWidth === 0).length,
+    overflow: document.documentElement.scrollWidth - window.innerWidth,
+  }));
+  expect(quality).toEqual({ brokenImages: 0, overflow: 0 });
 });
 
 test("39,000원 editorial sample keeps its reading and accessibility contract", async ({ page }) => {

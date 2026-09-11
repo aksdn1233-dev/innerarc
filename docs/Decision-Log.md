@@ -1807,3 +1807,11 @@
 - 여러 방을 연결한 Dollhouse는 구조 추정·권한·저장 모델이 준비될 때까지 지원 범위로 표시하지 않는다.
 - 실내 시점은 가구 및 벽 경계를 통과하지 못하며 안전한 시야가 없으면 전체 보기로 복귀한다.
 - 되돌림 조건: 모바일 조작 회귀, 장면 기하 오류, 렌더 예산 초과가 확인되면 기능 플래그로 분석을 중지하고 직전 브랜치 커밋으로 UI 변경을 되돌린다.
+
+## D-103 — Extend the editorial publication to the 79,000원 premium report
+
+- Date: 2026-09-11
+- Decision: Reuse the 39,000원 publication model for every inherited premium chapter, then add four premium-only scenes for cross-number synthesis, scenario evidence, the decision manual and three deterministic accessory concepts. The public sample and newly generated `premium-79000-v2` purchased reports use the same renderer; basic, Saju and historical premium reports retain their existing view.
+- Accessory boundary: Recommendations are selected locally from life path, attitude and personal year using the existing versioned birth-date rules. They are design concepts with planning price ranges and explicit “in development” status. The report does not create an order, payment, stock claim or outcome promise.
+- Demand, distribution and economics: This follows the owner's supplied report reference and direct request for premium accessory recommendations. Distribution stays on the existing protected report and public sample routes. No price, entitlement, checkout, provider call, token use or fulfillment cost changes; conversion impact is not claimed before measurement.
+- Safety and reversal: The screen says accessories do not change luck and keeps observed facts and qualified advice above symbolic interpretation. Revert the premium route branch, four premium scenes and scoped CSS to restore the legacy premium renderer. No database migration or stored-report rewrite is required. Production rollback begins from `8d406c27449fea30a8d5508ebfbcc23e95901b27`.
