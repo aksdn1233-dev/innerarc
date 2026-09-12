@@ -542,3 +542,14 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Keep the font change scoped to the homepage rather than changing report, payment or workspace line wrapping.
 - [x] Self-host the production font output through `next/font` and preserve local fallback families.
 - [x] Verify computed families, Korean line breaks and horizontal overflow at desktop and mobile widths; both sizes use the selected families, make zero external font requests, produce no console error and have zero horizontal overflow.
+
+## 2026-09-13 — Dream device-only production release
+
+- [x] PR #71 merge `d27a950d6226a1702ca2b866e71c77423dd34863` is live on the canonical Worker and the public Sites mirror.
+- [x] Production flags enable the public Dream journal and keep account sync, remote AI and AI privacy transfer disabled.
+- [x] Both live origins return 200 for health, Korean home, Korean/English Dream, Feng Shui, plans and representative premium reports; health reports site/database OK and payments open.
+- [x] Live Dream entry, deterministic result, local record, export/delete controls, typography, onboarding timer, no horizontal overflow and zero browser console errors were checked with synthetic data.
+- [x] Local Node 24 release gates pass: lint has zero errors, typecheck passes, 1,220 unit tests pass across 125 files, the 137-page production build and Sites build pass, and eight focused desktop/mobile browser cases pass.
+- [ ] Apply the Dream migration and complete hosted two-owner isolation/export/deletion probes before enabling account sync.
+- [ ] Verify an exact available model, pricing, consent and cost cap before enabling remote AI; the released path uses no AI model or runtime tokens.
+- [ ] Restore the GitHub account Actions spending limit before treating hosted run 34722047754 as test evidence; all four jobs stopped before executing steps.
