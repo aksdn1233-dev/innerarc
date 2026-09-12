@@ -257,3 +257,13 @@ Rollback reference: production base `ee4ae5038e34e0715456b837cbe7c7f2db5591c4`; 
 - [x] Clean production rebuild after temporary visual-inspection route removal generated the expected 134 routes; no preview route remains in source or build output.
 - [x] Dedicated Space behavior matrix: 23 passed and four intentional device skips. Five unrelated homepage image snapshots differed by about 1%; baselines were not rewritten to hide the discrepancy.
 - [ ] GitHub Actions for PR #64 created no executable steps because the account payment/spending limit remains active. Local Node 24 release evidence is 1,175 unit tests, 120 files, zero failures; lint has zero errors, typecheck passes, and the 134-route production build passes.
+
+## Feng Shui miniature companions — 2026-09-12
+
+- [x] Storyboard and character assignment use the repository's existing canon rather than adding new identities.
+- [x] Four versioned transparent assets, responsive delivery, localized descriptions and state mapping have unit coverage.
+- [x] The guided start and live 3D overlay were reviewed at 390px and 1280px with no overlap, overflow or console error.
+- [x] Existing deterministic geometry, recommendations, photo privacy, authentication, payments, reports and database are unchanged.
+- [x] Node 24 lint has zero errors, typecheck and 134-route production build pass, and the full unit suite passes 1,178 of 1,178 tests.
+- [x] The 120-case desktop/iPhone/Android Space matrix passes 90 cases with 30 intentional skips and zero failures; new visual baselines include the active companion.
+- [ ] Record merge commit, Worker/Sites versions, rollback versions and both-origin post-deploy checks.

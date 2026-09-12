@@ -499,3 +499,15 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Owner authorized release; production received the exact prerequisite daily-acquisition, PPI, Space V1, and residential-template migrations. Hosted schema lint passed and policy probes confirmed private storage, owner reads, and service-only internal writes.
 - [x] PR #64 merge `e8593380b594d55b85d2756840500ab487191766` is live as Cloudflare Worker version `9b70b0e4-bb61-4258-99b7-473dbeddea93` and public Sites version 106. Both origins returned 200 for health, Korean home/Feng Shui/workspace, English Feng Shui, and Japanese Premium; health reported site/database OK and payments open.
 - [ ] Complete physical iPhone/Android camera, touch, memory, and GPU checks. Emulated browser coverage must not be reported as physical-device evidence.
+
+## 2026-09-12 — Feng Shui miniature companion storyboard
+
+- [x] Canonical roles are fixed before artwork: Yundo/photo, Hoyeon/direction, Sahyeon/object review, Taeryeong/comparison.
+- [x] Every final source is a 1254×1254 RGBA PNG with real transparency; rejected baked-checker outputs are excluded from the product.
+- [x] The active tutorial beat and live room show one compact companion without blocking cardinal controls, furniture or the primary action.
+- [x] Korean and English names, alt text and short guidance lines come from one versioned manifest-backed configuration.
+- [x] Reduced motion removes the entry animation; 390px and 1280px direct review found no console warning, horizontal overflow or character/control overlap.
+- [x] No route, database migration, provider request, token cap, storage policy, price, checkout or entitlement changed.
+- [x] Node 24 release checks pass: lint has zero errors, typecheck and the 134-route build pass, and all 1,178 unit tests pass.
+- [x] Desktop/iPhone/Android Space matrix passes 90 cases with 30 intentional device/project skips and zero failures.
+- [ ] Complete merge, production deployment and post-deploy visual/health checks.

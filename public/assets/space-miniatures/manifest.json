@@ -1,0 +1,47 @@
+{
+  "version": "space-miniatures-1.0.0",
+  "artDirection": "Premium Korean-inspired 3.5-head-tall miniature guides with matte resin and restrained traditional detail",
+  "runtimePolicy": "Transparent PNG only. Display at or below 180 CSS pixels and never use as analysis evidence.",
+  "assets": [
+    {
+      "characterId": "yundo",
+      "canonicalRole": "균형과 안정의 해석자",
+      "runtimeScene": "photo",
+      "file": "yundo-photo-guide-v1.png",
+      "sourceWidth": 1254,
+      "sourceHeight": 1254,
+      "alpha": true,
+      "sourceMaster": "Codex ImageGen identity-preserving miniature render; checker background removed to real alpha without CSS keying"
+    },
+    {
+      "characterId": "hoyeon",
+      "canonicalRole": "직관과 방향의 해석자",
+      "runtimeScene": "direction",
+      "file": "hoyeon-direction-guide-v1.png",
+      "sourceWidth": 1254,
+      "sourceHeight": 1254,
+      "alpha": true,
+      "sourceMaster": "Existing approved Taeryeongdang miniature asset copied without resampling"
+    },
+    {
+      "characterId": "sahyeon",
+      "canonicalRole": "지혜와 통찰의 해석자",
+      "runtimeScene": "objects",
+      "file": "sahyeon-object-guide-v1.png",
+      "sourceWidth": 1254,
+      "sourceHeight": 1254,
+      "alpha": true,
+      "sourceMaster": "Existing approved Taeryeongdang miniature asset copied without resampling"
+    },
+    {
+      "characterId": "taeryeong",
+      "canonicalRole": "중심 해석자",
+      "runtimeScene": "compare",
+      "file": "taeryeong-compare-guide-v1.png",
+      "sourceWidth": 1254,
+      "sourceHeight": 1254,
+      "alpha": true,
+      "sourceMaster": "Codex ImageGen identity-preserving miniature render with native transparent alpha"
+    }
+  ]
+}

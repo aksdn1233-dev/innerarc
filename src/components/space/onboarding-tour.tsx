@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { SPACE_MINIATURE_GUIDES } from "@/core/space/miniature-guides";
 import styles from "./space.module.css";
 
 const DIRECTIONS = [
@@ -41,24 +42,28 @@ export function SpaceOnboardingTour({ locale, step, northDegrees, northConfirmed
   const items = [
     {
       image: "/images/space/previews/bedroom-before-v1.png",
+      miniature: SPACE_MINIATURE_GUIDES.photo,
       eyebrow: ko ? "1 · 사진 찍기" : "1 · Take photos",
       title: ko ? "방 전체를 두 방향에서 찍어요." : "Photograph the whole room from two sides.",
       body: ko ? "문·창·바닥과 가구가 한 화면에 보이게 찍고, 반대쪽에서도 한 장 더 찍으세요." : "Keep doors, windows, floor edges and furniture visible, then take one more photo from the opposite side.",
     },
     {
       image: "/images/space/previews/bedroom-before-v1.png",
+      miniature: SPACE_MINIATURE_GUIDES.direction,
       eyebrow: ko ? "2 · 방향 고르기" : "2 · Choose direction",
       title: ko ? "북쪽이 있는 쪽만 누르면 돼요." : "Just tap the side where north is.",
       body: ko ? "휴대폰 나침반을 켜고 방에서 북쪽이 있는 쪽을 고르세요. 숫자 각도는 입력하지 않습니다." : "Open your phone compass and choose the side of the room where north is. No angle entry is needed.",
     },
     {
       image: "/images/space/space-intelligence-hero.png",
+      miniature: SPACE_MINIATURE_GUIDES.objects,
       eyebrow: ko ? "3 · 빠진 물건 확인" : "3 · Check missing objects",
       title: ko ? "중요한 물건을 3D에서 확인해요." : "Check important room details in 3D.",
       body: ko ? "거울·액자·커튼·어항·주방 설비와 전자기기가 빠졌다면 목록에서 바로 추가할 수 있어요." : "Add mirrors, art, curtains, aquariums, kitchen fixtures or electronics when the draft misses them.",
     },
     {
       image: "/images/space/previews/bedroom-after-v1.png",
+      miniature: SPACE_MINIATURE_GUIDES.compare,
       eyebrow: ko ? "4 · 결과 비교" : "4 · Compare results",
       title: ko ? "현재 배치와 추천 배치를 번갈아 봐요." : "Switch between current and suggested layouts.",
       body: ko ? "한 번에 하나만 바꿔 보고, 실제로 편해졌는지는 나중에 기록하세요." : "Try one change at a time and record later whether it felt more comfortable in daily life.",
@@ -77,7 +82,11 @@ export function SpaceOnboardingTour({ locale, step, northDegrees, northConfirmed
       </div>
       <div className={styles.tourContent}>
         <figure className={styles.tourVisual}>
-          <Image alt="" fill priority={step === 0} sizes="(max-width: 640px) 92vw, 520px" src={item.image} />
+          <Image alt="" className={styles.tourBackdropImage} fill priority={step === 0} sizes="(max-width: 640px) 92vw, 520px" src={item.image} />
+          <div className={styles.tourMiniature} data-character={item.miniature.characterId}>
+            <Image alt={ko ? item.miniature.alt.ko : item.miniature.alt.en} height={item.miniature.height} src={item.miniature.path} width={item.miniature.width} sizes="(max-width: 720px) 116px, 180px" />
+            <p><b>{ko ? item.miniature.name.ko : item.miniature.name.en}</b><span>{ko ? item.miniature.line.ko : item.miniature.line.en}</span></p>
+          </div>
           {step === 0 && <div className={styles.photoArrows} aria-hidden="true"><span>①</span><i>→</i><span>②</span></div>}
           {step === 1 && <div className={styles.tourCompass} aria-hidden="true"><b>북 N</b><span>서 W</span><span>동 E</span><em>남 S</em></div>}
         </figure>
