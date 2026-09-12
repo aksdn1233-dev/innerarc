@@ -1742,6 +1742,16 @@ fieldset.field {
   font-size: 0.76rem;
 }
 
+.number-tile small {
+  display: block;
+  max-width: 15rem;
+  margin: 7px auto 0;
+  color: var(--ink-quiet);
+  font-size: 0.69rem;
+  line-height: 1.5;
+  text-wrap: balance;
+}
+
 .insight-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

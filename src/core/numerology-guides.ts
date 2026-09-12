@@ -137,7 +137,7 @@ export const NUMEROLOGY_GUIDES: readonly NumerologyGuide[] = [
     romanizedName: "HOYEON",
     role: { ko: "직관과 방향의 해석자", en: "Intuition and direction interpreter" },
     specialties: {
-      ko: ["직관·통찰", "생년월일 패턴 패턴", "미래 흐름·선택 방향"],
+      ko: ["직관·통찰", "생년월일 패턴", "미래 흐름·선택 방향"],
       en: ["Intuition and insight", "Numerology patterns", "Future flow and choice direction"],
     },
     theme: {

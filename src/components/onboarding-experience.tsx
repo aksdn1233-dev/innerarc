@@ -24,6 +24,7 @@ import { NumerologyWebtoonReading } from "@/components/numerology-webtoon-readin
 import { MIN_BIRTH_DATE, currentMaxBirthDate, isAcceptedBirthDate } from "@/core/birth-range";
 import { createPaidContentPreview } from "@/core/report-preview";
 import { createPaidTeaser } from "@/core/paid-teaser";
+import { describeNumerologyNumber, type NumerologyNumberKind } from "@/core/numerology-explanations";
 import { captureConversionEvent } from "@/core/analytics";
 import type { OnboardingFocusId } from "@/core/onboarding";
 import type { Locale } from "@/i18n/config";
@@ -82,18 +83,34 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
 
   useEffect(() => {
     const video = guideVideoRef.current;
-    if (!video || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent)
-      || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-    if (isIOS) {
-      void guideAudioRef.current?.play().catch(() => {});
+    const audio = guideAudioRef.current;
+    if (!video || !audio) return;
+    const stop = (media: HTMLMediaElement) => {
+      media.pause();
+      try {
+        media.currentTime = 0;
+      } catch {
+        // A browser can reject seeking before metadata is ready. Pausing still
+        // guarantees that a remounted guide cannot overlap the next narration.
+      }
+    };
+    video.muted = true;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      stop(video);
+      stop(audio);
       return;
     }
-    video.muted = false;
-    void video.play().catch(() => {
-      video.muted = true;
+    const isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent)
+      || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    if (!isIOS) {
       void video.play().catch(() => {});
-    });
+    }
+    audio.muted = false;
+    void audio.play().catch(() => {});
+    return () => {
+      stop(video);
+      stop(audio);
+    };
   }, []);
   const profile = result ? getRuleBasedProfile(result.lifePath.value, locale) : null;
   const integratedProfile = result ? createIntegratedProfile(result, locale) : null;
@@ -181,12 +198,12 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
   }
 
   const otherLocale = locale === "ko" ? "en" : "ko";
-  const labels = result
+  const labels: readonly (readonly [NumerologyNumberKind, string, NumberCalculation])[] = result
     ? [
-        [d.lifePath, result.lifePath],
-        [d.birthday, result.birthday],
-        [d.attitude, result.attitude],
-        [d.personalYear, result.personalYear],
+        ["lifePath", d.lifePath, result.lifePath],
+        ["birthday", d.birthday, result.birthday],
+        ["attitude", d.attitude, result.attitude],
+        ["personalYear", d.personalYear, result.personalYear],
       ] as const
     : [];
 
@@ -256,7 +273,7 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
             >
               <source src="/videos/taeyul-guide-clean.mp4?v=20260815-clean1" type="video/mp4" />
             </video>
-            <audio autoPlay className="inline-video-audio" preload="auto" ref={guideAudioRef}>
+            <audio aria-hidden="true" className="inline-video-audio" preload="auto" ref={guideAudioRef}>
               <source src="/videos/taeyul-guide-audio.m4a?v=20260810-ios1" type="audio/mp4" />
             </audio>
           </div>
@@ -454,10 +471,11 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
               )}
 
               <div className="number-grid">
-                {labels.map(([label, calculation]) => (
+                {labels.map(([kind, label, calculation]) => (
                   <div className="number-tile" key={label}>
                     <strong>{calculation.value}</strong>
                     <span>{label}</span>
+                    <small>{describeNumerologyNumber(kind, calculation.value, locale).short}</small>
                   </div>
                 ))}
               </div>
@@ -633,7 +651,7 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
 
               <details>
                 <summary>{d.evidence}</summary>
-                {labels.map(([label, calculation]) => (
+                {labels.map(([, label, calculation]) => (
                   <div className="evidence-row" key={label}>
                     <span>{label}</span>
                     <code>{evidence(calculation)}</code>
