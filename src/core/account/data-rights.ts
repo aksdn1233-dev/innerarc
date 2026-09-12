@@ -23,6 +23,7 @@ export const DataCollectionSchema = z.enum([
   "reality_check",
   "relationship",
   "ai_run",
+  "dream",
 ]);
 export type DataCollection = z.infer<typeof DataCollectionSchema>;
 

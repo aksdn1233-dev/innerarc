@@ -6,6 +6,7 @@ export const patternSourceSystems = [
   "saju",
   "numerology",
   "tarot",
+  "dream",
   "relationship",
   "behavioral",
   "user_reported",

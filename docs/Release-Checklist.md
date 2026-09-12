@@ -271,3 +271,14 @@ Rollback reference: production base `ee4ae5038e34e0715456b837cbe7c7f2db5591c4`; 
 - [x] Both public origins return 200 for health, Korean Feng Shui HTML and direct WebP; health reports site/database OK and payments open, and 390px live visual review shows the character, bubble and primary controls without overlap.
 - [x] Rollback preserves the pre-change Worker `9b70b0e4-bb61-4258-99b7-473dbeddea93` and Sites version 106; no migration or stored-data rollback is required.
 - [ ] GitHub Actions runs 34696184156 and 34697173995 created no executable steps because the account payment/spending limit remains active; local Node 24 and three-browser evidence is authoritative for this release.
+
+## Dream Intelligence preview and release gate — 2026-09-13
+
+- [ ] Verify source metadata and commercial-use boundaries with editorial/legal review.
+- [ ] Run migration lint plus two-user RLS create/read/delete/export probes outside production.
+- [ ] Confirm raw text is absent by default from device storage, account rows, analytics and logs.
+- [ ] Run all 10 dream fixtures, two-user personalization, hallucinated-source, retrofitting and safety tests.
+- [ ] Validate 360/390/430/768/1024/1280/1440 layouts, keyboard use, reduced motion, no overflow and no console/hydration errors.
+- [ ] Confirm existing payment, protected report, Saju, birth-date pattern, Reality Check and account regression gates.
+- [ ] Record the exact provider/model/pricing evidence if AI is enabled; otherwise report deterministic-only operation.
+- [ ] Obtain explicit owner approval before merging or production deployment.

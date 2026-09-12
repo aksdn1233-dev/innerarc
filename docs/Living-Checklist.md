@@ -513,3 +513,15 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Desktop/iPhone/Android Space matrix passes 90 cases with 30 intentional device/project skips and zero failures.
 - [x] PR #66 and corrective PR #67 are merged. Worker `1336e29a-5b9f-43bd-9ca8-84cee610824a` and Sites 108 serve the final asset path; both origins return 200 for health, Feng Shui HTML and direct WebP, with site/database OK and payments open.
 - [ ] Complete physical iPhone/Android camera, touch, memory and GPU review; current mobile evidence is browser emulation.
+
+## Dream Intelligence V1 — preview gate (2026-09-13)
+
+- [x] Five evidence layers and source tiers remain visibly separate; published claims require allowlisted source IDs.
+- [x] Ontology distinguishes entity, action, state, emotion, relation, context and location; multi-label classification is bounded.
+- [x] Initial interpretation is immutable and later Reality Checks append revisions.
+- [x] Personal signature waits for three samples and labels small samples as initial.
+- [x] Raw text retention is explicit; device and account records have export/delete paths.
+- [x] Existing prices, entitlements, payments, reports and deterministic calculations are unchanged.
+- [ ] Migration reviewed and applied in a non-production environment.
+- [ ] Mobile/desktop preview accepted by owner.
+- [ ] Production rollout explicitly approved by owner.

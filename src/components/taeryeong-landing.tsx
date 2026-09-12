@@ -9,6 +9,7 @@ import type { PublicReview } from "@/core/reviews";
 import type { Locale } from "@/i18n/config";
 
 type Props = {
+  dreamAvailable: boolean;
   locale: Locale;
   reportPreview: DailyHealingReportPreview;
   reviews: readonly PublicReview[];
@@ -197,7 +198,7 @@ function GuideScreenPreview({ locale, step, label }: { locale: Locale; step: num
   </div>;
 }
 
-export function TaeryeongLanding({ locale, reportPreview, reviews, reviewCount }: Props) {
+export function TaeryeongLanding({ dreamAvailable, locale, reportPreview, reviews, reviewCount }: Props) {
   const t = content[locale];
   const reviewLabel = reviewCount && reviewCount > 0
     ? `${t.reviews} ${reviewCount}`
@@ -281,6 +282,7 @@ export function TaeryeongLanding({ locale, reportPreview, reviews, reviewCount }
         <Link href={`/${locale}/celebrity`} prefetch={false}>{t.success}</Link>
         <Link href={`/${locale}/compatibility`} prefetch={false}>{t.relationship}</Link>
         <Link href={`/${locale}/space`} prefetch={false}>{t.space}</Link>
+        {dreamAvailable && <Link href={`/${locale}/dreams`} prefetch={false}>{locale === "ko" ? "꿈 기록" : "Dream journal"}</Link>}
         <Link href={`/${locale}/reading#evidence`} prefetch={false}>{reviewLabel}</Link>
       </nav>
       <div className="td2-nav-actions">

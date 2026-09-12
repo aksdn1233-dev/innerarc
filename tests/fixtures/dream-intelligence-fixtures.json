@@ -1,0 +1,12 @@
+[
+  { "id": "snake-home", "text": "어제 큰 뱀이 집 안으로 들어오는 꿈을 꿨는데 무섭지는 않았고 그냥 계속 쳐다봤어요.", "expected": ["SNAKE", "ENTER", "HOME", "CALM"] },
+  { "id": "late-exam", "text": "시험에 늦는 꿈을 또 꿨어요. 너무 불안했습니다.", "expected": ["EXAM", "LATE", "ANXIETY"] },
+  { "id": "deceased-family", "text": "죽은 가족이 웃으며 나타났어요. 많이 그리웠습니다.", "expected": ["DECEASED_PERSON", "FAMILY", "SMILING", "GRIEF"] },
+  { "id": "pig-home", "text": "큰 돼지가 우리 집에 들어오는 걸 봤어요.", "expected": ["PIG", "ENTER", "HOME"] },
+  { "id": "teeth", "text": "이가 빠지는 꿈을 꾸고 질병일까 무서웠어요.", "expected": ["TEETH", "LOSE", "FEAR"] },
+  { "id": "fall", "text": "높은 곳에서 떨어지는 꿈이었습니다. 공포가 컸어요.", "expected": ["HIGH_PLACE", "FALL", "FEAR"] },
+  { "id": "former-partner", "text": "전 남친이 계속 나타나는 꿈을 꾸고 슬펐어요.", "expected": ["FORMER_PARTNER", "GRIEF"] },
+  { "id": "flooded-home", "text": "집이 물에 잠긴 꿈이었고 불안했어요.", "expected": ["WATER", "HOME", "SUBMERGED", "ANXIETY"] },
+  { "id": "birth", "text": "아기를 낳는 꿈을 꿨어요. 실제 임신을 뜻하는지 궁금해요.", "expected": ["BABY", "GIVE_BIRTH"] },
+  { "id": "movie", "text": "최근 본 영화 장면이 그대로 꿈에 나왔어요.", "expected": ["MOVIE_SCENE", "RECENT_MEDIA"] }
+]
