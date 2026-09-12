@@ -17,6 +17,12 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
     level: 1,
     name: "사람의 흐름을 읽어 더 나은 오늘을 만듭니다.",
   })).toBeVisible();
+  const homeFonts = await page.locator(".td2").evaluate((home) => ({
+    body: getComputedStyle(home).fontFamily,
+    display: getComputedStyle(home.querySelector("h1")!).fontFamily,
+  }));
+  expect(homeFonts.body).toContain("Noto Sans KR");
+  expect(homeFonts.display).toContain("Song Myung");
   await expect(page.locator(".td2-hero").getByRole("link", { name: /무료 사주 보기/ })).toBeVisible();
   await expect(page.locator(".td2-hero").getByRole("link", { name: /서비스 둘러보기/ })).toBeVisible();
   await expect(page.getByRole("button", { name: /처음이세요\? 1분 안내 보기/ })).toBeVisible();

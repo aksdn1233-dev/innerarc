@@ -535,3 +535,10 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Confirm zero horizontal overflow and zero console errors at 1440, 1024, 430, 390 and 360 widths.
 - [x] Focused onboarding browser checks pass on desktop and mobile; the full six-scene timer closes after 36 seconds.
 - [ ] Production rollout remains gated by the Dream Intelligence approval requirement in D-111.
+
+## 2026-09-13 — Homepage typography option 10
+
+- [x] Use Song Myung for homepage display copy and Noto Sans KR for body, controls and numbers.
+- [x] Keep the font change scoped to the homepage rather than changing report, payment or workspace line wrapping.
+- [x] Self-host the production font output through `next/font` and preserve local fallback families.
+- [x] Verify computed families, Korean line breaks and horizontal overflow at desktop and mobile widths; both sizes use the selected families, make zero external font requests, produce no console error and have zero horizontal overflow.
