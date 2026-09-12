@@ -45,6 +45,9 @@ test("selection, validated adjustment, undo and same-camera comparison", async (
   await expect(view).toHaveAttribute("data-scene-state", /"x":1.2/);
   await expect(view).toHaveAttribute("data-motion", "settled", { timeout: 10000 });
   await expect(view).toHaveAttribute("data-motion-policy", "offscreen-snap");
+  // Preserve the offscreen-motion assertion above, then freeze later comparison
+  // changes so WebKit captures a committed frame instead of a compositor edge.
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await page.getByRole("button", { name: "Undo edit", exact: true }).click(); await expect(view).toHaveAttribute("data-scene-state", /"x":1.1/);
   await page.getByRole("group", { name: "Where north is in the room" }).getByRole("button", { name: "Top", exact: true }).click();
   await page.getByRole("checkbox", { name: "I checked that the 3D draft resembles the room" }).check();
