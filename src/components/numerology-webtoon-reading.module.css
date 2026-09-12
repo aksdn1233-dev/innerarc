@@ -27,10 +27,12 @@
 .dialogue ul { padding-left: 1.15rem; margin: 0; }
 .dialogue blockquote { padding: 10px 12px; border-left: 3px solid #9c724d; margin: 12px 0 0; background: #f4ede2; white-space: pre-wrap; }
 .numberList { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0; }
-.numberList div { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 12px; background: #f4eee4; }
-.numberList dt { font-size: .72rem; font-weight: 750; }
+.numberList div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 12px; background: #f4eee4; }
+.numberList dt { min-width: 0; font-size: .72rem; font-weight: 750; }
 .numberList dd { margin: 0; color: #775331; font-size: 1.25rem; font-weight: 900; }
+.numberHelp { display: block; margin-top: 3px; color: #70675f; font-size: .64rem; font-weight: 520; line-height: 1.42; }
 .boundary { padding: 20px 22px; margin: 0; background: #eee7dc; color: #6e675e; font-size: .75rem; line-height: 1.7; }
 @media (min-width: 680px) { .panel { min-height: 720px; padding: 42px; } .characterLayer { top: 28px; right: 20px; } .reverse .characterLayer { left: 20px; } }
+@media (max-width: 520px) { .numberList { grid-template-columns: 1fr; } .numberHelp { font-size: .68rem; } }
 @media (max-width: 360px) { .panel { min-height: 600px; padding: 18px 14px; } .bubble { width: 100%; padding: 18px; } .characterLayer { width: 84vw; height: 84vw; } }
 @media (prefers-reduced-motion: reduce) { .panel, .character, .effect { animation: none !important; transition: none !important; } }

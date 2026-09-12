@@ -4,6 +4,7 @@ import type { NumerologyProfile } from "@/core/numerology";
 import type { OnboardingReflectionContext } from "@/core/onboarding";
 import { selectWebtoonSequence, type WebtoonScene } from "@/core/webtoon-scenes";
 import type { Locale } from "@/i18n/config";
+import { describeNumerologyNumber, type NumerologyNumberKind } from "@/core/numerology-explanations";
 import styles from "./numerology-webtoon-reading.module.css";
 
 type Props = {
@@ -93,6 +94,12 @@ export function NumerologyWebtoonReading({ locale, result, context, archetype, s
     { seed: `${seed}:warning`, theme: "warning", sectionType: "warning", emotion: "serious", emphasis: "high" },
     { seed: `${seed}:closing`, theme: context.focusId === "health" ? "healing" : "encouragement", sectionType: context.focusId === "health" ? "balance" : "encouragement", emotion: context.focusId === "health" ? "gentle" : "hopeful", emphasis: "low" },
   ]);
+  const numbers = [
+    ["lifePath", ko ? "인생수" : "Life Path", result.lifePath.value],
+    ["birthday", ko ? "생일수" : "Birthday", result.birthday.value],
+    ["attitude", ko ? "태도수" : "Attitude", result.attitude.value],
+    ["personalYear", ko ? "개인연도" : "Personal Year", result.personalYear.value],
+  ] as const satisfies readonly (readonly [NumerologyNumberKind, string, number])[];
 
   const panels: Panel[] = [
     {
@@ -107,10 +114,15 @@ export function NumerologyWebtoonReading({ locale, result, context, archetype, s
       title: ko ? "숫자는 이렇게 나왔어요" : "Here are the calculated numbers",
       body: (
         <dl className={styles.numberList}>
-          <div><dt>{ko ? "인생수" : "Life Path"}</dt><dd>{result.lifePath.value}</dd></div>
-          <div><dt>{ko ? "생일수" : "Birthday"}</dt><dd>{result.birthday.value}</dd></div>
-          <div><dt>{ko ? "태도수" : "Attitude"}</dt><dd>{result.attitude.value}</dd></div>
-          <div><dt>{ko ? "개인연도" : "Personal Year"}</dt><dd>{result.personalYear.value}</dd></div>
+          {numbers.map(([kind, label, value]) => {
+            const explanation = describeNumerologyNumber(kind, value, locale);
+            return (
+              <div key={kind}>
+                <dt>{label}<small className={styles.numberHelp}>{explanation.short}</small></dt>
+                <dd>{value}</dd>
+              </div>
+            );
+          })}
         </dl>
       ),
     },

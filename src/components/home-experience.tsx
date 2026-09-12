@@ -556,19 +556,33 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   // the load simply fails and the poster stays — which is the intended state until one is.
   useEffect(() => {
     const video = heroVideoRef.current;
-    if (!video) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent)
-      || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-    if (isIOS) {
-      void heroAudioRef.current?.play().catch(() => {});
+    const audio = heroAudioRef.current;
+    if (!video || !audio) return;
+    const stop = (media: HTMLMediaElement) => {
+      media.pause();
+      try {
+        media.currentTime = 0;
+      } catch {
+        // Metadata may not be ready yet. Pausing is enough to prevent overlap.
+      }
+    };
+    video.muted = true;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      stop(video);
+      stop(audio);
       return;
     }
-    video.muted = false;
-    void video.play().catch(() => {
-      video.muted = true;
+    const isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent)
+      || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    if (!isIOS) {
       void video.play().catch(() => {});
-    });
+    }
+    audio.muted = false;
+    void audio.play().catch(() => {});
+    return () => {
+      stop(video);
+      stop(audio);
+    };
   }, []);
 
   function trackFormStart() {
@@ -815,7 +829,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
           >
             <source src="/videos/taeyul-hero.mp4?v=20260815-fluid1" type="video/mp4" />
           </video>
-          <audio autoPlay className="inline-video-audio" loop preload="auto" ref={heroAudioRef}>
+          <audio aria-hidden="true" className="inline-video-audio" loop preload="auto" ref={heroAudioRef}>
             <source src="/videos/taeyul-hero-audio.m4a?v=20260810-ios1" type="audio/mp4" />
           </audio>
           <MeteorTrails className="cinema-hero-meteors" />
