@@ -496,4 +496,6 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Keep matching deterministic, questions capped at three, conflict visible, and photos/measurement authoritative for correction.
 - [x] Keep current renderer, photo flow, auth, payments, reports, deterministic engines, and Reality Check additive and unchanged.
 - [ ] Acquire and review a licensed real-complex source before any complex-specific coverage claim.
-- [ ] Apply the migration in staging, verify hosted RLS/export/delete, rerun physical iPhone/Android tests, and obtain release authorization.
+- [x] Owner authorized release; production received the exact prerequisite daily-acquisition, PPI, Space V1, and residential-template migrations. Hosted schema lint passed and policy probes confirmed private storage, owner reads, and service-only internal writes.
+- [x] PR #64 merge `e8593380b594d55b85d2756840500ab487191766` is live as Cloudflare Worker version `9b70b0e4-bb61-4258-99b7-473dbeddea93` and public Sites version 106. Both origins returned 200 for health, Korean home/Feng Shui/workspace, English Feng Shui, and Japanese Premium; health reported site/database OK and payments open.
+- [ ] Complete physical iPhone/Android camera, touch, memory, and GPU checks. Emulated browser coverage must not be reported as physical-device evidence.
