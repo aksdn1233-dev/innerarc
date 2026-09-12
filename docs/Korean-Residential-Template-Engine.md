@@ -1,6 +1,6 @@
 # Korean Residential Template Engine V1
 
-Status: reviewable additive implementation; production migration and deployment are not authorized.
+Status: production release completed on 2026-09-12 with the owner's authorization. Physical iPhone/Android validation and real-complex coverage remain out of scope.
 
 ## What ships in this branch
 
@@ -30,10 +30,19 @@ Selections pin `template_id + version + variant`, so future revisions cannot rew
 
 Template matching, variants, geometry conversion, score calculation, questions, and rendering are local deterministic code. They add no model tokens or provider cost. Existing photo extraction remains the only optional high-cost path and retains its consent, rate, token, cost, retry, and fallback limits. Prices and entitlements remain unchanged at 9,600/39,000 KRW where applicable.
 
-Run migration `20260912000100_korean_residential_template_engine.sql` after the existing Space migration in staging. Keep `SPACE_ENABLED` off until migration, owner-RLS, export/delete, browser, hosted storage, and physical-device gates pass. Roll back UI writes by disabling the existing flag; retain the additive tables for historical export and deletion. Do not drop pinned versions during an incident.
+Production received `20260912000100_korean_residential_template_engine.sql` after its daily-acquisition, PPI, and Space V1 prerequisites. Hosted schema lint and bounded owner/service policy probes passed. Roll back new UI writes by disabling `SPACE_ENABLED`; disable `SPACE_AI_ENABLED` separately for a provider or cost incident. Retain the additive tables for historical export and deletion, and do not drop pinned versions during an incident. The immediate application rollback source is `6e918f73096bc3d802fc39324ae05106c0d1f489`.
 
 ## Acceptance and limits
 
 The unit suite covers library count/provenance, deterministic ranking, explicit conflicts, double mirroring without drift, expansion overrides, every template/variant conversion, fixed-fixture rejection, calibration/version retention, RLS isolation, and no global overwrite. Release also requires the existing Space browser matrix, mobile overflow checks, production build, and hosted migration evidence.
 
 Observed demand should be counted as distinct private projects by residence type/area with consented aggregate telemetry only. Revision and coverage thresholds live in `residential_template_engine_settings`; no application constant promotes templates. Reversal triggers are increased manual correction/conflict rates, misleading real-complex interpretation, fixed-fixture movement, loss of account export/delete, or regression in current Space completion.
+
+## Production release evidence — 2026-09-12
+
+- Source: PR #64 merge `e8593380b594d55b85d2756840500ab487191766`.
+- Database: `20260825000100`, `20260830000100`, `20260907000100`, and `20260912000100` applied to the linked production project. Schema lint returned no errors. Space storage remains private with a 3.5 MB JPEG limit; anonymous access and authenticated writes to service-only template tables/functions were denied in the release probes.
+- Validation: Node 24 lint completed with zero errors, typecheck passed, 1,175 unit tests across 120 files passed, the 134-route production build passed, and the dedicated Space behavior run passed 23 cases with four intentional device skips.
+- Runtime: Cloudflare Worker version `9b70b0e4-bb61-4258-99b7-473dbeddea93`; public Sites version 106. Both origins returned 200 for health and representative Korean, English, and Japanese routes. The health endpoint reported site/database OK and payments open.
+- Rollback: restore Worker version `69ff79b4-2120-4934-b191-be24fdd9e606` and Sites version 105, or revert application code to `6e918f73096bc3d802fc39324ae05106c0d1f489`. Preserve owner reads, export, deletion, image expiry, cleanup, and all migrated rows.
+- Remaining evidence: GitHub-hosted checks could not start because of the account payment/spending limit. Physical iPhone/Android camera, touch, memory, and GPU checks were not performed and must not be inferred from emulated browser projects.
