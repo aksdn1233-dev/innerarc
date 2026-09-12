@@ -504,6 +504,7 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 
 - [x] Canonical roles are fixed before artwork: Yundo/photo, Hoyeon/direction, Sahyeon/object review, Taeryeong/comparison.
 - [x] Every final source is a 1254×1254 RGBA PNG with real transparency; rejected baked-checker outputs are excluded from the product.
+- [x] A production-only image-transformer failure that hid the colour plane was caught after the first deploy; direct transparent WebP derivatives replace that path and have signature/runtime tests.
 - [x] The active tutorial beat and live room show one compact companion without blocking cardinal controls, furniture or the primary action.
 - [x] Korean and English names, alt text and short guidance lines come from one versioned manifest-backed configuration.
 - [x] Reduced motion removes the entry animation; 390px and 1280px direct review found no console warning, horizontal overflow or character/control overlap.

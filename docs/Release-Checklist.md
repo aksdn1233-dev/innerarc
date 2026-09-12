@@ -262,6 +262,7 @@ Rollback reference: production base `ee4ae5038e34e0715456b837cbe7c7f2db5591c4`; 
 
 - [x] Storyboard and character assignment use the repository's existing canon rather than adding new identities.
 - [x] Four versioned transparent assets, responsive delivery, localized descriptions and state mapping have unit coverage.
+- [x] Production smoke review caught a transparent-PNG transformer failure; direct 144–291 KB WebP delivery preserves colour and alpha without CSS keying or enlargement.
 - [x] The guided start and live 3D overlay were reviewed at 390px and 1280px with no overlap, overflow or console error.
 - [x] Existing deterministic geometry, recommendations, photo privacy, authentication, payments, reports and database are unchanged.
 - [x] Node 24 lint has zero errors, typecheck and 134-route production build pass, and the full unit suite passes 1,178 of 1,178 tests.
