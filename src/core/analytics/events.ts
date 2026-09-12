@@ -21,6 +21,7 @@ export const JOURNEY_ROUTES = [
   "sample_saju",
   "report",
   "shop",
+  "dreams",
   "other",
 ] as const;
 
@@ -133,6 +134,15 @@ export const SafeAnalyticsEventSchema = z.discriminatedUnion("name", [
     estimatedCostMicros: z.number().int().min(0).max(100_000_000),
     fallback: z.boolean(),
   }),
+  event("dream_recorded", { retainedRawText: z.boolean() }),
+  event("dream_interpreted", { mode: z.enum(["deterministic", "provider"]) }),
+  event("reality_check_completed", { dueDays: z.union([z.literal(3), z.literal(7), z.literal(30)]) }),
+  event("dream_return_7d", {}),
+  event("dream_return_30d", {}),
+  event("pattern_view_opened", {}),
+  event("personal_signature_created", { sampleBand: z.enum(["3-4", "5-9", "10+"]) }),
+  event("paid_conversion_from_dream", { productCode: z.enum(["plus_30d", "pro_30d", "premium_pdf"]) }),
+  event("dream_followup_conversion", { dueDays: z.union([z.literal(3), z.literal(7), z.literal(30)]) }),
 ]);
 
 export type SafeAnalyticsEvent = z.infer<typeof SafeAnalyticsEventSchema>;

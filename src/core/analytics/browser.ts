@@ -27,6 +27,15 @@ type ConversionEventName = Extract<
   | "payment_start"
   | "payment_success"
   | "payment_fail"
+  | "dream_recorded"
+  | "dream_interpreted"
+  | "reality_check_completed"
+  | "dream_return_7d"
+  | "dream_return_30d"
+  | "pattern_view_opened"
+  | "personal_signature_created"
+  | "paid_conversion_from_dream"
+  | "dream_followup_conversion"
 >;
 
 type ConversionEventProperties<Name extends ConversionEventName> = Extract<

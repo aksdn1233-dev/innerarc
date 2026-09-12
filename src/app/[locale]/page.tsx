@@ -8,6 +8,7 @@ import { isLocale } from "@/i18n/config";
 import { resolveSupabaseAdminClient } from "@/lib/supabase/admin";
 import { countPublicReviews, listPublicReviews } from "@/server/reviews";
 import { getSampleReport } from "@/server/reports/sample-report";
+import { dreamEnabled } from "@/server/dreams/config";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -53,7 +54,7 @@ export default async function LocaleHome({
     nextAction: sampleReport.actions[0] ?? "",
     calculationBasis,
   };
-  return <TaeryeongLanding locale={locale} reportPreview={reportPreview} reviewCount={reviewCount} reviews={reviews} />;
+  return <TaeryeongLanding dreamAvailable={dreamEnabled()} locale={locale} reportPreview={reportPreview} reviewCount={reviewCount} reviews={reviews} />;
 }
 
 export const dynamic = "force-dynamic";

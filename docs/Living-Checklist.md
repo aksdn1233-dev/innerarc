@@ -513,3 +513,32 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Desktop/iPhone/Android Space matrix passes 90 cases with 30 intentional device/project skips and zero failures.
 - [x] PR #66 and corrective PR #67 are merged. Worker `1336e29a-5b9f-43bd-9ca8-84cee610824a` and Sites 108 serve the final asset path; both origins return 200 for health, Feng Shui HTML and direct WebP, with site/database OK and payments open.
 - [ ] Complete physical iPhone/Android camera, touch, memory and GPU review; current mobile evidence is browser emulation.
+
+## Dream Intelligence V1 — preview gate (2026-09-13)
+
+- [x] Five evidence layers and source tiers remain visibly separate; published claims require allowlisted source IDs.
+- [x] Ontology distinguishes entity, action, state, emotion, relation, context and location; multi-label classification is bounded.
+- [x] Initial interpretation is immutable and later Reality Checks append revisions.
+- [x] Personal signature waits for three samples and labels small samples as initial.
+- [x] Raw text retention is explicit; device and account records have export/delete paths.
+- [x] Existing prices, entitlements, payments, reports and deterministic calculations are unchanged.
+- [x] Migration reviewed and exercised in isolated PGlite with owner, foreign-owner, service-role, immutable-history and account-deletion probes; hosted migration remains separate.
+- [x] Mobile/desktop preview accepted by owner through the selected typography review and production instruction on 2026-09-13.
+- [x] Production rollout explicitly approved by owner on 2026-09-13; launch is device-only while account sync and AI remain disabled.
+
+## 2026-09-13 — Compact six-scene home guide
+
+- [x] Reduce the desktop guide maximum to 820×640 and mobile maximum height to 600, use friendly Korean `-요` guidance, and preserve intentional margins at 430, 390 and 360 widths.
+- [x] Keep every scene at six seconds and close after the sixth scene; manual tabs, previous/next controls and reopen remain available.
+- [x] Add a Dream Intelligence example that shows raw wording, extracted sequence, evidence types and +3/+7/+30 follow-up.
+- [x] Add a Feng Shui example that uses real existing before/after room assets, all four cardinal directions and one practical recommendation.
+- [x] Confirm zero horizontal overflow and zero console errors at 1440, 1024, 430, 390 and 360 widths.
+- [x] Focused onboarding browser checks pass on desktop and mobile; the full six-scene timer closes after 36 seconds.
+- [x] Production rollout was approved on 2026-09-13; device storage is enabled while account sync and AI stay independently disabled.
+
+## 2026-09-13 — Homepage typography option 10
+
+- [x] Use Song Myung for homepage display copy and Noto Sans KR for body, controls and numbers.
+- [x] Keep the font change scoped to the homepage rather than changing report, payment or workspace line wrapping.
+- [x] Self-host the production font output through `next/font` and preserve local fallback families.
+- [x] Verify computed families, Korean line breaks and horizontal overflow at desktop and mobile widths; both sizes use the selected families, make zero external font requests, produce no console error and have zero horizontal overflow.

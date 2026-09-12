@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Noto_Sans_KR, Song_Myung } from "next/font/google";
 import {
   socialImageAlt,
   socialImageContentType,
@@ -9,6 +10,22 @@ import { BRAND_SEARCH_ALIASES } from "@/core/brand-links";
 import { brandNameKo } from "@/core/brand";
 import { resolvePublicAppUrl } from "@/core/site-url";
 import "./globals.css";
+
+const notoSansKr = Noto_Sans_KR({
+  display: "swap",
+  fallback: ["Pretendard Local", "Apple SD Gothic Neo", "sans-serif"],
+  preload: false,
+  variable: "--font-noto-sans-kr",
+  weight: "variable",
+});
+
+const songMyung = Song_Myung({
+  adjustFontFallback: false,
+  display: "swap",
+  fallback: ["Noto Serif KR", "AppleMyungjo", "serif"],
+  variable: "--font-song-myung",
+  weight: "400",
+});
 
 const openGraphImage = {
   url: socialImagePath,
@@ -76,7 +93,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>
+      <body className={`${notoSansKr.variable} ${songMyung.variable}`}>
         <a className="skip-link" href="#main-content">
           본문으로 건너뛰기 / Skip to content
         </a>

@@ -9,13 +9,14 @@ import type { PublicReview } from "@/core/reviews";
 import type { Locale } from "@/i18n/config";
 
 type Props = {
+  dreamAvailable: boolean;
   locale: Locale;
   reportPreview: DailyHealingReportPreview;
   reviews: readonly PublicReview[];
   reviewCount: number | null;
 };
 
-const GUIDE_SCREENS = ["questions", "intake", "free-result", "report"] as const;
+const GUIDE_SCREENS = ["questions", "intake", "free-result", "report", "dreams", "space"] as const;
 const GUIDE_STEP_DURATION_MS = 6_000;
 
 const content = {
@@ -39,14 +40,16 @@ const content = {
     heroArtNote: "브랜드 연출 이미지 · 생성형 이미지",
     guideCue: "처음이세요? 1분 안내 보기",
     guideEyebrow: "처음 오셨다면",
-    guideTitle: "결과를 보는 방법부터 알려드릴게요.",
-    guideBody: "실제 화면을 보면서 네 단계만 따라오면 돼요.",
+    guideTitle: "결과 보는 법부터 같이 볼게요.",
+    guideBody: "6초마다 다음 장면으로 넘어가요. 궁금한 기능은 눌러서 다시 볼 수 있어요.",
     guideScreenLabel: "실제 이용 화면",
     guideSteps: [
-      ["질문 고르기", "지금 궁금한 것을 고릅니다", "관계, 일, 돈, 나 자신 중에서 하나를 골라요."],
-      ["생년월일 넣기", "생년월일을 넣습니다", "회원가입 없이 기본 결과를 볼 수 있어요."],
-      ["무료 결과 보기", "내 기본 패턴을 확인합니다", "결과와 계산 과정을 함께 보여드려요."],
-      ["더 자세히 보기", "필요할 때 상세 리딩을 고릅니다", "가격과 내용을 확인한 뒤 선택할 수 있어요."],
+      ["질문 고르기", "지금 궁금한 걸 골라봐요", "관계, 일, 돈, 나 자신 중에서 하나를 골라요."],
+      ["생년월일 넣기", "생년월일을 넣어봐요", "회원가입 없이 기본 결과를 볼 수 있어요."],
+      ["무료 결과 보기", "내 기본 패턴을 확인해요", "결과와 계산 과정을 함께 보여드려요."],
+      ["더 자세히 보기", "필요할 때 상세 리딩을 골라봐요", "가격과 내용을 확인한 뒤 선택할 수 있어요."],
+      ["꿈 패턴 보기", "꿈을 적고 반복을 찾아봐요", "장면·감정·현실을 나눠 보고 3·7·30일 뒤 다시 확인해요."],
+      ["방을 3D로 보기", "사진으로 내 방을 3D로 살펴봐요", "동서남북과 가구를 확인하고 현재 배치와 추천 배치를 비교해요."],
     ],
     guideAction: "결과 예시 보기",
     guideClose: "안내 닫기",
@@ -124,13 +127,15 @@ const content = {
     guideCue: "New here? See the one-minute guide",
     guideEyebrow: "FIRST VISIT",
     guideTitle: "See how a result works before you begin.",
-    guideBody: "Follow four short steps using the real product screens.",
+    guideBody: "Six scenes advance every six seconds. Select any feature to replay it.",
     guideScreenLabel: "ACTUAL PRODUCT SCREEN",
     guideSteps: [
       ["Choose a question", "Choose what is on your mind", "Start with relationships, work, money, or yourself."],
       ["Add a birth date", "Enter your birth date", "See the basic result without creating an account."],
       ["Read the free result", "See your basic pattern", "The result and calculation are shown together."],
       ["Go deeper if needed", "Choose a detailed reading only if needed", "Review the contents and price before deciding."],
+      ["Read dream patterns", "Record a dream and find repetition", "Separate scenes, feelings, and real life, then check again after 3, 7, and 30 days."],
+      ["See the room in 3D", "Turn room photos into a 3D space", "Confirm directions and furniture, then compare the current and suggested layouts."],
     ],
     guideAction: "See a sample result",
     guideClose: "Close guide",
@@ -171,7 +176,7 @@ function Arrow() {
 function GuideScreenPreview({ locale, step, label }: { locale: Locale; step: number; label: string }) {
   const ko = locale === "ko";
   return <div aria-label={label} className="td2-guide-screen" role="group">
-    <header><span>태령당</span><small>{ko ? `이용 안내 ${step + 1}/4` : `QUICK GUIDE ${step + 1}/4`}</small></header>
+    <header><span>태령당</span><small>{ko ? `이용 안내 ${step + 1}/${GUIDE_SCREENS.length}` : `QUICK GUIDE ${step + 1}/${GUIDE_SCREENS.length}`}</small></header>
     {step === 0 && <div className="td2-guide-questions">
       <p>{ko ? "어떤 게 제일 궁금한가요?" : "What is on your mind?"}</p>
       {[ko ? "연애·관계" : "Love & relationships", ko ? "일·진로" : "Work & direction", ko ? "돈·사업" : "Money & business"].map((item, index) => <div className={index === 0 ? "is-picked" : undefined} key={item}><b>{String(index + 1).padStart(2, "0")}</b><span>{item}</span><Arrow /></div>)}
@@ -194,10 +199,32 @@ function GuideScreenPreview({ locale, step, label }: { locale: Locale; step: num
       {[ko ? "자주 반복되는 선택" : "Recurring choices", ko ? "지금 바꿔볼 한 가지" : "One change to try", ko ? "나중에 확인할 질문" : "A question to revisit"].map((item, index) => <div className="td2-guide-report-row" key={item}><b>0{index + 1}</b><span>{item}</span><i style={{ width: `${82 - index * 13}%` }} /></div>)}
       <footer><span>{ko ? "계산" : "FACT"}</span><span>{ko ? "상징" : "SYMBOL"}</span><span>{ko ? "현실 확인" : "REALITY"}</span></footer>
     </div>}
+    {step === 4 && <div className="td2-guide-dream">
+      <div className="td2-guide-dream-input">
+        <small>{ko ? "꿈 기록" : "DREAM RECORD"}</small>
+        <p>{ko ? "큰 뱀이 집에 들어왔어요. 무섭지는 않았고 가만히 바라봤어요." : "A large snake entered my home. I was calm and watched it."}</p>
+      </div>
+      <div className="td2-guide-dream-flow" aria-hidden="true"><span>뱀</span><b>→</b><span>{ko ? "들어옴" : "Entering"}</span><b>→</b><span>{ko ? "평온" : "Calm"}</span></div>
+      <article>
+        <small>{ko ? "오늘의 꿈" : "TODAY'S DREAM"}</small>
+        <strong>{ko ? "상징 하나보다, 지금의 선택과 감정을 먼저 살펴볼 꿈이에요." : "Look first at your current choices and feelings, rather than one symbol."}</strong>
+        <div><span>{ko ? "전통" : "Tradition"}</span><span>{ko ? "현대 연구" : "Research"}</span><span>{ko ? "나의 기록" : "My history"}</span></div>
+      </article>
+      <footer><b>+3</b><b>+7</b><b>+30</b><span>{ko ? "일 뒤 실제로 어땠는지 확인" : "days · check what actually happened"}</span></footer>
+    </div>}
+    {step === 5 && <div className="td2-guide-space">
+      <div className="td2-guide-room-pair">
+        <figure><Image alt="" fill sizes="(max-width: 640px) 42vw, 250px" src="/images/space/previews/bedroom-before-v1.png" /><figcaption>{ko ? "현재 배치" : "CURRENT"}</figcaption></figure>
+        <b aria-hidden="true">→</b>
+        <figure><Image alt="" fill sizes="(max-width: 640px) 42vw, 250px" src="/images/space/previews/bedroom-after-v1.png" /><figcaption>{ko ? "추천 배치" : "SUGGESTED"}</figcaption></figure>
+      </div>
+      <div className="td2-guide-compass" aria-label={ko ? "동서남북 방향" : "Cardinal directions"}><span>{ko ? "북" : "N"}</span><span>{ko ? "동" : "E"}</span><span>{ko ? "남" : "S"}</span><span>{ko ? "서" : "W"}</span></div>
+      <p><b>{ko ? "먼저 바꿔볼 한 가지" : "ONE CHANGE TO TRY"}</b>{ko ? "침대 옆 동선을 넓히고 거울과 전자기기 위치를 함께 확인해요." : "Widen the path beside the bed and review mirror and device placement."}</p>
+    </div>}
   </div>;
 }
 
-export function TaeryeongLanding({ locale, reportPreview, reviews, reviewCount }: Props) {
+export function TaeryeongLanding({ dreamAvailable, locale, reportPreview, reviews, reviewCount }: Props) {
   const t = content[locale];
   const reviewLabel = reviewCount && reviewCount > 0
     ? `${t.reviews} ${reviewCount}`
@@ -281,6 +308,7 @@ export function TaeryeongLanding({ locale, reportPreview, reviews, reviewCount }
         <Link href={`/${locale}/celebrity`} prefetch={false}>{t.success}</Link>
         <Link href={`/${locale}/compatibility`} prefetch={false}>{t.relationship}</Link>
         <Link href={`/${locale}/space`} prefetch={false}>{t.space}</Link>
+        {dreamAvailable && <Link href={`/${locale}/dreams`} prefetch={false}>{locale === "ko" ? "꿈 기록" : "Dream journal"}</Link>}
         <Link href={`/${locale}/reading#evidence`} prefetch={false}>{reviewLabel}</Link>
       </nav>
       <div className="td2-nav-actions">

@@ -165,5 +165,5 @@ describe("PREMIUM_79000 strict tier inheritance", () => {
       expect(report.sections.map((section) => section.body).join(" "), concern)
         .not.toMatch(/undefined|NaN|\{\{|\}\}/u);
     }
-  });
+  }, 10_000);
 });

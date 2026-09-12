@@ -85,8 +85,23 @@ export async function GET() {
     }
     spaceData[table] = rows;
   }
+  const dreamData: Record<string, unknown[]> = {};
+  let dreamMigrationPending = false;
+  for (const table of ["dream_events", "dream_followups", "dream_interpretation_revisions"] as const) {
+    const result = await auth.client.from(table).select("*").eq("owner_user_id", auth.user.id).limit(500);
+    if (result.error) {
+      if (["42P01", "PGRST205"].includes(result.error.code ?? "")) {
+        dreamMigrationPending = true;
+        dreamData[table] = [];
+        continue;
+      }
+      return NextResponse.json({ error: "EXPORT_FAILED" }, { status: 500 });
+    }
+    dreamData[table] = result.data ?? [];
+  }
   const exportData = {
     space: spaceData,
+    dreams: dreamData,
     profile: profile.data,
     consentReceipts: consents.data ?? [],
     tarotReadings: tarot.data ?? [],
@@ -120,12 +135,13 @@ export async function GET() {
   }
   const body = JSON.stringify({
     product: "태령당",
-    schemaVersion: "account-export-1.3.0",
+    schemaVersion: "account-export-1.4.0",
     scope: "authenticated_account",
     exportedAt,
     ownerUserId: auth.user.id,
     patternMigrationPending,
     spaceMigrationPending,
+    dreamMigrationPending,
     artifactProvenance: provenance,
     data: exportData,
   }, null, 2);
