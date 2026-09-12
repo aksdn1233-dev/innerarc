@@ -10,7 +10,7 @@ function localMonthOffset(offset: number): string {
 
 test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await page.goto("/ko");
-  const guideDialog = page.getByRole("dialog", { name: "결과를 보는 방법부터 알려드릴게요." });
+  const guideDialog = page.getByRole("dialog", { name: "결과 보는 법부터 같이 볼게요." });
   await expect(guideDialog).toBeVisible();
   await guideDialog.getByRole("button", { name: "안내 닫기" }).click();
   await expect(page.getByRole("heading", {
@@ -26,7 +26,7 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await expect(page.locator("#guide")).toBeInViewport();
   await expect(page.locator("#guide [role='tab']")).toHaveCount(6);
   await expect(page.locator("#guide .td2-guide-screen")).toHaveCount(1);
-  await expect(page.locator("#guide [role='tabpanel']")).toContainText("지금 궁금한 것을 고릅니다");
+  await expect(page.locator("#guide [role='tabpanel']")).toContainText("지금 궁금한 걸 골라봐요");
   await page.locator("#guide [role='tab']").filter({ hasText: "꿈 패턴 보기" }).click();
   await expect(page.locator("#guide [role='tabpanel']")).toContainText("3·7·30일 뒤 다시 확인해요");
   await expect(page.locator("#guide .td2-guide-dream")).toContainText("큰 뱀이 집에 들어왔어요");
@@ -87,12 +87,12 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
 
 test("every home visit opens the guide as a dismissible modal and navigation can reopen it", async ({ page }) => {
   await page.goto("/ko");
-  const dialog = page.getByRole("dialog", { name: "결과를 보는 방법부터 알려드릴게요." });
+  const dialog = page.getByRole("dialog", { name: "결과 보는 법부터 같이 볼게요." });
   await expect(dialog).toBeVisible();
   await expect(dialog.getByRole("tab")).toHaveCount(6);
   const modalBox = await dialog.boundingBox();
-  expect(modalBox?.width).toBeLessThanOrEqual(1_000);
-  expect(modalBox?.height).toBeLessThanOrEqual((page.viewportSize()?.height ?? 900) - 24);
+  expect(modalBox?.width).toBeLessThanOrEqual(840);
+  expect(modalBox?.height).toBeLessThanOrEqual(Math.min(640, (page.viewportSize()?.height ?? 900) - 48));
   await dialog.getByRole("button", { name: "안내 닫기" }).click();
   await expect(dialog).toHaveCount(0);
   await page.reload();
@@ -105,7 +105,7 @@ test("every home visit opens the guide as a dismissible modal and navigation can
 test("the first-visit guide advances every six seconds and closes after the last step", async ({ page }) => {
   await page.goto("/ko");
 
-  const dialog = page.getByRole("dialog", { name: "결과를 보는 방법부터 알려드릴게요." });
+  const dialog = page.getByRole("dialog", { name: "결과 보는 법부터 같이 볼게요." });
   const selectedTab = dialog.locator('[role="tab"][aria-selected="true"]');
   await expect(dialog).toBeVisible();
   await expect(selectedTab).toHaveText(/질문 고르기/);
