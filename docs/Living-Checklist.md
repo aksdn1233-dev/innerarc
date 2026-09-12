@@ -511,4 +511,5 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] No route, database migration, provider request, token cap, storage policy, price, checkout or entitlement changed.
 - [x] Node 24 release checks pass: lint has zero errors, typecheck and the 134-route build pass, and all 1,178 unit tests pass.
 - [x] Desktop/iPhone/Android Space matrix passes 90 cases with 30 intentional device/project skips and zero failures.
-- [ ] Complete merge, production deployment and post-deploy visual/health checks.
+- [x] PR #66 and corrective PR #67 are merged. Worker `1336e29a-5b9f-43bd-9ca8-84cee610824a` and Sites 108 serve the final asset path; both origins return 200 for health, Feng Shui HTML and direct WebP, with site/database OK and payments open.
+- [ ] Complete physical iPhone/Android camera, touch, memory and GPU review; current mobile evidence is browser emulation.
