@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { Scene } from "@/core/space/schema";
 import { clearTranslation } from "@/core/space/navigation";
@@ -12,6 +13,7 @@ import { safeInteriorCamera } from "@/core/space/camera-safety";
 import styles from "./space.module.css";
 import type { SpaceGuideNarration as SpaceGuideNarrationData } from "@/core/space/narration";
 import { SpaceGuideNarration } from "./guide-narration";
+import { roomMiniatureGuide } from "@/core/space/miniature-guides";
 
 type ComparisonMode = "current" | "compare" | "recommended";
 type Runtime = { update(scene: Scene, comparison?: Scene, mode?: ComparisonMode): void; select(id: string | null): void; perspective(): void; top(): void; reset(): void; zoom(n: number): void; turn(): void; recommended(): void; detail(): void; lighting(value: "day" | "evening"): void; profile(value: string): void; dispose(): void };
@@ -21,6 +23,7 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
   const host = useRef<HTMLDivElement>(null), runtime = useRef<Runtime | null>(null), latest = useRef(scene), latestComparison = useRef(comparisonScene), latestComparisonMode = useRef(comparisonMode), selectCallback = useRef(onSelect), latestSelected = useRef(selectedId);
   const [failed, setFailed] = useState(false), [ready, setReady] = useState(false), [attempt, setAttempt] = useState(0), [quality, setQuality] = useState("auto"), [lightChoice, setLightChoice] = useState<"day" | "evening">("day"), [assetLoading, setAssetLoading] = useState(false), [viewFallback, setViewFallback] = useState(false), [cameraChoice, setCameraChoice] = useState<"dollhouse" | "room" | "detail" | "top">("room"), [resolution, setResolution] = useState<RenderResolution | null>(null);
   const ko = locale === "ko";
+  const miniature = roomMiniatureGuide(comparisonMode);
   useEffect(() => { guideRef.current = guide; runtime.current?.select(latestSelected.current); }, [guide]);
   useEffect(() => { latest.current = scene; latestComparison.current = comparisonScene; latestComparisonMode.current = comparisonMode; runtime.current?.update(scene, comparisonScene, comparisonMode); }, [scene, comparisonScene, comparisonMode]);
   useEffect(() => { selectCallback.current = onSelect; latestSelected.current = selectedId; runtime.current?.select(selectedId); }, [onSelect, selectedId]);
@@ -341,6 +344,10 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
     <div className={styles.sceneFrame}>
       {(!ready || assetLoading) && !failed && <p className={styles.sceneLoading} data-space-loading role="status">{ko ? "방의 재질과 3D 가구를 불러오고 있습니다…" : "Loading room materials and 3D furniture…"}</p>}
       <div ref={host} className={styles.canvas} hidden={failed} data-quality={quality} />
+      {!failed && ready && <figure className={styles.roomMiniature} data-character={miniature.characterId} data-mode={comparisonMode ?? "current"}>
+        <Image alt={ko ? miniature.alt.ko : miniature.alt.en} height={miniature.height} src={miniature.path} width={miniature.width} sizes="(max-width: 540px) 82px, 138px" />
+        <figcaption><b>{ko ? miniature.name.ko : miniature.name.en}</b><span>{ko ? miniature.line.ko : miniature.line.en}</span></figcaption>
+      </figure>}
       {!failed && <div className={styles.compass} aria-label={ko ? "평면도 방향: 북·동·남·서" : "Plan directions: north, east, south and west"}>
         <div className={styles.compassRose} style={{ transform: `rotate(${scene.orientation.northDegrees}deg)` }}>
           {([
