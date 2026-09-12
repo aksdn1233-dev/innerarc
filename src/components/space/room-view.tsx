@@ -345,7 +345,7 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
       {(!ready || assetLoading) && !failed && <p className={styles.sceneLoading} data-space-loading role="status">{ko ? "방의 재질과 3D 가구를 불러오고 있습니다…" : "Loading room materials and 3D furniture…"}</p>}
       <div ref={host} className={styles.canvas} hidden={failed} data-quality={quality} />
       {!failed && ready && <figure className={styles.roomMiniature} data-character={miniature.characterId} data-mode={comparisonMode ?? "current"}>
-        <Image alt={ko ? miniature.alt.ko : miniature.alt.en} height={miniature.height} src={miniature.path} width={miniature.width} sizes="(max-width: 540px) 82px, 138px" />
+        <Image alt={ko ? miniature.alt.ko : miniature.alt.en} height={miniature.height} src={miniature.path} width={miniature.width} sizes="(max-width: 540px) 82px, 138px" unoptimized />
         <figcaption><b>{ko ? miniature.name.ko : miniature.name.en}</b><span>{ko ? miniature.line.ko : miniature.line.en}</span></figcaption>
       </figure>}
       {!failed && <div className={styles.compass} aria-label={ko ? "평면도 방향: 북·동·남·서" : "Plan directions: north, east, south and west"}>

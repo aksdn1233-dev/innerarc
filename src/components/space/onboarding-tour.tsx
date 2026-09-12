@@ -84,7 +84,7 @@ export function SpaceOnboardingTour({ locale, step, northDegrees, northConfirmed
         <figure className={styles.tourVisual}>
           <Image alt="" className={styles.tourBackdropImage} fill priority={step === 0} sizes="(max-width: 640px) 92vw, 520px" src={item.image} />
           <div className={styles.tourMiniature} data-character={item.miniature.characterId}>
-            <Image alt={ko ? item.miniature.alt.ko : item.miniature.alt.en} height={item.miniature.height} src={item.miniature.path} width={item.miniature.width} sizes="(max-width: 720px) 116px, 180px" />
+            <Image alt={ko ? item.miniature.alt.ko : item.miniature.alt.en} height={item.miniature.height} src={item.miniature.path} width={item.miniature.width} sizes="(max-width: 720px) 116px, 180px" unoptimized />
             <p><b>{ko ? item.miniature.name.ko : item.miniature.name.en}</b><span>{ko ? item.miniature.line.ko : item.miniature.line.en}</span></p>
           </div>
           {step === 0 && <div className={styles.photoArrows} aria-hidden="true"><span>①</span><i>→</i><span>②</span></div>}

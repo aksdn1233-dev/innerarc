@@ -51,7 +51,7 @@ export function SpaceGuideNarration({ guide, locale }: { guide: SpaceGuideNarrat
   }
 
   return <aside className={styles.spaceGuide} data-anchor-object={guide.objectId ?? "room"} aria-label={ko ? "3D 공간 안내" : "3D space guide"}>
-    {!imageFailed && <Image onError={() => setImageFailed(true)} src={SPACE_MINIATURE_GUIDES.photo.path} alt="" width={180} height={180} sizes="(max-width: 540px) 112px, 180px" loading="lazy" />}
+    {!imageFailed && <Image onError={() => setImageFailed(true)} src={SPACE_MINIATURE_GUIDES.photo.path} alt="" width={180} height={180} sizes="(max-width: 540px) 112px, 180px" loading="lazy" unoptimized />}
     <div className={styles.guideBubble}><small>{guide.objectId ? "1 · " : ""}{ko ? "윤도 · 공간 안내" : "Yundo · Space guide"}</small>
       {captions && <p>{guide.caption}</p>}
       <details><summary>{ko ? "왜 이렇게 보나요?" : "Why this point?"}</summary><p>{guide.detail}</p></details>
