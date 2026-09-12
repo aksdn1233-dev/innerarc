@@ -267,4 +267,7 @@ Rollback reference: production base `ee4ae5038e34e0715456b837cbe7c7f2db5591c4`; 
 - [x] Existing deterministic geometry, recommendations, photo privacy, authentication, payments, reports and database are unchanged.
 - [x] Node 24 lint has zero errors, typecheck and 134-route production build pass, and the full unit suite passes 1,178 of 1,178 tests.
 - [x] The 120-case desktop/iPhone/Android Space matrix passes 90 cases with 30 intentional skips and zero failures; new visual baselines include the active companion.
-- [ ] Record merge commit, Worker/Sites versions, rollback versions and both-origin post-deploy checks.
+- [x] PR #66 merge `9ea839ccf84d39e3c30d3fc6392f17bf346fa7e5` and corrective PR #67 merge `c81bb0c0b99941f19a673f54b04bc5c2ea6e9960` are live as Worker `1336e29a-5b9f-43bd-9ca8-84cee610824a` and Sites version 108.
+- [x] Both public origins return 200 for health, Korean Feng Shui HTML and direct WebP; health reports site/database OK and payments open, and 390px live visual review shows the character, bubble and primary controls without overlap.
+- [x] Rollback preserves the pre-change Worker `9b70b0e4-bb61-4258-99b7-473dbeddea93` and Sites version 106; no migration or stored-data rollback is required.
+- [ ] GitHub Actions runs 34696184156 and 34697173995 created no executable steps because the account payment/spending limit remains active; local Node 24 and three-browser evidence is authoritative for this release.
