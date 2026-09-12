@@ -525,3 +525,13 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [ ] Migration reviewed and applied in a non-production environment.
 - [ ] Mobile/desktop preview accepted by owner.
 - [ ] Production rollout explicitly approved by owner.
+
+## 2026-09-13 — Compact six-scene home guide
+
+- [x] Reduce the desktop guide maximum to 980×760 and preserve intentional margins at 430, 390 and 360 widths.
+- [x] Keep every scene at six seconds and close after the sixth scene; manual tabs, previous/next controls and reopen remain available.
+- [x] Add a Dream Intelligence example that shows raw wording, extracted sequence, evidence types and +3/+7/+30 follow-up.
+- [x] Add a Feng Shui example that uses real existing before/after room assets, all four cardinal directions and one practical recommendation.
+- [x] Confirm zero horizontal overflow and zero console errors at 1440, 1024, 430, 390 and 360 widths.
+- [x] Focused onboarding browser checks pass on desktop and mobile; the full six-scene timer closes after 36 seconds.
+- [ ] Production rollout remains gated by the Dream Intelligence approval requirement in D-111.
