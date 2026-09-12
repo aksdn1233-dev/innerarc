@@ -292,3 +292,8 @@ Rollback reference: production base `ee4ae5038e34e0715456b837cbe7c7f2db5591c4`; 
 - [x] Existing payment prices, entitlements, reports, deterministic Saju/birth-date calculations and Space behavior are unchanged.
 - [ ] Apply `20260913000100_dream_intelligence_v1.sql`, run hosted two-owner isolation/export/deletion probes, then enable account sync in a separate release.
 - [ ] AI remains disabled. No provider, model ID, token price or runtime AI cost is configured for this release.
+- [x] PR #71 merge `d27a950d6226a1702ca2b866e71c77423dd34863` is deployed as Cloudflare Worker version `225ac729-0832-4f47-8db8-edb63edc99a0` and public Sites version 111.
+- [x] Both origins return 200 for health, Korean home, Korean/English Dream, Feng Shui, plans, Korean premium and Japanese premium; health reports site/database OK and payments open. The Dream API intentionally returns `DREAM_SYNC_DISABLED` while the device journal remains available.
+- [x] Live browser review confirms the six-step timer, Dream navigation, selected Song Myung/Noto Sans KR typography, deterministic Dream result, zero horizontal overflow and zero console errors.
+- [x] Immediate rollback targets are Worker `bdcc8a75-116f-492c-83f5-eb594e1aedfd` and Sites version 110. No database rollback is required because the Dream migration was not applied.
+- [ ] GitHub Actions run 34722047754 created no executable steps because the account payment/spending limit remains active; the recorded local Node 24 gates are the release evidence.
