@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { DreamIntelligence } from "@/components/dreams/dream-intelligence";
 import { isLocale } from "@/i18n/config";
-import { dreamEnabled } from "@/server/dreams/config";
+import { dreamAccountSyncEnabled, dreamEnabled } from "@/server/dreams/config";
 
 export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -17,5 +17,5 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function DreamsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (!isLocale(locale) || !dreamEnabled()) notFound();
-  return <DreamIntelligence locale={locale} />;
+  return <DreamIntelligence accountSyncEnabled={dreamAccountSyncEnabled()} locale={locale} />;
 }

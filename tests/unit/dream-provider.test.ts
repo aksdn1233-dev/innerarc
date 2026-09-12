@@ -1,10 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { DREAM_EXTRACTION_JSON_SCHEMA, extractDreamWithFallback, OpenAIDreamUnderstandingProvider, type DreamUnderstandingProvider } from "@/server/dreams/provider";
-import { dreamAIConfig } from "@/server/dreams/config";
+import { dreamAccountSyncEnabled, dreamAIConfig } from "@/server/dreams/config";
 
 const input = { requestId: "dream-request-123", locale: "ko" as const, dreamDate: "2026-09-13", rawText: "큰 뱀이 집에 들어왔어요.", context: { currentConcern: "", recentExperience: "", bodyState: "", recurring: false, lucid: false }, retainRawText: false, allowRemoteAI: true };
 
 describe("dream provider fallback", () => {
+  it("keeps account sync off until both release flags are enabled", () => {
+    expect(dreamAccountSyncEnabled({ DREAM_INTELLIGENCE_ENABLED: "true" })).toBe(false);
+    expect(dreamAccountSyncEnabled({ DREAM_INTELLIGENCE_ENABLED: "true", DREAM_ACCOUNT_SYNC_ENABLED: "true" })).toBe(true);
+    expect(dreamAccountSyncEnabled({ DREAM_INTELLIGENCE_ENABLED: "false", DREAM_ACCOUNT_SYNC_ENABLED: "true" })).toBe(false);
+  });
   it("uses deterministic extraction when no provider is configured", async () => {
     const result = await extractDreamWithFallback(input, null);
     expect(result.fallback).toBe(true);

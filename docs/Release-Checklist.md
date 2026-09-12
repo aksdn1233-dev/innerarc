@@ -281,4 +281,14 @@ Rollback reference: production base `ee4ae5038e34e0715456b837cbe7c7f2db5591c4`; 
 - [ ] Validate 360/390/430/768/1024/1280/1440 layouts, keyboard use, reduced motion, no overflow and no console/hydration errors.
 - [ ] Confirm existing payment, protected report, Saju, birth-date pattern, Reality Check and account regression gates.
 - [ ] Record the exact provider/model/pricing evidence if AI is enabled; otherwise report deterministic-only operation.
-- [ ] Obtain explicit owner approval before merging or production deployment.
+- [x] Owner explicitly approved merging and production deployment on 2026-09-13.
+
+### Dream Intelligence device-only production release — 2026-09-13
+
+- [x] Release flags are separated: `DREAM_INTELLIGENCE_ENABLED=true`, `DREAM_ACCOUNT_SYNC_ENABLED=false`, `DREAM_AI_ENABLED=false`.
+- [x] Missing hosted migration cannot trigger Dream API reads, writes or deletes; local recording, export and deletion remain available.
+- [x] Node 24 full unit suite passes 1,220 tests after the sync-gate regression was added; lint, typecheck, production build and focused browser checks are rerun before publish.
+- [x] The first full-suite run exposed a pre-existing five-second timeout in the 14-domain premium inheritance matrix under parallel load (5.84s); the same case passed alone in 1.83s. Its explicit non-performance timeout is now 10 seconds while every content, inheritance and contradiction assertion remains unchanged, and the full suite is rerun before publish.
+- [x] Existing payment prices, entitlements, reports, deterministic Saju/birth-date calculations and Space behavior are unchanged.
+- [ ] Apply `20260913000100_dream_intelligence_v1.sql`, run hosted two-owner isolation/export/deletion probes, then enable account sync in a separate release.
+- [ ] AI remains disabled. No provider, model ID, token price or runtime AI cost is configured for this release.

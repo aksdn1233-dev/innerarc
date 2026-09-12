@@ -2,12 +2,12 @@ import { requireSupabaseUser } from "@/lib/supabase/auth";
 import { resolveSupabaseAdminClient } from "@/lib/supabase/admin";
 import { enforceSensitiveRequestLimit } from "@/server/abuse-protection";
 import { isSameOriginRequest } from "@/server/same-origin";
-import { dreamEnabled } from "./config";
+import { dreamAccountSyncEnabled } from "./config";
 
 export class DreamAccessError extends Error { constructor(public code: string, public status = 400) { super(code); } }
 export function dreamResponse(body: unknown, status = 200) { return Response.json(body, { status, headers: { "Cache-Control": "private, no-store", "X-Robots-Tag": "noindex, nofollow", ...(status === 429 ? { "Retry-After": "60" } : {}) } }); }
 export async function dreamAccess(request: Request, write = false) {
-  if (!dreamEnabled()) throw new DreamAccessError("DREAMS_DISABLED", 503);
+  if (!dreamAccountSyncEnabled()) throw new DreamAccessError("DREAM_SYNC_DISABLED", 503);
   if (write && !isSameOriginRequest(request)) throw new DreamAccessError("CROSS_ORIGIN_REQUEST", 403);
   const auth = await requireSupabaseUser();
   if (!auth.user || !auth.client || auth.error) throw new DreamAccessError("AUTH_REQUIRED", 401);

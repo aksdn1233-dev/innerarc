@@ -4,6 +4,10 @@ export function dreamEnabled(environment: Readonly<Record<string, string | undef
   return environment.DREAM_INTELLIGENCE_ENABLED === "true";
 }
 
+export function dreamAccountSyncEnabled(environment: Readonly<Record<string, string | undefined>> = process.env): boolean {
+  return dreamEnabled(environment) && environment.DREAM_ACCOUNT_SYNC_ENABLED === "true";
+}
+
 export function dreamAIEnabled(environment: Readonly<Record<string, string | undefined>> = process.env): boolean {
   return dreamEnabled(environment) && environment.DREAM_AI_ENABLED === "true";
 }

@@ -21,7 +21,7 @@ import { captureConversionEvent } from "@/core/analytics";
 import styles from "./dream-intelligence.module.css";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
 
-type Props = Readonly<{ locale: Locale }>;
+type Props = Readonly<{ accountSyncEnabled: boolean; locale: Locale }>;
 const today = () => new Date().toISOString().slice(0, 10);
 const isDue = (date: string) => date <= today();
 const uid = (prefix: string) => `${prefix}_${crypto.randomUUID().replaceAll("-", "")}`;
@@ -64,7 +64,7 @@ function captureReturnMilestones(records: readonly DreamEvent[], locale: Locale)
   }
 }
 
-export function DreamIntelligence({ locale }: Props) {
+export function DreamIntelligence({ accountSyncEnabled, locale }: Props) {
   const t = copy[locale];
   const [events, setEvents] = useState<DreamEvent[]>([]);
   const [selected, setSelected] = useState<DreamEvent | null>(null);
@@ -78,6 +78,7 @@ export function DreamIntelligence({ locale }: Props) {
       const localEvents = loadDreamEvents(window.localStorage);
       setEvents(localEvents);
       captureReturnMilestones(localEvents, locale);
+      if (!accountSyncEnabled) return;
       const client = getBrowserSupabaseClient();
       if (!client || !(await client.auth.getSession()).data.session?.user) return;
       const response = await fetch("/api/dreams", { headers: { Accept: "application/json" } });
@@ -97,7 +98,7 @@ export function DreamIntelligence({ locale }: Props) {
       });
     })().catch(() => undefined), 0);
     return () => { cancelled = true; window.clearTimeout(timer); };
-  }, [locale]);
+  }, [accountSyncEnabled, locale]);
   const signature = useMemo(() => buildDreamSignature(events, locale), [events, locale]);
   const filtered = useMemo(() => { const query = search.trim().toLocaleLowerCase(locale); if (!query) return events; return events.filter((event) => [event.initialInterpretation.title, event.initialInterpretation.normalizedSummary, ...event.initialInterpretation.ontology.flatMap((token) => [token.label.ko, token.label.en])].some((value) => value.toLocaleLowerCase(locale).includes(query))); }, [events, locale, search]);
 
@@ -106,7 +107,7 @@ export function DreamIntelligence({ locale }: Props) {
     if (!window.confirm(t.clearConfirm)) return;
     const client = getBrowserSupabaseClient();
     try {
-      if ((await client?.auth.getSession())?.data.session?.user) {
+      if (accountSyncEnabled && (await client?.auth.getSession())?.data.session?.user) {
         const response = await fetch("/api/dreams", { method: "DELETE" });
         if (!response.ok) { setError(locale === "ko" ? "계정 기록을 지우지 못했습니다. 잠시 뒤 다시 시도해주세요." : "Account records could not be deleted. Please try again."); return; }
       }
@@ -114,6 +115,7 @@ export function DreamIntelligence({ locale }: Props) {
     } catch { setError(locale === "ko" ? "기록을 지우지 못했습니다. 잠시 뒤 다시 시도해주세요." : "Records could not be deleted. Please try again."); }
   }
   async function accountInterpretation(input: DreamInput): Promise<{ signedIn: boolean; interpretation: DreamInterpretation | null; mode: "deterministic" | "provider" }> {
+    if (!accountSyncEnabled) return { signedIn: false, interpretation: null, mode: "deterministic" };
     const client = getBrowserSupabaseClient();
     if (!client) return { signedIn: false, interpretation: null, mode: "deterministic" };
     try {
@@ -149,6 +151,7 @@ export function DreamIntelligence({ locale }: Props) {
     captureConversionEvent("dream_followup_conversion", locale, { dueDays: days });
   }
   async function syncFollowUpIfSignedIn(completed: DreamEvent, days: 3 | 7 | 30, data: FormData) {
+    if (!accountSyncEnabled) return;
     const client = getBrowserSupabaseClient();
     if (!client) return;
     try {
