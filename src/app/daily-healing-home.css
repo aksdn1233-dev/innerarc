@@ -199,3 +199,12 @@
 .dh-transition{min-height:800px;grid-template-columns:1fr;grid-template-rows:auto 430px}.dh-transition>div:first-child{padding:86px 22px 64px}.dh-transition-art{min-height:430px}.dh-transition-art img{object-position:right top}.dh-reality{gap:52px}.dh-reality-story{grid-template-columns:1fr}.dh-reality-story ol{padding:22px}.dh-reality-story aside{display:grid;grid-template-columns:140px 1fr;align-items:end}.dh-reality-story aside img{width:150px;height:210px}.dh-reality-story aside p{margin:0 0 18px -10px}.dh-report{gap:42px}.dh-report-book{display:block;min-height:0}.dh-report-book::before{display:none}.dh-report-page{padding:34px 24px}.dh-report-page.is-left{border-radius:18px 18px 2px 2px}.dh-report-page.is-right{border-radius:2px 2px 18px 18px}.dh-bookmark{right:34px;height:64px}.dh-reviews>div,.dh-common-concerns>div{grid-template-columns:1fr}.dh-common-concerns a{min-height:150px}.dh-space{grid-template-columns:1fr;gap:52px}.dh-space-visual{min-height:520px}.dh-space-visual figure{width:82%;border-width:6px}.dh-space-visual figure:first-child{height:350px}.dh-space-visual figure:nth-child(2){height:320px}.dh-space-guide{right:-28px;width:140px;height:190px}.dh-close{min-height:0;grid-template-columns:1fr}.dh-close-art{min-height:560px}.dh-close-copy{padding:82px 22px 94px}.dh-close-copy>div{align-items:stretch;flex-direction:column}.dh-close-copy a{justify-content:space-between}.dh-footer{padding:56px 22px 34px;grid-template-columns:1fr;gap:30px}.dh-footer nav{justify-content:flex-start}.dh-footer>small{text-align:left}}
 @media(prefers-reduced-motion:reduce){.dh-close-video{display:none}.dh-close-video-fallback{display:block!important;position:absolute!important;inset:0}}
 @media(prefers-reduced-motion:reduce){.dh-concern-grid button,.dh-conversation>div>a,.dh-service-grid>a{transition:none}}
+
+/* 2026-09-23 heading measure: `ch` is half a Hangul glyph, so 8–8.5ch held four syllables
+   per line and set the entry heading one word per line. Let the column bound the measure. */
+.dh-entry-copy>h2 { max-width:11em; font-size:clamp(2.8rem,4.3vw,4.7rem); line-height:1.12; }
+@media(max-width:760px){
+  .dh-entry-copy>h2 { max-width:none; font-size:clamp(2.3rem,10vw,3.2rem); }
+  .dh-entry-scene { height:380px; }
+  .dh-conversation h2 { max-width:none; }
+}

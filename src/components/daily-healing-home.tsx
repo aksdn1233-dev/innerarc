@@ -85,9 +85,9 @@ function DeferredClosingVideo() {
 
 const copy = {
   ko: {
-    concernEyebrow: "오늘의 고민",
+    concernEyebrow: "혹시 이런 고민인가요?",
     concernTitle: "오늘, 어떤 고민이 있으신가요?",
-    concernBody: <>지금 마음에 걸리는 것부터<br />천천히 이야기해보세요.</>,
+    concernBody: <>가장 가까운 장면을 누르면<br />그 고민에 맞춘 무료 결과로 이어져요.</>,
     concerns: [
       ["relationships", "연애·관계", "마음과 거리"],
       ["work", "일·진로", "계속할지 바꿀지"],
@@ -96,20 +96,20 @@ const copy = {
       ["growth", "나 자신", "반복되는 습관"],
       ["leadership", "리더십", "결정과 역할"],
     ] as const,
-    concernPrompt: "하나를 고르면 그 고민에 맞춰 기본 결과를 보여드려요.",
-    concernAction: "이 고민부터 살펴보기",
-    listeningEyebrow: "잠시 쉬어가도 괜찮아요",
-    listeningTitle: <>지친 하루에도,<br />당신의 이야기는 소중하니까요.</>,
+    concernPrompt: "하나를 고르면 그 고민에 맞춘 무료 결과로 바로 이어져요.",
+    concernAction: "이 고민으로 무료 결과 보기",
+    listeningEyebrow: "1분이면 충분해요",
+    listeningTitle: <>고민 하나만 고르면,<br />첫 결과가 바로 나와요.</>,
     listeningBody: "오늘의 고민을 정리하고, 지금의 흐름을 조금 더 차분하게 바라보세요.",
-    listeningNote: "답을 서두르기보다, 무엇이 계속 마음에 남는지부터 들어볼게요.",
+    listeningNote: "답을 서두르기보다, 무엇이 반복되는지부터 함께 살펴볼게요.",
     guidesEyebrow: "태령당의 안내자들",
-    guidesTitle: "태령당에는 각기 다른 시선이 있습니다.",
-    guidesBody: "여섯 안내자가 저마다 잘 보는 부분을 쉬운 말로 전합니다. 계산과 판단은 정해진 기준에 따라 따로 이루어집니다.",
+    guidesTitle: "여섯 안내자가 각자의 시선으로 풀어드려요.",
+    guidesBody: "관계, 운의 흐름, 균형처럼 안내자마다 잘 보는 부분을 쉬운 말로 전해요. 숫자 계산은 누가 안내하든 같은 기준으로 이루어집니다.",
     servicesEyebrow: "지금 알고 싶은 것",
-    servicesTitle: <>궁금한 답을<br />바로 골라보세요.</>,
-    servicesBody: "내 성향부터 관계, 오늘의 흐름, 방 배치까지 필요한 것만 볼 수 있어요.",
+    servicesTitle: <>궁금한 것만<br />골라서 보세요.</>,
+    servicesBody: "타고난 기질부터 두 사람의 궁합, 오늘의 질문, 방 배치까지. 필요한 것 하나만 골라도 충분해요.",
     services: [
-      ["사주", "나는 어떤 기질을 타고났을까?", "연·월·일·시 네 기둥과 오행을 계산해 삶의 큰 흐름을 봅니다.", "fortune", "절기와 네 기둥", "내 사주 보기"],
+      ["사주", "나는 어떤 기질을 타고났을까?", "연·월·일·시 네 기둥과 오행을 계산해 삶의 큰 흐름을 봅니다.", "fortune", "절기와 네 기둥", "무료로 내 사주 보기"],
       ["생년월일 패턴", "왜 비슷한 선택을 되풀이할까?", "생년월일의 수로 내 강점과 자주 막히는 지점을 확인합니다.", "numerology", "무료 기본 결과", "무료로 내 패턴 보기"],
       ["궁합", "우리는 어디서 잘 맞고 부딪힐까?", "연인·가족·동료가 생각하고 행동하는 차이를 나란히 봅니다.", "compatibility", "둘의 차이와 조화", "둘의 궁합 보기"],
       ["오늘의 흐름", "오늘, 무엇부터 돌아보면 좋을까?", "생일의 월·일을 기준으로 오늘 나에게 필요한 질문을 받습니다.", "daily-fortune", "가볍게 매일", "오늘의 질문 받기"],
@@ -126,7 +126,7 @@ const copy = {
     transitionTitle: <>막연했던 고민이,<br />움직일 방향이 됩니다.</>,
     transitionBody: "답을 대신 정하지는 않아요. 지금 왜 망설이는지 알면 다음 선택은 조금 선명해집니다.",
     transitionNote: "내가 바꿀 수 있는 한 가지부터 찾습니다.",
-    reportEyebrow: "결과가 궁금하다면",
+    reportEyebrow: "상세 리딩 미리보기",
     reportTitle: <>결제 전에,<br />실제 리포트를 먼저 보세요.</>,
     reportBody: "어떤 계산을 쓰고 무엇을 알려주는지 예시 리포트에서 먼저 확인할 수 있어요.",
     reportSample: "1994년 11월 4일 예시",
@@ -135,7 +135,7 @@ const copy = {
     reportChapters: "이어지는 내용",
     reportNext: "지금 해볼 한 가지",
     reportLocked: "상세 리딩에서 보기",
-    reportAction: "실제 예시 리포트 보기",
+    reportAction: "예시 리포트 먼저 읽어보기",
     reviewsEyebrow: "먼저 써본 사람들의 이야기",
     reviewsTitle: <>다른 사람들은<br />무엇을 확인했을까요?</>,
     reviewsBody: "공개에 동의하고 운영자가 확인한 후기만 그대로 보여드립니다.",
@@ -146,7 +146,7 @@ const copy = {
     spaceAction: "내 방 3D로 확인하기",
     before: "현재 배치",
     after: "추천 배치",
-    closeTitle: "지금 가장 궁금한 것 하나만 골라보세요.",
+    closeTitle: "생년월일만 있으면, 지금 바로 시작할 수 있어요.",
     closeBody: "회원가입 없이 기본 분석과 사주 원국을 무료로 바로 볼 수 있어요.",
     closeAction: "무료로 내 패턴 보기",
     closeSajuAction: "무료 사주 원국 보기",
@@ -155,9 +155,9 @@ const copy = {
     copyright: "별루프 · 대표 박서준 · 사업자등록번호 482-12-03629 · 부산광역시 북구",
   },
   en: {
-    concernEyebrow: "WHAT IS ON YOUR MIND",
+    concernEyebrow: "SOUND FAMILIAR?",
     concernTitle: "What has been weighing on you today?",
-    concernBody: <>Begin with what keeps returning<br />and take it slowly.</>,
+    concernBody: <>Tap the scene closest to yours<br />to open a free result for that concern.</>,
     concerns: [
       ["relationships", "Love & relationships", "Closeness and distance"],
       ["work", "Work & direction", "Stay or change"],
@@ -167,11 +167,11 @@ const copy = {
       ["leadership", "Leadership", "Decisions and roles"],
     ] as const,
     concernPrompt: "Choose one to shape the focus of your free result.",
-    concernAction: "Start with this concern",
-    listeningEyebrow: "TAKE A QUIET MOMENT",
-    listeningTitle: <>Even after a tiring day,<br />your story still matters.</>,
+    concernAction: "See my free result for this",
+    listeningEyebrow: "IT TAKES A MINUTE",
+    listeningTitle: <>Pick one concern.<br />See your first result.</>,
     listeningBody: "Put today's concern into words and look at the current pattern with a little more calm.",
-    listeningNote: "We begin with what keeps staying on your mind, without rushing to an answer.",
+    listeningNote: "Rather than rushing to an answer, we start with what keeps repeating.",
     guidesEyebrow: "YOUR GUIDES",
     guidesTitle: "Taeryeongdang holds six different points of view.",
     guidesBody: "Each guide explains a different part of the story in plain words. Calculations and decisions still follow their separate, fixed rules.",
@@ -216,7 +216,7 @@ const copy = {
     spaceAction: "Check my room in 3D",
     before: "Current",
     after: "Suggested",
-    closeTitle: "Choose the one thing you want to understand now.",
+    closeTitle: "All you need is a birth date to begin.",
     closeBody: "View your basic pattern and Four Pillars chart free, without creating an account.",
     closeAction: "View my pattern free",
     closeSajuAction: "View my Four Pillars free",
@@ -275,13 +275,13 @@ export function DailyHealingHome({ locale, reportPreview, reviews, reviewCount }
       <div className="dh-entry-copy">
         <p className="dh-eyebrow">{t.listeningEyebrow}</p>
         <h2 id="dh-listening-title">{t.listeningTitle}</h2>
-        <p>{locale === "ko" ? "오늘 마음에 걸리는 일이 있다면 태령당과 천천히 이야기해보세요." : "If something is weighing on you today, take your time and tell Taeryeongdang."}</p>
+        <p>{locale === "ko" ? "요즘 가장 마음에 걸리는 것 하나를 고르고 생년월일만 넣으세요. 그 고민에 맞춘 기본 결과를 무료로 보여드려요." : "Choose what weighs on you most and add your birth date. The free basic result is shaped around that concern."}</p>
         <div className="dh-entry-question"><h3>{t.concernTitle}</h3><div className="dh-concern-grid" role="group" aria-label={t.concernTitle}>{t.concerns.map(([id, label]) => <button aria-pressed={selectedConcern === id} key={id} onClick={() => chooseConcern(id)} type="button">{label}</button>)}</div><div className="dh-concern-next" aria-live="polite"><span>{selected ? `${selected[1]} · ${selected[2]}` : t.concernPrompt}</span>{selectedConcern && <Link href={`/${locale}/numerology?focus=${selectedConcern}`} prefetch={false}>{t.concernAction}<Arrow /></Link>}</div></div>
       </div>
       <div className="dh-entry-scene" aria-hidden="true"><span className="dh-entry-sun" /><span className="dh-entry-curtain" /><span className="dh-entry-table" /><span className="dh-entry-cup" /><span className="dh-entry-book" /><span className="dh-entry-plant" /><Image src="/images/numerology-guides/gyeol-hoyeon-daily.webp" alt="" className="dh-entry-photo" fill sizes="(max-width: 760px) 100vw, 55vw" priority={false} unoptimized /><p><strong>{locale === "ko" ? "호연" : "Hoyeon"}</strong>{t.listeningNote}</p></div>
     </section>
 
-    <section className="dh-conversation" aria-labelledby="dh-conversation-title"><header><p className="dh-eyebrow">{t.concernEyebrow}</p><h2 id="dh-conversation-title">{locale === "ko" ? "무슨 이야기가 제일 마음에 걸리세요?" : "Which story is weighing on you most?"}</h2><p>{t.concernBody}</p></header><div aria-label={locale === "ko" ? "고민별 안내" : "Guidance by concern"} tabIndex={0}>{t.concerns.map(([id, label]) => <Link href={`/${locale}/numerology?focus=${id}`} key={id} onClick={() => captureConversionEvent("concern_selected", locale, { concern: id, surface: "home" })} prefetch={false}><DeferredImage alt="" height={384} src={concernScenes[id].image} width={384} sizes="384px" /><span><small>{label}</small><strong>{concernScenes[id][locale]}</strong></span><Arrow /></Link>)}</div></section>
+    <section className="dh-conversation" aria-labelledby="dh-conversation-title"><header><p className="dh-eyebrow">{t.concernEyebrow}</p><h2 id="dh-conversation-title">{locale === "ko" ? "이런 장면, 자꾸 반복되고 있나요?" : "Does one of these keep happening?"}</h2><p>{t.concernBody}</p></header><div aria-label={locale === "ko" ? "고민별 안내" : "Guidance by concern"} tabIndex={0}>{t.concerns.map(([id, label]) => <Link href={`/${locale}/numerology?focus=${id}`} key={id} onClick={() => captureConversionEvent("concern_selected", locale, { concern: id, surface: "home" })} prefetch={false}><DeferredImage alt="" height={384} src={concernScenes[id].image} width={384} sizes="384px" /><span><small>{label}</small><strong>{concernScenes[id][locale]}</strong></span><Arrow /></Link>)}</div></section>
 
     <section className="dh-guides" aria-labelledby="dh-guides-title">
       <header><div><p className="dh-eyebrow">{t.guidesEyebrow}</p><h2 id="dh-guides-title">{t.guidesTitle}</h2></div><p>{t.guidesBody}</p></header>
@@ -318,7 +318,7 @@ export function DailyHealingHome({ locale, reportPreview, reviews, reviewCount }
     {reviews.length > 0 ? <section className="dh-reviews" aria-labelledby="dh-reviews-title">
       <header><p className="dh-eyebrow">{t.reviewsEyebrow}</p><h2 id="dh-reviews-title">{t.reviewsTitle}</h2><p>{t.reviewsBody}</p>{showReviewCount && <small>{locale === "ko" ? `공개된 후기 ${reviewCount!.toLocaleString("ko-KR")}개 중 최근 후기입니다.` : `Recent entries from ${reviewCount!.toLocaleString("en-US")} published reviews.`}</small>}</header>
       <div>{reviews.map((review) => <article key={review.id}><small>{reviewTypeLabels[locale][review.reviewType]} · {review.publishedMonth}</small>{review.wantedToUnderstand && <h3>{review.wantedToUnderstand}</h3>}<p>{review.mostUseful}</p><footer><strong>{review.displayName || anonymousFallbackName[locale]}</strong><span>{changedActionLabels[locale][review.changedAction]}</span></footer></article>)}</div>
-    </section> : <section className="dh-common-concerns" aria-labelledby="dh-common-title"><p className="dh-eyebrow">{locale === "ko" ? "지금 고를 수 있는 고민" : "CHOOSE A CONCERN"}</p><h2 id="dh-common-title">{locale === "ko" ? "가장 자주 떠오르는 한 가지부터 눌러보세요." : "Tap the one concern that keeps returning."}</h2><div>{t.concerns.map(([id, label]) => <Link href={`/${locale}/numerology?focus=${id}`} key={id} prefetch={false}><small>{label}</small><strong>{concernScenes[id][locale]}</strong><Arrow /></Link>)}</div></section>}
+    </section> : <section className="dh-common-concerns" aria-labelledby="dh-common-title"><p className="dh-eyebrow">{locale === "ko" ? "아직 망설여진다면" : "STILL DECIDING?"}</p><h2 id="dh-common-title">{locale === "ko" ? "가장 자주 떠오르는 고민 하나만 눌러보세요." : "Tap the one concern that keeps returning."}</h2><div>{t.concerns.map(([id, label]) => <Link href={`/${locale}/numerology?focus=${id}`} key={id} prefetch={false}><small>{label}</small><strong>{concernScenes[id][locale]}</strong><Arrow /></Link>)}</div></section>}
 
     <section className="dh-space" aria-labelledby="dh-space-title">
       <div className="dh-space-visual">

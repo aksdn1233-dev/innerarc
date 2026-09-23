@@ -31,12 +31,12 @@ const content = {
     reviews: "이용 후기",
     login: "구매 내역",
     start: "무료 사주",
-    kicker: "PERSONAL PATTERN INTELLIGENCE",
-    title: <>사람의 흐름을 읽어<br /><em>더 나은 오늘을 만듭니다.</em></>,
-    heroBody: "사주와 생년월일 패턴의 계산 근거를 바탕으로, 반복되는 성향과 선택을 현실에 맞게 풀어드립니다.",
-    heroPrimary: "무료 사주 보기",
-    heroSecondary: "서비스 둘러보기",
-    heroNote: "무료로 시작 · 계산 과정 확인 · 나중에 다시 보기",
+    kicker: "사주 · 생년월일 패턴 · 궁합 · 풍수",
+    title: <>연애·돈·일, 왜 늘<br /><em>같은 자리에서 막힐까요?</em></>,
+    heroBody: "생년월일만 넣으면 반복되는 성향과 선택의 이유를 계산 근거와 함께 쉬운 말로 풀어드려요.",
+    heroPrimary: "무료로 내 사주 보기",
+    heroSecondary: "고민별로 골라보기",
+    heroNote: "회원가입 없이 · 기본 결과 무료 · 계산 근거 공개",
     heroArtNote: "브랜드 연출 이미지 · 생성형 이미지",
     guideCue: "처음이세요? 1분 안내 보기",
     guideEyebrow: "처음 오셨다면",
@@ -123,7 +123,7 @@ const content = {
     kicker: "People, relationships, spaces, and lived experience",
     title: <>There may be a reason<br />the same patterns<br /><em>keep returning.</em></>,
     heroBody: "Taeryeongdang connects symbolic traditions, deterministic calculations, and what you record from real life.",
-    heroPrimary: "See my patterns", heroSecondary: "Meet Taeryeongdang", heroNote: "Free foundation · Visible calculations · Reality-checked", heroArtNote: "Brand scene · generated image",
+    heroPrimary: "See my Four Pillars free", heroSecondary: "Start from a concern", heroNote: "No sign-up · Free basic result · Calculations shown", heroArtNote: "Brand scene · generated image",
     guideCue: "New here? See the one-minute guide",
     guideEyebrow: "FIRST VISIT",
     guideTitle: "See how a result works before you begin.",
@@ -329,7 +329,7 @@ export function TaeryeongLanding({ dreamAvailable, locale, reportPreview, review
           <Link className="td2-primary" href={`/${locale}/fortune`} prefetch={false} onClick={track}>{t.heroPrimary}<Arrow /></Link>
           <a className="td2-secondary" href="#services">{t.heroSecondary}<Arrow /></a>
         </div>
-        <p className="td2-note">{t.heroNote.split(" · ").map((part, index) => <span key={part}>{index > 0 ? " · " : ""}{part}</span>)}</p>
+        <p className="td2-note">{t.heroNote.split(" · ").map((part, index, parts) => <span key={part}>{part}{index < parts.length - 1 ? " · " : ""}</span>)}</p>
         <button className="td2-guide-cue" onClick={openGuide} type="button">{t.guideCue}<Arrow /></button>
       </div>
       <div className="td2-hero-signature" aria-hidden="true"><span>태</span><span>령</span><span>당</span></div>

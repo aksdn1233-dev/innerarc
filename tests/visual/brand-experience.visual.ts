@@ -50,7 +50,7 @@ test.describe("Taeryeong Daily Healing homepage", () => {
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
       await capture(page, ".td2-walkthrough", `brand-${width}-guide.png`);
       await page.getByRole("button", { name: "안내 닫기" }).click({ force: true });
-      await expect(page.getByRole("heading", { level: 1, name: "사람의 흐름을 읽어 더 나은 오늘을 만듭니다." })).toBeVisible();
+      await expect(page.getByRole("heading", { level: 1, name: "연애·돈·일, 왜 늘 같은 자리에서 막힐까요?" })).toBeVisible();
       await capture(page, ".td2-hero", `brand-${width}-hero.png`);
 
       const heroQuality = await page.locator(".td2-hero-image").evaluate(async (node) => {
@@ -95,7 +95,7 @@ test.describe("Taeryeong Daily Healing homepage", () => {
     await expect(page.locator(".dh-concern-grid button")).toHaveCount(6);
     await page.getByRole("button", { name: /연애·관계/ }).click();
     await expect(page.getByRole("button", { name: /연애·관계/ })).toHaveAttribute("aria-pressed", "true");
-    await expect(page.getByRole("link", { name: /이 고민부터 살펴보기/ })).toHaveAttribute("href", "/ko/numerology?focus=relationships");
+    await expect(page.getByRole("link", { name: /이 고민으로 무료 결과 보기/ })).toHaveAttribute("href", "/ko/numerology?focus=relationships");
 
     await expect(page.locator(".dh-guide-strip article")).toHaveCount(6);
     await expect(page.locator(".dh-service-grid > a")).toHaveCount(6);
