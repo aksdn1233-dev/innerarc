@@ -71,7 +71,7 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
       RectAreaLightUniformsLib.init(); const windowFill = new T.RectAreaLight(0xe9f3ff, 7.2, 1, 1); world.add(windowFill);
       const ceilingBounce = new T.RectAreaLight(0xfff1dc, 1.15, 3, 3); ceilingBounce.rotation.x = Math.PI / 2; world.add(ceilingBounce);
       const practical = new T.PointLight(0xffc98f, 3.4, 3.5, 2); practical.castShadow = false; practical.visible = false; world.add(practical);
-      world.add(new T.HemisphereLight(0xeaf2f6, 0x6d6255, .18));
+      const hemi = new T.HemisphereLight(0xeaf2f6, 0x6d6255, .18); world.add(hemi);
       const studioCanvas = document.createElement("canvas"); studioCanvas.width = studioCanvas.height = 256;
       const studioContext = studioCanvas.getContext("2d")!; const studioGradient = studioContext.createRadialGradient(128, 118, 8, 128, 128, 178);
       studioGradient.addColorStop(0, "#ece9e1"); studioGradient.addColorStop(.55, "#e2dfd7"); studioGradient.addColorStop(1, "#cbc9c3"); studioContext.fillStyle = studioGradient; studioContext.fillRect(0, 0, 256, 256);
@@ -103,7 +103,7 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
       composer.addPass(basePass); composer.addPass(ao); composer.addPass(output);
       // Count all geometry/shadow/postprocessing passes, not only the final fullscreen pass.
       renderer.info.autoReset = false;
-      let contextLost = false, updateVersion = 0;
+      let contextLost = false, updateVersion = 0, eveningMode = false;
       let committed = false, current = latest.current, arch: ReturnType<typeof assets.architecture> | null = null, archKey = "", selected: string | null = latestSelected.current, interiorView = false;
       const objects = new Map<string, { group: import("three").Group; key: string }>();
       let frame = 0, renderedFrames = 0, tierWarmSamples = 0; const sampleFrame = activeFrameTiming(); const intervals: number[] = [], renderTimes: number[] = [];
@@ -204,13 +204,13 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
         tierWarmSamples = 2; intervals.length = 0; renderTimes.length = 0;
         for (const key of ["frameAverage", "frameP90", "frameP95", "frameP99", "averageFps", "onePercentLowFps", "sampledFrames"]) delete container!.dataset[key];
         pixelRatio = tier === "ultra" ? Math.min(2.5, Math.max(2, devicePixelRatio)) : tier === "high" ? Math.min(2, Math.max(1.5, devicePixelRatio)) : tier === "balanced" ? Math.min(1.5, Math.max(1.25, devicePixelRatio)) : 1;
-        windowFill.visible = current.windows.length > 0 && tier !== "performance"; world.environmentIntensity = tier === "ultra" ? .36 : tier === "high" ? .30 : tier === "balanced" ? .27 : .38;
+        windowFill.visible = current.windows.length > 0 && tier !== "performance"; world.environmentIntensity = (tier === "ultra" ? .36 : tier === "high" ? .30 : tier === "balanced" ? .27 : .38) * (eveningMode ? .4 : 1);
         practical.visible = tier === "ultra" || tier === "high";
         const lightweight = tier === "performance";
         contact.enabled(!lightweight); contact.resolution(tier === "ultra" && !mobile ? 1024 : tier === "balanced" ? 256 : 512);
         ao.enabled = tier !== "performance"; aoScale = tier === "ultra" ? 1 : tier === "high" ? .8 : .55;
         ao.updateGtaoMaterial({ samples: tier === "ultra" ? 24 : tier === "high" ? 12 : 8 });
-        renderer.toneMappingExposure = tier === "ultra" ? 1.16 : tier === "high" ? 1.12 : tier === "balanced" ? 1.08 : 1.04;
+        renderer.toneMappingExposure = (tier === "ultra" ? 1.16 : tier === "high" ? 1.12 : tier === "balanced" ? 1.08 : 1.04) * (eveningMode ? .74 : 1);
         renderer.setPixelRatio(pixelRatio); composer.setPixelRatio(pixelRatio); const shadowSize = tier === "ultra" && !mobile ? 4096 : tier === "ultra" || tier === "high" ? 2048 : 1024; sun.shadow.mapSize.set(shadowSize, shadowSize); sun.shadow.intensity = tier === "ultra" ? .52 : tier === "high" ? .46 : .38; sun.shadow.map?.dispose(); sun.shadow.map = null; sun.castShadow = !lightweight;
         container!.dataset.shadowMode = lightweight ? "performance-unshadowed" : "directional-contact";
         container!.dataset.previewProfile = tier === "ultra" ? "ultra-preview" : tier;
@@ -318,11 +318,26 @@ export default function RoomView({ scene, comparisonScene, comparisonMode, local
         const object = (selected ? current.objects.find(item => item.id === selected) : undefined) ?? current.objects.find(item => item.kind === "bed" || item.kind === "sofa") ?? current.objects[0];
         const distance = Math.max(1.25, Math.max(object.width, object.depth) * 1.65), angle = -object.rotation * Math.PI / 180 + Math.PI * .72;
         const requested = { x: object.x + Math.sin(angle) * distance, y: Math.min(current.room.height - .18, Math.max(.9, object.height * .78)), z: object.z + Math.cos(angle) * distance };
-        const safe = safeInteriorCamera(current, requested, interiorCameraFit(current, camera.aspect).position);
+        let safe = safeInteriorCamera(current, requested, interiorCameraFit(current, camera.aspect).position);
+        // A plant's rendered foliage spreads well beyond its declared footprint, so the shared
+        // furniture-collision check alone still lets this camera land inside its leaves. Push it
+        // clear of any nearby plant so "furniture detail" shows the intended object, not foliage.
+        for (const plant of current.objects.filter(item => item.kind === "plant" && item.id !== object.id)) {
+          const clearance = Math.max(plant.width, plant.depth) * .9 + .55;
+          const dx = safe.x - plant.x, dz = safe.z - plant.z, planarDistance = Math.hypot(dx, dz);
+          if (planarDistance < clearance && planarDistance > .0001) {
+            const push = clearance - planarDistance;
+            safe = safeInteriorCamera(current, { x: safe.x + (dx / planarDistance) * push, y: safe.y, z: safe.z + (dz / planarDistance) * push }, safe);
+          }
+        }
         camera.fov = 48; camera.updateProjectionMatrix(); camera.position.set(safe.x, safe.y, safe.z); orbit.target.set(object.x, object.height * .48, object.z); interiorView = true; lastSafeCamera.copy(camera.position); setViewFallback(false); container!.dataset.cameraMode = "detail"; orbit.update(); schedule();
       }
       function lighting(value: "day" | "evening") {
-        const evening = value === "evening"; sun.intensity = evening ? .42 : 2.35; windowFill.intensity = evening ? .65 : 7.2; ceilingBounce.intensity = evening ? .42 : 1.15; practical.visible = evening || (!!current.objects.find(object => object.kind === "lighting") && ["high", "ultra"].includes(container!.dataset.effectiveQuality ?? "")); practical.intensity = evening ? 5.2 : 3.4; world.background = new T.Color(evening ? 0x2e3540 : 0xe7e5df); renderer.toneMappingExposure = evening ? 1.28 : 1.12; container!.dataset.lightingMode = value; schedule();
+        const evening = value === "evening"; eveningMode = evening; sun.intensity = evening ? .42 : 2.35; windowFill.intensity = evening ? .65 : 7.2; ceilingBounce.intensity = evening ? .42 : 1.15; practical.visible = evening || (!!current.objects.find(object => object.kind === "lighting") && ["high", "ultra"].includes(container!.dataset.effectiveQuality ?? "")); practical.intensity = evening ? 5.2 : 3.4; hemi.intensity = evening ? .07 : .18;
+        materials.exterior.map = evening ? materials.exteriorDuskMap : materials.exteriorDayMap; materials.exterior.needsUpdate = true;
+        const tier = container!.dataset.effectiveQuality ?? "high";
+        const baseEnvironment = tier === "ultra" ? .36 : tier === "high" ? .30 : tier === "balanced" ? .27 : .38;
+        world.background = new T.Color(evening ? 0x171b26 : 0xe7e5df); world.environmentIntensity = baseEnvironment * (evening ? .4 : 1); renderer.toneMappingExposure = evening ? .82 : 1.12; container!.dataset.lightingMode = value; schedule();
       }
       runtime.current = { update(next, comparison, mode) { void requestUpdate(next, comparison, mode); }, profile, select(id) { selected = id; schedule(); }, reset,
         perspective() { fit(false); },
