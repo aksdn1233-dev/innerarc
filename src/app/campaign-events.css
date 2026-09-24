@@ -43,8 +43,7 @@
   place-items: center;
   padding: max(18px, env(safe-area-inset-top)) 18px max(18px, env(safe-area-inset-bottom));
   overflow-y: auto;
-  background: rgb(4 7 14 / 74%);
-  backdrop-filter: blur(10px);
+  background: rgb(18 17 23 / 46%);
 }
 
 .campaign-modal {
@@ -52,11 +51,9 @@
   width: min(100%, 590px);
   padding: clamp(28px, 5vw, 48px);
   border: 1px solid rgb(235 196 113 / 34%);
-  border-radius: 28px;
+  border-radius: 6px;
   color: #f3ede2;
-  background:
-    radial-gradient(circle at 88% 4%, rgb(219 179 96 / 22%), transparent 33%),
-    linear-gradient(145deg, #1f192a, #0d111b 68%);
+  background: #1a1920;
   box-shadow: 0 30px 100px rgb(0 0 0 / 60%), inset 0 1px rgb(255 255 255 / 8%);
 }
 
@@ -143,7 +140,7 @@
 @media (max-width: 720px) {
   .campaign-utility-nav { margin-right: 10px; }
   .campaign-modal-backdrop { align-items: end; padding: 10px; }
-  .campaign-modal { max-height: calc(100svh - 20px); padding: 28px 22px 24px; overflow-y: auto; border-radius: 24px; }
+  .campaign-modal { max-height: calc(100svh - 20px); padding: 28px 22px 24px; overflow-y: auto; border-radius: 6px; }
   .campaign-modal-actions { display: grid; }
   .campaign-modal-actions a { justify-content: center; width: 100%; }
   .plans-campaign-banner { align-items: flex-start; flex-direction: column; }

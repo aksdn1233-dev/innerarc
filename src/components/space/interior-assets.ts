@@ -44,6 +44,12 @@ export function interiorMaterials(anisotropy: number) {
   const daylightContext = daylightCanvas.getContext("2d")!; const daylight = daylightContext.createLinearGradient(0, 0, 0, 512);
   daylight.addColorStop(0, "#b9ced8"); daylight.addColorStop(.58, "#d8e1e1"); daylight.addColorStop(1, "#e8dfcf"); daylightContext.fillStyle = daylight; daylightContext.fillRect(0, 0, 256, 512);
   const daylightTexture = new T.CanvasTexture(daylightCanvas); daylightTexture.colorSpace = T.SRGBColorSpace; daylightTexture.anisotropy = Math.min(anisotropy, 4); textures.push(daylightTexture);
+  // Dusk variant of the same window gradient, swapped in for the evening lighting mode so the
+  // view through the window actually reads as evening rather than reusing the daytime sky.
+  const duskCanvas = document.createElement("canvas"); duskCanvas.width = 256; duskCanvas.height = 512;
+  const duskContext = duskCanvas.getContext("2d")!; const dusk = duskContext.createLinearGradient(0, 0, 0, 512);
+  dusk.addColorStop(0, "#131a2c"); dusk.addColorStop(.55, "#2c2f4a"); dusk.addColorStop(1, "#5b4a58"); duskContext.fillStyle = dusk; duskContext.fillRect(0, 0, 256, 512);
+  const duskTexture = new T.CanvasTexture(duskCanvas); duskTexture.colorSpace = T.SRGBColorSpace; duskTexture.anisotropy = Math.min(anisotropy, 4); textures.push(duskTexture);
   // Bump maps carry scalar data, never sRGB colour transforms.
   const bump = (texture: T.Texture) => { const copy = texture.clone(); copy.colorSpace = T.NoColorSpace; copy.needsUpdate = true; textures.push(copy); return copy; };
   const oakBump = bump(oak), linenBump = bump(linen), plasterBump = bump(plaster), floorBump = bump(floor), marbleRoughness = bump(marble);
@@ -66,6 +72,8 @@ export function interiorMaterials(anisotropy: number) {
     rug: new T.MeshStandardMaterial({ color: 0xcbc4b5, map: linen, bumpMap: linenBump, bumpScale: .002, roughness: 1 }),
     glass: new T.MeshPhysicalMaterial({ color: 0xd7e8eb, metalness: 0, roughness: .10, clearcoat: 1, clearcoatRoughness: .04, envMapIntensity: 1.8, transparent: true, opacity: .22, side: T.DoubleSide, depthWrite: false }),
     exterior: new T.MeshBasicMaterial({ color: 0xffffff, map: daylightTexture, toneMapped: false }),
+    exteriorDayMap: daylightTexture,
+    exteriorDuskMap: duskTexture,
   };
   return { ...materials, dispose() { Object.values(materials).forEach(m => m.dispose()); textures.forEach(t => t.dispose()); } };
 }
