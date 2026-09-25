@@ -67,68 +67,68 @@ const NUMBER_MEANING: Readonly<Record<number, Bilingual>> = {
   9: n("멀리 보고 여러 사람의 의미를 연결하는 힘", "connecting people to a wider meaning"),
   11: n("미세한 신호와 가능성을 먼저 감지해 언어로 번역하는 힘", "translating subtle signals and possibility"),
   22: n("큰 비전을 실제로 작동하는 체계로 만드는 힘", "building a working system from a large vision"),
-  33: n("사람의 성장을 오래 지지하고 이끄는 힘", "supporting growth over time"),
+  33: n("사람의 성장을 오래 곁에서 돕고 이끄는 힘", "guiding people's growth for a long time"),
 };
 
 const EXACT_COMBINATIONS: Readonly<Record<string, ExactCombinationContent>> = {
   "11-4-6-5": {
     label: n("가능성을 구조로 만드는 설계자", "the possibility-to-system designer"),
     character: n(
-      "사람과 시장의 미세한 변화를 먼저 느끼고, 아직 말로 정리되지 않은 필요를 아이디어로 잡아내는 편입니다. 생명수 11/2의 감지력에 생일수 4의 구조화가 붙어 있어, 떠오른 생각을 서비스·절차·콘텐츠처럼 반복 가능한 형태로 만드는 데 강점이 있습니다. 태도수 6은 그 결과가 실제 사람에게 도움이 되는지를 먼저 보게 하고, 출생연도수 5는 새로운 기술과 환경 변화를 빠르게 받아들이게 합니다.",
-      "You notice subtle shifts in people and markets, then turn unspoken needs into ideas. Life Path 11/2 detects the signal, Birthday 4 gives it structure, Attitude 6 checks whether it helps real people, and Birth Year 5 adapts quickly to new tools and environments.",
+      "사람과 시장에서 일어나는 작은 변화를 남들보다 먼저 느끼고, 아직 말로 정리되지 않은 필요를 아이디어로 잡아냅니다. 생명수 11/2가 이런 신호를 먼저 알아채게 해주고, 생일수 4는 그 아이디어를 서비스나 순서, 콘텐츠처럼 여러 번 쓸 수 있는 구조로 바꾸는 힘을 줍니다. 태도수 6은 그 결과가 진짜 사람에게 도움이 되는지를 먼저 살피게 하고, 출생연도수 5는 새로운 기술이나 환경 변화를 빠르게 받아들이게 합니다.",
+      "You notice small shifts in people and markets before others do, and turn unspoken needs into ideas. Life Path 11/2 helps you sense the signal first, Birthday 4 turns the idea into something reusable, like a service, a process, or content. Attitude 6 makes you check whether it really helps people, and Birth Year 5 helps you pick up new tools and changes fast.",
     ),
     strengths: [
       n(
-        "사람이 직접 설명하지 않아도 불편해하는 지점과 기대하는 방향을 빨리 알아차립니다. 이 감각은 고객 문제를 찾거나 콘텐츠의 반응을 읽을 때 특히 강하게 작동합니다.",
-        "You often detect discomfort and expectation before people state it directly, which is useful for finding customer problems and reading content response.",
+        "사람이 말로 설명하지 않아도 불편해하는 지점과 바라는 방향을 빨리 알아차립니다. 이 감각은 고객이 겪는 문제를 찾거나 콘텐츠 반응을 읽을 때 특히 잘 통합니다.",
+        "You often notice discomfort and hopes before people say them out loud, which helps you find customer problems and read how content lands.",
       ),
       n(
-        "아이디어를 떠올리는 데서 끝나지 않고 화면, 절차, 서비스 흐름처럼 다른 사람이 사용할 수 있는 구조로 바꿀 수 있습니다. 자동화 기술·웹 서비스·플랫폼·콘텐츠·마케팅처럼 사람의 필요를 시스템으로 번역하는 일이 잘 맞습니다.",
-        "You can turn an idea into a screen, process, or service flow that another person can use. Automation, web services, platforms, content, marketing, and system-based work are plausible directions.",
+        "아이디어를 떠올리는 데서 끝내지 않고, 화면이나 순서, 서비스 흐름처럼 다른 사람이 실제로 쓸 수 있는 형태로 바꿀 수 있습니다. 자동화 기술, 웹 서비스, 플랫폼, 콘텐츠, 마케팅처럼 사람이 필요로 하는 걸 시스템으로 옮기는 일이 잘 맞습니다.",
+        "You don't stop at having an idea — you turn it into a screen, a process, or a service flow other people can use. Work that turns human needs into systems, like automation, web services, platforms, content, or marketing, suits you well.",
       ),
       n(
-        "새로운 도구를 배우는 속도와 사람에게 설명하는 능력이 함께 있습니다. 기술만 아는 역할보다 기술과 사용자의 언어 사이를 연결할 때 장점이 더 분명해집니다.",
-        "You combine fast tool learning with the ability to explain. The advantage becomes clearer when translating between technology and users.",
+        "새 도구를 배우는 속도와 그걸 다른 사람에게 쉽게 설명하는 능력을 함께 갖고 있습니다. 기술만 아는 사람보다, 기술과 그걸 쓰는 사람 사이를 이어줄 때 이 장점이 더 잘 드러납니다.",
+        "You learn new tools fast and can explain them just as fast. The advantage shows most clearly when you connect technology and the people who use it.",
       ),
     ],
     weaknesses: [
       n(
-        "능력이 부족해서 결과가 늦는 것이 아닙니다. 가능성을 여러 프로젝트로 동시에 펼치면서 한 가지를 끝까지 완성할 힘이 분산되는 것이 반복되는 원인입니다.",
-        "Results are not delayed by a lack of ability. They are delayed when several possible projects divide the energy needed to finish one.",
+        "능력이 모자라서 결과가 늦는 게 아닙니다. 가능성을 여러 프로젝트로 동시에 벌리다 보니, 한 가지를 끝까지 마칠 힘이 나뉘어 버리는 게 자꾸 반복되는 진짜 이유입니다.",
+        "Results are not late because ability is lacking. They are late because chasing several possible projects at once splits the energy needed to finish one.",
       ),
       n(
-        "시작을 못 하는 사람이 아닙니다. 하나가 완성되기 직전에 더 매력적인 새 구조를 발견해 다음 시작을 만들어내는 사람입니다.",
-        "You do not struggle to start. The recurring problem is discovering a more attractive new structure just before the current one is complete.",
+        "시작을 못 하는 사람이 아닙니다. 하나가 완성되기 직전에 더 끌리는 새 아이디어를 발견해서 또 새로 시작해버리는 사람입니다.",
+        "Starting is not the problem. The problem is finding a more exciting new idea right before the current one is done, and starting over again.",
       ),
       n(
-        "사람을 잘못 보는 것이 아니라 아직 증명되지 않은 가능성까지 실제 역량처럼 먼저 믿어주는 것이 문제입니다. 말과 의지보다 반복해서 끝낸 결과를 확인해야 동업·채용·협업의 손실이 줄어듭니다.",
-        "The issue is not poor judgment of people, but treating unproven potential as demonstrated performance. Repeated completed work matters more than stated intent.",
+        "사람을 잘못 보는 게 아니라, 아직 증명되지 않은 가능성을 실제 역량처럼 먼저 믿어버리는 게 문제입니다. 말이나 의지보다 실제로 반복해서 끝낸 결과를 봐야 동업, 채용, 협업에서 손해를 줄일 수 있습니다.",
+        "The issue is not poor judgment of people. The issue is treating unproven potential as if it were already demonstrated skill. What matters is work finished more than once, not words or intent.",
       ),
     ],
     career: n(
-      "직업과 사업에서는 자동화 기술, 웹 서비스, 플랫폼, 콘텐츠, 마케팅, 교육처럼 사람의 필요를 읽어 구조화하는 방향이 잘 맞습니다. 다만 여러 기능과 상품을 한꺼번에 넓히기보다 실제 고객 한 명이 돈을 내고 반복해서 사용할 한 가지 흐름을 먼저 완성해야 강점이 매출과 성과로 연결됩니다.",
-      "Work that translates human needs into systems—automation, web services, platforms, content, marketing, or education—fits this combination. The strength turns into results only after one paying-customer use case is completed before expanding features.",
+      "일이나 사업에서는 자동화 기술, 웹 서비스, 플랫폼, 콘텐츠, 마케팅, 교육처럼 사람이 필요로 하는 걸 읽어서 정리하는 방향이 잘 맞습니다. 다만 기능과 상품을 한꺼번에 늘리기보다, 진짜 고객 한 명이 돈을 내고 계속 쓰는 흐름 하나를 먼저 완성해야 이 강점이 매출과 성과로 이어집니다.",
+      "Work that turns human needs into systems — automation, web services, platforms, content, marketing, or education — fits this combination well. But the strength only turns into real results once one paying customer's use case is finished, before adding more features.",
     ),
     money: n(
-      "돈은 벌 기회보다 확장 시점에서 새기 쉽습니다. 가능성이 보이면 다음 기능·프로젝트·사람에게 자금을 미리 나누는 경향이 있어, 첫 흐름이 검증되기 전에 운영비가 분산될 수 있습니다. 매출이 반복되기 전에는 고정비와 외주 범위를 늘리지 않는 보존 규칙이 필요합니다.",
-      "Money is more likely to leak at expansion than at earning. Funding new features, projects, or people before the first flow repeats can scatter operating cash. Keep fixed costs and outsourcing flat until revenue repeats.",
+      "돈은 버는 순간보다 확장하는 순간에 새기 쉽습니다. 가능성이 보이면 다음 기능이나 프로젝트, 사람에게 미리 자금을 나눠주는 버릇이 있어서, 첫 흐름이 검증되기도 전에 쓰는 돈이 흩어질 수 있습니다. 매출이 반복해서 들어오기 전까지는 매달 나가는 돈과 외주 범위를 늘리지 않는 규칙이 필요합니다.",
+      "Money is more likely to leak when you expand than when you earn. You tend to fund the next feature, project, or person before the first flow is even proven, which scatters your spending. Keep fixed costs and outsourcing flat until revenue actually repeats.",
     ),
     relationships: n(
-      "가까운 사람은 계속 곁에 있을 것이라고 가정한 채 새 일과 새 관계에 에너지를 먼저 줄 수 있습니다. 관계가 갑자기 멀어지는 것처럼 보여도 실제로는 설명과 약속이 미뤄진 시간이 쌓인 결과일 수 있습니다. 친밀함을 믿는 것과 상대의 자리가 실제 일정에 남아 있는지는 따로 확인해야 합니다.",
-      "You may assume close people will remain while fresh work and connections receive the visible energy. Distance that looks sudden can be accumulated postponed explanation and time.",
+      "가까운 사람은 늘 곁에 있을 거라고 믿고, 새로운 일이나 새로운 관계에 에너지를 먼저 쓰기 쉽습니다. 관계가 갑자기 멀어진 것처럼 보여도 사실은 설명과 약속이 자꾸 미뤄지면서 쌓인 결과일 수 있습니다. 마음으로 믿는 것과, 실제 일정에 그 사람의 자리가 남아 있는지는 따로 확인해야 합니다.",
+      "You tend to assume close people will just stay while your energy goes to new work and new connections. Distance that looks sudden is often the result of explanations and promises being put off again and again. Trusting someone is different from checking whether they still have a real place in your schedule.",
     ),
     year: n(
-      "2026년 개인년 7은 새 가능성을 더 벌이는 해라기보다 이미 가진 가능성을 검증하고 완성하는 해입니다. 기능 수나 관심도보다 실제 유료 고객, 반복 사용, 완성된 결과물로 판단해야 합니다. 올해의 성과는 많이 시작한 목록이 아니라 끝까지 작동시킨 한 가지에서 나옵니다.",
-      "Personal Year 7 makes 2026 a year for validation and completion rather than adding possibilities. Judge by paying customers, repeat use, and finished output—not feature count or attention.",
+      "2026년 개인년 7은 새로운 가능성을 더 벌이는 해가 아니라, 이미 가진 가능성을 검증하고 완성하는 해입니다. 기능 개수나 관심도보다 실제 유료 고객, 반복 사용, 완성된 결과물로 판단해야 합니다. 올해의 성과는 많이 시작한 목록이 아니라 끝까지 돌아가게 만든 한 가지에서 나옵니다.",
+      "Personal Year 7 makes 2026 a year to test and finish what you already have, not to add more possibilities. Judge yourself by paying customers, repeat use, and finished work — not by how many features you have or how much attention you get.",
     ),
     actions: [
-      n("앞으로 3개월 동안 검증할 서비스나 프로젝트 하나만 정하고, 나머지는 보류 목록으로 옮기세요.", "Choose one service or project to validate for the next three months and move the rest to a hold list."),
-      n("그 한 가지에서 실제로 돈을 낼 고객 한 명과 반복 사용 장면 하나를 정의하고, 이번 달 안에 끝까지 작동하게 만드세요.", "Define one paying customer and one repeat-use moment, then make that flow work end to end this month."),
-      n("사람이나 기능에 비용을 추가하기 전, 이미 완료한 결과와 반복 매출이라는 두 가지 증거가 있는지 확인하세요.", "Before funding another person or feature, require two proofs: completed delivery and repeated revenue."),
+      n("앞으로 3개월 동안 시험해 볼 서비스나 프로젝트 하나만 고르고, 나머지는 나중에 할 목록으로 옮겨두세요.", "Choose one service or project to test for the next three months, and move the rest to a later list."),
+      n("그 한 가지에서 돈을 낼 고객 한 명과, 그 사람이 다시 쓰는 장면 하나를 정하고, 이번 달 안에 끝까지 돌아가게 만드세요.", "Define one paying customer and one moment they come back to use it again, then make that whole flow work this month."),
+      n("사람이나 기능에 돈을 더 쓰기 전에, 이미 끝낸 결과와 반복되는 매출이라는 두 가지 증거부터 확인하세요.", "Before spending more on people or features, check for two things first: work you already finished, and revenue that repeats."),
     ],
     conclusion: n(
-      "1994년 11월 4일생은 가능성을 빨리 발견하고 그것을 실제 구조로 만들 수 있는 사람입니다. 문제는 재능이 부족한 것이 아니라 하나가 완성되기 전에 다음 가능성으로 이동해 힘과 돈이 흩어지는 데 있습니다. 2026년에는 새로운 일을 더 추가하기보다 실제 고객이 돈을 내고 반복해서 사용할 한 가지를 완성해야 합니다. 이 사람의 성과는 더 많은 기회를 발견할 때가 아니라, 이미 발견한 기회 하나를 끝까지 현실로 만들 때 시작됩니다.",
-      "This profile detects possibility quickly and can make it real. The repeated failure is not lack of talent but moving to the next possibility before the current one is complete. In 2026, finish one use case a real customer will pay for and repeat. Results begin when one discovered opportunity becomes real.",
+      "1994년 11월 4일생은 가능성을 빨리 알아채고, 그걸 진짜 구조로 만들 수 있는 사람입니다. 문제는 재능이 모자라서가 아니라, 하나가 끝나기 전에 다음 가능성으로 옮겨가면서 힘과 돈이 흩어진다는 데 있습니다. 2026년에는 새 일을 더 벌이기보다, 진짜 고객이 돈을 내고 계속 쓰는 한 가지를 완성해야 합니다. 이 사람의 성과는 더 많은 기회를 발견할 때가 아니라, 이미 발견한 기회 하나를 끝까지 현실로 만들 때 시작됩니다.",
+      "This person spots possibility fast and can turn it into something real. The repeated problem is not a lack of talent — it's moving to the next possibility before the current one is done, which scatters both energy and money. In 2026, finish one thing a real customer keeps paying for, instead of starting new work. Results begin not when you find more chances, but when you turn one chance you already found into something real, all the way through.",
     ),
   },
 };
@@ -156,18 +156,18 @@ const DOMAIN_LABEL: Readonly<Record<BasicDomain, Bilingual>> = {
 };
 
 const DOMAIN_YEAR_DIRECTION: Readonly<Record<BasicDomain, Bilingual>> = {
-  business: n("2026년에는 기능과 상품을 더 늘리기보다 한 명의 유료 고객이 반복해서 쓰는 한 가지 흐름을 검증해야 합니다.", "In 2026, validate one repeat use by one paying customer before adding products or features."),
-  career: n("2026년에는 직함보다 실제로 끝낸 결과물과 확인 가능한 업무 증거가 이동의 기준이 됩니다.", "In 2026, completed evidence matters more than title when judging a career move."),
-  money: n("2026년에는 수익을 크게 예상하기보다 새는 고정비를 줄이고 한 가지 현금흐름을 확인하는 쪽이 맞습니다.", "In 2026, protect one verified cash flow and reduce leakage before projecting growth."),
-  love: n("2026년에는 감정의 크기보다 말과 행동이 반복해서 일치하는지를 확인해야 관계의 방향이 선명해집니다.", "In 2026, repeated consistency between words and actions clarifies the relationship."),
-  reconciliation: n("2026년에는 기다림보다 헤어진 원인이 실제 행동에서 달라졌는지를 한 번 분명히 확인하는 것이 중요합니다.", "In 2026, check once whether the cause of separation changed in behavior rather than waiting on hope."),
-  child: n("2026년에는 진로를 하나로 고정하기보다 아이가 몰입하고 회복하는 조건을 기록해 다음 경험을 고르는 편이 좋습니다.", "In 2026, record the conditions for focus and recovery before fixing one career path."),
-  education: n("2026년에는 수강생 수를 예상하기보다 체험 문의가 정규 등록으로 이어지는 한 가지 과정을 검증해야 합니다.", "In 2026, validate one path from trial inquiry to regular enrollment rather than predicting student count."),
-  health: n("2026년에는 강한 계획보다 수면·식사·활동이 유지되는 시간과 조건 하나를 고정하는 데 집중하세요.", "In 2026, anchor one repeatable condition for sleep, meals, or activity rather than intensifying the plan."),
-  housing: n("2026년에는 승인이나 가격을 낙관하기보다 계약 문서, 월 고정비, 자금 공백을 숫자로 확인해야 합니다.", "In 2026, check documents, monthly fixed costs, and the cash gap rather than assuming approval or price."),
-  private_fact: n("2026년에는 추측을 늘리기보다 접근 권한, 반복 행동, 직접 확인할 수 있는 사실만으로 판단해야 합니다.", "In 2026, decide from access, repeated behavior, and verifiable facts rather than adding speculation."),
-  compatibility: n("2026년에는 관계의 이름보다 책임·연락·갈등 후 회복 방식이 실제로 맞는지 확인해야 합니다.", "In 2026, examine responsibility, contact, and repair after conflict rather than the relationship label."),
-  growth: n("2026년에는 새 선택지를 더 찾기보다 이미 고른 한 가지를 끝까지 검증하는 일이 우선입니다.", "In 2026, finish validating one chosen direction before seeking another option."),
+  business: n("2026년에는 기능과 상품을 더 늘리기보다, 돈을 낸 고객 한 명이 계속 쓰는 흐름 하나를 먼저 확인해야 합니다.", "In 2026, check that one paying customer keeps using one thing before adding more products or features."),
+  career: n("2026년에는 직함보다, 실제로 끝낸 결과물과 눈으로 확인할 수 있는 증거가 이직의 기준이 됩니다.", "In 2026, finished work and proof you can show matter more than a job title when deciding to move."),
+  money: n("2026년에는 수익을 크게 기대하기보다, 새어 나가는 고정 지출을 줄이고 돈이 들어오는 흐름 하나를 확인하는 쪽이 맞습니다.", "In 2026, reduce leaking fixed costs and confirm one real money flow before expecting big growth."),
+  love: n("2026년에는 마음의 크기보다, 말과 행동이 계속 같은지를 확인해야 관계의 방향이 분명해집니다.", "In 2026, check whether words and actions keep matching. That makes the relationship's direction clearer than the size of feelings."),
+  reconciliation: n("2026년에는 그냥 기다리기보다, 헤어진 이유가 실제 행동에서 정말 달라졌는지 한 번 분명히 확인하는 게 중요합니다.", "In 2026, check once, clearly, whether the reason you broke up actually changed in behavior, instead of just waiting."),
+  child: n("2026년에는 진로 하나를 미리 정하기보다, 아이가 몰입하고 다시 힘을 내는 상황을 기록해서 다음 경험을 고르는 게 좋습니다.", "In 2026, note when the child focuses and bounces back, and use that to choose the next experience, rather than fixing one career path now."),
+  education: n("2026년에는 학생 수를 예상하기보다, 체험 문의가 정식 등록으로 이어지는 과정 하나를 확실히 만들어야 합니다.", "In 2026, build one clear path from trial inquiry to full enrollment, rather than guessing student numbers."),
+  health: n("2026년에는 무리한 계획보다, 잠·식사·활동을 계속 지킬 수 있는 시간과 조건 하나를 고정하는 데 집중하세요.", "In 2026, focus on locking in one time and condition for sleep, meals, or activity that you can keep, instead of a tougher plan."),
+  housing: n("2026년에는 승인이나 가격을 낙관하기보다, 계약서, 매달 나가는 돈, 부족한 자금을 숫자로 직접 확인해야 합니다.", "In 2026, check the contract, monthly costs, and any cash shortfall in real numbers, instead of assuming approval or price will work out."),
+  private_fact: n("2026년에는 추측을 늘리기보다, 실제로 확인할 권한이 있는지와 반복되는 행동, 직접 확인 가능한 사실만으로 판단해야 합니다.", "In 2026, decide only from what you can actually check, repeated behavior, and verifiable facts — not from guessing."),
+  compatibility: n("2026년에는 관계의 이름표보다, 책임지는 방식과 연락, 다툰 뒤 화해하는 방식이 실제로 잘 맞는지 확인해야 합니다.", "In 2026, check whether responsibility, contact, and making up after conflict actually work well, rather than what you call the relationship."),
+  growth: n("2026년에는 새로운 선택지를 더 찾기보다, 이미 고른 한 가지를 끝까지 확인해 보는 게 우선입니다.", "In 2026, finish testing the one direction you already chose before looking for another option."),
 };
 
 const DOMAIN_ACTIONS: Readonly<Record<BasicDomain, readonly Bilingual[]>> = {
@@ -180,8 +180,8 @@ const DOMAIN_ACTIONS: Readonly<Record<BasicDomain, readonly Bilingual[]>> = {
     n("이동 전에 연봉·권한·업무 범위·통근 시간을 한 표에서 비교하고 구두 조건은 서면으로 확인하세요.", "Compare pay, authority, scope, and commute in one table and confirm verbal terms in writing."),
   ],
   money: [
-    n("최근 3개월 지출을 생활비·관계비·확장비로 나누고 반복해서 새는 한 항목에 상한을 정하세요.", "Split three months of spending into living, relationship, and expansion costs, then cap one recurring leak."),
-    n("새 투자나 대출을 결정하기 전에 최악의 경우 감당할 월 상환액과 현금 보유 기간을 적으세요.", "Before a new investment or loan, write the monthly downside and how long cash can cover it."),
+    n("최근 3개월 동안 쓴 돈을 생활비, 관계비, 확장비로 나누고, 자꾸 새는 항목 하나에 쓸 수 있는 최대 금액을 정하세요.", "Split three months of spending into living, relationship, and expansion costs, then set a spending cap on the one that keeps leaking."),
+    n("새로운 투자나 대출을 결정하기 전에, 가장 나쁜 경우에 매달 갚을 수 있는 돈과 그 돈으로 버틸 수 있는 기간을 적어보세요.", "Before a new investment or loan, write down the worst-case monthly payment and how long your cash can cover it."),
   ],
   love: [
     n("원하는 관계 상태를 한 번 분명하게 묻고, 답보다 이후 4주의 행동이 일치하는지 기록하세요.", "Ask clearly for the relationship state once, then track whether four weeks of behavior matches the answer."),
@@ -204,8 +204,8 @@ const DOMAIN_ACTIONS: Readonly<Record<BasicDomain, readonly Bilingual[]>> = {
     n("목표 강도를 절반으로 낮추고 기상 직후나 퇴근 직후처럼 흔들리지 않는 시간에 고정하세요.", "Halve the target and anchor it to a stable point such as waking or arriving home."),
   ],
   housing: [
-    n("후보별 보증금·대출 상환·관리비·교통비를 합친 월 고정비와 잔금일의 자금 공백을 계산하세요.", "Calculate total monthly fixed cost and any closing-day cash gap for each option."),
-    n("계약이나 대출 신청 전에 등기·선순위·특약·승인 조건을 해당 기관이나 전문가에게 서면으로 확인하세요.", "Before signing or applying, verify registration, prior claims, clauses, and approval conditions in writing with the proper institution or professional."),
+    n("후보지마다 보증금, 대출 갚을 돈, 관리비, 교통비를 다 더한 매달 고정 지출과, 잔금 치르는 날 모자란 돈이 얼마인지 계산하세요.", "For each option, add up the deposit, loan payment, fees, and transport cost, and work out any cash shortfall on the closing day."),
+    n("계약하거나 대출을 신청하기 전에, 등기 내용, 먼저 갚아야 하는 빚, 특별 조건, 승인 조건을 담당 기관이나 전문가에게 서면으로 확인하세요.", "Before signing or applying, get written confirmation from the right institution or professional on the registration, any prior debts, special clauses, and approval conditions."),
   ],
   private_fact: [
     n("추측하려는 사실에 실제 접근 권한이 있는지와 직접 확인할 수 있는 증거가 무엇인지 먼저 구분하세요.", "Separate what you have lawful access to from what can actually be verified."),
@@ -289,14 +289,14 @@ function uniqueActions(candidates: readonly string[], fallback: readonly string[
 function privateFactAnalysis(locale: Locale, integrated: IntegratedProfile): string {
   const relationship = domainInsight(integrated, "private_fact");
   return locale === "ko"
-    ? `${relationship}\n\n상대는 마음이 복잡할수록 바로 설명하기보다 거리와 시간을 먼저 두는 방식일 가능성이 있습니다. 그래서 연락 간격이나 온라인 흔적을 확인하려는 행동이 생길 수는 있습니다. 다만 실제 CCTV 열람, 다른 사람과의 만남, 현재 마음처럼 본인만 아는 사실은 생년월일로 확인할 수 없습니다.\n\n확인할 것은 추측의 양이 아니라 반복 행동입니다. 약속을 지키는지, 설명 없이 사라지는 일이 반복되는지, 질문했을 때 책임 있게 답하는지를 보세요. 한 번 직접 묻고도 답이 없다면 감시를 늘리기보다 내가 받아들일 수 있는 관계의 기준을 정하는 것이 현실적인 대응입니다.`
+    ? `${relationship}\n\n상대는 마음이 복잡할수록 바로 설명하기보다, 거리와 시간을 먼저 두는 사람일 수 있습니다. 그래서 연락이 뜸해지거나 온라인 흔적을 확인하고 싶은 마음이 생길 수 있습니다. 다만 실제로 CCTV를 봤는지, 다른 사람을 만났는지, 지금 무슨 생각을 하는지처럼 그 사람만 아는 사실은 생년월일로 확인할 수 없습니다.\n\n확인해야 할 것은 추측의 양이 아니라 반복되는 행동입니다. 약속을 지키는지, 설명도 없이 자꾸 사라지는지, 물어봤을 때 제대로 답하는지를 보세요. 한 번 직접 물어보고도 답이 없다면, 감시를 늘리기보다 내가 받아들일 수 있는 관계의 선을 정하는 게 현실적인 방법입니다.`
     : `${relationship}\n\nWhen overwhelmed, the other person may be more likely to create distance before explaining, which can invite checking contact gaps or online traces. A birth date cannot confirm private facts such as CCTV access, another relationship, or their current thoughts.\n\nObserve repeated behavior: kept commitments, unexplained absence, and accountable answers when asked. Ask once directly; without an answer, set your own boundary rather than expanding surveillance.`;
 }
 
 function compatibilityAnalysis(locale: Locale, integrated: IntegratedProfile): string {
   const relationship = domainInsight(integrated, "compatibility");
   return locale === "ko"
-    ? `${relationship}\n\n현재 입력에는 한 사람의 생년월일만 있어 이 사람의 관계 방식까지만 읽을 수 있습니다. 두 사람의 궁합을 보려면 상대 생년월일을 별도 궁합 화면에 입력해야 같은 계산 기준으로 책임, 연락, 갈등 후 회복 방식을 비교할 수 있습니다. 궁합은 관계의 운명을 판정하는 점수가 아니라 실제로 맞춰야 할 운영 조건을 찾는 분석입니다.`
+    ? `${relationship}\n\n지금은 한 사람의 생년월일만 있어서, 이 사람이 관계에서 어떤 방식으로 행동하는지까지만 읽을 수 있습니다. 두 사람의 궁합을 보려면 상대의 생년월일도 별도 궁합 화면에 입력해야, 같은 기준으로 책임지는 방식, 연락, 다툰 뒤 화해하는 방식을 비교할 수 있습니다. 궁합은 관계의 운명을 점수로 매기는 게 아니라, 실제로 서로 맞춰야 할 부분을 찾는 분석입니다.`
     : `${relationship}\n\nOnly one birth date is present, so this report can describe that person's relationship pattern but not a two-person comparison. Use both birth dates in the separate compatibility flow to compare responsibility, contact, and repair. Compatibility is a set of operating conditions, not a fate score.`;
 }
 
@@ -310,21 +310,21 @@ function buildCalculationBody(args: {
   const meaning = (value: number) => text(NUMBER_MEANING[value] ?? NUMBER_MEANING[9], locale);
   if (locale === "ko") {
     return [
-      `생명수 ${numberDisplay(profile.lifePath.value)} — ${withParticle(meaning(profile.lifePath.value), "subject")} 중심 성향입니다.`,
-      `생일수 ${numberDisplay(profile.birthday.value)} — 실제 행동과 일을 마무리하는 방식에 ${withParticle(meaning(profile.birthday.value), "subject")} 나타납니다.`,
-      `태도수 ${numberDisplay(profile.attitude.value)} — 처음 상황을 보고 판단할 때 ${withParticle(meaning(profile.attitude.value), "subject")} 먼저 드러납니다.`,
-      `출생연도수 ${numberDisplay(birthYear)} — 익숙한 환경 밖에서 반응하는 배경 리듬에는 ${withParticle(meaning(birthYear), "subject")} 깔려 있습니다.`,
-      `2026 개인년 ${numberDisplay(profile.personalYear.value)} · ${personalYearPhase} — 올해의 방향과 우선순위를 정하는 흐름입니다.`,
-      "같은 생년월일에는 같은 숫자가 나오며, 가격은 숫자를 바꾸지 않고 해석의 범위와 깊이만 바꿉니다.",
+      `생명수 ${numberDisplay(profile.lifePath.value)} — ${withParticle(meaning(profile.lifePath.value), "subject")} 가장 중심에 있는 성향입니다.`,
+      `생일수 ${numberDisplay(profile.birthday.value)} — 실제로 행동하고 일을 마무리하는 방식에 ${withParticle(meaning(profile.birthday.value), "subject")} 그대로 나타납니다.`,
+      `태도수 ${numberDisplay(profile.attitude.value)} — 처음 상황을 보고 판단할 때 ${withParticle(meaning(profile.attitude.value), "subject")} 제일 먼저 드러납니다.`,
+      `출생연도수 ${numberDisplay(birthYear)} — 낯선 환경에 놓였을 때 몸에 배어 나오는 반응에는 ${withParticle(meaning(birthYear), "subject")} 깔려 있습니다.`,
+      `2026 개인년 ${numberDisplay(profile.personalYear.value)} · ${personalYearPhase} — 올해 방향과 우선순위를 정하는 흐름입니다.`,
+      "같은 생년월일이면 언제나 같은 숫자가 나옵니다. 가격이 달라져도 이 숫자는 바뀌지 않고, 얼마나 자세히 풀어 설명하는지만 달라집니다.",
     ].join("\n\n");
   }
   return [
-    `Life Path ${numberDisplay(profile.lifePath.value)} — ${meaning(profile.lifePath.value)} is the central tendency.`,
-    `Birthday ${numberDisplay(profile.birthday.value)} — ${meaning(profile.birthday.value)} shapes execution and completion.`,
-    `Attitude ${numberDisplay(profile.attitude.value)} — ${meaning(profile.attitude.value)} is the first visible approach.`,
-    `Birth Year ${numberDisplay(birthYear)} — ${meaning(birthYear)} forms the background rhythm.`,
-    `2026 Personal Year ${numberDisplay(profile.personalYear.value)} · ${personalYearPhase} — the current-year priority.`,
-    "The same birth date always produces the same numbers; price changes depth, not calculated facts.",
+    `Life Path ${numberDisplay(profile.lifePath.value)} — ${meaning(profile.lifePath.value)} sits at the center of who you are.`,
+    `Birthday ${numberDisplay(profile.birthday.value)} — ${meaning(profile.birthday.value)} shows up in how you act and finish things.`,
+    `Attitude ${numberDisplay(profile.attitude.value)} — ${meaning(profile.attitude.value)} is what people see first.`,
+    `Birth Year ${numberDisplay(birthYear)} — ${meaning(birthYear)} is the rhythm running underneath, in unfamiliar situations.`,
+    `2026 Personal Year ${numberDisplay(profile.personalYear.value)} · ${personalYearPhase} — this sets your direction and priority for the year.`,
+    "The same birth date always gives the same numbers. A higher price does not change the numbers, only how much detail you get.",
   ].join("\n\n");
 }
 
@@ -338,15 +338,15 @@ function buildTemperamentBody(
     .map((id) => integrated.domains.find((domain) => domain.id === id))
     .filter((domain): domain is IntegratedProfile["domains"][number] => Boolean(domain));
   const labels = locale === "ko"
-    ? ["생각", "결정과 행동", "사람", "압박", "성과 조건"]
-    : ["Thinking", "Decision and action", "People", "Under pressure", "Success condition"];
+    ? ["생각하는 방식", "결정하고 움직이는 방식", "사람을 대하는 방식", "힘들 때 반응", "잘 풀리는 조건"]
+    : ["How you think", "How you decide and act", "How you treat people", "Under pressure", "What helps you succeed"];
   const paragraphs = selected.map((domain, index) =>
     `${labels[index]} — ${domain.personalizedInference} ${domain.realityCheck}`);
   if (exact) {
     paragraphs.push(
       locale === "ko"
-        ? "이 조합은 직감만 따를 때보다 감지한 가능성을 작은 구조로 만들고 실제 반응을 확인할 때 가장 강합니다. 반대로 여러 사람과 여러 계획을 동시에 책임지면 감각은 예민해지지만 완성 속도는 급격히 떨어집니다."
-        : "This combination is strongest when sensed possibility becomes a small structure and meets real feedback. Carrying several people and plans at once keeps sensitivity high but completion low.",
+        ? "이 조합은 그냥 감으로 밀어붙일 때보다, 알아챈 가능성을 작게 만들어보고 진짜 반응을 확인할 때 가장 힘을 발휘합니다. 반대로 여러 사람과 여러 계획을 한꺼번에 떠맡으면, 감은 예민해지지만 끝까지 해내는 속도는 크게 떨어집니다."
+        : "This combination works best when you turn a sensed possibility into something small and check the real reaction. Carrying several people and plans at once keeps your instincts sharp but slows down how fast you finish things.",
     );
   }
   return paragraphs.join("\n\n");
@@ -392,27 +392,27 @@ export function createBasicPaidReport(
 
   const directAnswer = safety.requiresRealityFirstGuidance
     ? (ko
-        ? "이 질문은 먼저 해당 분야의 전문가나 공식 기관에서 확인해야 합니다. 그 확인을 대신할 수는 없지만, 지금 반복되는 판단 습관과 생활 조건을 정리하는 데에는 이 리포트를 사용할 수 있습니다."
-        : "This question first belongs with the relevant professional or formal channel. This report cannot replace that check, but it can organize the repeated decision and daily pattern around it.")
+        ? "이 질문은 먼저 그 분야의 전문가나 공식 기관에 확인해야 하는 문제입니다. 이 리포트가 그 확인을 대신할 수는 없지만, 지금 자꾸 반복되는 판단 습관과 생활 조건을 정리하는 데는 쓸 수 있습니다."
+        : "This question needs to be checked with the right professional or official source first. This report can't replace that check, but it can help you sort out the decision habits and daily conditions around it.")
     : domain === "private_fact"
       ? (ko
-          ? "상대가 바로 설명하기보다 거리를 두고 상황을 살피는 흐름은 있을 수 있습니다. 다만 CCTV 열람, 다른 사람과의 만남, 현재 마음 같은 사적 사실은 생년월일로 확인할 수 없으며 반복 행동과 실제 접근 권한을 봐야 합니다."
-          : "The person may create distance before explaining, but a birth date cannot confirm private facts such as CCTV access, another relationship, or current thoughts. Repeated behavior and actual access are what can be checked.")
+          ? "상대는 바로 설명하기보다, 거리를 두고 상황을 지켜보는 편일 수 있습니다. 다만 CCTV를 봤는지, 다른 사람을 만났는지, 지금 무슨 마음인지처럼 그 사람만 아는 사실은 생년월일로 확인할 수 없습니다. 대신 반복 행동과 실제로 확인 가능한 접근 권한을 봐야 합니다."
+          : "The person may watch quietly and keep distance rather than explain right away. But private facts, such as CCTV access, another relationship, or their current feelings, cannot be confirmed from a birth date. What you can check is repeated behavior and real, verifiable access.")
       : domain === "compatibility"
         ? (ko
-            ? "현재 입력만으로는 이 사람의 관계 방식까지는 분명히 볼 수 있습니다. 두 사람의 궁합 결론을 내려면 상대 생년월일이 필요하며, 그때도 운명 점수가 아니라 책임·소통·회복 조건을 비교하게 됩니다."
-            : "This input can clearly describe one person's relationship pattern. A two-person conclusion needs the other birth date and compares operating conditions rather than fate.")
+            ? "지금 입력한 정보만으로는 이 사람이 관계에서 어떻게 행동하는지까지는 분명히 볼 수 있습니다. 두 사람의 궁합을 결론 내리려면 상대 생년월일이 필요하고, 그때도 운명 점수가 아니라 책임지는 방식, 소통, 화해하는 방식을 비교하게 됩니다."
+            : "What you entered can clearly describe how this one person acts in relationships. A two-person conclusion needs the other person's birth date, and even then it compares responsibility, communication, and repair rather than fate.")
         : topicText(topic.verdict, locale);
 
   const numericContext = ko
-    ? `이 결론은 생명수 ${numberDisplay(profile.lifePath.value)}, 생일수 ${numberDisplay(profile.birthday.value)}, 태도수 ${numberDisplay(profile.attitude.value)}, 출생연도수 ${numberDisplay(birthYear)}, ${withParticle(`2026 개인년 ${numberDisplay(profile.personalYear.value)}`, "object")} 함께 적용한 결과입니다.`
-    : `This conclusion applies Life Path ${numberDisplay(profile.lifePath.value)}, Birthday ${numberDisplay(profile.birthday.value)}, Attitude ${numberDisplay(profile.attitude.value)}, Birth Year ${numberDisplay(birthYear)}, and 2026 Personal Year ${numberDisplay(profile.personalYear.value)}.`;
+    ? `이 결론은 생명수 ${numberDisplay(profile.lifePath.value)}, 생일수 ${numberDisplay(profile.birthday.value)}, 태도수 ${numberDisplay(profile.attitude.value)}, 출생연도수 ${numberDisplay(birthYear)}, ${withParticle(`2026 개인년 ${numberDisplay(profile.personalYear.value)}`, "object")} 모두 합쳐서 나온 것입니다.`
+    : `This comes from putting Life Path ${numberDisplay(profile.lifePath.value)}, Birthday ${numberDisplay(profile.birthday.value)}, Attitude ${numberDisplay(profile.attitude.value)}, Birth Year ${numberDisplay(birthYear)}, and 2026 Personal Year ${numberDisplay(profile.personalYear.value)} together.`;
 
   const characterBody = exact
     ? `${text(exact.character, locale)}\n\n${text(exact.strengths[0], locale)}`
     : ko
-      ? `${characterLabel}. ${integrated.summary} ${withParticle(integrated.strengths.join(", "), "subject")} 실제 강점으로 나타나며, 이 강점이 어떤 선택에서 반복됐는지를 확인할수록 해석이 선명해집니다.`
-      : `${characterLabel}. ${integrated.summary} The repeatable strengths are ${integrated.strengths.join(", ")}; compare them with actual choices.`;
+      ? `${characterLabel}. ${integrated.summary} ${withParticle(integrated.strengths.join(", "), "subject")} 진짜 강점으로 나타납니다. 이 강점이 어떤 선택에서 자꾸 반복됐는지 확인할수록, 이 해석은 더 또렷해집니다.`
+      : `${characterLabel}. ${integrated.summary} These strengths keep showing up: ${integrated.strengths.join(", ")}. The more you check where they repeated in real choices, the clearer this reading gets.`;
 
   const weaknessBody = [
     ...specificWeaknesses,
@@ -443,17 +443,21 @@ export function createBasicPaidReport(
     ? text(DOMAIN_ACTIONS[domain][0], locale)
     : topicText(topic.action, locale);
   const questionConclusion = ko
-    ? `${characterLabel}라는 해석이 이번 질문의 중심입니다. ${specificWeaknesses[0]} 지금 필요한 방향은 ${conclusionDirection} 2026년에 필요한 것은 가능성을 더 찾는 일이 아니라, 확인한 한 가지를 끝까지 작동시키는 일입니다.`
-    : `${characterLabel} is the center of this reading. ${specificWeaknesses[0]} The practical direction is: ${conclusionDirection} In 2026, the work is not to find more possibilities but to make one verified direction work.`;
+    ? `${characterLabel} — 이 해석이 이번 질문의 중심입니다. ${specificWeaknesses[0]} 지금 필요한 건 ${conclusionDirection} 2026년에 필요한 건 가능성을 더 찾는 게 아니라, 이미 확인한 한 가지를 끝까지 돌아가게 만드는 일입니다.`
+    : `${characterLabel} — this reading centers on that. ${specificWeaknesses[0]} What you need now: ${conclusionDirection} In 2026, the work is not finding more possibilities, but making the one thing you already checked work all the way through.`;
 
   const sections = hasQuestion
     ? [
         {
           title: ko ? "질문에 대한 직접 결론" : "Direct answer",
+          keySentence: ko ? "질문에 대한 답부터 먼저 말합니다." : "Here is the direct answer to your question, first.",
           body: `${directAnswer}\n\n${numericContext}`,
         },
         {
           title: ko ? "핵심 숫자" : "Core numbers",
+          keySentence: ko
+            ? "이 리딩은 생년월일에서 나온 다섯 개 숫자에서 시작합니다."
+            : "This reading starts from five numbers taken from your birth date.",
           body: buildCalculationBody({
             locale,
             profile,
@@ -463,34 +467,55 @@ export function createBasicPaidReport(
         },
         {
           title: ko ? "캐릭터 한 문장" : "Character in one line",
+          keySentence: ko
+            ? `"${characterLabel}" — 이 한 줄이 이 사람을 요약합니다.`
+            : `"${characterLabel}" sums up who this person is in one line.`,
           body: `${characterLabel}\n\n${characterBody}`,
         },
         {
           title: ko ? "핵심 성향" : "Core temperament",
+          keySentence: ko
+            ? "생각, 행동, 관계, 압박, 성공 조건까지 다섯 가지 모습을 한 번에 보여줍니다."
+            : "This shows five sides at once: thinking, acting, relating, handling pressure, and what helps you succeed.",
           body: buildTemperamentBody(locale, integrated, exact),
         },
         {
           title: ko ? "반복되는 약점" : "Repeated weakness",
+          keySentence: ko
+            ? "이 사람에게서 자꾸 반복되는 진짜 문제 하나를 짚어냅니다."
+            : "This points to the one problem that keeps repeating for this person.",
           body: weaknessBody,
         },
         {
           title: ko
             ? `질문 분야 분석 · ${text(DOMAIN_LABEL[domain], locale)}`
             : `Focused analysis · ${text(DOMAIN_LABEL[domain], locale)}`,
+          keySentence: ko
+            ? "지금 물어본 문제에만 집중해서 답합니다."
+            : "This section focuses only on the question you actually asked.",
           body: focusedAnalysis,
         },
         {
           title: ko ? "2026년 흐름" : "2026 direction",
+          keySentence: ko
+            ? "2026년에 뭘 조심하고 뭘 밀어붙일지 알려줍니다."
+            : "This tells you what to watch for and what to push forward in 2026.",
           body: yearBody,
         },
         {
           title: ko ? "최종 결론" : "Final conclusion",
+          keySentence: ko
+            ? "지금 당장 무엇을 해야 하는지 한 문장으로 정리합니다."
+            : "This sums up, in one line, what to actually do next.",
           body: questionConclusion,
         },
       ]
     : [
         {
           title: ko ? "핵심 숫자" : "Core numbers",
+          keySentence: ko
+            ? "이 리딩은 생년월일에서 나온 다섯 개 숫자에서 시작합니다."
+            : "This reading starts from five numbers taken from your birth date.",
           body: buildCalculationBody({
             locale,
             profile,
@@ -500,38 +525,62 @@ export function createBasicPaidReport(
         },
         {
           title: ko ? "캐릭터 한 문장" : "Character in one line",
+          keySentence: ko
+            ? `"${characterLabel}" — 이 한 줄이 이 사람을 요약합니다.`
+            : `"${characterLabel}" sums up who this person is in one line.`,
           body: `${characterLabel}\n\n${characterBody}`,
         },
         {
           title: ko ? "핵심 성향" : "Core temperament",
+          keySentence: ko
+            ? "생각, 행동, 관계, 압박, 성공 조건까지 다섯 가지 모습을 한 번에 보여줍니다."
+            : "This shows five sides at once: thinking, acting, relating, handling pressure, and what helps you succeed.",
           body: buildTemperamentBody(locale, integrated, exact),
         },
         {
           title: ko ? "주요 강점" : "Key strengths",
+          keySentence: ko
+            ? "이 사람이 가장 잘하는 것들을 한자리에 모아 보여줍니다."
+            : "This gathers the things this person is genuinely good at, in one place.",
           body: exact
             ? exact.strengths.map((item) => text(item, locale)).join("\n\n")
             : integrated.strengths.map((item) => `${item}.`).join("\n\n"),
         },
         {
           title: ko ? "반복되는 약점" : "Repeated weakness",
+          keySentence: ko
+            ? "이 사람에게서 자꾸 반복되는 진짜 문제 하나를 짚어냅니다."
+            : "This points to the one problem that keeps repeating for this person.",
           body: weaknessBody,
         },
         {
           title: ko ? "직업·사업 방향" : "Work & business direction",
+          keySentence: ko
+            ? "어떤 일, 어떤 사업이 이 사람과 잘 맞는지 짚어줍니다."
+            : "This points to the kind of work or business that fits this person.",
           body: exact
             ? text(exact.career, locale)
             : `${domainInsight(integrated, "career")}\n\n${integrated.careerRecommendations.slice(0, 2).map((item) => `${item.title} — ${item.fitReason}`).join("\n")}`,
         },
         {
           title: ko ? "돈의 흐름" : "Money flow",
+          keySentence: ko
+            ? "돈이 어디서 새고 어디서 모이는지 보여줍니다."
+            : "This shows where money tends to leak and where it tends to gather.",
           body: exact ? text(exact.money, locale) : domainInsight(integrated, "money"),
         },
         {
           title: ko ? "관계 성향" : "Relationship pattern",
+          keySentence: ko
+            ? "관계에서 이 사람이 자주 반복하는 습관을 보여줍니다."
+            : "This shows the habit this person keeps repeating in relationships.",
           body: exact ? text(exact.relationships, locale) : domainInsight(integrated, "love"),
         },
         {
           title: ko ? "2026년 흐름" : "2026 direction",
+          keySentence: ko
+            ? "2026년에 뭘 조심하고 뭘 밀어붙일지 알려줍니다."
+            : "This tells you what to watch for and what to push forward in 2026.",
           body: [
             ko
               ? `2026년은 개인년 ${numberDisplay(profile.personalYear.value)}의 ${personalYear.phase} 흐름입니다. ${personalYear.timing}`
@@ -541,11 +590,14 @@ export function createBasicPaidReport(
         },
         {
           title: ko ? "최종 결론" : "Final conclusion",
+          keySentence: ko
+            ? "올해 진짜 해야 할 일 한 가지로 마무리합니다."
+            : "This closes with the one real thing to do this year.",
           body: exact
             ? text(exact.conclusion, locale)
             : (ko
-                ? `${characterLabel}라는 중심 성향은 분명한 강점입니다. 반복되는 실패 원인은 ${specificWeaknesses[0]} 올해는 새 방향을 더 찾기보다 이미 고른 한 가지를 검증하고 완성하세요. 가능성을 현실로 만드는 마지막 단계는 발견이 아니라 완료입니다.`
-                : `${characterLabel} is a clear strength. The repeated failure is: ${specificWeaknesses[0]} This year, validate and complete one chosen direction. Possibility becomes real at completion, not discovery.`),
+                ? `${characterLabel} — 이건 분명한 강점입니다. 자꾸 반복되는 실패 원인은 ${specificWeaknesses[0]} 올해는 새 방향을 더 찾기보다, 이미 고른 한 가지를 확인하고 끝까지 완성하세요. 가능성을 현실로 만드는 마지막 한 걸음은 발견이 아니라 완료입니다.`
+                : `${characterLabel} is a clear strength. The repeated failure is: ${specificWeaknesses[0]} This year, test and finish the one direction you already chose, instead of looking for another. Possibility becomes real when you finish, not when you discover.`),
         },
       ];
 
@@ -571,8 +623,8 @@ export function createBasicPaidReport(
     createdAt: new Date().toISOString(),
     concern,
     summary: hasQuestion
-      ? (ko ? "고객 질문에 답하고 핵심 성향과 2026년 방향을 연결했습니다." : "Your question, core temperament, and 2026 direction.")
-      : (ko ? "생년월일만으로 구성한 핵심 성향과 2026년 방향입니다." : "Core temperament and 2026 direction from the birth date."),
+      ? (ko ? "질문에 답하면서 핵심 성향과 2026년 방향을 이어서 보여줍니다." : "Your question, your core temperament, and your 2026 direction, together.")
+      : (ko ? "생년월일만으로 알 수 있는 핵심 성향과 2026년 방향입니다." : "Core temperament and 2026 direction, from the birth date alone."),
     sections,
     actions,
     cautions: [
@@ -581,8 +633,8 @@ export function createBasicPaidReport(
       ...integrated.risks.slice(0, 2),
     ],
     disclaimer: ko
-      ? "이 리포트는 자기이해와 선택 정리를 위한 참고 자료이며 미래, 건강, 투자 수익 또는 타인의 사적 사실을 보장하지 않습니다."
-      : "This report supports reflection and decision-making. It does not guarantee the future, health outcomes, investment returns, or another person's private facts.",
+      ? "이 리포트는 나를 이해하고 선택을 정리하는 데 도움을 주는 참고 자료입니다. 미래, 건강, 투자 수익, 다른 사람의 사적인 일을 보장하지는 않습니다."
+      : "This report is meant to help you understand yourself and sort out choices. It does not guarantee the future, health outcomes, investment returns, or another person's private facts.",
     tierLabel: tierBadgeLabel("plus_30d", locale),
     characterLabel,
     sharpInsights,
