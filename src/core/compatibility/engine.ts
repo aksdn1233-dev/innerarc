@@ -149,7 +149,7 @@ export function createCompatibilityInsight(input: {
       "communication",
       locale,
       ko
-        ? `${pick(attitudeStyles[0].communication, locale)}과(와) ${pick(attitudeStyles[1].communication, locale)} 사이에는 속도 차이가 있을 수 있습니다.`
+        ? `${withParticle(pick(attitudeStyles[0].communication, locale), "with")} ${pick(attitudeStyles[1].communication, locale)} 사이에는 속도 차이가 있을 수 있습니다.`
         : `You may notice a pacing gap between ${pick(attitudeStyles[0].communication, locale)} and ${pick(attitudeStyles[1].communication, locale)}.`,
       [ko ? "대화를 시작하기 전에, 지금 필요한 게 공감인지 정보인지 결정인지 먼저 말하기" : "Before you start talking, say whether you need empathy, information, or a decision"],
       ko ? "두 사람 모두 편하게 말할 수 있었던 순간은 어떤 조건이었나요?" : "What conditions have let both of you speak comfortably?",
@@ -159,7 +159,7 @@ export function createCompatibilityInsight(input: {
       "money_responsibility",
       locale,
       ko
-        ? `${pick(attitudeStyles[0].responsibility, locale)}과(와) ${pick(attitudeStyles[1].responsibility, locale)}은(는), 말하지 않은 기대가 쌓이면 부딪힐 수 있습니다.`
+        ? `${withParticle(pick(attitudeStyles[0].responsibility, locale), "with")} ${withParticle(pick(attitudeStyles[1].responsibility, locale), "topic")}, 말하지 않은 기대가 쌓이면 부딪힐 수 있습니다.`
         : `${pick(attitudeStyles[0].responsibility, locale)} and ${pick(attitudeStyles[1].responsibility, locale)} can clash once unspoken expectations pile up.`,
       [pick(type.responsibility, locale)],
       ko ? "실제로 돈, 시간, 돌봄의 부담은 지금 누구에게 얼마나 나눠져 있나요?" : "How are the real costs, time, and care actually split between you right now?",
