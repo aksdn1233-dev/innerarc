@@ -29,7 +29,7 @@ async function capture(page: import("@playwright/test").Page, selector: string, 
 
 async function openHome(page: import("@playwright/test").Page) {
   await page.goto("/ko", { waitUntil: "networkidle" });
-  await expect(page.getByRole("dialog", { name: "결과를 보는 방법부터 알려드릴게요." })).toBeVisible();
+  await expect(page.getByRole("dialog", { name: "결과 보는 법부터 같이 볼게요." })).toBeVisible();
 }
 
 test.describe("Taeryeong Daily Healing homepage", () => {
@@ -95,7 +95,7 @@ test.describe("Taeryeong Daily Healing homepage", () => {
     await expect(page.locator(".dh-concern-grid button")).toHaveCount(6);
     await page.getByRole("button", { name: /연애·관계/ }).click();
     await expect(page.getByRole("button", { name: /연애·관계/ })).toHaveAttribute("aria-pressed", "true");
-    await expect(page.getByRole("link", { name: /이 고민으로 무료 결과 보기/ })).toHaveAttribute("href", "/ko/numerology?focus=relationships");
+    await expect(page.getByRole("link", { name: /이 고민으로 무료 결과 보기/ })).toHaveAttribute("href", "/ko/numerology?guide=1&focus=relationships");
 
     await expect(page.locator(".dh-guide-strip article")).toHaveCount(6);
     await expect(page.locator(".dh-service-grid > a")).toHaveCount(6);
@@ -158,7 +158,7 @@ test.describe("Taeryeong Daily Healing homepage", () => {
     await closing.scrollIntoViewIfNeeded();
     await expect(closing.locator("video source")).toHaveAttribute("src", /\/videos\/taeyul-hero\.mp4/);
     await expect.poll(() => closing.locator("video").evaluate((node) => (node as HTMLVideoElement).videoWidth)).toBeGreaterThan(0);
-    await expect(closing.getByRole("link", { name: "무료로 내 패턴 보기" })).toHaveAttribute("href", "/ko/numerology");
+    await expect(closing.getByRole("link", { name: "무료로 내 패턴 보기" })).toHaveAttribute("href", "/ko/numerology?guide=1");
     await expect(closing.getByRole("link", { name: "무료 사주 원국 보기" })).toHaveAttribute("href", "/ko/fortune");
   });
 });

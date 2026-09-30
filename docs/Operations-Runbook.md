@@ -1,3 +1,7 @@
+## 2026-09-30 audit gate during Taeryeong renewal
+
+The PR's first CI `verify` failed at `pnpm audit` after lint, typecheck, tests, and build had passed. Three build-toolchain override pins had become stale: `fast-uri` 3.1.6, `undici` 7.29.0, and `brace-expansion` 5.0.9. The patched pins are 3.1.8, 7.29.1, and 5.0.12; the lockfile was regenerated. The packages are reached through local build/lint tooling, not through the deployed Worker. Before future releases, run `pnpm audit` with the frozen lockfile and move an override only to a published patched version after checking its dependency paths. Do not silence new advisories by adding an ignore entry. The two existing policy-ignored findings remain separately recorded in `pnpm-workspace.yaml`.
+
 # Operations and Rollback Runbook
 
 Status: Supabase account persistence connected; production deployment and remaining service owners are unassigned.

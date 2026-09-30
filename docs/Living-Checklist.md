@@ -558,5 +558,6 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 
 - [x] Reference flow and actual home/intake/report routes inspected; user-approved first-party 1254px Taeryeong asset reused without upscaling.
 - [x] Optional guided entry calls the unchanged deterministic numerology calculator and keeps the old direct intake.
+- [x] CI audit failure fixed by updating three build-toolchain pins and lockfile; fresh audit reports only the two existing policy-ignored findings.
 - [x] Desktop/mobile browser journeys: 8 guided/home tests and 54 Saju/report/onboarding regressions passed after updating two intentional copy assertions; privacy, free result, legal footer, and payment entry were exercised. Production smoke remains pending.
 - [ ] Record production deployment ID and live rollback target after release.
