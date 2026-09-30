@@ -1,3 +1,7 @@
+## 2026-09-30 Space browser regression during renewal
+
+The first PR Space browser jobs failed at the exact background-color assertion in `tests/e2e/space.spec.ts`. The page source already defined the warm ivory `#f6f3ec` (`rgb(246, 243, 236)`), while the test still expected the retired mint `rgb(243, 248, 244)`. The product style was not altered to satisfy an obsolete expectation; the test now checks the current source token. Keep this assertion synchronized with the Space design token when that color is intentionally changed, and run the Space demo in desktop, iPhone, and Android projects before release.
+
 ## 2026-09-30 audit gate during Taeryeong renewal
 
 The PR's first CI `verify` failed at `pnpm audit` after lint, typecheck, tests, and build had passed. Three build-toolchain override pins had become stale: `fast-uri` 3.1.6, `undici` 7.29.0, and `brace-expansion` 5.0.9. The patched pins are 3.1.8, 7.29.1, and 5.0.12; the lockfile was regenerated. The packages are reached through local build/lint tooling, not through the deployed Worker. Before future releases, run `pnpm audit` with the frozen lockfile and move an override only to a published patched version after checking its dependency paths. Do not silence new advisories by adding an ignore entry. The two existing policy-ignored findings remain separately recorded in `pnpm-workspace.yaml`.
