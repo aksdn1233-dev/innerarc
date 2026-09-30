@@ -15,7 +15,7 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await guideDialog.getByRole("button", { name: "안내 닫기" }).click();
   await expect(page.getByRole("heading", {
     level: 1,
-    name: "연애·돈·일, 왜 늘 같은 자리에서 막힐까요?",
+    name: "요즘, 어떤 고민이 마음에 남아 있나요?",
   })).toBeVisible();
   const homeFonts = await page.locator(".td2").evaluate((home) => ({
     body: getComputedStyle(home).fontFamily,
@@ -23,8 +23,8 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   }));
   expect(homeFonts.body).toContain("Noto Sans KR");
   expect(homeFonts.display).toContain("Song Myung");
-  await expect(page.locator(".td2-hero").getByRole("link", { name: /무료로 내 사주 보기/ })).toBeVisible();
-  await expect(page.locator(".td2-hero").getByRole("link", { name: /고민별로 골라보기/ })).toBeVisible();
+  await expect(page.locator(".td2-hero").getByRole("link", { name: /내 이야기 시작하기/ })).toBeVisible();
+  await expect(page.locator(".td2-hero").getByRole("link", { name: /무엇을 볼 수 있나요\?/ })).toBeVisible();
   await expect(page.getByRole("button", { name: /처음이세요\? 1분 안내 보기/ })).toBeVisible();
   await expect(page.locator(".dh-concern-grid button")).toHaveCount(6);
   await expect(page.locator(".dh-service-grid > a")).toHaveCount(6);
@@ -50,9 +50,9 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await expect(page.locator('.td2-nav a:has-text("이용 안내")')).toHaveAttribute("href", "#guide");
   await expect(page.locator('.td2-nav a:has-text("이용 후기")')).toHaveAttribute("href", "/ko/reading#evidence");
   await expect(page.locator('.td2-nav a:has-text("궁합")')).toHaveAttribute("href", "/ko/compatibility");
-  await expect(page.locator(".td2-nav-actions").getByRole("link", { name: /무료 사주/ })).toHaveAttribute("href", "/ko/fortune");
-  await page.locator(".td2-hero").getByRole("link", { name: /무료로 내 사주 보기/ }).click();
-  await page.waitForURL("**/ko/fortune");
+  await expect(page.locator(".td2-nav-actions").getByRole("link", { name: /무료로 시작/ })).toHaveAttribute("href", "/ko/numerology?guide=1");
+  await page.locator(".td2-hero").getByRole("link", { name: /내 이야기 시작하기/ }).click();
+  await page.waitForURL("**/ko/numerology?guide=1");
 
   await page.goto("/ko/reading");
   await expect(page.locator(".report-outline")).toContainText("실제 생성한 상세 리딩입니다");
@@ -156,8 +156,8 @@ test("mobile home has no overflow and preserves the selling page behavior", asyn
     await page.goto("/ko");
     const guideClose = page.getByRole("button", { name: "안내 닫기" });
     if (await guideClose.count()) await guideClose.click();
-    await expect(page.getByRole("heading", { level: 1, name: "연애·돈·일, 왜 늘 같은 자리에서 막힐까요?" })).toBeVisible();
-    await expect(page.locator(".td2-hero").getByRole("link", { name: /무료로 내 사주 보기/ })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: "요즘, 어떤 고민이 마음에 남아 있나요?" })).toBeVisible();
+    await expect(page.locator(".td2-hero").getByRole("link", { name: /내 이야기 시작하기/ })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
     await expect(page.locator(".mobile-purchase-bar")).toHaveCount(0);
     await expect(page.locator(".dh-report-book")).toHaveCount(1);
@@ -186,8 +186,8 @@ test("mobile home has no overflow and preserves the selling page behavior", asyn
 
 test("English page keeps the same calculated core meaning", async ({ page }) => {
   await page.goto("/en");
-  await expect(page.getByRole("heading", { level: 1, name: "There may be a reason the same patterns keep returning." })).toBeVisible();
-  await expect(page.getByRole("link", { name: /See my Four Pillars free/ })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "What has been on your mind lately?" })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Start my story/ })).toBeVisible();
   await expect(page.locator(".dh-service-grid > a")).toHaveCount(6);
   await expect(page.locator(".dh-report-page.is-right li")).toHaveCount(5);
   await expect(page.locator(".dh-report-book")).toContainText("Life Path");

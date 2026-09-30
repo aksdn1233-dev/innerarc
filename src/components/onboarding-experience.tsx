@@ -3,6 +3,7 @@
 import { HydrationGate } from "./hydration-gate";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   calculateNumerologyProfile,
   NumerologyInputError,
@@ -40,6 +41,7 @@ type Props = {
    * correct — including in a background tab, where an animation frame never runs.
    */
   initialFocusId?: OnboardingFocusId;
+  guided?: boolean;
 };
 
 /**
@@ -59,7 +61,7 @@ function evidence(calculation: NumberCalculation): string {
   return [`${calculation.expression} = ${calculation.initialTotal}`, ...reductions.map(String)].join(" → ");
 }
 
-export function OnboardingExperience({ locale, dictionary: d, routeName = "profile", initialFocusId }: Props) {
+export function OnboardingExperience({ locale, dictionary: d, routeName = "profile", initialFocusId, guided = false }: Props) {
   // Bounded here rather than in the module so a long-lived tab still refuses tomorrow.
   const maxBirthDate = currentMaxBirthDate();
   const [result, setResult] = useState<NumerologyProfile | null>(null);
@@ -68,6 +70,10 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
   const [selectedFocus, setSelectedFocus] = useState<OnboardingFocusId>(
     initialFocusId ?? d.interests[0]?.value ?? "work",
   );
+  const [guidedStep, setGuidedStep] = useState(0);
+  const [guidedBirthDate, setGuidedBirthDate] = useState("");
+  const [guidedName, setGuidedName] = useState("");
+  const [guidedConcern, setGuidedConcern] = useState("");
   const deepProfileRef = useRef<HTMLDetailsElement>(null);
   const guideVideoRef = useRef<HTMLVideoElement>(null);
   const guideAudioRef = useRef<HTMLAudioElement>(null);
@@ -190,6 +196,7 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
   function restart() {
     setResult(null);
     setContext(null);
+    if (guided) setGuidedStep(0);
     scrollToElement("#onboarding");
   }
 
@@ -209,18 +216,18 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
 
   return (
     <>
-      <main className="shell profile-shell night-ground" id="main-content" tabIndex={-1}>
+      <main className={`shell profile-shell night-ground${guided ? " guided-numerology" : ""}`} id="main-content" tabIndex={-1}>
         <header className="topbar">
           <Link className="brand" href={`/${locale}`}>
             <strong>태령당</strong>
-            <small>{d.brandTagline}</small>
+            <small>{guided ? "TAERYEONGDANG" : d.brandTagline}</small>
           </Link>
           <Link className="locale-switch" href={`/${otherLocale}/${routeName}`} prefetch={false}>
             {otherLocale === "ko" ? "한국어" : "English"}
           </Link>
         </header>
 
-        <section className="hero" aria-labelledby="hero-title">
+        {!guided && <section className="hero" aria-labelledby="hero-title">
           <div>
             <p className="eyebrow">{d.eyebrow}</p>
             <h1 id="hero-title">{d.headline}</h1>
@@ -277,11 +284,22 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
               <source src="/videos/taeyul-guide-audio.m4a?v=20260810-ios1" type="audio/mp4" />
             </audio>
           </div>
-        </section>
+        </section>}
 
-        <section className="form-section cinema-intake" id="onboarding" aria-labelledby="onboarding-title">
+        <section className="form-section cinema-intake" id="onboarding" aria-labelledby={guided ? undefined : "onboarding-title"} aria-label={guided ? (locale === "ko" ? "무료 생년월일 패턴 안내" : "Free birth-date pattern guide") : undefined}>
           <div className="cinema-intake-art" aria-hidden="true" />
-          <form className="form-card" onFocusCapture={trackFreeStart} onSubmit={submit} noValidate><HydrationGate locale={locale}>
+          <form className={`form-card${guided ? " guided-form-card" : ""}`} onFocusCapture={trackFreeStart} onSubmit={submit} noValidate><HydrationGate locale={locale}>
+            {guided ? <>
+              <div className="guided-head"><span>{locale === "ko" ? "태령이와 시작해요" : "Start with Taeryeong"}</span><span>{guidedStep + 1} / 3</span></div>
+              <div className="guided-progress" role="progressbar" aria-valuemin={1} aria-valuemax={3} aria-valuenow={guidedStep + 1} aria-label={locale === "ko" ? "진행 단계" : "Progress"}><span style={{ width: `${((guidedStep + 1) / 3) * 100}%` }} /></div>
+              <div className="guided-character"><Image src="/assets/gyeol-webtoon/characters/taeryeong/taeryeong_assure_confident_01-hd-v2-3x.webp" alt={locale === "ko" ? "태령이" : "Taeryeong"} width={1254} height={1254} sizes="(max-width: 700px) 110px, 140px" priority unoptimized /></div>
+              {guidedStep === 0 && <section className="guided-stage" aria-labelledby="guided-question"><p className="eyebrow">01 — {locale === "ko" ? "오늘의 고민" : "TODAY'S CONCERN"}</p><h1 id="guided-question">{locale === "ko" ? "요즘 뭐가 제일 마음에 걸리세요?" : "What's on your mind lately?"}</h1><p>{locale === "ko" ? "하나만 골라주세요. 결과를 보는 관점을 맞출게요." : "Choose one so we can frame your result around it."}</p><div className="guided-choices" role="group" aria-label={d.interest}>{d.interests.map((option) => <button aria-pressed={selectedFocus === option.value} key={option.value} onClick={() => selectFocus(option.value)} type="button">{option.label}</button>)}</div></section>}
+              {guidedStep === 1 && <section className="guided-stage" aria-labelledby="guided-birth"><p className="eyebrow">02 — {locale === "ko" ? "생년월일" : "BIRTH DATE"}</p><h1 id="guided-birth">{locale === "ko" ? "언제 태어나셨나요?" : "When were you born?"}</h1><p>{locale === "ko" ? "생년월일만 계산에 써요. 태어난 시간은 필요 없어요." : "Only your birth date is used for this calculation. Birth time isn't needed."}</p><label htmlFor="guidedBirthDate">{d.birthDate}</label><input id="guidedBirthDate" type="date" min={MIN_BIRTH_DATE} max={maxBirthDate} value={guidedBirthDate} onChange={(event) => { setGuidedBirthDate(event.target.value); setError(""); }} required /><small>{d.birthHelp}</small></section>}
+              {guidedStep === 2 && <section className="guided-stage" aria-labelledby="guided-final"><p className="eyebrow">03 — {locale === "ko" ? "무료 결과" : "FREE RESULT"}</p><h1 id="guided-final">{locale === "ko" ? "이제 내 패턴을 볼까요?" : "Ready to see your pattern?"}</h1><p>{locale === "ko" ? "이름과 질문은 선택이에요. 비워둬도 계산할 수 있어요." : "Your name and question are optional."}</p><label htmlFor="guidedName">{d.name}</label><input id="guidedName" type="text" maxLength={200} value={guidedName} onChange={(event) => setGuidedName(event.target.value)} placeholder={d.namePlaceholder} /><label htmlFor="guidedConcern">{d.concern}</label><textarea id="guidedConcern" maxLength={2_000} value={guidedConcern} onChange={(event) => setGuidedConcern(event.target.value)} placeholder={d.concernPlaceholder} /><input type="hidden" name="interest" value={selectedFocus} /><input type="hidden" name="birthDate" value={guidedBirthDate} /><input type="hidden" name="name" value={guidedName} /><input type="hidden" name="concern" value={guidedConcern} /><input type="hidden" name="depth" value="balanced" /><label className="check"><input type="checkbox" name="privacyRequired" required /><span>{d.privacyRequired}</span></label><Link className="legal-inline-link" href={`/${locale}/privacy`}>{locale === "ko" ? "개인정보 처리 안내" : "Privacy information"}</Link></section>}
+              <div className="guided-actions">{guidedStep > 0 && <button className="guided-back" type="button" onClick={() => { setError(""); setGuidedStep(guidedStep - 1); }}>{locale === "ko" ? "이전" : "Back"}</button>}{guidedStep < 2 ? <button className="primary-button" type="button" onClick={() => { if (guidedStep === 1 && !isAcceptedBirthDate(guidedBirthDate)) { setError(d.invalidDate); return; } setError(""); setGuidedStep(guidedStep + 1); }}>{locale === "ko" ? "다음" : "Continue"} →</button> : <button className="primary-button" type="submit">{locale === "ko" ? "무료 결과 보기" : "See free result"} →</button>}</div>
+              {error && <p className="error" role="alert">{error}</p>}
+              <p className="guided-boundary">{locale === "ko" ? "생년월일 패턴은 상징적 자기 성찰 도구예요. 미래를 확정하지 않아요." : "Birth-date patterns are symbolic reflection tools, not certain predictions."}</p>
+            </> : <>
             <p className="eyebrow">01 — {d.eyebrow}</p>
             <h2 id="onboarding-title">{d.start}</h2>
 
@@ -373,6 +391,7 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
             <p className="legal-note">
               <Link href={`/${locale}/terms`}>{locale === "ko" ? "출시 전 이용조건" : "Pre-release terms"}</Link>
             </p>
+            </>}
           </HydrationGate></form>
         </section>
 

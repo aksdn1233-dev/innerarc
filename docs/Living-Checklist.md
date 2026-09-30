@@ -553,3 +553,10 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [ ] Apply the Dream migration and complete hosted two-owner isolation/export/deletion probes before enabling account sync.
 - [ ] Verify an exact available model, pricing, consent and cost cap before enabling remote AI; the released path uses no AI model or runtime tokens.
 - [ ] Restore the GitHub account Actions spending limit before treating hosted run 34722047754 as test evidence; all four jobs stopped before executing steps.
+
+## 2026-09-30 Taeryeong renewal verification
+
+- [x] Reference flow and actual home/intake/report routes inspected; user-approved first-party 1254px Taeryeong asset reused without upscaling.
+- [x] Optional guided entry calls the unchanged deterministic numerology calculator and keeps the old direct intake.
+- [x] Desktop/mobile browser journeys: 8 guided/home tests and 54 Saju/report/onboarding regressions passed after updating two intentional copy assertions; privacy, free result, legal footer, and payment entry were exercised. Production smoke remains pending.
+- [ ] Record production deployment ID and live rollback target after release.

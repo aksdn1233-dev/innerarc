@@ -11667,3 +11667,33 @@ summary {
   .home-space-mobile-menu { display: flex; align-items: center; margin-left: auto; }
   .home-space-mobile-menu a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border: 1px solid rgba(239,212,147,.4); border-radius: 999px; background: rgba(22,19,31,.8); color: #f5dfad; font-size: .82rem; font-weight: 700; text-decoration: none; }
 }
+
+/* Optional, conversational entrance to the unchanged numerology calculator. */
+.guided-numerology { max-width: none; padding-inline: 0; background: #17161c; }
+.guided-numerology .topbar { width: min(100% - 40px, 1060px); margin: 0 auto; }
+.guided-numerology .cinema-intake { min-height: calc(100svh - 76px); padding: clamp(36px, 6vh, 72px) 0 80px; }
+.guided-numerology .cinema-intake-art { background-image: none; filter: none; }
+.guided-numerology .cinema-intake::after { background: #17161c; }
+.guided-numerology .cinema-intake .guided-form-card { width: min(100% - 32px, 590px); min-height: 650px; padding: 28px clamp(22px, 5vw, 48px) 30px; border: 1px solid rgba(205,178,122,.32); background: #242229; }
+.guided-head { display: flex; justify-content: space-between; color: #d3b77f; font-size: .78rem; font-weight: 700; }
+.guided-progress { height: 3px; margin: 18px 0 6px; background: rgba(255,255,255,.17); }
+.guided-progress span { display: block; height: 100%; background: #cdb27a; transition: width .2s ease; }
+.guided-character { display: flex; justify-content: center; height: 130px; overflow: hidden; }
+.guided-character img { width: 150px; height: 150px; object-fit: contain; object-position: top; }
+.guided-stage { min-height: 250px; }
+.guided-stage h1 { max-width: 14ch; margin: 10px 0 16px; color: #fff8ec; font-family: var(--display-font); font-size: clamp(2rem, 5vw, 2.8rem); line-height: 1.2; word-break: keep-all; }
+.guided-stage > p:not(.eyebrow) { margin: 0 0 25px; color: #d7d0c5; line-height: 1.7; }
+.guided-stage > label:not(.check) { display: block; margin: 18px 0 6px; }
+.guided-stage > small { display: block; margin-top: 9px; }
+.guided-choices { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; }
+.guided-choices button { min-height: 54px; padding: 9px 14px; border: 1px solid rgba(242,237,227,.35); border-radius: 3px; background: transparent; color: #f2ede3; cursor: pointer; font: inherit; text-align: left; }
+.guided-choices button[aria-pressed="true"] { border-color: #cdb27a; background: rgba(205,178,122,.17); color: #fff8ec; }
+.guided-choices button:hover { border-color: #cdb27a; }
+.guided-actions { display: flex; gap: 10px; margin-top: 22px; }
+.guided-actions .primary-button { flex: 1; margin: 0; }
+.guided-back { min-width: 88px; border: 1px solid rgba(242,237,227,.35); border-radius: 3px; background: transparent; color: #f2ede3; cursor: pointer; font: inherit; }
+.guided-boundary { margin: 20px 0 0; color: #c6bfb3; font-size: .73rem; line-height: 1.65; }
+.guided-numerology .result-section { width: min(100% - 32px, 1080px); margin-inline: auto; }
+@media (max-width: 640px) { .guided-numerology .cinema-intake .guided-form-card { min-height: 590px; padding: 22px; } .guided-character { height: 115px; } .guided-character img { width: 130px; height: 130px; } }
+.guided-numerology .cinema-intake .primary-button { border-color: #cdb27a; border-radius: 3px; background: #b8995c; box-shadow: none; color: #17161c; font-weight: 800; }
+.guided-numerology .cinema-intake .primary-button:hover { background: #cdb27a; }

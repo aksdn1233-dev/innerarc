@@ -30,14 +30,14 @@ const content = {
     space: "풍수학",
     reviews: "이용 후기",
     login: "구매 내역",
-    start: "무료 사주",
-    kicker: "사주 · 생년월일 패턴 · 궁합 · 풍수",
-    title: <>연애·돈·일, 왜 늘<br /><em>같은 자리에서 막힐까요?</em></>,
-    heroBody: "생년월일만 넣으면 반복되는 성향과 선택의 이유를 계산 근거와 함께 쉬운 말로 풀어드려요.",
-    heroPrimary: "무료로 내 사주 보기",
-    heroSecondary: "고민별로 골라보기",
+    start: "무료로 시작",
+    kicker: "태령이와 함께 읽는 나의 이야기",
+    title: <>요즘, 어떤 고민이<br /><em>마음에 남아 있나요?</em></>,
+    heroBody: "하나를 골라 이야기해 주세요. 생년월일로 계산한 나의 패턴을 먼저 무료로 볼 수 있어요.",
+    heroPrimary: "내 이야기 시작하기",
+    heroSecondary: "무엇을 볼 수 있나요?",
     heroNote: "회원가입 없이 · 기본 결과 무료 · 계산 근거 공개",
-    heroArtNote: "브랜드 연출 이미지 · 생성형 이미지",
+    heroArtNote: "태령당 캐릭터 · 태령이",
     guideCue: "처음이세요? 1분 안내 보기",
     guideEyebrow: "처음 오셨다면",
     guideTitle: "결과 보는 법부터 같이 볼게요.",
@@ -120,10 +120,10 @@ const content = {
   en: {
     navLabel: "Taeryeongdang main navigation",
     services: "Services", guide: "First visit", analysis: "Pattern analysis", success: "Success patterns", relationship: "Relationships", space: "Feng Shui", reviews: "Reviews", login: "Purchases", start: "Start now",
-    kicker: "People, relationships, spaces, and lived experience",
-    title: <>There may be a reason<br />the same patterns<br /><em>keep returning.</em></>,
-    heroBody: "Taeryeongdang connects symbolic traditions, deterministic calculations, and what you record from real life.",
-    heroPrimary: "See my Four Pillars free", heroSecondary: "Start from a concern", heroNote: "No sign-up · Free basic result · Calculations shown", heroArtNote: "Brand scene · generated image",
+    kicker: "A conversation with Taeryeong",
+    title: <>What has been<br /><em>on your mind lately?</em></>,
+    heroBody: "Start with one concern. See a free birth-date pattern reading with its calculation shown.",
+    heroPrimary: "Start my story", heroSecondary: "Explore the services", heroNote: "No sign-up · Free basic result · Calculations shown", heroArtNote: "Taeryeongdang character · Taeryeong",
     guideCue: "New here? See the one-minute guide",
     guideEyebrow: "FIRST VISIT",
     guideTitle: "See how a result works before you begin.",
@@ -313,20 +313,20 @@ export function TaeryeongLanding({ dreamAvailable, locale, reportPreview, review
       </nav>
       <div className="td2-nav-actions">
         <Link className="td2-login" href={`/${locale}/orders`} prefetch={false}>{t.login}</Link>
-        <Link className="td2-pill" href={`/${locale}/fortune`} prefetch={false}>{t.start}<Arrow /></Link>
+        <Link className="td2-pill" href={`/${locale}/numerology?guide=1`} prefetch={false}>{t.start}<Arrow /></Link>
         <Link className="td2-language" href={`/${locale === "ko" ? "en" : "ko"}`} prefetch={false}>{locale === "ko" ? "EN" : "한국어"}</Link>
       </div>
     </header>
 
     <section className="td2-hero" aria-labelledby="td2-hero-title">
-      <Image className="td2-hero-image" src="/images/brand/taeryeong-night-hero-v3.jpg" alt="" fill priority quality={92} sizes="100vw" />
+      <div className="td2-hero-art" aria-hidden="true"><span className="td2-art-caption">TAERYEONG · 01</span><Image className="td2-hero-character" src="/assets/gyeol-webtoon/characters/taeryeong/taeryeong_assure_confident_01-hd-v2-3x.webp" alt="" width={1254} height={1254} priority unoptimized sizes="(max-width: 700px) 70vw, 430px" /><span className="td2-art-floor" /></div>
       <div className="td2-hero-wash" aria-hidden="true" />
       <div className="td2-hero-copy">
         <p className="td2-kicker">{t.kicker}</p>
         <h1 id="td2-hero-title">{t.title}</h1>
         <p className="td2-lead">{t.heroBody}</p>
         <div className="td2-actions">
-          <Link className="td2-primary" href={`/${locale}/fortune`} prefetch={false} onClick={track}>{t.heroPrimary}<Arrow /></Link>
+          <Link className="td2-primary" href={`/${locale}/numerology?guide=1`} prefetch={false} onClick={track}>{t.heroPrimary}<Arrow /></Link>
           <a className="td2-secondary" href="#services">{t.heroSecondary}<Arrow /></a>
         </div>
         <p className="td2-note">{t.heroNote.split(" · ").map((part, index, parts) => <span key={part}>{part}{index < parts.length - 1 ? " · " : ""}</span>)}</p>
@@ -340,6 +340,7 @@ export function TaeryeongLanding({ dreamAvailable, locale, reportPreview, review
     <section aria-modal="true" className="td2-walkthrough" id="guide" aria-labelledby="td2-guide-title" ref={guideRef} role="dialog">
       <button aria-label={t.guideClose} className="td2-guide-close" onClick={closeGuide} ref={guideCloseRef} type="button">×</button>
       <header>
+        <Image className="td2-guide-character" src="/assets/gyeol-webtoon/characters/taeryeong/taeryeong_assure_confident_01-hd-v2-3x.webp" alt="" width={1254} height={1254} unoptimized sizes="68px" />
         <p className="td2-eyebrow">{t.guideEyebrow}</p>
         <h2 id="td2-guide-title">{t.guideTitle}</h2>
         <p>{t.guideBody}</p>

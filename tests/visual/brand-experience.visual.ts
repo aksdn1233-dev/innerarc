@@ -50,10 +50,10 @@ test.describe("Taeryeong Daily Healing homepage", () => {
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
       await capture(page, ".td2-walkthrough", `brand-${width}-guide.png`);
       await page.getByRole("button", { name: "안내 닫기" }).click({ force: true });
-      await expect(page.getByRole("heading", { level: 1, name: "연애·돈·일, 왜 늘 같은 자리에서 막힐까요?" })).toBeVisible();
+      await expect(page.getByRole("heading", { level: 1, name: "요즘, 어떤 고민이 마음에 남아 있나요?" })).toBeVisible();
       await capture(page, ".td2-hero", `brand-${width}-hero.png`);
 
-      const heroQuality = await page.locator(".td2-hero-image").evaluate(async (node) => {
+      const heroQuality = await page.locator(".td2-hero-character").evaluate(async (node) => {
         const image = node as HTMLImageElement;
         const box = image.getBoundingClientRect();
         const response = await fetch(image.currentSrc);
