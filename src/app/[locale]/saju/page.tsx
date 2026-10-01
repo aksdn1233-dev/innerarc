@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import { SajuExperience } from "@/components/saju-experience";
 import { isLocale } from "@/i18n/config";
 import { resolveProductPricing } from "@/core/product-prices";
+import type { PublicReview } from "@/core/reviews";
+import { resolveSupabaseAdminClient } from "@/lib/supabase/admin";
+import { countPublicReviews, listPublicReviews } from "@/server/reviews";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -28,5 +31,27 @@ export default async function SajuPage({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  return <SajuExperience locale={locale} price={resolveProductPricing().prices.plus_30d} />;
+  // Only published reviews and their real count are shown. An unreachable review table
+  // leaves both empty and the fee chapter simply omits the section.
+  let reviews: readonly PublicReview[] = [];
+  let reviewCount: number | null = null;
+  const admin = resolveSupabaseAdminClient().client;
+  if (admin) {
+    const [published, count] = await Promise.all([
+      listPublicReviews(admin, locale, 3),
+      countPublicReviews(admin, locale),
+    ]);
+    reviews = published.data;
+    reviewCount = count;
+  }
+  return (
+    <SajuExperience
+      locale={locale}
+      prices={resolveProductPricing().prices}
+      reviewCount={reviewCount}
+      reviews={reviews}
+    />
+  );
 }
+
+export const dynamic = "force-dynamic";

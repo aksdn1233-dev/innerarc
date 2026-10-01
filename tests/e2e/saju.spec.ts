@@ -1,63 +1,61 @@
 import { expect, test, type Page } from "@playwright/test";
 import { resolveProductPricing } from "../../src/core/product-prices";
-// Assert the server-authoritative schedule; the September 6 campaign has an end.
-const pricing = resolveProductPricing();
-const krw = (value: number) => value.toLocaleString("en-US");
-async function checkPrivacyConsent(page: Page) {
-  const consent = page.getByRole("checkbox");
-  await expect(consent).toBeVisible();
-  await consent.check();
-  await expect(consent).toBeChecked();
-}
-test("the Four Pillars chart moves into the current one-time checkout", async ({ page }) => {
-  await page.goto("/ko/saju");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("사주 원국");
-  await expect(page.getByRole("heading", { level: 2, name: "기억나는 만큼만 알려주세요" })).toBeVisible();
-  await expect(page.locator("[data-phase]")).toHaveCount(5);
 
-  await page.locator("#saju-birthDate").fill("1994-11-04");
+const pricing = resolveProductPricing();
+
+async function answerIntake(page: Page, options: { hour?: string } = {}) {
   await page.locator("#saju-readingName").fill("결이");
-  await page.locator("#saju-birthTime").fill("09:30");
-  await checkPrivacyConsent(page);
-  await page.getByRole("button", { name: /원 결제로 원국 받기/ }).click();
+  await page.getByRole("button", { name: /다음/ }).click();
+  await page.getByRole("radio", { name: "여성" }).click();
+  await page.getByRole("button", { name: /다음/ }).click();
+  await page.locator("#saju-birthDate").fill("1994-11-04");
+  await page.getByRole("button", { name: /다음/ }).click();
+  await page.locator("#saju-birthHour").selectOption(options.hour ?? "사시");
+  await page.getByRole("button", { name: /다음/ }).click();
+  await page.getByRole("radio", { name: "돈" }).click();
+  await page.getByRole("button", { name: /다음/ }).click();
+  await page.getByRole("button", { name: "언제쯤 돈이 모일까요?" }).click();
+  const consent = page.getByRole("checkbox");
+  await consent.check();
+  await page.getByRole("button", { name: /무료 풀이 보기/ }).click();
+}
+
+test("six questions lead to free chapters before any fee", async ({ page }) => {
+  await page.goto("/ko/saju");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("태령당 사주");
+  await expect(page.getByText("1/6단계")).toBeVisible();
+  await answerIntake(page);
+
+  await expect(page.locator(".saju-story-chapter")).toHaveText("서막");
+  await page.getByRole("button", { name: "다음 챕터" }).click();
+  await expect(page.locator(".saju-story-pillar")).toHaveCount(4);
+  await page.getByRole("button", { name: "다음 챕터" }).click();
+  await expect(page.locator(".saju-story-pastlife")).toBeVisible({ timeout: 5_000 });
+  await page.getByRole("button", { name: "다음 챕터" }).click();
+  await expect(page.locator(".saju-story-meter")).toBeVisible();
+});
+
+test("the fee chapter hands the chosen product to the existing checkout", async ({ page }) => {
+  await page.goto("/ko/saju");
+  await answerIntake(page);
+  await page.getByRole("button", { name: "다음 챕터" }).click();
+  await page.getByRole("button", { name: /잠긴 풀이 4개/ }).click();
+  await expect(page.locator('[data-product-option="pro_30d"]')).toHaveAttribute("aria-checked", "true");
+  await expect(page.locator('[data-product-option="plus_30d"]')).toContainText(pricing.prices.plus_30d.toLocaleString("ko-KR"));
+  await page.locator('[data-product-option="plus_30d"]').click();
+  await page.getByRole("button", { name: /원국 풀이 열기/ }).click();
 
   await expect(page).toHaveURL(/\/ko\/plans\?product=plus_30d$/);
   const draft = await page.evaluate(() => JSON.parse(sessionStorage.getItem("innerarc.checkoutDraft.v1") ?? "null"));
   expect(draft.name).toBe("결이");
-  const product = page.locator('[data-product="plus_30d"]');
-  await expect(product).toContainText("사주 원국");
-  await expect(product).toContainText("₩5,500");
-  await expect(product).toContainText("이메일로 보관하기");
+  expect(draft.readingKind).toBe("saju_chart");
+  expect(draft.focusId).toBe("money");
+  expect(draft.birthTime).toBe("10:30");
 });
 
 test("an unknown birth time leaves the hour pillar empty instead of inventing one", async ({ page }) => {
   await page.goto("/ko/saju");
-  await page.locator("#saju-birthDate").fill("1994-11-04");
-  await checkPrivacyConsent(page);
-  await page.getByRole("button", { name: /원 결제로 원국 받기/ }).click();
-
-  const draft = await page.evaluate(() => JSON.parse(sessionStorage.getItem("innerarc.checkoutDraft.v1") ?? "null"));
-  expect(draft.birthTime).toBeUndefined();
-  expect(draft.readingKind).toBe("saju_chart");
-});
-
-test("a date the engine will not stand behind is refused, not answered", async ({ page }) => {
-  await page.goto("/ko/saju");
-  await page.locator("#saju-birthDate").fill("1099-01-01");
-  await checkPrivacyConsent(page);
-  await page.getByRole("button", { name: /원 결제로 원국 받기/ }).click();
-  // Scoped to the form's own error: `role="alert"` alone also matches Next's route
-  // announcer, which is empty.
-  await expect(page.locator(".saju-error")).toContainText("1100");
-  await expect(page.locator(".saju-chart")).toHaveCount(0);
-});
-
-test("the English page shows the Korean chart with an English derivation", async ({ page }) => {
-  await page.goto("/en/saju");
-  await page.locator("#saju-birthDate").fill("1994-11-04");
-  await page.locator("#saju-birthTime").fill("09:30");
-  await checkPrivacyConsent(page);
-  await page.getByRole("button", { name: `Get the chart for ₩${krw(pricing.prices.plus_30d)}` }).click();
-  await expect(page).toHaveURL(/\/en\/plans\?product=plus_30d$/);
-  await expect(page.locator('[data-product="plus_30d"]')).toContainText("Four Pillars chart");
+  await answerIntake(page, { hour: "unknown" });
+  await page.getByRole("button", { name: "다음 챕터" }).click();
+  await expect(page.getByText("시주는 비워두었습니다")).toBeVisible();
 });

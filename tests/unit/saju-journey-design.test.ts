@@ -17,8 +17,13 @@ describe("Saju journey presentation", () => {
     expect(hubCss).toContain("@media (prefers-reduced-motion: reduce)");
     expect(hubCss).toMatch(/\.locale\s*\{[^}]*min-height:\s*44px/s);
     expect(intake).toContain('import "./saju-experience.module.css"');
-    expect(intake).toContain("기억나는 만큼만 알려주세요");
-    expect(intakeCss).toContain(":global(.saju-intake-layout .saju-submit)");
+    // One question per screen, asked by 태령, with the free chapters before any fee.
+    expect(intake).toContain("무료 결과 먼저 확인");
+    expect(intake).toContain("모르는 시간은 짐작하지 않고 비워둡니다");
+    expect(intake).toContain("Ch4. 태령의 복채");
+    // No invented urgency or crowd numbers: no countdowns, no "N명 결제" counters.
+    expect(intake).not.toMatch(/setInterval|명 결제|명이 복채/);
+    expect(intakeCss).toContain(":global(.saju-story)");
     expect(intakeCss).toContain("@media (prefers-reduced-motion: reduce)");
     expect(globalCss).not.toContain("sajuPortalBreath");
   });
