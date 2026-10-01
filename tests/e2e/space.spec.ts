@@ -45,7 +45,7 @@ test("space demo confirms, analyzes, compares, applies and invalidates edits", a
   await tutorial.getByRole("button", { name: "내 방으로 시작하기 →" }).click();
   await expect(tutorial).toHaveCount(0);
   await expect(page.locator("figure[data-character=yundo]")).toBeVisible();
-  expect(await page.locator("main").evaluate((node) => getComputedStyle(node).backgroundColor)).toBe("rgb(243, 248, 244)");
+  expect(await page.locator("main").evaluate((node) => getComputedStyle(node).backgroundColor)).toBe("rgb(246, 243, 236)");
   await expect(page.locator("[data-direction]")).toHaveCount(4);
   await expect(page.locator("[data-direction=north]")).toContainText("북 N");
   await expect(page.locator("[data-direction=east]")).toContainText("동 E");

@@ -37,7 +37,7 @@ export default async function NumerologyPage({
   searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ focus?: string }>;
+  searchParams: Promise<{ focus?: string; guide?: string }>;
 }) {
   const [{ locale }, query] = await Promise.all([params, searchParams]);
   if (!isLocale(locale)) notFound();
@@ -47,6 +47,7 @@ export default async function NumerologyPage({
       dictionary={dictionaries[locale]}
       routeName="numerology"
       initialFocusId={resolveConcernHandoff(query.focus)}
+      guided={query.guide === "1"}
     />
   );
 }

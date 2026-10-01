@@ -1,3 +1,12 @@
+## D-084 — Taeryeong-led conversational entry, preserving the calculation and commerce boundary
+
+- Date: 2026-09-30
+- Decision: Use the owner's competitor reference for its narrow, one-question-at-a-time entry pattern, without copying its art, claims, or intake fields. Give Taeryeong the first screen with the approved 1254px transparent asset. The home CTA opens an optional three-step birth-date pattern guide; the established direct intake remains available. The guide collects only the existing concern domain, birth date, optional name/question, and required privacy acknowledgement, then submits to the existing deterministic calculator and result component. It does not request birth time, MBTI, sex, or AI consent that this calculation does not need.
+- Demand evidence and distribution: The owner explicitly requested a site-wide renewal based on `grandma-saju.com/saju` and production release, with Taeryeong as the character and no reduction in image quality. Distribution remains existing direct, Naver, organic, and paid campaign traffic. The home CTA and concern links route to the live free-pattern experience.
+- Unit economics and costs: Existing 9,600/39,000 KRW product contracts, payment verification, report generation, entitlements, and fulfilment are untouched. The guide is local UI over the same calculator, adds no model call or storage write, and renders a first-party WebP at or below native density.
+- Safety and guardrails: Symbolic interpretation remains separate from deterministic numbers and scientific claims. No new personal fields or provider transfers are added. Preserve old `/numerology` and `/profile` routes, privacy checks, results, account isolation, and paid flow. Measure `free_start`, `birth_input_complete`, and `free_result_view` versus prior baseline; watch mobile completion, image density, accessibility, and payment route regression.
+- Reversal conditions: Revert the visual and `guide=1` entry if free-result completion falls materially after a representative traffic window, mobile layout fails, or the guided result differs from the direct calculator. Rollback target before this release: `a53557a`.
+
 # Decision Log
 
 ## D-083 — Correct the Daily Healing home with a character-led visual rebuild
