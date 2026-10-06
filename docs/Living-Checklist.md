@@ -562,3 +562,12 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] CI audit failure fixed by updating three build-toolchain pins and lockfile; fresh audit reports only the two existing policy-ignored findings.
 - [x] Desktop/mobile browser journeys: 8 guided/home tests and 54 Saju/report/onboarding regressions passed after updating two intentional copy assertions; privacy, free result, legal footer, and payment entry were exercised. Production smoke remains pending.
 - [ ] Record production deployment ID and live rollback target after release.
+
+## 2026-09-29 사주 메뉴 이야기형 개편
+
+- [x] 입력 6단계(이름·성별·생년월일·시진·관심 분야·질문)와 개인정보 동의
+- [x] 무료 챕터 4개(서막·사주 팔자·전생·사회적 가면)와 복채 챕터
+- [x] 태령 그림은 2×/3× 고해상도만 사용
+- [x] typecheck, lint, 테스트 1,227개 통과
+- [x] 일본어 /ja/reading 제목 276px 넘침 문제 수정
+- [ ] 운영 배포 후 폰에서 복채 챕터 → 결제 화면 이동 실제 확인
