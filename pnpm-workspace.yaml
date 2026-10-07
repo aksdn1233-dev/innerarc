@@ -11,6 +11,10 @@ auditConfig:
   ignoreGhsas:
     - GHSA-w3rx-r6r6-pgpr
     - GHSA-5p2g-fcmc-qvqq
+    # braces stack-exhaustion DoS: no patched release is published yet (3.0.3 is the
+    # latest). Reached only through eslint-config-next and vinext's build-time globbing,
+    # never in the deployed Worker. Remove this entry once braces >=3.0.4 exists.
+    - GHSA-vfj7-8cjw-p6xm
 
 # Every pin here answers a published advisory in the build, lint, or local-development
 # toolchain. None of these packages runs in the deployed Worker. A pin that was current
@@ -19,7 +23,10 @@ auditConfig:
 overrides:
   # GHSA for DoS via unbounded intermediate arrays; 5.0.12 covers the subsequent recursion and quadratic-time advisories.
   brace-expansion: "5.0.12"
-  sharp: "0.35.4"
+  # GHSA-wq5f-xc86-pv6w (librsvg CVE-2026-96889), fixed in 0.35.5.
+  sharp: "0.35.5"
+  # GHSA-68fv-2mgg-jv7q, event-loop DoS through indexed source maps; fixed in 1.2.2.
+  source-map-js: "1.2.2"
   # Attacker-controlled sourceMappingURL reads arbitrary .map files when `from` is
   # unset. Scoped to every path rather than `next>postcss` alone, because the same
   # vulnerable copy also arrives through vinext > @unpic/react > next.
