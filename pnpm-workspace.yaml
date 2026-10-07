@@ -11,19 +11,33 @@ auditConfig:
   ignoreGhsas:
     - GHSA-w3rx-r6r6-pgpr
     - GHSA-5p2g-fcmc-qvqq
-  minimumReleaseAge: -1
 
 # Every pin here answers a published advisory in the build, lint, or local-development
 # toolchain. None of these packages runs in the deployed Worker. A pin that was current
 # when it was written goes stale the moment the next advisory lands — `pnpm audit` in CI
 # is what catches that, so these versions are expected to move.
 overrides:
+  # GHSA for DoS via unbounded intermediate arrays; 5.0.12 covers the subsequent recursion and quadratic-time advisories.
   brace-expansion: "5.0.12"
   sharp: "0.35.4"
+  # Attacker-controlled sourceMappingURL reads arbitrary .map files when `from` is
+  # unset. Scoped to every path rather than `next>postcss` alone, because the same
+  # vulnerable copy also arrives through vinext > @unpic/react > next.
   postcss: "8.5.23"
+  # Host confusion via a backslash authority introducer, reached through webpack's
+  # schema validation inside @vitejs/plugin-rsc.
+  # Follow-up canonicalization advisories require 3.1.8.
   fast-uri: "3.1.8"
+  # GHSA-5p4m-2wfm-xmqj and GHSA-2883-xcg3-v3hh, fixed in 4.3.2. Reached only through eslint and its configs, so
+  # it runs while linting and never in the deployed Worker.
   js-yaml: "4.3.2"
+  # GHSA-jr45-8vmc-qm54 and GHSA-v3r7-h72x-cjcm, the newer advisory requires 7.29.1. Reached only
+  # through wrangler and @cloudflare/vite-plugin by way of miniflare, so it never runs
+  # in the deployed Worker, which uses the Cloudflare runtime's own fetch. Pinned inside
+  # the 7.x line because that is what miniflare expects; 8.x is a major bump.
   undici: "7.29.1"
+  # Zero/negative and custom-generator size infinite loops reached through PostCSS
+  # tooling (GHSA-2v37-7h3g-55p8). 3.3.18 is the patched 3.x release.
   nanoid: "3.3.18"
 
 patchedDependencies:
