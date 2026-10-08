@@ -709,6 +709,8 @@
 .td2-walkthrough .guide-steps-tabs button.is-current { background: none; box-shadow: none; color: #16151b; }
 .td2-walkthrough .guide-steps-tabs button.is-current small { color: #16151b; }
 .td2-walkthrough .guide-steps-tabs button.is-current::before { background: #b8995c; }
+/* Six equal tabs drop below the 44px target width on narrow phones (about 40px at 320px). */
+@media (max-width: 400px) { .td2-walkthrough .guide-steps-tabs { grid-template-columns: repeat(3,minmax(0,1fr)); row-gap: 8px; } }
 
 .td2-walkthrough .guide-stage-eyebrow { margin: 18px 0 0; color: #6b655e; font-size: .62rem; letter-spacing: .14em; }
 .td2-walkthrough .guide-stage-title { margin: 6px 0 12px; }
