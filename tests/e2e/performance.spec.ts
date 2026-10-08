@@ -21,10 +21,16 @@ const DEFAULT_DECODED_BUDGET = 1_200_000;
  * it, which costs about 13 bytes each across 91 declarations. The rest is the scoped
  * token block and the surfaces that stopped being cards. Measured at 206.6 KB.
  *
+ * Raised to 340,000 on 2026-10-08 by owner decision for the homepage typography of
+ * 2026-09-13 (69d3e85): next/font emits Noto Sans KR (variable) and Song Myung as about
+ * 126 KB of @font-face rules, one per Korean unicode-range slice, on every route. The
+ * glyph files themselves still load only for the slices a page uses. CI was stopping at
+ * the audit step, so this landed unmeasured; measured on CI at 336.1 KB.
+ *
  * The allowance stays narrow on purpose: another global screen still cannot be absorbed
  * without an explicit decision, which is the only reason these numbers move at all.
  */
-const DEFAULT_CSS_DECODED_BUDGET = 214_000;
+const DEFAULT_CSS_DECODED_BUDGET = 340_000;
 
 const routes = [
   // The editorial home removes the old autoplay film, audio and iOS animation. Its
@@ -38,12 +44,14 @@ const routes = [
   // That baseline already measured 273.7 KB on home and 211.0-229.6 KB on the
   // specialized routes after the Saju art release. The new timer and Japanese language
   // switch add 1.4 KB and 0.9 KB respectively. Each ceiling keeps about 1% headroom.
-  { path: "/en", transfer: 495_000, decoded: 1_320_000, cssDecoded: 278_000 },
+  // 2026-10-08: every CSS ceiling below also carries the ~126 KB of Korean font-face rules
+  // described at DEFAULT_CSS_DECODED_BUDGET, re-measured on CI with about 1% headroom.
+  { path: "/en", transfer: 495_000, decoded: 1_320_000, cssDecoded: 415_000 },
   { path: "/en/relationship" },
   { path: "/en/compatibility" },
-  { path: "/en/celebrity", cssDecoded: 218_500 },
+  { path: "/en/celebrity", cssDecoded: 344_500 },
   { path: "/en/reality-check" },
-  { path: "/en/shop", cssDecoded: 223_000 },
+  { path: "/en/shop", cssDecoded: 348_500 },
   // The Saju hub intentionally exposes all six supplied guide cuts and its route-scoped
   // editorial stylesheet on top of the shared one. Measured at 49 resources and 206.0 KB
   // decoded CSS after the home journey sections were added to the shared stylesheet.
@@ -53,8 +61,8 @@ const routes = [
   // while and the six guide cuts had grown past the shared 1.2 MB default unnoticed. The
   // number below records the measured state rather than pretending it is new; the guide
   // artwork on this route is the thing to shrink, and that is a separate change.
-  { path: "/en/fortune", resources: 52, cssDecoded: 233_000, decoded: 1_260_000 },
-  { path: "/en/saju", cssDecoded: 228_000 },
+  { path: "/en/fortune", resources: 52, cssDecoded: 353_500, decoded: 1_260_000 },
+  { path: "/en/saju", cssDecoded: 357_500 },
 ] as const satisfies readonly { path: string; transfer?: number; decoded?: number; resources?: number; cssDecoded?: number }[];
 
 for (const entry of routes) {
