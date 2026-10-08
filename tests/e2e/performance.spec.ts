@@ -112,17 +112,20 @@ for (const entry of routes) {
       };
     });
     expect([...unexpectedOrigins]).toEqual([]);
-    expect(metrics.resourceCount).toBeLessThanOrEqual(resourceBudget);
-    expect(metrics.jsTransferBytes).toBeLessThan(350_000);
-    expect(metrics.jsDecodedBytes).toBeLessThan(1_050_000);
+    // Every budget failure reports the whole measurement, so one CI run is enough to
+    // re-baseline all of them instead of revealing one assertion per run.
+    const measured = `${route} ${JSON.stringify(metrics)}`;
+    expect(metrics.resourceCount, measured).toBeLessThanOrEqual(resourceBudget);
+    expect(metrics.jsTransferBytes, measured).toBeLessThan(350_000);
+    expect(metrics.jsDecodedBytes, measured).toBeLessThan(1_050_000);
     // The shared stylesheet now includes the intake, Four Pillars table, character-led
     // reports, 24-item concept catalog, expanded retention survey, bounded event chrome,
     // the P0 provenance notice / Pattern Intelligence controls, and the home journey
     // sections. See DEFAULT_CSS_DECODED_BUDGET above for why the allowance moved and why
     // it is still narrow enough to catch an unplanned global screen.
-    expect(metrics.cssDecodedBytes).toBeLessThan(cssDecodedBudget);
-    expect(metrics.totalTransferBytes).toBeLessThan(transferBudget);
-    expect(metrics.totalDecodedBytes).toBeLessThan(decodedBudget);
+    expect(metrics.cssDecodedBytes, measured).toBeLessThan(cssDecodedBudget);
+    expect(metrics.totalTransferBytes, measured).toBeLessThan(transferBudget);
+    expect(metrics.totalDecodedBytes, measured).toBeLessThan(decodedBudget);
     if (route === "/en") {
       const initialVideo = await page.evaluate(() => performance.getEntriesByType("resource")
         .some(({ name }) => new URL(name).pathname === "/videos/taeyul-hero.mp4"));
