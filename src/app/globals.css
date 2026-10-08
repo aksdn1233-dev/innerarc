@@ -11697,3 +11697,8 @@ summary {
 @media (max-width: 640px) { .guided-numerology .cinema-intake .guided-form-card { min-height: 590px; padding: 22px; } .guided-character { height: 115px; } .guided-character img { width: 130px; height: 130px; } }
 .guided-numerology .cinema-intake .primary-button { border-color: #cdb27a; border-radius: 3px; background: #b8995c; box-shadow: none; color: #17161c; font-weight: 800; }
 .guided-numerology .cinema-intake .primary-button:hover { background: #cdb27a; }
+
+/* Japanese has no spaces between words, so the Korean `word-break: keep-all` rules above
+   turn a whole Japanese heading into one unbreakable word and push the page sideways on
+   phones. Japanese text breaks between characters, with strict kinsoku. */
+[lang|="ja"], [lang|="ja"] * { word-break: normal !important; line-break: strict; }

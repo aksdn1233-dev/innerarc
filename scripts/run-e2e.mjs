@@ -49,6 +49,9 @@ const server = spawn(node, ["./scripts/serve-production.mjs"], {
     ...process.env,
     ...paymentCheckoutTestEnvironment,
     AI_PROVIDER: process.env.AI_PROVIDER ?? "disabled",
+    // Mirror production's released flags (D-114): the device-only Dream journal is public,
+    // while account sync and remote AI stay off unless a run sets them explicitly.
+    DREAM_INTELLIGENCE_ENABLED: process.env.DREAM_INTELLIGENCE_ENABLED ?? "true",
     NODE_ENV: "production",
     PORT: String(port),
   },
