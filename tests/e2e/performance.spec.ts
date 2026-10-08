@@ -2,7 +2,14 @@ import { expect, test } from "@playwright/test";
 import { E2E_ORIGIN } from "./test-origin";
 
 const DEFAULT_TRANSFER_BUDGET = 450_000;
-const DEFAULT_DECODED_BUDGET = 1_200_000;
+/**
+ * Raised from 1,200,000 on 2026-10-08 by owner decision, for the same 2026-09-13 fonts
+ * described at DEFAULT_CSS_DECODED_BUDGET. On CI every route now decodes about 121 KB of
+ * Korean @font-face rules plus the woff2 slices its text needs (about 120 KB on the
+ * lightest routes), which local builds cannot see because they mock next/font. Measured
+ * on CI at 1,232,947 (relationship) and 1,247,847 (reality-check); about 1.4% headroom.
+ */
+const DEFAULT_DECODED_BUDGET = 1_265_000;
 /**
  * Raised from 197,000 on 2026-09-02 for the home journey sections: the four-step guide,
  * the generated report outline, the closing action, and the concern-specific paid teaser.
@@ -46,12 +53,20 @@ const routes = [
   // switch add 1.4 KB and 0.9 KB respectively. Each ceiling keeps about 1% headroom.
   // 2026-10-08: every CSS ceiling below also carries the ~126 KB of Korean font-face rules
   // described at DEFAULT_CSS_DECODED_BUDGET, re-measured on CI with about 1% headroom.
-  { path: "/en", transfer: 495_000, decoded: 1_320_000, cssDecoded: 415_000 },
+  //
+  // 2026-10-08, totals: the same fonts add 160-300 KB transferred per route on CI, which
+  // the totals below now carry (owner decision). In exchange the home hero, guide and
+  // Daily Healing scenes load the 768 px Taeryeong cut instead of the 1254 px one; it is
+  // covers the hero's 480 px maximum at 1.6x and saves 251 KB on /en.
+  // Each ceiling is local production measurement plus the font payload CI reported for
+  // that route, with about 1% headroom; decoded ceilings that CI has not yet reached are
+  // estimated the same way with about 2%.
+  { path: "/en", transfer: 850_000, decoded: 1_810_000, cssDecoded: 415_000 },
   { path: "/en/relationship" },
-  { path: "/en/compatibility" },
-  { path: "/en/celebrity", cssDecoded: 344_500 },
+  { path: "/en/compatibility", transfer: 460_000, decoded: 1_355_000 },
+  { path: "/en/celebrity", decoded: 1_305_000, cssDecoded: 344_500 },
   { path: "/en/reality-check" },
-  { path: "/en/shop", cssDecoded: 348_500 },
+  { path: "/en/shop", transfer: 535_000, decoded: 1_425_000, cssDecoded: 348_500 },
   // The Saju hub intentionally exposes all six supplied guide cuts and its route-scoped
   // editorial stylesheet on top of the shared one. Measured at 49 resources and 206.0 KB
   // decoded CSS after the home journey sections were added to the shared stylesheet.
@@ -61,8 +76,8 @@ const routes = [
   // while and the six guide cuts had grown past the shared 1.2 MB default unnoticed. The
   // number below records the measured state rather than pretending it is new; the guide
   // artwork on this route is the thing to shrink, and that is a separate change.
-  { path: "/en/fortune", resources: 52, cssDecoded: 353_500, decoded: 1_260_000 },
-  { path: "/en/saju", cssDecoded: 357_500 },
+  { path: "/en/fortune", resources: 52, cssDecoded: 353_500, transfer: 612_000, decoded: 1_490_000 },
+  { path: "/en/saju", cssDecoded: 357_500, transfer: 760_000, decoded: 1_650_000 },
 ] as const satisfies readonly { path: string; transfer?: number; decoded?: number; resources?: number; cssDecoded?: number }[];
 
 for (const entry of routes) {
