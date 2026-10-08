@@ -319,7 +319,7 @@ export function TaeryeongLanding({ dreamAvailable, locale, reportPreview, review
     </header>
 
     <section className="td2-hero" aria-labelledby="td2-hero-title">
-      <div className="td2-hero-art" aria-hidden="true"><span className="td2-art-caption">TAERYEONG · 01</span><Image className="td2-hero-character" src="/assets/gyeol-webtoon/characters/taeryeong/taeryeong_assure_confident_01-hd-v2-3x.webp" alt="" width={1254} height={1254} priority unoptimized sizes="(max-width: 700px) 70vw, 430px" /><span className="td2-art-floor" /></div>
+      <div className="td2-hero-art" aria-hidden="true"><span className="td2-art-caption">TAERYEONG · 01</span><Image className="td2-hero-character" src="/assets/gyeol-webtoon/characters/taeryeong/taeryeong_assure_confident_01-hd-v2-2x.webp" alt="" width={768} height={768} priority unoptimized sizes="(max-width: 700px) 70vw, 430px" /><span className="td2-art-floor" /></div>
       <div className="td2-hero-wash" aria-hidden="true" />
       <div className="td2-hero-copy">
         <p className="td2-kicker">{t.kicker}</p>
@@ -340,7 +340,7 @@ export function TaeryeongLanding({ dreamAvailable, locale, reportPreview, review
     <section aria-modal="true" className="td2-walkthrough" id="guide" aria-labelledby="td2-guide-title" ref={guideRef} role="dialog">
       <button aria-label={t.guideClose} className="td2-guide-close" onClick={closeGuide} ref={guideCloseRef} type="button">×</button>
       <header>
-        <Image className="td2-guide-character" src="/assets/gyeol-webtoon/characters/taeryeong/taeryeong_assure_confident_01-hd-v2-3x.webp" alt="" width={1254} height={1254} unoptimized sizes="68px" />
+        <Image className="td2-guide-character" src="/assets/gyeol-webtoon/characters/taeryeong/taeryeong_assure_confident_01-hd-v2-2x.webp" alt="" width={768} height={768} unoptimized sizes="68px" />
         <p className="td2-eyebrow">{t.guideEyebrow}</p>
         <h2 id="td2-guide-title">{t.guideTitle}</h2>
         <p>{t.guideBody}</p>
