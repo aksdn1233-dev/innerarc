@@ -6,11 +6,14 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import {
   SajuInputError,
+  buildHarangFreeReading,
   buildSajuChart,
   buildSajuStory,
+  type HarangFreeReading,
   type SajuChart,
   type SajuStoryReading,
 } from "@/core/saju";
+import { HARANG_IMAGES, HARANG_LINES } from "@/core/characters/harang";
 import { MIN_BIRTH_DATE, currentMaxBirthDate, isAcceptedBirthDate } from "@/core/birth-range";
 import type { PublicReview } from "@/core/reviews";
 import type { ProductPriceSet } from "@/core/product-prices";
@@ -20,10 +23,13 @@ import "./saju-experience.module.css";
 /**
  * The 사주 menu as a guided story.
  *
- * Six short questions, one per screen, asked by 태령. Then four free chapters built from
- * the chart the engine computes in the browser (nothing personal is sent anywhere until
- * checkout), and a fifth chapter that names what the paid readings add and hands the
- * same checkout draft to /plans that the rest of the site uses.
+ * Six short questions, one per screen, asked by 하랑 법사. Then six free chapters built
+ * from the chart and birth-date numbers the engines compute in the browser (nothing
+ * personal is sent anywhere until checkout), and a last chapter that names what the paid
+ * readings add and hands the same checkout draft to /plans that the rest of the site uses.
+ *
+ * Voice (owner's guide, 2026-10): the visitor is "님", 하랑 is "저", polite and a little
+ * sly. One joke per visit at most, never inside a reading or on the fee screen.
  *
  * Conversion devices are kept honest on purpose: every number shown is either the
  * visitor's own chart or a real count passed in from the server, reviews are the
@@ -33,17 +39,18 @@ import "./saju-experience.module.css";
 type FocusId = "work" | "relationships" | "health" | "growth" | "money";
 type ProductCode = "plus_30d" | "pro_30d" | "premium_pdf";
 
-const IMG = "/assets/gyeol-webtoon/characters/taeryeong";
 const POSE = {
-  front: `${IMG}/taeryeong_front_neutral_01.png`,
-  welcome: `${IMG}/taeryeong_reach-hand_welcoming_01.png`,
-  explain: `${IMG}/taeryeong_explain_calm_01.png`,
-  chart: `${IMG}/taeryeong_read-chart_focused_01.png`,
-  reveal: `${IMG}/taeryeong_result-reveal_dramatic_01.png`,
-  ponder: `${IMG}/taeryeong_ponder_thoughtful_01.png`,
-  warm: `${IMG}/taeryeong_smile_warm_01.png`,
-  book: `${IMG}/taeryeong_read-book_focused_01.png`,
+  front: HARANG_IMAGES.face,
+  welcome: HARANG_IMAGES.bust,
+  chart: HARANG_IMAGES.read,
+  reveal: HARANG_IMAGES.base,
+  wink: HARANG_IMAGES.wink,
+  soft: HARANG_IMAGES.soft,
+  smile: HARANG_IMAGES.smile,
 } as const;
+
+/** Chapter positions. The fee chapter is always last. */
+const CH = { prologue: 0, chart: 1, youth: 2, numbers: 3, past: 4, mask: 5, fee: 6 } as const;
 
 /** 시진 labels, with the wall-clock ranges most Korean 만세력 print. Picking one sends the
  * middle of its range; the engine then applies the usual longitude correction. */
@@ -72,7 +79,7 @@ function Portrait({ src, className, alt = "" }: { src: string; className?: strin
   return <img alt={alt} className={className} decoding="async" height={384} loading="lazy" src={src} width={384} />;
 }
 
-/** The full-body pose, framed on the face for small round and square slots. */
+/** A bust or face cut, cropped to fill small round and square slots. */
 function Face({ src, className }: { src: string; className: string }) {
   return (
     <span aria-hidden="true" className={`saju-story-face ${className}`}>
@@ -119,7 +126,9 @@ export function SajuExperience({
   const [product, setProduct] = useState<ProductCode>("pro_30d");
 
   const story: SajuStoryReading | null = useMemo(() => (chart ? buildSajuStory(chart, locale) : null), [chart, locale]);
-  const callName = name.trim() || L("당신", "you");
+  const extra: HarangFreeReading | null = useMemo(() => (chart ? buildHarangFreeReading(chart, locale) : null), [chart, locale]);
+  const [shareStatus, setShareStatus] = useState<"idle" | "shared" | "copied" | "failed">("idle");
+  const callName = name.trim() || L("손님", "you");
   const birthTime = exactTime || (hourChoice && hourChoice !== "unknown" ? HOURS.find((h) => h[0] === hourChoice)?.[2] ?? "" : "");
 
   const FOCUS: readonly (readonly [FocusId, string])[] = [
@@ -147,55 +156,55 @@ export function SajuExperience({
 
   const steps = [
     {
-      say: L(`어서 오세요. 여기까지 오셨다면 마음에 걸리는 일이 있으시겠지요.\n먼저 이름을 알려주세요.`, "Welcome. If you came this far, something is on your mind.\nFirst, tell me your name."),
-      accent: L("기본 풀이는 복채 없이 봐드리겠습니다.", "The basic reading is free."),
+      say: L(`${HARANG_LINES.welcome}\n우선 성함부터 여쭙겠습니다.`, "Welcome. Who is on your mind tonight?\nFirst, may I have your name."),
+      accent: L("기본 풀이는 복채 없이 봐드립니다.", "The basic reading is free."),
       label: L("이름", "Name"),
-      help: L("별명도 괜찮아요. 비워두셔도 됩니다.", "A nickname is fine. You can leave it blank."),
+      help: L("별명도 괜찮습니다. 비워두시면 '손님'으로 부르겠습니다.", "A nickname is fine. Leave it blank and I'll call you 'guest'."),
       ok: true,
     },
     {
-      say: L(`${callName}님, 반갑습니다.\n성별을 알려주시면 흐름을 더 바르게 볼 수 있습니다.`, `Nice to meet you, ${callName}.\nYour sex sets the direction of the ten-year cycles.`),
+      say: L(`${callName}님, 반갑습니다. 하랑입니다.\n성별을 알려주시면 대운이 어느 쪽으로 흐르는지부터 잡아두겠습니다.`, `Nice to meet you, ${callName}. I'm Harang.\nYour sex sets which way your ten-year cycles run.`),
       label: L("성별", "Sex"),
-      help: L("대운의 방향을 정하는 데 필요한 정보예요.", "Needed to set the direction of your luck cycles."),
+      help: L("대운의 방향을 정하는 데만 씁니다.", "Used only to set the direction of your luck cycles."),
       ok: sex !== "",
     },
     {
-      say: L("태어나신 날을 알려주세요.\n그 하루에 네 기둥, 여덟 글자가 모두 담겨 있습니다.", "Tell me the day you were born.\nFour pillars and eight characters live in that one day."),
+      say: L(`${HARANG_LINES.birthDate}\n그 하루에 네 기둥, 여덟 글자가 다 들어 있습니다.`, "Tell me the day you were born, and I'll find that day's sky first.\nFour pillars and eight characters live in that one day."),
       label: L("생년월일 (양력)", "Date of birth (solar)"),
-      help: L("음력 생일은 아직 받지 않아요. 양력으로 바꿔서 넣어주세요.", "Lunar dates are not supported yet; please enter the solar date."),
+      help: L("음력 생일은 아직 못 받습니다. 양력으로 바꿔서 넣어주세요.", "Lunar dates aren't supported yet; please enter the solar date."),
       ok: isAcceptedBirthDate(birthDate),
     },
     {
-      say: L("태어난 시간도 아시나요?\n모르셔도 괜찮습니다. 모르는 시간은 짐작하지 않고 비워둡니다.", "Do you know your birth time?\nIt's fine if not. I leave an unknown hour empty rather than guess."),
+      say: L("태어난 시간도 아십니까?\n모르셔도 괜찮습니다. 모르는 시간은 짐작하지 않고 비워둡니다.", "Do you know your birth time?\nIt's fine if not. I leave an unknown hour empty rather than guess."),
       label: L("태어난 시간", "Birth time"),
-      help: L("모르면 '시간 모름'을 골라주세요.", "Choose 'Unknown' if you don't know."),
+      help: L("모르시면 '시간 모름'을 골라주세요.", "Choose 'Unknown' if you don't know."),
       ok: hourChoice !== "" || exactTime !== "",
     },
     {
-      say: L("요즘 가장 마음이 쓰이는 곳은 어디인가요?\n하나만 고르시면 그곳부터 깊게 보겠습니다.", "Where does your mind go most these days?\nPick one and I'll look there first."),
+      say: L("요즘 마음이 제일 자주 가는 곳이 어디입니까?\n하나만 고르시면 거기부터 깊게 보겠습니다.", "Where does your mind go most these days?\nPick one and I'll look there first."),
       label: L("관심 분야", "Focus"),
-      help: L("유료 풀이가 이 분야를 중심으로 짜여요.", "The paid reading centres on this area."),
+      help: L("복채 풀이를 이 분야 중심으로 짭니다.", "The paid reading centres on this area."),
       ok: focusId !== "",
     },
     {
-      say: L("마지막입니다.\n정말 묻고 싶은 것을 한 줄로 적어주세요.", "Last one.\nWrite, in one line, what you really want to ask."),
-      accent: L("구체적으로 적어주실수록 더 정확히 짚어드립니다.", "The more specific, the sharper the answer."),
+      say: L("마지막입니다.\n정말 묻고 싶은 걸 한 줄로 적어주세요.", "Last one.\nWrite, in one line, what you really want to ask."),
+      accent: L("돌려 물으시면 저도 돌려 답합니다. 구체적일수록 정확히 짚습니다.", "Ask around it and I'll answer around it. The more specific, the sharper."),
       label: L("궁금한 것", "Your question"),
-      help: L("칩을 눌러도 되고, 직접 써도 돼요. 비워두면 전체 흐름으로 봅니다.", "Tap a chip or write your own. Leave it blank for the overall flow."),
+      help: L("칩을 누르셔도 되고, 직접 쓰셔도 됩니다. 비워두시면 전체 흐름으로 봅니다.", "Tap a chip or write your own. Leave it blank for the overall flow."),
       ok: consent,
     },
   ] as const;
   const current = steps[step]!;
 
   useEffect(() => {
-    if (chapter !== 2 || pastReady) return;
+    if (chapter !== CH.past || pastReady) return;
     const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     const timer = window.setTimeout(() => setPastReady(true), reduced ? 0 : 1400);
     return () => window.clearTimeout(timer);
   }, [chapter, pastReady]);
 
   function goChapter(next: number) {
-    setChapter(Math.max(0, Math.min(4, next)));
+    setChapter(Math.max(0, Math.min(CH.fee, next)));
     setTocOpen(false);
     window.scrollTo({ top: 0 });
   }
@@ -254,17 +263,38 @@ export function SajuExperience({
     router.push(`/${locale}/plans?product=${product}`);
   }
 
+  async function share() {
+    // Only the page address is shared. The visitor's chart stays on this device.
+    const url = new URL(`/${locale}/saju`, window.location.href).toString();
+    const title = L("하랑 법사의 사주", "Saju with Harang");
+    const text = L("하랑 법사가 사주 여덟 글자로 짚어주는 무료 풀이예요.", "A free Saju reading from your eight characters, by Harang.");
+    try {
+      if (navigator.share) {
+        await navigator.share({ title, text, url });
+        setShareStatus("shared");
+      } else {
+        await navigator.clipboard.writeText(url);
+        setShareStatus("copied");
+      }
+    } catch (caught) {
+      if (caught instanceof DOMException && caught.name === "AbortError") return;
+      setShareStatus("failed");
+    }
+  }
+
   /* ---------------- intake ---------------- */
   if (!chart || !story) {
     return (
       <main className="saju-page saju-story" data-stage="intake">
         {step === 0 && <header className="saju-story-hero">
           <Portrait className="saju-story-hero-portrait" src={POSE.welcome} />
-          <p className="saju-story-edition">太靈堂 · FOUR PILLARS</p>
-          <h1>{L("숨김없이 짚어드리는 태령당 사주", "Taeryeongdang Saju, read plainly")}</h1>
-          <p className="saju-story-lede">{L("왜 늘 같은 자리에서 막히는지, 사주 여덟 글자로 차분히 짚어드립니다.", "Why you keep getting stuck in the same place, read calmly from your eight characters.")}</p>
-          <ul className="saju-story-chips" aria-label={L("풀이 구성", "What you get")}>
-            <li>{L("사주 원국 무료 계산", "Free chart")}</li>
+          <p className="saju-story-edition">結 GYEOL · 하랑 법사</p>
+          <h1>{L("하랑 법사가 짚어드리는 사주", "Saju, read by Harang")}</h1>
+          <p className="saju-story-lede">{L("왜 늘 같은 자리에서 막히는지, 여덟 글자로 웃으며 짚어드립니다. 끝은 다정하게 닫고요.", "Why you keep getting stuck in the same place, read from your eight characters with a smile, and closed kindly.")}</p>
+          <ul className="saju-story-chips" aria-label={L("무료 풀이 구성", "What the free reading covers")}>
+            <li>{L("사주 원국", "Your chart")}</li>
+            <li>{L("어린 시절", "Childhood")}</li>
+            <li>{L("숫자로 본 나", "Your numbers")}</li>
             <li>{L("전생 풀이", "Past-life sketch")}</li>
             <li>{L("겉과 속 점수", "Mask score")}</li>
           </ul>
@@ -350,7 +380,7 @@ export function SajuExperience({
                   <textarea aria-labelledby="saju-step-label" className="saju-story-input saju-story-textarea" id="saju-concern" maxLength={300} onChange={(e) => setConcern(e.target.value)} placeholder={L("예: 언제쯤 돈이 모일까요?", "e.g. When will money settle?")} value={concern} />
                   <label className="check saju-story-consent">
                     <input checked={consent} name="privacyRequired" onChange={(e) => setConsent(e.target.checked)} required type="checkbox" />
-                    <span>{L("[필수] 생년월일·출생 시각을 이 기기에서 사주 계산에 쓰는 데 동의합니다. 결제 전에는 서버로 보내지 않아요.", "[Required] I agree to use my birth details on this device to calculate the chart. Nothing is sent before checkout.")}</span>
+                    <span>{L("[필수] 생년월일·출생 시각을 이 기기에서 사주 계산에 쓰는 데 동의합니다. 결제 전에는 서버로 보내지 않습니다.", "[Required] I agree to use my birth details on this device to calculate the chart. Nothing is sent before checkout.")}</span>
                   </label>
                 </>
               )}
@@ -364,8 +394,8 @@ export function SajuExperience({
         </form>
 
         <aside className="saju-shop-entry">
-          <div><p className="eyebrow">SAJU ACCESSORY</p><h2>{L("내 사주 오행에 맞는 악세서리 방향", "Accessory directions for your Saju phases")}</h2><p>{L("오행별 형태·색·소재 방향을 먼저 비교해 보세요. 물건이 운이나 결과를 바꾸는 것은 아닙니다.", "Compare form, palette, and material directions by phase. An object does not change luck or outcomes.")}</p></div>
-          <Link href={`/${locale}/shop#saju-accessory-title`}>{L("사주 추천 악세서리 보기", "See Saju accessory directions")}</Link>
+          <div><p className="eyebrow">SAJU ACCESSORY</p><h2>{L("님 오행에 맞는 장신구 방향", "Accessory directions for your Saju phases")}</h2><p>{L("오행별 모양·색·소재 방향을 먼저 비교해 보세요. 물건 하나로 운이나 결과가 바뀌지는 않습니다. 그건 제가 장담 못 합니다.", "Compare form, palette, and material directions by phase. An object does not change luck or outcomes.")}</p></div>
+          <Link href={`/${locale}/shop#saju-accessory-title`}>{L("사주 추천 장신구 보기", "See Saju accessory directions")}</Link>
         </aside>
       </main>
     );
@@ -381,9 +411,11 @@ export function SajuExperience({
   const chapters = [
     L("서막", "Prologue"),
     L("Ch1. 나의 사주 팔자", "Ch1. My eight characters"),
-    L("Ch2. 전생의 업보", "Ch2. Past-life karma"),
-    L("Ch3. 사회적 가면", "Ch3. The social mask"),
-    L("Ch4. 태령의 복채", "Ch4. The reading fee"),
+    L("Ch2. 어린 날과 보는 눈", "Ch2. Childhood and the way you look"),
+    L("Ch3. 숫자로 본 나", "Ch3. Your numbers"),
+    L("Ch4. 전생의 업보", "Ch4. Past-life karma"),
+    L("Ch5. 사회적 가면", "Ch5. The social mask"),
+    L("Ch6. 하랑의 복채", "Ch6. The reading fee"),
   ];
   const focusLabel = FOCUS.find(([value]) => value === focusId)?.[1] ?? L("나 자신", "Myself");
   const sealed = [
@@ -393,9 +425,9 @@ export function SajuExperience({
     L("잘 될 때 · 보통일 때 · 어려울 때 대처법", "What to do when it goes well, so-so, or badly"),
   ];
   const tiers: readonly (readonly [ProductCode, string, string])[] = [
-    ["plus_30d", L("사주 원국 풀이", "Four Pillars reading"), L("원국 · 오행 · 억부/조후/격국 세 관점 해석", "Chart, phases, and three classical viewpoints")],
-    ["pro_30d", L("상세 풀이", "Detailed reading"), L("잠긴 4가지 전부 · 질문 직접 답 · 2026년 흐름 · 세 갈래 대처법", "All four sealed items, a direct answer, 2026 flow, three scenarios")],
-    ["premium_pdf", L("프리미엄 PDF", "Premium PDF"), L("상세 풀이 전부 + 더 깊은 섹션 · PDF로 소장", "Everything in Detailed plus deeper sections, as a PDF")],
+    ["pro_30d", L("기본 상세 리딩", "Detailed reading"), L("잠긴 4가지 전부 · 질문 직접 답 · 2026년 흐름 · 세 갈래 대처법", "All four sealed items, a direct answer, 2026 flow, three scenarios")],
+    ["premium_pdf", L("고급 심화 리딩", "In-depth reading"), L("기본 상세 리딩 전부 + 더 깊은 섹션 · PDF로 소장", "Everything in Detailed plus deeper sections, as a PDF")],
+    ["plus_30d", L("사주 원국 풀이만", "Four Pillars chart only"), L("원국 · 오행 · 억부/조후/격국 세 관점 해석", "Chart, phases, and three classical viewpoints")],
   ];
   const selectedPrice = prices[product];
   const ctaLabel = product === "plus_30d"
@@ -407,19 +439,19 @@ export function SajuExperience({
       <header className="saju-story-rhead">
         <Face className="saju-story-mini" src={POSE.front} />
         <div>
-          <p className="saju-story-brand">{L("태령당", "Taeryeongdang")}</p>
+          <p className="saju-story-brand">{L("하랑 법사", "Harang")}</p>
           <p className="saju-story-chapter">{chapters[chapter]}</p>
         </div>
-        <button className="saju-story-restart" onClick={() => { setChart(null); setStep(0); }} type="button">{L("다시 입력", "Start over")}</button>
+        <button className="saju-story-restart" onClick={() => { setChart(null); setStep(0); setShareStatus("idle"); }} type="button">{L("다시 입력", "Start over")}</button>
       </header>
 
-      {chapter === 0 && (
+      {chapter === CH.prologue && (
         <article className="saju-story-chapter-body" data-tone="night">
           <p className="saju-story-kicker">PROLOGUE</p>
           <h2 className="saju-story-title">{L(`이 사주는,\n${callName}님의 이야기입니다`, `This chart is\nyour story, ${callName}`)}</h2>
           <p className="saju-story-poem">{L("태어난 그 날, 그 시각의 하늘은\n두 번 오지 않습니다.\n그래서 이 여덟 글자는 세상에 하나뿐입니다.", "The sky of that day and hour\nnever comes twice.\nSo these eight characters are yours alone.")}</p>
-          <blockquote className="saju-story-voice">{L("먼저 말씀드립니다. 이것은 맞히기 놀음이 아니라, 한 사람을 읽는 방법입니다. 글자는 제가 짚어드릴 테니, 이야기가 맞는지만 살펴봐 주세요.", "Let me say this first: this is not a guessing game, it's a way of reading a person. I'll point to the characters; you judge whether the story fits.")}</blockquote>
-          <p className="saju-story-poem">{L("여덟 글자 가운데\n당신의 주인이 되는 글자,\n하나부터 보여드리겠습니다.", "Of the eight,\nlet me first show you\nthe one that is you.")}</p>
+          <blockquote className="saju-story-voice">{L("먼저 말씀드립니다. 이건 맞히기 놀음이 아니라 한 사람을 읽는 방법입니다. 글자는 제가 짚을 테니, 이야기가 맞는지는 님이 판단해 주세요. 틀리면 틀렸다고 하셔도 됩니다.", "Let me say this first: this is not a guessing game, it's a way of reading a person. I'll point to the characters; you judge whether the story fits.")}</blockquote>
+          <p className="saju-story-poem">{L(`${HARANG_LINES.freeIntro}\n여덟 글자 가운데 님의 주인이 되는 글자,\n그것부터 보여드리겠습니다.`, "Let me start light, with something you've half noticed.\nOf the eight, here is\nthe one that is you.")}</p>
           <div className="saju-story-daycard" data-phase={story.dayMaster.phase}>
             <span className="saju-story-daycard-tag">{L("일간 · 나", "Day master")}</span>
             <b>{story.dayMaster.stem}</b>
@@ -429,9 +461,9 @@ export function SajuExperience({
         </article>
       )}
 
-      {chapter === 1 && (
+      {chapter === CH.chart && (
         <article className="saju-story-chapter-body" data-tone="paper">
-          <p className="saju-story-poem">{L("여덟 글자를 모두 그렸습니다. 전부 당신의 것입니다.", "All eight are drawn. Every one is yours.")}</p>
+          <p className="saju-story-poem">{L("여덟 글자를 다 그렸습니다. 전부 님의 것입니다.", "All eight are drawn. Every one is yours.")}</p>
           <div className="saju-story-pillars saju-chart">
             {pillars.map(([key, pillar, stemGod]) => {
               const [han, role] = PILLAR_ROLE[locale][key];
@@ -452,21 +484,21 @@ export function SajuExperience({
               );
             })}
           </div>
-          <p className="saju-story-caption">{L("위 글자가 하늘의 기운(천간), 아래 글자가 땅의 기운(지지)입니다. 가운데 이름표는 그 글자가 '나'와 어떤 사이인지 알려주는 십성입니다.", "Top: heavenly stems. Bottom: earthly branches. The middle tag is the ten-god relation to you.")}</p>
+          <p className="saju-story-caption">{L("위 글자가 하늘의 기운(천간), 아래 글자가 땅의 기운(지지)입니다. 가운데 이름표는 그 글자가 님과 어떤 사이인지 알려주는 십성입니다.", "Top: heavenly stems. Bottom: earthly branches. The middle tag is the ten-god relation to you.")}</p>
           {chart.hour === null && <p className="saju-note">{L("태어난 시간을 몰라 시주는 비워두었습니다. 짐작해서 채우지 않습니다.", "No birth time, so the hour pillar stays empty. We don't guess.")}</p>}
           {chart.termBoundaryWarning && <p className="saju-warning" role="status">{chart.termBoundaryWarning}</p>}
           <div className="saju-story-voice-row">
             <Face className="saju-story-avatar" src={POSE.chart} />
-            <p>{L("원국은 평생 바뀌지 않습니다. 다만 이 글자들을 어떻게 쓰느냐는 당신의 손에 달려 있습니다.", "The chart never changes. How you use it is up to you.")}</p>
+            <p>{L("원국은 평생 안 바뀝니다. 다만 이 글자를 어떻게 쓰느냐는 님 손에 달려 있습니다. 그건 제가 대신 못 해드립니다.", "The chart never changes. How you use it is up to you; that part I can't do for you.")}</p>
           </div>
           <section className="saju-story-card">
             <h3>{L(`일주 ${chart.day.label} — 나 자신`, `Day pillar ${chart.day.label} — you`)}</h3>
-            <p>{L(`태어난 날의 글자입니다. 사주에서 가장 중요한 자리예요. 당신의 중심은 ${story.dayMaster.image}입니다.`, `The characters of your birth day, the most important seat. Your core is ${story.dayMaster.image}.`)}</p>
+            <p>{L(`태어난 날의 글자입니다. 사주에서 가장 중요한 자리지요. 님의 중심은 ${story.dayMaster.image}입니다.`, `The characters of your birth day, the most important seat. Your core is ${story.dayMaster.image}.`)}</p>
             <p className="saju-story-inner">{L(`이 자리 아래 글자의 십성: ${chart.tenGods.dayBranch}`, `Ten god below: ${chart.tenGods.dayBranch}`)}</p>
           </section>
           <section className="saju-story-card">
             <h3>{L(`월주 ${chart.month.label} — 사회 속의 나`, `Month pillar ${chart.month.label} — you in society`)}</h3>
-            <p>{L("태어난 달의 글자입니다. 일하고 사람을 만날 때 드러나는 모습이 여기서 보입니다. 이 자리는 Ch3에서 더 짚어드립니다.", "The month's characters show how you appear at work and among people. More in Ch3.")}</p>
+            <p>{L("태어난 달의 글자입니다. 일하고 사람을 만날 때 드러나는 모습이 여기서 보입니다. 이 자리는 Ch5에서 더 짚어드립니다.", "The month's characters show how you appear at work and among people. More in Ch5.")}</p>
             <p className="saju-story-inner">{L(`이 자리 위 글자의 십성: ${chart.tenGods.monthStem}`, `Ten god above: ${chart.tenGods.monthStem}`)}</p>
           </section>
           <dl className="saju-facts">
@@ -476,17 +508,67 @@ export function SajuExperience({
         </article>
       )}
 
-      {chapter === 2 && (
+      {chapter === CH.youth && extra && (
+        <article className="saju-story-chapter-body" data-tone="night">
+          <p className="saju-story-kicker">CHILDHOOD</p>
+          <h2 className="saju-story-title">{L("어린 날의 님", "You, as a child")}</h2>
+          <div className="saju-story-voice-row">
+            <Face className="saju-story-avatar" src={POSE.soft} />
+            <p>{L("연주와 월주에는 어린 시절이 담깁니다. 어떤 집에서 어떤 눈치를 보며 컸는지, 세 토막으로 짚어보겠습니다.", "The year and month pillars hold childhood. Let me read it in three parts.")}</p>
+          </div>
+          <ol className="saju-story-stages">
+            {extra.childhood.stages.map((stage) => (
+              <li key={stage.ages}><b>{stage.ages}</b><p>{stage.body}</p></li>
+            ))}
+          </ol>
+          <p className="saju-story-evidence">{extra.childhood.evidence}</p>
+
+          <p className="saju-story-kicker saju-story-kicker-gap">THE WAY YOU LOOK</p>
+          <section className="saju-story-card" data-tone="outer">
+            <p className="saju-story-side">{L("● 사물을 보는 눈", "● How you see things")}</p>
+            <h3>{extra.lens.title}</h3>
+            <p>{extra.lens.body}</p>
+            <p className="saju-story-poke"><span aria-hidden="true">🎯</span>{extra.lens.poke}</p>
+            <p className="saju-story-do">{extra.lens.fix}</p>
+          </section>
+          <p className="saju-story-evidence">{extra.lens.evidence}</p>
+        </article>
+      )}
+
+      {chapter === CH.numbers && extra && (
+        <article className="saju-story-chapter-body" data-tone="paper">
+          <p className="saju-story-kicker">NUMBERS</p>
+          <h2 className="saju-story-title">{L("숫자로 본 나", "Your numbers")}</h2>
+          <p className="saju-story-poem">{L(`${callName}님 생년월일이 참 곱습니다.\n숫자인데도 곱다는 게 이상하죠.`, "Your birth date is a lovely one.\nOdd thing to say about numbers, I know.")}</p>
+          <dl className="saju-story-numbers">
+            <div data-main="true"><dt>{L("운명수", "Life path")}</dt><dd>{extra.numbers.lifePath.value}</dd><small>{extra.numbers.lifePath.formula}</small></div>
+            <div><dt>{L("생일수", "Birthday")}</dt><dd>{extra.numbers.birthday.value}</dd><small>{extra.numbers.birthday.formula}</small></div>
+            <div><dt>{L("태도수", "Attitude")}</dt><dd>{extra.numbers.attitude.value}</dd><small>{extra.numbers.attitude.formula}</small></div>
+          </dl>
+          <section className="saju-story-card">
+            <h3>{L(`운명수 ${extra.numbers.lifePath.value} · ${extra.numbers.title}`, `Life path ${extra.numbers.lifePath.value} · ${extra.numbers.title}`)}</h3>
+            <p>{extra.numbers.body}</p>
+            <p className="saju-story-poke"><span aria-hidden="true">🎯</span>{extra.numbers.poke}</p>
+            <p className="saju-story-do">{extra.numbers.fix}</p>
+          </section>
+          <p className="saju-story-evidence">{extra.numbers.evidence}</p>
+          <p className="saju-story-fineprint">{L("수비학은 생년월일 숫자를 상징으로 읽는 자기 성찰 도구입니다. 예언이 아닙니다.", "Numerology reads birth-date digits as symbols for reflection. It is not a prediction.")}</p>
+        </article>
+      )}
+
+      {chapter === CH.past && (
         <article className="saju-story-chapter-body" data-tone="ember">
           {!pastReady ? (
             <div className="saju-story-loading" role="status">
               <span className="saju-story-spinner" aria-hidden="true" />
-              <b>{L("태령이 전생을 살피는 중입니다…", "Taeryeong is looking into your past life…")}</b>
+              <Face className="saju-story-avatar saju-story-loading-face" src={POSE.wink} />
+              <b>{L("하랑 법사가 전생을 살피는 중입니다…", "Harang is looking into your past life…")}</b>
+              <small>{L("비 오는 날엔 파전이 점괘보다 정확한데… 흠흠. 방금 건 못 들은 걸로 해주세요.", "On rainy days a pancake beats any oracle… ahem. Forget I said that.")}</small>
             </div>
           ) : (
             <>
               <p className="saju-story-hashtag">{story.pastLife.hashtag}</p>
-              <p className="saju-story-muted-quote">{L("\"오셨군요. 어디, 한번 살펴보겠습니다.\"", "\"You've come. Let me take a look.\"")}</p>
+              <p className="saju-story-muted-quote">{L("\"찾았습니다. 어디, 한번 들어보시지요.\"", "\"Found it. Have a listen.\"")}</p>
               <figure className="saju-story-pastlife">
                 <Face className="saju-story-pastlife-art" src={POSE.reveal} />
                 <figcaption>
@@ -515,22 +597,23 @@ export function SajuExperience({
                 </section>
               ))}
               <section className="saju-story-final">
-                <h3>{L("그렇다면 어떻게 살아야 할까요?", "So how should you live?")}</h3>
+                <h3>{L("그래서 이렇게 하면 됩니다", "So here's what to do")}</h3>
                 <p>{story.closing}</p>
               </section>
+              <p className="saju-story-evidence">{L(`📐 근거: 전생 = 일간 ${chart.dayMaster}의 상징 · 부족/넘치는 기운 = 오행 분포(지장간 포함)`, `📐 Basis: past life = day master ${chart.dayMaster} symbolism · missing/overflowing = phase balance (hidden stems included)`)}</p>
               <p className="saju-story-fineprint">{L("전생 풀이는 일간의 상징을 이야기로 옮긴 재미 요소입니다. 사실 판정이 아닙니다.", "The past-life chapter turns your day master's symbolism into a story for fun. It is not a factual claim.")}</p>
             </>
           )}
         </article>
       )}
 
-      {chapter === 3 && (
+      {chapter === CH.mask && (
         <article className="saju-story-chapter-body" data-tone="night">
           <p className="saju-story-kicker">SOCIAL MASK</p>
           <h2 className="saju-story-title">{L("사회적 가면", "The social mask")}</h2>
           <p className="saju-story-poem">{L("\"사람들 앞에서는 웃고 있지만,\n속으로는 다른 생각을 하고 계시지요?\"", "\"You smile in front of people,\nbut inside you're thinking something else, aren't you?\"")}</p>
           <section className="saju-story-card" data-tone="outer">
-            <p className="saju-story-side">{L("● 남들이 보는 당신", "● How others see you")}</p>
+            <p className="saju-story-side">{L("● 남들이 보는 님", "● How others see you")}</p>
             <h3>{story.mask.outerTitle}</h3>
             <p>{story.mask.outer}</p>
             <div className="saju-story-meter">
@@ -540,23 +623,33 @@ export function SajuExperience({
             </div>
           </section>
           <section className="saju-story-card" data-tone="inner">
-            <p className="saju-story-side">{L("● 가면 뒤의 당신", "● Behind the mask")}</p>
+            <p className="saju-story-side">{L("● 가면 뒤의 님", "● Behind the mask")}</p>
             <p>{story.mask.inner}</p>
           </section>
-          <p className="saju-story-fineprint">{L("점수는 월간과 일지의 십성 관계로 계산한 참고 지표입니다.", "The score is a reference index from the month stem and day branch relations.")}</p>
+          <p className="saju-story-evidence">{L(`📐 근거: 겉 = 월간 ${chart.month.stem}(${chart.tenGods.monthStem}) · 속 = 일지 ${chart.day.branch}(${chart.tenGods.dayBranch}) · 점수 = 52에서 드러난 천간 십성마다 가감, 겉과 속 계열이 다르면 +6 (35~92)`, `📐 Basis: outer = month stem ${chart.month.stem} (${chart.tenGods.monthStem}) · inner = day branch ${chart.day.branch} (${chart.tenGods.dayBranch}) · score starts at 52, adjusted per visible stem ten god, +6 when outer and inner differ (35–92)`)}</p>
+          <section className="saju-story-share">
+            <Face className="saju-story-avatar" src={POSE.smile} />
+            <div>
+              <p>{L(HARANG_LINES.share, "Someone came to mind just now, didn't they? Show them too.")}</p>
+              <button onClick={() => void share()} type="button">{L("이 풀이 보여주기", "Share this reading")}</button>
+              <small aria-live="polite">{shareStatus === "shared" ? L("공유 창을 열었습니다.", "Share menu opened.") : shareStatus === "copied" ? L("링크를 복사했습니다. 생년월일은 담기지 않습니다.", "Link copied. Your birth details are not included.") : shareStatus === "failed" ? L("공유하지 못했습니다. 잠시 뒤 다시 눌러주세요.", "Couldn't share. Try again in a moment.") : L("링크에는 님의 생년월일이 담기지 않습니다.", "The link does not include your birth details.")}</small>
+            </div>
+          </section>
         </article>
       )}
 
-      {chapter === 4 && (
+      {chapter === CH.fee && (
         <article className="saju-story-chapter-body" data-tone="paper" id="saju-fee">
           <Portrait className="saju-story-fee-art" src={POSE.welcome} />
-          <p className="saju-story-poem">{L(`"${callName}님, 여기서부터는\n복채를 받고 말씀드리겠습니다."`, `"${callName}, from here on\nI read for a fee."`)}</p>
+          <p className="saju-story-poem">{L(`"${callName}님, ${HARANG_LINES.fee}"`, `"${callName}, from here on I read for a fee.\nMy time is precious, and so is your story."`)}</p>
           <section className="saju-story-found">
             <span className="saju-story-stamp" aria-hidden="true">{L("복채", "FEE")}</span>
-            <h2>{L("태령이 당신의 사주에서\n먼저 찾아낸 것 7가지", "Seven things Taeryeong\nfound in your chart")}</h2>
-            <p className="saju-story-found-sub">{L("3개는 이미 보여드렸습니다 · 4개는 복채를 받고 열어드립니다", "Three shown already · four open with the fee")}</p>
+            <h2>{L("하랑이 님의 사주에서\n먼저 찾아낸 것 9가지", "Nine things Harang\nfound in your chart")}</h2>
+            <p className="saju-story-found-sub">{L("5개는 이미 보여드렸습니다 · 4개는 복채를 받고 열어드립니다", "Five shown already · four open with the fee")}</p>
             <ul className="saju-story-done">
               <li><b>{L("사주 원국 여덟 글자", "Your eight characters")}</b><span className="saju-story-mini-pillars">{pillars.map(([key, pillar]) => <span key={key}>{pillar ? pillar.label : "—"}</span>)}</span></li>
+              {extra && <li><b>{L(`보는 눈 「${extra.lens.title}」`, `The way you look: ${extra.lens.title}`)}</b></li>}
+              {extra && <li><b>{L(`운명수 ${extra.numbers.lifePath.value} 「${extra.numbers.title}」`, `Life path ${extra.numbers.lifePath.value}: ${extra.numbers.title}`)}</b></li>}
               <li><b>{L(`전생 「${story.pastLife.title}」`, `Past life: ${story.pastLife.title}`)}</b></li>
               <li><b>{L(`겉과 속의 거리 ${story.mask.score}점`, `Mask score ${story.mask.score}`)}</b></li>
             </ul>
@@ -564,11 +657,11 @@ export function SajuExperience({
               {sealed.map((item) => <li key={item}><span aria-hidden="true">封</span>{item}</li>)}
             </ul>
             {concern.trim() && (
-              <p className="saju-story-asked">{L(`물어보신 것: "${concern.trim()}" — 이 질문의 직접 답은 상세 풀이 첫 장에 담깁니다.`, `You asked: "${concern.trim()}" — the direct answer opens the Detailed reading.`)}</p>
+              <p className="saju-story-asked">{L(`물어보신 것: "${concern.trim()}" — 이 질문의 직접 답은 기본 상세 리딩 첫 장에 담습니다.`, `You asked: "${concern.trim()}" — the direct answer opens the Detailed reading.`)}</p>
             )}
           </section>
 
-          <h3 className="saju-story-section">{L("어디까지 열어볼까요", "How much to open")}</h3>
+          <h3 className="saju-story-section">{L("어디까지 열어보시겠습니까", "How much to open")}</h3>
           <div className="saju-story-tiers" role="radiogroup" aria-label={L("상품 선택", "Choose a reading")}>
             {tiers.map(([code, title, detail]) => (
               <button aria-checked={product === code} className="saju-story-tier" data-product-option={code} key={code} onClick={() => setProduct(code)} role="radio" type="button">
@@ -592,22 +685,23 @@ export function SajuExperience({
           )}
 
           <h3 className="saju-story-section">{L("자주 묻는 질문", "FAQ")}</h3>
-          <details className="saju-story-faq"><summary>{L("정말 맞나요?", "Is it accurate?")}</summary><p>{L("사주를 바탕으로 성향과 흐름을 읽는 풀이예요. 미래를 확정하지 않아요. 무료 챕터를 보고 맞는지 직접 판단해 주세요.", "It reads tendencies and flow from the chart; it does not fix the future. Judge the free chapters yourself.")}</p></details>
-          <details className="saju-story-faq"><summary>{L("결제하면 바로 볼 수 있나요?", "Can I read it right after paying?")}</summary><p>{L("결제가 확인되면 풀이가 만들어지고, 주문 화면에서 바로 열 수 있어요.", "Once payment is confirmed, the reading is created and opens from your order page.")}</p></details>
-          <details className="saju-story-faq"><summary>{L("입력한 정보는 어디에 쓰이나요?", "Where does my information go?")}</summary><p>{L("결제 전까지는 이 기기 안에서만 계산해요. 결제를 진행하면 풀이를 만드는 데만 써요.", "Until checkout it stays on this device. At checkout it is used only to create your reading.")}</p></details>
+          <details className="saju-story-faq"><summary>{L("정말 맞습니까?", "Is it accurate?")}</summary><p>{L("사주를 바탕으로 성향과 흐름을 읽는 풀이입니다. 미래를 정해드리지는 않습니다. 무료 장을 보시고 맞는지 직접 판단해 주세요.", "It reads tendencies and flow from the chart; it does not fix the future. Judge the free chapters yourself.")}</p></details>
+          <details className="saju-story-faq"><summary>{L("결제하면 바로 볼 수 있습니까?", "Can I read it right after paying?")}</summary><p>{L("결제가 확인되면 풀이가 만들어지고, 주문 화면에서 바로 여실 수 있습니다.", "Once payment is confirmed, the reading is created and opens from your order page.")}</p></details>
+          <details className="saju-story-faq"><summary>{L("입력한 정보는 어디에 쓰입니까?", "Where does my information go?")}</summary><p>{L("결제 전까지는 이 기기 안에서만 계산합니다. 결제를 진행하시면 풀이를 만드는 데만 씁니다.", "Until checkout it stays on this device. At checkout it is used only to create your reading.")}</p></details>
 
           <div className="saju-story-paybar">
-            <p>{L("아직 보지 못한 풀이 4개가 이 버튼 뒤에 있습니다", "Four readings you haven't seen are behind this button")}</p>
+            <p>{L("아직 못 보신 풀이 4개가 이 버튼 뒤에 있습니다", "Four readings you haven't seen are behind this button")}</p>
             <button className="saju-story-next" onClick={checkout} type="button"><span aria-hidden="true">開</span> {ctaLabel}</button>
-            <small>{L("다음 화면에서 결제 수단을 고르고 결제해요.", "Choose a payment method on the next screen.")}</small>
+            <small>{L("다음 화면에서 결제 수단을 고르고 결제하시면 됩니다.", "Choose a payment method on the next screen.")}</small>
           </div>
+          <p className="saju-story-farewell">{L(HARANG_LINES.farewell, "That's enough for tonight. The moon is still high; come find me first next time.")}</p>
           <p className="saju-limits">{L("이 풀이는 상징적 자기 성찰 도구이며 의료·법률·투자 판단을 대신하지 않습니다.", "This is a symbolic self-reflection tool and does not replace medical, legal, or financial advice.")}</p>
         </article>
       )}
 
-      {chapter >= 1 && chapter <= 3 && (
+      {chapter >= CH.chart && chapter < CH.fee && (
         <div className="saju-story-stickycta">
-          <button className="saju-story-next" onClick={() => goChapter(4)} type="button"><span aria-hidden="true">開</span> {L("잠긴 풀이 4개 + 전부 열기", "Open the 4 sealed readings")}</button>
+          <button className="saju-story-next" onClick={() => goChapter(CH.fee)} type="button"><span aria-hidden="true">開</span> {L("잠긴 풀이 4개 + 전부 열기", "Open the 4 sealed readings")}</button>
         </div>
       )}
 
@@ -624,7 +718,7 @@ export function SajuExperience({
             <h2>{L("목차", "Contents")}</h2>
             <ol>
               {chapters.map((title, index) => (
-                <li key={title}><button onClick={() => goChapter(index)} type="button"><span>{title}</span><small>{index === 4 ? L("복채", "Fee") : L("무료", "Free")}</small></button></li>
+                <li key={title}><button onClick={() => goChapter(index)} type="button"><span>{title}</span><small>{index === CH.fee ? L("복채", "Fee") : L("무료", "Free")}</small></button></li>
               ))}
             </ol>
             <button className="saju-story-toc-close" onClick={() => setTocOpen(false)} type="button">{L("닫기", "Close")}</button>

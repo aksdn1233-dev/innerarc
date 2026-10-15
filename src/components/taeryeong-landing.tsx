@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { DailyHealingHome, type DailyHealingReportPreview } from "@/components/daily-healing-home";
 import { captureConversionEvent } from "@/core/analytics";
+import { HARANG_IMAGES } from "@/core/characters/harang";
 import type { PublicReview } from "@/core/reviews";
 import type { Locale } from "@/i18n/config";
 
@@ -21,7 +22,7 @@ const GUIDE_STEP_DURATION_MS = 6_000;
 
 const content = {
   ko: {
-    navLabel: "태령당 주요 메뉴",
+    navLabel: "결 GYEOL 주요 메뉴",
     services: "서비스",
     guide: "이용 안내",
     analysis: "생년월일 패턴",
@@ -31,25 +32,25 @@ const content = {
     reviews: "이용 후기",
     login: "구매 내역",
     start: "무료로 시작",
-    kicker: "태령이와 함께 읽는 나의 이야기",
-    title: <>요즘, 어떤 고민이<br /><em>마음에 남아 있나요?</em></>,
-    heroBody: "하나를 골라 이야기해 주세요. 생년월일로 계산한 나의 패턴을 먼저 무료로 볼 수 있어요.",
-    heroPrimary: "내 이야기 시작하기",
-    heroSecondary: "무엇을 볼 수 있나요?",
-    heroNote: "회원가입 없이 · 기본 결과 무료 · 계산 근거 공개",
-    heroArtNote: "태령당 캐릭터 · 태령이",
-    guideCue: "처음이세요? 1분 안내 보기",
+    kicker: "밤 마당의 하랑 법사",
+    title: <>어서 오세요.<br /><em>오늘은 어떤 사람이 마음에 걸려서 오셨습니까.</em></>,
+    heroBody: "태어난 날을 알려주시면, 제가 그날의 하늘부터 찾아보겠습니다. 사주 원국과 어린 시절, 숫자 풀이까지 복채 없이 먼저 봐드립니다.",
+    heroPrimary: "생년월일 넣고 시작하기",
+    heroSecondary: "무엇을 봐드리는지 보기",
+    heroNote: "회원가입 없이 · 기본 풀이 복채 없음 · 계산 근거 공개",
+    heroArtNote: "결 GYEOL · 하랑 법사",
+    guideCue: "처음 오셨습니까? 1분 안내 보기",
     guideEyebrow: "처음 오셨다면",
-    guideTitle: "결과 보는 법부터 같이 볼게요.",
-    guideBody: "6초마다 다음 장면으로 넘어가요. 궁금한 기능은 눌러서 다시 볼 수 있어요.",
+    guideTitle: "제가 어떻게 보는지부터 보여드리죠.",
+    guideBody: "6초마다 다음 장면으로 넘어갑니다. 궁금한 건 눌러서 다시 보셔도 됩니다.",
     guideScreenLabel: "화면 예시",
     guideSteps: [
-      ["질문 고르기", "지금 궁금한 걸 골라봐요", "관계, 일, 돈, 나 자신 중에서 하나를 골라요."],
-      ["생년월일 넣기", "생년월일을 넣어봐요", "회원가입 없이 기본 결과를 볼 수 있어요."],
-      ["무료 결과 보기", "내 기본 패턴을 확인해요", "결과와 계산 과정을 함께 보여드려요."],
-      ["더 자세히 보기", "필요할 때 상세 리딩을 골라봐요", "가격과 내용을 확인한 뒤 선택할 수 있어요."],
-      ["꿈 패턴 보기", "꿈을 적고 반복을 찾아봐요", "장면·감정·현실을 나눠 보고 3·7·30일 뒤 다시 확인해요."],
-      ["방을 3D로 보기", "사진으로 내 방을 3D로 살펴봐요", "동서남북과 가구를 확인하고 현재 배치와 추천 배치를 비교해요."],
+      ["질문 고르기", "지금 궁금한 걸 하나 고르세요", "관계, 일, 돈, 님 자신 중에서 하나면 충분합니다."],
+      ["생년월일 넣기", "생년월일을 알려주세요", "회원가입 없이 기본 풀이를 봐드립니다."],
+      ["무료 결과 보기", "님의 기본 패턴부터 짚습니다", "결과와 계산 과정을 같이 보여드립니다."],
+      ["더 자세히 보기", "더 듣고 싶으실 때 상세 리딩을 고르세요", "가격과 내용을 먼저 보시고 정하시면 됩니다."],
+      ["꿈 패턴 보기", "꿈을 적어두면 반복을 찾아드립니다", "장면·감정·현실을 나눠 보고 3·7·30일 뒤 다시 확인합니다."],
+      ["방을 3D로 보기", "방 사진으로 님의 방을 3D로 봅니다", "동서남북과 가구를 확인하고 지금 배치와 추천 배치를 비교합니다."],
     ],
     guideAction: "결과 예시 보기",
     guideClose: "안내 닫기",
@@ -59,7 +60,7 @@ const content = {
       ["다양한 분석", "사주·나의 패턴·궁합·공간운"],
       ["안전한 이용", "기록과 개인정보 직접 관리"],
     ],
-    readEyebrow: "태령당에서 할 수 있는 것",
+    readEyebrow: "결에서 할 수 있는 것",
     readTitle: <>지금 궁금한 걸<br />바로 볼 수 있어요.</>,
     readBody: "나를 알아보고, 둘을 비교하고, 내 방까지 살펴볼 수 있어요.",
     sajuHub: "사주 보기",
@@ -118,12 +119,12 @@ const content = {
     copyright: "별루프 · 대표 박서준 · 사업자등록번호 482-12-03629 · 부산광역시 북구",
   },
   en: {
-    navLabel: "Taeryeongdang main navigation",
+    navLabel: "GYEOL main navigation",
     services: "Services", guide: "First visit", analysis: "Pattern analysis", success: "Success patterns", relationship: "Relationships", space: "Feng Shui", reviews: "Reviews", login: "Purchases", start: "Start now",
-    kicker: "A conversation with Taeryeong",
-    title: <>What has been<br /><em>on your mind lately?</em></>,
-    heroBody: "Start with one concern. See a free birth-date pattern reading with its calculation shown.",
-    heroPrimary: "Start my story", heroSecondary: "Explore the services", heroNote: "No sign-up · Free basic result · Calculations shown", heroArtNote: "Taeryeongdang character · Taeryeong",
+    kicker: "Harang, in the night courtyard",
+    title: <>Welcome.<br /><em>Who is on your mind tonight?</em></>,
+    heroBody: "Tell me the day you were born, and I'll find that day's sky first. Your chart, your childhood and your numbers come free.",
+    heroPrimary: "Start with my birth date", heroSecondary: "See what I read", heroNote: "No sign-up · Free basic reading · Calculations shown", heroArtNote: "GYEOL · Harang",
     guideCue: "New here? See the one-minute guide",
     guideEyebrow: "FIRST VISIT",
     guideTitle: "See how a result works before you begin.",
@@ -176,7 +177,7 @@ function Arrow() {
 function GuideScreenPreview({ locale, step, label }: { locale: Locale; step: number; label: string }) {
   const ko = locale === "ko";
   return <div aria-label={label} className="td2-guide-screen" role="group">
-    <header><span>태령당</span><small>{ko ? `화면 예시 ${step + 1}/${GUIDE_SCREENS.length}` : `SCREEN EXAMPLE ${step + 1}/${GUIDE_SCREENS.length}`}</small></header>
+    <header><span>{ko ? "결 GYEOL" : "GYEOL"}</span><small>{ko ? `화면 예시 ${step + 1}/${GUIDE_SCREENS.length}` : `SCREEN EXAMPLE ${step + 1}/${GUIDE_SCREENS.length}`}</small></header>
     {step === 0 && <div className="td2-guide-questions">
       <p>{ko ? "어떤 게 제일 궁금한가요?" : "What is on your mind?"}</p>
       {[ko ? "연애·관계" : "Love & relationships", ko ? "일·진로" : "Work & direction", ko ? "돈·사업" : "Money & business"].map((item, index) => <div className={index === 0 ? "is-picked" : undefined} key={item}><b>{String(index + 1).padStart(2, "0")}</b><span>{item}</span><Arrow /></div>)}
@@ -297,10 +298,10 @@ export function TaeryeongLanding({ dreamAvailable, locale, reportPreview, review
     setGuideOpen(false);
   }
 
-  return <main className="td2" id="main-content" tabIndex={-1}>
+  return <main className="td2 hr" id="main-content" tabIndex={-1}>
     <header className="td2-nav-shell">
-      <Link className="td2-brand" href={`/${locale}`} prefetch={false} aria-label={locale === "ko" ? "태령당 홈" : "Taeryeongdang home"}>
-        <strong>태령당</strong><small>PERSONAL PATTERN INTELLIGENCE</small>
+      <Link className="td2-brand" href={`/${locale}`} prefetch={false} aria-label={locale === "ko" ? "결 GYEOL 홈" : "GYEOL home"}>
+        <strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong><small>{locale === "ko" ? "하랑 법사의 밤 마당" : "WITH HARANG"}</small>
       </Link>
       <nav className="td2-nav" aria-label={t.navLabel}>
         <a href="#guide" onClick={(event) => { event.preventDefault(); openGuide(); }}>{t.guide}</a>
@@ -319,20 +320,27 @@ export function TaeryeongLanding({ dreamAvailable, locale, reportPreview, review
     </header>
 
     <section className="td2-hero" aria-labelledby="td2-hero-title">
-      <div className="td2-hero-art" aria-hidden="true"><span className="td2-art-caption">TAERYEONG · 01</span><Image className="td2-hero-character" src="/assets/gyeol-webtoon/characters/taeryeong/taeryeong_assure_confident_01-hd-v2-2x.webp" alt="" width={768} height={768} priority unoptimized sizes="(max-width: 700px) 70vw, 430px" /><span className="td2-art-floor" /></div>
+      <div className="td2-hero-art hr-hero-art" aria-hidden="true">
+        <picture>
+          <source media="(max-width: 760px)" srcSet={HARANG_IMAGES.heroMobile} />
+          <source media="(max-width: 900px)" srcSet={HARANG_IMAGES.heroSmall} />
+          <img alt="" className="hr-hero-image" decoding="async" fetchPriority="high" height={944} src={HARANG_IMAGES.hero} width={1680} />
+        </picture>
+        <span className="hr-petals"><i /><i /><i /><i /><i /><i /></span>
+      </div>
       <div className="td2-hero-wash" aria-hidden="true" />
       <div className="td2-hero-copy">
         <p className="td2-kicker">{t.kicker}</p>
         <h1 id="td2-hero-title">{t.title}</h1>
         <p className="td2-lead">{t.heroBody}</p>
         <div className="td2-actions">
-          <Link className="td2-primary" href={`/${locale}/numerology?guide=1`} prefetch={false} onClick={track}>{t.heroPrimary}<Arrow /></Link>
+          <Link className="td2-primary" href={`/${locale}/saju`} prefetch={false} onClick={track}>{t.heroPrimary}<Arrow /></Link>
           <a className="td2-secondary" href="#services">{t.heroSecondary}<Arrow /></a>
         </div>
         <p className="td2-note">{t.heroNote.split(" · ").map((part, index, parts) => <span key={part}>{part}{index < parts.length - 1 ? " · " : ""}</span>)}</p>
         <button className="td2-guide-cue" onClick={openGuide} type="button">{t.guideCue}<Arrow /></button>
       </div>
-      <div className="td2-hero-signature" aria-hidden="true"><span>태</span><span>령</span><span>당</span></div>
+      <div className="td2-hero-signature" aria-hidden="true"><span>하</span><span>랑</span></div>
       <small className="td2-hero-art-note">{t.heroArtNote}</small>
     </section>
 
@@ -340,7 +348,7 @@ export function TaeryeongLanding({ dreamAvailable, locale, reportPreview, review
     <section aria-modal="true" className="td2-walkthrough" id="guide" aria-labelledby="td2-guide-title" ref={guideRef} role="dialog">
       <button aria-label={t.guideClose} className="td2-guide-close" onClick={closeGuide} ref={guideCloseRef} type="button">×</button>
       <header>
-        <Image className="td2-guide-character" src="/assets/gyeol-webtoon/characters/taeryeong/taeryeong_assure_confident_01-hd-v2-2x.webp" alt="" width={768} height={768} unoptimized sizes="68px" />
+        <Image className="td2-guide-character" src={HARANG_IMAGES.face} alt="" width={256} height={256} unoptimized sizes="68px" />
         <p className="td2-eyebrow">{t.guideEyebrow}</p>
         <h2 id="td2-guide-title">{t.guideTitle}</h2>
         <p>{t.guideBody}</p>
@@ -385,7 +393,7 @@ export function TaeryeongLanding({ dreamAvailable, locale, reportPreview, review
           ><span style={{ width: `${Math.min(100, (guideElapsedMs / GUIDE_STEP_DURATION_MS) * 100)}%` }} /></div>
           <small aria-live="polite">
             {locale === "ko"
-              ? `${Math.max(1, Math.ceil((GUIDE_STEP_DURATION_MS - guideElapsedMs) / 1_000))}초 뒤 ${guideStep === GUIDE_SCREENS.length - 1 ? "안내가 닫혀요" : "다음 화면"}`
+              ? `${Math.max(1, Math.ceil((GUIDE_STEP_DURATION_MS - guideElapsedMs) / 1_000))}초 뒤 ${guideStep === GUIDE_SCREENS.length - 1 ? "안내가 닫힙니다" : "다음 화면"}`
               : `${Math.max(1, Math.ceil((GUIDE_STEP_DURATION_MS - guideElapsedMs) / 1_000))}s until ${guideStep === GUIDE_SCREENS.length - 1 ? "the guide closes" : "the next screen"}`}
           </small>
         </div>

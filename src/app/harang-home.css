@@ -1,0 +1,208 @@
+/*
+ * 하랑 법사 night theme for the home page (owner handoff 2026-10-16, §3).
+ *
+ * Loaded after taeryeong-landing.css and daily-healing-home.css and scoped to
+ * `.td2.hr`, so it only re-skins: layout, structure and behaviour stay in those files
+ * and removing the `hr` class (or this import) restores the previous look.
+ *
+ * Palette: 밤 한옥 마당 남색 ground, 한지 text, 복사꽃 분홍 as the main accent, 금빛
+ * for the paid/primary button and rules. 오방색 is reserved for phase readouts only.
+ * Motion: a handful of petals drifting slowly, transform/opacity only, off under
+ * prefers-reduced-motion.
+ */
+.td2.hr {
+  --hr-night: #0b1026;
+  --hr-night-2: #141a3a;
+  --hr-night-3: #1d2550;
+  --hr-hanji: #f4ede0;
+  --hr-hanji-muted: #c9c4d4;
+  --hr-peach: #f2a9bd;
+  --hr-peach-deep: #e0708f;
+  --hr-gold: #d9b56b;
+  --hr-gold-soft: #e7cb8e;
+  --hr-line: rgba(244, 237, 224, .14);
+  --td-ink: var(--hr-hanji);
+  --td-muted: var(--hr-hanji-muted);
+  --td-line: var(--hr-line);
+  --td-gold: var(--hr-gold);
+  --td-gold-soft: var(--hr-gold-soft);
+  background: var(--hr-night);
+  color: var(--hr-hanji);
+}
+.td2.hr :focus-visible { outline-color: var(--hr-peach); }
+
+/* ---------- top bar ---------- */
+.td2.hr .td2-nav-shell { border-bottom-color: rgba(242, 169, 189, .18); background: rgba(11, 16, 38, .94); }
+.td2.hr .td2-brand strong { color: var(--hr-hanji); letter-spacing: -.02em; }
+.td2.hr .td2-brand small { color: var(--hr-peach); }
+.td2.hr .td2-nav a:hover, .td2.hr .td2-login:hover { color: var(--hr-peach); }
+.td2.hr .td2-pill { border-color: var(--hr-gold); background: var(--hr-gold); color: #1a1530; }
+
+/* ---------- hero ---------- */
+.td2.hr .td2-hero { background: var(--hr-night); }
+.td2.hr .hr-hero-art { inset: 0; display: block; background: var(--hr-night); }
+.td2.hr .hr-hero-art::before { display: none; }
+.td2.hr .hr-hero-art picture, .td2.hr .hr-hero-image { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.td2.hr .hr-hero-image { object-fit: cover; object-position: 70% 30%; }
+.td2.hr .td2-hero-wash {
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(11, 16, 38, .96) 0%, rgba(11, 16, 38, .82) 30%, rgba(11, 16, 38, .25) 55%, rgba(11, 16, 38, 0) 72%),
+    linear-gradient(0deg, rgba(11, 16, 38, .85), transparent 38%);
+}
+.td2.hr .td2-hero .td2-kicker { color: var(--hr-peach); }
+.td2.hr .td2-hero h1 { max-width: 640px; color: var(--hr-hanji); }
+.td2.hr .td2-hero h1 em { display: block; margin-top: 14px; color: var(--hr-peach); font-size: .5em; line-height: 1.45; letter-spacing: -.03em; }
+.td2.hr .td2-lead { color: rgba(244, 237, 224, .82); }
+.td2.hr .td2-primary { border-color: var(--hr-gold); background: linear-gradient(135deg, #f3dca6, var(--hr-gold) 55%, #b8914a); color: #1a1530; }
+.td2.hr a.td2-primary { color: #1a1530; }
+.td2.hr .td2-secondary { border-color: rgba(242, 169, 189, .45); background: rgba(11, 16, 38, .4); }
+.td2.hr .td2-secondary:hover { border-color: var(--hr-peach); }
+.td2.hr .td2-guide-cue:hover { color: var(--hr-peach); }
+.td2.hr .td2-hero-signature { z-index: 2; color: rgba(242, 169, 189, .7); }
+.td2.hr .td2-hero-art-note { color: rgba(244, 237, 224, .62); }
+
+/* A few peach-blossom petals, drifting slowly. Six elements, compositor-only. */
+.td2.hr .hr-petals { position: absolute; z-index: 1; inset: 0; overflow: hidden; pointer-events: none; }
+.td2.hr .hr-petals i {
+  position: absolute;
+  top: -6%;
+  width: 12px;
+  height: 9px;
+  border-radius: 80% 0 80% 0;
+  background: var(--hr-peach);
+  opacity: 0;
+  animation: hrPetal 22s linear infinite;
+  will-change: transform, opacity;
+}
+.td2.hr .hr-petals i:nth-child(1) { left: 58%; animation-delay: 0s; }
+.td2.hr .hr-petals i:nth-child(2) { left: 72%; animation-delay: -4s; animation-duration: 26s; }
+.td2.hr .hr-petals i:nth-child(3) { left: 84%; animation-delay: -9s; }
+.td2.hr .hr-petals i:nth-child(4) { left: 64%; animation-delay: -13s; animation-duration: 28s; }
+.td2.hr .hr-petals i:nth-child(5) { left: 90%; animation-delay: -17s; }
+.td2.hr .hr-petals i:nth-child(6) { left: 44%; animation-delay: -6s; animation-duration: 30s; }
+@keyframes hrPetal {
+  0% { opacity: 0; transform: translate3d(0, 0, 0) rotate(0deg); }
+  10% { opacity: .75; }
+  90% { opacity: .55; }
+  100% { opacity: 0; transform: translate3d(-120px, 105vh, 0) rotate(300deg); }
+}
+
+/* ---------- guide dialog ---------- */
+.td2.hr .td2-walkthrough { border-color: rgba(242, 169, 189, .3); background: linear-gradient(150deg, #141a3a 0%, #10163a 60%, #0b1026 100%); color: var(--hr-hanji); }
+.td2.hr .td2-walkthrough > header > p:last-child, .td2.hr .td2-guide-timer small { color: var(--hr-hanji-muted); }
+.td2.hr .td2-walkthrough .guide-steps-tabs { border-color: var(--hr-line); background: rgba(29, 37, 80, .8); }
+.td2.hr .td2-walkthrough .guide-steps-tabs button { color: var(--hr-hanji-muted); }
+.td2.hr .td2-walkthrough .guide-steps-tabs button small { color: var(--hr-peach); }
+.td2.hr .td2-walkthrough .guide-steps-tabs button.is-current { background: linear-gradient(135deg, #e0708f, #b9506f); color: #fff; }
+.td2.hr .td2-walkthrough .guide-steps-tabs button.is-current small { color: #ffe3ea; }
+.td2.hr .td2-guide-progress { background: rgba(242, 169, 189, .18); }
+.td2.hr .td2-guide-progress > span { background: var(--hr-peach-deep); }
+.td2.hr .td2-guide-close { border-color: var(--hr-line); background: var(--hr-night-2); color: var(--hr-hanji); }
+.td2.hr .td2-guide-character { border-radius: 50%; border: 2px solid var(--hr-gold); object-fit: cover; }
+.td2.hr .guide-stage-title strong { color: var(--hr-hanji); }
+.td2.hr .guide-stage-title span { color: var(--hr-hanji-muted); }
+.td2.hr .journey-guide-action { background: var(--hr-gold); color: #1a1530; }
+.td2.hr .td2-walkthrough .guide-stage, .td2.hr .td2-guide-screen { color: #121826; }
+
+/* ---------- Daily Healing sections ---------- */
+.td2.hr .dh-flow {
+  --dh-ivory: var(--hr-hanji);
+  --dh-cream: var(--hr-night);
+  --dh-white: var(--hr-night-2);
+  --dh-charcoal: var(--hr-hanji);
+  --dh-navy: var(--hr-night);
+  --dh-brown: var(--hr-gold);
+  --dh-sage: var(--hr-gold);
+  --dh-red: var(--hr-peach);
+  --dh-line: var(--hr-line);
+  background: var(--hr-night);
+  color: var(--hr-hanji);
+}
+.td2.hr .dh-transition > div:first-child > p:not(.dh-eyebrow),
+.td2.hr .dh-conversation header > p:last-child,
+.td2.hr .dh-guides header > p,
+.td2.hr .dh-services header p,
+.td2.hr .dh-report-copy > p:not(.dh-eyebrow),
+.td2.hr .dh-space-copy > p:not(.dh-eyebrow),
+.td2.hr .dh-close-copy > p:not(.dh-eyebrow) { color: var(--hr-hanji-muted); }
+.td2.hr .dh-eyebrow { color: var(--hr-peach); }
+.td2.hr .dh-character-entry { border-color: rgba(242, 169, 189, .2); background: var(--hr-night-2); box-shadow: 0 28px 75px rgba(0, 0, 0, .35); }
+.td2.hr .dh-entry-copy { background: var(--hr-night-2); }
+.td2.hr .dh-entry-copy > p:not(.dh-eyebrow) { color: var(--hr-hanji-muted); }
+.td2.hr .dh-concern-grid button { border-color: rgba(242, 169, 189, .35); color: var(--hr-hanji); }
+.td2.hr .dh-concern-grid button[aria-pressed="true"] { border-color: var(--hr-peach-deep); background: var(--hr-peach-deep); color: #fff; }
+.td2.hr .dh-concern-next { color: var(--hr-hanji-muted); }
+.td2.hr .dh-concern-next a { background: var(--hr-gold); color: #1a1530; }
+.td2.hr .dh-entry-scene { background: var(--hr-night-3); }
+.td2.hr .dh-entry-scene::before { display: none; }
+.td2.hr .dh-entry-scene::after { background: linear-gradient(0deg, rgba(11, 16, 38, .55), transparent 45%); }
+.td2.hr .dh-entry-photo { object-fit: cover; object-position: 50% 20%; }
+.td2.hr .dh-entry-cup { display: none; }
+.td2.hr .dh-entry-scene > p { border-left-color: var(--hr-peach); background: rgba(11, 16, 38, .88); color: var(--hr-hanji); }
+.td2.hr .dh-entry-scene > p strong { color: var(--hr-peach); }
+
+.td2.hr .dh-conversation, .td2.hr .dh-services, .td2.hr .dh-report { background: #0e1430; }
+.td2.hr .dh-guides, .td2.hr .dh-reviews, .td2.hr .dh-common-concerns { background: var(--hr-night-2); }
+.td2.hr .dh-transition, .td2.hr .dh-space, .td2.hr .dh-close { background: var(--hr-night); }
+.td2.hr .dh-reality { background: #161033; }
+.td2.hr .dh-transition-art { background: var(--hr-night-3); }
+.td2.hr .dh-transition-art::after { display: none; }
+.td2.hr .dh-transition-art img { object-fit: cover; object-position: 50% 15%; }
+.td2.hr .dh-transition small { color: var(--hr-peach); }
+
+.td2.hr .dh-reality { color: var(--hr-hanji); }
+.td2.hr .dh-reality-copy > .dh-eyebrow, .td2.hr .dh-reality-copy > strong { color: var(--hr-gold); }
+.td2.hr .dh-reality-copy > p:not(.dh-eyebrow) { color: var(--hr-hanji-muted); }
+.td2.hr .dh-reality-story ol { background: var(--hr-night-3); color: var(--hr-hanji); }
+.td2.hr .dh-reality-story li { border-bottom-color: var(--hr-line); }
+.td2.hr .dh-reality-story li:not(:last-child)::after { background: var(--hr-night-3); }
+.td2.hr .dh-reality-story aside img { object-position: 50% 20%; }
+.td2.hr .dh-reality-story aside p { background: var(--hr-night-2); color: var(--hr-hanji); }
+.td2.hr .dh-space-copy li { border-color: var(--hr-line); background: var(--hr-night-3); color: var(--hr-hanji); }
+.td2.hr .dh-conversation > div > a,
+.td2.hr .dh-service-grid > a,
+.td2.hr .dh-guide-strip article,
+.td2.hr .dh-reviews article,
+.td2.hr .dh-common-concerns a { border-color: var(--hr-line); background: var(--hr-night-3); color: var(--hr-hanji); }
+.td2.hr .dh-guide-strip article.is-host { border: 1px solid var(--hr-peach); }
+.td2.hr .dh-guide-strip article.is-host img { object-fit: cover; object-position: 50% 20%; }
+.td2.hr .dh-service-grid span, .td2.hr .dh-guide-strip small, .td2.hr .dh-conversation small { color: var(--hr-peach); }
+.td2.hr .dh-service-grid b { color: var(--hr-gold); }
+.td2.hr .dh-star { fill: var(--hr-peach); }
+.td2.hr .dh-celestial-thread path, .td2.hr .dh-celestial-thread text { stroke: var(--hr-gold); color: var(--hr-gold); fill: none; }
+.td2.hr .dh-celestial-thread text { fill: var(--hr-gold); stroke: none; }
+
+/* The report preview stays on 한지 paper, so its own dark text is kept. */
+.td2.hr .dh-report-page { color: #1c1a24; }
+.td2.hr .dh-report-page p, .td2.hr .dh-report-page small, .td2.hr .dh-report-page dt { color: #4b4553; }
+.td2.hr .dh-report-copy a, .td2.hr .dh-reality-copy a, .td2.hr .dh-space-copy a { background: var(--hr-gold); color: #1a1530; }
+.td2.hr .dh-space-copy li small { color: var(--hr-peach); }
+
+.td2.hr .dh-close-art { background: var(--hr-night-3); }
+.td2.hr .dh-close-still { object-fit: cover; object-position: 50% 12%; }
+.td2.hr .dh-close-copy > div > a:first-child { background: var(--hr-gold); color: #1a1530; }
+.td2.hr .dh-close-copy > div > a:last-child { border-color: rgba(242, 169, 189, .45); color: var(--hr-hanji); }
+.td2.hr .dh-close-farewell { margin-top: 28px !important; color: var(--hr-peach) !important; font-family: var(--td-display); font-size: 1.05rem; line-height: 1.8; }
+.td2.hr .dh-footer { background: #070a1a; color: var(--hr-hanji); }
+
+/* Phones: the portrait sits above the words instead of under them. */
+@media (max-width: 760px) {
+  .td2.hr .td2-hero { display: block; min-height: 0; }
+  .td2.hr .hr-hero-art { position: relative; inset: auto; height: min(112vw, 540px); }
+  .td2.hr .hr-hero-image { object-position: 50% 12%; }
+  .td2.hr .td2-hero-wash {
+    inset: 0 0 auto 0;
+    height: min(112vw, 540px);
+    background: linear-gradient(180deg, rgba(11, 16, 38, 0) 55%, rgba(11, 16, 38, .85) 85%, var(--hr-night) 100%);
+  }
+  .td2.hr .td2-hero-copy { width: calc(100% - 32px); margin-top: -64px; padding: 0 0 56px; }
+  .td2.hr .td2-hero h1 { font-size: clamp(2.4rem, 11vw, 3.2rem); }
+  .td2.hr .td2-hero h1 em { font-size: .52em; }
+  .td2.hr .td2-hero-signature { display: none; }
+  .td2.hr .td2-hero-art-note { top: calc(min(112vw, 540px) - 28px); bottom: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .td2.hr .hr-petals { display: none; }
+}

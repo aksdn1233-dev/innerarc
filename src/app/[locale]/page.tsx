@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "@/app/taeryeong-landing.css";
 import "@/app/daily-healing-home.css";
+import "@/app/harang-home.css";
 import { notFound } from "next/navigation";
 import { TaeryeongLanding } from "@/components/taeryeong-landing";
 import { buildReportOutline } from "@/core/report-outline";

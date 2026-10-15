@@ -22,7 +22,7 @@ async function answerIntake(page: Page, options: { hour?: string } = {}) {
 
 test("six questions lead to free chapters before any fee", async ({ page }) => {
   await page.goto("/ko/saju");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("태령당 사주");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("하랑 법사가 짚어드리는 사주");
   await expect(page.getByText("1/6단계")).toBeVisible();
   await answerIntake(page);
 
@@ -30,9 +30,17 @@ test("six questions lead to free chapters before any fee", async ({ page }) => {
   await page.getByRole("button", { name: "다음 챕터" }).click();
   await expect(page.locator(".saju-story-pillar")).toHaveCount(4);
   await page.getByRole("button", { name: "다음 챕터" }).click();
+  await expect(page.locator(".saju-story-stages li")).toHaveCount(3);
+  await expect(page.locator(".saju-story-evidence").first()).toContainText("📐 근거");
+  await page.getByRole("button", { name: "다음 챕터" }).click();
+  // 1994-11-04: 1+9+9+4+1+1+0+4 = 29 → 2+9 = 11, a master number kept as is.
+  await expect(page.locator('.saju-story-numbers [data-main="true"] dd')).toHaveText("11");
+  await page.getByRole("button", { name: "다음 챕터" }).click();
   await expect(page.locator(".saju-story-pastlife")).toBeVisible({ timeout: 5_000 });
   await page.getByRole("button", { name: "다음 챕터" }).click();
   await expect(page.locator(".saju-story-meter")).toBeVisible();
+  await expect(page.locator(".saju-story-share button")).toBeVisible();
+  await expect(page.getByText(/태령/)).toHaveCount(0);
 });
 
 test("the fee chapter hands the chosen product to the existing checkout", async ({ page }) => {

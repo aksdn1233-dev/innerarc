@@ -29,10 +29,10 @@ async function capture(page: import("@playwright/test").Page, selector: string, 
 
 async function openHome(page: import("@playwright/test").Page) {
   await page.goto("/ko", { waitUntil: "networkidle" });
-  await expect(page.getByRole("dialog", { name: "결과 보는 법부터 같이 볼게요." })).toBeVisible();
+  await expect(page.getByRole("dialog", { name: "제가 어떻게 보는지부터 보여드리죠." })).toBeVisible();
 }
 
-test.describe("Taeryeong Daily Healing homepage", () => {
+test.describe("하랑 법사 Daily Healing homepage", () => {
   test.beforeEach(({}, testInfo) => {
     test.skip(testInfo.project.name !== "desktop-space", "One deterministic Chromium capture set is sufficient.");
   });
@@ -50,10 +50,10 @@ test.describe("Taeryeong Daily Healing homepage", () => {
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
       await capture(page, ".td2-walkthrough", `brand-${width}-guide.png`);
       await page.getByRole("button", { name: "안내 닫기" }).click({ force: true });
-      await expect(page.getByRole("heading", { level: 1, name: "요즘, 어떤 고민이 마음에 남아 있나요?" })).toBeVisible();
+      await expect(page.getByRole("heading", { level: 1, name: "어서 오세요. 오늘은 어떤 사람이 마음에 걸려서 오셨습니까." })).toBeVisible();
       await capture(page, ".td2-hero", `brand-${width}-hero.png`);
 
-      const heroQuality = await page.locator(".td2-hero-character").evaluate(async (node) => {
+      const heroQuality = await page.locator(".hr-hero-image").evaluate(async (node) => {
         const image = node as HTMLImageElement;
         const box = image.getBoundingClientRect();
         const response = await fetch(image.currentSrc);
@@ -91,11 +91,11 @@ test.describe("Taeryeong Daily Healing homepage", () => {
     await page.getByRole("button", { name: "안내 닫기" }).click({ force: true });
 
     const flow = page.locator(".dh-flow");
-    await expect(flow.getByRole("heading", { name: "오늘, 어떤 고민이 있으신가요?" })).toBeVisible();
+    await expect(flow.getByRole("heading", { name: "오늘, 어떤 고민을 들고 오셨습니까?" })).toBeVisible();
     await expect(page.locator(".dh-concern-grid button")).toHaveCount(6);
     await page.getByRole("button", { name: /연애·관계/ }).click();
     await expect(page.getByRole("button", { name: /연애·관계/ })).toHaveAttribute("aria-pressed", "true");
-    await expect(page.getByRole("link", { name: /이 고민으로 무료 결과 보기/ })).toHaveAttribute("href", "/ko/numerology?guide=1&focus=relationships");
+    await expect(page.getByRole("link", { name: /이 고민으로 무료 풀이 보기/ })).toHaveAttribute("href", "/ko/numerology?guide=1&focus=relationships");
 
     await expect(page.locator(".dh-guide-strip article")).toHaveCount(6);
     await expect(page.locator(".dh-service-grid > a")).toHaveCount(6);
@@ -154,11 +154,10 @@ test.describe("Taeryeong Daily Healing homepage", () => {
     await expect(page.locator(".dh-report-book")).toContainText("지금 해볼 한 가지");
 
     const closing = page.locator(".dh-close");
-    await expect(closing.locator("video")).toHaveAttribute("poster", "/images/taeyul-hero.jpg");
     await closing.scrollIntoViewIfNeeded();
-    await expect(closing.locator("video source")).toHaveAttribute("src", /\/videos\/taeyul-hero\.mp4/);
-    await expect.poll(() => closing.locator("video").evaluate((node) => (node as HTMLVideoElement).videoWidth)).toBeGreaterThan(0);
-    await expect(closing.getByRole("link", { name: "무료로 내 패턴 보기" })).toHaveAttribute("href", "/ko/numerology?guide=1");
-    await expect(closing.getByRole("link", { name: "무료 사주 원국 보기" })).toHaveAttribute("href", "/ko/fortune");
+    await expect(closing.locator("video")).toHaveCount(0);
+    await expect(closing.locator(".dh-close-art img")).toHaveAttribute("src", /\/characters\/harang\//);
+    await expect(closing.getByRole("link", { name: "무료로 내 사주 보기" })).toHaveAttribute("href", "/ko/saju");
+    await expect(closing.getByRole("link", { name: "생년월일 패턴 보기" })).toHaveAttribute("href", "/ko/numerology?guide=1");
   });
 });
