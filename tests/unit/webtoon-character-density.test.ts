@@ -32,8 +32,7 @@ describe("restored webtoon character density", () => {
   });
 
   it("ships every restored pose as transparent 768px and 1254px canvases", () => {
-    // 사현 and 연희 keep their restored HD poses; 하랑 법사 ships native 384px poses only.
-    expect(RESTORED_WEBTOON_CHARACTER_ASSETS).toHaveLength(8);
+    expect(RESTORED_WEBTOON_CHARACTER_ASSETS).toHaveLength(11);
     for (const asset of RESTORED_WEBTOON_CHARACTER_ASSETS) {
       const base = `${process.cwd()}/public/assets/gyeol-webtoon/characters/${asset.replace(/\.png$/, "-hd-v2")}`;
       expect(webpMetadata(`${base}-2x.webp`), asset).toEqual({ hasAlpha: true, width: 768, height: 768 });

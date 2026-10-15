@@ -156,7 +156,7 @@ test.describe("하랑 법사 Daily Healing homepage", () => {
     const closing = page.locator(".dh-close");
     await closing.scrollIntoViewIfNeeded();
     await expect(closing.locator("video")).toHaveCount(0);
-    await expect(closing.locator(".dh-close-art img")).toHaveAttribute("src", /\/characters\/harang\//);
+    await expect(closing.locator(".dh-close-art img")).toHaveAttribute("src", /characters(?:\/|%2F)harang/);
     await expect(closing.getByRole("link", { name: "무료로 내 사주 보기" })).toHaveAttribute("href", "/ko/saju");
     await expect(closing.getByRole("link", { name: "생년월일 패턴 보기" })).toHaveAttribute("href", "/ko/numerology?guide=1");
   });
