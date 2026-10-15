@@ -15,7 +15,7 @@ const copy = {
     label: "나를 읽는 작은 시작",
     title: "오늘, 무엇이 가장 궁금하세요?",
     intro: "생년월일로 원국을 세우고, 지금 필요한 성찰 메뉴를 골라보세요.",
-    edition: "태령당 · FOUR PILLARS EDITION",
+    edition: "결 · FOUR PILLARS EDITION",
     orbitLabel: "오행의 균형",
     evidence: ["계산 근거 공개", "모르는 시각은 비움", "한·영 리포트"],
     guideCue: "지금 곁에 선 해석자",
@@ -29,11 +29,11 @@ const copy = {
     nav: ["홈", "사주", "원국", "기록"],
   },
   en: {
-    brand: "태령당 SAJU",
+    brand: "결 SAJU",
     label: "A small start to understanding yourself",
     title: "What are you most curious about today?",
     intro: "Build your Four Pillars chart, then choose the reflection that fits this moment.",
-    edition: "태령당 · FOUR PILLARS EDITION",
+    edition: "결 · FOUR PILLARS EDITION",
     orbitLabel: "Five-phase balance",
     evidence: ["Visible derivation", "Unknown time stays blank", "Korean · English"],
     guideCue: "Your guide for this visit",
@@ -68,7 +68,7 @@ const services = {
 } as const;
 
 const serviceGuideIds: readonly NumerologyGuideId[] = [
-  "taeryeong",
+  "harang",
   "sahyeon",
   "yeonhui",
   "hwayeon",
@@ -80,7 +80,7 @@ export function SajuServiceHub({ locale, pricing }: { locale: Locale; pricing: P
   const t = copy[locale];
   const otherLocale = locale === "ko" ? "en" : "ko";
   const navHrefs = ["", "/fortune", "/saju", "/me"];
-  const [selectedGuideId, setSelectedGuideId] = useState<NumerologyGuideId>("taeryeong");
+  const [selectedGuideId, setSelectedGuideId] = useState<NumerologyGuideId>("harang");
   const selectedGuide = getNumerologyGuide(selectedGuideId);
   const formatPrice = (amount: number) => locale === "ko"
     ? `${amount.toLocaleString("ko-KR")}원`

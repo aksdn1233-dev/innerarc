@@ -22,6 +22,8 @@
   --st-seal: #c4475b;
   --st-blue: #8fb0ff;
   --st-ember: #f2a9bd;
+  --display-font: var(--font-nanum-myeongjo), "Nanum Myeongjo", "Noto Serif KR", serif;
+  font-family: "Pretendard Local", var(--font-noto-sans-kr), "Noto Sans KR", sans-serif;
   position: relative;
   max-width: 520px;
   margin: 0 auto;
@@ -181,7 +183,7 @@
 :global(.saju-story-meter .saju-story-progress) { grid-column: 1 / -1; }
 
 /* ---------- fee chapter ---------- */
-:global(.saju-story-fee-art) { display: block; width: 180px; max-width: 100%; height: auto; margin: 0 auto; border: 2px solid var(--st-gold-deep); border-radius: 50%; }
+:global(.saju-story-fee-art) { display: block; width: 220px; max-width: 100%; height: auto; margin: 0 auto; border: 2px solid var(--st-gold-deep); border-radius: 18px; }
 :global(.saju-story-found) { position: relative; margin: 20px 0; padding: 22px 18px; border: 1px solid var(--st-paper-line); border-radius: 18px; background: rgba(0, 0, 0, .3); }
 :global(.saju-story-stamp) { position: absolute; top: -12px; right: 14px; padding: 8px 7px; border-radius: 6px; background: var(--st-seal); color: #fff; font-weight: 700; writing-mode: vertical-rl; transform: rotate(8deg); }
 :global(.saju-story-found h2) { margin: 0; font: 400 1.4rem/1.4 var(--display-font, serif); text-align: center; white-space: pre-line; }
@@ -250,7 +252,9 @@
 :global(.saju-story-share button) { min-height: 44px; padding: 8px 18px; border: 0; border-radius: 99px; background: var(--st-peach-deep); color: #fff; font-weight: 700; }
 :global(.saju-story-share small) { display: block; margin-top: 8px; color: var(--st-muted); font-size: .78rem; }
 :global(.saju-story-loading-face) { margin: 0 auto 12px; }
-:global(.saju-story-loading small) { display: block; margin-top: 10px; color: var(--st-muted); font-size: .85rem; }
+:global(.saju-story-loading-face) { width: 120px !important; height: 120px !important; }
+:global(.saju-story-aside) { display: flex; gap: 10px; align-items: center; margin-top: 14px; text-align: left; }
+:global(.saju-story-loading small) { display: block; color: var(--st-muted); font-size: .85rem; }
 :global(.saju-story-farewell) { margin: 28px 0 0; color: #f4ede0; font: 500 1rem/1.8 var(--display-font, serif); text-align: center; }
 
 @media (prefers-reduced-motion: reduce) {

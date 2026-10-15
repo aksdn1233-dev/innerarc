@@ -2,9 +2,9 @@
   "version": 1,
   "naming": "character_pose_expression_variant.png",
   "characters": {
-    "taeryeong": {
-      "nameKo": "태령",
-      "role": "결의 중심 해석자",
+    "harang": {
+      "nameKo": "하랑",
+      "role": "결의 중심 해석자 · 하랑 법사",
       "theme": [
         "core",
         "life-path",
@@ -15,165 +15,165 @@
         "chart-scroll",
         "abacus"
       ],
-      "slug": "taeryeong",
+      "slug": "harang",
       "assets": [
         {
-          "file": "taeryeong_front_neutral_01.png",
+          "file": "harang_front_neutral_01.png",
           "pose": "front",
           "expression": "neutral"
         },
         {
-          "file": "taeryeong_three-quarter_neutral_01.png",
+          "file": "harang_three-quarter_neutral_01.png",
           "pose": "three-quarter",
           "expression": "neutral"
         },
         {
-          "file": "taeryeong_side_neutral_01.png",
+          "file": "harang_side_neutral_01.png",
           "pose": "side",
           "expression": "neutral"
         },
         {
-          "file": "taeryeong_explain_calm_01.png",
+          "file": "harang_explain_calm_01.png",
           "pose": "explain",
           "expression": "calm"
         },
         {
-          "file": "taeryeong_reach-hand_welcoming_01.png",
+          "file": "harang_reach-hand_welcoming_01.png",
           "pose": "reach-hand",
           "expression": "welcoming"
         },
         {
-          "file": "taeryeong_read-book_focused_01.png",
+          "file": "harang_read-book_focused_01.png",
           "pose": "read-book",
           "expression": "focused"
         },
         {
-          "file": "taeryeong_read-chart_focused_01.png",
+          "file": "harang_read-chart_focused_01.png",
           "pose": "read-chart",
           "expression": "focused"
         },
         {
-          "file": "taeryeong_calculate_focused_01.png",
+          "file": "harang_calculate_focused_01.png",
           "pose": "calculate",
           "expression": "focused"
         },
         {
-          "file": "taeryeong_signature-prop-1_confident_01.png",
+          "file": "harang_signature-prop-1_confident_01.png",
           "pose": "signature-prop-1",
           "expression": "confident"
         },
         {
-          "file": "taeryeong_signature-prop-2_confident_01.png",
+          "file": "harang_signature-prop-2_confident_01.png",
           "pose": "signature-prop-2",
           "expression": "confident"
         },
         {
-          "file": "taeryeong_result-reveal_certain_01.png",
+          "file": "harang_result-reveal_certain_01.png",
           "pose": "result-reveal",
           "expression": "certain"
         },
         {
-          "file": "taeryeong_closing-bow_polite_01.png",
+          "file": "harang_closing-bow_polite_01.png",
           "pose": "closing-bow",
           "expression": "polite"
         },
         {
-          "file": "taeryeong_comfort_gentle_01.png",
+          "file": "harang_comfort_gentle_01.png",
           "pose": "comfort",
           "expression": "gentle"
         },
         {
-          "file": "taeryeong_warning_serious_01.png",
+          "file": "harang_warning_serious_01.png",
           "pose": "warning",
           "expression": "serious"
         },
         {
-          "file": "taeryeong_cheer_encouraging_01.png",
+          "file": "harang_cheer_encouraging_01.png",
           "pose": "cheer",
           "expression": "encouraging"
         },
         {
-          "file": "taeryeong_chibi_happy_01.png",
+          "file": "harang_chibi_happy_01.png",
           "pose": "chibi",
           "expression": "happy"
         },
         {
-          "file": "taeryeong_react_surprised_01.png",
+          "file": "harang_react_surprised_01.png",
           "pose": "react",
           "expression": "surprised"
         },
         {
-          "file": "taeryeong_ponder_thoughtful_01.png",
+          "file": "harang_ponder_thoughtful_01.png",
           "pose": "ponder",
           "expression": "thoughtful"
         },
         {
-          "file": "taeryeong_analyze_focused_01.png",
+          "file": "harang_analyze_focused_01.png",
           "pose": "analyze",
           "expression": "focused"
         },
         {
-          "file": "taeryeong_assure_confident_01.png",
+          "file": "harang_assure_confident_01.png",
           "pose": "assure",
           "expression": "confident"
         },
         {
-          "file": "taeryeong_smile_warm_01.png",
+          "file": "harang_smile_warm_01.png",
           "pose": "smile",
           "expression": "warm"
         },
         {
-          "file": "taeryeong_tease_playful_01.png",
+          "file": "harang_tease_playful_01.png",
           "pose": "tease",
           "expression": "playful"
         },
         {
-          "file": "taeryeong_celebrate_delighted_01.png",
+          "file": "harang_celebrate_delighted_01.png",
           "pose": "celebrate",
           "expression": "delighted"
         },
         {
-          "file": "taeryeong_judge_serious_01.png",
+          "file": "harang_judge_serious_01.png",
           "pose": "judge",
           "expression": "serious"
         },
         {
-          "file": "taeryeong_judge_cold_01.png",
+          "file": "harang_judge_cold_01.png",
           "pose": "judge",
           "expression": "cold"
         },
         {
-          "file": "taeryeong_comfort_compassionate_01.png",
+          "file": "harang_comfort_compassionate_01.png",
           "pose": "comfort",
           "expression": "compassionate"
         },
         {
-          "file": "taeryeong_thumbs-up_encouraging_01.png",
+          "file": "harang_thumbs-up_encouraging_01.png",
           "pose": "thumbs-up",
           "expression": "encouraging"
         },
         {
-          "file": "taeryeong_emphasize_certain_01.png",
+          "file": "harang_emphasize_certain_01.png",
           "pose": "emphasize",
           "expression": "certain"
         },
         {
-          "file": "taeryeong_result-card_confident_01.png",
+          "file": "harang_result-card_confident_01.png",
           "pose": "result-card",
           "expression": "confident"
         },
         {
-          "file": "taeryeong_write_focused_01.png",
+          "file": "harang_write_focused_01.png",
           "pose": "write",
           "expression": "focused"
         },
         {
-          "file": "taeryeong_result-reveal_dramatic_01.png",
+          "file": "harang_result-reveal_dramatic_01.png",
           "pose": "result-reveal",
           "expression": "dramatic"
         },
         {
-          "file": "taeryeong_chibi_shocked_01.png",
+          "file": "harang_chibi_shocked_01.png",
           "pose": "chibi",
           "expression": "shocked"
         }

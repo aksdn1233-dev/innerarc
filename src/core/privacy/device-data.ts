@@ -92,7 +92,7 @@ export function inspectDeviceData(storage: DeviceStorage): DeviceDataCounts {
 export function exportDeviceData(storage: DeviceStorage, exportedAt: string): string {
   const validExportedAt = z.string().datetime({ offset: true }).parse(exportedAt);
   return JSON.stringify({
-    product: "태령당",
+    product: "결",
     schemaVersion: DEVICE_EXPORT_SCHEMA_VERSION,
     exportedAt: validExportedAt,
     scope: "this_browser_device",

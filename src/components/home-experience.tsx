@@ -154,14 +154,14 @@ const copy = {
     outlineMore: (count: number) => `외 ${count}개 장이 이어집니다.`,
     outlineSample: "예시 리포트 전체 보기",
     faqEyebrow: "자주 묻는 질문",
-    faqTitle: "태령당이 뭘 해주나요?",
+    faqTitle: "결이 뭘 해주나요?",
     homeCloseTitle: "가격과 후기를 확인하고 시작하세요",
     homeCloseBody: "무료 결과를 먼저 보셔도 되고, 바로 상세 리딩으로 가셔도 됩니다.",
     homeCloseCta: "상세 리딩 보기",
     heroKicker: "연애 · 돈 · 일 · 공부",
     // The h1 is read by search engines and screen readers before anyone sees the art, so
     // it says the areas in the words people search with rather than naming the machinery.
-    heroTitle: "태령당 — 연애·돈·일·공부에서 반복되는 흐름을 생년월일로 찾습니다",
+    heroTitle: "결 — 연애·돈·일·공부에서 반복되는 흐름을 생년월일로 찾습니다",
     heroBody: "듣고 흘려보내면 끝인 이야기가 아니라, 숫자가 어떻게 나왔는지 계산 근거까지 전부 열어 글로 남겨드립니다. 다시 읽고, 실제 삶과 맞는지 직접 대조하실 수 있습니다.",
     primary: "내 패턴 확인하기",
     heroNote: "생년월일 기반 · 1회 결제 · 자동 갱신 없음",
@@ -230,12 +230,12 @@ const copy = {
     outlineMore: (count: number) => `${count} more chapters follow.`,
     outlineSample: "Read the full sample report",
     faqEyebrow: "Common questions",
-    faqTitle: "What does 태령당 actually do?",
+    faqTitle: "What does 결 actually do?",
     homeCloseTitle: "Check the prices and reviews, then begin",
     homeCloseBody: "See the free result first, or go straight to the detailed reading.",
     homeCloseCta: "See the detailed reading",
     heroKicker: "Love · Money · Work · Study",
-    heroTitle: "태령당 — find the patterns that keep repeating in love, money, work and study, from your birth date",
+    heroTitle: "결 — find the patterns that keep repeating in love, money, work and study, from your birth date",
     heroBody: "Not something you hear once and lose: every number is shown with the calculation behind it, and the reading stays in writing so you can read it again and check it against what actually happens.",
     primary: "See my patterns",
     heroNote: "Birth-date based · One-time payment · No auto-renewal",
@@ -716,8 +716,8 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
 
   const siteFooter = (
     <footer className="home-footer">
-      <div><strong>태령당</strong><p>{locale === "ko" ? "실제 삶으로 검증하는 개인 패턴 분석" : "Personal Pattern Intelligence verified through lived experience"}</p></div>
-      <nav aria-label={locale === "ko" ? "공식 채널 및 법률 안내" : "Official channels and legal"}><a href={OFFICIAL_NAVER_BLOG_URL} rel="me noopener noreferrer" target="_blank">{locale === "ko" ? "태령당 공식 블로그" : "태령당 official blog"}</a><Link href={`/${locale}/terms`}>{locale === "ko" ? "이용조건" : "Terms"}</Link><Link href={`/${locale}/privacy`}>{locale === "ko" ? "개인정보" : "Privacy"}</Link><Link href={`/${locale}/orders`}>{locale === "ko" ? "구매 내역" : "Find a purchase"}</Link><Link href={`/${locale}/support`}>{locale === "ko" ? "고객 문의" : "Support"}</Link></nav>
+      <div><strong>결</strong><p>{locale === "ko" ? "실제 삶으로 검증하는 개인 패턴 분석" : "Personal Pattern Intelligence verified through lived experience"}</p></div>
+      <nav aria-label={locale === "ko" ? "공식 채널 및 법률 안내" : "Official channels and legal"}><a href={OFFICIAL_NAVER_BLOG_URL} rel="me noopener noreferrer" target="_blank">{locale === "ko" ? "결 공식 블로그" : "결 official blog"}</a><Link href={`/${locale}/terms`}>{locale === "ko" ? "이용조건" : "Terms"}</Link><Link href={`/${locale}/privacy`}>{locale === "ko" ? "개인정보" : "Privacy"}</Link><Link href={`/${locale}/orders`}>{locale === "ko" ? "구매 내역" : "Find a purchase"}</Link><Link href={`/${locale}/support`}>{locale === "ko" ? "고객 문의" : "Support"}</Link></nav>
       <small>{locale === "ko" ? "별루프 · 대표 박서준 · 사업자등록번호 482-12-03629 · 부산광역시 북구" : "Byeolloof · Busan, Republic of Korea"}</small>
     </footer>
   );
@@ -753,7 +753,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
         {/* Over the opening screen the header is chrome, not content: it goes transparent
             and hands its links to a panel, so nothing competes with the title. */}
         <header className="topbar home-topbar is-over-cinema">
-          <Link className="brand" href={`/${locale}`}><strong>태령당</strong><small>{d.brandTagline}</small></Link>
+          <Link className="brand" href={`/${locale}`}><strong>결</strong><small>{d.brandTagline}</small></Link>
           {/* Every one of these used to point at a section that had been moved to
               /reading, so the whole header did nothing on the home page. Same-page
               anchors stay anchors; the rest name the route they actually live on. */}

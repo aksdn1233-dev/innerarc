@@ -1,7 +1,7 @@
 /*
  * 하랑 법사 night theme for the home page (owner handoff 2026-10-16, §3).
  *
- * Loaded after taeryeong-landing.css and daily-healing-home.css and scoped to
+ * Loaded after harang-landing.css and daily-healing-home.css and scoped to
  * `.td2.hr`, so it only re-skins: layout, structure and behaviour stay in those files
  * and removing the `hr` class (or this import) restores the previous look.
  *
@@ -200,9 +200,19 @@
   .td2.hr .td2-hero h1 { font-size: clamp(2.4rem, 11vw, 3.2rem); }
   .td2.hr .td2-hero h1 em { font-size: .52em; }
   .td2.hr .td2-hero-signature { display: none; }
-  .td2.hr .td2-hero-art-note { top: calc(min(112vw, 540px) - 28px); bottom: auto; }
+  .td2.hr .td2-hero-art-note { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .td2.hr .hr-petals { display: none; }
 }
+
+/* Secondary lines inside the dark cards keep WCAG AA contrast on --hr-night-3. */
+.td2.hr .dh-guide-strip footer p,
+.td2.hr .dh-service-grid p,
+.td2.hr .dh-service-grid strong,
+.td2.hr .dh-conversation strong,
+.td2.hr .dh-reviews p,
+.td2.hr .dh-reviews footer,
+.td2.hr .dh-common-concerns strong { color: var(--hr-hanji-muted); }
+.td2.hr .dh-service-grid h3, .td2.hr .dh-guide-strip strong { color: var(--hr-hanji); }

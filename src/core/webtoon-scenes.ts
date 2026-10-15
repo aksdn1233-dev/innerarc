@@ -63,9 +63,9 @@ export type WebtoonScene = Readonly<{
 }>;
 
 const THEME_CHARACTER: Record<string, NumerologyGuideId> = {
-  core: "taeryeong",
-  "life-path": "taeryeong",
-  integrated: "taeryeong",
+  core: "harang",
+  "life-path": "harang",
+  integrated: "harang",
   relationship: "yeonhui",
   compatibility: "yeonhui",
   emotion: "yeonhui",
@@ -84,7 +84,7 @@ const THEME_CHARACTER: Record<string, NumerologyGuideId> = {
 };
 
 const SECTION_CHARACTER: Record<WebtoonSectionType, NumerologyGuideId> = {
-  summary: "taeryeong",
+  summary: "harang",
   numbers: "sahyeon",
   relationship: "yeonhui",
   decision: "sahyeon",
@@ -94,8 +94,8 @@ const SECTION_CHARACTER: Record<WebtoonSectionType, NumerologyGuideId> = {
 };
 
 const EMOTION_CHARACTER: Record<WebtoonEmotion, NumerologyGuideId> = {
-  neutral: "taeryeong",
-  calm: "taeryeong",
+  neutral: "harang",
+  calm: "harang",
   focused: "sahyeon",
   serious: "hwayeon",
   gentle: "yundo",
@@ -103,7 +103,7 @@ const EMOTION_CHARACTER: Record<WebtoonEmotion, NumerologyGuideId> = {
 };
 
 const SCENE_DECOR: Record<NumerologyGuideId, { background: string; prop: string; effect: string }> = {
-  taeryeong: { background: "black-gold-study_01.png", prop: "numerology-card_01.png", effect: "gold-sparkle_01.png" },
+  harang: { background: "black-gold-study_01.png", prop: "numerology-card_01.png", effect: "gold-sparkle_01.png" },
   yeonhui: { background: "wisteria-garden_01.png", prop: "relationship-knot_01.png", effect: "purple-empathy-petals_01.png" },
   sahyeon: { background: "parchment-calculation-room_01.png", prop: "chart-scroll_01.png", effect: "reveal-rays_01.png" },
   hwayeon: { background: "crimson-fate-chamber_01.png", prop: "butterfly-fan_01.png", effect: "red-warning-aura_01.png" },
@@ -130,7 +130,7 @@ function chooseCharacter(input: WebtoonSceneInput): NumerologyGuideId {
   if (input.theme && THEME_CHARACTER[input.theme]) return THEME_CHARACTER[input.theme];
   if (input.sectionType) return SECTION_CHARACTER[input.sectionType];
   if (input.emotion) return EMOTION_CHARACTER[input.emotion];
-  return "taeryeong";
+  return "harang";
 }
 
 function orderedCandidates(character: ManifestCharacter, input: WebtoonSceneInput): ManifestAsset[] {

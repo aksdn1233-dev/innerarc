@@ -12,7 +12,7 @@ describe("GYEOL webtoon scene selector", () => {
   it("is deterministic and maps the six product themes to the approved guides", () => {
     const input = { seed: "1994-11-04:11:summary", theme: "core", emphasis: "medium" } as const;
     expect(selectWebtoonScene(input)).toEqual(selectWebtoonScene(input));
-    expect(selectWebtoonScene(input).character).toBe("taeryeong");
+    expect(selectWebtoonScene(input).character).toBe("harang");
     expect(selectWebtoonScene({ seed: "relationship", theme: "relationship" }).character).toBe("yeonhui");
     expect(selectWebtoonScene({ seed: "analysis", theme: "analysis" }).character).toBe("sahyeon");
     expect(selectWebtoonScene({ seed: "warning", theme: "warning" }).character).toBe("hwayeon");
@@ -20,10 +20,10 @@ describe("GYEOL webtoon scene selector", () => {
     expect(selectWebtoonScene({ seed: "possibility", theme: "possibility" }).character).toBe("hoyeon");
   });
 
-  it("falls back by section and emotion, then to Taeryeong", () => {
+  it("falls back by section and emotion, then to Harang", () => {
     expect(selectWebtoonScene({ seed: "x", theme: "unknown", sectionType: "warning" }).character).toBe("hwayeon");
     expect(selectWebtoonScene({ seed: "x", theme: "unknown", emotion: "gentle" }).character).toBe("yundo");
-    expect(selectWebtoonScene({ seed: "x" }).character).toBe("taeryeong");
+    expect(selectWebtoonScene({ seed: "x" }).character).toBe("harang");
   });
 
   it("avoids repeating the same character, pose, and expression across recent panels", () => {

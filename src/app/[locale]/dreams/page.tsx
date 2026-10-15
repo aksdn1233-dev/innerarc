@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   return {
-    title: locale === "ko" ? "꿈 패턴 기록 | 태령당" : "Dream Patterns | Taeryeongdang",
+    title: locale === "ko" ? "꿈 패턴 기록 | 결" : "Dream Patterns | GYEOL",
     description: locale === "ko" ? "꿈속 장면과 감정, 최근 현실과 반복 기록을 나누어 살펴보세요." : "Compare dream scenes and feelings with recent life and your own recurring records.",
     robots: { index: false, follow: false, noarchive: true, noimageindex: true },
   };

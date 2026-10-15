@@ -1,7 +1,7 @@
 import type { Locale } from "@/i18n/config";
 
-export const brandNameKo = "태령당" as const;
-export const brandInternalId = "TAERYEONGDANG_INTERNAL" as const;
+export const brandNameKo = "결" as const;
+export const brandInternalId = "GYEOL_INTERNAL" as const;
 export const brandProductDescriptor = "Personal Pattern Intelligence" as const;
 
 export const brand = Object.freeze({

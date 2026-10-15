@@ -80,7 +80,7 @@ export function ReportSampleExperience({
     <main className={`shell paid-report-shell webtoon-shell sample-report-shell sample-${kind}`} id="main-content">
       <WebtoonReveal />
       <header className="sample-report-head">
-        <Link className="brand" href={`/${locale}`} prefetch={false}><strong>태령당</strong></Link>
+        <Link className="brand" href={`/${locale}`} prefetch={false}><strong>결</strong></Link>
         <p className="eyebrow">{ko ? "941104 결과 리포트 예시" : "1994-11-04 report sample"}</p>
         <h1>{report.title}</h1>
         <p>{report.tierLabel}</p>

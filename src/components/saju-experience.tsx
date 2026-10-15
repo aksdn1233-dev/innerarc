@@ -42,9 +42,12 @@ type ProductCode = "plus_30d" | "pro_30d" | "premium_pdf";
 const POSE = {
   front: HARANG_IMAGES.face,
   welcome: HARANG_IMAGES.bust,
-  chart: HARANG_IMAGES.read,
+  chart: HARANG_IMAGES.result,
   reveal: HARANG_IMAGES.base,
-  wink: HARANG_IMAGES.wink,
+  loading: HARANG_IMAGES.loading,
+  ahem: HARANG_IMAGES.ahem,
+  sigh: HARANG_IMAGES.sigh,
+  fee: HARANG_IMAGES.fee,
   soft: HARANG_IMAGES.soft,
   smile: HARANG_IMAGES.smile,
 } as const;
@@ -561,9 +564,12 @@ export function SajuExperience({
           {!pastReady ? (
             <div className="saju-story-loading" role="status">
               <span className="saju-story-spinner" aria-hidden="true" />
-              <Face className="saju-story-avatar saju-story-loading-face" src={POSE.wink} />
+              <Face className="saju-story-avatar saju-story-loading-face" src={POSE.loading} />
               <b>{L("하랑 법사가 전생을 살피는 중입니다…", "Harang is looking into your past life…")}</b>
-              <small>{L("비 오는 날엔 파전이 점괘보다 정확한데… 흠흠. 방금 건 못 들은 걸로 해주세요.", "On rainy days a pancake beats any oracle… ahem. Forget I said that.")}</small>
+              <span className="saju-story-aside">
+                <Face className="saju-story-mini" src={POSE.ahem} />
+                <small>{L("비 오는 날엔 파전이 점괘보다 정확한데… 흠흠. 방금 건 못 들은 걸로 해주세요.", "On rainy days a pancake beats any oracle… ahem. Forget I said that.")}</small>
+              </span>
             </div>
           ) : (
             <>
@@ -640,7 +646,7 @@ export function SajuExperience({
 
       {chapter === CH.fee && (
         <article className="saju-story-chapter-body" data-tone="paper" id="saju-fee">
-          <Portrait className="saju-story-fee-art" src={POSE.welcome} />
+          <Portrait className="saju-story-fee-art" src={POSE.fee} />
           <p className="saju-story-poem">{L(`"${callName}님, ${HARANG_LINES.fee}"`, `"${callName}, from here on I read for a fee.\nMy time is precious, and so is your story."`)}</p>
           <section className="saju-story-found">
             <span className="saju-story-stamp" aria-hidden="true">{L("복채", "FEE")}</span>

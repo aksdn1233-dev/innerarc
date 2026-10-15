@@ -44,7 +44,7 @@ function japaneseSaju(orderId: string, input: PaidReadingInput): PaidReport {
     actions: ["四柱を保存し、別の万年暦と照合する", "出生時刻が不明なら時柱を確定事項として使わない", "解釈と実際の記憶が違えばReality Checkに残す"],
     cautions: chart.hour ? [] : ["出生時刻がないため、時柱は空欄です。"],
     disclaimer: "四柱推命は自己理解のための伝統的な象徴ツールです。未来を保証せず、医療・法律・投資の判断に代わるものではありません。",
-    tierLabel: "四柱命式・一回", characterLabel: "태령당 四柱命式", contentVersion: "saju-chart-report-ja-1.0.0",
+    tierLabel: "四柱命式・一回", characterLabel: "결 四柱命式", contentVersion: "saju-chart-report-ja-1.0.0",
     contentReferences: [`saju-rule:${chart.ruleVersion}`, "locale:ja"],
     profileFacts: { birthDate: input.birthDate, ...(input.birthTime ? { birthTime: input.birthTime } : {}), ...(input.gender ? { gender: input.gender } : {}) },
   };

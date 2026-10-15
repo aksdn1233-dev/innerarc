@@ -4,7 +4,7 @@
   "license_notice": "Third-party assets retain their listed licenses; the site content-protection notice does not restrict those rights.",
   "assets": [
     {
-      "asset_id": "taeryeongdang-bed-v1",
+      "asset_id": "gyeol-bed-v1",
       "category": "bed",
       "visual_style": "Warm contemporary upholstered timber bed with tailored linen bedding",
       "source": "Original project procedural geometry",
@@ -22,7 +22,7 @@
       "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-bookshelf-v1",
+      "asset_id": "gyeol-bookshelf-v1",
       "category": "bookshelf",
       "visual_style": "Warm contemporary timber shelving with restrained book accents",
       "source": "Original project procedural geometry",
@@ -40,7 +40,7 @@
       "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-cabinet-v1",
+      "asset_id": "gyeol-cabinet-v1",
       "category": "cabinet",
       "visual_style": "Warm contemporary veneer casework with recessed panels and brass pulls",
       "source": "Original project procedural geometry",
@@ -58,7 +58,7 @@
       "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-coffee_table-v1",
+      "asset_id": "gyeol-coffee_table-v1",
       "category": "coffee_table",
       "visual_style": "Soft modern marble top with dark timber pedestal bases",
       "source": "Original project procedural geometry",
@@ -76,7 +76,7 @@
       "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-desk-v1",
+      "asset_id": "gyeol-desk-v1",
       "category": "desk",
       "visual_style": "Warm contemporary writing desk with slim dark legs and integrated drawers",
       "source": "Original project procedural geometry",
@@ -94,7 +94,7 @@
       "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-dining_chair-v1",
+      "asset_id": "gyeol-dining_chair-v1",
       "category": "dining_chair",
       "visual_style": "Tailored neutral upholstery with slender dark timber supports",
       "source": "Original project procedural geometry",
@@ -112,7 +112,7 @@
       "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-dining_table-v1",
+      "asset_id": "gyeol-dining_table-v1",
       "category": "dining_table",
       "visual_style": "Rounded warm-veneer dining table with slender dark timber legs",
       "source": "Original project procedural geometry",
@@ -130,7 +130,7 @@
       "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-lighting-v1",
+      "asset_id": "gyeol-lighting-v1",
       "category": "lighting",
       "visual_style": "Minimal warm-metal floor lamp with a woven neutral shade",
       "source": "Original project procedural geometry",
@@ -148,7 +148,7 @@
       "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-nightstand-v1",
+      "asset_id": "gyeol-nightstand-v1",
       "category": "nightstand",
       "visual_style": "Compact two-drawer veneer nightstand with shadow gaps and inset brass pulls",
       "source": "Original project procedural geometry",
@@ -166,7 +166,7 @@
       "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-office_chair-v1",
+      "asset_id": "gyeol-office_chair-v1",
       "category": "office_chair",
       "visual_style": "Neutral upholstered task chair with a restrained dark-metal base",
       "source": "Original project procedural geometry",
@@ -206,7 +206,7 @@
       "sha256": "7c9f733fb7947a6875790f9d93845adec1e888a226b5b44070258333064cf10a"
     },
     {
-      "asset_id": "taeryeongdang-rug-v1",
+      "asset_id": "gyeol-rug-v1",
       "category": "rug",
       "visual_style": "Low-pile neutral woven rug with fine border and fringe",
       "source": "Original project procedural geometry",
@@ -224,7 +224,7 @@
       "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-storage-v1",
+      "asset_id": "gyeol-storage-v1",
       "category": "storage",
       "visual_style": "Low warm-veneer storage unit with subtle panel rhythm",
       "source": "Original project procedural geometry",
@@ -242,7 +242,7 @@
       "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-tv-v1",
+      "asset_id": "gyeol-tv-v1",
       "category": "tv",
       "visual_style": "Slim near-black display with a minimal pedestal and low-reflection screen",
       "source": "Original project procedural geometry",
@@ -260,7 +260,7 @@
       "geometry_source": "src/components/space/interior-assets.ts and supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-monitor-v1",
+      "asset_id": "gyeol-monitor-v1",
       "category": "monitor",
       "visual_style": "Slim desktop monitor with a quiet matte display and compact pedestal",
       "source": "Original project procedural geometry",
@@ -278,7 +278,7 @@
       "geometry_source": "src/components/space/supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-computer-v1",
+      "asset_id": "gyeol-computer-v1",
       "category": "computer",
       "visual_style": "Compact dark computer tower with restrained ventilation details",
       "source": "Original project procedural geometry",
@@ -296,7 +296,7 @@
       "geometry_source": "src/components/space/supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-air_purifier-v1",
+      "asset_id": "gyeol-air_purifier-v1",
       "category": "air_purifier",
       "visual_style": "Soft white air purifier with vertical intake slots and a calm control panel",
       "source": "Original project procedural geometry",
@@ -314,7 +314,7 @@
       "geometry_source": "src/components/space/supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-refrigerator-v1",
+      "asset_id": "gyeol-refrigerator-v1",
       "category": "refrigerator",
       "visual_style": "Tall warm white refrigerator with paired doors and subtle metal handles",
       "source": "Original project procedural geometry",
@@ -332,7 +332,7 @@
       "geometry_source": "src/components/space/supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-speaker-v1",
+      "asset_id": "gyeol-speaker-v1",
       "category": "speaker",
       "visual_style": "Slender fabric-front speaker with a warm timber cabinet and stable plinth",
       "source": "Original project procedural geometry",
@@ -350,7 +350,7 @@
       "geometry_source": "src/components/space/supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-wardrobe-v1",
+      "asset_id": "gyeol-wardrobe-v1",
       "category": "wardrobe",
       "visual_style": "Tall warm-veneer wardrobe with recessed doors and slim brass pulls",
       "source": "Original project procedural geometry",
@@ -503,7 +503,7 @@
       ]
     },
     {
-      "asset_id": "taeryeongdang-window-treatment-v1",
+      "asset_id": "gyeol-window-treatment-v1",
       "category": "window_treatment",
       "visual_style": "Full-height neutral linen panels with gathered folds and restrained bronze rail",
       "source": "Original project procedural geometry",
@@ -551,7 +551,7 @@
       "compression_status": "Generated once; mipmaps and anisotropic filtering; base color + linear roughness + subtle plaster micro-bump"
     },
     {
-      "asset_id": "taeryeongdang-mirror-v1",
+      "asset_id": "gyeol-mirror-v1",
       "category": "mirror",
       "visual_style": "Warm timber-framed standing mirror with a restrained reflective plane",
       "source": "Original project procedural geometry",
@@ -569,7 +569,7 @@
       "geometry_source": "src/components/space/supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-artwork-v1",
+      "asset_id": "gyeol-artwork-v1",
       "category": "artwork",
       "visual_style": "Floor-supported warm timber frame with abstract sage and sand artwork",
       "source": "Original project procedural geometry",
@@ -587,7 +587,7 @@
       "geometry_source": "src/components/space/supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-clock-v1",
+      "asset_id": "gyeol-clock-v1",
       "category": "clock",
       "visual_style": "Warm timber standing clock with a clear neutral face and brass rim",
       "source": "Original project procedural geometry",
@@ -605,7 +605,7 @@
       "geometry_source": "src/components/space/supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-curtain-v1",
+      "asset_id": "gyeol-curtain-v1",
       "category": "curtain",
       "visual_style": "Full-height neutral fabric panels with gathered folds and slim bronze rail",
       "source": "Original project procedural geometry",
@@ -623,7 +623,7 @@
       "geometry_source": "src/components/space/supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-waste-bin-v1",
+      "asset_id": "gyeol-waste-bin-v1",
       "category": "waste_bin",
       "visual_style": "Compact lidded sage waste bin with a restrained brass handle",
       "source": "Original project procedural geometry",
@@ -641,7 +641,7 @@
       "geometry_source": "src/components/space/supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-shoe-rack-v1",
+      "asset_id": "gyeol-shoe-rack-v1",
       "category": "shoe_rack",
       "visual_style": "Open warm-timber shoe rack with four accessible shelves",
       "source": "Original project procedural geometry",
@@ -659,7 +659,7 @@
       "geometry_source": "src/components/space/supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-aquarium-v1",
+      "asset_id": "gyeol-aquarium-v1",
       "category": "aquarium",
       "visual_style": "Supported glass aquarium with a dark lid, sand bed and simple plants",
       "source": "Original project procedural geometry",
@@ -677,7 +677,7 @@
       "geometry_source": "src/components/space/supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-stove-v1",
+      "asset_id": "gyeol-stove-v1",
       "category": "stove",
       "visual_style": "Compact neutral kitchen range with dark cooktop and four visible burners",
       "source": "Original project procedural geometry",
@@ -695,7 +695,7 @@
       "geometry_source": "src/components/space/supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-sink-v1",
+      "asset_id": "gyeol-sink-v1",
       "category": "sink",
       "visual_style": "Warm cabinet sink with a visible basin and curved bronze faucet",
       "source": "Original project procedural geometry",
@@ -713,7 +713,7 @@
       "geometry_source": "src/components/space/supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-room-divider-v1",
+      "asset_id": "gyeol-room-divider-v1",
       "category": "room_divider",
       "visual_style": "Lightweight three-panel linen and timber room divider",
       "source": "Original project procedural geometry",
@@ -731,7 +731,7 @@
       "geometry_source": "src/components/space/supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-column-v1",
+      "asset_id": "gyeol-column-v1",
       "category": "column",
       "visual_style": "Plain structural column with restrained timber base and cap",
       "source": "Original project procedural geometry",
@@ -749,7 +749,7 @@
       "geometry_source": "src/components/space/supplementary-assets.ts"
     },
     {
-      "asset_id": "taeryeongdang-ceiling-beam-v1",
+      "asset_id": "gyeol-ceiling-beam-v1",
       "category": "ceiling_beam",
       "visual_style": "Simple dark timber ceiling beam represented at verified elevation",
       "source": "Original project procedural geometry",

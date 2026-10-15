@@ -93,7 +93,7 @@ export function createSajuChartReport(
       ? "사주는 전통 상징에 따른 자기 성찰 도구입니다. 미래를 보장하거나 의료·법률·투자 판단을 대신하지 않습니다."
       : "Four Pillars is a traditional symbolic reflection tool. It does not guarantee the future or replace medical, legal, or investment judgment.",
     tierLabel: ko ? "사주 원국 · 5,500원 · 1회" : "Four Pillars chart · ₩5,500 · one time",
-    characterLabel: ko ? "태령당 사주 원국" : "태령당 Four Pillars",
+    characterLabel: ko ? "결 사주 원국" : "결 Four Pillars",
     contentVersion: "saju-chart-report-1.2.0",
     contentReferences: [
       `saju-rule:${chart.ruleVersion}`,

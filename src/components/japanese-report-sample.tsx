@@ -77,15 +77,15 @@ export function JapaneseReportSample({ kind }: { kind: SampleReportKind }) {
   const basis = base.calculationBasis;
   return <main className="editorial-report editorial-report-sample japanese-report-sample" id="main-content" lang="ja">
     <header className="ed-sample-head">
-      <Link className="brand" href="/ja"><strong>태령당</strong></Link>
+      <Link className="brand" href="/ja"><strong>결</strong></Link>
       <div><p className="eyebrow">1994年11月4日・結果レポート例</p><p className="sample-report-notice">実際の計算規則で作った固定サンプルです。決済・注文・保存は行われません。</p></div>
       <nav aria-label="レポート言語" className="sample-report-language-tabs"><Link href={`/ko/samples/${kind}`}>한국어</Link><Link href={`/en/samples/${kind}`}>English</Link><Link aria-current="page" href={`/ja/samples/${kind}`}>日本語</Link></nav>
       <nav aria-label="レポート例を選ぶ" className="sample-report-tabs">{(["detail", "premium", "saju"] as const).map((item) => <Link aria-current={item === kind ? "page" : undefined} className={item === kind ? "is-current" : undefined} href={`/ja/samples/${item}`} key={item}>{labels[item]}</Link>)}</nav>
     </header>
     <section className="ed-cover" aria-labelledby="ja-report-title">
-      <Image alt="" aria-hidden="true" className="ed-cover-image" fill priority sizes="100vw" src="/images/brand/taeryeong-night-hero-v3.jpg" />
+      <Image alt="" aria-hidden="true" className="ed-cover-image" fill priority sizes="100vw" src="/images/brand/night-hero-v3.jpg" />
       <div className="ed-cover-shade" aria-hidden="true" />
-      <div className="ed-cover-brand"><strong>태령당</strong><span>PERSONAL PATTERN INTELLIGENCE</span></div>
+      <div className="ed-cover-brand"><strong>결</strong><span>PERSONAL PATTERN INTELLIGENCE</span></div>
       <div className="ed-cover-copy"><p>繰り返す選択を、現実の行動まで整理する</p><h1 id="ja-report-title">{labels[kind]}<br />結果レポート</h1><div className="ed-symbol-mark" aria-hidden="true"><span /></div><h2>可能性を形にする人</h2><p>答えを決めつけず、実際の経験と照らし合わせます。</p></div>
       <dl className="ed-cover-facts"><div><dt>生年月日</dt><dd>1994-11-04</dd></div><div><dt>言語</dt><dd>日本語</dd></div><div><dt>レポート</dt><dd>{kind.toUpperCase()}</dd></div>{basis && <div><dt>個人年</dt><dd>{basis.serviceYear} · {numberDisplay(basis.personalYear)}</dd></div>}</dl>
     </section>

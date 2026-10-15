@@ -262,11 +262,7 @@ export function DailyHealingHome({ locale, reportPreview, reviews, reviewCount }
     <section className="dh-guides" aria-labelledby="dh-guides-title">
       <header><div><p className="dh-eyebrow">{t.guidesEyebrow}</p><h2 id="dh-guides-title">{t.guidesTitle}</h2></div><p>{t.guidesBody}</p></header>
       <div aria-label={locale === "ko" ? "결 GYEOL 안내자 목록" : "GYEOL guide list"} className="dh-guide-strip" tabIndex={0}>
-        <article className="is-host">
-          <div><DeferredImage alt={locale === "ko" ? "흰 도포에 붉은 띠를 맨 하랑 법사" : "Harang in a white robe with a red sash"} height={403} src={HARANG_IMAGES.laugh} width={480} sizes="384px" /></div>
-          <footer><small>{locale === "ko" ? "사주 · 맞이하는 법사" : "Saju · your host"}</small><strong>{locale === "ko" ? "하랑 법사" : "Harang"}</strong><p>{locale === "ko" ? "직설로 짚고, 끝은 다정하게 닫습니다." : "Says it plainly, closes it kindly."}</p></footer>
-        </article>
-        {NUMEROLOGY_GUIDES.filter((guide) => guide.id !== "taeryeong").map((guide) => <article key={guide.id}>
+        {NUMEROLOGY_GUIDES.map((guide) => <article className={guide.id === "harang" ? "is-host" : undefined} key={guide.id}>
           <div><DeferredImage alt={guide.imageAlt[locale]} height={384} src={guide.image} width={384} sizes="384px" /></div>
           <footer><small>{guide.role[locale]}</small><strong>{guide.name[locale]}</strong><p>{guide.specialties[locale][0]}</p></footer>
         </article>)}

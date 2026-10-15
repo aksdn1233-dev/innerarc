@@ -23,8 +23,8 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
     body: getComputedStyle(home).fontFamily,
     display: getComputedStyle(home.querySelector("h1")!).fontFamily,
   }));
-  expect(homeFonts.body).toContain("Noto Sans KR");
-  expect(homeFonts.display).toContain("Song Myung");
+  expect(homeFonts.body).toContain("Pretendard");
+  expect(homeFonts.display).toContain("Nanum Myeongjo");
   await expect(page.locator(".td2-hero").getByRole("link", { name: /생년월일 넣고 시작하기/ })).toBeVisible();
   await expect(page.locator(".td2-hero").getByRole("link", { name: /무엇을 봐드리는지 보기/ })).toBeVisible();
   await expect(page.getByRole("button", { name: /처음 오셨습니까\? 1분 안내 보기/ })).toBeVisible();
@@ -220,7 +220,7 @@ test("English page keeps the same calculated core meaning", async ({ page }) => 
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download SVG" }).click();
   const download = await downloadPromise;
-  expect(download.suggestedFilename()).toBe("taeryeongdang-core_profile.svg");
+  expect(download.suggestedFilename()).toBe("gyeol-core_profile.svg");
 });
 
 test("onboarding focus, concern, depth, and AI consent create a local context layer", async ({ page }) => {
@@ -688,7 +688,7 @@ test("guest privacy center saves explicitly, exports, and deletes all device dat
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export all JSON" }).click();
   const download = await downloadPromise;
-  expect(download.suggestedFilename()).toMatch(/^taeryeongdang-device-data-\d{4}-\d{2}-\d{2}\.json$/);
+  expect(download.suggestedFilename()).toMatch(/^gyeol-device-data-\d{4}-\d{2}-\d{2}\.json$/);
 
   page.once("dialog", (dialog) => dialog.accept());
   await page.getByRole("button", { name: "Delete all device data" }).click();
@@ -706,7 +706,7 @@ test("privacy, terms, and support publish contacts while disclosing unresolved l
   await page.getByRole("link", { name: "Read the privacy information" }).click();
   await expect(page.getByText("Pre-operation notice · transfer details and legal review pending")).toBeVisible();
   await expect(page.getByText("Supabase handles the authentication email", { exact: false })).toBeVisible();
-  await expect(page.getByText("태령당 retains the order ID", { exact: false })).toBeVisible();
+  await expect(page.getByText("결 retains the order ID", { exact: false })).toBeVisible();
   await expect(page.getByText("Support and privacy email: qkrehgus5886@naver.com")).toBeVisible();
   await page.getByRole("link", { name: "Terms of use" }).click();
   await expect(page.getByText("Pre-release terms · mail-order registration details pending")).toBeVisible();

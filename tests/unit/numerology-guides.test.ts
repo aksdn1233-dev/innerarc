@@ -23,9 +23,9 @@ describe("GYEOL numerology guides", () => {
     }
   });
 
-  it("uses the supplied independent transparent character cuts", async () => {
-    const taeryeong = await readFile("public/assets/gyeol-webtoon/characters/taeryeong/taeryeong_result-card_confident_01.png");
-    expect(taeryeong.subarray(1, 4).toString()).toBe("PNG");
+  it("uses the supplied independent character cuts", async () => {
+    const harang = await readFile("public/assets/gyeol-webtoon/characters/harang/harang_result-card_confident_01.png");
+    expect(harang.subarray(1, 4).toString()).toBe("PNG");
   });
 
   it("connects each existing focus to a guide without changing the calculation engine", () => {
@@ -34,7 +34,7 @@ describe("GYEOL numerology guides", () => {
     expect(getDefaultNumerologyGuide("money").id).toBe("hwayeon");
     expect(getDefaultNumerologyGuide("health").id).toBe("yundo");
     expect(getDefaultNumerologyGuide("growth").id).toBe("hoyeon");
-    expect(getDefaultNumerologyGuide("leadership").id).toBe("taeryeong");
+    expect(getDefaultNumerologyGuide("leadership").id).toBe("harang");
   });
 
   it("uses whole-image responsive rendering for the roster and result", async () => {

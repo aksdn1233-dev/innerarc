@@ -45,11 +45,11 @@ export function createReportProvenance(input: {
 
 export function provenanceMetaTags(value: ReportProvenance): string {
   const attributes = [
-    ["taeryeongdang:provenance-version", value.version],
-    ["taeryeongdang:report-id", value.reportId],
-    ["taeryeongdang:provenance-id", value.provenanceId],
-    ["taeryeongdang:export-id", value.exportId],
-    ["taeryeongdang:content-fingerprint", value.contentFingerprint],
+    ["gyeol:provenance-version", value.version],
+    ["gyeol:report-id", value.reportId],
+    ["gyeol:provenance-id", value.provenanceId],
+    ["gyeol:export-id", value.exportId],
+    ["gyeol:content-fingerprint", value.contentFingerprint],
   ];
   return attributes
     .map(([name, content]) => `<meta name="${name}" content="${content}">`)

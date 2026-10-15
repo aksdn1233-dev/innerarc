@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import "@/app/taeryeong-landing.css";
+import "@/app/harang-landing.css";
 import "@/app/daily-healing-home.css";
 import "@/app/harang-home.css";
 import { notFound } from "next/navigation";
-import { TaeryeongLanding } from "@/components/taeryeong-landing";
+import { HarangLanding } from "@/components/harang-landing";
 import { buildReportOutline } from "@/core/report-outline";
 import { isLocale } from "@/i18n/config";
 import { resolveSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -55,7 +55,7 @@ export default async function LocaleHome({
     nextAction: sampleReport.actions[0] ?? "",
     calculationBasis,
   };
-  return <TaeryeongLanding dreamAvailable={dreamEnabled()} locale={locale} reportPreview={reportPreview} reviewCount={reviewCount} reviews={reviews} />;
+  return <HarangLanding dreamAvailable={dreamEnabled()} locale={locale} reportPreview={reportPreview} reviewCount={reviewCount} reviews={reviews} />;
 }
 
 export const dynamic = "force-dynamic";

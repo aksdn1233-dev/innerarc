@@ -7,7 +7,7 @@ export interface DreamStorageLike { getItem(key: string): string | null; setItem
 export function loadDreamEvents(storage: DreamStorageLike): DreamEvent[] { const raw = storage.getItem(DREAM_STORAGE_KEY); if (!raw) return []; try { const parsed = payload.safeParse(JSON.parse(raw)); return parsed.success ? parsed.data.events : []; } catch { return []; } }
 export function saveDreamEvents(storage: DreamStorageLike, events: readonly DreamEvent[]): void { storage.setItem(DREAM_STORAGE_KEY, JSON.stringify(payload.parse({ version: 1, events: events.slice(0, 200) }))); }
 export function clearDreamEvents(storage: DreamStorageLike): void { storage.removeItem(DREAM_STORAGE_KEY); }
-export function exportDreamEvents(events: readonly DreamEvent[], exportedAt: string): string { return JSON.stringify({ product: "태령당", schemaVersion: 1, exportedAt, data: { dreamEvents: payload.parse({ version: 1, events }).events } }, null, 2); }
+export function exportDreamEvents(events: readonly DreamEvent[], exportedAt: string): string { return JSON.stringify({ product: "결", schemaVersion: 1, exportedAt, data: { dreamEvents: payload.parse({ version: 1, events }).events } }, null, 2); }
 
 const accountPayload = z.object({
   events: z.array(z.object({

@@ -38,7 +38,7 @@ function GuideCard({
           className="numerology-guide-image"
           decoding="async"
           height="384"
-          priority={guide.id === "taeryeong"}
+          priority={guide.id === "harang"}
           sizes="(max-width: 560px) calc(100vw - 24px), (max-width: 840px) 50vw, 384px"
           src={guide.image}
           width="384"
@@ -75,8 +75,8 @@ export function NumerologyGuideRoster({ locale, selectedGuideId, onSelect, surfa
       <header className="numerology-guide-heading">
         <p className="eyebrow">
           {isSaju
-            ? (ko ? "태령당 사주 서비스 해석자" : "태령당 Saju service guides")
-            : (ko ? "태령당 생년월일 패턴 해석자" : "태령당 numerology guides")}
+            ? (ko ? "결 사주 서비스 해석자" : "결 Saju service guides")
+            : (ko ? "결 생년월일 패턴 해석자" : "결 numerology guides")}
         </p>
         <h2 id="numerology-guide-title">{ko ? "지금 필요한 관점의 해석자를 고르세요" : "Choose the perspective you need now"}</h2>
         <p>

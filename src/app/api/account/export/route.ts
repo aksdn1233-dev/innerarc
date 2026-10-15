@@ -134,7 +134,7 @@ export async function GET() {
     });
   }
   const body = JSON.stringify({
-    product: "태령당",
+    product: "결",
     schemaVersion: "account-export-1.4.0",
     scope: "authenticated_account",
     exportedAt,
@@ -149,7 +149,7 @@ export async function GET() {
   return new NextResponse(body, {
     headers: {
       "content-type": "application/json; charset=utf-8",
-      "content-disposition": `attachment; filename="taeryeongdang-account-export-${exportedAt.slice(0, 10)}.json"`,
+      "content-disposition": `attachment; filename="gyeol-account-export-${exportedAt.slice(0, 10)}.json"`,
       "cache-control": "no-store",
     },
   });

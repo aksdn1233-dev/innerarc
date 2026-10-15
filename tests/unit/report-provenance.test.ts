@@ -21,8 +21,8 @@ describe("report and export provenance", () => {
   it("renders non-semantic metadata only", () => {
     const value = createReportProvenance({ reportId: "order_123", ownerScope: "owner_123", content: "hello", environment, exportId: `exp_${"c".repeat(32)}` })!;
     const tags = provenanceMetaTags(value);
-    expect(tags).toContain("taeryeongdang:provenance-id");
-    expect(tags).toContain("taeryeongdang:content-fingerprint");
+    expect(tags).toContain("gyeol:provenance-id");
+    expect(tags).toContain("gyeol:content-fingerprint");
     expect(tags).not.toMatch(/display|fortune|prediction/i);
   });
 });

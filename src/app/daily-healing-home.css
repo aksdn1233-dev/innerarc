@@ -209,7 +209,7 @@
   .dh-conversation h2 { max-width:none; }
 }
 
-/* Keep the lead guide consistent with the high-resolution Taeryeong opening. */
+/* Keep the lead guide consistent with the high-resolution opening art. */
 .dh-entry-scene { background: #ddd1bd; }
 .dh-entry-photo { object-fit: contain; object-position: center bottom; }
 .dh-entry-scene::before { width: 23%; background: #e8dfd0; }

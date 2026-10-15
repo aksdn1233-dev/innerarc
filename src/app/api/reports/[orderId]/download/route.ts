@@ -128,7 +128,7 @@ export async function GET(
   return new NextResponse(html, {
     headers: {
       "Content-Type": "text/html; charset=utf-8",
-      "Content-Disposition": `attachment; filename="taeryeongdang-${orderId}.html"`,
+      "Content-Disposition": `attachment; filename="gyeol-${orderId}.html"`,
       "Cache-Control": "private, no-store",
       "X-Robots-Tag": "noindex, nofollow, noarchive, nosnippet, noimageindex",
       ...(provenance ? {

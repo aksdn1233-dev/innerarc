@@ -24,6 +24,11 @@ export const HARANG_IMAGES = {
   front: `${DIR}/angle-front-480.webp`,
   threeQuarter: `${DIR}/angle-three-quarter-480.webp`,
   side: `${DIR}/angle-side-480.webp`,
+  sigh: `${DIR}/sigh-640.webp`,
+  ahem: `${DIR}/ahem-640.webp`,
+  loading: `${DIR}/loading-640.webp`,
+  result: `${DIR}/result-720.webp`,
+  fee: `${DIR}/fee-720.webp`,
 } as const;
 
 export const HARANG_NAME = { ko: "하랑 법사", en: "Harang" } as const;

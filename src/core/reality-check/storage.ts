@@ -115,7 +115,7 @@ export function clearRealityChecks(storage: StorageLike): void {
 export function exportRealityChecks(records: RealityCheckRecord[], exportedAt: string): string {
   return JSON.stringify(
     {
-      product: "태령당",
+      product: "결",
       schemaVersion: 1,
       exportedAt,
       data: { realityChecks: records },

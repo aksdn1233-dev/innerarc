@@ -3,7 +3,7 @@
 // handler: reading it through node:fs has no filesystem to read from on a Workers
 // runtime, which returned 500 for every link-preview crawl.
 export const socialImageAlt =
-  "태령당, 실제 삶으로 검증하는 개인 패턴 분석";
+  "결 · 하랑 법사가 짚어주는 사주와 생년월일 패턴";
 export const socialImageSize = { width: 1200, height: 630 } as const;
 export const socialImageContentType = "image/png";
-export const socialImagePath = "/taeryeongdang-og.png";
+export const socialImagePath = "/gyeol-harang-og.png";
