@@ -3,7 +3,8 @@
 import { HydrationGate } from "./hydration-gate";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { captureConversionEvent } from "@/core/analytics";
 import {
   SajuInputError,
   buildHarangFreeReading,
@@ -18,7 +19,7 @@ import { MIN_BIRTH_DATE, currentMaxBirthDate, isAcceptedBirthDate } from "@/core
 import type { PublicReview } from "@/core/reviews";
 import type { ProductPriceSet } from "@/core/product-prices";
 import type { Locale } from "@/i18n/config";
-import "./saju-experience.module.css";
+import styles from "./saju-experience.module.css";
 
 /**
  * The 사주 menu as a guided story.
@@ -96,7 +97,6 @@ export function SajuExperience({
   locale,
   prices,
   reviews = [],
-  reviewCount = null,
 }: {
   locale: Locale;
   prices: ProductPriceSet;
@@ -109,6 +109,7 @@ export function SajuExperience({
   const won = (value: number) => (ko ? `${value.toLocaleString("ko-KR")}원` : `₩${value.toLocaleString("en-US")}`);
   const maxBirthDate = currentMaxBirthDate();
   const router = useRouter();
+  const tracked = useRef(new Set<string>());
 
   const [step, setStep] = useState(0);
   const [name, setName] = useState("");
@@ -131,7 +132,7 @@ export function SajuExperience({
   const story: SajuStoryReading | null = useMemo(() => (chart ? buildSajuStory(chart, locale) : null), [chart, locale]);
   const extra: HarangFreeReading | null = useMemo(() => (chart ? buildHarangFreeReading(chart, locale) : null), [chart, locale]);
   const [shareStatus, setShareStatus] = useState<"idle" | "shared" | "copied" | "failed">("idle");
-  const callName = name.trim() || L("손님", "you");
+  const callName = name.trim() ? L(`${name.trim()}님`, name.trim()) : L("손님", "you");
   const birthTime = exactTime || (hourChoice && hourChoice !== "unknown" ? HOURS.find((h) => h[0] === hourChoice)?.[2] ?? "" : "");
 
   const FOCUS: readonly (readonly [FocusId, string])[] = [
@@ -159,14 +160,14 @@ export function SajuExperience({
 
   const steps = [
     {
-      say: L(`${HARANG_LINES.welcome}\n우선 성함부터 여쭙겠습니다.`, "Welcome. Who is on your mind tonight?\nFirst, may I have your name."),
-      accent: L("기본 풀이는 복채 없이 봐드립니다.", "The basic reading is free."),
+      say: L(`${HARANG_LINES.welcome}\n먼저 어떻게 불러드리면 될까요?`, "Welcome. What is on your mind?\nWhat should I call you?"),
+      accent: L("기본 풀이는 무료예요.", "The basic reading is free."),
       label: L("이름", "Name"),
-      help: L("별명도 괜찮습니다. 비워두시면 '손님'으로 부르겠습니다.", "A nickname is fine. Leave it blank and I'll call you 'guest'."),
+      help: L("별명도 괜찮아요. 비워두시면 ‘손님’으로 불러드려요.", "A nickname is fine. Leave it blank and I'll call you 'guest'."),
       ok: true,
     },
     {
-      say: L(`${callName}님, 반갑습니다. 하랑입니다.\n성별을 알려주시면 대운이 어느 쪽으로 흐르는지부터 잡아두겠습니다.`, `Nice to meet you, ${callName}. I'm Harang.\nYour sex sets which way your ten-year cycles run.`),
+      say: L(`${callName}, 반가워요. 하랑이에요.\n성별을 알려주시면 전통 사주의 대운 방향을 정할 수 있어요.`, `Nice to meet you${name.trim() ? `, ${name.trim()}` : ""}. I'm Harang.\nYour sex sets the traditional direction of the ten-year cycles.`),
       label: L("성별", "Sex"),
       help: L("대운의 방향을 정하는 데만 씁니다.", "Used only to set the direction of your luck cycles."),
       ok: sex !== "",
@@ -178,22 +179,22 @@ export function SajuExperience({
       ok: isAcceptedBirthDate(birthDate),
     },
     {
-      say: L("태어난 시간도 아십니까?\n모르셔도 괜찮습니다. 모르는 시간은 짐작하지 않고 비워둡니다.", "Do you know your birth time?\nIt's fine if not. I leave an unknown hour empty rather than guess."),
+      say: L("태어난 시간도 아세요?\n모르는 시간은 비워두고 볼게요.", "Do you know your birth time?\nIt's fine if not. An unknown hour stays empty."),
       label: L("태어난 시간", "Birth time"),
-      help: L("모르시면 '시간 모름'을 골라주세요.", "Choose 'Unknown' if you don't know."),
+      help: L("모르시면 ‘시간 모름’을 골라주세요.", "Choose 'Unknown' if you don't know."),
       ok: hourChoice !== "" || exactTime !== "",
     },
     {
-      say: L("요즘 마음이 제일 자주 가는 곳이 어디입니까?\n하나만 고르시면 거기부터 깊게 보겠습니다.", "Where does your mind go most these days?\nPick one and I'll look there first."),
+      say: L("요즘 어떤 일이 가장 궁금하세요?\n하나만 골라주시면 거기부터 볼게요.", "What is on your mind most?\nPick one and we’ll start there."),
       label: L("관심 분야", "Focus"),
-      help: L("복채 풀이를 이 분야 중심으로 짭니다.", "The paid reading centres on this area."),
+      help: L("더 자세한 풀이도 이 주제를 중심으로 이어져요.", "The paid reading centres on this area."),
       ok: focusId !== "",
     },
     {
-      say: L("마지막입니다.\n정말 묻고 싶은 걸 한 줄로 적어주세요.", "Last one.\nWrite, in one line, what you really want to ask."),
-      accent: L("돌려 물으시면 저도 돌려 답합니다. 구체적일수록 정확히 짚습니다.", "Ask around it and I'll answer around it. The more specific, the sharper."),
+      say: L("마지막이에요.\n정말 묻고 싶은 걸 한 줄로 적어주세요.", "Last one.\nWrite, in one line, what you really want to ask."),
+      accent: L("한 가지 상황을 떠올리면, 나에게 맞는 부분을 살펴보기 쉬워요.", "Think of one situation. It can help you reflect on the parts that fit your life."),
       label: L("궁금한 것", "Your question"),
-      help: L("칩을 누르셔도 되고, 직접 쓰셔도 됩니다. 비워두시면 전체 흐름으로 봅니다.", "Tap a chip or write your own. Leave it blank for the overall flow."),
+      help: L("예시를 누르거나 직접 적어주세요. 비워두면 전체 흐름으로 봐요.", "Tap a chip or write your own. Leave it blank for the overall flow."),
       ok: consent,
     },
   ] as const;
@@ -207,6 +208,10 @@ export function SajuExperience({
   }, [chapter, pastReady]);
 
   function goChapter(next: number) {
+    if (next === CH.fee && !tracked.current.has("paid_teaser_view")) {
+      tracked.current.add("paid_teaser_view");
+      captureConversionEvent("paid_teaser_view", locale, { concern: focusId || "growth" });
+    }
     setChapter(Math.max(0, Math.min(CH.fee, next)));
     setTocOpen(false);
     window.scrollTo({ top: 0 });
@@ -214,6 +219,15 @@ export function SajuExperience({
 
   function next() {
     if (!current.ok) return;
+    if (!tracked.current.has("free_start")) {
+      tracked.current.add("free_start");
+      captureConversionEvent("free_start", locale, { surface: "saju" });
+    }
+    if (step === 2 && !tracked.current.has("birth_input_complete")) {
+      tracked.current.add("birth_input_complete");
+      captureConversionEvent("birth_input_complete", locale, { surface: "saju" });
+    }
+    if (step === 4) captureConversionEvent("concern_selected", locale, { concern: focusId || "growth", surface: "saju" });
     setError(null);
     if (step < steps.length - 1) {
       setStep(step + 1);
@@ -233,6 +247,7 @@ export function SajuExperience({
         midnightConvention: midnight,
       });
       setChart(built);
+      captureConversionEvent("free_result_view", locale, { concern: focusId || "growth" });
       setChapter(0);
       setPastReady(false);
       window.scrollTo({ top: 0 });
@@ -248,6 +263,8 @@ export function SajuExperience({
 
   function checkout() {
     const focus = (focusId || "growth") as FocusId;
+    captureConversionEvent("paid_teaser_click", locale, { concern: focus });
+    captureConversionEvent("product_select", locale, { productCode: product, location: "product_card" });
     const draft = {
       version: 1 as const,
       locale,
@@ -288,23 +305,14 @@ export function SajuExperience({
   /* ---------------- intake ---------------- */
   if (!chart || !story) {
     return (
-      <main className="saju-page saju-story" data-stage="intake">
-        {step === 0 && <header className="saju-story-hero">
-          <Portrait className="saju-story-hero-portrait" src={POSE.welcome} />
-          <p className="saju-story-edition">結 GYEOL · 하랑 법사</p>
-          <h1>{L("하랑 법사가 짚어드리는 사주", "Saju, read by Harang")}</h1>
-          <p className="saju-story-lede">{L("왜 늘 같은 자리에서 막히는지, 여덟 글자로 웃으며 짚어드립니다. 끝은 다정하게 닫고요.", "Why you keep getting stuck in the same place, read from your eight characters with a smile, and closed kindly.")}</p>
-          <ul className="saju-story-chips" aria-label={L("무료 풀이 구성", "What the free reading covers")}>
-            <li>{L("사주 원국", "Your chart")}</li>
-            <li>{L("어린 시절", "Childhood")}</li>
-            <li>{L("숫자로 본 나", "Your numbers")}</li>
-            <li>{L("전생 풀이", "Past-life sketch")}</li>
-            <li>{L("겉과 속 점수", "Mask score")}</li>
-          </ul>
-          {reviewCount !== null && reviewCount > 0 && (
-            <p className="saju-story-count">{L(`공개된 후기 ${reviewCount.toLocaleString("ko-KR")}개`, `${reviewCount.toLocaleString("en-US")} published reviews`)}</p>
-          )}
-        </header>}
+      <main className={`saju-page saju-story ${styles.shell}`} data-stage="intake">
+        <header className="saju-story-hero saju-intake-heading">
+          <Link href={`/${locale}`} className="saju-intake-home">{L("← 홈", "← Home")}</Link>
+          <Portrait className="saju-story-hero-portrait" src={POSE.front} />
+          <div><p className="saju-story-edition">結 GYEOL · {L("하랑 법사", "HARANG")}</p>
+          <h1>{L("내 이야기, 하나씩 풀어봐요.", "Your story, one step at a time.")}</h1>
+          <p>{L("간단히 답하고 무료 풀이부터 읽어보세요.", "Answer a few questions, then read the free chapters.")}</p></div>
+        </header>
 
         <form className="saju-story-intake" onSubmit={(event) => { event.preventDefault(); next(); }} noValidate>
           <HydrationGate locale={locale}>
@@ -317,7 +325,7 @@ export function SajuExperience({
 
             <div className="saju-story-bubble-row">
               <Face className="saju-story-avatar" src={POSE.front} />
-              <p className="saju-story-bubble">
+              <p className="saju-story-bubble" role="status" aria-live="polite">
                 {current.say}
                 {"accent" in current && current.accent && <><br /><b>{current.accent}</b></>}
               </p>
@@ -438,7 +446,7 @@ export function SajuExperience({
     : L(`복채 ${won(selectedPrice)} 내고 전부 열기`, `Pay ${won(selectedPrice)} and open everything`);
 
   return (
-    <main className="saju-page saju-story" data-stage="reading">
+    <main className={`saju-page saju-story ${styles.shell}`} data-stage="reading">
       <header className="saju-story-rhead">
         <Face className="saju-story-mini" src={POSE.front} />
         <div>
@@ -451,7 +459,7 @@ export function SajuExperience({
       {chapter === CH.prologue && (
         <article className="saju-story-chapter-body" data-tone="night">
           <p className="saju-story-kicker">PROLOGUE</p>
-          <h2 className="saju-story-title">{L(`이 사주는,\n${callName}님의 이야기입니다`, `This chart is\nyour story, ${callName}`)}</h2>
+          <h2 className="saju-story-title">{L(`이 사주는,\n${callName}의 이야기입니다`, "This chart tells\nyour story.")}</h2>
           <p className="saju-story-poem">{L("태어난 그 날, 그 시각의 하늘은\n두 번 오지 않습니다.\n그래서 이 여덟 글자는 세상에 하나뿐입니다.", "The sky of that day and hour\nnever comes twice.\nSo these eight characters are yours alone.")}</p>
           <blockquote className="saju-story-voice">{L("먼저 말씀드립니다. 이건 맞히기 놀음이 아니라 한 사람을 읽는 방법입니다. 글자는 제가 짚을 테니, 이야기가 맞는지는 님이 판단해 주세요. 틀리면 틀렸다고 하셔도 됩니다.", "Let me say this first: this is not a guessing game, it's a way of reading a person. I'll point to the characters; you judge whether the story fits.")}</blockquote>
           <p className="saju-story-poem">{L(`${HARANG_LINES.freeIntro}\n여덟 글자 가운데 님의 주인이 되는 글자,\n그것부터 보여드리겠습니다.`, "Let me start light, with something you've half noticed.\nOf the eight, here is\nthe one that is you.")}</p>
@@ -542,7 +550,7 @@ export function SajuExperience({
         <article className="saju-story-chapter-body" data-tone="paper">
           <p className="saju-story-kicker">NUMBERS</p>
           <h2 className="saju-story-title">{L("숫자로 본 나", "Your numbers")}</h2>
-          <p className="saju-story-poem">{L(`${callName}님 생년월일이 참 곱습니다.\n숫자인데도 곱다는 게 이상하죠.`, "Your birth date is a lovely one.\nOdd thing to say about numbers, I know.")}</p>
+          <p className="saju-story-poem">{L(`${callName} 생년월일이 참 곱습니다.\n숫자인데도 곱다는 게 이상하죠.`, "Your birth date is a lovely one.\nOdd thing to say about numbers, I know.")}</p>
           <dl className="saju-story-numbers">
             <div data-main="true"><dt>{L("운명수", "Life path")}</dt><dd>{extra.numbers.lifePath.value}</dd><small>{extra.numbers.lifePath.formula}</small></div>
             <div><dt>{L("생일수", "Birthday")}</dt><dd>{extra.numbers.birthday.value}</dd><small>{extra.numbers.birthday.formula}</small></div>
@@ -647,7 +655,7 @@ export function SajuExperience({
       {chapter === CH.fee && (
         <article className="saju-story-chapter-body" data-tone="paper" id="saju-fee">
           <Portrait className="saju-story-fee-art" src={POSE.fee} />
-          <p className="saju-story-poem">{L(`"${callName}님, ${HARANG_LINES.fee}"`, `"${callName}, from here on I read for a fee.\nMy time is precious, and so is your story."`)}</p>
+          <p className="saju-story-poem">{L(`"${callName}, ${HARANG_LINES.fee}"`, '"From here, the reading is paid.\nCheck the added content and price first."')}</p>
           <section className="saju-story-found">
             <span className="saju-story-stamp" aria-hidden="true">{L("복채", "FEE")}</span>
             <h2>{L("하랑이 님의 사주에서\n먼저 찾아낸 것 9가지", "Nine things Harang\nfound in your chart")}</h2>

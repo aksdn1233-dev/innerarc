@@ -12,9 +12,6 @@ async function closeTour(page: import("@playwright/test").Page) {
 // enforce exact scene state, object counts, geometry budgets and render scale.
 
 test("failed material load releases the canvas and retry restores one renderer", async ({ page }, testInfo) => {
-  // Run recovery before the fixture gallery creates many short-lived WebGL
-  // contexts in the same constrained browser process. The product timeout and
-  // exact fresh-scene assertion remain unchanged.
   // The network log is attached inline so the JSON report keeps it even after
   // later CI steps clear test-results.
   const started = Date.now(), log: string[] = [], stamp = () => `${String(Date.now() - started).padStart(6)}ms`;
@@ -38,7 +35,14 @@ test("failed material load releases the canvas and retry restores one renderer",
 });
 
 async function recoverAfterMaterialOutage(page: import("@playwright/test").Page) {
-  await page.route("**/space/assets/oak-floor-color.jpg", route => route.fulfill({ status: 503, body: "synthetic outage" })); await page.goto("/en/space"); await closeTour(page);
+  // Warm the page and WebGL bundles before injecting the material outage. On a
+  // cold WebKit runner, downloading the dynamic chunks can consume most of the
+  // per-attempt startup deadline, leaving no time to exercise recovery.
+  await page.goto("/en/space"); await closeTour(page);
+  await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "8", { timeout: 30000 });
+  expect(await page.locator("canvas").count()).toBe(1);
+  await page.route("**/space/assets/oak-floor-color.jpg", route => route.fulfill({ status: 503, body: "synthetic outage", headers: { "cache-control": "no-store" } }));
+  await page.reload(); await closeTour(page);
   await expect(page.getByRole("button", { name: "Retry 3D" })).toBeVisible({ timeout: 20000 }); expect(await page.locator("canvas").count()).toBe(0);
   await page.unroute("**/space/assets/oak-floor-color.jpg"); await page.getByRole("button", { name: "Retry 3D" }).click();
   await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "8", { timeout: 30000 }); expect(await page.locator("canvas").count()).toBe(1);

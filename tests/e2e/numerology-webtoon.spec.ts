@@ -19,29 +19,13 @@ test("1994-11-04 keeps its calculation and gains selectable webtoon dialogue", a
   await expect(page.locator("main")).toContainText("과학적 예측·진단·치료");
 });
 
-test("the home and pattern guides each have one audible narration source", async ({ page }) => {
-  await page.goto("/ko/numerology?focus=work");
-  const readMedia = async (selector: string) => page.locator(selector).evaluate((element) => {
-    const video = element.querySelector("video") as HTMLVideoElement;
-    const audio = element.querySelector("audio") as HTMLAudioElement;
-    return {
-      audioAutoplay: audio.autoplay,
-      audioMuted: audio.muted,
-      videoMuted: video.muted,
-    };
-  });
-  await expect.poll(() => readMedia(".hero-guide")).toEqual({
-    audioAutoplay: false,
-    audioMuted: false,
-    videoMuted: true,
-  });
-
-  await page.goto("/ko/reading");
-  await expect.poll(() => readMedia(".cinema-hero")).toEqual({
-    audioAutoplay: false,
-    audioMuted: false,
-    videoMuted: true,
-  });
+test("Harang portraits never load duplicate legacy narration", async ({ page }) => {
+  for (const [route, selector] of [["/ko/numerology?focus=work", ".hero-guide"], ["/ko/reading", ".cinema-hero"]]) {
+    await page.goto(route);
+    const region = page.locator(selector);
+    await expect(region.locator("video, audio")).toHaveCount(0);
+    await expect(region.locator('img[src*="characters/harang"]')).toHaveCount(1);
+  }
 });
 
 test("English results explain the same four calculated numbers", async ({ page }) => {

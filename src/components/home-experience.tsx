@@ -1,6 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import { HARANG_IMAGES } from "@/core/characters/harang";
+import { HarangJourneyPreview } from "@/components/harang-journey-preview";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { MeteorTrails, NightHorizon, SceneDivider } from "@/components/brand-visuals";
 import { ReviewEvidenceSection } from "@/components/review-evidence-section";
@@ -70,8 +73,6 @@ const GUIDE_SCREENS = [
   "report",
 ] as const;
 
-/** 390×531 at 2x — the portrait frame the clips are recorded in. */
-const GUIDE_FRAME = { width: 780, height: 1062 } as const;
 
 const concernExamples: Record<Locale, Record<FocusId, string>> = {
   ko: {
@@ -139,7 +140,7 @@ const copy = {
     guideCue: "처음이세요? 이용 방법 먼저 보기",
     guideEyebrow: "이용 방법",
     guideTitle: "네 단계면 결과까지 갑니다",
-    guideScreenLabel: "실제 화면",
+    guideScreenLabel: "이용 예시",
     guideSteps: [
       ["질문 고르기", "지금 가장 걸리는 질문을 고릅니다", "예) 지금 하는 일이 돈이 될까요?"],
       ["생년월일", "양력 생년월일만 넣습니다", "예) 1994년 11월 4일 → 1994-11-04 · 회원가입 없음"],
@@ -215,7 +216,7 @@ const copy = {
     guideCue: "First time here? See how it works",
     guideEyebrow: "How it works",
     guideTitle: "Four steps to a result",
-    guideScreenLabel: "The actual screen",
+    guideScreenLabel: "Example journey",
     guideSteps: [
       ["Pick a question", "Choose the question on your mind", "e.g. Will the work I am doing actually pay?"],
       ["Birth date", "A birth date is all it takes", "e.g. 4 November 1994 → 1994-11-04 · no account"],
@@ -330,17 +331,13 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
   // Switching steps must not show an empty frame. `display: none` stops a lazy image
   // being fetched at all, so once the stage is near the viewport every capture is loaded
   // eagerly and a tap changes the picture immediately.
-  const [stageReady, setStageReady] = useState(false);
   const [stageOnScreen, setStageOnScreen] = useState(false);
   const guideTabsRef = useRef<HTMLDivElement>(null);
   const guideStageRef = useRef<HTMLDivElement>(null);
-  const guideClipRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const heroRef = useRef<HTMLElement>(null);
   const guideRef = useRef<HTMLElement>(null);
   const closeRef = useRef<HTMLElement>(null);
   const campaignShownRef = useRef(false);
-  const heroVideoRef = useRef<HTMLVideoElement>(null);
-  const heroAudioRef = useRef<HTMLAudioElement>(null);
   const trackedRef = useRef(new Set<string>());
   const sampleRef = useRef<HTMLElement>(null);
   const productsRef = useRef<HTMLElement>(null);
@@ -451,7 +448,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
     // that delivers the observer late still never leaves the frame empty.
     const observer = new IntersectionObserver(([entry]) => {
       if (!entry) return;
-      if (entry.isIntersecting) setStageReady(true);
+
       // Kept connected, unlike the first version: the walkthrough moves on by itself, and
       // a walkthrough that keeps stepping through screens nobody is looking at is just a
       // battery bill.
@@ -461,33 +458,11 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
     return () => observer.disconnect();
   }, [showEverything]);
 
-  /**
-   * Plays the step that is showing, and only while the stage is on screen.
-   *
-   * A visitor who asked for reduced motion gets the poster frame instead: the poster is
-   * the clip's own first frame, so they still see the screen, it just does not move. They
-   * do not get the automatic step either — the tabs still move them.
-   */
   useEffect(() => {
-    if (showEverything) return;
-    const clips = guideClipRefs.current;
-    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    guideTabsRef.current?.style.setProperty("--guide-progress", "0");
-    clips.forEach((clip, index) => {
-      if (!clip) return;
-      if (index !== guideStep || !stageReady || !stageOnScreen || still) {
-        clip.pause();
-        return;
-      }
-      clip.currentTime = 0;
-      void clip.play().catch(() => { /* a browser may refuse; the poster stays */ });
-    });
-  }, [guideStep, showEverything, stageOnScreen, stageReady]);
-
-  /** The step showing, and the one the walkthrough will move to next. */
-  function isNear(index: number) {
-    return index === guideStep || index === (guideStep + 1) % GUIDE_SCREENS.length;
-  }
+    if (showEverything || !stageOnScreen || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = window.setTimeout(() => setGuideStep(step => (step + 1) % GUIDE_SCREENS.length), 6000);
+    return () => window.clearTimeout(timer);
+  }, [guideStep, showEverything, stageOnScreen]);
 
   function openGuide() {
     markGuideSeen();
@@ -550,40 +525,6 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
 
     return () => observers.forEach((observer) => observer.disconnect());
   }, [locale]);
-
-  // The hero clip is fetched after first paint, so it never competes with the page for
-  // the first bytes and never counts against the initial payload. If no clip is published
-  // the load simply fails and the poster stays — which is the intended state until one is.
-  useEffect(() => {
-    const video = heroVideoRef.current;
-    const audio = heroAudioRef.current;
-    if (!video || !audio) return;
-    const stop = (media: HTMLMediaElement) => {
-      media.pause();
-      try {
-        media.currentTime = 0;
-      } catch {
-        // Metadata may not be ready yet. Pausing is enough to prevent overlap.
-      }
-    };
-    video.muted = true;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      stop(video);
-      stop(audio);
-      return;
-    }
-    const isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent)
-      || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-    if (!isIOS) {
-      void video.play().catch(() => {});
-    }
-    audio.muted = false;
-    void audio.play().catch(() => {});
-    return () => {
-      stop(video);
-      stop(audio);
-    };
-  }, []);
 
   function trackFormStart() {
     if (trackedRef.current.has("form-start")) return;
@@ -781,57 +722,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
             thumb. Everything explanatory has moved below the fold, where it belongs. */}
         <section className="cinema-hero" aria-labelledby="hero-title" ref={heroRef}>
           <NightHorizon className="cinema-hero-scene" />
-          {/* 태율(太律), the numerology guide from the supplied character sheet.
-              Decorative: the title beside it carries the meaning, so it is not announced
-              again.
-
-              A seven-second loop of him, watermark removed and cross-faded at the seam so
-              it repeats without a cut. The poster is the clip's own first frame, so the
-              still and the moving picture are the same image and nothing jumps when
-              playback starts. `preload="none"` keeps it out of the initial payload; the
-              effect below starts it once the page is idle, and never when the visitor has
-              asked for reduced motion. */}
-          {/* Video poster must use the same direct asset as the video fallback. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            alt=""
-            aria-hidden="true"
-            className="cinema-hero-portrait inline-video-fallback"
-            fetchPriority="high"
-            loading="eager"
-            src="/videos/taeyul-hero-ios-mini.webp?v=20260815-mini1"
-          />
-          <video
-            {...{ "webkit-playsinline": "true", "x-webkit-airplay": "deny" }}
-            aria-hidden="true"
-            className="cinema-hero-portrait inline-video-source"
-            controls={false}
-            controlsList="nofullscreen noremoteplayback"
-            disablePictureInPicture
-            disableRemotePlayback
-            loop
-            muted
-            onLoadedMetadata={(event) => {
-              const video = event.currentTarget;
-              video.setAttribute("playsinline", "");
-              video.setAttribute("webkit-playsinline", "");
-              video.controls = false;
-              video.addEventListener("webkitbeginfullscreen", () => {
-                (video as HTMLVideoElement & { webkitExitFullscreen?: () => void })
-                  .webkitExitFullscreen?.();
-              }, { once: true });
-            }}
-            playsInline
-            poster="/images/taeyul-hero.jpg"
-            preload="auto"
-            ref={heroVideoRef}
-            tabIndex={-1}
-          >
-            <source src="/videos/taeyul-hero.mp4?v=20260815-fluid1" type="video/mp4" />
-          </video>
-          <audio aria-hidden="true" className="inline-video-audio" loop preload="auto" ref={heroAudioRef}>
-            <source src="/videos/taeyul-hero-audio.m4a?v=20260810-ios1" type="audio/mp4" />
-          </audio>
+          <Image alt="" aria-hidden="true" className="cinema-hero-portrait" src={HARANG_IMAGES.baseLarge} width={1088} height={1456} unoptimized priority sizes="(max-width: 760px) 100vw, 600px" />
           <MeteorTrails className="cinema-hero-meteors" />
           <div className="cinema-hero-veil" aria-hidden="true" />
 
@@ -993,7 +884,6 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                     if (!delta) return;
                     event.preventDefault();
                     const next = (guideStep + delta + GUIDE_SCREENS.length) % GUIDE_SCREENS.length;
-                    setStageReady(true);
                     setGuideStep(next);
                     guideTabsRef.current?.querySelectorAll("button")[next]?.focus();
                   }}
@@ -1005,8 +895,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                       className={guideStep === index ? "is-current" : undefined}
                       id={`guide-tab-${index}`}
                       key={label}
-                      onClick={() => { setStageReady(true); setGuideStep(index); }}
-                      onFocus={() => setStageReady(true)}
+                      onClick={() => setGuideStep(index)}
                       role="tab"
                       tabIndex={guideStep === index ? 0 : -1}
                       type="button"
@@ -1031,41 +920,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                   </div>
 
                   <div className="guide-stage" ref={guideStageRef}>
-                    {GUIDE_SCREENS.map((screen, index) => (
-                      <video
-                        aria-label={t.guideSteps[index]![1]}
-                        className="guide-stage-clip"
-                        hidden={guideStep !== index}
-                        key={screen}
-                        muted
-                        playsInline
-                        // Nothing downloads until the reader reaches the stage — the
-                        // poster included, since a poster is fetched whatever `preload`
-                        // says, and four of them landed in the initial payload. The
-                        // poster is the clip's own first frame, so the still and the
-                        // moving picture are the same image.
-                        poster={stageReady ? `/images/guide/${screen}.jpg` : undefined}
-                        // The step being watched and the one it will move to next. All
-                        // four put 2.4 MB on the reader's connection for screens they may
-                        // never reach; only the current one leaves the automatic step
-                        // waiting on a download.
-                        preload={stageReady && isNear(index) ? "auto" : "none"}
-                        // The clip's own length is the step's length: it moves on when the
-                        // screen has finished showing itself, not on a timer picked out of
-                        // the air. Only the visible clip plays, so only it can end.
-                        onEnded={() => setGuideStep((step) => (step + 1) % GUIDE_SCREENS.length)}
-                        onTimeUpdate={(event) => {
-                          if (index !== guideStep) return;
-                          const { currentTime, duration } = event.currentTarget;
-                          const played = duration ? currentTime / duration : 0;
-                          guideTabsRef.current?.style.setProperty("--guide-progress", played.toFixed(3));
-                        }}
-                        ref={(node) => { guideClipRefs.current[index] = node; }}
-                        style={{ aspectRatio: `${GUIDE_FRAME.width} / ${GUIDE_FRAME.height}` }}
-                      >
-                        <source src={`/images/guide/${screen}.mp4`} type="video/mp4" />
-                      </video>
-                    ))}
+                    <HarangJourneyPreview locale={locale} step={guideStep} />
                   </div>
                 </div>
               </div>

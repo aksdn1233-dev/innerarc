@@ -1,5 +1,12 @@
 # Living Checklist
 
+## 2026-10-16 Harang-only renewal
+
+- [x] Owner-selected approved Harang artwork; legacy public character media retired.
+- [x] Real report, service navigation, pricing, Reality Check and legal boundaries retained.
+- [x] Contrast, target-size and definition-list defects found by browser gates corrected.
+- [ ] Final release evidence: docs/Harang-Renewal-Validation-2026-10-16.md.
+
 Last updated: 2026-09-10
 
 ## Phase 0 - Workspace and baseline
@@ -563,6 +570,14 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Desktop/mobile browser journeys: 8 guided/home tests and 54 Saju/report/onboarding regressions passed after updating two intentional copy assertions; privacy, free result, legal footer, and payment entry were exercised. Production smoke remains pending.
 - [ ] Record production deployment ID and live rollback target after release.
 
+## 2026-10-16 — Stabilize iPhone space recovery verification
+
+- [x] Root cause: the recovery gate injected an asset outage during the first cold WebKit load. Dynamic bundle startup could consume most of the recovery window, making a successful second renderer appear flaky even though a full Playwright retry passed.
+- [x] Warm the page and WebGL bundles before injecting the synthetic material failure; retain the same failure, canvas-release, retry, object-count, and single-renderer assertions.
+- [x] The focused iPhone recovery gate passed 5/5 repeated local runs with `CI=1` and `failOnFlakyTests` enabled.
+- [ ] Require all hosted CI checks to be green before merging.
+- [ ] Production deploy remains automatic after a successful CI run on `main`; verify the deploy job health and build identity.
+
 ## 2026-09-29 사주 메뉴 이야기형 개편
 
 - [x] 입력 6단계(이름·성별·생년월일·시진·관심 분야·질문)와 개인정보 동의
@@ -571,3 +586,12 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] typecheck, lint, 테스트 1,227개 통과
 - [x] 일본어 /ja/reading 제목 276px 넘침 문제 수정
 - [ ] 운영 배포 후 폰에서 복채 챕터 → 결제 화면 이동 실제 확인
+
+## 2026-10-16 — Harang-only reading-room renewal
+- [x] Reference and actual repository compared; owner chose Harang, existing identity and art reused.
+- [x] Old public character assets/audio/recordings retired; saved optional guide IDs retain a fallback.
+- [x] Real report preview, service/price navigation, legal footer and Reality Check preserved.
+- [x] Unit suite: 128 files, 1,229 tests passed before final browser fixes.
+- [x] Browser QA found and fixed sample contrast, 44px link targets and invalid definition-list grouping. Existing axe/phone scans remain regression gates.
+- [ ] Final complete browser, visual, payment-shell and release checks recorded in Release-Checklist.
+- [ ] Hosted CI and build identity must pass before declaring production complete.

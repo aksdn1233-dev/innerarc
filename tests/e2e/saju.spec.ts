@@ -21,9 +21,18 @@ async function answerIntake(page: Page, options: { hour?: string } = {}) {
 }
 
 test("six questions lead to free chapters before any fee", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/ko/saju");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("하랑 법사가 짚어드리는 사주");
+  await expect(page.locator(".saju-intake-heading h1")).toBeVisible();
+  const portrait = await page.locator(".saju-intake-heading img").boundingBox();
+  expect(portrait?.width).toBe(64);
+  expect(portrait?.height).toBe(64);
+  await expect(page.locator("#saju-readingName")).toBeInViewport();
   await expect(page.getByText("1/6단계")).toBeVisible();
+  await page.getByRole("button", { name: /다음/ }).click();
+  await expect(page.locator(".saju-story-bubble")).toContainText("손님,");
+  await expect(page.locator(".saju-story-bubble")).not.toContainText("손님님");
+  await page.getByRole("button", { name: "이전 단계" }).click();
   await answerIntake(page);
 
   await expect(page.locator(".saju-story-chapter")).toHaveText("서막");

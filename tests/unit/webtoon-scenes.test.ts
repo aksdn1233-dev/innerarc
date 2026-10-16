@@ -9,20 +9,20 @@ import {
 } from "@/core/webtoon-scenes";
 
 describe("GYEOL webtoon scene selector", () => {
-  it("is deterministic and maps the six product themes to the approved guides", () => {
+  it("is deterministic and maps every product theme to the current host", () => {
     const input = { seed: "1994-11-04:11:summary", theme: "core", emphasis: "medium" } as const;
     expect(selectWebtoonScene(input)).toEqual(selectWebtoonScene(input));
     expect(selectWebtoonScene(input).character).toBe("harang");
-    expect(selectWebtoonScene({ seed: "relationship", theme: "relationship" }).character).toBe("yeonhui");
-    expect(selectWebtoonScene({ seed: "analysis", theme: "analysis" }).character).toBe("sahyeon");
-    expect(selectWebtoonScene({ seed: "warning", theme: "warning" }).character).toBe("hwayeon");
-    expect(selectWebtoonScene({ seed: "healing", theme: "healing" }).character).toBe("yundo");
-    expect(selectWebtoonScene({ seed: "possibility", theme: "possibility" }).character).toBe("hoyeon");
+    expect(selectWebtoonScene({ seed: "relationship", theme: "relationship" }).character).toBe("harang");
+    expect(selectWebtoonScene({ seed: "analysis", theme: "analysis" }).character).toBe("harang");
+    expect(selectWebtoonScene({ seed: "warning", theme: "warning" }).character).toBe("harang");
+    expect(selectWebtoonScene({ seed: "healing", theme: "healing" }).character).toBe("harang");
+    expect(selectWebtoonScene({ seed: "possibility", theme: "possibility" }).character).toBe("harang");
   });
 
   it("falls back by section and emotion, then to Harang", () => {
-    expect(selectWebtoonScene({ seed: "x", theme: "unknown", sectionType: "warning" }).character).toBe("hwayeon");
-    expect(selectWebtoonScene({ seed: "x", theme: "unknown", emotion: "gentle" }).character).toBe("yundo");
+    expect(selectWebtoonScene({ seed: "x", theme: "unknown", sectionType: "warning" }).character).toBe("harang");
+    expect(selectWebtoonScene({ seed: "x", theme: "unknown", emotion: "gentle" }).character).toBe("harang");
     expect(selectWebtoonScene({ seed: "x" }).character).toBe("harang");
   });
 
@@ -51,7 +51,7 @@ describe("GYEOL webtoon scene selector", () => {
     const manifest = getWebtoonManifest();
     const seen = new Set<string>();
     for (const [id, character] of Object.entries(manifest.characters)) {
-      expect(character.assets).toHaveLength(32);
+      expect(character.assets).toHaveLength(3);
       for (const asset of character.assets) {
         expect(asset.file).toMatch(new RegExp(`^${id}_[a-z0-9-]+_[a-z0-9-]+_01\\.png$`));
         const path = `${WEBTOON_ASSET_ROOT}/characters/${id}/${asset.file}`;
@@ -60,7 +60,7 @@ describe("GYEOL webtoon scene selector", () => {
         expect((await stat(`public${path}`)).size).toBeGreaterThan(40_000);
       }
     }
-    expect(seen.size).toBe(192);
+    expect(seen.size).toBe(3);
 
     const scenes = ["core", "relationship", "analysis", "warning", "healing", "possibility"]
       .map((theme) => selectWebtoonScene({ seed: theme, theme }));
@@ -72,12 +72,7 @@ describe("GYEOL webtoon scene selector", () => {
     }
   });
 
-  it("keeps redesigned Yundo and Hoyeon metadata free of the rejected traits", () => {
-    const manifest = getWebtoonManifest();
-    for (const id of ["yundo", "hoyeon"] as const) {
-      const serialized = JSON.stringify(manifest.characters[id]).toLowerCase();
-      expect(serialized).not.toContain("glasses");
-      expect(serialized).not.toContain("long-hair");
-    }
+  it("exposes only the current host in its public manifest", () => {
+    expect(Object.keys(getWebtoonManifest().characters)).toEqual(["harang"]);
   });
 });

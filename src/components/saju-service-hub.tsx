@@ -67,14 +67,7 @@ const services = {
   ],
 } as const;
 
-const serviceGuideIds: readonly NumerologyGuideId[] = [
-  "harang",
-  "sahyeon",
-  "yeonhui",
-  "hwayeon",
-  "hoyeon",
-  "yundo",
-];
+const serviceGuideIds: readonly NumerologyGuideId[] = ["harang", "harang", "harang", "harang", "harang", "harang"];
 
 export function SajuServiceHub({ locale, pricing }: { locale: Locale; pricing: ProductPricingSnapshot }) {
   const t = copy[locale];

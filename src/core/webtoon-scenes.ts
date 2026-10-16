@@ -2,7 +2,7 @@ import manifestJson from "@/data/gyeol-webtoon-manifest.json";
 import type { NumerologyGuideId } from "@/core/numerology-guides";
 import { withParticle } from "@/core/korean-particles";
 
-export const WEBTOON_SCENE_VERSION = "gyeol-webtoon-scenes-1.0.0";
+export const WEBTOON_SCENE_VERSION = "gyeol-webtoon-scenes-2.0.0";
 export const WEBTOON_ASSET_ROOT = "/assets/gyeol-webtoon";
 
 type ManifestAsset = Readonly<{ file: string; pose: string; expression: string }>;
@@ -62,53 +62,14 @@ export type WebtoonScene = Readonly<{
   objectPosition: "center bottom";
 }>;
 
-const THEME_CHARACTER: Record<string, NumerologyGuideId> = {
-  core: "harang",
-  "life-path": "harang",
-  integrated: "harang",
-  relationship: "yeonhui",
-  compatibility: "yeonhui",
-  emotion: "yeonhui",
-  analysis: "sahyeon",
-  pattern: "sahyeon",
-  decision: "sahyeon",
-  timing: "hwayeon",
-  change: "hwayeon",
-  warning: "hwayeon",
-  balance: "yundo",
-  healing: "yundo",
-  stability: "yundo",
-  intuition: "hoyeon",
-  possibility: "hoyeon",
-  encouragement: "hoyeon",
-};
-
-const SECTION_CHARACTER: Record<WebtoonSectionType, NumerologyGuideId> = {
-  summary: "harang",
-  numbers: "sahyeon",
-  relationship: "yeonhui",
-  decision: "sahyeon",
-  warning: "hwayeon",
-  balance: "yundo",
-  encouragement: "hoyeon",
-};
-
-const EMOTION_CHARACTER: Record<WebtoonEmotion, NumerologyGuideId> = {
-  neutral: "harang",
-  calm: "harang",
-  focused: "sahyeon",
-  serious: "hwayeon",
-  gentle: "yundo",
-  hopeful: "hoyeon",
-};
-
-const SCENE_DECOR: Record<NumerologyGuideId, { background: string; prop: string; effect: string }> = {
-  harang: { background: "black-gold-study_01.png", prop: "numerology-card_01.png", effect: "gold-sparkle_01.png" },
-  yeonhui: { background: "wisteria-garden_01.png", prop: "relationship-knot_01.png", effect: "purple-empathy-petals_01.png" },
-  sahyeon: { background: "parchment-calculation-room_01.png", prop: "chart-scroll_01.png", effect: "reveal-rays_01.png" },
-  hwayeon: { background: "crimson-fate-chamber_01.png", prop: "butterfly-fan_01.png", effect: "red-warning-aura_01.png" },
-  yundo: { background: "blue-healing-observatory_01.png", prop: "blue-crystal-sphere_01.png", effect: "blue-healing-glow_01.png" },
-  hoyeon: { background: "amber-intuitive-studio_01.png", prop: "sun-compass_01.png", effect: "closing-light-particles_01.png" },
+const SCENE_DECOR: Record<WebtoonSectionType, { background: string; prop: string; effect: string }> = {
+  summary: { background: "black-gold-study_01.png", prop: "numerology-card_01.png", effect: "gold-sparkle_01.png" },
+  numbers: { background: "parchment-calculation-room_01.png", prop: "chart-scroll_01.png", effect: "reveal-rays_01.png" },
+  relationship: { background: "wisteria-garden_01.png", prop: "relationship-knot_01.png", effect: "purple-empathy-petals_01.png" },
+  decision: { background: "parchment-calculation-room_01.png", prop: "chart-scroll_01.png", effect: "reveal-rays_01.png" },
+  warning: { background: "warning-red-chamber_01.png", prop: "chart-scroll_01.png", effect: "red-warning-aura_01.png" },
+  balance: { background: "blue-healing-observatory_01.png", prop: "numerology-book_01.png", effect: "blue-healing-glow_01.png" },
+  encouragement: { background: "sunrise-terrace_01.png", prop: "sun-compass_01.png", effect: "closing-light-particles_01.png" },
 };
 
 const POSE_PREFERENCE: Record<NonNullable<WebtoonSceneInput["emphasis"]>, readonly string[]> = {
@@ -126,13 +87,6 @@ function stableHash(value: string): number {
   return hash >>> 0;
 }
 
-function chooseCharacter(input: WebtoonSceneInput): NumerologyGuideId {
-  if (input.theme && THEME_CHARACTER[input.theme]) return THEME_CHARACTER[input.theme];
-  if (input.sectionType) return SECTION_CHARACTER[input.sectionType];
-  if (input.emotion) return EMOTION_CHARACTER[input.emotion];
-  return "harang";
-}
-
 function orderedCandidates(character: ManifestCharacter, input: WebtoonSceneInput): ManifestAsset[] {
   const preferred = POSE_PREFERENCE[input.emphasis ?? "medium"];
   const ranked = [...character.assets].sort((left, right) => {
@@ -148,14 +102,14 @@ export function selectWebtoonScene(
   input: WebtoonSceneInput,
   recent: readonly WebtoonScene[] = [],
 ): WebtoonScene {
-  const characterId = chooseCharacter(input);
+  const characterId = "harang" as const;
   const character = manifest.characters[characterId];
   const candidates = orderedCandidates(character, input);
   const recentKeys = new Set(recent.slice(-2).map((scene) => `${scene.character}:${scene.pose}:${scene.expression}`));
   const available = candidates.filter((asset) => !recentKeys.has(`${characterId}:${asset.pose}:${asset.expression}`));
   const pool = available.length > 0 ? available : candidates;
   const asset = pool[stableHash(`${input.seed}:${input.theme ?? ""}:${input.sectionType ?? ""}:${input.emotion ?? ""}`) % pool.length];
-  const decor = SCENE_DECOR[characterId];
+  const decor = SCENE_DECOR[input.sectionType ?? "summary"];
 
   return {
     version: WEBTOON_SCENE_VERSION,

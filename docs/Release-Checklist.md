@@ -1,5 +1,11 @@
 # Release Checklist
 
+## 2026-10-16 Harang reading-room renewal
+
+- [x] Existing payment, account and deterministic engine boundaries preserved.
+- [x] Rollback reference captured before release; retired media recoverable in Git.
+- [ ] Final gates and deployed identity recorded in Harang-Renewal-Validation-2026-10-16.md.
+
 ## Product and content
 
 - [x] Local P0 acceptance criteria trace to deterministic or browser tests.

@@ -222,7 +222,7 @@ export function DetailEditorialReport({
       )}
 
       <section className="ed-cover" aria-labelledby="ed-cover-title">
-        <Image alt="" aria-hidden="true" className="ed-cover-image" fill priority sizes="100vw" src="/images/brand/night-hero-v3.jpg" />
+        <Image alt="" aria-hidden="true" className="ed-cover-image" fill priority sizes="100vw" src="/characters/harang/hero-1680.webp" />
         <div className="ed-cover-shade" aria-hidden="true" />
         <div className="ed-cover-brand"><strong>{ko ? "결" : "GYEOL"}</strong><span>PERSONAL PATTERN INTELLIGENCE</span></div>
         <div className="ed-cover-copy">

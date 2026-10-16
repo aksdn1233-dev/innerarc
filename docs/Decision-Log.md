@@ -1,3 +1,10 @@
+## D-117 — Sole Harang host and focused reading-room entry
+
+- Date: 2026-10-16. Direct owner request: retire prior public character identities, simplify the reference-style entry, and use the approved high-resolution 하랑 법사.
+- The narrow home has one dominant action into the existing Saju journey; report preview, pricing/service navigation, FAQ, Reality Check and legal information remain accessible.
+- Existing numerical evidence, engines, paid entitlements, prices, authentication, APIs and data stay intact. No new provider, token cost or migration; old guide IDs have a presentation fallback.
+- Retired public assets remain recoverable in Git. Acceptance, demand evidence, business guardrails and rollback: Harang-Reading-Room-Renewal-2026-10-16.md. Validation and incident controls: Harang-Renewal-Validation-2026-10-16.md.
+
 ## D-084 — Taeryeong-led conversational entry, preserving the calculation and commerce boundary
 
 - Date: 2026-09-30
@@ -1934,3 +1941,12 @@
 - Data contracts: guide IDs are computed, never stored, so `taeryeong` → `harang` needs no migration. Share payloads are built and parsed in one call. Device and account exports now say `product: "결"` and use `gyeol-*` filenames; nothing imports those files back. Report provenance meta tags become `gyeol:*`; no code reads them, and reports already delivered keep their own tags.
 - Payload: the stylesheet and font change move the CSS budgets in `tests/e2e/performance.spec.ts`; the new ceilings are the measured values with the usual ~1% headroom.
 - Reversal: revert the merge commit. The deleted 태령 assets remain in git history.
+
+## D-117 — One Harang host and a focused reading-room entry
+- Date: 2026-10-16
+- Owner demand: remove previous character traces, simplify the reference-style entry, and use the already approved high-resolution 하랑 법사.
+- Replace the broad homepage/modal with a focused portrait entry and one primary CTA to the existing six-question Saju journey. Preserve report preview, prices, service links, Reality Check, FAQ and legal details below it.
+- Consolidate presentation guides across the free result, service hub, daily flow, celebrity comparison, Space tour and paid/sample report art. Historical guide IDs fall back to Harang; saved evidence, deterministic engines, payment verification and prices do not change.
+- Retire public old-character art, narration, recordings, marketing captures and obsolete visual baselines. Assets remain recoverable from Git.
+- No new provider, token cost, database migration or data transfer. Existing closed-set, opt-in funnel telemetry gains the Saju surface.
+- Demand, success/guardrail metrics, costs, acceptance and reversal conditions: Harang-Reading-Room-Renewal-2026-10-16.md. Pre-release source e9ad278; Worker 21a128c4-d172-40cc-815f-379ffe528392.

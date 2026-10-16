@@ -31,7 +31,7 @@ describe("production miniature guide assets", () => {
 
   it("uses the canonical lead guide when an optional runtime variant is missing", () => {
     expect(getMiniGuideAsset("unknown-guide")).toBe(MINI_GUIDE_ASSETS.harangWelcome);
-    expect(getMiniGuideAsset("yundo")).toBe(MINI_GUIDE_ASSETS.yundoSpaceExplain);
+    expect(getMiniGuideAsset("yundo")).toBe(MINI_GUIDE_ASSETS.harangWelcome);
   });
 
   it("builds narration only from a validated recommendation and its real object anchor", () => {

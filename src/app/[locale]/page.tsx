@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import "@/app/harang-landing.css";
-import "@/app/daily-healing-home.css";
 import "@/app/harang-home.css";
 import { notFound } from "next/navigation";
 import { HarangLanding } from "@/components/harang-landing";
@@ -10,6 +8,8 @@ import { resolveSupabaseAdminClient } from "@/lib/supabase/admin";
 import { countPublicReviews, listPublicReviews } from "@/server/reviews";
 import { getSampleReport } from "@/server/reports/sample-report";
 import { dreamEnabled } from "@/server/dreams/config";
+import { getHomeFaq } from "@/i18n/home-faq";
+import { resolveProductPricing } from "@/core/product-prices";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -55,7 +55,7 @@ export default async function LocaleHome({
     nextAction: sampleReport.actions[0] ?? "",
     calculationBasis,
   };
-  return <HarangLanding dreamAvailable={dreamEnabled()} locale={locale} reportPreview={reportPreview} reviewCount={reviewCount} reviews={reviews} />;
+  return <HarangLanding dreamAvailable={dreamEnabled()} locale={locale} reportPreview={reportPreview} reviewCount={reviewCount} reviews={reviews} faq={getHomeFaq(locale, resolveProductPricing().prices.pro_30d)} />;
 }
 
 export const dynamic = "force-dynamic";

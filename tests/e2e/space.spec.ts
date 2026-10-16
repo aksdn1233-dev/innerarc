@@ -30,21 +30,21 @@ test("space demo confirms, analyzes, compares, applies and invalidates edits", a
   const tourViolations = await tutorial.evaluate(async (node) => (await (window as unknown as { axe: { run(target: Element, options: unknown): Promise<{ violations: { id: string }[] }> } }).axe.run(node, { runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa"] } })).violations);
   expect(tourViolations).toEqual([]);
   await expect(tutorial.getByRole("heading", { name: "방 전체를 두 방향에서 찍어요." })).toBeVisible();
-  await expect(tutorial.locator("[data-character=yundo]")).toBeVisible();
-  await expect(tutorial.getByAltText("카메라를 들고 촬영 위치를 안내하는 윤도 미니어처")).toBeVisible();
+  await expect(tutorial.locator("[data-character=harang]")).toBeVisible();
+  await expect(tutorial.getByAltText(/하랑 법사 미니어처/)).toBeVisible();
   await expect(tutorial.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "1");
   await tutorial.getByRole("button", { name: "다음 →" }).click();
   await expect(tutorial.getByRole("heading", { name: "북쪽이 있는 쪽만 누르면 돼요." })).toBeVisible();
-  await expect(tutorial.locator("[data-character=hoyeon]")).toBeVisible();
+  await expect(tutorial.locator("[data-character=harang]")).toBeVisible();
   await tutorial.getByRole("group", { name: "방에서 북쪽이 있는 방향" }).getByRole("button", { name: "오른쪽", exact: true }).click();
   await tutorial.getByRole("button", { name: "다음 →" }).click();
   await expect(tutorial.getByText("✓ 거울·액자", { exact: true })).toBeVisible();
-  await expect(tutorial.locator("[data-character=sahyeon]")).toBeVisible();
+  await expect(tutorial.locator("[data-character=harang]")).toBeVisible();
   await tutorial.getByRole("button", { name: "다음 →" }).click();
   await expect(tutorial.locator("[data-character=harang]")).toBeVisible();
   await tutorial.getByRole("button", { name: "내 방으로 시작하기 →" }).click();
   await expect(tutorial).toHaveCount(0);
-  await expect(page.locator("figure[data-character=yundo]")).toBeVisible();
+  await expect(page.locator("figure[data-character=harang]")).toBeVisible();
   expect(await page.locator("main").evaluate((node) => getComputedStyle(node).backgroundColor)).toBe("rgb(246, 243, 236)");
   await expect(page.locator("[data-direction]")).toHaveCount(4);
   await expect(page.locator("[data-direction=north]")).toContainText("북 N");
@@ -174,17 +174,12 @@ test("device speech failure keeps the anchored guide readable", async ({ page })
   await expect(page.getByLabel("3D space guide").locator("p").first()).toBeVisible();
 });
 
-test("the home always shows a simple path to 3D room analysis", async ({ page }) => {
+test("the home keeps a simple path to 3D room analysis", async ({ page }) => {
   await page.goto("/ko");
-  await page.getByRole("button", { name: "안내 닫기" }).click();
-  const menu = page.getByRole("navigation").getByRole("link", { name: "풍수학", exact: true });
-  await expect(menu).toBeVisible();
-  await expect(page.getByRole("heading", { name: "침대와 책상, 지금 자리가 맞습니까?", exact: true })).toBeVisible();
-  await expect(page.locator(".dh-space-copy")).toContainText("방 구조 확인");
-  const roomLinks = page.getByRole("link", { name: "내 방 3D로 확인하기", exact: true });
-  await expect(roomLinks).toHaveCount(1);
-  await expect(roomLinks).toBeVisible();
-  await menu.click();
+  const roomLink = page.locator('.harang-services a[href="/ko/space"]');
+  await expect(roomLink).toContainText("풍수학");
+  await expect(roomLink).toContainText("3D");
+  await roomLink.click();
   await expect(page).toHaveURL(/\/ko\/space$/);
 });
 

@@ -279,7 +279,7 @@ export default async function PurchasedReportPage({
         <section className="webtoon-cover" data-webtoon-panel="">
           <NightHorizon className="cinema-hero-scene" />
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img alt="" aria-hidden="true" className="webtoon-cover-art" src="/images/taeyul-hero.jpg" />
+          <img alt="" aria-hidden="true" className="webtoon-cover-art" src="/characters/harang/base-1088.webp" />
           <MeteorTrails className="cinema-hero-meteors" />
           <div className="cinema-hero-veil" aria-hidden="true" />
 

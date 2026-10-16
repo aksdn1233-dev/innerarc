@@ -19,20 +19,20 @@ function webpMetadata(path: string): { hasAlpha: boolean; height: number; width:
 
 describe("restored webtoon character density", () => {
   it("serves authored 1x, 2x and 3x sources for a restored Saju character", () => {
-    const path = "/assets/gyeol-webtoon/characters/sahyeon/sahyeon_assure_confident_01.png";
+    const path = "/assets/gyeol-webtoon/characters/harang/harang_assure_confident_01.png";
     expect(getWebtoonCharacterImageSources(path)).toEqual({
       src: path,
-      srcSet: `${path} 1x, /assets/gyeol-webtoon/characters/sahyeon/sahyeon_assure_confident_01-hd-v2-2x.webp 2x, /assets/gyeol-webtoon/characters/sahyeon/sahyeon_assure_confident_01-hd-v2-3x.webp 3x`,
+      srcSet: `${path} 1x, /assets/gyeol-webtoon/characters/harang/harang_assure_confident_01-hd-v2-2x.webp 2x, /assets/gyeol-webtoon/characters/harang/harang_assure_confident_01-hd-v2-3x.webp 3x`,
     });
   });
 
   it("keeps an original-only asset free of fake density claims", () => {
-    const path = "/assets/gyeol-webtoon/characters/yundo/yundo_smile_warm_01.png";
+    const path = "/assets/gyeol-webtoon/characters/harang/harang_smile_warm_01.png";
     expect(getWebtoonCharacterImageSources(path)).toEqual({ src: path });
   });
 
   it("ships every restored pose as transparent 768px and 1254px canvases", () => {
-    expect(RESTORED_WEBTOON_CHARACTER_ASSETS).toHaveLength(11);
+    expect(RESTORED_WEBTOON_CHARACTER_ASSETS).toHaveLength(3);
     for (const asset of RESTORED_WEBTOON_CHARACTER_ASSETS) {
       const base = `${process.cwd()}/public/assets/gyeol-webtoon/characters/${asset.replace(/\.png$/, "-hd-v2")}`;
       expect(webpMetadata(`${base}-2x.webp`), asset).toEqual({ hasAlpha: true, width: 768, height: 768 });

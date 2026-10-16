@@ -1,3 +1,13 @@
+## 2026-10-16 Harang reading-room renewal
+
+Post-deploy finding: Vinext dropped the side-effect-only Saju CSS Module although the
+Next test build retained it. Bind a real local class export on both intake and reader;
+do not import a CSS Module only for its side effects. build:sites now checks the emitted
+client CSS for the actual home/intake selectors and fails before deploy if they disappear.
+Verify the built Vinext runtime and the live route after both direct and client navigation.
+
+Rollback source e9ad27811b022f09968fb4a7705fb66b1c29fcec; pre-release Worker 21a128c4-d172-40cc-815f-379ffe528392. Preserve dashboard variables with --keep-vars. No migration changed. Restore old assets only with their matching source. See Harang-Renewal-Validation-2026-10-16.md for findings and test environment requirements.
+
 ## 2026-09-30 Space browser regression during renewal
 
 The first PR Space browser jobs failed at the exact background-color assertion in `tests/e2e/space.spec.ts`. The page source already defined the warm ivory `#f6f3ec` (`rgb(246, 243, 236)`), while the test still expected the retired mint `rgb(243, 248, 244)`. The product style was not altered to satisfy an obsolete expectation; the test now checks the current source token. Keep this assertion synchronized with the Space design token when that color is intentionally changed, and run the Space demo in desktop, iPhone, and Android projects before release.
@@ -463,3 +473,7 @@ Set `DREAM_AI_ENABLED=false` first for provider, model, latency, schema or cost 
 Enabling remote dream structuring requires all of: `DREAM_AI_ENABLED=true`, `DREAM_AI_PRIVACY_APPROVED=true`, `OPENAI_API_KEY`, `DREAM_AI_MODEL`, both current per-million token costs in micros, and `DREAM_AI_MAX_COST_MICROS`. First verify the configured ID with the deployment account. The user must also select the per-submission transfer checkbox. Missing configuration, access denial, refusal, timeout, malformed schema, retry exhaustion or cost overrun returns the deterministic result. Never infer prices or fill a model default.
 
 The device-only production release is Worker `225ac729-0832-4f47-8db8-edb63edc99a0` and Sites version 111 from source `d27a950d6226a1702ca2b866e71c77423dd34863`. Its rollback targets are Worker `bdcc8a75-116f-492c-83f5-eb594e1aedfd` and Sites version 110. Keep `DREAM_ACCOUNT_SYNC_ENABLED=false` until the production migration and hosted two-owner probes pass; a 503 `DREAM_SYNC_DISABLED` response from `/api/dreams` is expected in this state and does not make the device journal unavailable.
+
+### Space recovery browser-test cold-start flake — 2026-10-16
+
+When the iPhone/WebKit recovery gate fails only on its first attempt and passes after Playwright restarts the test, inspect whether its synthetic 503 was injected before cold dynamic imports and WebGL startup. The failure artifact for PR #81 showed the fresh renderer was not ready before the test's retry assertion, while its clean retry passed. Warm the public Space scene before injecting the one-asset 503, then reload and preserve the exact assertions that failure removes the canvas and retry restores one scene and one renderer. Do not relax the production 25-second startup deadline, disable `failOnFlakyTests`, or treat a retry-pass as a green gate. This test-only stabilization does not change the default-off production Space flags, stored data, migration, payment, or model configuration.
