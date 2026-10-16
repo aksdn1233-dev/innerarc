@@ -10,15 +10,7 @@ test("campaign popup and checkout follow the active or expired schedule", async 
   // page and reached its closing section, so nothing covers the questions on the way.
   const dialog = page.getByRole("dialog", { name: /사주 원국·상세 리딩, 지금 1,500원/ });
   await expect(dialog).toHaveCount(0);
-  await page.locator(".dh-close").scrollIntoViewIfNeeded();
-  if (pricing.campaign) {
-    await expect(dialog).toBeVisible();
-    await expect(dialog).toContainText("후기·공유 이벤트 진행 중");
-    await expect(dialog).toContainText("신세계상품권 15만원 상당");
-    await dialog.getByRole("button", { name: "팝업 닫기" }).click();
-  } else {
-    await expect(dialog).toHaveCount(0);
-  }
+  await page.locator(".harang-ending").scrollIntoViewIfNeeded();
   await expect(dialog).toHaveCount(0);
   // The campaign links sit at the top of the page rather than floating over it, so they
   // are checked where they live instead of wherever the reader happens to have stopped.

@@ -9,7 +9,7 @@ import { createIntegratedProfile } from "@/core/profile";
 import { onboardingFocusIds } from "@/core/onboarding";
 import { createPaidTeaser } from "@/core/paid-teaser";
 import { buildReportOutline } from "@/core/report-outline";
-import { getSampleReport, SAMPLE_REPORT_BIRTH_DATE } from "@/server/reports/sample-report";
+import { getSampleReport } from "@/server/reports/sample-report";
 import {
   OPERATIONAL_EVENT_NAMES,
   metricDimension,
@@ -337,77 +337,23 @@ describe("the night ground", () => {
   });
 });
 
-describe("the walkthrough plays recordings of the running product", () => {
-  /**
-   * The stage claims to be showing the real screen, so what plays on it is a recording
-   * of the real screen, made by a committed script rather than drawn. These keep the
-   * files, the script, and what the component asks for in agreement.
-   */
-  const screens = ["questions", "intake", "free-result", "report"] as const;
-
-  it("ships a clip and a poster for every step", async () => {
-    for (const name of screens) {
-      const clip = await readFile(`public/images/guide/${name}.mp4`);
-      const poster = await readFile(`public/images/guide/${name}.jpg`);
-      expect(clip.byteLength).toBeGreaterThan(20_000);
-      // Only the step being watched downloads, but keep each one modest anyway.
-      expect(clip.byteLength).toBeLessThan(1_600_000);
-      expect(poster.byteLength).toBeGreaterThan(5_000);
-      // H.264 in an MP4 container, so it plays on iOS Safari.
-      expect(clip.subarray(4, 8).toString("latin1")).toBe("ftyp");
-      expect(clip.subarray(0, 4_096).toString("latin1")).toContain("avc1");
-    }
+describe("the walkthrough retires obsolete recordings", () => {
+  it("renders a labelled, inert example with the canonical sample calculation", async () => {
+    const preview = await readFile("src/components/harang-journey-preview.tsx", "utf8");
+    expect(homeExperience).toContain("<HarangJourneyPreview");
+    expect(homeExperience).not.toContain("/images/guide/");
+    expect(preview).toContain("1994. 11. 04");
+    expect(preview).toContain("<dd>11</dd>");
+    expect(preview).toContain("<dd>4</dd>");
+    expect(preview).toContain("<dd>6</dd>");
+    expect(preview).toContain("예시 화면");
+    expect(preview).not.toMatch(/<input|<select|<textarea|<button|<Link/);
   });
-
-  it("asks for exactly those clips, in order", () => {
-    const declared = /const GUIDE_SCREENS = \[([\s\S]*?)\] as const;/.exec(homeExperience)?.[1] ?? "";
-    expect([...declared.matchAll(/"([a-z-]+)"/g)].map(([, name]) => name)).toEqual([...screens]);
-    expect(homeExperience).toContain('`/images/guide/${screen}.jpg`');
-    expect(homeExperience).toContain('src={`/images/guide/${screen}.mp4`}');
-  });
-
-  it("keeps the recording script committed, on the published sample birth date", async () => {
-    const script = await readFile("scripts/capture-guide-screens.mjs", "utf8");
-    expect(script).toContain(SAMPLE_REPORT_BIRTH_DATE);
-    expect(script).toContain("/ko/samples/detail");
-    expect(script).toContain("libx264");
-  });
-
-  it("holds nothing but the picture inside the frame", () => {
-    const source = homeExperience.slice(
-      homeExperience.indexOf('<div className="guide-stage" ref={guideStageRef}>'),
-    );
-    const stage = source.slice(0, source.indexOf("</div>"));
-    expect(stage).not.toBe("");
-    expect(stage).not.toMatch(/<input|<select|<textarea|<button|<Link|<p |<h2|<h3/);
-  });
-
-  it("downloads the step being watched and the one it moves to next, once the stage is reached", () => {
-    expect(homeExperience).toContain('preload={stageReady && isNear(index) ? "auto" : "none"}');
-    expect(homeExperience).toContain("index === (guideStep + 1) % GUIDE_SCREENS.length");
-    // A poster is fetched whatever `preload` says, so it waits for the stage too.
-    expect(homeExperience).toContain("poster={stageReady ?");
-  });
-
-  it("moves to the next step when the clip ends, and shows how far through it is", () => {
-    // The reference advances by itself. `loop` would hold a step forever, so its absence
-    // is the thing that makes the walk a walk.
-    expect(homeExperience).toContain("setGuideStep((step) => (step + 1) % GUIDE_SCREENS.length)");
-    // Scoped to the stage: the hero portrait upstairs is a loop on purpose.
-    const clip = homeExperience.slice(
-      homeExperience.indexOf('className="guide-stage-clip"'),
-      homeExperience.indexOf('type="video/mp4"'),
-    );
-    expect(clip).not.toMatch(/^\s+loop$/m);
-    expect(homeExperience).toContain('guideTabsRef.current?.style.setProperty("--guide-progress"');
-    expect(globals).toContain("transform: scaleX(var(--guide-progress, 0));");
-    // Nothing steps through screens nobody is looking at.
-    expect(homeExperience).toContain("setStageOnScreen(entry.isIntersecting)");
+  it("advances only on screen and respects reduced motion", () => {
     expect(homeExperience).toContain("!stageOnScreen");
-  });
-
-  it("leaves a visitor who asked for less motion the poster instead", () => {
     expect(homeExperience).toContain('window.matchMedia("(prefers-reduced-motion: reduce)").matches');
-    expect(homeExperience).toContain("if (index !== guideStep || !stageReady || !stageOnScreen || still) {");
+    expect(homeExperience).toContain("setGuideStep(step => (step + 1) % GUIDE_SCREENS.length), 6000)");
+    expect(homeExperience).toContain("window.clearTimeout(timer)");
+    expect(homeExperience).toContain('aria-selected={guideStep === index}');
   });
 });

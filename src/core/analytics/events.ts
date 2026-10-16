@@ -47,6 +47,7 @@ export const FUNNEL_SURFACES = [
   "numerology",
   "profile",
   "fortune",
+  "saju",
   "other",
 ] as const;
 

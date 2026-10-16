@@ -1,41 +1,8 @@
 {
-  "version": "space-miniatures-1.0.0",
+  "version": "space-miniatures-2.0.0",
   "artDirection": "Premium Korean-inspired 3.5-head-tall miniature guides with matte resin and restrained traditional detail",
   "runtimePolicy": "Keep 1254px RGBA PNG masters. Serve transparent 1254px WebP derivatives directly at or below 180 CSS pixels and never use them as analysis evidence.",
   "assets": [
-    {
-      "characterId": "yundo",
-      "canonicalRole": "균형과 안정의 해석자",
-      "runtimeScene": "photo",
-      "sourceFile": "yundo-photo-guide-v1.png",
-      "runtimeFile": "yundo-photo-guide-v1-runtime.webp",
-      "sourceWidth": 1254,
-      "sourceHeight": 1254,
-      "alpha": true,
-      "sourceMaster": "Codex ImageGen identity-preserving miniature render; checker background removed to real alpha without CSS keying"
-    },
-    {
-      "characterId": "hoyeon",
-      "canonicalRole": "직관과 방향의 해석자",
-      "runtimeScene": "direction",
-      "sourceFile": "hoyeon-direction-guide-v1.png",
-      "runtimeFile": "hoyeon-direction-guide-v1-runtime.webp",
-      "sourceWidth": 1254,
-      "sourceHeight": 1254,
-      "alpha": true,
-      "sourceMaster": "Existing approved 결 miniature asset copied without resampling"
-    },
-    {
-      "characterId": "sahyeon",
-      "canonicalRole": "지혜와 통찰의 해석자",
-      "runtimeScene": "objects",
-      "sourceFile": "sahyeon-object-guide-v1.png",
-      "runtimeFile": "sahyeon-object-guide-v1-runtime.webp",
-      "sourceWidth": 1254,
-      "sourceHeight": 1254,
-      "alpha": true,
-      "sourceMaster": "Existing approved 결 miniature asset copied without resampling"
-    },
     {
       "characterId": "harang",
       "canonicalRole": "중심 해석자",
