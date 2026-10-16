@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Noto_Sans_KR, Song_Myung } from "next/font/google";
+import { Nanum_Myeongjo, Noto_Sans_KR } from "next/font/google";
 import {
   socialImageAlt,
   socialImageContentType,
@@ -19,11 +19,13 @@ const notoSansKr = Noto_Sans_KR({
   weight: "variable",
 });
 
-const songMyung = Song_Myung({
+// Display serif for the 하랑 법사 look (owner handoff 2026-10-16: 명조 for titles).
+const nanumMyeongjo = Nanum_Myeongjo({
   adjustFontFallback: false,
   display: "swap",
   fallback: ["Noto Serif KR", "AppleMyungjo", "serif"],
-  variable: "--font-song-myung",
+  preload: false,
+  variable: "--font-nanum-myeongjo",
   weight: "400",
 });
 
@@ -93,7 +95,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${notoSansKr.variable} ${songMyung.variable}`}>
+      <body className={`${notoSansKr.variable} ${nanumMyeongjo.variable}`}>
         <a className="skip-link" href="#main-content">
           본문으로 건너뛰기 / Skip to content
         </a>

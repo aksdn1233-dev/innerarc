@@ -43,14 +43,14 @@ export type DailyFortuneResult = Readonly<{
 }>;
 
 const guideByNumber: Record<number, NumerologyGuideId> = {
-  1: "taeryeong",
+  1: "harang",
   2: "yeonhui",
   3: "hoyeon",
   4: "yundo",
   5: "hwayeon",
   6: "yeonhui",
   7: "sahyeon",
-  8: "taeryeong",
+  8: "harang",
   9: "hoyeon",
 };
 

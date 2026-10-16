@@ -66,7 +66,7 @@ for (const expected of cases) {
 
     await expect(page.locator('meta[property="og:image:alt"]')).toHaveAttribute(
       "content",
-      /태령당/,
+      /결/,
     );
     await expect(page.locator('meta[property="og:image:type"]')).toHaveAttribute("content", "image/png");
     await expect(page.locator('meta[property="og:image:width"]')).toHaveAttribute("content", "1200");

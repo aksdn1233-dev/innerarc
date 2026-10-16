@@ -1,16 +1,16 @@
 export const MINI_GUIDE_ASSET_VERSION = "mini-guides-1.0.0" as const;
 
-export const MINI_GUIDE_CHARACTER_IDS = ["taeryeong", "yeonhui", "sahyeon", "hwayeon", "yundo", "hoyeon"] as const;
+export const MINI_GUIDE_CHARACTER_IDS = ["harang", "yeonhui", "sahyeon", "hwayeon", "yundo", "hoyeon"] as const;
 export type MiniGuideCharacterId = (typeof MINI_GUIDE_CHARACTER_IDS)[number];
 
 export const MINI_GUIDE_ASSETS = {
-  taeryeongWelcome: {
-    characterId: "taeryeong",
+  harangWelcome: {
+    characterId: "harang",
     role: "self_discovery_guide",
     pose: "welcome",
     expression: "calm",
     assetType: "2.5d-raster",
-    path: "/assets/mini-guides/taeryeong/taeryeong_welcome_calm_01.png",
+    path: "/assets/mini-guides/harang/harang_welcome_calm_01.png",
     width: 1254,
     height: 1254,
     alpha: true,
@@ -85,5 +85,5 @@ const MINI_GUIDE_BY_CHARACTER = new Map<MiniGuideCharacterId, MiniGuideAsset>(
 );
 
 export function getMiniGuideAsset(characterId?: string): MiniGuideAsset {
-  return MINI_GUIDE_BY_CHARACTER.get(characterId as MiniGuideCharacterId) ?? MINI_GUIDE_ASSETS.taeryeongWelcome;
+  return MINI_GUIDE_BY_CHARACTER.get(characterId as MiniGuideCharacterId) ?? MINI_GUIDE_ASSETS.harangWelcome;
 }

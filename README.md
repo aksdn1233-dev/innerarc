@@ -1,6 +1,6 @@
-# 태령당
+# 결 GYEOL
 
-태령당 is a personal pattern intelligence platform. It combines deterministic numerology, auditable Saju/tarot symbolism, explicit Reality Checks, real-life evidence, and conservative confidence revision. It does **not** claim scientific prediction: symbolic systems are hypotheses for reflection, and personal relevance is checked against lived experience.
+결 (GYEOL) is a personal pattern intelligence platform. It combines deterministic numerology, auditable Saju/tarot symbolism, explicit Reality Checks, real-life evidence, and conservative confidence revision. It does **not** claim scientific prediction: symbolic systems are hypotheses for reflection, and personal relevance is checked against lived experience.
 
 ## Current scope
 
@@ -30,7 +30,7 @@ Version 0.20.2 provides a web-first, guest-first Korean/English application with
   and business partner) over eight operating domains, with legacy detailed types kept readable;
 - source-bound public-birth-date celebrity comparison;
 - privacy-safe local PNG/SVG share cards with explicit native file sharing, cancellation handling, and a download fallback that adds no upload, tracking, or browser storage;
-- native Korean/English link-preview metadata and a first-party 1200×630 태령당 social card with no personal result data or tracking dependency;
+- native Korean/English link-preview metadata and a first-party 1200×630 결 social card featuring 하랑 법사 with no personal result data or tracking dependency;
 - the Reality Check Loop, browser-local review-month capture, and read-only navigation across current and prior monthly pattern reports;
 - a guest privacy center for independent consent, language/time-zone preferences, validated device export, and complete local deletion;
 - optional Supabase email sign-in with explicit owner-scoped upload/restore, account export, and atomic server-record deletion;

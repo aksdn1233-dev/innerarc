@@ -212,7 +212,7 @@ export function DetailEditorialReport({
     <main className={`editorial-report${sample ? " editorial-report-sample" : ""}${isPremium ? " editorial-report-premium" : ""}`} id="main-content">
       {sample && (
         <header className="ed-sample-head">
-          <Link className="brand" href={`/${locale}`} prefetch={false}><strong>{ko ? "태령당" : "Taeryeongdang"}</strong></Link>
+          <Link className="brand" href={`/${locale}`} prefetch={false}><strong>{ko ? "결" : "GYEOL"}</strong></Link>
           <div>
             <p className="eyebrow">{ko ? `941104 남성 · ${isPremium ? "프리미엄 " : ""}결과 리포트 예시` : `1994-11-04 male · ${isPremium ? "premium " : ""}report sample`}</p>
             <p className="sample-report-notice">{ko ? "실제 계산기와 리포트 구조로 만든 고정 예시입니다. 결제·주문·저장은 발생하지 않습니다." : "A fixed sample made with the production calculator. It creates no payment, order, or storage."}</p>
@@ -222,9 +222,9 @@ export function DetailEditorialReport({
       )}
 
       <section className="ed-cover" aria-labelledby="ed-cover-title">
-        <Image alt="" aria-hidden="true" className="ed-cover-image" fill priority sizes="100vw" src="/images/brand/taeryeong-night-hero-v3.jpg" />
+        <Image alt="" aria-hidden="true" className="ed-cover-image" fill priority sizes="100vw" src="/images/brand/night-hero-v3.jpg" />
         <div className="ed-cover-shade" aria-hidden="true" />
-        <div className="ed-cover-brand"><strong>{ko ? "태령당" : "TAERYEONGDANG"}</strong><span>PERSONAL PATTERN INTELLIGENCE</span></div>
+        <div className="ed-cover-brand"><strong>{ko ? "결" : "GYEOL"}</strong><span>PERSONAL PATTERN INTELLIGENCE</span></div>
         <div className="ed-cover-copy">
           <p>{ko ? (isPremium ? "가능성부터 실행 기준까지 깊게 읽는 리포트" : "사람의 길을 읽는 당신만의 인생 리포트") : (isPremium ? "A deeper report from possibility to action" : "A personal report for reading the path you repeat")}</p>
           <h1 id="ed-cover-title">{ko ? (isPremium ? <>프리미엄<br />개인 패턴<br />리포트</> : <>개인 패턴<br />인텔리전스<br />리포트</>) : (isPremium ? <>Premium Personal<br />Pattern Report</> : <>Personal Pattern<br />Intelligence Report</>)}</h1>
@@ -484,7 +484,7 @@ export function DetailEditorialReport({
       <section className="ed-closing" aria-labelledby="ed-closing-title">
         <Image alt="" aria-hidden="true" fill sizes="100vw" src="/assets/gyeol-webtoon/shared/backgrounds/closing-dusk-terrace_01.png" />
         <div aria-hidden="true" className="ed-closing-shade" />
-        <div><ChapterNumber value={closingChapter} /><p className="ed-kicker">{ko ? "마지막 한마디" : "A LAST NOTE"}</p><h2 id="ed-closing-title">{model.closing}</h2><p>{ko ? "당신이 남긴 실제 기록이 다음 해석을 더 정확한 질문으로 바꿉니다." : "The record you leave turns the next reading into a better question."}</p><strong>{ko ? "태령당" : "TAERYEONGDANG"}</strong></div>
+        <div><ChapterNumber value={closingChapter} /><p className="ed-kicker">{ko ? "마지막 한마디" : "A LAST NOTE"}</p><h2 id="ed-closing-title">{model.closing}</h2><p>{ko ? "당신이 남긴 실제 기록이 다음 해석을 더 정확한 질문으로 바꿉니다." : "The record you leave turns the next reading into a better question."}</p><strong>{ko ? "결" : "GYEOL"}</strong></div>
       </section>
 
       {footer}

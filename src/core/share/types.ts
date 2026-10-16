@@ -8,7 +8,7 @@ export const ShareCardPayloadSchema = z.object({
   schemaVersion: z.literal(SHARE_CARD_SCHEMA_VERSION),
   kind: z.enum(shareCardKinds),
   locale: z.enum(["ko", "en"]),
-  brand: z.literal("태령당"),
+  brand: z.literal("결"),
   eyebrow: z.string().min(1).max(80),
   title: z.string().min(1).max(120),
   subtitle: z.string().min(1).max(220),

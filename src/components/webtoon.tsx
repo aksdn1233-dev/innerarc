@@ -65,7 +65,7 @@ function storyTheme(title: ReactNode, tone: WebtoonTone): { theme: string; secti
 }
 
 const characterVoices = {
-  taeryeong: {
+  harang: {
     ko: [
       (subject: string) => `좋습니다. ‘${subject}’부터 큰 흐름을 잡아보겠습니다.`,
       (subject: string) => `흩어진 신호를 모아서 ‘${subject}’의 구조부터 살펴보겠습니다.`,
@@ -180,9 +180,9 @@ export const RESTORED_WEBTOON_CHARACTER_ASSETS = [
   "sahyeon/sahyeon_explain_calm_01.png",
   "sahyeon/sahyeon_read-chart_focused_01.png",
   "sahyeon/sahyeon_result-card_confident_01.png",
-  "taeryeong/taeryeong_analyze_focused_01.png",
-  "taeryeong/taeryeong_assure_confident_01.png",
-  "taeryeong/taeryeong_result-card_confident_01.png",
+  "harang/harang_analyze_focused_01.png",
+  "harang/harang_assure_confident_01.png",
+  "harang/harang_result-card_confident_01.png",
   "yeonhui/yeonhui_explain_calm_01.png",
   "yeonhui/yeonhui_read-chart_focused_01.png",
   "yeonhui/yeonhui_result-card_confident_01.png",

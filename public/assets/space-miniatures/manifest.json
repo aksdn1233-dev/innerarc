@@ -23,7 +23,7 @@
       "sourceWidth": 1254,
       "sourceHeight": 1254,
       "alpha": true,
-      "sourceMaster": "Existing approved Taeryeongdang miniature asset copied without resampling"
+      "sourceMaster": "Existing approved 결 miniature asset copied without resampling"
     },
     {
       "characterId": "sahyeon",
@@ -34,18 +34,18 @@
       "sourceWidth": 1254,
       "sourceHeight": 1254,
       "alpha": true,
-      "sourceMaster": "Existing approved Taeryeongdang miniature asset copied without resampling"
+      "sourceMaster": "Existing approved 결 miniature asset copied without resampling"
     },
     {
-      "characterId": "taeryeong",
+      "characterId": "harang",
       "canonicalRole": "중심 해석자",
       "runtimeScene": "compare",
-      "sourceFile": "taeryeong-compare-guide-v1.png",
-      "runtimeFile": "taeryeong-compare-guide-v1-runtime.webp",
+      "sourceFile": "harang-compare-guide-v1.png",
+      "runtimeFile": "harang-compare-guide-v1-runtime.webp",
       "sourceWidth": 1254,
       "sourceHeight": 1254,
       "alpha": true,
-      "sourceMaster": "Codex ImageGen identity-preserving miniature render with native transparent alpha"
+      "sourceMaster": "Canva generation from the approved 하랑 법사 base design; chroma background converted to alpha, square-padded to 1254px"
     }
   ]
 }

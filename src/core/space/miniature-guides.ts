@@ -3,7 +3,7 @@ export const SPACE_MINIATURE_ASSET_VERSION = "space-miniatures-1.0.0" as const;
 type LocalizedText = Readonly<{ ko: string; en: string }>;
 
 export type SpaceMiniatureGuide = Readonly<{
-  characterId: "yundo" | "hoyeon" | "sahyeon" | "taeryeong";
+  characterId: "yundo" | "hoyeon" | "sahyeon" | "harang";
   name: LocalizedText;
   scene: "photo" | "direction" | "objects" | "compare";
   path: string;
@@ -53,12 +53,12 @@ export const SPACE_MINIATURE_GUIDES = {
     alpha: true,
   },
   compare: {
-    characterId: "taeryeong",
-    name: { ko: "태령", en: "Taeryeong" },
+    characterId: "harang",
+    name: { ko: "하랑", en: "Harang" },
     scene: "compare",
-    path: "/assets/space-miniatures/taeryeong-compare-guide-v1-runtime.webp",
-    sourcePath: "/assets/space-miniatures/taeryeong-compare-guide-v1.png",
-    alt: { ko: "현재와 추천 배치 카드를 나란히 보여주는 태령 미니어처", en: "Taeryeong miniature presenting current and suggested room cards" },
+    path: "/assets/space-miniatures/harang-compare-guide-v1-runtime.webp",
+    sourcePath: "/assets/space-miniatures/harang-compare-guide-v1.png",
+    alt: { ko: "현재와 추천 배치 카드를 나란히 보여주는 하랑 법사 미니어처", en: "Harang miniature presenting current and suggested room cards" },
     line: { ko: "하나씩 바꿔 보고 비교해요.", en: "Try one change at a time and compare." },
     width: 1254,
     height: 1254,

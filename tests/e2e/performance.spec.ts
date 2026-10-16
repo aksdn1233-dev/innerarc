@@ -56,12 +56,15 @@ const routes = [
   //
   // 2026-10-08, totals: the same fonts add 160-300 KB transferred per route on CI, which
   // the totals below now carry (owner decision). In exchange the home hero, guide and
-  // Daily Healing scenes load the 768 px Taeryeong cut instead of the 1254 px one; it is
+  // Daily Healing scenes load the 768 px character cut instead of the 1254 px one; it is
   // covers the hero's 480 px maximum at 1.6x and saves 251 KB on /en.
   // Each ceiling is local production measurement plus the font payload CI reported for
   // that route, with about 1% headroom; decoded ceilings that CI has not yet reached are
   // estimated the same way with about 2%.
-  { path: "/en", transfer: 850_000, decoded: 1_810_000, cssDecoded: 415_000 },
+  // 2026-10-16 (D-115/D-116): the 하랑 night theme adds harang-home.css (+7.3 KB decoded
+  // on /en) and the 사주 funnel's new free chapters add 0.6 KB to /en/saju. Nanum Myeongjo
+  // replaces Song Myung at the same single weight, so font-face rules are unchanged.
+  { path: "/en", transfer: 850_000, decoded: 1_810_000, cssDecoded: 427_000 },
   { path: "/en/relationship" },
   { path: "/en/compatibility", transfer: 460_000, decoded: 1_355_000 },
   { path: "/en/celebrity", decoded: 1_305_000, cssDecoded: 344_500 },
@@ -77,7 +80,7 @@ const routes = [
   // number below records the measured state rather than pretending it is new; the guide
   // artwork on this route is the thing to shrink, and that is a separate change.
   { path: "/en/fortune", resources: 52, cssDecoded: 353_500, transfer: 612_000, decoded: 1_490_000 },
-  { path: "/en/saju", cssDecoded: 357_500, transfer: 760_000, decoded: 1_650_000 },
+  { path: "/en/saju", cssDecoded: 362_000, transfer: 760_000, decoded: 1_650_000 },
 ] as const satisfies readonly { path: string; transfer?: number; decoded?: number; resources?: number; cssDecoded?: number }[];
 
 for (const entry of routes) {

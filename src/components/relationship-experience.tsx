@@ -122,7 +122,7 @@ export function RelationshipExperience({ locale, copy }: Props) {
       <main className="shell relationship-shell" id="main-content" tabIndex={-1}>
         <header className="topbar">
           <Link className="brand" href={`/${locale}`}>
-            <strong>태령당</strong>
+            <strong>결</strong>
             <small>{copy.eyebrow}</small>
           </Link>
           <Link className="locale-switch" href={`/${otherLocale}/relationship`} prefetch={false}>

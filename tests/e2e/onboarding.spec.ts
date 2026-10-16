@@ -10,31 +10,33 @@ function localMonthOffset(offset: number): string {
 
 test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await page.goto("/ko");
-  const guideDialog = page.getByRole("dialog", { name: "결과 보는 법부터 같이 볼게요." });
+  const guideDialog = page.getByRole("dialog", { name: "제가 어떻게 보는지부터 보여드리죠." });
   await expect(guideDialog).toBeVisible();
   await guideDialog.getByRole("button", { name: "안내 닫기" }).click();
   await expect(page.getByRole("heading", {
     level: 1,
-    name: "요즘, 어떤 고민이 마음에 남아 있나요?",
+    name: "어서 오세요. 오늘은 어떤 사람이 마음에 걸려서 오셨습니까.",
   })).toBeVisible();
+  await expect(page.locator(".td2-hero img.hr-hero-image")).toHaveAttribute("src", /\/characters\/harang\//);
+  await expect(page.locator("main")).not.toContainText("태령");
   const homeFonts = await page.locator(".td2").evaluate((home) => ({
     body: getComputedStyle(home).fontFamily,
     display: getComputedStyle(home.querySelector("h1")!).fontFamily,
   }));
-  expect(homeFonts.body).toContain("Noto Sans KR");
-  expect(homeFonts.display).toContain("Song Myung");
-  await expect(page.locator(".td2-hero").getByRole("link", { name: /내 이야기 시작하기/ })).toBeVisible();
-  await expect(page.locator(".td2-hero").getByRole("link", { name: /무엇을 볼 수 있나요\?/ })).toBeVisible();
-  await expect(page.getByRole("button", { name: /처음이세요\? 1분 안내 보기/ })).toBeVisible();
+  expect(homeFonts.body).toContain("Pretendard");
+  expect(homeFonts.display).toContain("Nanum Myeongjo");
+  await expect(page.locator(".td2-hero").getByRole("link", { name: /생년월일 넣고 시작하기/ })).toBeVisible();
+  await expect(page.locator(".td2-hero").getByRole("link", { name: /무엇을 봐드리는지 보기/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /처음 오셨습니까\? 1분 안내 보기/ })).toBeVisible();
   await expect(page.locator(".dh-concern-grid button")).toHaveCount(6);
   await expect(page.locator(".dh-service-grid > a")).toHaveCount(6);
-  await page.getByRole("button", { name: /처음이세요\? 1분 안내 보기/ }).click();
+  await page.getByRole("button", { name: /처음 오셨습니까\? 1분 안내 보기/ }).click();
   await expect(page.locator("#guide")).toBeInViewport();
   await expect(page.locator("#guide [role='tab']")).toHaveCount(6);
   await expect(page.locator("#guide .td2-guide-screen")).toHaveCount(1);
-  await expect(page.locator("#guide [role='tabpanel']")).toContainText("지금 궁금한 걸 골라봐요");
+  await expect(page.locator("#guide [role='tabpanel']")).toContainText("지금 궁금한 걸 하나 고르세요");
   await page.locator("#guide [role='tab']").filter({ hasText: "꿈 패턴 보기" }).click();
-  await expect(page.locator("#guide [role='tabpanel']")).toContainText("3·7·30일 뒤 다시 확인해요");
+  await expect(page.locator("#guide [role='tabpanel']")).toContainText("3·7·30일 뒤 다시 확인합니다");
   await expect(page.locator("#guide .td2-guide-dream")).toContainText("큰 뱀이 집에 들어왔어요");
   await page.locator("#guide [role='tab']").filter({ hasText: "방을 3D로 보기" }).click();
   await expect(page.locator("#guide .td2-guide-space img")).toHaveCount(2);
@@ -51,8 +53,8 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await expect(page.locator('.td2-nav a:has-text("이용 후기")')).toHaveAttribute("href", "/ko/reading#evidence");
   await expect(page.locator('.td2-nav a:has-text("궁합")')).toHaveAttribute("href", "/ko/compatibility");
   await expect(page.locator(".td2-nav-actions").getByRole("link", { name: /무료로 시작/ })).toHaveAttribute("href", "/ko/numerology?guide=1");
-  await page.locator(".td2-hero").getByRole("link", { name: /내 이야기 시작하기/ }).click();
-  await page.waitForURL("**/ko/numerology?guide=1");
+  await page.locator(".td2-hero").getByRole("link", { name: /생년월일 넣고 시작하기/ }).click();
+  await page.waitForURL("**/ko/saju");
 
   await page.goto("/ko/reading");
   await expect(page.locator(".report-outline")).toContainText("실제 생성한 상세 리딩입니다");
@@ -93,7 +95,7 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
 
 test("every home visit opens the guide as a dismissible modal and navigation can reopen it", async ({ page }) => {
   await page.goto("/ko");
-  const dialog = page.getByRole("dialog", { name: "결과 보는 법부터 같이 볼게요." });
+  const dialog = page.getByRole("dialog", { name: "제가 어떻게 보는지부터 보여드리죠." });
   await expect(dialog).toBeVisible();
   await expect(dialog.getByRole("tab")).toHaveCount(6);
   const modalBox = await dialog.boundingBox();
@@ -111,7 +113,7 @@ test("every home visit opens the guide as a dismissible modal and navigation can
 test("the first-visit guide advances every six seconds and closes after the last step", async ({ page }) => {
   await page.goto("/ko");
 
-  const dialog = page.getByRole("dialog", { name: "결과 보는 법부터 같이 볼게요." });
+  const dialog = page.getByRole("dialog", { name: "제가 어떻게 보는지부터 보여드리죠." });
   const selectedTab = dialog.locator('[role="tab"][aria-selected="true"]');
   await expect(dialog).toBeVisible();
   await expect(selectedTab).toHaveText(/질문 고르기/);
@@ -136,14 +138,15 @@ test("the first-visit guide advances every six seconds and closes after the last
   await expect(selectedTab).toHaveText(/질문 고르기/);
 });
 
-test("the closing film waits until the visitor reaches the closing section", async ({ page }) => {
+// The previous character's closing film is gone; 하랑's Vidu film is a separate job. Until
+// it ships the close is one still, and no video may load there at all.
+test("the closing section shows 하랑 법사 without loading any film", async ({ page }) => {
   await page.goto("/ko");
   await page.getByRole("dialog").getByRole("button", { name: "안내 닫기" }).click();
-  const closingVideo = page.locator(".dh-close-video");
-  await expect(closingVideo.locator("source")).toHaveCount(0);
   await page.locator(".dh-close").scrollIntoViewIfNeeded();
-  await expect(closingVideo.locator("source")).toHaveCount(1);
-  await expect(closingVideo.locator("source")).toHaveAttribute("src", /taeyul-hero\.mp4/);
+  await expect(page.locator(".dh-close video")).toHaveCount(0);
+  await expect(page.locator(".dh-close-art img")).toHaveAttribute("src", /harang/);
+  await expect(page.locator(".dh-close").getByRole("link", { name: /무료로 내 사주 보기/ })).toHaveAttribute("href", "/ko/saju");
 });
 
 test("mobile home has no overflow and preserves the selling page behavior", async ({ page }) => {
@@ -156,8 +159,8 @@ test("mobile home has no overflow and preserves the selling page behavior", asyn
     await page.goto("/ko");
     const guideClose = page.getByRole("button", { name: "안내 닫기" });
     if (await guideClose.count()) await guideClose.click();
-    await expect(page.getByRole("heading", { level: 1, name: "요즘, 어떤 고민이 마음에 남아 있나요?" })).toBeVisible();
-    await expect(page.locator(".td2-hero").getByRole("link", { name: /내 이야기 시작하기/ })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: "어서 오세요. 오늘은 어떤 사람이 마음에 걸려서 오셨습니까." })).toBeVisible();
+    await expect(page.locator(".td2-hero").getByRole("link", { name: /생년월일 넣고 시작하기/ })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
     await expect(page.locator(".mobile-purchase-bar")).toHaveCount(0);
     await expect(page.locator(".dh-report-book")).toHaveCount(1);
@@ -186,8 +189,8 @@ test("mobile home has no overflow and preserves the selling page behavior", asyn
 
 test("English page keeps the same calculated core meaning", async ({ page }) => {
   await page.goto("/en");
-  await expect(page.getByRole("heading", { level: 1, name: "What has been on your mind lately?" })).toBeVisible();
-  await expect(page.getByRole("link", { name: /Start my story/ })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "Welcome. Who is on your mind tonight?" })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Start with my birth date/ })).toBeVisible();
   await expect(page.locator(".dh-service-grid > a")).toHaveCount(6);
   await expect(page.locator(".dh-report-page.is-right li")).toHaveCount(5);
   await expect(page.locator(".dh-report-book")).toContainText("Life Path");
@@ -217,7 +220,7 @@ test("English page keeps the same calculated core meaning", async ({ page }) => 
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download SVG" }).click();
   const download = await downloadPromise;
-  expect(download.suggestedFilename()).toBe("taeryeongdang-core_profile.svg");
+  expect(download.suggestedFilename()).toBe("gyeol-core_profile.svg");
 });
 
 test("onboarding focus, concern, depth, and AI consent create a local context layer", async ({ page }) => {
@@ -685,7 +688,7 @@ test("guest privacy center saves explicitly, exports, and deletes all device dat
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export all JSON" }).click();
   const download = await downloadPromise;
-  expect(download.suggestedFilename()).toMatch(/^taeryeongdang-device-data-\d{4}-\d{2}-\d{2}\.json$/);
+  expect(download.suggestedFilename()).toMatch(/^gyeol-device-data-\d{4}-\d{2}-\d{2}\.json$/);
 
   page.once("dialog", (dialog) => dialog.accept());
   await page.getByRole("button", { name: "Delete all device data" }).click();
@@ -703,7 +706,7 @@ test("privacy, terms, and support publish contacts while disclosing unresolved l
   await page.getByRole("link", { name: "Read the privacy information" }).click();
   await expect(page.getByText("Pre-operation notice · transfer details and legal review pending")).toBeVisible();
   await expect(page.getByText("Supabase handles the authentication email", { exact: false })).toBeVisible();
-  await expect(page.getByText("태령당 retains the order ID", { exact: false })).toBeVisible();
+  await expect(page.getByText("결 retains the order ID", { exact: false })).toBeVisible();
   await expect(page.getByText("Support and privacy email: qkrehgus5886@naver.com")).toBeVisible();
   await page.getByRole("link", { name: "Terms of use" }).click();
   await expect(page.getByText("Pre-release terms · mail-order registration details pending")).toBeVisible();

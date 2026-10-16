@@ -9,13 +9,13 @@ import styles from "@/components/space/space.module.css";
 export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
-  return { title: locale === "ko" ? "풍수학 | 태령당" : "Feng Shui | 태령당", description: locale === "ko" ? "방 구조를 확인하고 가구 배치를 3D로 비교하세요. 전통 풍수와 생활 분석을 구분해 살펴봅니다." : "Check your room and compare furniture layouts in 3D, separating traditional interpretation from practical observations.", alternates: { canonical: `/${locale}/space`, languages: { ko: "/ko/space", en: "/en/space" } } };
+  return { title: locale === "ko" ? "풍수학 | 결" : "Feng Shui | 결", description: locale === "ko" ? "방 구조를 확인하고 가구 배치를 3D로 비교하세요. 전통 풍수와 생활 분석을 구분해 살펴봅니다." : "Check your room and compare furniture layouts in 3D, separating traditional interpretation from practical observations.", alternates: { canonical: `/${locale}/space`, languages: { ko: "/ko/space", en: "/en/space" } } };
 }
 export default async function SpacePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params; if (!isLocale(locale)) notFound();
   const ko = locale === "ko", enabled = spaceEnabled();
   return <main id="main-content" className={styles.surface}>
-    <nav className={styles.nav} aria-label={ko ? "풍수학 메뉴" : "Feng Shui navigation"}><Link href={`/${locale}`}>태령당</Link><Link href={`/${locale}/space/workspace`} prefetch={false}>{ko ? "내 방 분석" : "My room analysis"}</Link></nav>
+    <nav className={styles.nav} aria-label={ko ? "풍수학 메뉴" : "Feng Shui navigation"}><Link href={`/${locale}`}>결</Link><Link href={`/${locale}/space/workspace`} prefetch={false}>{ko ? "내 방 분석" : "My room analysis"}</Link></nav>
     <section className={styles.hero}>
       <div className={styles.heroCopy}>
         <span className={styles.badge}>{ko ? "풍수학 · 3D 공간 분석" : "FENG SHUI · 3D ROOM ANALYSIS"}</span>
@@ -26,7 +26,7 @@ export default async function SpacePage({ params }: { params: Promise<{ locale: 
         {!enabled && <p className={styles.hint}>{ko ? "사진 분석은 준비 중이에요. 아래 3D 예시는 지금 바로 써볼 수 있어요." : "Photo analysis is coming soon. You can use the 3D example now."}</p>}
       </div>
       <figure className={styles.heroVisual}>
-        <Image src="/images/space/space-intelligence-hero.png" alt={ko ? "태령당 예시 거실의 실제 3D 렌더 화면" : "Actual 3D render of a sample living room in Taeryeongdang"} width={1354} height={1082} priority sizes="(max-width: 900px) 100vw, 55vw" />
+        <Image src="/images/space/space-intelligence-hero.png" alt={ko ? "결 예시 거실의 실제 3D 렌더 화면" : "Actual 3D render of a sample living room in GYEOL"} width={1354} height={1082} priority sizes="(max-width: 900px) 100vw, 55vw" />
         <figcaption>{ko ? "현재 배치와 추천 배치를 같은 화면에서 비교해요." : "Compare the current and suggested layouts in the same view."}</figcaption>
       </figure>
     </section>

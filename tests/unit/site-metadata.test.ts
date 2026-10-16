@@ -16,10 +16,10 @@ describe("site sharing metadata", () => {
     const en = getLocalizedSiteMetadata("en");
     const combined = [ko.title, ko.description, en.title, en.description].join(" ");
 
-    expect(ko.title).toContain("태령당");
+    expect(ko.title).toContain("결");
     expect(ko.title).not.toContain("수비학");
     expect(en.title).toContain("Personal Pattern Intelligence");
-    expect(en.title).toContain("태령당");
+    expect(en.title).toContain("결");
 
     // This copy is read by someone who has not arrived yet — in a search result, a link
     // preview, a tab. It used to name the machinery ("상징 분석을 가설로 제시", "Reality
@@ -41,8 +41,8 @@ describe("site sharing metadata", () => {
     expect(combined).not.toMatch(/정확도|정확히 예측|반드시|보장|accuracy|predicts? exactly|guaranteed/i);
   });
 
-  it("keeps the legacy search aliases while connecting the 태령당 official blog", async () => {
-    expect(BRAND_SEARCH_ALIASES).toContain("태령당");
+  it("keeps the legacy search aliases while connecting the 결 official blog", async () => {
+    expect(BRAND_SEARCH_ALIASES).toContain("결");
     expect(BRAND_SEARCH_ALIASES).toContain("MY GYEOL");
     expect(OFFICIAL_NAVER_BLOG_URL).toBe("https://blog.naver.com/qkrehgus5886");
 
@@ -51,13 +51,13 @@ describe("site sharing metadata", () => {
 
     expect(localeLayout).toContain("sameAs: [OFFICIAL_NAVER_BLOG_URL]");
     expect(localeLayout).toContain("alternateName: BRAND_SEARCH_ALIASES");
-    expect(homeExperience).toContain("태령당 공식 블로그");
+    expect(homeExperience).toContain("결 공식 블로그");
   });
 
   it("ships one bounded first-party PNG with explicit accessible metadata", async () => {
     // The card is served straight from the static asset host, so the shipped file
     // itself is what link-preview crawlers receive. No route handler is involved.
-    expect(socialImagePath).toBe("/taeryeongdang-og.png");
+    expect(socialImagePath).toBe("/gyeol-harang-og.png");
     expect(socialImageContentType).toBe("image/png");
 
     const bytes = new Uint8Array(await readFile(join("public", socialImagePath)));
@@ -67,6 +67,6 @@ describe("site sharing metadata", () => {
     expect(String.fromCharCode(...bytes.slice(1, 4))).toBe("PNG");
     expect(new DataView(bytes.buffer).getUint32(16)).toBe(socialImageSize.width);
     expect(new DataView(bytes.buffer).getUint32(20)).toBe(socialImageSize.height);
-    expect(socialImageAlt).toContain("태령당");
+    expect(socialImageAlt).toContain("결");
   });
 });

@@ -4,7 +4,7 @@ import { JapaneseReportSample } from "@/components/japanese-report-sample";
 import { isSampleReportKind } from "@/server/reports/sample-report";
 
 export const metadata: Metadata = {
-  title: "結果レポート例 | 태령당",
+  title: "結果レポート例 | 결",
   description: "実際の計算規則で作った日本語の結果レポート例です。",
   robots: { index: false, follow: false },
 };

@@ -41,7 +41,7 @@ test("space demo confirms, analyzes, compares, applies and invalidates edits", a
   await expect(tutorial.getByText("✓ 거울·액자", { exact: true })).toBeVisible();
   await expect(tutorial.locator("[data-character=sahyeon]")).toBeVisible();
   await tutorial.getByRole("button", { name: "다음 →" }).click();
-  await expect(tutorial.locator("[data-character=taeryeong]")).toBeVisible();
+  await expect(tutorial.locator("[data-character=harang]")).toBeVisible();
   await tutorial.getByRole("button", { name: "내 방으로 시작하기 →" }).click();
   await expect(tutorial).toHaveCount(0);
   await expect(page.locator("figure[data-character=yundo]")).toBeVisible();
@@ -179,7 +179,7 @@ test("the home always shows a simple path to 3D room analysis", async ({ page })
   await page.getByRole("button", { name: "안내 닫기" }).click();
   const menu = page.getByRole("navigation").getByRole("link", { name: "풍수학", exact: true });
   await expect(menu).toBeVisible();
-  await expect(page.getByRole("heading", { name: "침대와 책상, 지금 자리가 맞을까요?", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "침대와 책상, 지금 자리가 맞습니까?", exact: true })).toBeVisible();
   await expect(page.locator(".dh-space-copy")).toContainText("방 구조 확인");
   const roomLinks = page.getByRole("link", { name: "내 방 3D로 확인하기", exact: true });
   await expect(roomLinks).toHaveCount(1);

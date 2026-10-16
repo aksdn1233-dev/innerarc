@@ -30,7 +30,7 @@ function formatWon(amount: number, locale: Locale): string {
 
 const KO = (detailPrice: string): readonly HomeFaqEntry[] => [
   [
-    "태령당은 무엇을 해주는 곳인가요?",
+    "결은 무엇을 해주는 곳인가요?",
     "생년월일로 연애·돈·일·공부에서 반복되는 흐름을 찾아 글로 정리해 드립니다. 오늘 무엇을 하라고 정해주는 곳이 아니라, 왜 늘 같은 자리에서 막히는지 그 이유를 짚어드리는 쪽에 가깝습니다.",
   ],
   [

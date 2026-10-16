@@ -8,7 +8,7 @@ export function ShareCardPanel({ payload }: { payload: ShareCardPayload }) {
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState("");
   const operationInProgress = useRef(false);
-  const filename = `taeryeongdang-${payload.kind}`;
+  const filename = `gyeol-${payload.kind}`;
   const copy = ko
     ? {
         share: "이미지 공유",
@@ -70,7 +70,7 @@ export function ShareCardPanel({ payload }: { payload: ShareCardPayload }) {
     try {
       const blob = await createPng();
       const file = new File([blob], `${filename}.png`, { type: "image/png" });
-      const data: ShareData = { files: [file], title: "태령당" };
+      const data: ShareData = { files: [file], title: "결" };
       let supportsFileShare = false;
       try {
         supportsFileShare =

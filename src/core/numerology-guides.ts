@@ -3,7 +3,7 @@ import type { OnboardingFocusId } from "@/core/onboarding";
 export const NUMEROLOGY_GUIDE_VERSION = "gyeol-numerology-guides-1.0.0";
 
 export const numerologyGuideIds = [
-  "taeryeong",
+  "harang",
   "yeonhui",
   "sahyeon",
   "hwayeon",
@@ -34,10 +34,10 @@ export type NumerologyGuide = Readonly<{
 
 export const NUMEROLOGY_GUIDES: readonly NumerologyGuide[] = [
   {
-    id: "taeryeong",
-    name: { ko: "태령", en: "Taeryeong" },
-    romanizedName: "TAERYEONG",
-    role: { ko: "중심 해석자", en: "Lead interpreter" },
+    id: "harang",
+    name: { ko: "하랑", en: "Harang" },
+    romanizedName: "HARANG",
+    role: { ko: "중심 해석자 · 법사", en: "Lead interpreter" },
     specialties: {
       ko: ["종합 해석", "핵심 생년월일 패턴", "질문의 중심 정리"],
       en: ["Integrated reading", "Core numerology", "Central question framing"],
@@ -47,10 +47,10 @@ export const NUMEROLOGY_GUIDES: readonly NumerologyGuide[] = [
       color: "#6f5792",
       symbol: "결 문양",
     },
-    image: "/assets/gyeol-webtoon/characters/taeryeong/taeryeong_result-card_confident_01.png",
+    image: "/assets/gyeol-webtoon/characters/harang/harang_result-card_confident_01.png",
     imageAlt: {
-      ko: "검은 머리와 안경, 흑금·보라 전통복을 입은 중심 해석자 태령",
-      en: "Taeryeong, the lead interpreter, in the preserved black, gold, and violet reference design",
+      ko: "흰 도포에 붉은 띠를 매고 명식 두루마리를 펼친 중심 해석자 하랑 법사",
+      en: "Harang, the lead interpreter, in a white robe and red sash, holding an open chart scroll",
     },
     primaryFocus: "growth",
     focusIds: ["growth", "leadership"],
@@ -160,7 +160,7 @@ const DEFAULT_GUIDE_BY_FOCUS: Record<OnboardingFocusId, NumerologyGuideId> = {
   health: "yundo",
   growth: "hoyeon",
   money: "hwayeon",
-  leadership: "taeryeong",
+  leadership: "harang",
 };
 
 export function getNumerologyGuide(id: NumerologyGuideId): NumerologyGuide {

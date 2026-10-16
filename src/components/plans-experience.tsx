@@ -544,7 +544,7 @@ export function PlansExperience({
     <main className="shell plans-shell night-ground" id="main-content" tabIndex={-1}>
       <header className="topbar">
         <Link className="brand" href={`/${locale}`}>
-            <strong>태령당</strong>
+            <strong>결</strong>
           <small>{t.brand}</small>
         </Link>
         <nav className="plans-language-switcher" aria-label="Language">
@@ -568,7 +568,7 @@ export function PlansExperience({
         </div>
         <div className="plans-guide" aria-hidden="true">
           <span>{locale === "ko" ? "지금 필요한 만큼만, 제가 차분히 안내해 드릴게요." : locale === "ja" ? "今必要な深さだけ、落ち着いてご案内します。" : "Choose the depth you need. I will guide you through it."}</span>
-          <Image alt="" height={1280} priority src="/images/numerology-guides/gyeol-taeryeong.jpg" width={720} />
+          <Image alt="" height={1280} priority src="/images/numerology-guides/gyeol-harang.jpg" width={720} />
         </div>
       </section>
 
