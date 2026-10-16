@@ -19,7 +19,7 @@ import { MIN_BIRTH_DATE, currentMaxBirthDate, isAcceptedBirthDate } from "@/core
 import type { PublicReview } from "@/core/reviews";
 import type { ProductPriceSet } from "@/core/product-prices";
 import type { Locale } from "@/i18n/config";
-import "./saju-experience.module.css";
+import styles from "./saju-experience.module.css";
 
 /**
  * The 사주 menu as a guided story.
@@ -132,7 +132,7 @@ export function SajuExperience({
   const story: SajuStoryReading | null = useMemo(() => (chart ? buildSajuStory(chart, locale) : null), [chart, locale]);
   const extra: HarangFreeReading | null = useMemo(() => (chart ? buildHarangFreeReading(chart, locale) : null), [chart, locale]);
   const [shareStatus, setShareStatus] = useState<"idle" | "shared" | "copied" | "failed">("idle");
-  const callName = name.trim() || L("손님", "you");
+  const callName = name.trim() ? L(`${name.trim()}님`, name.trim()) : L("손님", "you");
   const birthTime = exactTime || (hourChoice && hourChoice !== "unknown" ? HOURS.find((h) => h[0] === hourChoice)?.[2] ?? "" : "");
 
   const FOCUS: readonly (readonly [FocusId, string])[] = [
@@ -167,7 +167,7 @@ export function SajuExperience({
       ok: true,
     },
     {
-      say: L(`${callName}님, 반가워요. 하랑이에요.\n성별을 알려주시면 전통 사주의 대운 방향을 정할 수 있어요.`, `Nice to meet you, ${callName}. I'm Harang.\nYour sex sets the traditional direction of the ten-year cycles.`),
+      say: L(`${callName}, 반가워요. 하랑이에요.\n성별을 알려주시면 전통 사주의 대운 방향을 정할 수 있어요.`, `Nice to meet you${name.trim() ? `, ${name.trim()}` : ""}. I'm Harang.\nYour sex sets the traditional direction of the ten-year cycles.`),
       label: L("성별", "Sex"),
       help: L("대운의 방향을 정하는 데만 씁니다.", "Used only to set the direction of your luck cycles."),
       ok: sex !== "",
@@ -305,7 +305,7 @@ export function SajuExperience({
   /* ---------------- intake ---------------- */
   if (!chart || !story) {
     return (
-      <main className="saju-page saju-story" data-stage="intake">
+      <main className={`saju-page saju-story ${styles.shell}`} data-stage="intake">
         <header className="saju-story-hero saju-intake-heading">
           <Link href={`/${locale}`} className="saju-intake-home">{L("← 홈", "← Home")}</Link>
           <Portrait className="saju-story-hero-portrait" src={POSE.front} />
@@ -446,7 +446,7 @@ export function SajuExperience({
     : L(`복채 ${won(selectedPrice)} 내고 전부 열기`, `Pay ${won(selectedPrice)} and open everything`);
 
   return (
-    <main className="saju-page saju-story" data-stage="reading">
+    <main className={`saju-page saju-story ${styles.shell}`} data-stage="reading">
       <header className="saju-story-rhead">
         <Face className="saju-story-mini" src={POSE.front} />
         <div>
@@ -459,7 +459,7 @@ export function SajuExperience({
       {chapter === CH.prologue && (
         <article className="saju-story-chapter-body" data-tone="night">
           <p className="saju-story-kicker">PROLOGUE</p>
-          <h2 className="saju-story-title">{L(`이 사주는,\n${callName}님의 이야기입니다`, `This chart is\nyour story, ${callName}`)}</h2>
+          <h2 className="saju-story-title">{L(`이 사주는,\n${callName}의 이야기입니다`, "This chart tells\nyour story.")}</h2>
           <p className="saju-story-poem">{L("태어난 그 날, 그 시각의 하늘은\n두 번 오지 않습니다.\n그래서 이 여덟 글자는 세상에 하나뿐입니다.", "The sky of that day and hour\nnever comes twice.\nSo these eight characters are yours alone.")}</p>
           <blockquote className="saju-story-voice">{L("먼저 말씀드립니다. 이건 맞히기 놀음이 아니라 한 사람을 읽는 방법입니다. 글자는 제가 짚을 테니, 이야기가 맞는지는 님이 판단해 주세요. 틀리면 틀렸다고 하셔도 됩니다.", "Let me say this first: this is not a guessing game, it's a way of reading a person. I'll point to the characters; you judge whether the story fits.")}</blockquote>
           <p className="saju-story-poem">{L(`${HARANG_LINES.freeIntro}\n여덟 글자 가운데 님의 주인이 되는 글자,\n그것부터 보여드리겠습니다.`, "Let me start light, with something you've half noticed.\nOf the eight, here is\nthe one that is you.")}</p>
@@ -550,7 +550,7 @@ export function SajuExperience({
         <article className="saju-story-chapter-body" data-tone="paper">
           <p className="saju-story-kicker">NUMBERS</p>
           <h2 className="saju-story-title">{L("숫자로 본 나", "Your numbers")}</h2>
-          <p className="saju-story-poem">{L(`${callName}님 생년월일이 참 곱습니다.\n숫자인데도 곱다는 게 이상하죠.`, "Your birth date is a lovely one.\nOdd thing to say about numbers, I know.")}</p>
+          <p className="saju-story-poem">{L(`${callName} 생년월일이 참 곱습니다.\n숫자인데도 곱다는 게 이상하죠.`, "Your birth date is a lovely one.\nOdd thing to say about numbers, I know.")}</p>
           <dl className="saju-story-numbers">
             <div data-main="true"><dt>{L("운명수", "Life path")}</dt><dd>{extra.numbers.lifePath.value}</dd><small>{extra.numbers.lifePath.formula}</small></div>
             <div><dt>{L("생일수", "Birthday")}</dt><dd>{extra.numbers.birthday.value}</dd><small>{extra.numbers.birthday.formula}</small></div>
@@ -655,7 +655,7 @@ export function SajuExperience({
       {chapter === CH.fee && (
         <article className="saju-story-chapter-body" data-tone="paper" id="saju-fee">
           <Portrait className="saju-story-fee-art" src={POSE.fee} />
-          <p className="saju-story-poem">{L(`"${callName}님, ${HARANG_LINES.fee}"`, `"${callName}, from here on I read for a fee.\nMy time is precious, and so is your story."`)}</p>
+          <p className="saju-story-poem">{L(`"${callName}, ${HARANG_LINES.fee}"`, '"From here, the reading is paid.\nCheck the added content and price first."')}</p>
           <section className="saju-story-found">
             <span className="saju-story-stamp" aria-hidden="true">{L("복채", "FEE")}</span>
             <h2>{L("하랑이 님의 사주에서\n먼저 찾아낸 것 9가지", "Nine things Harang\nfound in your chart")}</h2>

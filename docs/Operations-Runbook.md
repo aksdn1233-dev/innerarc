@@ -1,5 +1,11 @@
 ## 2026-10-16 Harang reading-room renewal
 
+Post-deploy finding: Vinext dropped the side-effect-only Saju CSS Module although the
+Next test build retained it. Bind a real local class export on both intake and reader;
+do not import a CSS Module only for its side effects. build:sites now checks the emitted
+client CSS for the actual home/intake selectors and fails before deploy if they disappear.
+Verify the built Vinext runtime and the live route after both direct and client navigation.
+
 Rollback source e9ad27811b022f09968fb4a7705fb66b1c29fcec; pre-release Worker 21a128c4-d172-40cc-815f-379ffe528392. Preserve dashboard variables with --keep-vars. No migration changed. Restore old assets only with their matching source. See Harang-Renewal-Validation-2026-10-16.md for findings and test environment requirements.
 
 ## 2026-09-30 Space browser regression during renewal
