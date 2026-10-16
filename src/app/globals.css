@@ -8464,7 +8464,7 @@ summary {
   .cinema-hero-meteors { display: none; }
 }
 
-/* ---- 태율 portrait and the character sheet's palette --------------------------------
+/* ---- 하랑 portrait and the character sheet's palette --------------------------------
    Colours come from the supplied sheet (PANTONE 2025 × 한국 전통색): Eclipse #1F1D2B,
    Deep Purple #4B2E63, Toffee #7A5A2E, Almond Milk #DCCFA1, Aqua Foam #79A8A1. */
 
@@ -8479,7 +8479,7 @@ summary {
   right: 0;
   bottom: 0;
   left: 0;
-  background-image: url("/images/taeyul-hero.jpg");
+  background-image: url("/characters/harang/base-1088.webp");
   background-position: 62% 12%;
   background-repeat: no-repeat;
   background-size: cover;
@@ -9194,7 +9194,7 @@ summary {
   .selected-guide-result { grid-template-columns: 96px minmax(0, 1fr); padding: 16px; }
 }
 
-/* ---- 태율 in motion -----------------------------------------------------------------
+/* ---- 하랑 in motion -----------------------------------------------------------------
    One still image, so the movement has to come from how it is shown. Three slow cycles
    at different periods, which never line up and so never look like a loop:
      drift  — a long push in and across, the camera easing toward him
@@ -9202,26 +9202,26 @@ summary {
      sheen  — gold light travelling over the robe every so often
    All of it stops for prefers-reduced-motion. */
 
-@keyframes taeyul-drift {
+@keyframes harang-drift {
   0%   { transform: scale(1.06) translate3d(0, 0, 0); }
   50%  { transform: scale(1.13) translate3d(-1.6%, -1.1%, 0); }
   100% { transform: scale(1.06) translate3d(0, 0, 0); }
 }
 
-@keyframes taeyul-breath {
+@keyframes harang-breath {
   0%   { transform: translate3d(0, 0, 0); }
   50%  { transform: translate3d(0, -0.9%, 0); }
   100% { transform: translate3d(0, 0, 0); }
 }
 
-@keyframes taeyul-sheen {
+@keyframes harang-sheen {
   0%   { opacity: 0; transform: translate3d(-120%, 0, 0) rotate(8deg); }
   8%   { opacity: 0.5; }
   34%  { opacity: 0; transform: translate3d(120%, 0, 0) rotate(8deg); }
   100% { opacity: 0; transform: translate3d(120%, 0, 0) rotate(8deg); }
 }
 
-@keyframes taeyul-glow {
+@keyframes harang-glow {
   0%, 100% { opacity: 0.24; }
   50%      { opacity: 0.5; }
 }
@@ -9236,13 +9236,13 @@ summary {
   background-position: inherit;
   background-repeat: no-repeat;
   background-size: inherit;
-  animation: taeyul-drift 19s ease-in-out infinite;
+  animation: harang-drift 19s ease-in-out infinite;
   content: "";
 }
 
 /* The element's own background is hidden so only the drifting copy shows; keeping both
    would double the image and fight at the edges. */
-.cinema-hero-portrait::before { background-image: url("/images/taeyul-hero.jpg"); }
+.cinema-hero-portrait::before { background-image: url("/characters/harang/base-1088.webp"); }
 
 /* Light crossing the gold thread. Clipped to the portrait so it reads as the robe
    catching the light, not as a band drawn over the screen. */
@@ -9260,14 +9260,14 @@ summary {
     rgba(220, 207, 161, 0.16) 58%,
     transparent 100%
   );
-  animation: taeyul-sheen 11s ease-in-out infinite;
+  animation: harang-sheen 11s ease-in-out infinite;
   content: "";
   mix-blend-mode: screen;
   pointer-events: none;
 }
 
 /* The moon behind him pulses very slightly, so the sky is not frozen either. */
-.cinema-hero-meteors { animation: taeyul-glow 9.7s ease-in-out infinite; }
+.cinema-hero-meteors { animation: harang-glow 9.7s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
   .cinema-hero-portrait,
@@ -9304,7 +9304,7 @@ summary {
     rgba(220, 207, 161, 0.16) 58%,
     transparent 100%
   );
-  animation: taeyul-sheen 11s ease-in-out infinite;
+  animation: harang-sheen 11s ease-in-out infinite;
   content: "";
   mix-blend-mode: screen;
   pointer-events: none;
@@ -9986,7 +9986,7 @@ summary {
   position: absolute;
   z-index: -2;
   inset: -8%;
-  background: url("/images/taeyul-hero.jpg") center 18% / cover no-repeat;
+  background: url("/characters/harang/base-1088.webp") center 18% / cover no-repeat;
   filter: blur(24px) saturate(0.9);
   opacity: 0.78;
 }

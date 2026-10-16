@@ -1,6 +1,7 @@
 "use client";
 
 import { HydrationGate } from "./hydration-gate";
+import { HARANG_IMAGES } from "@/core/characters/harang";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -75,8 +76,6 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
   const [guidedName, setGuidedName] = useState("");
   const [guidedConcern, setGuidedConcern] = useState("");
   const deepProfileRef = useRef<HTMLDetailsElement>(null);
-  const guideVideoRef = useRef<HTMLVideoElement>(null);
-  const guideAudioRef = useRef<HTMLAudioElement>(null);
   const teaserRef = useRef<HTMLElement>(null);
   const trackedRef = useRef(new Set<string>());
   const surface = routeName === "numerology" ? "numerology" as const : "profile" as const;
@@ -87,37 +86,6 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
     captureConversionEvent("free_start", locale, { surface });
   }
 
-  useEffect(() => {
-    const video = guideVideoRef.current;
-    const audio = guideAudioRef.current;
-    if (!video || !audio) return;
-    const stop = (media: HTMLMediaElement) => {
-      media.pause();
-      try {
-        media.currentTime = 0;
-      } catch {
-        // A browser can reject seeking before metadata is ready. Pausing still
-        // guarantees that a remounted guide cannot overlap the next narration.
-      }
-    };
-    video.muted = true;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      stop(video);
-      stop(audio);
-      return;
-    }
-    const isIOS = /iPad|iPhone|iPod/i.test(navigator.userAgent)
-      || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-    if (!isIOS) {
-      void video.play().catch(() => {});
-    }
-    audio.muted = false;
-    void audio.play().catch(() => {});
-    return () => {
-      stop(video);
-      stop(audio);
-    };
-  }, []);
   const profile = result ? getRuleBasedProfile(result.lifePath.value, locale) : null;
   const integratedProfile = result ? createIntegratedProfile(result, locale) : null;
   const lifestyle = result ? createLifestyleRecommendations(result, locale) : null;
@@ -244,45 +212,7 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
             </Link>
           </div>
           <div className="hero-guide">
-            {/* Video poster must use the same direct asset as the video fallback. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-              alt=""
-              aria-hidden="true"
-              className="guide-clip guide-clip-fallback inline-video-fallback"
-              fetchPriority="high"
-              loading="eager"
-              src="/videos/taeyul-guide-ios-clean.webp?v=20260815-clean1"
-            />
-            <video
-              {...{ "webkit-playsinline": "true", "x-webkit-airplay": "deny" }}
-              aria-hidden="true"
-              className="guide-clip inline-video-source"
-              controls={false}
-              controlsList="nofullscreen noremoteplayback"
-              disablePictureInPicture
-              disableRemotePlayback
-              muted
-              onLoadedMetadata={(event) => {
-                const video = event.currentTarget;
-                video.setAttribute("playsinline", "");
-                video.setAttribute("webkit-playsinline", "");
-                video.controls = false;
-                video.addEventListener("webkitbeginfullscreen", () => {
-                  (video as HTMLVideoElement & { webkitExitFullscreen?: () => void })
-                    .webkitExitFullscreen?.();
-                }, { once: true });
-              }}
-              playsInline
-              preload="auto"
-              ref={guideVideoRef}
-              tabIndex={-1}
-            >
-              <source src="/videos/taeyul-guide-clean.mp4?v=20260815-clean1" type="video/mp4" />
-            </video>
-            <audio aria-hidden="true" className="inline-video-audio" preload="auto" ref={guideAudioRef}>
-              <source src="/videos/taeyul-guide-audio.m4a?v=20260810-ios1" type="audio/mp4" />
-            </audio>
+            <Image alt={locale === "ko" ? "하랑 법사" : "Harang"} className="guide-clip" src={HARANG_IMAGES.baseLarge} width={1088} height={1456} sizes="(max-width: 760px) 100vw, 480px" unoptimized priority />
           </div>
         </section>}
 

@@ -6,8 +6,8 @@ const krw = (value: number) => value.toLocaleString("en-US");
 
 test("main and free-pattern screens route to the separate Saju service hub", async ({ page }) => {
   await page.goto("/ko");
-  await expect(page.locator('.dh-service-grid a[href="/ko/fortune"]')).toHaveCount(1);
-  await expect(page.locator(".td2-nav").getByRole("link", { name: "생년월일 패턴", exact: true })).toHaveAttribute(
+  await expect(page.locator('.harang-cover a[href="/ko/saju"]')).toHaveCount(1);
+  await expect(page.locator('.harang-services a[href="/ko/numerology"]')).toHaveAttribute(
     "href",
     "/ko/numerology",
   );
@@ -27,8 +27,8 @@ test("the Saju service hub exposes real routes and labels unfinished services", 
   await expect(page.locator("main")).toContainText("계산 근거 공개");
   await expect(page.locator("main")).toContainText("지금 곁에 선 해석자");
   await expect(page.locator("[data-phase]")).toHaveCount(5);
-  await expect(page.getByRole("heading", { name: "지금 필요한 관점의 해석자를 고르세요" })).toBeVisible();
-  await expect(page.locator(".numerology-guide-card")).toHaveCount(6);
+  await expect(page.locator(".harang-guide-solo")).toContainText("하랑 법사");
+  await expect(page.locator(".numerology-guide-card")).toHaveCount(0);
   await expect(page.getByRole("link", { name: /먼저 내 사주 원국 만들기/ })).toHaveAttribute("href", "/ko/saju");
   await expect(page.getByRole("link", { name: /먼저 내 사주 원국 만들기/ })).toContainText(`1회 ${krw(pricing.prices.plus_30d)}원`);
   await expect(page.getByRole("link", { name: /상세 리딩/ })).toHaveAttribute("href", "/ko/plans");

@@ -24,7 +24,7 @@ describe("daily fortune", () => {
     const tomorrow = createDailyFortune({ birthMonth: 11, birthDay: 4, dateKey: "2026-08-22", locale: "ko" });
 
     expect(first).toEqual(again);
-    expect(first).toMatchObject({ personalYear: 7, personalMonth: 6, personalDay: 9, guideId: "hoyeon" });
+    expect(first).toMatchObject({ personalYear: 7, personalMonth: 6, personalDay: 9, guideId: "harang" });
     expect(tomorrow.personalDay).toBe(1);
   });
 

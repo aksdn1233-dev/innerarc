@@ -10,50 +10,13 @@ function localMonthOffset(offset: number): string {
 
 test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await page.goto("/ko");
-  const guideDialog = page.getByRole("dialog", { name: "제가 어떻게 보는지부터 보여드리죠." });
-  await expect(guideDialog).toBeVisible();
-  await guideDialog.getByRole("button", { name: "안내 닫기" }).click();
-  await expect(page.getByRole("heading", {
-    level: 1,
-    name: "어서 오세요. 오늘은 어떤 사람이 마음에 걸려서 오셨습니까.",
-  })).toBeVisible();
-  await expect(page.locator(".td2-hero img.hr-hero-image")).toHaveAttribute("src", /\/characters\/harang\//);
-  await expect(page.locator("main")).not.toContainText("태령");
-  const homeFonts = await page.locator(".td2").evaluate((home) => ({
-    body: getComputedStyle(home).fontFamily,
-    display: getComputedStyle(home.querySelector("h1")!).fontFamily,
-  }));
-  expect(homeFonts.body).toContain("Pretendard");
-  expect(homeFonts.display).toContain("Nanum Myeongjo");
-  await expect(page.locator(".td2-hero").getByRole("link", { name: /생년월일 넣고 시작하기/ })).toBeVisible();
-  await expect(page.locator(".td2-hero").getByRole("link", { name: /무엇을 봐드리는지 보기/ })).toBeVisible();
-  await expect(page.getByRole("button", { name: /처음 오셨습니까\? 1분 안내 보기/ })).toBeVisible();
-  await expect(page.locator(".dh-concern-grid button")).toHaveCount(6);
-  await expect(page.locator(".dh-service-grid > a")).toHaveCount(6);
-  await page.getByRole("button", { name: /처음 오셨습니까\? 1분 안내 보기/ }).click();
-  await expect(page.locator("#guide")).toBeInViewport();
-  await expect(page.locator("#guide [role='tab']")).toHaveCount(6);
-  await expect(page.locator("#guide .td2-guide-screen")).toHaveCount(1);
-  await expect(page.locator("#guide [role='tabpanel']")).toContainText("지금 궁금한 걸 하나 고르세요");
-  await page.locator("#guide [role='tab']").filter({ hasText: "꿈 패턴 보기" }).click();
-  await expect(page.locator("#guide [role='tabpanel']")).toContainText("3·7·30일 뒤 다시 확인합니다");
-  await expect(page.locator("#guide .td2-guide-dream")).toContainText("큰 뱀이 집에 들어왔어요");
-  await page.locator("#guide [role='tab']").filter({ hasText: "방을 3D로 보기" }).click();
-  await expect(page.locator("#guide .td2-guide-space img")).toHaveCount(2);
-  await expect.poll(() => page.locator("#guide .td2-guide-space img").evaluateAll((images) => images.every((image) => image instanceof HTMLImageElement && image.complete && image.naturalWidth > 0))).toBe(true);
-  await expect(page.locator("#guide .td2-guide-compass span")).toHaveText(["북", "동", "남", "서"]);
-  await page.getByRole("button", { name: "안내 닫기" }).click();
-  await expect(page.locator("#onboarding")).toHaveCount(0);
-  await expect(page.locator(".dh-report-page.is-right li")).toHaveCount(5);
-  await expect(page.locator(".dh-report-book")).toContainText("지금 해볼 한 가지");
-  await expect(page.locator(".dh-report-book")).toContainText("인생수");
-  await expect(page.locator(".dh-reality")).toContainText("기억이 흐려지기 전에 남겨보세요");
-  await expect(page.locator(".dh-footer")).toContainText("사업자등록번호");
-  await expect(page.locator('.td2-nav a:has-text("이용 안내")')).toHaveAttribute("href", "#guide");
-  await expect(page.locator('.td2-nav a:has-text("이용 후기")')).toHaveAttribute("href", "/ko/reading#evidence");
-  await expect(page.locator('.td2-nav a:has-text("궁합")')).toHaveAttribute("href", "/ko/compatibility");
-  await expect(page.locator(".td2-nav-actions").getByRole("link", { name: /무료로 시작/ })).toHaveAttribute("href", "/ko/numerology?guide=1");
-  await page.locator(".td2-hero").getByRole("link", { name: /생년월일 넣고 시작하기/ }).click();
+  await expect(page.locator(".harang-cover h1")).toBeVisible();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(page.locator(".harang-cover-image")).toHaveAttribute("src", /characters\/harang/);
+  await expect(page.locator(".harang-how li")).toHaveCount(3);
+  await expect(page.locator(".harang-sample")).toContainText("인생수");
+  await expect(page.locator(".harang-footer")).toContainText("사업자등록번호");
+  await page.locator(".harang-cover .harang-primary").click();
   await page.waitForURL("**/ko/saju");
 
   await page.goto("/ko/reading");
@@ -93,60 +56,23 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await expect(page.getByText("1 + 9 + 9 + 4 + 1 + 1 + 0 + 4 = 29 → 11")).toBeVisible();
 });
 
-test("every home visit opens the guide as a dismissible modal and navigation can reopen it", async ({ page }) => {
+test("home guidance stays in the page and never interrupts a visit", async ({ page }) => {
   await page.goto("/ko");
-  const dialog = page.getByRole("dialog", { name: "제가 어떻게 보는지부터 보여드리죠." });
-  await expect(dialog).toBeVisible();
-  await expect(dialog.getByRole("tab")).toHaveCount(6);
-  const modalBox = await dialog.boundingBox();
-  expect(modalBox?.width).toBeLessThanOrEqual(840);
-  expect(modalBox?.height).toBeLessThanOrEqual(Math.min(640, (page.viewportSize()?.height ?? 900) - 48));
-  await dialog.getByRole("button", { name: "안내 닫기" }).click();
-  await expect(dialog).toHaveCount(0);
+  await page.getByRole("link", { name: "어떻게 보나요?" }).click();
+  await expect(page.locator("#guide")).toBeInViewport();
+  await expect(page.locator("#guide li")).toHaveCount(3);
+  await expect(page.getByRole("dialog")).toHaveCount(0);
   await page.reload();
-  await expect(dialog).toBeVisible();
-  await dialog.getByRole("button", { name: "안내 닫기" }).click();
-  await page.getByRole("link", { name: "이용 안내" }).click();
-  await expect(dialog).toBeVisible();
+  await expect(page.getByRole("dialog")).toHaveCount(0);
 });
 
-test("the first-visit guide advances every six seconds and closes after the last step", async ({ page }) => {
+test("the closing section uses only Harang with a working free entry", async ({ page }) => {
   await page.goto("/ko");
-
-  const dialog = page.getByRole("dialog", { name: "제가 어떻게 보는지부터 보여드리죠." });
-  const selectedTab = dialog.locator('[role="tab"][aria-selected="true"]');
-  await expect(dialog).toBeVisible();
-  await expect(selectedTab).toHaveText(/질문 고르기/);
-  await expect(dialog.getByRole("progressbar", { name: "다음 화면까지 남은 시간" })).toBeVisible();
-  await expect(dialog.getByText(/초 뒤 다음 화면/)).toBeVisible();
-
-  await page.waitForTimeout(6_200);
-  await expect(selectedTab).toHaveText(/생년월일 넣기/);
-  await page.waitForTimeout(6_200);
-  await expect(selectedTab).toHaveText(/무료 결과 보기/);
-  await page.waitForTimeout(6_200);
-  await expect(selectedTab).toHaveText(/더 자세히 보기/);
-  await page.waitForTimeout(6_200);
-  await expect(selectedTab).toHaveText(/꿈 패턴 보기/);
-  await page.waitForTimeout(6_200);
-  await expect(selectedTab).toHaveText(/방을 3D로 보기/);
-  await page.waitForTimeout(6_200);
-  await expect(dialog).toHaveCount(0);
-
-  await page.getByRole("link", { name: "이용 안내" }).click();
-  await expect(dialog).toBeVisible();
-  await expect(selectedTab).toHaveText(/질문 고르기/);
-});
-
-// The previous character's closing film is gone; 하랑's Vidu film is a separate job. Until
-// it ships the close is one still, and no video may load there at all.
-test("the closing section shows 하랑 법사 without loading any film", async ({ page }) => {
-  await page.goto("/ko");
-  await page.getByRole("dialog").getByRole("button", { name: "안내 닫기" }).click();
-  await page.locator(".dh-close").scrollIntoViewIfNeeded();
-  await expect(page.locator(".dh-close video")).toHaveCount(0);
-  await expect(page.locator(".dh-close-art img")).toHaveAttribute("src", /harang/);
-  await expect(page.locator(".dh-close").getByRole("link", { name: /무료로 내 사주 보기/ })).toHaveAttribute("href", "/ko/saju");
+  const closing = page.locator(".harang-ending");
+  await closing.scrollIntoViewIfNeeded();
+  await expect(closing.locator("video, audio")).toHaveCount(0);
+  await expect(closing.locator("img")).toHaveAttribute("src", /harang/);
+  await expect(closing.locator(".harang-primary")).toHaveAttribute("href", "/ko/saju");
 });
 
 test("mobile home has no overflow and preserves the selling page behavior", async ({ page }) => {
@@ -159,11 +85,11 @@ test("mobile home has no overflow and preserves the selling page behavior", asyn
     await page.goto("/ko");
     const guideClose = page.getByRole("button", { name: "안내 닫기" });
     if (await guideClose.count()) await guideClose.click();
-    await expect(page.getByRole("heading", { level: 1, name: "어서 오세요. 오늘은 어떤 사람이 마음에 걸려서 오셨습니까." })).toBeVisible();
-    await expect(page.locator(".td2-hero").getByRole("link", { name: /생년월일 넣고 시작하기/ })).toBeVisible();
+    await expect(page.locator(".harang-cover h1")).toBeVisible();
+    await expect(page.locator(".harang-cover .harang-primary")).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
     await expect(page.locator(".mobile-purchase-bar")).toHaveCount(0);
-    await expect(page.locator(".dh-report-book")).toHaveCount(1);
+    await expect(page.locator(".harang-sample")).toHaveCount(1);
 
     await page.goto("/ko/reading");
     await expect(page.locator(".mobile-purchase-bar")).toHaveCount(0);
@@ -189,12 +115,12 @@ test("mobile home has no overflow and preserves the selling page behavior", asyn
 
 test("English page keeps the same calculated core meaning", async ({ page }) => {
   await page.goto("/en");
-  await expect(page.getByRole("heading", { level: 1, name: "Welcome. Who is on your mind tonight?" })).toBeVisible();
-  await expect(page.getByRole("link", { name: /Start with my birth date/ })).toBeVisible();
-  await expect(page.locator(".dh-service-grid > a")).toHaveCount(6);
-  await expect(page.locator(".dh-report-page.is-right li")).toHaveCount(5);
-  await expect(page.locator(".dh-report-book")).toContainText("Life Path");
-  await expect(page.locator(".dh-footer > p")).toContainText("not scientific prediction");
+  await expect(page.locator(".harang-cover h1")).toBeVisible();
+  await expect(page.locator(".harang-cover .harang-primary")).toBeVisible();
+  expect(await page.locator(".harang-services > div > a").count()).toBeGreaterThanOrEqual(5);
+  await expect(page.locator(".harang-sample ol li")).toHaveCount(3);
+  await expect(page.locator(".harang-sample")).toContainText("Life Path");
+  await expect(page.locator(".harang-footer > p")).toContainText("symbolic reflection tools");
   await page.goto("/en/profile");
   await expect(page).toHaveURL(`${E2E_ORIGIN}/en/profile`);
   await page.locator("#birthDate").fill("1994-11-04");
@@ -726,8 +652,7 @@ test("privacy, terms, and support publish contacts while disclosing unresolved l
 
 test("the whole funnel connects: home, free result, paid teaser, intake", async ({ page }) => {
   await page.goto("/ko");
-  await page.getByRole("button", { name: "안내 닫기" }).click();
-  await page.locator(".td2-nav").getByRole("link", { name: "생년월일 패턴" }).click();
+  await page.locator('.harang-services a[href="/ko/numerology"]').click();
   await page.waitForURL("**/ko/numerology");
   await page.locator("#birthDate").fill("1994-11-04");
   await page.locator('input[name="privacyRequired"]').check();
@@ -741,12 +666,10 @@ test("the whole funnel connects: home, free result, paid teaser, intake", async 
   await expect(page.locator("#onboarding")).toBeVisible();
 });
 
-test("editorial home shows real product evidence and clear claim boundaries", async ({ page }) => {
+test("home keeps real report evidence and clear claim boundaries", async ({ page }) => {
   await page.goto("/ko");
-  await expect(page.locator(".dh-space-visual figure > img")).toHaveCount(2);
-  await expect(page.locator(".dh-space-visual figure > img").first()).toHaveAttribute("alt", /현재 배치/);
-  await expect(page.locator(".dh-space-copy")).toContainText("사진");
-  await expect(page.locator(".dh-space-copy")).toContainText("방 구조 확인");
-  await expect(page.locator(".dh-space-copy")).toContainText("바꿀 자리 보기");
-  await expect(page.locator(".dh-footer > p")).toContainText("과학적 예측, 진단, 치료 또는 결과 보장이 아닙니다");
+  await expect(page.locator('.harang-services a[href="/ko/space"]')).toContainText("3D");
+  await expect(page.locator(".harang-sample ol li")).toHaveCount(3);
+  await expect(page.locator(".harang-sample")).toContainText("예시");
+  await expect(page.locator(".harang-footer > p")).toContainText("미래를 보장하거나");
 });

@@ -7,7 +7,7 @@ describe("Feng Shui miniature guides", () => {
     const manifest = JSON.parse(await readFile("public/assets/space-miniatures/manifest.json", "utf8"));
     expect(manifest.version).toBe(SPACE_MINIATURE_ASSET_VERSION);
     expect(Object.keys(SPACE_MINIATURE_GUIDES)).toEqual(["photo", "direction", "objects", "compare"]);
-    expect(manifest.assets.map((asset: { characterId: string }) => asset.characterId)).toEqual(["yundo", "hoyeon", "sahyeon", "harang"]);
+    expect(manifest.assets.map((asset: { characterId: string }) => asset.characterId)).toEqual(["harang"]);
     for (const guide of Object.values(SPACE_MINIATURE_GUIDES)) {
       expect(guide.line.ko.length).toBeGreaterThan(10);
       expect(guide.line.en.length).toBeGreaterThan(10);
@@ -28,9 +28,12 @@ describe("Feng Shui miniature guides", () => {
     }
   });
 
-  it("changes the room companion with the comparison state", () => {
-    expect(roomMiniatureGuide("current").characterId).toBe("yundo");
-    expect(roomMiniatureGuide("compare").characterId).toBe("sahyeon");
+  it("keeps Harang while changing the contextual guidance", () => {
+    expect(roomMiniatureGuide("current").characterId).toBe("harang");
+    expect(roomMiniatureGuide("compare").characterId).toBe("harang");
     expect(roomMiniatureGuide("recommended").characterId).toBe("harang");
+    expect(roomMiniatureGuide("current").scene).toBe("photo");
+    expect(roomMiniatureGuide("compare").scene).toBe("objects");
+    expect(roomMiniatureGuide("recommended").scene).toBe("compare");
   });
 });

@@ -154,7 +154,7 @@ export function CelebrityExperience({ locale, copy }: Props) {
                   <a href={item.source.url} target="_blank" rel="noreferrer">{item.source.publisher} · {item.source.title}</a>
                 </article>)}
               </div>
-              <Image className={styles.guide} src={MINI_GUIDE_ASSETS.sahyeonSuccessPresent.path} alt="" width={220} height={220} sizes="(max-width: 720px) 132px, 220px" loading="lazy" />
+              <Image className={styles.guide} src={MINI_GUIDE_ASSETS.harangWelcome.path} alt="" width={220} height={220} sizes="(max-width: 720px) 132px, 220px" loading="lazy" />
             </section>}
 
             {comparison.matches[0] && <section className={styles.realityStory} aria-label={copy.publicPattern}>

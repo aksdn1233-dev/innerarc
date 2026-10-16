@@ -1,5 +1,13 @@
 # Home funnel and interface design rules
 
+Current owner-approved override (D-117, 2026-10-16): the home is a focused portrait
+entry with one primary CTA into the real Saju journey and inline three-step guidance.
+No arrival dialog. The historical four-step recordings below are retired because they
+show previous characters. The legacy reading page instead labels its inert HTML preview
+"이용 예시 / Example journey"; it must never call that preview an actual recording.
+Report proof still comes from the real sample report builder. All navigation, free/paid,
+consent, analytics, accessibility, pricing and legal regression checks below still apply.
+
 Last updated: 2026-09-02
 
 These are permanent product rules, not notes on one change. Read them before touching the

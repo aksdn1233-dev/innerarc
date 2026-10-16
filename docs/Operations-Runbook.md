@@ -1,3 +1,7 @@
+## 2026-10-16 Harang reading-room renewal
+
+Rollback source e9ad27811b022f09968fb4a7705fb66b1c29fcec; pre-release Worker 21a128c4-d172-40cc-815f-379ffe528392. Preserve dashboard variables with --keep-vars. No migration changed. Restore old assets only with their matching source. See Harang-Renewal-Validation-2026-10-16.md for findings and test environment requirements.
+
 ## 2026-09-30 Space browser regression during renewal
 
 The first PR Space browser jobs failed at the exact background-color assertion in `tests/e2e/space.spec.ts`. The page source already defined the warm ivory `#f6f3ec` (`rgb(246, 243, 236)`), while the test still expected the retired mint `rgb(243, 248, 244)`. The product style was not altered to satisfy an obsolete expectation; the test now checks the current source token. Keep this assertion synchronized with the Space design token when that color is intentionally changed, and run the Space demo in desktop, iPhone, and Android projects before release.

@@ -2,418 +2,117 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import { DailyHealingHome, type DailyHealingReportPreview } from "@/components/daily-healing-home";
 import { captureConversionEvent } from "@/core/analytics";
-import { HARANG_IMAGES } from "@/core/characters/harang";
+import { HARANG_IMAGES, SITE_NAME } from "@/core/characters/harang";
+import { OFFICIAL_NAVER_BLOG_URL } from "@/core/brand-links";
+import type { DailyHealingReportPreview } from "@/components/daily-healing-home";
 import type { PublicReview } from "@/core/reviews";
 import type { Locale } from "@/i18n/config";
+import type { HomeFaqEntry } from "@/i18n/home-faq";
 
-type Props = {
-  dreamAvailable: boolean;
-  locale: Locale;
-  reportPreview: DailyHealingReportPreview;
-  reviews: readonly PublicReview[];
-  reviewCount: number | null;
-};
+type Props = { dreamAvailable: boolean; locale: Locale; reportPreview: DailyHealingReportPreview; reviews: readonly PublicReview[]; reviewCount: number | null; faq: readonly HomeFaqEntry[] };
+const Arrow = () => <span aria-hidden="true">↗</span>;
 
-const GUIDE_SCREENS = ["questions", "intake", "free-result", "report", "dreams", "space"] as const;
-const GUIDE_STEP_DURATION_MS = 6_000;
-
-const content = {
-  ko: {
-    navLabel: "결 GYEOL 주요 메뉴",
-    services: "서비스",
-    guide: "이용 안내",
-    analysis: "생년월일 패턴",
-    success: "유명인 비교",
-    relationship: "궁합",
-    space: "풍수학",
-    reviews: "이용 후기",
-    login: "구매 내역",
-    start: "무료로 시작",
-    kicker: "밤 마당의 하랑 법사",
-    title: <>어서 오세요.<br /><em>오늘은 어떤 사람이 마음에 걸려서 오셨습니까.</em></>,
-    heroBody: "태어난 날을 알려주시면, 제가 그날의 하늘부터 찾아보겠습니다. 사주 원국과 어린 시절, 숫자 풀이까지 복채 없이 먼저 봐드립니다.",
-    heroPrimary: "생년월일 넣고 시작하기",
-    heroSecondary: "무엇을 봐드리는지 보기",
-    heroNote: "회원가입 없이 · 기본 풀이 복채 없음 · 계산 근거 공개",
-    heroArtNote: "결 GYEOL · 하랑 법사",
-    guideCue: "처음 오셨습니까? 1분 안내 보기",
-    guideEyebrow: "처음 오셨다면",
-    guideTitle: "제가 어떻게 보는지부터 보여드리죠.",
-    guideBody: "6초마다 다음 장면으로 넘어갑니다. 궁금한 건 눌러서 다시 보셔도 됩니다.",
-    guideScreenLabel: "화면 예시",
-    guideSteps: [
-      ["질문 고르기", "지금 궁금한 걸 하나 고르세요", "관계, 일, 돈, 님 자신 중에서 하나면 충분합니다."],
-      ["생년월일 넣기", "생년월일을 알려주세요", "회원가입 없이 기본 풀이를 봐드립니다."],
-      ["무료 결과 보기", "님의 기본 패턴부터 짚습니다", "결과와 계산 과정을 같이 보여드립니다."],
-      ["더 자세히 보기", "더 듣고 싶으실 때 상세 리딩을 고르세요", "가격과 내용을 먼저 보시고 정하시면 됩니다."],
-      ["꿈 패턴 보기", "꿈을 적어두면 반복을 찾아드립니다", "장면·감정·현실을 나눠 보고 3·7·30일 뒤 다시 확인합니다."],
-      ["방을 3D로 보기", "방 사진으로 님의 방을 3D로 봅니다", "동서남북과 가구를 확인하고 지금 배치와 추천 배치를 비교합니다."],
-    ],
-    guideAction: "결과 예시 보기",
-    guideClose: "안내 닫기",
-    trustItems: [
-      ["정확한 계산", "같은 입력은 같은 결과"],
-      ["쉬운 해석", "생활에 맞춘 설명"],
-      ["다양한 분석", "사주·나의 패턴·궁합·공간운"],
-      ["안전한 이용", "기록과 개인정보 직접 관리"],
-    ],
-    readEyebrow: "결에서 할 수 있는 것",
-    readTitle: <>지금 궁금한 걸<br />바로 볼 수 있어요.</>,
-    readBody: "나를 알아보고, 둘을 비교하고, 내 방까지 살펴볼 수 있어요.",
-    sajuHub: "사주 보기",
-    freePattern: "나 알아보기",
-    pillars: [
-      ["01", "타고난 기질과 흐름", "사주", "명식과 오행을 계산 근거와 함께 살펴봅니다.", "/ko/fortune"],
-      ["02", "반복되는 나의 패턴", "생년월일 패턴", "생년월일에 담긴 핵심 수와 선택의 흐름을 봅니다.", "/ko/numerology"],
-      ["03", "두 사람의 차이와 조화", "궁합", "연인·가족·동료가 부딪히고 맞는 지점을 비교합니다.", "/ko/compatibility"],
-      ["04", "내 방의 흐름", "풍수학", "지금 배치와 추천 배치를 실제 3D로 비교합니다.", "/ko/space"],
-    ],
-    previewEyebrow: "개인 패턴 분석",
-    previewTitle: <>왜 같은 선택을 반복하는지<br />한눈에 보여드려요.</>,
-    previewBody: "내 강점, 자주 막히는 지점, 지금 바꿔볼 한 가지를 계산 과정과 함께 정리해요.",
-    previewCta: "내 결과 보기",
-    sample: "예시 결과",
-    sampleDate: "1994년 11월 4일",
-    sampleHeadline: "깊이 생각하고 사람을 잘 살피지만, 결정할 때 혼자 오래 고민하는 편이에요.",
-    samplePoints: ["내가 잘하는 것", "자꾸 반복되는 선택", "지금 바꿔볼 한 가지"],
-    chartLabels: ["사고력", "표현력", "실행력", "관계감각", "회복력", "변화적응"],
-    successEyebrow: "성공 패턴 비교",
-    successTitle: <>성공한 사람과 나는<br />무엇이 다를까요?</>,
-    successBody: "공개된 생년월일과 실제 경력 기록을 나란히 봐요. 닮았다고 같은 결과가 생기는 것은 아니에요.",
-    successCta: "비교해보기",
-    relationshipEyebrow: "관계 보기",
-    relationshipTitle: <>둘이 어디서 잘 맞고<br />어디서 부딪힐까요?</>,
-    relationshipBody: "연인, 가족, 친구, 동료와 생각하고 행동하는 방식을 비교해요.",
-    relationshipCta: "둘의 관계 보기",
-    relationshipCompare: "둘의 차이를 나란히 봅니다",
-    relationshipAxes: ["말하는 방식", "결정하는 속도", "혼자 필요한 시간"],
-    spaceEyebrow: "풍수학 · 3D 공간 분석",
-    spaceTitle: <>내 방, 어디를<br /><span>바꾸면 좋을까요?</span></>,
-    spaceBody: "방을 찍으면 지금 모습과 바꾼 모습을 3D로 비교해요.",
-    spaceSteps: ["방 사진 찍기", "북쪽 알려주기", "바꾼 모습 보기"],
-    spaceCta: "내 방 분석하기",
-    spaceDemo: "3D 예시 먼저 보기",
-    before: "현재 배치",
-    after: "추천 배치",
-    spaceBubble: "침대 옆 길을 조금 넓혀보세요.",
-    spaceDisclosure: "풍수 해석과 생활에 필요한 조언을 따로 보여드려요.",
-    realityEyebrow: "다시 확인하기",
-    realityTitle: <>나중에 다시 보고,<br />실제로 어땠는지 남겨요.</>,
-    realityBody: "한 달 뒤에 돌아와 결과가 맞았는지 간단히 기록할 수 있어요.",
-    realityCta: "기록 남기기",
-    realitySteps: ["오늘의 해석 저장", "생활에서 확인", "다음 분석에 반영"],
-    celestialEyebrow: "천문 · 절기 · 사주",
-    celestialTitle: <>하늘의 절기와<br />태어난 때를 함께 봅니다.</>,
-    celestialBody: "사주는 태어난 날짜와 시간을 절기 기준으로 계산해 연·월·일·시 네 기둥을 세웁니다. 전통 해석과 계산 근거를 나눠 보여드려요.",
-    celestialCta: "내 사주 계산해보기",
-    celestialAlt: "북두칠성과 절기선, 연월일시 네 기둥을 함께 표시한 고전 천문 도판",
-    closeTitle: "궁금한 것부터 시작해보세요.",
-    closeBody: "기본 분석은 무료로 바로 볼 수 있어요.",
-    closeCta: "무료로 나 알아보기",
-    benefits: ["쉽게 시작", "계산 과정 확인", "내 결과 보관", "나중에 다시 보기"],
-    footerBody: "나와 관계, 공간의 흐름을 쉽게 살펴보는 곳.",
-    footerBoundary: "사주·생년월일 패턴·풍수는 성찰을 위한 상징적 도구이며 과학적 예측, 진단, 치료 또는 결과 보장이 아닙니다.",
-    copyright: "별루프 · 대표 박서준 · 사업자등록번호 482-12-03629 · 부산광역시 북구",
-  },
-  en: {
-    navLabel: "GYEOL main navigation",
-    services: "Services", guide: "First visit", analysis: "Pattern analysis", success: "Success patterns", relationship: "Relationships", space: "Feng Shui", reviews: "Reviews", login: "Purchases", start: "Start now",
-    kicker: "Harang, in the night courtyard",
-    title: <>Welcome.<br /><em>Who is on your mind tonight?</em></>,
-    heroBody: "Tell me the day you were born, and I'll find that day's sky first. Your chart, your childhood and your numbers come free.",
-    heroPrimary: "Start with my birth date", heroSecondary: "See what I read", heroNote: "No sign-up · Free basic reading · Calculations shown", heroArtNote: "GYEOL · Harang",
-    guideCue: "New here? See the one-minute guide",
-    guideEyebrow: "FIRST VISIT",
-    guideTitle: "See how a result works before you begin.",
-    guideBody: "Six scenes advance every six seconds. Select any feature to replay it.",
-    guideScreenLabel: "SCREEN EXAMPLE",
-    guideSteps: [
-      ["Choose a question", "Choose what is on your mind", "Start with relationships, work, money, or yourself."],
-      ["Add a birth date", "Enter your birth date", "See the basic result without creating an account."],
-      ["Read the free result", "See your basic pattern", "The result and calculation are shown together."],
-      ["Go deeper if needed", "Choose a detailed reading only if needed", "Review the contents and price before deciding."],
-      ["Read dream patterns", "Record a dream and find repetition", "Separate scenes, feelings, and real life, then check again after 3, 7, and 30 days."],
-      ["See the room in 3D", "Turn room photos into a 3D space", "Confirm directions and furniture, then compare the current and suggested layouts."],
-    ],
-    guideAction: "See a sample result",
-    guideClose: "Close guide",
-    trustItems: [
-      ["Auditable calculation", "The same input returns the same result"],
-      ["Practical interpretation", "Clear language for everyday choices"],
-      ["Connected services", "Saju, personal patterns, compatibility and space"],
-      ["Private by design", "You control your records and data"],
-    ],
-    readEyebrow: "WHAT YOU CAN DO", readTitle: <>Start with what<br />you want to understand.</>, readBody: "Explore yourself, compare two people, and even review your room.", sajuHub: "Open Four Pillars services", freePattern: "View free pattern",
-    pillars: [
-      ["01", "Read yourself.", "Saju · birth-date patterns", "Calculated evidence and symbolic interpretation stay distinct.", "/en/numerology"],
-      ["02", "Compare people.", "Success pattern comparison", "Only structures calculated from public birth dates are compared.", "/en/celebrity"],
-      ["03", "Read relationships.", "Compatibility · relationships", "See how two people operate and where friction may arise.", "/en/relationship"],
-      ["04", "Read the space.", "Feng Shui", "Compare room structure and circulation in a real 3D scene.", "/en/space"],
-      ["05", "Check real life.", "Reality Check", "Record whether an interpretation held up and revisit it later.", "/en/reality-check"],
-    ],
-    previewEyebrow: "PERSONAL PATTERN ANALYSIS", previewTitle: <>See why the same choices<br />keep returning.</>, previewBody: "Your strengths, recurring friction, and one practical change are shown with the calculation behind them.", previewCta: "Start free analysis", sample: "Sample result", sampleDate: "4 November 1994", sampleHeadline: "You think deeply and notice people well, but may spend too long deciding alone.", samplePoints: ["What comes naturally", "The choice that repeats", "One thing to try now"], chartLabels: ["Thinking", "Expression", "Action", "Connection", "Recovery", "Adaptation"],
-    successEyebrow: "SUCCESS PATTERN COMPARISON", successTitle: <>Look past matching numbers<br />to how lives diverged.</>, successBody: "We use public birth dates and sourced career events. A public figure's life does not determine your future.", successCta: "Compare my success pattern",
-    relationshipEyebrow: "RELATIONSHIP INTELLIGENCE", relationshipTitle: <>See where you diverge,<br />not just whether you match.</>, relationshipBody: "Compare how partners, family, friends, coworkers, or business partners operate across eight domains. No score decides whether a relationship is good or bad.", relationshipCta: "Start relationship analysis",
-    relationshipCompare: "See the differences side by side",
-    relationshipAxes: ["How you communicate", "How quickly you decide", "Time you need alone"],
-    spaceEyebrow: "FENG SHUI · 3D ROOM", spaceTitle: <>Your room,<br /><span>what could work better?</span></>, spaceBody: "Add room photos to compare your current and suggested layouts side by side in 3D.", spaceSteps: ["Take 2–6 room photos", "Show which way is north", "Compare the suggested layout"], spaceCta: "Analyze my room", spaceDemo: "Try the 3D example", before: "Current", after: "Suggested", spaceBubble: "Try widening the path beside the bed.", spaceDisclosure: "Traditional feng shui and practical room advice are clearly separated.",
-    realityEyebrow: "REALITY CHECK", realityTitle: <>Go beyond interpretation.<br />Check it against real life.</>, realityBody: "A later reflection becomes evidence for the next reading. Results that missed remain visible too.", realityCta: "Start Reality Check", realitySteps: ["Save today's reading", "Check it in daily life", "Use it in the next reading"],
-    celestialEyebrow: "SKY · SEASONS · FOUR PILLARS",
-    celestialTitle: <>We read the season of the sky<br />with the moment you were born.</>,
-    celestialBody: "Four Pillars uses your birth date and time with the seasonal calendar to establish the year, month, day, and hour pillars. Traditional interpretation and calculation evidence stay clearly separated.",
-    celestialCta: "Calculate my Four Pillars",
-    celestialAlt: "A classical celestial chart showing the Big Dipper, seasonal markers, and the four pillars of year, month, day, and hour",
-    closeTitle: "Begin your story today.", closeBody: "Read where you are now, then return to see what matched real life.", closeCta: "Start free", benefits: ["Simple start", "Visible evidence", "Personal report", "Ongoing checks"], footerBody: "Personal Pattern Intelligence that turns symbols into real questions and checks them against lived experience.", footerBoundary: "Saju, birth-date patterns, and feng shui are symbolic reflection tools, not scientific prediction, diagnosis, treatment, or guaranteed outcomes.", copyright: "Byeolloof · Busan, Republic of Korea",
-  },
-} as const;
-
-function Arrow() {
-  return <span aria-hidden="true">→</span>;
-}
-
-function GuideScreenPreview({ locale, step, label }: { locale: Locale; step: number; label: string }) {
+export function HarangLanding({ dreamAvailable, locale, reportPreview, reviews, reviewCount, faq }: Props) {
   const ko = locale === "ko";
-  return <div aria-label={label} className="td2-guide-screen" role="group">
-    <header><span>{ko ? "결 GYEOL" : "GYEOL"}</span><small>{ko ? `화면 예시 ${step + 1}/${GUIDE_SCREENS.length}` : `SCREEN EXAMPLE ${step + 1}/${GUIDE_SCREENS.length}`}</small></header>
-    {step === 0 && <div className="td2-guide-questions">
-      <p>{ko ? "어떤 게 제일 궁금한가요?" : "What is on your mind?"}</p>
-      {[ko ? "연애·관계" : "Love & relationships", ko ? "일·진로" : "Work & direction", ko ? "돈·사업" : "Money & business"].map((item, index) => <div className={index === 0 ? "is-picked" : undefined} key={item}><b>{String(index + 1).padStart(2, "0")}</b><span>{item}</span><Arrow /></div>)}
-    </div>}
-    {step === 1 && <div className="td2-guide-intake">
-      <small>{ko ? "생년월일" : "BIRTH DATE"}</small><strong>1994. 11. 04</strong>
-      <div><span>{ko ? "양력" : "SOLAR"}</span><span>{ko ? "태어난 시간 모름" : "TIME UNKNOWN"}</span></div>
-      <label><i>✓</i>{ko ? "분석을 위해 입력한 정보를 확인했어요." : "I reviewed the information for this analysis."}</label>
-      <button type="button" tabIndex={-1}>{ko ? "무료 결과 보기" : "See free result"}<Arrow /></button>
-    </div>}
-    {step === 2 && <div className="td2-guide-result">
-      <small>{ko ? "나의 핵심 패턴" : "MY CORE PATTERN"}</small><div className="td2-guide-number">11</div>
-      <h3>{ko ? "깊이 보고, 의미를 연결하는 사람" : "You look deeper and connect meaning."}</h3>
-      <div className="td2-guide-metrics"><span><b>82</b>{ko ? "사고력" : "Thinking"}</span><span><b>88</b>{ko ? "관계감각" : "Connection"}</span><span><b>76</b>{ko ? "회복력" : "Recovery"}</span></div>
-      <p>{ko ? "계산 근거와 상징 해석을 나눠서 보여드려요." : "Calculations and symbolic interpretation stay separate."}</p>
-    </div>}
-    {step === 3 && <div className="td2-guide-report">
-      <div className="td2-guide-report-nav"><b>{ko ? "핵심 요약" : "Summary"}</b><span>{ko ? "강점" : "Strengths"}</span><span>{ko ? "주의점" : "Cautions"}</span></div>
-      <h3>{ko ? "결과를 생활에서 어떻게 써볼지 정리했어요." : "See how to use the result in daily life."}</h3>
-      {[ko ? "자주 반복되는 선택" : "Recurring choices", ko ? "지금 바꿔볼 한 가지" : "One change to try", ko ? "나중에 확인할 질문" : "A question to revisit"].map((item, index) => <div className="td2-guide-report-row" key={item}><b>0{index + 1}</b><span>{item}</span><i style={{ width: `${82 - index * 13}%` }} /></div>)}
-      <footer><span>{ko ? "계산" : "FACT"}</span><span>{ko ? "상징" : "SYMBOL"}</span><span>{ko ? "현실 확인" : "REALITY"}</span></footer>
-    </div>}
-    {step === 4 && <div className="td2-guide-dream">
-      <div className="td2-guide-dream-input">
-        <small>{ko ? "꿈 기록" : "DREAM RECORD"}</small>
-        <p>{ko ? "큰 뱀이 집에 들어왔어요. 무섭지는 않았고 가만히 바라봤어요." : "A large snake entered my home. I was calm and watched it."}</p>
-      </div>
-      <div className="td2-guide-dream-flow" aria-hidden="true"><span>뱀</span><b>→</b><span>{ko ? "들어옴" : "Entering"}</span><b>→</b><span>{ko ? "평온" : "Calm"}</span></div>
-      <article>
-        <small>{ko ? "오늘의 꿈" : "TODAY'S DREAM"}</small>
-        <strong>{ko ? "상징 하나보다, 지금의 선택과 감정을 먼저 살펴볼 꿈이에요." : "Look first at your current choices and feelings, rather than one symbol."}</strong>
-        <div><span>{ko ? "전통" : "Tradition"}</span><span>{ko ? "현대 연구" : "Research"}</span><span>{ko ? "나의 기록" : "My history"}</span></div>
-      </article>
-      <footer><b>+3</b><b>+7</b><b>+30</b><span>{ko ? "일 뒤 실제로 어땠는지 확인" : "days · check what actually happened"}</span></footer>
-    </div>}
-    {step === 5 && <div className="td2-guide-space">
-      <div className="td2-guide-room-pair">
-        <figure><Image alt="" fill sizes="(max-width: 640px) 42vw, 250px" src="/images/space/previews/bedroom-before-v1.png" /><figcaption>{ko ? "현재 배치" : "CURRENT"}</figcaption></figure>
-        <b aria-hidden="true">→</b>
-        <figure><Image alt="" fill sizes="(max-width: 640px) 42vw, 250px" src="/images/space/previews/bedroom-after-v1.png" /><figcaption>{ko ? "추천 배치" : "SUGGESTED"}</figcaption></figure>
-      </div>
-      <div className="td2-guide-compass" aria-label={ko ? "동서남북 방향" : "Cardinal directions"}><span>{ko ? "북" : "N"}</span><span>{ko ? "동" : "E"}</span><span>{ko ? "남" : "S"}</span><span>{ko ? "서" : "W"}</span></div>
-      <p><b>{ko ? "먼저 바꿔볼 한 가지" : "ONE CHANGE TO TRY"}</b>{ko ? "침대 옆 동선을 넓히고 거울과 전자기기 위치를 함께 확인해요." : "Widen the path beside the bed and review mirror and device placement."}</p>
-    </div>}
-  </div>;
-}
-
-export function HarangLanding({ dreamAvailable, locale, reportPreview, reviews, reviewCount }: Props) {
-  const t = content[locale];
-  const reviewLabel = reviewCount && reviewCount > 0
-    ? `${t.reviews} ${reviewCount}`
-    : t.reviews;
-
+  const L = (k: string, e: string) => ko ? k : e;
+  const start = L("내 이야기 무료로 풀어보기", "Start my free reading");
+  const services = [
+    ["numerology", L("나의 패턴", "My patterns"), L("비슷한 선택을 반복하는 이유가 궁금해요.", "Understand the choices you keep repeating."), "01"],
+    ["daily-fortune", L("오늘의 흐름", "Daily reflection"), L("오늘 돌아볼 질문 하나를 가볍게 받아봐요.", "Take one small reflection question into today."), "02"],
+    ["compatibility", L("두 사람 궁합", "Compatibility"), L("잘 맞는 점과 자주 부딪히는 점을 알아봐요.", "See where two people connect and clash."), "02"],
+    ["space", L("풍수학", "Feng Shui"), L("내 방을 3D로 보고, 바꿀 배치를 찾아요.", "See your room in 3D and explore a better layout."), "03"],
+    ...(dreamAvailable ? [["dreams", L("꿈 기록", "Dream journal"), L("꿈에서 남은 장면을 현실의 고민과 나눠 봐요.", "Separate dream scenes from your waking concerns."), "04"]] : []),
+    ["celebrity", L("유명인과 비교", "Public-life comparison"), L("닮은 패턴을 서로 다른 삶과 나란히 봐요.", "Compare similar patterns across different lives."), dreamAvailable ? "05" : "04"],
+  ];
   const track = () => captureConversionEvent("primary_cta_click", locale, { location: "hero" });
-  const [guideOpen, setGuideOpen] = useState(false);
-  const [guideStep, setGuideStep] = useState(0);
-  const [guideElapsedMs, setGuideElapsedMs] = useState(0);
-  const guideRef = useRef<HTMLElement>(null);
-  const guideTabsRef = useRef<HTMLDivElement>(null);
-  const guideCloseRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setGuideOpen(true), 0);
-    return () => window.clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    if (!guideOpen) return;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const focusTimer = window.setTimeout(() => guideCloseRef.current?.focus(), 0);
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") closeGuide();
-      if (event.key !== "Tab") return;
-      const controls = [...(guideRef.current?.querySelectorAll<HTMLElement>("button, a[href], [tabindex='0']") ?? [])]
-        .filter((control) => !control.hasAttribute("disabled") && control.offsetParent !== null);
-      const first = controls[0];
-      const last = controls.at(-1);
-      if (!first || !last) return;
-      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
-    };
-    window.addEventListener("keydown", closeOnEscape);
-    return () => {
-      window.clearTimeout(focusTimer);
-      window.removeEventListener("keydown", closeOnEscape);
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [guideOpen]);
-
-  useEffect(() => {
-    if (!guideOpen) return;
-    const startedAt = Date.now();
-    const progressTimer = window.setInterval(() => {
-      setGuideElapsedMs(Math.min(GUIDE_STEP_DURATION_MS, Date.now() - startedAt));
-    }, 100);
-    const timer = window.setTimeout(() => {
-      if (guideStep === GUIDE_SCREENS.length - 1) {
-        setGuideOpen(false);
-        return;
-      }
-      setGuideElapsedMs(0);
-      setGuideStep(guideStep + 1);
-    }, GUIDE_STEP_DURATION_MS);
-    return () => {
-      window.clearInterval(progressTimer);
-      window.clearTimeout(timer);
-    };
-  }, [guideOpen, guideStep]);
-
-  function openGuide() {
-    setGuideElapsedMs(0);
-    setGuideStep(0);
-    setGuideOpen(true);
-  }
-
-  function closeGuide() {
-    setGuideOpen(false);
-  }
-
-  return <main className="td2 hr" id="main-content" tabIndex={-1}>
-    <header className="td2-nav-shell">
-      <Link className="td2-brand" href={`/${locale}`} prefetch={false} aria-label={locale === "ko" ? "결 GYEOL 홈" : "GYEOL home"}>
-        <strong>{locale === "ko" ? "결 GYEOL" : "GYEOL"}</strong><small>{locale === "ko" ? "하랑 법사의 밤 마당" : "WITH HARANG"}</small>
-      </Link>
-      <nav className="td2-nav" aria-label={t.navLabel}>
-        <a href="#guide" onClick={(event) => { event.preventDefault(); openGuide(); }}>{t.guide}</a>
-        <Link href={`/${locale}/numerology`} prefetch={false}>{t.analysis}</Link>
-        <Link href={`/${locale}/celebrity`} prefetch={false}>{t.success}</Link>
-        <Link href={`/${locale}/compatibility`} prefetch={false}>{t.relationship}</Link>
-        <Link href={`/${locale}/space`} prefetch={false}>{t.space}</Link>
-        {dreamAvailable && <Link href={`/${locale}/dreams`} prefetch={false}>{locale === "ko" ? "꿈 기록" : "Dream journal"}</Link>}
-        <Link href={`/${locale}/reading#evidence`} prefetch={false}>{reviewLabel}</Link>
-      </nav>
-      <div className="td2-nav-actions">
-        <Link className="td2-login" href={`/${locale}/orders`} prefetch={false}>{t.login}</Link>
-        <Link className="td2-pill" href={`/${locale}/numerology?guide=1`} prefetch={false}>{t.start}<Arrow /></Link>
-        <Link className="td2-language" href={`/${locale === "ko" ? "en" : "ko"}`} prefetch={false}>{locale === "ko" ? "EN" : "한국어"}</Link>
-      </div>
-    </header>
-
-    <section className="td2-hero" aria-labelledby="td2-hero-title">
-      <div className="td2-hero-art hr-hero-art" aria-hidden="true">
-        <picture>
-          <source media="(max-width: 760px)" srcSet={HARANG_IMAGES.heroMobile} />
-          <source media="(max-width: 900px)" srcSet={HARANG_IMAGES.heroSmall} />
-          <img alt="" className="hr-hero-image" decoding="async" fetchPriority="high" height={944} src={HARANG_IMAGES.hero} width={1680} />
-        </picture>
-        <span className="hr-petals"><i /><i /><i /><i /><i /><i /></span>
-      </div>
-      <div className="td2-hero-wash" aria-hidden="true" />
-      <div className="td2-hero-copy">
-        <p className="td2-kicker">{t.kicker}</p>
-        <h1 id="td2-hero-title">{t.title}</h1>
-        <p className="td2-lead">{t.heroBody}</p>
-        <div className="td2-actions">
-          <Link className="td2-primary" href={`/${locale}/saju`} prefetch={false} onClick={track}>{t.heroPrimary}<Arrow /></Link>
-          <a className="td2-secondary" href="#services">{t.heroSecondary}<Arrow /></a>
-        </div>
-        <p className="td2-note">{t.heroNote.split(" · ").map((part, index, parts) => <span key={part}>{part}{index < parts.length - 1 ? " · " : ""}</span>)}</p>
-        <button className="td2-guide-cue" onClick={openGuide} type="button">{t.guideCue}<Arrow /></button>
-      </div>
-      <div className="td2-hero-signature" aria-hidden="true"><span>하</span><span>랑</span></div>
-      <small className="td2-hero-art-note">{t.heroArtNote}</small>
-    </section>
-
-    {guideOpen && <div className="td2-guide-modal" onMouseDown={(event) => { if (event.target === event.currentTarget) closeGuide(); }}>
-    <section aria-modal="true" className="td2-walkthrough" id="guide" aria-labelledby="td2-guide-title" ref={guideRef} role="dialog">
-      <button aria-label={t.guideClose} className="td2-guide-close" onClick={closeGuide} ref={guideCloseRef} type="button">×</button>
-      <header>
-        <Image className="td2-guide-character" src={HARANG_IMAGES.face} alt="" width={256} height={256} unoptimized sizes="68px" />
-        <p className="td2-eyebrow">{t.guideEyebrow}</p>
-        <h2 id="td2-guide-title">{t.guideTitle}</h2>
-        <p>{t.guideBody}</p>
+  return <main className="harang-renewal" id="main-content" tabIndex={-1}>
+    <div className="harang-home-column">
+      <header className="harang-topbar">
+        <Link href={`/${locale}`} prefetch={false} aria-label={L("결 GYEOL 홈", "GYEOL home")}><strong>結</strong><span>{SITE_NAME[locale]}<small>WITH HARANG</small></span></Link>
+        <nav aria-label={L("빠른 메뉴", "Quick links")}><Link href={`/${locale}/orders`} prefetch={false}>{L("구매 내역", "Purchases")}</Link><Link href={`/${ko ? "en" : "ko"}`} prefetch={false}>{ko ? "EN" : "한국어"}</Link></nav>
       </header>
-      <div className="guide-walk">
-        <div
-          className="guide-steps-tabs"
-          role="tablist"
-          aria-label={t.guideTitle}
-          ref={guideTabsRef}
-          onKeyDown={(event) => {
-            const delta = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
-            if (!delta) return;
-            event.preventDefault();
-            const next = (guideStep + delta + GUIDE_SCREENS.length) % GUIDE_SCREENS.length;
-            setGuideElapsedMs(0);
-            setGuideStep(next);
-            guideTabsRef.current?.querySelectorAll("button")[next]?.focus();
-          }}
-        >
-          {t.guideSteps.map(([label], index) => <button
-            aria-controls="td2-guide-stage"
-            aria-selected={guideStep === index}
-            className={guideStep === index ? "is-current" : undefined}
-            id={`td2-guide-tab-${index}`}
-            key={label}
-            onClick={() => { setGuideElapsedMs(0); setGuideStep(index); }}
-            role="tab"
-            tabIndex={guideStep === index ? 0 : -1}
-            type="button"
-          ><small aria-hidden="true">{String(index + 1).padStart(2, "0")}</small><span>{label}</span></button>)}
-        </div>
-        <p className="guide-stage-eyebrow">{t.guideScreenLabel}</p>
-        <div className="td2-guide-timer">
-          <div
-            aria-label={locale === "ko" ? "다음 화면까지 남은 시간" : "Time until the next screen"}
-            aria-valuemax={GUIDE_STEP_DURATION_MS}
-            aria-valuemin={0}
-            aria-valuenow={guideElapsedMs}
-            className="td2-guide-progress"
-            role="progressbar"
-          ><span style={{ width: `${Math.min(100, (guideElapsedMs / GUIDE_STEP_DURATION_MS) * 100)}%` }} /></div>
-          <small aria-live="polite">
-            {locale === "ko"
-              ? `${Math.max(1, Math.ceil((GUIDE_STEP_DURATION_MS - guideElapsedMs) / 1_000))}초 뒤 ${guideStep === GUIDE_SCREENS.length - 1 ? "안내가 닫힙니다" : "다음 화면"}`
-              : `${Math.max(1, Math.ceil((GUIDE_STEP_DURATION_MS - guideElapsedMs) / 1_000))}s until ${guideStep === GUIDE_SCREENS.length - 1 ? "the guide closes" : "the next screen"}`}
-          </small>
-        </div>
-        <div
-          aria-labelledby={`td2-guide-tab-${guideStep}`}
-          className="guide-walk-body"
-          id="td2-guide-stage"
-          role="tabpanel"
-          tabIndex={0}
-        >
-          <div className="guide-stage-title"><strong>{t.guideSteps[guideStep]![1]}</strong><span>{t.guideSteps[guideStep]![2]}</span></div>
-          <div className="guide-stage">
-            <GuideScreenPreview label={t.guideSteps[guideStep]![1]} locale={locale} step={guideStep} />
-          </div>
-        </div>
-      </div>
-      <button className="journey-guide-action" onClick={() => { closeGuide(); window.setTimeout(() => document.querySelector(".td2-product-section")?.scrollIntoView({ behavior: "smooth" }), 0); }} type="button">{t.guideAction}<Arrow /></button>
-    </section>
-    </div>}
 
-    <DailyHealingHome locale={locale} reportPreview={reportPreview} reviewCount={reviewCount} reviews={reviews} />
+      <section className="harang-cover" aria-labelledby="harang-home-title">
+        <Image className="harang-cover-image" alt={L("밤 한옥 마당에서 이야기를 듣는 하랑 법사", "Harang welcomes you in a lantern-lit courtyard")} src={HARANG_IMAGES.baseLarge} fill sizes="(max-width: 600px) 100vw, 560px" priority unoptimized />
+        <div className="harang-cover-shade" aria-hidden="true" />
+        <p className="harang-cover-note">{L("“그 고민, 하나씩 같이 풀어봐요.”", "“Let’s take your question one step at a time.”")}</p>
+        <div className="harang-cover-copy">
+          <p className="harang-eyebrow">{L("하랑 법사의 사주 · 나의 패턴", "SAJU & PERSONAL PATTERNS WITH HARANG")}</p>
+          <h1 id="harang-home-title">{L("왜 비슷한 일로", "Why do the same things")}<br />{L("자꾸 막힐까요?", "keep getting in the way?")}</h1>
+          <p>{L("태어난 날에서 기질을 보고, 반복되는 선택을 짚어요. 사주 원국과 숫자 풀이부터 무료로 만나보세요.", "Explore your temperament and recurring choices from your birth date. Start with your free chart and number reading.")}</p>
+          <Link className="harang-primary" href={`/${locale}/saju`} onClick={track} prefetch={false}>{start}<Arrow /></Link>
+          <small>{L("회원가입 없이 · 결제 전에 무료 결과부터", "No sign-up · Read the free result before payment")}</small>
+        </div>
+      </section>
+
+      <nav className="harang-section-nav" aria-label={L("서비스 둘러보기", "Explore the service")}><a href="#guide">{L("어떻게 보나요?", "How it works")}</a><a href="#preview">{L("결과 미리 보기", "Report preview")}</a><a href="#services">{L("다른 고민도 보기", "More to explore")}</a></nav>
+
+      <section className="harang-home-section harang-how" id="guide" aria-labelledby="harang-how-title">
+        <p className="harang-eyebrow">{L("처음이라면", "YOUR FIRST VISIT")}</p>
+        <h2 id="harang-how-title">{L("질문은 하나씩.", "One question at a time.")}<br />{L("풀이는 내 속도로.", "Read at your own pace.")}</h2>
+        <ol>
+          {[
+            [L("간단히 답해요", "Answer a few questions"), L("이름은 별명도 괜찮아요. 생년월일과 아는 만큼의 출생 시각을 알려주세요.", "A nickname is fine. Add your birth date and your birth time if known.")],
+            [L("무료 풀이부터 읽어요", "Read the free chapters"), L("사주 원국, 어린 시절, 숫자로 본 나 등 여섯 장을 먼저 봐요. 계산 과정도 같이 보여드려요.", "Read six chapters, including your chart, childhood and numbers, with the calculation behind them.")],
+            [L("더 궁금할 때 깊이 봐요", "Go deeper when you want"), L("상세 리딩에서 무엇을 더 보는지와 가격을 확인한 뒤 골라요.", "Review the added content and price before choosing a detailed reading.")],
+          ].map(([title, body], i) => <li key={title}><span>0{i + 1}</span><div><h3>{title}</h3><p>{body}</p></div></li>)}
+        </ol>
+      </section>
+
+      <section className="harang-home-section harang-preview" id="preview" aria-labelledby="harang-preview-title">
+        <p className="harang-eyebrow">{L("실제 리포트 구성", "FROM THE ACTUAL REPORT")}</p>
+        <h2 id="harang-preview-title">{L("읽고 나면,", "After the reading,")}<br />{L("내 선택이 조금 더 보여요.", "see your choices more clearly.")}</h2>
+        <p>{L("상세 리포트 일부예요. 예시 생년월일로 만든 결과이며, 내 결과는 입력한 정보에 따라 달라져요.", "This is part of a detailed report generated from a sample birth date. Your result depends on your own input.")}</p>
+        <article className="harang-sample">
+          <header><span>{reportPreview.outline.tierLabel}</span><small>{L("예시 · 1994.11.04", "SAMPLE · 4 NOV 1994")}</small></header>
+          <h3>{reportPreview.summary}</h3>
+          {reportPreview.calculationBasis && <dl aria-label={L("예시 핵심 숫자", "Sample core numbers")}>
+            {[
+              [L("인생수", "Life Path"), reportPreview.calculationBasis.lifePath, L("삶을 바라보는 큰 방향", "Your broader approach")],
+              [L("생일수", "Birthday"), reportPreview.calculationBasis.birthday, L("자연스럽게 드러나는 기질", "An everyday tendency")],
+              [L("태도수", "Attitude"), reportPreview.calculationBasis.attitude, L("처음 마주할 때의 반응", "Your first response")],
+            ].map(([label, value, help]) => <div key={label}><dt>{label}</dt><dd>{value}<small>{help}</small></dd></div>)}
+          </dl>}
+          <ol>{reportPreview.outline.entries.slice(0, 3).map(entry => <li key={entry.position}><span>{String(entry.position).padStart(2, "0")}</span><div><strong>{entry.title}</strong>{entry.excerpt && <p>{entry.excerpt}</p>}</div></li>)}</ol>
+          <Link href={`/${locale}/samples/detail`} prefetch={false}>{L("상세 리포트 예시 읽어보기", "Read the detailed report sample")}<Arrow /></Link>
+          <Link href={`/${locale}/reading#products`} prefetch={false}>{L("가격과 서비스 구성 보기", "Compare the readings and prices")}<Arrow /></Link>
+        </article>
+      </section>
+
+      <section className="harang-home-section harang-services" id="services" aria-labelledby="harang-services-title">
+        <p className="harang-eyebrow">{L("지금 궁금한 것부터", "START WITH YOUR QUESTION")}</p>
+        <h2 id="harang-services-title">{L("사람도, 관계도,", "Yourself, your relationships,")}<br />{L("내 공간도 살펴봐요.", "even the space you live in.")}</h2>
+        <div>{services.map(([route, title, body], index) => <Link href={`/${locale}/${route}`} key={route} prefetch={false}><small>{String(index + 1).padStart(2, "0")}</small><div><h3>{title}</h3><p>{body}</p></div><Arrow /></Link>)}</div>
+      </section>
+
+      <section className="harang-home-section harang-reality" id="reality-check" aria-labelledby="harang-reality-title">
+        <p className="harang-eyebrow">REALITY CHECK</p>
+        <h2 id="harang-reality-title">{L("그때 들은 말,", "What did the reading say?")}<br />{L("실제로는 어땠나요?", "What actually happened?")}</h2>
+        <p>{L("맞은 점과 달랐던 점을 함께 남겨요. 내 삶에서 반복되는 흐름은 기록이 쌓일수록 더 잘 보이니까요.", "Keep both what fit and what did not. Returning to real experience helps you notice your recurring patterns.")}</p>
+        <ol><li>{L("지난 풀이", "Past reading")}</li><li>{L("실제 경험", "Real experience")}</li><li>{L("다음 선택", "Next choice")}</li></ol>
+        <Link href={`/${locale}/reality-check`} prefetch={false}>{L("내 경험 남기기", "Record my experience")}<Arrow /></Link>
+      </section>
+
+      {reviews.length > 0 && <section className="harang-home-section harang-reviews" id="reviews" aria-labelledby="harang-reviews-title"><p className="harang-eyebrow">{L("직접 남겨주신 이야기", "PUBLISHED READER STORIES")}</p><h2 id="harang-reviews-title">{L("읽고, 달라진 점들.", "What readers took away.")}</h2>{reviewCount !== null && reviewCount > 0 && <p>{L(`공개 후기 ${reviewCount}개`, `${reviewCount} published reviews`)}</p>}{reviews.map(review => <blockquote key={review.id}><p>{review.mostUseful}</p><footer>{review.displayName || L("익명", "Anonymous")} · {review.publishedMonth}</footer></blockquote>)}</section>}
+
+      <section className="harang-home-section harang-faq" aria-labelledby="harang-faq-title">
+        <h2 id="harang-faq-title">{L("시작하기 전에 궁금한 점", "Before you begin")}</h2>
+        {faq.map(([question, answer]) => <details key={question}><summary>{question}</summary><p>{answer}</p></details>)}
+      </section>
+      <section className="harang-home-section harang-ending">
+        <Image src={HARANG_IMAGES.face} alt="" width={256} height={256} unoptimized />
+        <h2>{L("마음에 걸렸던 그 질문,", "That question on your mind,")}<br />{L("여기서 시작해요.", "start with it here.")}</h2>
+        <Link className="harang-primary" href={`/${locale}/saju`} prefetch={false}>{start}<Arrow /></Link>
+        <Link className="harang-records" href={`/${locale}/me`} prefetch={false}>{L("내 기록 보러 가기", "Open my records")}</Link>
+      </section>
+
+      <footer className="harang-footer">
+        <strong>{SITE_NAME[locale]} · {L("하랑 법사", "WITH HARANG")}</strong>
+        <nav aria-label={L("공식 채널 및 법률 안내", "Official channels and legal")}><Link href={`/${locale}/terms`}>{L("이용조건", "Terms")}</Link><Link href={`/${locale}/privacy`}>{L("개인정보", "Privacy")}</Link><Link href={`/${locale}/orders`}>{L("구매 내역", "Purchases")}</Link><Link href={`/${locale}/support`}>{L("결제·환불 문의", "Payment & refunds")}</Link><a href={OFFICIAL_NAVER_BLOG_URL} rel="me noopener noreferrer" target="_blank">{L("공식 블로그", "Official blog")}</a></nav>
+        <p>{L("사주·생년월일 패턴·풍수는 나를 돌아보는 상징적 해석이에요. 미래를 보장하거나 진단·치료·전문가의 조언을 대신하지 않아요.", "Saju, birth-date patterns and Feng Shui are symbolic reflection tools. They do not guarantee the future or replace diagnosis, treatment or professional advice.")}</p>
+        <small>{L("별루프 · 대표 박서준 · 사업자등록번호 482-12-03629 · 부산광역시 북구", "Byeolloof · Park Seojun · Registration 482-12-03629 · Busan, Republic of Korea")}</small>
+      </footer>
+    </div>
   </main>;
 }
