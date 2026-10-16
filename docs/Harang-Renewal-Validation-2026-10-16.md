@@ -41,6 +41,12 @@ while normal pull-request/main validation continues. Rollback before the style r
 Worker d07bd26f-cc86-4fff-9321-98788179c92c (renewed home) or
 21a128c4-d172-40cc-815f-379ffe528392 (pre-renewal).
 
+The live guest path also exposed a doubled honorific (손님님). Format the address once,
+preserve the separate raw input used for checkout, and exercise the empty-name/back path.
+Two existing local five-second unit cases timed out under machine load; the full suite
+passed 1,229/1,229 with two workers and the standard hosted unit gate passed unchanged.
+No timeout or product performance budget was relaxed.
+
 - Node 24 lint: 0 errors, 4 existing internal-navigation warnings.
 - Typecheck and Next production build passed; Cloudflare/Vinext build passed.
 - Unit: 128 files, 1,229 tests passed.
