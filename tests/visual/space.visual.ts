@@ -11,7 +11,30 @@ async function closeTour(page: import("@playwright/test").Page) {
 // Keep a 5% pixel-noise allowance here while the assertions below continue to
 // enforce exact scene state, object counts, geometry budgets and render scale.
 
-test("failed material load releases the canvas and retry restores one renderer", async ({ page }) => {
+test("failed material load releases the canvas and retry restores one renderer", async ({ page }, testInfo) => {
+  // The network log is attached inline so the JSON report keeps it even after
+  // later CI steps clear test-results.
+  const started = Date.now(), log: string[] = [], stamp = () => `${String(Date.now() - started).padStart(6)}ms`;
+  page.on("request", r => log.push(`${stamp()} → ${r.method()} ${r.url()}`)); page.on("requestfinished", r => log.push(`${stamp()} ✓ ${r.url()}`)); page.on("requestfailed", r => log.push(`${stamp()} ✗ ${r.url()} ${r.failure()?.errorText}`)); page.on("console", m => log.push(`${stamp()} console.${m.type()} ${m.text()}`));
+  // Image decodes and WebGL context loss happen inside awaits the product
+  // deliberately swallows, so log their outcome from the page itself.
+  await page.addInitScript(() => {
+    const original = window.createImageBitmap.bind(window); let next = 0;
+    (window as unknown as { createImageBitmap: typeof original }).createImageBitmap = ((...args: Parameters<typeof original>) => {
+      const id = ++next; console.log(`[probe] createImageBitmap#${id} start`);
+      return original(...args).then(bitmap => { console.log(`[probe] createImageBitmap#${id} ok`); return bitmap; }, error => { console.log(`[probe] createImageBitmap#${id} error ${error}`); throw error; });
+    }) as typeof original;
+    document.addEventListener("webglcontextlost", () => console.log("[probe] webglcontextlost"), true);
+    window.addEventListener("error", event => console.log(`[probe] error ${event.message}`));
+    window.addEventListener("unhandledrejection", event => console.log(`[probe] unhandledrejection ${event.reason}`));
+  });
+  try { await recoverAfterMaterialOutage(page); } finally {
+    log.push(`${stamp()} state: ${await page.locator("[role=status]").allInnerTexts().catch(() => [])} | retry visible: ${await page.getByRole("button", { name: "Retry 3D" }).isVisible().catch(() => false)} | canvases: ${await page.locator("canvas").count().catch(() => -1)}`);
+    await testInfo.attach("network-log", { body: log.join("\n"), contentType: "text/plain" });
+  }
+});
+
+async function recoverAfterMaterialOutage(page: import("@playwright/test").Page) {
   // Warm the page and WebGL bundles before injecting the material outage. On a
   // cold WebKit runner, downloading the dynamic chunks can consume most of the
   // per-attempt startup deadline, leaving no time to exercise recovery.
@@ -23,7 +46,7 @@ test("failed material load releases the canvas and retry restores one renderer",
   await expect(page.getByRole("button", { name: "Retry 3D" })).toBeVisible({ timeout: 20000 }); expect(await page.locator("canvas").count()).toBe(0);
   await page.unroute("**/space/assets/oak-floor-color.jpg"); await page.getByRole("button", { name: "Retry 3D" }).click();
   await expect(page.locator("[data-scene-state]")).toHaveAttribute("data-object-count", "8", { timeout: 30000 }); expect(await page.locator("canvas").count()).toBe(1);
-});
+}
 
 for (const example of SPACE_EXAMPLES) test(`visual geometry fixture: ${example}`, async ({ page }, testInfo) => {
   const loadStarted = Date.now();
