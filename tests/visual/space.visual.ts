@@ -19,7 +19,22 @@ test("failed material load releases the canvas and retry restores one renderer",
   // later CI steps clear test-results.
   const started = Date.now(), log: string[] = [], stamp = () => `${String(Date.now() - started).padStart(6)}ms`;
   page.on("request", r => log.push(`${stamp()} → ${r.method()} ${r.url()}`)); page.on("requestfinished", r => log.push(`${stamp()} ✓ ${r.url()}`)); page.on("requestfailed", r => log.push(`${stamp()} ✗ ${r.url()} ${r.failure()?.errorText}`)); page.on("console", m => log.push(`${stamp()} console.${m.type()} ${m.text()}`));
-  try { await recoverAfterMaterialOutage(page); } finally { await testInfo.attach("network-log", { body: log.join("\n"), contentType: "text/plain" }); }
+  // Image decodes and WebGL context loss happen inside awaits the product
+  // deliberately swallows, so log their outcome from the page itself.
+  await page.addInitScript(() => {
+    const original = window.createImageBitmap.bind(window); let next = 0;
+    (window as unknown as { createImageBitmap: typeof original }).createImageBitmap = ((...args: Parameters<typeof original>) => {
+      const id = ++next; console.log(`[probe] createImageBitmap#${id} start`);
+      return original(...args).then(bitmap => { console.log(`[probe] createImageBitmap#${id} ok`); return bitmap; }, error => { console.log(`[probe] createImageBitmap#${id} error ${error}`); throw error; });
+    }) as typeof original;
+    document.addEventListener("webglcontextlost", () => console.log("[probe] webglcontextlost"), true);
+    window.addEventListener("error", event => console.log(`[probe] error ${event.message}`));
+    window.addEventListener("unhandledrejection", event => console.log(`[probe] unhandledrejection ${event.reason}`));
+  });
+  try { await recoverAfterMaterialOutage(page); } finally {
+    log.push(`${stamp()} state: ${await page.locator("[role=status]").allInnerTexts().catch(() => [])} | retry visible: ${await page.getByRole("button", { name: "Retry 3D" }).isVisible().catch(() => false)} | canvases: ${await page.locator("canvas").count().catch(() => -1)}`);
+    await testInfo.attach("network-log", { body: log.join("\n"), contentType: "text/plain" });
+  }
 });
 
 async function recoverAfterMaterialOutage(page: import("@playwright/test").Page) {
