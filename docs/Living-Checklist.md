@@ -563,6 +563,14 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Desktop/mobile browser journeys: 8 guided/home tests and 54 Saju/report/onboarding regressions passed after updating two intentional copy assertions; privacy, free result, legal footer, and payment entry were exercised. Production smoke remains pending.
 - [ ] Record production deployment ID and live rollback target after release.
 
+## 2026-10-16 — Stabilize iPhone space recovery verification
+
+- [x] Root cause: the recovery gate injected an asset outage during the first cold WebKit load. Dynamic bundle startup could consume most of the recovery window, making a successful second renderer appear flaky even though a full Playwright retry passed.
+- [x] Warm the page and WebGL bundles before injecting the synthetic material failure; retain the same failure, canvas-release, retry, object-count, and single-renderer assertions.
+- [x] The focused iPhone recovery gate passed 5/5 repeated local runs with `CI=1` and `failOnFlakyTests` enabled.
+- [ ] Require all hosted CI checks to be green before merging.
+- [ ] Production deploy remains automatic after a successful CI run on `main`; verify the deploy job health and build identity.
+
 ## 2026-09-29 사주 메뉴 이야기형 개편
 
 - [x] 입력 6단계(이름·성별·생년월일·시진·관심 분야·질문)와 개인정보 동의
