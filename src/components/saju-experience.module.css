@@ -261,6 +261,9 @@
   :global(.saju-story-spinner) { animation: none; }
   :global(.saju-story-progress i) { transition: none; }
 }
+/* A referenced local export retains this module in the production client graph. */
+.shell { min-width: 0; }
+
 /* One question per screen, without repeating the homepage's full-size cover. */
 :global(.saju-intake-heading) { display:grid; grid-template-columns:64px minmax(0,1fr); gap:14px; align-items:center; padding:16px 20px 24px; text-align:left; background:none; }
 :global(.saju-intake-heading .saju-intake-home) { grid-column:1 / -1; min-height:44px; display:inline-flex; align-items:center; color:#cfb381; font-size:12px; text-decoration:none; }

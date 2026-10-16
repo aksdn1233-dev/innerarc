@@ -16,7 +16,8 @@ describe("Saju journey presentation", () => {
     expect(hub).toContain('aria-hidden="true"');
     expect(hubCss).toContain("@media (prefers-reduced-motion: reduce)");
     expect(hubCss).toMatch(/\.locale\s*\{[^}]*min-height:\s*44px/s);
-    expect(intake).toContain('import "./saju-experience.module.css"');
+    expect(intake).toContain('import styles from "./saju-experience.module.css"');
+    expect(intake).toContain("styles.shell");
     // One question per screen, asked by 하랑 법사, with the free chapters before any fee.
     expect(intake).toContain("무료 결과 먼저 확인");
     expect(intake).toContain("모르는 시간은 비워두고 볼게요.");

@@ -30,6 +30,17 @@ an obsolete recording under a current-screen label.
 
 ## Final gate results
 
+Post-deploy production incident: Next retained a side-effect-only CSS Module while
+Vinext omitted it from the emitted client CSS. The real domain therefore showed the
+Saju intake without its layout. Bind a local module export on both intake and reader,
+then fail build:sites if required selectors are absent. The actual Vinext runtime now
+reports a grid header, 64px portrait and zero mobile overflow; the same six-question,
+free-result, paid-entry and accessibility cases are checked against that runtime.
+An incident repair may deploy the committed, locally verified artifact with --keep-vars
+while normal pull-request/main validation continues. Rollback before the style repair:
+Worker d07bd26f-cc86-4fff-9321-98788179c92c (renewed home) or
+21a128c4-d172-40cc-815f-379ffe528392 (pre-renewal).
+
 - Node 24 lint: 0 errors, 4 existing internal-navigation warnings.
 - Typecheck and Next production build passed; Cloudflare/Vinext build passed.
 - Unit: 128 files, 1,229 tests passed.

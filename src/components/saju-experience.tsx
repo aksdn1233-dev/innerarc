@@ -19,7 +19,7 @@ import { MIN_BIRTH_DATE, currentMaxBirthDate, isAcceptedBirthDate } from "@/core
 import type { PublicReview } from "@/core/reviews";
 import type { ProductPriceSet } from "@/core/product-prices";
 import type { Locale } from "@/i18n/config";
-import "./saju-experience.module.css";
+import styles from "./saju-experience.module.css";
 
 /**
  * The 사주 menu as a guided story.
@@ -305,7 +305,7 @@ export function SajuExperience({
   /* ---------------- intake ---------------- */
   if (!chart || !story) {
     return (
-      <main className="saju-page saju-story" data-stage="intake">
+      <main className={`saju-page saju-story ${styles.shell}`} data-stage="intake">
         <header className="saju-story-hero saju-intake-heading">
           <Link href={`/${locale}`} className="saju-intake-home">{L("← 홈", "← Home")}</Link>
           <Portrait className="saju-story-hero-portrait" src={POSE.front} />
@@ -446,7 +446,7 @@ export function SajuExperience({
     : L(`복채 ${won(selectedPrice)} 내고 전부 열기`, `Pay ${won(selectedPrice)} and open everything`);
 
   return (
-    <main className="saju-page saju-story" data-stage="reading">
+    <main className={`saju-page saju-story ${styles.shell}`} data-stage="reading">
       <header className="saju-story-rhead">
         <Face className="saju-story-mini" src={POSE.front} />
         <div>
