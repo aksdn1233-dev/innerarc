@@ -30,47 +30,47 @@ function formatWon(amount: number, locale: Locale): string {
 
 const KO = (detailPrice: string): readonly HomeFaqEntry[] => [
   [
-    "결은 무엇을 해주는 곳인가요?",
-    "생년월일로 연애·돈·일·공부에서 반복되는 흐름을 찾아 글로 정리해 드립니다. 오늘 무엇을 하라고 정해주는 곳이 아니라, 왜 늘 같은 자리에서 막히는지 그 이유를 짚어드리는 쪽에 가깝습니다.",
+    "어떤 서비스인가요?",
+    "생년월일로 성향과 반복되는 선택을 살펴봐요. 미래를 정해주는 풀이는 아니에요.",
   ],
   [
     "무료로 어디까지 볼 수 있나요?",
-    "양력 생년월일만 넣으면 핵심 숫자와 기본 성향, 반복되는 지점까지 결제 없이 보실 수 있습니다. 사주 네 기둥도 무료로 세워드리고, 회원가입은 필요 없습니다.",
+    "사주 네 기둥과 핵심 숫자, 기본 성향을 무료로 봐요. 회원가입은 필요 없어요.",
   ],
   [
-    "점집이나 사주와는 무엇이 다른가요?",
-    "누가 더 잘 맞히는지를 겨루지 않습니다. 대신 숫자가 어떤 계산으로 나왔는지 근거를 전부 열어두고, 결과를 글로 남겨 다시 읽고 실제 삶과 대조하실 수 있게 합니다. 미래를 예측하거나 진단하지 않습니다.",
+    "풀이의 근거도 볼 수 있나요?",
+    "계산 과정을 확인하고 실제 경험과 비교할 수 있어요. 예측이나 진단은 아니에요.",
   ],
   [
-    "연애나 돈 말고 공부·시험도 되나요?",
-    "됩니다. 질문 목록에 없는 고민은 생년월일을 넣는 화면에서 직접 적으시면, 상세 리딩에 그 주제를 다루는 장이 따로 만들어집니다.",
+    "다른 고민도 물어볼 수 있나요?",
+    "공부·시험 등 다른 고민도 입력해요. 상세 리딩에서 함께 다뤄요.",
   ],
   [
     "결제는 어떻게 되나요?",
-    `1회 결제이고 자동 갱신이 없습니다. 상세 리딩은 ${detailPrice}이며, 결제 뒤에는 회원가입 없이 링크로 열어보실 수 있습니다.`,
+    `상세 리딩은 ${detailPrice}, 한 번만 결제해요. 자동 갱신 없이 링크로 다시 볼 수 있어요.`,
   ],
 ];
 
 const EN = (detailPrice: string): readonly HomeFaqEntry[] => [
   [
     "What is this?",
-    "From your birth date it finds the patterns that keep repeating in love, money, work and study, and writes them down. It does not tell you what to do today; it names why you keep getting stuck in the same place.",
+    "Explore tendencies and recurring choices from your birth date. The reading does not determine your future.",
   ],
   [
     "How much can I see for free?",
-    "A birth date is enough to see the core numbers, your basic tendencies and what repeats, with no payment. The Four Pillars chart is free too, and no account is needed.",
+    "Your Four Pillars chart, core numbers and basic tendencies are free. No account needed.",
   ],
   [
-    "How is this different from a fortune teller?",
-    "It does not compete on who guesses better. Every number is shown with the calculation that produced it, and the reading stays in writing so you can read it again and check it against what actually happens. It does not predict or diagnose.",
+    "Can I check the reasoning?",
+    "See the calculations and compare the reading with real experience. It is not prediction or diagnosis.",
   ],
   [
-    "Does it cover study and exams as well?",
-    "Yes. A concern that is not on the question list can be written in on the birth-date screen, and the detailed reading gets a chapter of its own on that subject.",
+    "Can I ask about other concerns?",
+    "Add a concern such as study or exams to include it in your detailed reading.",
   ],
   [
     "How does payment work?",
-    `One payment, no renewal. The detailed reading is ${detailPrice}, and it opens from a link afterwards without an account.`,
+    `The detailed reading is ${detailPrice}, paid once. No renewal; revisit it through your link.`,
   ],
 ];
 
