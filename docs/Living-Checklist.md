@@ -1,5 +1,23 @@
 # Living Checklist
 
+## 2026-10-19 Shorter lower-home copy
+
+- Owner requested less explanatory text below the hero. Shorten KO/EN guidance,
+  service descriptions, Reality Check and shared FAQ; keep report numbers/chapter
+  titles from the real generator and link to the full sample rather than repeating it.
+- Preserve hero, readable font sizes, routes, free/paid entry, current prices,
+  legal/business/protection notices, engines and data. No provider or fulfilment cost change.
+- Keep FAQ/JSON-LD on the same source. The existing FAQ test now checks substance
+  without demanding filler length or one formal Korean sentence.
+- Demand evidence is the owner's request, not measured conversion improvement.
+  Watch free-start completion and sample/pricing navigation on existing channels;
+  revert if comprehension or entry completion regresses. No new tracking or AI calls.
+- Pre-release rollback: source ca78735f534b9006137100d1775e3d497ef77441;
+  revert this copy-only commit and use the normal CI/deploy path. No migration.
+- Local verification: targeted lint, typecheck, 30 unit checks, Vinext production
+  build/style gate, 8 home/navigation/mobile browser checks and 4 KO/EN accessibility
+  checks passed. Mobile overflow/target checks cover 320/360/375/390/430px.
+
 ## 2026-10-16 Harang-only renewal
 
 - [x] Owner-selected approved Harang artwork; legacy public character media retired.
