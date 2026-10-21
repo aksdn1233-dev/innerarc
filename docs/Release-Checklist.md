@@ -1,5 +1,12 @@
 # Release Checklist
 
+## 2026-10-22 Report question corrective release
+
+- [x] Pre-fix failures and actual GPT comparison retained; no superiority marketing claim.
+- [x] Independent answers, multilingual boundaries, name calculations, output gate and editorial rendering covered by regressions.
+- [x] Calculation evidence, historical orders, access, engines, prices and consent unchanged; no migration or model call.
+- [ ] Final source/CI/browser/Worker identity and live verification: `Report-Question-Upgrade-2026-10-22.md`.
+
 ## 2026-10-16 Harang reading-room renewal
 
 - [x] Existing payment, account and deterministic engine boundaries preserved.

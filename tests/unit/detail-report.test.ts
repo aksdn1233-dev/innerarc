@@ -146,7 +146,7 @@ describe("DETAIL_39000 question-domain coverage", () => {
     const report = detail("암 진단을 받았는데 완치될 수 있을까요?", "health");
     const whole = customerContent(report);
 
-    expect(report.sections[0]?.body).toContain("자격을 갖춘 전문가");
+    expect(report.sections[0]?.body).toMatch(/의료진|자격을 갖춘 전문가/u);
     expect(report.sections.some((section) =>
       section.title.startsWith("먼저 확인해야 할 것 ·"))).toBe(true);
     expect(whole).not.toMatch(/완치(합니다|됩니다)|반드시 낫/u);

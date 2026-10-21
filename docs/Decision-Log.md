@@ -1,3 +1,10 @@
+## D-119 — Independent question answers after real GPT comparison
+
+- Date: 2026-10-22. Owner authorized improvement after the six-case live comparison exposed missing answers and unsupported conclusions. Do not claim that repairing these cases proves general superiority.
+- Keep engines, history, auth, consent, payments and prices unchanged. Add versioned, multilingual independent question answers after prose deduplication, a structural output gate and actual editorial rendering. Unknown facts and unsupported questions remain explicit.
+- Five pre-fix regressions, three-language repeated/mixed/urgent/name/corruption/escaping cases and production-CSS browser checks cover the concrete defects. Numeric fixture results remain identical. No new provider, customer transfer or DB migration.
+- Demand, cost, evidence, limitations, release/rollback and continuing whole-narrative review: Report-Question-Upgrade-2026-10-22.md. Previous production source 7fb1a4b and Worker 17fd2339-ae10-40b0-9100-02107fbb41c2.
+
 ## D-118 — Continuing report evidence and question-specific quality
 
 - Date: 2026-10-22. Owner requires reports to be more accurate/objective than a normal GPT prompt and continuously improved. This is a target, not established comparative evidence.

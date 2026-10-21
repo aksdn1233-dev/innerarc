@@ -2,6 +2,7 @@ import { z } from "zod";
 import { isAcceptedBirthDate } from "@/core/birth-range";
 import { relationshipTypes } from "@/core/compatibility/types";
 import type { ReportLanguageAudit } from "@/core/report-quality";
+import type { ReportQuestionAnswer } from "@/core/report-question-guidance";
 import type {
   EnrichmentAuditEntry,
   ReportCoverageCategory,
@@ -113,4 +114,6 @@ export type PaidReport = Readonly<{
     lockedTopics: readonly string[];
   }>;
   qualityAudit?: ReportLanguageAudit;
+  /** Versioned answers for newly generated reports; historical purchases remain readable. */
+  questionAnswers?: readonly ReportQuestionAnswer[];
 }>;

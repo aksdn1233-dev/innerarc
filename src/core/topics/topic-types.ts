@@ -10,10 +10,9 @@ export type ConcernTopic = Readonly<{
   focus: ConcernFocusId;
   label: Bilingual;
   /**
-   * The verdict, written as the first thing the buyer reads. It commits to a direction
-   * — "해볼 만합니다", "지금은 아닙니다", "순서를 바꾸셔야 합니다" — and names the
-   * condition that decides it. A reading that opens by explaining what it cannot do has
-   * already lost the reader, so this must never begin with a limitation.
+   * Answer the user's question directly and name the conditions to check. A direction
+   * is not a guaranteed outcome. When information is insufficient, saying so is a
+   * valid answer and should be followed by a useful next step rather than false certainty.
    */
   verdict: Bilingual;
   /** How to look at this particular situation. */

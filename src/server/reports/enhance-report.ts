@@ -1,9 +1,8 @@
 import { calculateNumerologyProfile } from "@/core/numerology";
 import { createCompatibilityInsight } from "@/core/compatibility/engine";
 import { createPaidContentPreview } from "@/core/report-preview";
-import { auditReportLanguage, deduplicateReportSections } from "@/core/report-quality";
+import { deduplicateReportSections } from "@/core/report-quality";
 import type { PaidReadingInput, PaidReport } from "@/core/paid-reading";
-import { createDetailPaidReport } from "@/server/reports/detail-report";
 
 export function enhancePaidReport(report: PaidReport, input: PaidReadingInput): PaidReport {
   const serviceYear = report.calculationBasis?.serviceYear ?? new Date(input.createdAt).getUTCFullYear();
@@ -16,19 +15,8 @@ export function enhancePaidReport(report: PaidReport, input: PaidReadingInput): 
   supplements.push(`${preview.unlockedSectionTitle}\n${input.productCode === "plus_30d" ? preview.visible : preview.fullBody}`);
 
   if (input.productCode === "premium_pdf") {
-    const questions = (input.questions?.length ? input.questions : input.concern ? [input.concern] : []).map(question => question.trim()).filter(Boolean).slice(0, 2);
-    questions.forEach((question, index) => {
-      // Reuse the existing question/topic and safety routing instead of giving every
-      // question the same relationship preview. This does not invoke an AI provider.
-      const answer = createDetailPaidReport(report.orderId, { ...input, productCode: "pro_30d", concern: question });
-      references.push(...(answer.contentReferences ?? []));
-      // The numeric context already has its own line below; duplicating that full
-      // paragraph here makes the deduplicator remove it from the opening answer.
-      const directAnswer = answer.sections[0]!.body.split(/\n\s*\n/u)[0]!;
-      supplements.push(`${ko ? `개인 질문 ${index + 1} 직접 답변` : `Personal question ${index + 1}`}\n${ko
-          ? `질문: ${question}\n\n생년월일 패턴 계산 근거: 생명수 ${profile.lifePath.value}, 개인년 ${profile.personalYear.value}.\n\n답변: ${directAnswer}\n\n확인할 행동: ${answer.actions[0] ?? "질문과 관련된 사실과 추측을 나눠 적어보세요."}`
-          : `Question: ${question}\n\nBasis: Life Path ${profile.lifePath.value}, Personal Year ${profile.personalYear.value}.\n\nAnswer: ${directAnswer}\n\nNext step: ${answer.actions[0] ?? "Write down the observed facts separately from assumptions."}`}`);
-    });
+    // Personal answers are composed after narrative deduplication, in independent
+    // contexts. Shared safety/decision advice must not erase an earlier answer.
     if (input.companion) {
       const companion = calculateNumerologyProfile({
         birthDate: input.companion.birthDate,
@@ -64,5 +52,7 @@ export function enhancePaidReport(report: PaidReport, input: PaidReadingInput): 
       lockedTopics: preview.lockedTopics,
     },
   };
-  return { ...enhanced, qualityAudit: auditReportLanguage(enhanced) };
+  // The final question composition audits the completed narrative once. Auditing
+  // here as well would repeat the quadratic prose comparison before changing it.
+  return enhanced;
 }

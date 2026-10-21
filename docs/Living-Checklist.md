@@ -1,5 +1,17 @@
 # Living Checklist
 
+## 2026-10-22 Question-quality corrective release
+
+- [x] Five pre-fix failures reproduced; independent answer composition, bounded multilingual
+  guidance and new output-completeness checks implemented with regression coverage.
+- [x] Six original cases repaired: 9/9 structured answers complete, all 30 calculation values unchanged.
+- [x] Paid editorial renderer now exposes new personal answers; old unversioned purchases unchanged.
+- [x] Missing names, multi-intent questions, unsupported context, urgent safety, three languages,
+  identical questions, metadata corruption and untrusted markup covered.
+- [ ] Hosted production/browser gates and deployment identity: `Report-Question-Upgrade-2026-10-22.md`.
+- [ ] Continue whole-narrative review, including overly business-specific profile prose and
+  Japanese depth. A repaired answer block is not a certification of every chapter or GPT superiority.
+
 ## 2026-10-22 Actual GPT comparison and confirmed semantic failures
 
 - [x] Six synthetic cases frozen before actual ChatGPT UI answers; raw outputs,
@@ -8,10 +20,10 @@
   Both final numeric vectors match 30/30; GPT C2 retains a wrong overview despite correction.
 - [x] Existing focused suite rerun: 7 files / 263 checks passed. This does not validate
   narrative completeness. Production source and successful deployment were reconciled.
-- [ ] Fix destructive cross-question dedup: C4.Q1 and C6.Q1 keep headings but lose answers/actions.
-- [ ] Japanese personal questions: C5.Q1 and C5.Q2 not individually generated.
-- [ ] C6.Q2: explicitly answer that name-derived values require a name; do not route to generic life advice.
-- [ ] Remove unsupported C4 conflict-resolution guarantee and review C3 routine certainty.
+- [x] Fix destructive cross-question dedup: C4.Q1 and C6.Q1 retain complete answers/actions.
+- [x] Japanese personal questions: C5.Q1 and C5.Q2 individually generated.
+- [x] C6.Q2 explicitly answers that name-derived values require a name.
+- [x] Unsupported C4 conflict-resolution and C3 habit-maintenance verdicts removed.
 - [ ] Improve question-specific money/health information needs; evaluate new held-out questions
   with independent human reviewers after repairs. Do not claim superiority from this first run.
 - Evidence, exact scope and unresolved status: `Report-GPT-Comparison-2026-10-22.md`.

@@ -87,20 +87,20 @@ export const LIFE_EXTRA_TOPICS: readonly ConcernTopic[] = [
     focus: "health",
     label: n("건강 습관", "Health habits"),
     verdict: n(
-      "유지 가능합니다. 강도보다 시각이 결과를 정합니다. 목표를 절반으로 줄이고 정해진 시간에 붙이면 이어집니다.",
-      "This holds. When beats how hard; halve the target and attach it to a fixed time.",
+      "유지할 수 있을지는 실제 생활 조건을 봐야 해요. 부담 없는 크기로 시도하고, 끊긴 날의 시간과 몸 상태를 확인해 자신에게 맞는 방식을 찾아보세요.",
+      "Whether a habit lasts depends on real circumstances. Try a manageable version and observe timing and how you feel on missed days before choosing a routine.",
     ),
     framing: n(
-      "이 리포트는 몸 상태를 판단하지 않습니다. 다만 습관이 유지되는 조건은 함께 볼 수 있습니다. 새 습관은 보통 2~3주가 고비이므로, 그 시기를 넘기기 전까지는 결과보다 지속 여부에 집중하는 편이 낫습니다.",
-      "This report does not judge your body. It can look at the conditions under which a habit holds. A new habit usually hits its hardest point around two to three weeks in, so until then, focus on sticking with it rather than on results.",
+      "이 리포트는 몸 상태를 판단하지 않아요. 습관이 잘 이어진 날과 어려웠던 날의 차이를 기록하는 용도로 활용해 주세요. 같은 방법이 모두에게 맞는다고 가정하지 않아요.",
+      "This report does not assess your health. Use it to record differences between easier and harder days, without assuming that the same method fits everyone.",
     ),
     observe: n(
       "운동이나 식사 계획이 끊긴 날의 공통점을 2주만 기록해 보세요. 시간대나 피로도가 자주 겹칩니다. 야근한 날이나 약속이 늦게 끝난 날처럼 특정 요일에 몰려있는지도 함께 확인해 보세요.",
       "For two weeks, note what the days you dropped it had in common. Time of day and fatigue repeat often. Also check whether the drop-off clusters on specific days, like ones with overtime or a late evening plan.",
     ),
     action: n(
-      "목표를 지금의 절반으로 줄이고, 정해진 시간에 붙이세요. 강도보다 시각이 유지에 더 크게 작용합니다. 예를 들어 하루 30분 운동이 부담스럽다면 15분으로 줄이고, 아침 기상 직후처럼 흔들리지 않는 시간에 고정하세요.",
-      "Halve the target and attach it to a fixed time. When beats how hard for staying with it. For example, if 30 minutes a day feels heavy, cut it to 15 and anchor it to a fixed point like right after waking, which rarely shifts.",
+      "무리 없는 행동 하나를 골라 가능한 시간에 시도하고, 실제로 했는지와 부담이 어땠는지 적어보세요. 증상이나 통증이 있다면 운동량을 정하기 전에 의료진과 먼저 확인해 주세요.",
+      "Choose one manageable activity, try it at a feasible time and record completion and burden. If there are symptoms or pain, consult a clinician before deciding on exercise levels.",
     ),
     caution: n(
       "통증·어지럼, 의도하지 않은 급격한 체중 변화, 식사를 계속 거르게 되는 상태나 일상 기능 저하가 있다면 습관 해석보다 의료진 확인이 우선입니다. 극단적인 식이 제한은 권하지 않습니다.",

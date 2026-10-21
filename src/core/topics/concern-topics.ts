@@ -481,8 +481,8 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     focus: "relationships",
     label: n("다툼·갈등", "A recurring argument"),
     verdict: n(
-      "이 갈등은 풀립니다. 다만 주제를 바꾼다고 해결되지 않습니다. 다툼이 시작되는 시간대와 상태를 바꾸면 대부분 줄어듭니다.",
-      "This resolves, but not by changing the subject. Changing when and in what state it starts reduces most of it.",
+      "갈등이 풀릴지는 지금 정보만으로 정할 수 없어요. 다툼이 시작되는 상황과 서로의 대화 의사를 확인하고, 작은 변화를 시도한 뒤 실제로 달라졌는지 살펴보세요.",
+      "The available information cannot establish whether this conflict will resolve. Check how arguments start and whether both people want to talk, then observe whether a small change actually helps.",
     ),
     framing: n(
       "반복되는 다툼은 주제가 아니라 방식에서 되풀이되는 경우가 많습니다. 무엇으로 싸웠는지보다 어떻게 시작됐는지를 보세요. 예를 들어 목소리가 커지는 시점이 항상 같다면, 그 시점 직전에 무슨 말이 나왔는지가 실제 발화점입니다.",

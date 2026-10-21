@@ -20,12 +20,15 @@ in Korean, English and Japanese. Existing language, question relevance, safety, 
 inheritance, deletion/export, privacy and fulfillment tests remain authoritative.
 New reports retain the internal audit policy reference `report-evidence:1.0.0`.
 
-Premium personal questions now reuse the existing per-question topic and safety composer
-instead of receiving identical relationship advice. Two-question Korean/English regressions
-failed before the fix and pass afterward. The full direct-answer numeric paragraph must not
-be copied into the supplement: backward deduplication otherwise removes the original opening
-calculation context. Keep a compact separate basis line and the question's first answer
-paragraph. Empty/whitespace concerns do not create pretend personal questions.
+The first per-question fix reused the topic/safety composer instead of identical relationship
+advice. The subsequent live comparison exposed a deeper failure: two questions routed to
+the same fallback could lose the first answer during backward deduplication. This is now
+superseded by `report-questions:1.0.0`: compose and audit each independent answer after
+ordinary prose dedup, preserve information/action/reconsideration fields and verify exact
+inclusion in the stored body. KO/EN/JA share that contract; unrecognized questions disclose
+insufficient context. Empty/whitespace concerns create no pretend questions. The typed
+optional metadata and actual editorial reader are covered alongside stored/download text.
+See `Report-Question-Upgrade-2026-10-22.md`; do not apply global dedup to those answers.
 
 The English topic matcher now recognizes “changing jobs” as well as “change jobs”. Shared
 job-change and debt verdicts no longer assert success or manageable repayment without facts.
@@ -38,10 +41,10 @@ astronomical conventions, validate a person's biography, prove clinical effectiv
 detect every misleading sentence. Existing golden numerical and solar-term/late-Zi fixtures
 still check the engines independently. Interpretation relevance and contradictions require
 review against the actual question and explicitly consented lived evidence.
-The question-by-question topic fix in this release applies to the KO/EN premium composer.
-Japanese calculation/limitation checks are covered, but that does not certify equal narrative
-depth or personalized-question coverage in the separate Japanese composer. Review that
-language's semantic completeness separately; do not advertise parity based on numeric tests.
+The new independent question layer covers Japanese personal questions as well as KO/EN.
+That does not certify equal long-form narrative depth in the separate Japanese composer.
+Review each language's semantic completeness separately; do not advertise full parity based
+on numeric or answer-field tests.
 
 ## Recurring review
 
