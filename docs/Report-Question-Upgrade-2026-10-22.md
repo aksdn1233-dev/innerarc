@@ -75,11 +75,16 @@ elements; fixture generation now stays in the real React renderer. Non-ASCII ass
 then caught a missing UTF-8 declaration in the test-only intercepted response; both the
 response and fixture document now explicitly declare UTF-8. Production's encoding was intact.
 
+The fixture also declares a device-width viewport and asserts `innerWidth` equals each
+requested width; otherwise a mobile browser could silently test its default desktop layout.
+The first PR run (39663316606) was cancelled before merge to add this stricter test, without
+changing product code or repeating a superseded run unnecessarily.
+
 Local verification: lint has 0 errors / 4 pre-existing navigation warnings; typecheck,
 131 unit files / 1,398 tests, 9 focused files / 283 checks, and the actual Vinext production
 build/style gate passed. Pinned Playwright browsers are absent, but the installed Chrome
-was used in a separate temporary test profile: all 3 language tests passed across the
-9 language/viewport combinations with no overflow or serious/critical axe violations.
+was used in separate temporary desktop and mobile-emulation profiles: all 6 tests passed
+across 18 language/viewport combinations with no overflow or serious/critical axe violations.
 Mobile screenshots were inspected. Hosted pinned Chromium/WebKit and existing payment,
 auth, report and Space gates remain required before release. No large browser download
 or user-file cleanup was needed.

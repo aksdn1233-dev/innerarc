@@ -21,13 +21,14 @@ for (const language of ["ko", "en", "ja"] as const) {
     const styles = await page.locator('link[rel="stylesheet"]').evaluateAll(links => links.map(link => (link as HTMLLinkElement).href));
     const root = await page.locator("html").evaluate(element => ({ className: element.className, style: element.getAttribute("style") ?? "" }));
     expect(styles.length).toBeGreaterThan(0);
-    const fixture = `<!doctype html><html lang="${language}" class="${root.className}" style="${root.style.replaceAll('"', '&quot;')}"><head><meta charset="utf-8"><title>Question section verification</title>${styles.map(href => `<link rel="stylesheet" href="${href}">`).join("")}</head><body><main class="editorial-report">${example.html}</main></body></html>`;
+    const fixture = `<!doctype html><html lang="${language}" class="${root.className}" style="${root.style.replaceAll('"', '&quot;')}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Question section verification</title>${styles.map(href => `<link rel="stylesheet" href="${href}">`).join("")}</head><body><main class="editorial-report">${example.html}</main></body></html>`;
     await page.route("**/__report-question-fixture", route => route.fulfill({ status: 200, contentType: "text/html; charset=utf-8", body: fixture }));
     // A fresh document drops the sample's React runtime; production styles and
     // fonts keep their real same-origin URLs. No test endpoint is shipped.
     await page.goto("/__report-question-fixture");
     for (const width of [1440, 390, 360]) {
       await page.setViewportSize({ width, height: 900 });
+      expect(await page.evaluate(() => innerWidth)).toBe(width);
       const section = page.locator("#ed-question-answers");
       for (const question of example.questions) await expect(section).toContainText(question);
       await expect(section.locator("article")).toHaveCount(2);
