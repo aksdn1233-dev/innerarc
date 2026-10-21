@@ -1,5 +1,22 @@
 # Living Checklist
 
+## 2026-10-22 Actual GPT comparison and confirmed semantic failures
+
+- [x] Six synthetic cases frozen before actual ChatGPT UI answers; raw outputs,
+  model-menu evidence and hashes saved in ignored `artifacts/report-quality/live-comparison/`.
+- [x] Ordinary prompts (2) separated from convention-controlled prompts (4).
+  Both final numeric vectors match 30/30; GPT C2 retains a wrong overview despite correction.
+- [x] Existing focused suite rerun: 7 files / 263 checks passed. This does not validate
+  narrative completeness. Production source and successful deployment were reconciled.
+- [ ] Fix destructive cross-question dedup: C4.Q1 and C6.Q1 keep headings but lose answers/actions.
+- [ ] Japanese personal questions: C5.Q1 and C5.Q2 not individually generated.
+- [ ] C6.Q2: explicitly answer that name-derived values require a name; do not route to generic life advice.
+- [ ] Remove unsupported C4 conflict-resolution guarantee and review C3 routine certainty.
+- [ ] Improve question-specific money/health information needs; evaluate new held-out questions
+  with independent human reviewers after repairs. Do not claim superiority from this first run.
+- Evidence, exact scope and unresolved status: `Report-GPT-Comparison-2026-10-22.md`.
+  No production code or historical paid report was modified by this comparison.
+
 ## 2026-10-22 Report evidence and continuing quality
 
 - [x] New-report numeric metadata and printed calculation values checked against the existing engine.
@@ -9,8 +26,9 @@
 - [x] Two distinct premium questions routed to their own answer; preserve the main numeric context during dedup.
 - [x] English changing-jobs matching and unsupported debt/job verdicts corrected with regressions.
 - [x] Weekly Monday 09:00 Asia/Seoul app review created (automation-2); policy in Report-Quality-Standard.md.
-- [ ] Final release verification after complete CI; existing access and paid deliveries must stay intact.
-- Actual GPT comparative superiority remains unmeasured; no marketing accuracy claim authorized by a test pass.
+- [x] Release CI 39651006431 and production Deploy 39652845884 succeeded on 7fb1a4b;
+  existing access and paid delivery paths remain intact.
+- A first real GPT comparison is now recorded above; comparative superiority remains unestablished.
 
 ## 2026-10-19 Shorter lower-home copy
 

@@ -70,8 +70,12 @@ paid model calls, customer exports, provider transfer or extra consent defaults 
 
 ## Comparison with an ordinary GPT response
 
-No GPT comparison has been run as part of this release. A test run of our own fixtures is
-not such a comparison. Before making a superiority claim:
+The original release did not include a GPT comparison. The subsequent owner-requested
+six-case live UI run is documented in `Report-GPT-Comparison-2026-10-22.md`, with raw
+synthetic outputs and hashes saved locally. It found equal final numeric vectors, one
+GPT display contradiction, and confirmed product question-coverage/claim defects.
+It does **not** establish comparative superiority. Our own fixture pass rate is not a
+GPT comparison or evidence of narrative completeness. Before making a superiority claim:
 
 1. Freeze a representative held-out synthetic case set and rubric before seeing outputs.
    Include missing birth time, master numbers, leap dates, uncertain/private facts, conflicting
