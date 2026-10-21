@@ -8,6 +8,13 @@ normal CI. Valid-input delivery failures trigger rollback, not weakened calculat
 Policy, first validator false positive, question-routing/dedup regression and rollback:
 Report-Quality-Standard.md. Weekly app heartbeat: automation-2. No new model calls or migration.
 
+The first release CI passed report checks but failed audit on three launch-editor
+advisories carried by Vite 8.1.5. Pin Vite 8.1.6 and regenerate the lockfile; verify audit,
+build and all browsers on that source. Preserve the existing audit exceptions without
+adding a new one. Keep this patch if rolling back report behavior. Local browser/install
+checks hit missing binaries and ENOSPC; only the ignored worktree build output was cleaned,
+and browser completion must be confirmed by hosted CI, not inferred from HTTP success.
+
 ## 2026-10-16 Harang reading-room renewal
 
 Post-deploy finding: Vinext dropped the side-effect-only Saju CSS Module although the

@@ -115,6 +115,22 @@ Vinext production build/style gate passed. The new evidence suite contains 149 c
 The first local browser attempt could not launch because the pinned Playwright browser
 binaries were absent; reinstall the package's Chromium/WebKit revisions and rerun before
 calling browser verification complete. This is an environment failure, not a report failure.
+Installation then hit local ENOSPC. Only the worktree's ignored `.next` output was removed
+after a scoped Git dry run; source and customer data were preserved. Complete browser
+validation on the hosted pinned-browser runners. Local HTTP checks returned 200 with the
+intended limitation notices for KO/EN/JA. The Japanese public sample uses a separate fixed
+editorial renderer and retains its existing notice; it is not proof of personalized parity.
+
+The first PR CI (39648156938) passed lint/typecheck/unit/build and failed dependency audit:
+Vite 8.1.5 was covered by newly updated launch-editor advisories
+[GHSA-587h-7wmj-h5pm](https://github.com/advisories/GHSA-587h-7wmj-h5pm),
+[GHSA-698v-4r3x-3vcv](https://github.com/advisories/GHSA-698v-4r3x-3vcv), and
+[GHSA-r825-w8mm-5pxw](https://github.com/advisories/GHSA-r825-w8mm-5pxw).
+Pin published Vite 8.1.6 (npm integrity verified) and regenerate the lockfile; the other
+dependency versions remain unchanged, with peer-key normalization. `pnpm audit` then exits
+successfully with only the three pre-existing workspace exceptions. No ignore was added.
+The post-patch build/browser gates must pass on hosted CI; the earlier local build used
+8.1.5 and is not represented as validating the patched bundler.
 
 If `REPORT_EVIDENCE_MISMATCH` occurs, use the existing failed-paid-fulfillment/support/refund
 procedure; do not mark the report ready or change a customer's facts to make it pass. Fix
@@ -127,3 +143,5 @@ Worker `e0fbb3fe-d046-4865-abc3-e7bed85e8c5e`. Revert this release through norma
 with preserved dashboard variables. No migration, entitlement regeneration or data deletion.
 Revert for valid-input fulfillment failures or payment/privacy regression; repair the gate
 before re-enabling it. Keep all calculation evidence and the symbolic claim boundary.
+Keep the Vite security patch when reverting report behavior; do not reintroduce the known
+toolchain advisory or add an audit bypass to make a rollback green.
