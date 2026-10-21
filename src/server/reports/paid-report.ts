@@ -8,10 +8,11 @@ import { createSajuChartReport } from "@/server/reports/saju-chart-report";
 import { createJapanesePaidReport } from "@/server/reports/japanese-paid-report";
 import { enhancePaidReport } from "@/server/reports/enhance-report";
 import { verifyPaidReportEvidence } from "@/server/reports/evidence-audit";
+import { applyQuestionGuidance } from "@/server/reports/question-guidance";
 
 export function createPaidReport(orderId: string, rawInput: unknown): PaidReport {
   const input = PaidReadingInputSchema.parse(rawInput);
-  if (input.displayLocale === "ja") return verifyPaidReportEvidence(createJapanesePaidReport(orderId, input), input);
+  if (input.displayLocale === "ja") return verifyPaidReportEvidence(applyQuestionGuidance(createJapanesePaidReport(orderId, input), input), input);
   if (input.productCode === "plus_30d" && input.readingKind === "saju_chart") {
     return verifyPaidReportEvidence(createSajuChartReport(orderId, input), input);
   }
@@ -27,7 +28,7 @@ export function createPaidReport(orderId: string, rawInput: unknown): PaidReport
       report = createPremiumPaidReport(orderId, input);
       break;
   }
-  return verifyPaidReportEvidence(enhancePaidReport(report, input), input);
+  return verifyPaidReportEvidence(applyQuestionGuidance(enhancePaidReport(report, input), input), input);
 }
 
 export async function revokeGuestPaidReport(

@@ -1,3 +1,14 @@
+## 2026-10-22 Question completeness
+
+New numerology reports carry `report-questions:1.0.0` and optional `questionAnswers`.
+The generation gate rejects missing/mismatched question count, routing, nonempty fields
+or text absent from the stored/download body, using closed `questions.*` failure IDs.
+Use existing failed-fulfillment/support handling; never force ready or log the raw question.
+Independent answers must be composed after narrative deduplication. Audit each answer
+context separately; essential conditions repeated for two questions must not disappear.
+Old stored reports are not revalidated or regenerated. Rollback source/Worker and scope
+are in `Report-Question-Upgrade-2026-10-22.md`; preserve Vite 8.1.6 and dashboard variables.
+
 ## 2026-10-22 New-report evidence gate
 
 `REPORT_EVIDENCE_MISMATCH` means a new report failed the calculation/output contract.

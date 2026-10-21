@@ -92,7 +92,7 @@ describe("new report evidence gate", () => {
     const report = createPaidReport("synthetic-debt", { ...base, locale, productCode: "plus_30d", concern });
     // A professional-first safety response is also correct; never force a financial
     // interpretation to replace that valid boundary just to match one sentence.
-    expect(report.sections[0]!.body).toMatch(locale === "ko" ? /판단할 수는 없어요|전문가나 공식 기관/u : /cannot establish repayment capacity/u);
+    expect(report.sections[0]!.body).toMatch(locale === "ko" ? /판단할 수는? 없어요|전문가나 공식 기관/u : /cannot establish repayment capacity/u);
     expect(report.sections[0]!.body).not.toMatch(/정리 가능한 규모|manageable shape/u);
     const { topic } = resolveConcernTopic(concern, "growth");
     expect(topic.id).toBe("debt");

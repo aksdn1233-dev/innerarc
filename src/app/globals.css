@@ -5510,6 +5510,11 @@ summary {
   border-bottom: 1px solid var(--ed-line);
 }
 .ed-paper-section { background: var(--ed-paper-light); }
+.ed-question-guidance article + article { margin-top: 36px; padding-top: 28px; border-top: 1px solid var(--ed-line); }
+.ed-question-guidance :is(blockquote, p, dd) { max-width: 68ch; overflow-wrap: anywhere; }
+.ed-question-guidance blockquote { margin: 18px 0; color: var(--ed-ink); font-size: 1.15rem; line-height: 1.8; }
+.ed-question-guidance dt { margin-top: 22px; font-family: var(--font-sans), sans-serif; font-weight: 700; }
+.ed-question-guidance dd { margin: 8px 0 20px; }
 .ed-paper-section:nth-of-type(even) { background: var(--ed-paper); }
 .ed-paper-section > :not(.ed-chapter-number), .ed-ink-section > :not(.ed-chapter-number), .ed-reality-section > :not(.ed-chapter-number) { max-width: 920px; margin-left: auto; margin-right: auto; }
 .ed-chapter-number { display: block; position: relative; max-width: 920px; margin: 0 auto 22px; color: var(--ed-gold); font-size: clamp(2rem, 4vw, 3.4rem); line-height: 1; font-variant-numeric: tabular-nums; }

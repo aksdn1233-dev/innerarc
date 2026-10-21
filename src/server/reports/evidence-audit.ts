@@ -1,6 +1,7 @@
 import { calculateBirthYearNumber, calculateNumerologyProfile } from "@/core/numerology";
 import type { PaidReadingInput, PaidReport } from "@/core/paid-reading";
 import { buildSajuChart } from "@/core/saju";
+import { formatQuestionAnswer, questionTopics, REPORT_QUESTION_POLICY, selectReportQuestions } from "@/core/report-question-guidance";
 
 export const REPORT_EVIDENCE_POLICY_VERSION = "report-evidence:1.0.0";
 
@@ -26,6 +27,21 @@ export function auditPaidReportEvidence(report: PaidReport, input: PaidReadingIn
   check("locale", report.locale === (input.displayLocale === "ja" ? "en" : input.locale) && report.displayLocale === input.displayLocale);
   check("sections", report.sections.length > 0 && report.sections.every(section => !!section.title.trim() && !!section.body.trim()));
   check("limits", /보장하지|미래를 보장하거나[^.\n]{0,80}대신하지 않습니다|does not guarantee|保証せず|保証ではありません/iu.test(report.disclaimer));
+
+  // These checks concern new composition only, not stored purchases. A compact
+  // closed-set code must never include the customer's question or personal data.
+  if (input.readingKind !== "saju_chart") {
+    check("questions.policy", report.contentReferences?.includes(REPORT_QUESTION_POLICY) === true);
+    const expectedQuestions = input.productCode === "premium_pdf" ? selectReportQuestions(input.questions, input.concern) : [];
+    check("questions.count", report.questionAnswers?.length === expectedQuestions.length);
+    expectedQuestions.forEach((question, index) => {
+      const answer = report.questionAnswers?.[index];
+      check("questions.input", answer?.question === question);
+      check("questions.routing", JSON.stringify(answer?.topics) === JSON.stringify(questionTopics(question)));
+      check("questions.complete", !!answer && [answer.answer, answer.information, answer.action, answer.reconsider].every(value => typeof value === "string" && !!value.trim()) && Array.isArray(answer.topics) && answer.topics.length > 0);
+      if (answer) check("questions.printed", report.sections.some(section => section.body.includes(formatQuestionAnswer(answer, index, input.displayLocale ?? input.locale))));
+    });
+  }
 
   if (input.productCode === "plus_30d" && input.readingKind === "saju_chart") {
     const chart = buildSajuChart({

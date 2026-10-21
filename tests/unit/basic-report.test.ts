@@ -122,7 +122,9 @@ describe("BASIC_19000 complete report", () => {
       focusId: "health",
       concern: "내 건강 습관과 생활 리듬은 무엇부터 바꿀까?",
     }));
-    expect(health).not.toMatch(/진단|치료합니다|완치|2주 안에 체중 5%/u);
+    // A clear denial of diagnosis is the required boundary, not a diagnostic claim.
+    expect(health).toMatch(/진단할 수는? 없어요/u);
+    expect(health).not.toMatch(/진단합니다|치료합니다|완치|2주 안에 체중 5%/u);
 
     const privateFact = totalKoreanContent(createPaidReport("iabasicprivatefact", {
       ...BASE,

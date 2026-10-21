@@ -16,6 +16,7 @@ import {
 import type { Locale } from "@/i18n/config";
 import { ReportRealityCheck } from "@/components/pattern-intelligence/report-reality-check";
 import { EvidenceEventCapture } from "@/components/pattern-intelligence/evidence-event-capture";
+import { ReportQuestionGuidance } from "@/components/report-question-guidance";
 
 function ChapterNumber({ value }: { value: number }) {
   return <span aria-hidden="true" className="ed-chapter-number">{String(value).padStart(2, "0")}</span>;
@@ -242,6 +243,7 @@ export function DetailEditorialReport({
       </section>
 
       <nav className="ed-toc" aria-label={ko ? "리포트 차례" : "Report contents"}>
+        {!!report.questionAnswers?.length && <a href="#ed-question-answers">{ko ? "내 질문" : "Your questions"}</a>}
         <a href="#ed-core">{ko ? "핵심" : "Core"}</a>
         <a href="#ed-patterns">{ko ? "반복 패턴" : "Patterns"}</a>
         <a href="#ed-life">{ko ? "돈·일·관계" : "Life"}</a>
@@ -251,6 +253,8 @@ export function DetailEditorialReport({
         {isPremium && <a href="#ed-accessories">{ko ? "추천 소품" : "Accessories"}</a>}
         <a href="#ed-reality">Reality Check</a>
       </nav>
+
+      <ReportQuestionGuidance report={report} language={locale} />
 
       <section className="ed-paper-section ed-statement" id="ed-core">
         <ChapterNumber value={1} />

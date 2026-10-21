@@ -127,7 +127,7 @@ describe("PREMIUM_79000 strict tier inheritance", () => {
     });
     const all = [...health.sections, ...privateFact.sections].map((section) => section.body).join(" ");
 
-    expect(health.sections[0].body).toMatch(/전문가|사실 확인/u);
+    expect(health.sections[0].body).toMatch(/의료진|전문가|사실 확인/u);
     expect(all).not.toMatch(/반드시|틀림없이|확실히 합격|수익을 보장/u);
     expect(all).not.toMatch(/다른 사람을 만나고 있습니다|바람을 피우고 있습니다/u);
     expect(all).not.toMatch(/2027|2028|2029/u);

@@ -1,5 +1,34 @@
 # Living Checklist
 
+## 2026-10-22 Question-quality corrective release
+
+- [x] Five pre-fix failures reproduced; independent answer composition, bounded multilingual
+  guidance and new output-completeness checks implemented with regression coverage.
+- [x] Six original cases repaired: 9/9 structured answers complete, all 30 calculation values unchanged.
+- [x] Paid editorial renderer now exposes new personal answers; old unversioned purchases unchanged.
+- [x] Missing names, multi-intent questions, unsupported context, urgent safety, three languages,
+  identical questions, metadata corruption and untrusted markup covered.
+- [ ] Hosted production/browser gates and deployment identity: `Report-Question-Upgrade-2026-10-22.md`.
+- [ ] Continue whole-narrative review, including overly business-specific profile prose and
+  Japanese depth. A repaired answer block is not a certification of every chapter or GPT superiority.
+
+## 2026-10-22 Actual GPT comparison and confirmed semantic failures
+
+- [x] Six synthetic cases frozen before actual ChatGPT UI answers; raw outputs,
+  model-menu evidence and hashes saved in ignored `artifacts/report-quality/live-comparison/`.
+- [x] Ordinary prompts (2) separated from convention-controlled prompts (4).
+  Both final numeric vectors match 30/30; GPT C2 retains a wrong overview despite correction.
+- [x] Existing focused suite rerun: 7 files / 263 checks passed. This does not validate
+  narrative completeness. Production source and successful deployment were reconciled.
+- [x] Fix destructive cross-question dedup: C4.Q1 and C6.Q1 retain complete answers/actions.
+- [x] Japanese personal questions: C5.Q1 and C5.Q2 individually generated.
+- [x] C6.Q2 explicitly answers that name-derived values require a name.
+- [x] Unsupported C4 conflict-resolution and C3 habit-maintenance verdicts removed.
+- [ ] Improve question-specific money/health information needs; evaluate new held-out questions
+  with independent human reviewers after repairs. Do not claim superiority from this first run.
+- Evidence, exact scope and unresolved status: `Report-GPT-Comparison-2026-10-22.md`.
+  No production code or historical paid report was modified by this comparison.
+
 ## 2026-10-22 Report evidence and continuing quality
 
 - [x] New-report numeric metadata and printed calculation values checked against the existing engine.
@@ -9,8 +38,9 @@
 - [x] Two distinct premium questions routed to their own answer; preserve the main numeric context during dedup.
 - [x] English changing-jobs matching and unsupported debt/job verdicts corrected with regressions.
 - [x] Weekly Monday 09:00 Asia/Seoul app review created (automation-2); policy in Report-Quality-Standard.md.
-- [ ] Final release verification after complete CI; existing access and paid deliveries must stay intact.
-- Actual GPT comparative superiority remains unmeasured; no marketing accuracy claim authorized by a test pass.
+- [x] Release CI 39651006431 and production Deploy 39652845884 succeeded on 7fb1a4b;
+  existing access and paid delivery paths remain intact.
+- A first real GPT comparison is now recorded above; comparative superiority remains unestablished.
 
 ## 2026-10-19 Shorter lower-home copy
 
