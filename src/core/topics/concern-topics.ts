@@ -104,8 +104,8 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     focus: "work",
     label: n("이직", "Changing jobs"),
     verdict: n(
-      "옮기는 방향 자체는 맞습니다. 다만 지금 자리가 힘들어서 옮기면 같은 문제가 따라옵니다. 갈 곳의 조건을 확인한 뒤 움직이면 이번 이동은 성과가 됩니다.",
-      "The direction is right, but moving because this seat is hard carries the problem along. Verify the next role first and this move pays off.",
+      "생년월일만으로 이직의 성공 여부를 알 수는 없어요. 지금 자리의 불만과 새 역할의 권한·책임·평가 조건을 나눠 살펴보세요.",
+      "A birth date cannot establish whether a job move will work. Compare the current concern with the next role's documented responsibilities and conditions before deciding.",
     ),
     framing: n(
       "이직은 지금 자리가 나쁜지가 아니라, 옮길 자리가 지금보다 나은지로 결정하는 편이 안전합니다. 두 질문은 다릅니다. 연봉, 통근 시간, 업무 범위 세 가지를 지금 자리와 나란히 표로 비교하면 감정과 조건이 분리됩니다.",
@@ -123,7 +123,7 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
       "연봉만 보고 옮기면 업무 조건에서 되돌아옵니다. 최종 제안은 서면으로 받고, 지금 직장은 그 뒤에 정리하세요. 구두로 합의한 연봉과 최종 근로계약서상 금액이 다른 경우가 있으니 서명 전에 숫자를 다시 대조하세요.",
       "Moving on salary alone returns as working conditions. Get the offer in writing before ending the current job. Verbally agreed pay sometimes differs from the figure in the final contract, so check the number again before signing.",
     ),
-    patterns: [/이직|옮길까|옮기는|퇴사하고|회사를? 나와|전직/u, /change jobs|new job|quit and move/i],
+    patterns: [/이직|옮길까|옮기는|퇴사하고|회사를? 나와|전직/u, /chang(?:e|ing) jobs|job change|career change|new job|quit and move/i],
   },
   {
     id: "job_hunt",
@@ -540,8 +540,8 @@ const BASE_TOPICS: readonly ConcernTopic[] = [
     focus: "money",
     label: n("빚·상환", "Debt"),
     verdict: n(
-      "정리 가능한 규모입니다. 다만 전부를 한 번에 갚으려 하면 오래 갑니다. 금리가 가장 높은 것 하나부터 잡으면 순서가 잡힙니다.",
-      "This is a manageable shape. Paying everything at once drags; taking the highest rate first sets the order.",
+      "지금 정보만으로 상환 가능한 규모인지 판단할 수는 없어요. 수입·필수 지출·각 채무의 조건을 확인하고, 상환이 어렵다면 공적 상담기관에서 사실을 먼저 확인해요.",
+      "The supplied information cannot establish repayment capacity. Check income, essential expenses and each debt's terms; if repayment is difficult, seek a formal debt-counselling service.",
     ),
     framing: n(
       "빚은 순서 문제입니다. 금리가 높은 것부터인지, 금액이 작은 것부터인지만 정해도 대부분 정리됩니다. 금리가 연 15퍼센트를 넘는 항목이 있다면, 금액이 작더라도 그것부터 우선 처리하는 편이 이자 부담을 줄입니다.",

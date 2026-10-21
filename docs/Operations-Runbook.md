@@ -1,3 +1,13 @@
+## 2026-10-22 New-report evidence gate
+
+`REPORT_EVIDENCE_MISMATCH` means a new report failed the calculation/output contract.
+Use the existing failed-fulfillment and support/refund handling; never force status ready
+or regenerate a historical purchase to hide it. Failure codes contain no customer values.
+Reproduce with a synthetic input, fix the cause and rerun `pnpm test:report-quality` plus
+normal CI. Valid-input delivery failures trigger rollback, not weakened calculation checks.
+Policy, first validator false positive, question-routing/dedup regression and rollback:
+Report-Quality-Standard.md. Weekly app heartbeat: automation-2. No new model calls or migration.
+
 ## 2026-10-16 Harang reading-room renewal
 
 Post-deploy finding: Vinext dropped the side-effect-only Saju CSS Module although the

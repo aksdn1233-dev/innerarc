@@ -1,5 +1,17 @@
 # Living Checklist
 
+## 2026-10-22 Report evidence and continuing quality
+
+- [x] New-report numeric metadata and printed calculation values checked against the existing engine.
+- [x] Saju known/unknown time, KO/EN/JA, master/leap-date and corruption matrix added.
+- [x] Valid coordinated Korean negation retained after initial validator false positives.
+- [x] Calculations distinguished from unverified personality/life hypotheses; stored purchases unchanged.
+- [x] Two distinct premium questions routed to their own answer; preserve the main numeric context during dedup.
+- [x] English changing-jobs matching and unsupported debt/job verdicts corrected with regressions.
+- [x] Weekly Monday 09:00 Asia/Seoul app review created (automation-2); policy in Report-Quality-Standard.md.
+- [ ] Final release verification after complete CI; existing access and paid deliveries must stay intact.
+- Actual GPT comparative superiority remains unmeasured; no marketing accuracy claim authorized by a test pass.
+
 ## 2026-10-19 Shorter lower-home copy
 
 - Owner requested less explanatory text below the hero. Shorten KO/EN guidance,

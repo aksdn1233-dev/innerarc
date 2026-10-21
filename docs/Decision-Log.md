@@ -1,3 +1,10 @@
+## D-118 — Continuing report evidence and question-specific quality
+
+- Date: 2026-10-22. Owner requires reports to be more accurate/objective than a normal GPT prompt and continuously improved. This is a target, not established comparative evidence.
+- Gate new reports against deterministic numerical/pillar evidence, keep unknown time unknown, separate symbolic hypotheses from observed facts, and route premium questions individually. Preserve prior purchased reports and engines.
+- Add synthetic/corruption regressions, reuse existing golden vectors, and run a weekly local review (automation-2, Monday 09:00 Asia/Seoul) with no recurring paid model calls or customer-data export. Each code change remains covered by normal CI.
+- Demand, business costs/metrics, fair GPT comparison protocol, failure findings and rollback are recorded in Report-Quality-Standard.md. No migration, pricing, payment policy or provider flag change.
+
 ## D-117 — Sole Harang host and focused reading-room entry
 
 - Date: 2026-10-16. Direct owner request: retire prior public character identities, simplify the reference-style entry, and use the approved high-resolution 하랑 법사.
