@@ -1,4 +1,6 @@
 import { expect, test } from "@playwright/test";
+import { resolveProductPricing } from "../../src/core/product-prices";
+const prices = resolveProductPricing().prices;
 
 const checkoutEnabled = process.env.E2E_PAYMENT_CHECKOUT === "1";
 
@@ -36,7 +38,7 @@ test("checkout validates locally and switches product and report input together"
         provider: "payapp",
         orderId: "e2e_order_01",
         orderName: "Premium in-depth reading",
-        amount: 39_000,
+        amount: prices.premium_pdf,
         currency: "KRW",
         payUrl: "https://pay.example.invalid/e2e_order_01",
         reportUrl: `${new URL(route.request().url()).origin}/en/reports/e2e_order_01`,
@@ -65,7 +67,7 @@ test("checkout validates locally and switches product and report input together"
   expect(requests).toHaveLength(1);
   expect(requests[0]).toMatchObject({
     productCode: "premium_pdf",
-    expectedAmount: expect.any(Number),
+    expectedAmount: prices.premium_pdf,
     customerPhone: "010-1234-5678",
     readingInput: {
       productCode: "premium_pdf",
@@ -114,7 +116,7 @@ test("a rapid double click creates only one payment order", async ({ page }) => 
         provider: "payapp",
         orderId: "e2e_order_once",
         orderName: "Detailed reading",
-        amount: 9_600,
+        amount: prices.pro_30d,
         currency: "KRW",
         payUrl: "https://pay.example.invalid/e2e_order_once",
         reportUrl: `${new URL(route.request().url()).origin}/en/reports/e2e_order_once`,
@@ -135,7 +137,7 @@ test("a rapid double click creates only one payment order", async ({ page }) => 
   expect(requestCount).toBe(1);
 });
 
-test("the 9,600 KRW detailed report can be purchased with birth date only", async ({ page }) => {
+test("the catalog-priced detailed report can be purchased with birth date only", async ({ page }) => {
   const requests: unknown[] = [];
   await page.addInitScript((value) => {
     window.sessionStorage.setItem("innerarc.checkoutDraft.v1", JSON.stringify(value));
@@ -153,7 +155,7 @@ test("the 9,600 KRW detailed report can be purchased with birth date only", asyn
         provider: "payapp",
         orderId: "e2e_order_detail",
         orderName: "Detailed reading",
-        amount: 9_600,
+        amount: prices.pro_30d,
         currency: "KRW",
         payUrl: "https://pay.example.invalid/e2e_order_detail",
         reportUrl: `${new URL(route.request().url()).origin}/en/reports/e2e_order_detail`,
@@ -172,7 +174,7 @@ test("the 9,600 KRW detailed report can be purchased with birth date only", asyn
   expect(requests).toHaveLength(1);
   expect(requests[0]).toMatchObject({
     productCode: "pro_30d",
-    expectedAmount: expect.any(Number),
+    expectedAmount: prices.pro_30d,
     readingInput: {
       productCode: "pro_30d",
       birthDate: "1994-11-04",

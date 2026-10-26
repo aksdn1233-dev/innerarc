@@ -147,6 +147,14 @@ describe("PayApp feedback callback", () => {
     expect(recorded.events[0]).toMatchObject({ event_type: "PAY_STATE_4", provider: "payapp" });
   });
 
+  it.each([9800, 36000, 39000, 79000, 9600, 1500])("verifies the saved order amount %i after a catalog revision", async (amount) => {
+    stubOrder(defaultOrder({ amount }));
+    const response = await POST(feedbackRequest({ price: String(amount) }));
+    expect(response.status).toBe(200);
+    expect(await response.text()).toBe("SUCCESS");
+    expect(finalizePaidReport).toHaveBeenCalledTimes(1);
+  });
+
   it("rejects a forged callback whose secrets do not match", async () => {
     const forgeries: Record<string, string>[] = [
       { linkkey: "wrong-link-key-value" },

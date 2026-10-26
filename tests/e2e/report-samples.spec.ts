@@ -52,7 +52,7 @@ test("all public result samples have complete Japanese pages and language switch
   }
 });
 
-test("79,000원 premium sample uses the editorial report and deterministic accessory edit", async ({ page }) => {
+test("Premium sample uses the editorial report and deterministic accessory edit", async ({ page }) => {
   await page.goto("/ko/samples/premium");
   await expect(page.locator(".editorial-report-premium")).toBeVisible();
   await expect(page.locator(".ed-cover h1")).toContainText("프리미엄");
@@ -87,7 +87,7 @@ test("79,000원 premium sample uses the editorial report and deterministic acces
   expect(quality.duplicatePremiumParagraphs).toEqual([]);
 });
 
-test("39,000원 editorial sample keeps its reading and accessibility contract", async ({ page }) => {
+test("Detailed editorial sample keeps its reading and accessibility contract", async ({ page }) => {
   await page.goto("/ko/samples/detail");
   await expect(page.locator(".ed-cover-facts dd")).toContainText(["1994-11-04", "남성"]);
   await expect(page.locator(".ed-strength-list > li")).toHaveCount(5);

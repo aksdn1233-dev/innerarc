@@ -672,3 +672,11 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Browser QA found and fixed sample contrast, 44px link targets and invalid definition-list grouping. Existing axe/phone scans remain regression gates.
 - [ ] Final complete browser, visual, payment-shell and release checks recorded in Release-Checklist.
 - [ ] Hosted CI and build identity must pass before declaring production complete.
+
+
+## 2026-10-27 — Report price revision
+
+- [x] Reproduce old prices with synthetic failing tests; revise Detailed/Premium only, retaining historical amount/snapshot evidence and saved reports.
+- [x] Add real order/provider parity, stale/tampered rejection and saved-amount callback regressions; move Japanese intake and guide price prose to server snapshot.
+- [ ] Complete normal CI/deploy and public KO/EN/JA price/health verification; final release PR and ignored pricing artifacts close this item without a documentation-only redeploy.
+- Pricing economics, guardrails and rollback: Report-Price-Revision-2026-10-27.md.

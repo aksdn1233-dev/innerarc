@@ -34,7 +34,7 @@ Version 0.20.2 provides a web-first, guest-first Korean/English application with
 - the Reality Check Loop, browser-local review-month capture, and read-only navigation across current and prior monthly pattern reports;
 - a guest privacy center for independent consent, language/time-zone preferences, validated device export, and complete local deletion;
 - optional Supabase email sign-in with explicit owner-scoped upload/restore, account export, and atomic server-record deletion;
-- a fail-closed PayApp hosted checkout with virtual-account deposit notifications plus PortOne/Toss fallbacks, server-owned 9,600/39,000 KRW active products, guest or optional-account purchase, verified payment callbacks, post-payment reports, downloads, My Page storage, notification preferences, and an allowlisted admin console;
+- a fail-closed PayApp hosted checkout with virtual-account deposit notifications plus PortOne/Toss fallbacks, server-owned 5,500 KRW chart / 9,800 KRW Detailed / 36,000 KRW Premium products, guest or optional-account purchase, verified payment callbacks, post-payment reports, downloads, My Page storage, notification preferences, and an allowlisted admin console;
 - a per-condition payment readiness report in that console that names the variable closing checkout without ever showing its value, records the payment company's own rejection wording, and lets the owner grant the launch approval without a redeploy;
 - a completed-report experience survey that measures acquisition source, usefulness, return intent,
   desired follow-up, and preferred rhythm, then offers a separate consent-controlled detailed review;

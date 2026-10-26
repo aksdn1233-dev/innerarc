@@ -537,3 +537,8 @@ The device-only production release is Worker `225ac729-0832-4f47-8db8-edb63edc99
 ### Space recovery browser-test cold-start flake — 2026-10-16
 
 When the iPhone/WebKit recovery gate fails only on its first attempt and passes after Playwright restarts the test, inspect whether its synthetic 503 was injected before cold dynamic imports and WebGL startup. The failure artifact for PR #81 showed the fresh renderer was not ready before the test's retry assertion, while its clean retry passed. Warm the public Space scene before injecting the one-asset 503, then reload and preserve the exact assertions that failure removes the canvas and retry restores one scene and one renderer. Do not relax the production 25-second startup deadline, disable `failOnFlakyTests`, or treat a retry-pass as a green gate. This test-only stabilization does not change the default-off production Space flags, stored data, migration, payment, or model configuration.
+
+
+## 2026-10-27 — Current report prices and stale checkout
+
+From the Korea-date revision, Chart/Detailed/Premium are 5,500/9,800/36,000 KRW. Code catalog owns the charged amount; recognized previous dashboard assertions do not override it or close checkout. `PRICE_CHANGED` tells an old tab to reload; never accept the client's stale amount. Stored-order callback verification must keep its original charge; do not rewrite orders or regenerate purchases. Old diagnostic clocks must not compare historical prices to today's constants. See Report-Price-Revision-2026-10-27.md for tests, actual-cost review, rollback source/Worker and normal release requirements. Preserve all authorized revisions on rollback and `--keep-vars`; no migration.

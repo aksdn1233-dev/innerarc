@@ -1,7 +1,16 @@
-export const STANDARD_PRODUCT_PRICES_KRW = {
+/** List prices before the owner revision; retained for past snapshots and callbacks. */
+export const PRE_REPORT_REVISION_PRODUCT_PRICES_KRW = {
   plus_30d: 5_500,
   pro_30d: 39_000,
   premium_pdf: 79_000,
+} as const;
+
+/** Owner-approved list prices from 2026-10-27 00:00 Asia/Seoul. */
+export const REPORT_PRICE_REVISION_START = "2026-10-26T15:00:00.000Z";
+export const STANDARD_PRODUCT_PRICES_KRW = {
+  plus_30d: 5_500,
+  pro_30d: 9_800,
+  premium_pdf: 36_000,
 } as const;
 
 /**
@@ -59,11 +68,14 @@ export function resolveProductPricing(now: Date = new Date()): ProductPricingSna
   const startsAt = new Date(ONE_WEEK_EXTENSION_START);
   const endsAt = new Date(ONE_WEEK_EXTENSION_END);
   const campaignActive = now >= startsAt && now < endsAt;
+  const regularPrices = now >= new Date(REPORT_PRICE_REVISION_START)
+    ? STANDARD_PRODUCT_PRICES_KRW
+    : PRE_REPORT_REVISION_PRODUCT_PRICES_KRW;
   return {
     prices: campaignActive
       ? ONE_WEEK_EXTENSION_PRODUCT_PRICES_KRW
-      : STANDARD_PRODUCT_PRICES_KRW,
-    regularPrices: STANDARD_PRODUCT_PRICES_KRW,
+      : regularPrices,
+    regularPrices,
     campaign: campaignActive
       ? {
           code: "one_week_extension_1500",
@@ -91,6 +103,7 @@ export function isCampaignDiscountedProduct(
 export function knownScheduledPrices(productCode: ProductPriceCode): readonly number[] {
   return [...new Set([
     STANDARD_PRODUCT_PRICES_KRW[productCode],
+    PRE_REPORT_REVISION_PRODUCT_PRICES_KRW[productCode],
     RETIRED_EVENT_PRODUCT_PRICES_KRW[productCode],
     HISTORICAL_1500_PRODUCT_PRICES_KRW[productCode],
     ONE_WEEK_EXTENSION_PRODUCT_PRICES_KRW[productCode],
