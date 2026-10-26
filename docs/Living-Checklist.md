@@ -5,6 +5,7 @@
 - [x] Real browser failure reproduced before the missing free Saju concern guide was added.
 - [x] KO/EN category and subquestion guidance, relevant free-domain order and teaser implemented; calculation/history/payment/privacy preserved.
 - [x] Existing short fatigue example caught in browser QA and covered by regression; paid prose excluded from free bundle.
+- [x] Hosted initial CSS over-budget failure repaired without changing budgets/fonts/images; result styles kept component-local and payload/result checks rerun.
 - [ ] Final local/hosted/production interactive evidence: `Free-Concern-Relevance-2026-10-26.md`.
 
 ## 2026-10-26 Long-form evidence review

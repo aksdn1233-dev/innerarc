@@ -95,6 +95,22 @@ Final hosted checks and deployment identities are recorded in the PR and ignored
 data changes independently of source. Do not infer release success from an HTTP 200
 or passing unit test alone; exercise a real free-result interaction after deployment.
 
+## Performance gate correction
+
+PR CI 40314089234 passed 271 functional browser checks but failed both initial-payload
+checks for `/en/saju`: decoded CSS was 364,049 bytes against the unchanged 362,000-byte
+limit. The result card's stylesheet was preloaded/aggregated into the initial form even
+though the result is not displayed until local input. Do not raise the budget or retry
+unchanged code. Remaining superseded jobs were cancelled.
+
+Keep the same visual rules as static typed style properties on the result component,
+remove its additional stylesheet, and render those properties only with the card.
+No global styles, fonts, images, screenshots or performance thresholds were weakened.
+A real local Next production build now measures 359,139 CSS bytes and passes the same
+committed desktop/mobile initial-payload tests. The actual Vinext production build/style
+gate also passes; final hosted validation still remains required. The SSR term-count
+check now accepts attributes on `<dt>` while still requiring all three semantic labels.
+
 ## Demand, business and rollback
 
 Demand evidence is the owner's direct feedback and reproduced missing link, not a

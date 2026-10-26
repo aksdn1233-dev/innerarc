@@ -9,6 +9,11 @@ Urgent safety hides symbolic chapters and paid offers until edited. Free pages i
 only the shared lightweight classifier, not full paid topic or answer copy.
 Run local dependency audit before push, normal gates, then a real synthetic browser
 intake against production; HTTP/CSS alone does not establish this interactive change.
+CI 40314089234 exposed 364,049 CSS bytes on the initial Saju form, above its
+362,000-byte ceiling. Keep that ceiling: result-only visual rules belong with the
+result component, not a preloaded extra stylesheet. Local Next production now measures
+359,139 bytes; both existing payload tests pass. Repeat the actual result/accessibility
+checks as well as the payload gate so optimization never removes the visual treatment.
 Evidence, boundaries and rollback: `Free-Concern-Relevance-2026-10-26.md`.
 
 ## 2026-10-26 Long-form evidence review

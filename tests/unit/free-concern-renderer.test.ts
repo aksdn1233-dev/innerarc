@@ -10,7 +10,7 @@ describe("free concern presentation", () => {
       const reading = createFreeConcernReading({ locale, focusId: "work", concern: '<script>alert("PRIVATE")</script> 사업을 시작해도 될까요?' });
       const html = renderToStaticMarkup(createElement(FreeConcernReadingCard, { reading, locale }));
       expect(html).toContain("&lt;script&gt;"); expect(html).not.toContain("<script>");
-      expect(html.match(/<dt>/g)).toHaveLength(3);
+      expect(html.match(/<dt\b/g)).toHaveLength(3);
       expect(html).toContain(reading.action);
     }
   });
