@@ -145,7 +145,7 @@ const copy = {
       ["질문 고르기", "지금 가장 걸리는 질문을 고릅니다", "예) 지금 하는 일이 돈이 될까요?"],
       ["생년월일", "양력 생년월일만 넣습니다", "예) 1994년 11월 4일 → 1994-11-04 · 회원가입 없음"],
       ["무료 결과", "결제 없이 기본 패턴을 봅니다", "핵심 성향과 반복 지점 · 계산 근거까지 공개"],
-      ["상세 리딩", "고른 질문으로 이어서 봅니다", "상세 리딩 39,000원 · 1회 결제 · 비회원 열람"],
+      ["상세 리딩", "고른 질문으로 이어서 봅니다", "상세 리딩 {price} · 1회 결제 · 비회원 열람"],
     ],
     guideStepAction: "질문 고르기",
     outlineEyebrow: "상세 리딩 목차",
@@ -221,7 +221,7 @@ const copy = {
       ["Pick a question", "Choose the question on your mind", "e.g. Will the work I am doing actually pay?"],
       ["Birth date", "A birth date is all it takes", "e.g. 4 November 1994 → 1994-11-04 · no account"],
       ["Free result", "Read the free result before paying", "Core tendencies, what repeats, and the calculation shown"],
-      ["Detailed reading", "Continue with the question you chose", "₩39,000 · one-time · opens without an account"],
+      ["Detailed reading", "Continue with the question you chose", "{price} · one-time · opens without an account"],
     ],
     guideStepAction: "Pick a question",
     outlineEyebrow: "Detailed reading contents",
@@ -916,7 +916,7 @@ export function HomeExperience({ locale, dictionary: d, pricing, pageContent, re
                 >
                   <div className="guide-stage-title">
                     <strong>{t.guideSteps[guideStep]![1]}</strong>
-                    <span>{t.guideSteps[guideStep]![2]}</span>
+                    <span>{t.guideSteps[guideStep]![2].replace("{price}", formatWon(pricing.prices.pro_30d, locale))}</span>
                   </div>
 
                   <div className="guide-stage" ref={guideStageRef}>

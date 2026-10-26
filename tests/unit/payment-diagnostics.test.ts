@@ -20,7 +20,7 @@ const payAppEnvironment = {
 } as const;
 
 // A fixed clock keeps standard-price diagnostics deterministic.
-const FIXED_NOW = new Date("2026-08-01T00:00:00.000Z");
+const FIXED_NOW = new Date("2026-10-27T00:00:00.000Z");
 
 function inspectCatalogPrices(environment: Readonly<Record<string, string | undefined>>) {
   return inspectCatalogPricesAtRuntime(environment, FIXED_NOW);
@@ -85,8 +85,8 @@ describe("catalog prices", () => {
     const prices = inspectCatalogPrices(stale);
     expect(prices.ok).toBe(true);
     if (prices.ok) {
-      expect(prices.comprehensivePrice).toBe(39_000);
-      expect(prices.premiumPdfPrice).toBe(79_000);
+      expect(prices.comprehensivePrice).toBe(9_800);
+      expect(prices.premiumPdfPrice).toBe(36_000);
     }
   });
 

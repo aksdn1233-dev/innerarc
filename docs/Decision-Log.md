@@ -1977,3 +1977,10 @@
 - Retire public old-character art, narration, recordings, marketing captures and obsolete visual baselines. Assets remain recoverable from Git.
 - No new provider, token cost, database migration or data transfer. Existing closed-set, opt-in funnel telemetry gains the Saju surface.
 - Demand, success/guardrail metrics, costs, acceptance and reversal conditions: Harang-Reading-Room-Renewal-2026-10-16.md. Pre-release source e9ad278; Worker 21a128c4-d172-40cc-815f-379ffe528392.
+
+
+## D-122 — Owner-approved Detailed 9,800 / Premium 36,000 KRW
+
+- Date: 2026-10-27. Direct owner instruction; chart stays 5,500 KRW. Central time-versioned code catalog drives all new prices, KO/EN/JA guidance and checkout. No content/tier ID, historical order/report or entitlement rewrite.
+- Preserve old assertions and charge evidence; stale tabs fail before writes. No migration or new provider/model/fulfillment cost. Detailed receipts -29,200 and Premium -43,000 KRW per undiscounted order; exact net margin depends on real fees/tax/refunds/support and is not claimed.
+- Demand, distribution, reference economics, guardrails, initial regression failures, required checks and pre-change rollback: [Report price revision](Report-Price-Revision-2026-10-27.md). Final CI/deploy/live evidence is recorded on the release PR; do not create a duplicate deployment just to add run IDs.

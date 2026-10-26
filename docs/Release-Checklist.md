@@ -323,3 +323,10 @@ Rollback reference: production base `ee4ae5038e34e0715456b837cbe7c7f2db5591c4`; 
 - [x] Live browser review confirms the six-step timer, Dream navigation, selected Song Myung/Noto Sans KR typography, deterministic Dream result, zero horizontal overflow and zero console errors.
 - [x] Immediate rollback targets are Worker `bdcc8a75-116f-492c-83f5-eb594e1aedfd` and Sites version 110. No database rollback is required because the Dream migration was not applied.
 - [ ] GitHub Actions run 34722047754 created no executable steps because the account payment/spending limit remains active; the recorded local Node 24 gates are the release evidence.
+
+
+## 2026-10-27 — Price-only release
+
+- Require matching 5,500/9,800/36,000 prices on KO/EN/JA plans, Japanese intake, reading guide and checkout requests. Reject stale/tampered client amounts before writes.
+- Verify historical 39,000/79,000 and campaign callbacks against stored orders; preserve purchased report contents and legacy IDs. No real payment/customer record is needed for QA.
+- Normal CI, isolated fake checkout, production build, deployment checkout SHA, Worker version, domain and health are required; final proof is in the release PR and ignored pricing artifacts. Rollback/economics: Report-Price-Revision-2026-10-27.md.

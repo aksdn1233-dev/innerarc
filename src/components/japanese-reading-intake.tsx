@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import type { ProductPricingSnapshot } from "@/core/product-prices";
 
 type ProductCode = "plus_30d" | "pro_30d" | "premium_pdf";
 
-export function JapaneseReadingIntake() {
+export function JapaneseReadingIntake({ pricing }: { pricing: ProductPricingSnapshot }) {
   const router = useRouter();
   const [productCode, setProductCode] = useState<ProductCode>("pro_30d");
   const [readingFor, setReadingFor] = useState<"self" | "gift">("self");
@@ -51,7 +52,7 @@ export function JapaneseReadingIntake() {
       </section>
       <form className="japanese-reading-form" onSubmit={submit}>
         <fieldset><legend>1. リーディング商品</legend>
-          {[["plus_30d", "四柱推命・命式 5,500ウォン"], ["pro_30d", "詳細リーディング 39,000ウォン"], ["premium_pdf", "プレミアム深層リーディング 79,000ウォン"]].map(([value, label]) => <label key={value}><input checked={productCode === value} onChange={() => setProductCode(value as ProductCode)} type="radio" /><span>{label}</span></label>)}
+          {([["plus_30d", "四柱推命・命式"], ["pro_30d", "詳細リーディング"], ["premium_pdf", "プレミアム深層リーディング"]] as const).map(([value, label]) => <label key={value}><input checked={productCode === value} onChange={() => setProductCode(value as ProductCode)} type="radio" /><span>{label} {pricing.prices[value].toLocaleString("ja-JP")}ウォン</span></label>)}
         </fieldset>
         <fieldset><legend>2. 誰のためのリーディングですか？</legend>
           <label><input checked={readingFor === "self"} onChange={() => setReadingFor("self")} type="radio" /><span>自分のため</span></label>
