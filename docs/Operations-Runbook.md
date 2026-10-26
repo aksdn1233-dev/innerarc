@@ -1,3 +1,13 @@
+## 2026-10-26 Long-form evidence review
+
+The Korean 11/4/6/5 combination no longer assumes a software business or observed
+biography. Detail/premium composer versions 2.1.0 affect new generation only; do not
+regenerate old purchases. KO/EN premium motives are explicit hypotheses with rejection
+conditions. Business suitability requires actual context. Run `pnpm test:report-quality`
+for the six new regressions plus existing calculation/question/safety gates.
+Scope, accepted remaining narrative limits and source/Worker rollback:
+`Report-Narrative-Review-2026-10-26.md`. Preserve dashboard vars and existing audit gates.
+
 ## 2026-10-22 Question completeness
 
 New numerology reports carry `report-questions:1.0.0` and optional `questionAnswers`.

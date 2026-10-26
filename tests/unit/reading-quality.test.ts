@@ -100,8 +100,8 @@ describe("no tarot claim without a tarot draw", () => {
   it("puts the character label in the reading", () => {
     const report = reading("pro_30d");
     const section = report.sections.find((s) => s.title === "캐릭터 한 줄");
-    expect(report.characterLabel).toBe("판을 먼저 읽는 시스템 설계자");
-    expect(section?.body).toContain("시스템 설계자");
+    expect(report.characterLabel).toBe("감각과 기준을 함께 살펴보는 사람");
+    expect(section?.body).toContain("상징적 별칭");
   });
 });
 

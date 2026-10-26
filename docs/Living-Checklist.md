@@ -1,5 +1,13 @@
 # Living Checklist
 
+## 2026-10-26 Long-form evidence review
+
+- [x] Six synthetic failures reproduced before fixes: unrelated entrepreneur prose, unsupported business suitability and KO/EN hidden-motive assertions.
+- [x] Bounded copy repair, versioned composers and regression tests; engines/history/consent/payment/privacy untouched.
+- [x] Local 1,404 unit tests, 289 focused checks, lint, typecheck and actual production build/style gate passed.
+- [ ] Hosted gates and deployed identity: `Report-Narrative-Review-2026-10-26.md`.
+- [ ] Continue other profile/basic/domain prose, distinct same-domain questions and Japanese narrative-depth review; no GPT superiority or empirical accuracy claim.
+
 ## 2026-10-22 Question-quality corrective release
 
 - [x] Five pre-fix failures reproduced; independent answer composition, bounded multilingual
@@ -8,7 +16,7 @@
 - [x] Paid editorial renderer now exposes new personal answers; old unversioned purchases unchanged.
 - [x] Missing names, multi-intent questions, unsupported context, urgent safety, three languages,
   identical questions, metadata corruption and untrusted markup covered.
-- [ ] Hosted production/browser gates and deployment identity: `Report-Question-Upgrade-2026-10-22.md`.
+- [x] PR #88 production/browser gates: main CI 39665478324 and Deploy 39666960330 succeeded on d17124e; public health reconfirmed 2026-10-26.
 - [ ] Continue whole-narrative review, including overly business-specific profile prose and
   Japanese depth. A repaired answer block is not a certification of every chapter or GPT superiority.
 

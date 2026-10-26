@@ -22,7 +22,7 @@ import type { Locale } from "@/i18n/config";
 import { createDetailPaidReport } from "@/server/reports/detail-report";
 
 export const PREMIUM_REPORT_SERVICE_YEAR = 2026;
-export const PREMIUM_REPORT_CONTENT_VERSION = "premium-report-composer-2.0.0";
+export const PREMIUM_REPORT_CONTENT_VERSION = "premium-report-composer-2.1.0";
 
 type PremiumDomain =
   | "business"
@@ -333,13 +333,13 @@ export function createPremiumPaidReport(
   );
   const hidden = localized(
     locale,
-    `겉으로는 결과와 해결을 중시하지만 숨은 동기는 단순한 승부욕이 아니라 '내가 책임진 판이 무너지지 않아야 한다'는 보호 욕구에 가깝습니다. 압박이 커지면 도움을 청하기보다 정보·일정·사람을 직접 통제하는 방어가 나타날 수 있습니다. 이 방어는 단기 위기를 넘기게 하지만 장기적으로는 위임 실패와 관계 피로를 만듭니다.`,
-    "The hidden motive is not status alone but keeping the system you carry from failing. Under pressure this can become control rather than delegation.",
+    `숨은 동기는 생년월일로 알 수 없습니다. 여기서는 '부담을 느낄 때 혼자 해결하려는가, 도움을 구하는가'를 관찰할 질문으로 둡니다. 혼자 맡았던 사례와 도움을 받아 편해졌던 사례를 비교해보세요. 둘 다 해당하지 않으면 이 가설은 채택하지 않아도 됩니다.`,
+    "A birth date cannot establish a hidden motive. Use this as a question: under pressure, do you try to handle things alone or ask for help? Compare a time you acted alone with a time support helped. Reject the hypothesis if neither describes your experience.",
   );
   const paradox = localized(
     locale,
-    `가장 큰 강점인 속도·책임감·결과 집착이 바로 실패의 원인이 되기도 합니다. 남보다 먼저 빈틈을 보고 직접 메우면 초반 성과는 빠르지만, 기준이 공유되지 않아 결국 본인만 모든 일을 아는 구조가 됩니다. 뿌리 원인은 능력 부족이 아니라 '설명하고 기다리는 시간보다 내가 하는 편이 빠르다'는 반복 선택입니다.`,
-    "The same speed and responsibility that create early results can produce a system only you can operate. The root cause is repeatedly choosing control over explicit handoff.",
+    `강점이 상황에 따라 부담이 되는지는 실제 경험을 살펴봐야 합니다. 빨리 끝내려다 설명을 줄였던 적이 있다면, 충분히 대화해서 더 편해진 반대 사례와 비교해보세요. 차이가 시간, 역할, 합의에 있었는지 확인합니다. 이는 실패 원인을 특정한 결론이 아니라 검토할 가설입니다.`,
+    "Whether a strength becomes a burden depends on the situation. If rushing once left little room for explanation, compare it with a time a fuller conversation helped. Look at differences in time, roles, and agreement. This is a hypothesis to examine, not an established cause of failure.",
   );
   const directExtension = safety.requiresRealityFirstGuidance
     ? localized(
@@ -357,8 +357,12 @@ export function createPremiumPaidReport(
     direct_answer: directExtension,
     core_numbers: synthesis,
     character: localized(locale, `${detail.characterLabel}. 이 이름은 강함만 뜻하지 않습니다. 성과를 만들 힘과 사람·책임을 지키려는 감각이 동시에 작동한다는 뜻입니다.`, `${detail.characterLabel}. This label names both execution and responsibility.`),
-    temperament: hidden,
-    contradiction: paradox,
+    temperament: localized(locale,
+      "상징 해석은 기질을 확인한 사실이 아닙니다. 최근 편안했던 상황과 부담스러웠던 상황에서 행동이 어떻게 달랐는지 비교해보세요. 같은 행동이 없었다면 성향으로 묶지 말고 상황의 차이를 살펴볼 수 있습니다.",
+      "This symbolic reading has not established your temperament. Compare how you acted in a comfortable situation and a demanding one. If the pattern does not repeat, examine the circumstances instead of assigning a fixed trait."),
+    contradiction: localized(locale,
+      "서로 다른 바람이 부딪힌 적이 있는지부터 확인합니다. 있었던 갈등과 잘 조율된 반대 사례를 나란히 놓고, 무엇이 달랐는지 살펴보세요. 숫자 사이의 대비는 이 비교를 위한 질문이지 내적 갈등이 있다는 증거가 아닙니다.",
+      "First ask whether competing wishes have actually caused tension. Compare a difficult choice with one you handled comfortably. Contrast between numbers is a prompt for that comparison, not evidence of an internal conflict."),
     decision_pattern: localized(locale, `판단할 때는 사실·해석·가정을 세 칸으로 나누세요. 사실은 ${strategy.proof}, 해석은 현재 가장 가능성 높은 설명, 가정은 아직 확인하지 못한 기대입니다. 사실 두 개가 모이기 전에는 되돌리기 어려운 결정을 확정하지 않는 것이 좋습니다.`, `Separate facts, interpretation, and assumptions. Require two independent facts before an irreversible decision.`),
     strongest_ability: localized(locale, `이 능력을 오래 쓰려면 '내가 해결한 결과'보다 '다른 사람도 반복할 수 있는 기준'을 남겨야 합니다. 규모가 커질수록 직접 처리량보다 의사결정 기준의 전달력이 성과를 결정합니다.`, "Make the strength repeatable by leaving criteria other people can use."),
     failure_mechanisms: localized(locale, `관찰 가능한 경고 신호는 일정이 계속 밀리고, 설명 없이 일을 다시 가져오고, 휴식 중에도 확인을 멈추지 못하는 것입니다. 세 신호 중 두 개가 2주 이어지면 의지 문제가 아니라 구조 문제로 보고 범위를 줄이세요.`, "Treat two persistent warning signs as a structural problem, not a willpower problem."),

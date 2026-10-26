@@ -1,11 +1,18 @@
 # Release Checklist
 
+## 2026-10-26 Long-form report review
+
+- [x] Six pre-fix failures, bounded repair and local 1,404-test regression gates recorded.
+- [x] Historical purchases, calculations, consent, payment/access and 2026 edition preserved.
+- [x] Pre-release source/Worker rollback recorded; zero migration/provider costs.
+- [ ] Hosted CI and public deployment confirmation: `Report-Narrative-Review-2026-10-26.md`.
+
 ## 2026-10-22 Report question corrective release
 
 - [x] Pre-fix failures and actual GPT comparison retained; no superiority marketing claim.
 - [x] Independent answers, multilingual boundaries, name calculations, output gate and editorial rendering covered by regressions.
 - [x] Calculation evidence, historical orders, access, engines, prices and consent unchanged; no migration or model call.
-- [ ] Final source/CI/browser/Worker identity and live verification: `Report-Question-Upgrade-2026-10-22.md`.
+- [x] PR #88 final identity: d17124e, main CI 39665478324, Deploy 39666960330, Worker e3027752-2ae2-4104-bbe8-2ac081aa9b84; health reconfirmed 2026-10-26.
 
 ## 2026-10-16 Harang reading-room renewal
 

@@ -152,3 +152,12 @@ Revert for valid-input fulfillment failures or payment/privacy regression; repai
 before re-enabling it. Keep all calculation evidence and the symbolic claim boundary.
 Keep the Vite security patch when reverting report behavior; do not reintroduce the known
 toolchain advisory or add an audit bypass to make a rollback green.
+
+## October 26 long-form review
+
+The new `Report-Narrative-Review-2026-10-26.md` records six additional pre-fix
+synthetic failures: a specific combination receiving a fabricated entrepreneur biography
+and unconditional KO/EN premium hidden motives. Their bounded repair is covered by the
+focused suite, including rejection/counterexample language and unchanged numerical evidence.
+Other long-form profiles and Japanese depth still require review. These are known-case
+regressions, not a fresh independent comparison or an outcome-accuracy claim.
