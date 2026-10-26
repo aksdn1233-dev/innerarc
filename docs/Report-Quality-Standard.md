@@ -161,3 +161,11 @@ and unconditional KO/EN premium hidden motives. Their bounded repair is covered 
 focused suite, including rejection/counterexample language and unchanged numerical evidence.
 Other long-form profiles and Japanese depth still require review. These are known-case
 regressions, not a fresh independent comparison or an outcome-accuracy claim.
+
+## Free first-result relevance
+
+`Free-Concern-Relevance-2026-10-26.md` records the free Saju selection/question gap and
+numerology's generic ordering/teaser. Introductory guidance is category/question-specific
+while engine evidence remains fixed. Unsupported wording is disclosed, safety comes first,
+and no complete paid topic/answer library belongs in the browser bundle. Regressions cover
+real intake and rendering as well as pure routing, without claiming prediction accuracy.

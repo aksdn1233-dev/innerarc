@@ -243,7 +243,7 @@ describe("the free reading shows less than the engine calculates", () => {
     expect(onboardingExperience).toContain("const FREE_DOMAIN_COUNT = 3;");
     expect(onboardingExperience).toContain("const FREE_CAREER_COUNT = 1;");
     expect(onboardingExperience).toContain("const FREE_STRENGTH_COUNT = 2;");
-    expect(onboardingExperience).toContain("integratedProfile.domains.slice(0, FREE_DOMAIN_COUNT)");
+    expect(onboardingExperience).toContain("orderedDomains.slice(0, FREE_DOMAIN_COUNT)");
     expect(onboardingExperience).toContain("integratedProfile.careerRecommendations.slice(0, FREE_CAREER_COUNT)");
     // Withheld sections are named, so the page never quietly drops content.
     expect(onboardingExperience).toContain("free-tier-remainder");

@@ -1,3 +1,16 @@
+## 2026-10-26 Free concern relevance
+
+The first free Saju/profile/numerology result must show the chosen concern and a
+bounded next step, not just generic personality or a paid offer. Blank concerns use
+category guidance; unrecognized questions explicitly need context. Never infer that
+changing the category changes canonical numbers/pillars. Written questions stay in page
+memory and out of analytics, URLs, logs, sharing and automatic storage.
+Urgent safety hides symbolic chapters and paid offers until edited. Free pages import
+only the shared lightweight classifier, not full paid topic or answer copy.
+Run local dependency audit before push, normal gates, then a real synthetic browser
+intake against production; HTTP/CSS alone does not establish this interactive change.
+Evidence, boundaries and rollback: `Free-Concern-Relevance-2026-10-26.md`.
+
 ## 2026-10-26 Long-form evidence review
 
 The Korean 11/4/6/5 combination no longer assumes a software business or observed

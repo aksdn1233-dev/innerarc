@@ -673,3 +673,21 @@ test("home keeps real report evidence and clear claim boundaries", async ({ page
   await expect(page.locator(".harang-sample")).toContainText("예시");
   await expect(page.locator(".harang-footer > p")).toContainText("미래를 보장하거나");
 });
+
+
+test("free work questions lead with business guidance and relevant domains", async ({ page }) => {
+  await page.goto("/en/profile");
+  await page.locator("#birthDate").fill("1994-11-04");
+  await page.getByText("Tell it what you want to know, and it fits closer (optional)").click();
+  await page.locator('input[name="interest"][value="work"]').check();
+  await page.locator("#concern").fill("Should I start a business?");
+  await page.locator('input[name="privacyRequired"]').check();
+  await page.getByRole("button", { name: "Show my core pattern" }).click();
+  await expect(page.getByTestId("free-concern-reading")).toContainText("potential customer");
+  await page.locator("#deep-profile > summary").click();
+  const cards = page.locator(".domain-card");
+  await expect(cards).toHaveCount(3);
+  expect(await cards.evaluateAll(nodes => nodes.map(n => n.getAttribute("data-domain")))).toEqual(["career", "leadership", "action"]);
+  await expect(page.locator(".paid-preview h3")).not.toContainText("relationships actually begin");
+  await expect(page.locator(".paid-preview a")).toHaveAttribute("href", "/en/reading?focus=work#onboarding");
+});

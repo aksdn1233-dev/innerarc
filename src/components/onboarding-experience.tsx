@@ -26,6 +26,8 @@ import { NumerologyWebtoonReading } from "@/components/numerology-webtoon-readin
 import { MIN_BIRTH_DATE, currentMaxBirthDate, isAcceptedBirthDate } from "@/core/birth-range";
 import { createPaidContentPreview } from "@/core/report-preview";
 import { createPaidTeaser } from "@/core/paid-teaser";
+import { createFreeConcernReading, freeDomainOrder } from "@/core/free-concern-reading";
+import { FreeConcernReadingCard } from "./free-concern-reading";
 import { describeNumerologyNumber, type NumerologyNumberKind } from "@/core/numerology-explanations";
 import { captureConversionEvent } from "@/core/analytics";
 import type { OnboardingFocusId } from "@/core/onboarding";
@@ -88,9 +90,16 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
 
   const profile = result ? getRuleBasedProfile(result.lifePath.value, locale) : null;
   const integratedProfile = result ? createIntegratedProfile(result, locale) : null;
+  const concernReading = context ? createFreeConcernReading({ locale, focusId: context.focusId, concern: context.concern?.text ?? "" }) : null;
+  const effectiveFocus = concernReading?.focusId ?? context?.focusId ?? selectedFocus;
+  const domainOrder = freeDomainOrder(effectiveFocus);
+  const orderedDomains = integratedProfile
+    ? domainOrder.flatMap(id => integratedProfile.domains.filter(domain => domain.id === id))
+      .concat(integratedProfile.domains.filter(domain => !domainOrder.includes(domain.id)))
+    : [];
   const lifestyle = result ? createLifestyleRecommendations(result, locale) : null;
   const paidPreview = result ? createPaidContentPreview(result, locale) : null;
-  const paidTeaser = context ? createPaidTeaser(context.focusId, locale) : null;
+  const paidTeaser = context ? createPaidTeaser(effectiveFocus, locale) : null;
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -327,6 +336,8 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
 
         {result && profile && integratedProfile && lifestyle && context && (
           <section className="result-section webtoon-flow" id="result" aria-live="polite" tabIndex={-1}>
+            {concernReading && <FreeConcernReadingCard reading={concernReading} locale={locale} />}
+            {concernReading?.scope === "safety" ? <button className="text-button" type="button" onClick={restart}>{d.restart}</button> : <>
             <WebtoonReveal />
             <NumerologyWebtoonReading
               archetype={profile.archetype}
@@ -398,8 +409,8 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
               {paidPreview && paidTeaser && (
                 <section className="paid-preview" aria-labelledby="paid-preview-title" ref={teaserRef}>
                   <p className="eyebrow">{locale === "ko" ? "실제 상세 리딩 미리보기" : "Real detailed-reading preview"}</p>
-                  <h3 id="paid-preview-title">{paidPreview.unlockedSectionTitle}</h3>
-                  <p>{paidPreview.visible}</p>
+                  <h3 id="paid-preview-title">{effectiveFocus === "relationships" ? paidPreview.unlockedSectionTitle : locale === "ko" ? `${concernReading?.label ?? context.focusLabel}, 더 살펴볼 내용` : `${concernReading?.label ?? context.focusLabel}: what the detail adds`}</h3>
+                  {effectiveFocus === "relationships" && <p>{paidPreview.visible}</p>}
                   <p className="paid-preview-bridge">{paidTeaser.bridge}</p>
                   <ul className="paid-preview-locks">
                     {paidTeaser.lockedTopics.map((topic) => <li key={topic}>{topic}</li>)}
@@ -547,8 +558,8 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
                 <p className="deep-profile-intro">{d.integratedIntro}</p>
                 <p className="summary">{integratedProfile.summary}</p>
                 <div className="domain-grid">
-                  {integratedProfile.domains.slice(0, FREE_DOMAIN_COUNT).map((domain) => (
-                    <article className="domain-card" key={domain.id}>
+                  {orderedDomains.slice(0, FREE_DOMAIN_COUNT).map((domain) => (
+                    <article className="domain-card" data-domain={domain.id} key={domain.id}>
                       <h3>{domain.title}</h3>
                       <div className="domain-facts">
                         {domain.calculatedFacts.map((item, index) => <span key={`${domain.id}:${index}:${item}`}>{item}</span>)}
@@ -565,7 +576,7 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
                 {integratedProfile.domains.length > FREE_DOMAIN_COUNT && (
                   <p className="free-tier-remainder">
                     <strong>{locale === "ko" ? "상세 리딩에서 이어지는 영역" : "Domains that continue in the detailed reading"}</strong>
-                    <span>{integratedProfile.domains.slice(FREE_DOMAIN_COUNT).map((domain) => domain.title).join(" · ")}</span>
+                    <span>{orderedDomains.slice(FREE_DOMAIN_COUNT).map((domain) => domain.title).join(" · ")}</span>
                   </p>
                 )}
 
@@ -633,6 +644,7 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
                 </button>
               </section>
             </article>
+            </>}
           </section>
         )}
       </main>

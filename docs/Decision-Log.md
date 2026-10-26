@@ -1,3 +1,9 @@
+## D-121 — Free results begin with the visitor's concern
+
+- Date: 2026-10-26. Owner reported that business/love/category choices did not seem reflected in free readings. Browser/source evidence confirmed Saju only used those choices for analytics/checkout, and numerology opened generic domains and an unrelated dating teaser.
+- Add local, bounded, KO/EN first-step question/category guidance; relevant free domain order and teaser; preserve engines, chapter counts, purchases, pricing/auth/payments and privacy. Existing classifier is shared without paid prose in the free bundle. Unsupported questions disclose limits and urgent safety suppresses symbolic/paid content.
+- Demand, existing 9,600/39,000 KRW economics, no provider/fulfillment cost, boundaries, checks, known routing limits and rollback: Free-Concern-Relevance-2026-10-26.md. Pre-release source ca3389b; Worker a76176bb-6e5c-43aa-b330-241e539d4311.
+
 ## D-120 — Evidence-bound long-form report copy
 
 - Date: 2026-10-26. Weekly owner-authorized quality review reproduced six new synthetic failures after reconciling healthy PR #88 CI/production and the passing 283-check baseline.

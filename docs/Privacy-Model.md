@@ -182,3 +182,11 @@ Bundled structure samples contain no real complex, building, address, unit numbe
 ## Dream journal data — 2026-09-13
 
 Dream text can include health, relationships, third parties and intimate events. The default device/account record omits the submitted raw wording; keeping it requires an explicit per-entry choice. Normalized summaries, ontology tags, interpretation snapshots and follow-up outcomes remain personal data. Account rows use owner-only RLS and service-role writes, appear in account export, and are deleted through the existing account-deletion receipt. Device records can be downloaded or cleared directly. Dream routes and API responses are noindex/no-store. Do not place dream text, symbols, concerns, identities or outcomes in analytics, logs, error text or provider telemetry.
+
+## Free concern guidance — 2026-10-26
+
+The free concern composer accepts only an existing category, language and optional written
+question; no birth/name input or new collection. It runs locally, uses bounded text and
+renders the quote as escaped React text. It adds no URL parameter, storage, log, analytics
+payload, provider call or implicit Reality Check record. Region-labelled help links contain
+only public contact URLs. Existing explicit checkout draft/consent behavior is unchanged.
