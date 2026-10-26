@@ -32,8 +32,8 @@ function customerContent(report: PaidReport): string {
   ].join("\n\n");
 }
 
-describe("DETAIL_39000 exact 1994-11-04 regression", () => {
-  it("builds the required no-question consultant report from deterministic content", () => {
+describe("DETAIL_39000 symbolic 1994-11-04 regression", () => {
+  it("keeps calculated evidence and complete chapters without inventing a biography", () => {
     const report = detail("");
     const whole = customerContent(report);
 
@@ -48,24 +48,18 @@ describe("DETAIL_39000 exact 1994-11-04 regression", () => {
       birthYear: 5,
       personalYear: 7,
     });
-    expect(report.characterLabel).toBe("판을 먼저 읽는 시스템 설계자");
+    expect(report.characterLabel).toBe("감각과 기준을 함께 살펴보는 사람");
     expect(report.sections).toHaveLength(18);
     expect(report.actions).toHaveLength(5);
     expect(report.sharpInsights).toHaveLength(5);
     expect(report.sections[0]?.title).toBe("핵심 숫자");
     expect(report.sections.at(-1)?.title).toBe("최종 결론");
 
-    expect(whole).toMatch(/사람.*시장|시장.*사람/u);
-    expect(whole).toMatch(/자동화 기술.*웹\s*서비스.*플랫폼.*마케팅.*콘텐츠/u);
-    expect(whole).toMatch(/직감[\s\S]*근거|근거[\s\S]*직감/u);
-    expect(whole).toMatch(/검증하지 않은.*판단|증명하지 않은 미래/u);
-    expect(whole).toMatch(/다음 아이디어|현재.*완료/u);
-    expect(whole).toMatch(/위임|권한.*책임/u);
-    expect(whole).toMatch(/고정비|현금|이익/u);
-    expect(whole).toMatch(/안정.*당연|관계.*확인/u);
-    expect(whole).toMatch(/일을 다시 가져|통제/u);
-    expect(whole).toMatch(/2026.*검증.*전문성/u);
-    expect(whole).toMatch(/법률.*개인정보.*기술/u);
+    expect(whole).toMatch(/상징[\s\S]*실제|실제[\s\S]*상징/u);
+    expect(whole).toMatch(/생년월일만으로.*실제 행동/u);
+    expect(whole).toContain("반대 사례");
+    expect(whole).toMatch(/직업과 역할은 이 숫자 조합으로 정할 수 없습니다/u);
+    expect(whole).not.toMatch(/웹서비스|유료고객|반복 매출|숨은 동기를 알 수 있습니다/u);
     expect(whole).not.toMatch(/2027|2028/u);
     expect(whole).not.toMatch(/타로로 치면|카드가 나왔|AI가 분석했습니다/u);
     expect(whole.length).toBeGreaterThanOrEqual(5_000);

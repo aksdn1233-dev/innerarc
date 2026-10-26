@@ -1,3 +1,13 @@
+## 2026-10-26 Report-release dependency gate
+
+The first PR #89 CI failed audit (40248161349). Reproduced actionable advisories were
+fixed with reviewed within-major pins: Next/eslint-config-next 16.4.1, Zod 4.6.6 direct
+and lint-tool transitive, Vitest 4.1.12, Undici 7.30.1, fast-uri 3.1.9. Existing sharp
+0.35.5 mitigation stays. No ignore added; audit exits zero with two existing ignored
+high findings still disclosed. This is dependency remediation, not evidence of an
+exploited service. Full checks rerun on the patched source. Details, sources and
+rollback that preserves security patches: `Report-Narrative-Review-2026-10-26.md`.
+
 # Local Security Review
 
 Date: 2026-08-11<br>

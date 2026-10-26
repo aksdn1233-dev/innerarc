@@ -1,3 +1,10 @@
+## D-120 — Evidence-bound long-form report copy
+
+- Date: 2026-10-26. Weekly owner-authorized quality review reproduced six new synthetic failures after reconciling healthy PR #88 CI/production and the passing 283-check baseline.
+- Replace a number-combination entrepreneur biography and unconditional KO/EN premium hidden motives with symbolic questions, observable context and counterexamples. Remove the business module's suitability guarantee. Keep calculations, tiers, 2026 edition, stored purchases and business systems unchanged.
+- The first hosted audit failed on newly actionable dependency advisories. Apply verified within-major fixes and the lockfile, retain existing ignore policy, then rerun every normal gate; preserve security pins on report rollback.
+- No model calls, migration, new data collection or provider cost. Scope, demand, current 9,600/39,000 KRW economics, guardrails, accepted limits and rollback: Report-Narrative-Review-2026-10-26.md. Do not call these regression repairs a new GPT superiority comparison.
+
 ## D-119 — Independent question answers after real GPT comparison
 
 - Date: 2026-10-22. Owner authorized improvement after the six-case live comparison exposed missing answers and unsupported conclusions. Do not claim that repairing these cases proves general superiority.
