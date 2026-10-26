@@ -5,6 +5,10 @@ biography. Detail/premium composer versions 2.1.0 affect new generation only; do
 regenerate old purchases. KO/EN premium motives are explicit hypotheses with rejection
 conditions. Business suitability requires actual context. Run `pnpm test:report-quality`
 for the six new regressions plus existing calculation/question/safety gates.
+PR CI 40248161349 additionally caught newly actionable dependency advisories. Do not
+waive/retry that audit failure: patched pins and lockfile cover Next 16.4.1, Zod 4.6.6
+(including lint transitive), Vitest 4.1.12, Undici 7.30.1 and fast-uri 3.1.9. Existing
+ignores remain unchanged; retain these security updates when reverting report copy.
 Scope, accepted remaining narrative limits and source/Worker rollback:
 `Report-Narrative-Review-2026-10-26.md`. Preserve dashboard vars and existing audit gates.
 

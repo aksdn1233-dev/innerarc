@@ -40,7 +40,7 @@ error. Raw local failure output is retained under ignored
   boundaries. Keep calculation, section, insight-presence, length and duplicate checks.
   Add six pre-fix regressions to `pnpm test:report-quality`.
 
-No engine, database schema, fulfillment state machine, account isolation, local
+No calculation engine, database schema, fulfillment state machine, account isolation, local
 export/delete, consent, payment, entitlement, historical purchase, price or provider
 configuration changes. Stored purchases are not regenerated. No UI redesign.
 
@@ -53,12 +53,47 @@ baseline also ran successfully on the available Node 22 runtime; final verificat
 uses the required Node 24. Six installed-Chrome desktop/mobile-emulation tests
 passed across 18 KO/EN/JA viewport combinations (1440/390/360px), with no overflow
 or serious/critical accessibility findings. This is not a physical-device test.
-No dependencies or audit exceptions changed.
+The first copy-only verification changed no dependencies. The hosted security gate then
+found newly actionable advisories; the bounded security update below was required
+before release. Existing audit exceptions were not expanded.
 
 The first editing attempt produced unescaped newlines in TS strings; compilation
 caught it locally, and it was repaired before tests or publication. No failing
 transform was committed. Hosted CI/browser and deployment must pass before release;
 final run IDs and public checks are recorded with the PR/release evidence.
+
+## Security gate caught dependency advisories
+
+PR CI 40248161349 failed at the dependency audit after lint, types, units and build.
+The failure reproduced locally: 13 actionable advisory records across Next, Zod,
+Vitest mocker, Undici and fast-uri. Do not retry unchanged source or waive the gate.
+The superseded run was cancelled to avoid redundant browser cost.
+
+Registry availability and maintainer/advisory fixes were verified before pinning:
+- Next and matching eslint-config-next 16.4.1 (from 16.3.8):
+  [image optimization](https://github.com/vercel/next.js/security/advisories/GHSA-2464-fhr4-w9xw),
+  [Server Actions](https://github.com/advisories/GHSA-p3m5-59mp-jv5r),
+  [typed-array cache output](https://github.com/advisories/GHSA-673q-mjm6-r5xr).
+  The existing sharp 0.35.5 override already mitigated the image-library issue;
+  do not mistake a package advisory for confirmed exploitation of this Worker.
+- Zod 4.6.6 for the direct dependency and the lint-tool transitive 4.x copy:
+  [constrained collection validation](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5).
+  The first direct-only bump left the old lint copy; audit caught it, and the override
+  now aligns both. Existing bounded API schemas and privacy errors stay covered.
+- Vitest 4.1.12 within the existing major:
+  [mock registration](https://github.com/vitest-dev/vitest/security/advisories/GHSA-qxg6-89mg-rqv8).
+- Undici 7.30.1 within the existing toolchain major:
+  [content encoding failure](https://github.com/nodejs/undici/security/advisories/GHSA-xjj6-f33q-929c).
+- fast-uri 3.1.9 within the existing toolchain major:
+  [scheme decoding](https://github.com/fastify/fast-uri/security/advisories/GHSA-w74x-v6f9-j3xg).
+
+The regenerated lockfile keeps React 19.2.8, Vinext 0.0.50, Vite 8.1.6 and the
+reviewed patches. No audit ignore was added or broadened. Audit now exits zero,
+with two existing ignored high advisories still disclosed. Full local and hosted
+checks must be rerun on the patched tree; pre-patch success is not sufficient.
+Patched local source passed the same 1,404 unit tests, 289 focused checks, lint,
+typecheck, production build/style gate and six desktop/mobile-emulation browser tests.
+No exploit probes against production or claims of detected compromise.
 
 ## Business, cost and limits
 
@@ -86,6 +121,6 @@ the annual transition before selling a new year's content without altering old o
 Pre-release source: `d17124e61d2a53b304b85b46afa77024a5eefd7e`.
 Pre-release Worker: `e3027752-2ae2-4104-bbe8-2ac081aa9b84`.
 Revert this bounded report-copy change through normal CI and automatic deployment;
-keep Vite 8.1.6 and dashboard variables (`--keep-vars`). No migration or data rollback.
+keep the security dependency pins below, Vite 8.1.6 and dashboard variables (`--keep-vars`). No migration or data rollback. Do not restore vulnerable dependency versions with a report-copy rollback; retain Next 16.4.1, Zod 4.6.6, Vitest 4.1.12, Undici 7.30.1 and fast-uri 3.1.9 (or later reviewed fixes).
 Reverse for valid-input delivery failures, lost paid content, language/display
 breakage, or payment/privacy regression. Never weaken the evidence gate to pass.

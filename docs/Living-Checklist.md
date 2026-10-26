@@ -5,6 +5,7 @@
 - [x] Six synthetic failures reproduced before fixes: unrelated entrepreneur prose, unsupported business suitability and KO/EN hidden-motive assertions.
 - [x] Bounded copy repair, versioned composers and regression tests; engines/history/consent/payment/privacy untouched.
 - [x] Local 1,404 unit tests, 289 focused checks, lint, typecheck and actual production build/style gate passed.
+- [x] Initial hosted audit failure reproduced; required dependency fixes applied without new ignores, including the transitive lint Zod copy.
 - [ ] Hosted gates and deployed identity: `Report-Narrative-Review-2026-10-26.md`.
 - [ ] Continue other profile/basic/domain prose, distinct same-domain questions and Japanese narrative-depth review; no GPT superiority or empirical accuracy claim.
 
