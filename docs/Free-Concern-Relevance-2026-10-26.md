@@ -57,6 +57,10 @@ analytics, logs, share payloads or storage. Existing explicit checkout remains s
 The first browser test reproduced the missing business guidance before implementation.
 The first corrective browser pass caught an overlooked existing “지칠까요” example;
 a focused regression and category-context recognition fix retain that question.
+A final input-retention review replaced equality-to-example guessing with an explicit
+example-selection flag, so manually typed wording is preserved even when identical
+to a chip. Two browser checks cover this. The superseded initial PR run 40313482257
+was cancelled before merge to verify this refinement without duplicate CI cost.
 A mixed-length test fixture initially failed TypeScript's tuple typing; its optional
 locale now has a default. Neither failure was waived or published.
 
@@ -81,7 +85,7 @@ These support practical checks and referral boundaries, not symbolic prediction.
 Local Node 24 checks: 134 unit files / 1,426 tests, including 12 report-quality files /
 311 checks, passed. Lint has zero errors and four existing navigation warnings. Typecheck,
 actual Vinext production build/style gate and local audit passed (two existing ignored
-high advisories remain; no new ignore/dependency change). Eighteen installed-Chrome
+high advisories remain; no new ignore/dependency change). Twenty installed-Chrome
 desktop/mobile-emulation browser checks passed, including actual form/checkout/unknown-time
 regressions, KO/EN concern outputs, 360/430px wrapping, serious/critical axe checks,
 no page errors and question storage boundaries. These are not physical-device tests.

@@ -122,6 +122,7 @@ export function SajuExperience({
   const [midnight, setMidnight] = useState<"야자시" | "조자시">("야자시");
   const [focusId, setFocusId] = useState<FocusId | "">("");
   const [concern, setConcern] = useState("");
+  const [exampleSelected, setExampleSelected] = useState(false);
   const [consent, setConsent] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -379,7 +380,7 @@ export function SajuExperience({
               {step === 4 && (
                 <div className="saju-story-choice saju-story-choice-small" role="radiogroup" aria-labelledby="saju-step-label">
                   {FOCUS.map(([value, label]) => (
-                    <button aria-checked={focusId === value} key={value} onClick={() => { if (focusId && CHIPS[focusId].includes(concern)) setConcern(""); setFocusId(value); }} role="radio" type="button">{label}</button>
+                    <button aria-checked={focusId === value} key={value} onClick={() => { if (value !== focusId && exampleSelected) { setConcern(""); setExampleSelected(false); } setFocusId(value); }} role="radio" type="button">{label}</button>
                   ))}
                 </div>
               )}
@@ -388,10 +389,10 @@ export function SajuExperience({
                 <>
                   <div className="saju-story-pills">
                     {CHIPS[(focusId || "growth") as FocusId].map((chip) => (
-                      <button aria-pressed={concern === chip} key={chip} onClick={() => setConcern(chip)} type="button">{chip}</button>
+                      <button aria-pressed={concern === chip} key={chip} onClick={() => { setConcern(chip); setExampleSelected(true); }} type="button">{chip}</button>
                     ))}
                   </div>
-                  <textarea aria-labelledby="saju-step-label" className="saju-story-input saju-story-textarea" id="saju-concern" maxLength={300} onChange={(e) => setConcern(e.target.value)} placeholder={`${L("예: ", "e.g. ")}${CHIPS[(focusId || "growth") as FocusId][0]}`} value={concern} />
+                  <textarea aria-labelledby="saju-step-label" className="saju-story-input saju-story-textarea" id="saju-concern" maxLength={300} onChange={(e) => { setConcern(e.target.value); setExampleSelected(false); }} placeholder={`${L("예: ", "e.g. ")}${CHIPS[(focusId || "growth") as FocusId][0]}`} value={concern} />
                   <label className="check saju-story-consent">
                     <input checked={consent} name="privacyRequired" onChange={(e) => setConsent(e.target.checked)} required type="checkbox" />
                     <span>{L("[필수] 생년월일·출생 시각을 이 기기에서 사주 계산에 쓰는 데 동의합니다. 결제 전에는 서버로 보내지 않습니다.", "[Required] I agree to use my birth details on this device to calculate the chart. Nothing is sent before checkout.")}</span>

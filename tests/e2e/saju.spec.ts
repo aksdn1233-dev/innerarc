@@ -4,7 +4,7 @@ import { resolveProductPricing } from "../../src/core/product-prices";
 
 const pricing = resolveProductPricing();
 
-async function answerIntake(page: Page, options: { hour?: string; focus?: string; question?: string; typedQuestion?: string } = {}) {
+async function answerIntake(page: Page, options: { hour?: string; focus?: string; question?: string; typedQuestion?: string; submit?: boolean } = {}) {
   await page.locator("#saju-readingName").fill("결이");
   await page.getByRole("button", { name: /다음/ }).click();
   await page.getByRole("radio", { name: "여성" }).click();
@@ -19,7 +19,7 @@ async function answerIntake(page: Page, options: { hour?: string; focus?: string
   if (options.typedQuestion) await page.locator("#saju-concern").fill(options.typedQuestion);
   const consent = page.getByRole("checkbox");
   await consent.check();
-  await page.getByRole("button", { name: /무료 풀이 보기/ }).click();
+  if (options.submit !== false) await page.getByRole("button", { name: /무료 풀이 보기/ }).click();
 }
 
 test("six questions lead to free chapters before any fee", async ({ page }) => {
@@ -141,4 +141,18 @@ test("urgent safety concerns do not lead into symbolic chapters or a paid offer"
   await expect(page.locator('a[href="tel:988"]')).toBeVisible();
   await expect(page.locator(".saju-story-rnav")).toHaveCount(0);
   await expect(page.locator("#saju-fee")).toHaveCount(0);
+});
+
+test("changing the category clears only a chosen example and preserves typed wording", async ({ page }) => {
+  await page.goto("/ko/saju");
+  await answerIntake(page, { focus: "일 · 사업", question: "사업을 시작해도 될까요?", submit: false });
+  await page.getByRole("button", { name: "이전 단계" }).click();
+  await page.getByRole("radio", { name: "사람 · 연애", exact: true }).click();
+  await page.getByRole("button", { name: /다음/ }).click();
+  await expect(page.locator("#saju-concern")).toHaveValue("");
+  await page.locator("#saju-concern").fill("이 사람과 계속 가도 될까요?");
+  await page.getByRole("button", { name: "이전 단계" }).click();
+  await page.getByRole("radio", { name: "돈", exact: true }).click();
+  await page.getByRole("button", { name: /다음/ }).click();
+  await expect(page.locator("#saju-concern")).toHaveValue("이 사람과 계속 가도 될까요?");
 });
