@@ -1,12 +1,20 @@
 # Living Checklist
 
+## 2026-10-26 Free concern relevance
+
+- [x] Real browser failure reproduced before the missing free Saju concern guide was added.
+- [x] KO/EN category and subquestion guidance, relevant free-domain order and teaser implemented; calculation/history/payment/privacy preserved.
+- [x] Existing short fatigue example caught in browser QA and covered by regression; paid prose excluded from free bundle.
+- [x] Hosted initial CSS over-budget failure repaired without changing budgets/fonts/images; result styles kept component-local and payload/result checks rerun.
+- [ ] Final local/hosted/production interactive evidence: `Free-Concern-Relevance-2026-10-26.md`.
+
 ## 2026-10-26 Long-form evidence review
 
 - [x] Six synthetic failures reproduced before fixes: unrelated entrepreneur prose, unsupported business suitability and KO/EN hidden-motive assertions.
 - [x] Bounded copy repair, versioned composers and regression tests; engines/history/consent/payment/privacy untouched.
 - [x] Local 1,404 unit tests, 289 focused checks, lint, typecheck and actual production build/style gate passed.
 - [x] Initial hosted audit failure reproduced; required dependency fixes applied without new ignores, including the transitive lint Zod copy.
-- [ ] Hosted gates and deployed identity: `Report-Narrative-Review-2026-10-26.md`.
+- [x] PR #89 main CI 40249953205 and Deploy 40250937568 succeeded on ca3389b; Worker a76176bb-6e5c-43aa-b330-241e539d4311 and actual new public prose confirmed.
 - [ ] Continue other profile/basic/domain prose, distinct same-domain questions and Japanese narrative-depth review; no GPT superiority or empirical accuracy claim.
 
 ## 2026-10-22 Question-quality corrective release

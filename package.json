@@ -16,7 +16,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:report-quality": "vitest run tests/unit/report-evidence.test.ts tests/unit/report-narrative-evidence.test.ts tests/unit/report-question-guidance.test.ts tests/unit/report-question-renderer.test.ts tests/unit/numerology.test.ts tests/unit/saju.test.ts tests/unit/reading-quality.test.ts tests/unit/detail-report.test.ts tests/unit/premium-report.test.ts tests/unit/historical-tier-completion.test.ts",
+    "test:report-quality": "vitest run tests/unit/free-concern-reading.test.ts tests/unit/free-concern-renderer.test.ts tests/unit/report-evidence.test.ts tests/unit/report-narrative-evidence.test.ts tests/unit/report-question-guidance.test.ts tests/unit/report-question-renderer.test.ts tests/unit/numerology.test.ts tests/unit/saju.test.ts tests/unit/reading-quality.test.ts tests/unit/detail-report.test.ts tests/unit/premium-report.test.ts tests/unit/historical-tier-completion.test.ts",
     "test:e2e": "node scripts/run-e2e.mjs",
     "generate:sbom": "node scripts/generate-sbom.mjs",
     "capture:launch": "node scripts/run-launch-capture.mjs",

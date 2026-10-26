@@ -20,6 +20,8 @@ import type { PublicReview } from "@/core/reviews";
 import type { ProductPriceSet } from "@/core/product-prices";
 import type { Locale } from "@/i18n/config";
 import styles from "./saju-experience.module.css";
+import { createFreeConcernReading } from "@/core/free-concern-reading";
+import { FreeConcernReadingCard } from "./free-concern-reading";
 
 /**
  * The 사주 menu as a guided story.
@@ -120,6 +122,7 @@ export function SajuExperience({
   const [midnight, setMidnight] = useState<"야자시" | "조자시">("야자시");
   const [focusId, setFocusId] = useState<FocusId | "">("");
   const [concern, setConcern] = useState("");
+  const [exampleSelected, setExampleSelected] = useState(false);
   const [consent, setConsent] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -131,6 +134,7 @@ export function SajuExperience({
 
   const story: SajuStoryReading | null = useMemo(() => (chart ? buildSajuStory(chart, locale) : null), [chart, locale]);
   const extra: HarangFreeReading | null = useMemo(() => (chart ? buildHarangFreeReading(chart, locale) : null), [chart, locale]);
+  const concernReading = useMemo(() => chart ? createFreeConcernReading({ locale, focusId: focusId || "growth", concern }) : null, [chart, locale, focusId, concern]);
   const [shareStatus, setShareStatus] = useState<"idle" | "shared" | "copied" | "failed">("idle");
   const callName = name.trim() ? L(`${name.trim()}님`, name.trim()) : L("손님", "you");
   const birthTime = exactTime || (hourChoice && hourChoice !== "unknown" ? HOURS.find((h) => h[0] === hourChoice)?.[2] ?? "" : "");
@@ -187,7 +191,7 @@ export function SajuExperience({
     {
       say: L("요즘 어떤 일이 가장 궁금하세요?\n하나만 골라주시면 거기부터 볼게요.", "What is on your mind most?\nPick one and we’ll start there."),
       label: L("관심 분야", "Focus"),
-      help: L("더 자세한 풀이도 이 주제를 중심으로 이어져요.", "The paid reading centres on this area."),
+      help: L("무료 첫 안내부터 이 분야에 맞춰 볼게요.", "Your free guidance starts with this area."),
       ok: focusId !== "",
     },
     {
@@ -376,7 +380,7 @@ export function SajuExperience({
               {step === 4 && (
                 <div className="saju-story-choice saju-story-choice-small" role="radiogroup" aria-labelledby="saju-step-label">
                   {FOCUS.map(([value, label]) => (
-                    <button aria-checked={focusId === value} key={value} onClick={() => setFocusId(value)} role="radio" type="button">{label}</button>
+                    <button aria-checked={focusId === value} key={value} onClick={() => { if (value !== focusId && exampleSelected) { setConcern(""); setExampleSelected(false); } setFocusId(value); }} role="radio" type="button">{label}</button>
                   ))}
                 </div>
               )}
@@ -385,10 +389,10 @@ export function SajuExperience({
                 <>
                   <div className="saju-story-pills">
                     {CHIPS[(focusId || "growth") as FocusId].map((chip) => (
-                      <button aria-pressed={concern === chip} key={chip} onClick={() => setConcern(chip)} type="button">{chip}</button>
+                      <button aria-pressed={concern === chip} key={chip} onClick={() => { setConcern(chip); setExampleSelected(true); }} type="button">{chip}</button>
                     ))}
                   </div>
-                  <textarea aria-labelledby="saju-step-label" className="saju-story-input saju-story-textarea" id="saju-concern" maxLength={300} onChange={(e) => setConcern(e.target.value)} placeholder={L("예: 언제쯤 돈이 모일까요?", "e.g. When will money settle?")} value={concern} />
+                  <textarea aria-labelledby="saju-step-label" className="saju-story-input saju-story-textarea" id="saju-concern" maxLength={300} onChange={(e) => { setConcern(e.target.value); setExampleSelected(false); }} placeholder={`${L("예: ", "e.g. ")}${CHIPS[(focusId || "growth") as FocusId][0]}`} value={concern} />
                   <label className="check saju-story-consent">
                     <input checked={consent} name="privacyRequired" onChange={(e) => setConsent(e.target.checked)} required type="checkbox" />
                     <span>{L("[필수] 생년월일·출생 시각을 이 기기에서 사주 계산에 쓰는 데 동의합니다. 결제 전에는 서버로 보내지 않습니다.", "[Required] I agree to use my birth details on this device to calculate the chart. Nothing is sent before checkout.")}</span>
@@ -410,6 +414,13 @@ export function SajuExperience({
         </aside>
       </main>
     );
+  }
+
+  if (concernReading?.scope === "safety") {
+    return <main className={`saju-page saju-story ${styles.shell}`} data-stage="safety">
+      <FreeConcernReadingCard reading={concernReading} locale={locale} />
+      <button className="saju-story-restart" onClick={() => { setChart(null); setStep(5); }} type="button">{L("질문 다시 입력하기", "Edit your question")}</button>
+    </main>;
   }
 
   /* ---------------- reader ---------------- */
@@ -458,6 +469,7 @@ export function SajuExperience({
 
       {chapter === CH.prologue && (
         <article className="saju-story-chapter-body" data-tone="night">
+          {concernReading && <FreeConcernReadingCard reading={concernReading} locale={locale} />}
           <p className="saju-story-kicker">PROLOGUE</p>
           <h2 className="saju-story-title">{L(`이 사주는,\n${callName}의 이야기입니다`, "This chart tells\nyour story.")}</h2>
           <p className="saju-story-poem">{L("태어난 그 날, 그 시각의 하늘은\n두 번 오지 않습니다.\n그래서 이 여덟 글자는 세상에 하나뿐입니다.", "The sky of that day and hour\nnever comes twice.\nSo these eight characters are yours alone.")}</p>

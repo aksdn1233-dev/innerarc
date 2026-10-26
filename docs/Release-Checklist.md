@@ -1,11 +1,17 @@
 # Release Checklist
 
+## 2026-10-26 Free concern relevance
+
+- [x] Missing free category/question guidance reproduced; no mock report or engine change.
+- [x] Privacy, urgent-safety, paid-content boundary and source/Worker rollback documented.
+- [ ] Final local/browser/hosted/deployed interaction checks: `Free-Concern-Relevance-2026-10-26.md`.
+
 ## 2026-10-26 Long-form report review
 
 - [x] Six pre-fix failures, bounded repair and local 1,404-test regression gates recorded.
 - [x] Historical purchases, calculations, consent, payment/access and 2026 edition preserved.
 - [x] Pre-release source/Worker rollback recorded; zero migration/provider costs.
-- [ ] Hosted CI and public deployment confirmation: `Report-Narrative-Review-2026-10-26.md`.
+- [x] PR #89 main CI 40249953205, Deploy 40250937568 and actual rendered public prose confirmed on ca3389b.
 
 ## 2026-10-22 Report question corrective release
 
