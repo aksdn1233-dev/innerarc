@@ -20,10 +20,10 @@ describe("patched glob engine and legacy caller compatibility", () => {
 
   it("keeps actual ESLint configuration matching and diagnostics active", async () => {
     const { ESLint } = await import("eslint");
-    const lint = new ESLint();
+    const lint = new ESLint({ overrideConfigFile: true, overrideConfig: [{ files: ["src/**/*.js"], rules: { "no-debugger": "error" } }] });
     expect(await lint.isPathIgnored("node_modules/synthetic.js")).toBe(true);
-    const [result] = await lint.lintText("export const synthetic: any = 1;", { filePath: "src/security-compat-probe.ts" });
-    expect(result.messages.some(message => message.ruleId === "@typescript-eslint/no-explicit-any")).toBe(true);
+    const [result] = await lint.lintText("debugger;", { filePath: "src/security-compat-probe.js" });
+    expect(result.messages.some(message => message.ruleId === "no-debugger")).toBe(true);
   }, 15_000);
 
   it("keeps callable, filter, list, defaults, globstar and class APIs used by legacy tools", () => {

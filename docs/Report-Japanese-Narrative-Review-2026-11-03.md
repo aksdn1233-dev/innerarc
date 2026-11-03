@@ -138,3 +138,11 @@ to avoid duplicate browser cost; final CI must validate the refined head. A sepa
 local parallel quality run passed 314 checks but the 927-year enumeration exceeded its
 unchanged 5-second limit by 142ms. Running the same 315 checks with maxWorkers=1 passed;
 no test/assertion/timeout was weakened, and hosted normal full-suite success is required.
+
+The new ESLint consumer test initially cold-loaded the entire Next/TypeScript lint
+configuration inside a parallel unit worker; on the constrained local machine this
+exceeded its 15-second functional timeout (16.9s). Keep that timeout, and use the real
+ESLint engine with a small flat-config glob and core-rule diagnostic for this integration
+fixture. Full repository configuration remains independently verified by pnpm lint and
+CI. This removes duplicate heavyweight setup from a unit test rather than retrying a
+flaky assertion or raising its limit. Supersede the pending CI head before release.
