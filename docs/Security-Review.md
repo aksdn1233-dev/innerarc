@@ -126,3 +126,14 @@ The new migration keeps shared revision definitions and candidate aggregation in
 ## Dream Intelligence boundary — 2026-09-13
 
 The feature is off by default. Writes require authentication, same-origin checks, service-role mediation and the existing sensitive-request limiter; reads remain owner-scoped. Database triggers reject edits to the initial timestamp and interpretation. Published evidence can use only compiled source IDs, while user text is untrusted and never becomes a citation. Requests and local storage are strictly parsed and bounded. Account deletion removes dream children transactionally; exports continue even when the UI flag is off. Release blockers: an IDOR, missing rate limiter, non-consensual raw-text retention, source spoofing, retrofitting, or unsafe health/death/pregnancy/accident/lottery language.
+
+
+## 2026-11-03 pending release — SVG and glob audit fixes
+
+Satori 0.33.5 and same-line fflate 0.7.5 address GHSA-wx4j-mvgx-mqwp and the newly
+exposed GHSA-px8p-9vwx-vf98; minimatch 11.0.1 addresses GHSA-g3hv-75wg-m249. Legacy
+callable imports are adapted by private @gyeol/minimatch-compat while all matching stays
+in patched upstream 11.0.1. Actual ESLint diagnostics/ignores, supported matching APIs,
+and embedded SVG attribute escaping have regressions. No audit-ignore changes. Audit
+exit 0 still includes two existing ignored highs. No customer data or paid model call;
+normal hosted CI/deployment evidence is required before calling this production.

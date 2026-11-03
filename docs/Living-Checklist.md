@@ -689,3 +689,11 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [ ] Resolve new Satori/minimatch audit gate with verified compatibility, then normal CI/merge/deploy/live checks. Draft branch codex/japanese-narrative-evidence is not a production fix. Do not add audit ignores, force a major legacy-interface override, or rerun known-failing CI unnecessarily.
 - [ ] Continue remaining long-form/domain/JA depth and year-edition review; do not count old cases as a new GPT benchmark.
 - Evidence, remaining limits and rollback: Report-Japanese-Narrative-Review-2026-11-03.md.
+
+
+## 2026-11-03 — Security hold resolution in progress
+
+- [x] Verified published Satori/minimatch fixes; preserve actual legacy callable consumers via private adapter. Actual ESLint diagnostics and SVG escaping regressions pass.
+- [x] Fix Satori's newly exposed fflate ZIP64-loop advisory in the same 0.7 line; audit exits 0 with only the two unchanged existing ignored highs.
+- [x] Add real money free-result E2E beside business/love and keep every calculation/price/history boundary.
+- [ ] Normal PR/main CI, automatic deployment and fresh public free-result/health checks before claiming release. Final proof in release PR. Previous held draft status is superseded only when those gates pass.

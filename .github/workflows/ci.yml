@@ -78,7 +78,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [desktop-space, iphone-space, android-space]
+        include:
+          - project: desktop-space
+            browser: chromium
+          - project: iphone-space
+            browser: webkit
+          - project: android-space
+            browser: chromium
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -93,18 +99,20 @@ jobs:
       - run: corepack enable
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
-      - run: pnpm exec playwright install --with-deps chromium webkit
+      - name: Install this project's browser
+        id: browser_install
+        run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
       - name: Run isolated lightweight performance gate
         run: pnpm exec playwright test -c playwright.space.config.ts --project=${{ matrix.project }} --workers=1 --grep='lightweight tier stays within' --reporter=line,json
         env:
           PLAYWRIGHT_JSON_OUTPUT_NAME: artifacts/space-browser-results-${{ matrix.project }}-performance.json
       - name: Run isolated material recovery gate
-        if: always()
+        if: ${{ !cancelled() && steps.browser_install.outcome == 'success' }}
         run: pnpm exec playwright test -c playwright.space.config.ts --project=${{ matrix.project }} --workers=1 --grep='failed material load releases' --reporter=line,json
         env:
           PLAYWRIGHT_JSON_OUTPUT_NAME: artifacts/space-browser-results-${{ matrix.project }}-recovery.json
       - name: Run functional and visual space gates
-        if: always()
+        if: ${{ !cancelled() && steps.browser_install.outcome == 'success' }}
         run: pnpm exec playwright test -c playwright.space.config.ts --project=${{ matrix.project }} --workers=1 --grep-invert='lightweight tier stays within|failed material load releases' --update-snapshots=all --reporter=line,json
         env:
           PLAYWRIGHT_JSON_OUTPUT_NAME: artifacts/space-browser-results-${{ matrix.project }}-functional.json

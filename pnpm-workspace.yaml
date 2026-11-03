@@ -21,6 +21,14 @@ auditConfig:
 # when it was written goes stale the moment the next advisory lands — `pnpm audit` in CI
 # is what catches that, so these versions are expected to move.
 overrides:
+  # GHSA-wx4j-mvgx-mqwp: upgrade the actual SVG serializer, including Vinext OG.
+  satori: "0.33.5"
+  # Satori compression dependency: same-line ZIP64 loop fix, GHSA-px8p-9vwx-vf98.
+  "fflate@>=0.7.0 <0.7.5": "0.7.5"
+  # GHSA-g3hv-75wg-m249: all glob matching uses 11.0.1; legacy callable consumers
+  # receive a private API adapter rather than an unsafe global export-shape override.
+  "minimatch@<4": "file:./tools/minimatch-compat"
+  "minimatch@>=4 <11.0.1": "11.0.1"
   # GHSA-mrhx-c7xc-m3w5; align direct and React Hooks lint-tool Zod 4.x copies.
   zod: "4.6.6"
   # GHSA for DoS via unbounded intermediate arrays; 5.0.12 covers the subsequent recursion and quadratic-time advisories.
@@ -50,5 +58,4 @@ overrides:
   nanoid: "3.3.18"
 
 patchedDependencies:
-  minimatch@3.1.5: patches/minimatch@3.1.5.patch
   vinext@0.0.50: patches/vinext@0.0.50.patch
