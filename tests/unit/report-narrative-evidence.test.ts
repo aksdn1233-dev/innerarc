@@ -14,6 +14,23 @@ const text = (report: PaidReport) => [
 ].join("\n");
 
 describe("long-form symbolic evidence boundaries", () => {
+  for (const productCode of ["pro_30d", "premium_pdf"] as const) {
+    it.each(["2000-02-29", "1990-01-01"])("keeps Japanese %s biographical claims unverified in " + productCode, birthDate => {
+      const report = createPaidReport("iasyntheticjapanesenarrative", {
+        ...base, locale: "en", displayLocale: "ja", productCode, birthDate,
+      });
+      expect(report.summary).toMatch(/象徴|仮説/u);
+      expect(report.summary).not.toMatch(/行動に使う傾向があります/u);
+      for (const title of ["外から見える姿と内側の動き", "強みが最も生きる場面", "強みが負担に変わる瞬間"]) {
+        const section = report.sections.find(s => s.title === title);
+        expect(section?.body, title).toMatch(/未確認|分かりません|確認できません|判断できません|入力されていません/u);
+        expect(section?.body, title).toMatch(/観察|記録|経験/u);
+        expect(section?.body, title).toMatch(/違|反例|当てはまら/u);
+      }
+      expect(text(report)).not.toContain("周囲には落ち着いて状況を整理する人に見えます");
+    });
+  }
+
   it.each([
     ["no biography", "", "growth"],
     ["health", "잠을 충분히 자도 피곤해요. 무엇부터 확인할까요?", "health"],

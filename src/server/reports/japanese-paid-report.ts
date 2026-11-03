@@ -59,16 +59,16 @@ export function createJapanesePaidReport(orderId: string, input: PaidReadingInpu
   const basis = [
     ["運命数", profile.lifePath.value], ["誕生日数", profile.birthday.value], ["態度数", profile.attitude.value], ["出生年数", birthYear],
   ] as const;
-  const core = `${display(profile.lifePath.value)}の「${meanings[profile.lifePath.value] ?? meanings[9]}」を中心に、${display(profile.birthday.value)}の「${meanings[profile.birthday.value] ?? meanings[9]}」を行動に使う傾向があります。`;
+  const core = `数秘術では、${display(profile.lifePath.value)}を「${meanings[profile.lifePath.value] ?? meanings[9]}」、${display(profile.birthday.value)}を「${meanings[profile.birthday.value] ?? meanings[9]}」という象徴で読みます。実際の能力や行動を確認したものではなく、経験と比べるための仮説です。`;
   const sections: Array<{ title: string; body: string; keySentence?: string }> = [
     { title: "あなたを一文で表すと", keySentence: core, body: `${core}\nこれは結論ではなく、実際の選択で確かめる最初の仮説です。` },
     { title: "4つの数字が示す基本構造", body: basis.map(([label, value]) => `${label} ${display(value)} — ${meanings[value] ?? meanings[9]}`).join("\n") },
-    { title: "外から見える姿と内側の動き", body: "周囲には落ち着いて状況を整理する人に見えます。内側では複数の可能性を比べ、失敗を減らそうとして長く考えることがあります。考える時間を決め、小さく試すと持ち味が生きます。" },
-    { title: "強みが最も生きる場面", body: "まだ言葉になっていない不便を見つけ、誰でも使える順序や仕組みに直す場面です。人の気持ちと現実の手順をつなぐ役割で力を発揮しやすいでしょう。" },
-    { title: "強みが負担に変わる瞬間", body: "良い方法を探し続けて着手が遅れるとき、自分が全部引き受けて周囲の役割まで抱えるときです。遅れ・やり直し・休息不足が二週間続いたら範囲を減らしてください。" },
+    { title: "外から見える姿と内側の動き", body: "他人にどう見られ、内側で何を考えているかは、今回の入力からは分かりません。最近の一場面について、実際に言われたこと、自分が感じたこと、取った行動を分けて記録してください。他人の印象と自分の経験が違っていても、どちらかを数字の説明に合わせる必要はありません。" },
+    { title: "強みが最も生きる場面", body: "得意な場面や職業は生年月日だけでは判断できません。順序を整える、言葉で伝える、人を支えるといった数字から連想した例を確かめるなら、最近うまく進んだ場面と助けが必要だった場面を一つずつ挙げてください。経験が当てはまらない例は外し、実際に行ったことと周囲から確認できた反応を手掛かりにします。" },
+    { title: "強みが負担に変わる瞬間", body: "着手が遅れたり仕事を抱え込んだりしているかは未確認です。もし負担を感じるなら、起きたこと、作業量、期限、周囲の条件を観察メモに残してください。性格だけを原因にせず、違う経験や無理なく進んだ条件も比較します。説明が当てはまらなければ、この仮説は採用しなくてかまいません。" },
     { title: "決めるときの癖", body: "直感は方向を見つける材料にし、決定は確認できた事実で行います。『分かっている事実』『まだ確かめていない想定』『次に試す一歩』の三つに分けると判断が明確になります。" },
     { title: `${selected.name}で先に見る基準`, body: `${selected.check}を最初に確認してください。${input.concern.trim() ? `ご相談「${input.concern.trim()}」についても、期待だけで結論を出さず、期限内に確認できる行動を一つ決めます。` : "最近の一場面を選び、言葉と実際の行動が一致したかを記録します。"}` },
-    { title: "仕事と役割", body: "肩書きより責任と裁量が釣り合っているかを見ます。完成の基準が明確で、改善結果を確認できる仕事では強みが続きます。説明のない期待だけが増える環境では消耗しやすくなります。" },
+    { title: "仕事と役割", body: "仕事との相性は、数字だけでなく経験と実際の条件で確認します。候補ごとに責任、裁量、期限、完成の基準を並べ、できたことと支援が必要だったことを具体的に比べてください。今の仕事で何が起きているかを、このレポートだけで知ることはできません。" },
     { title: "お金と資源", body: "生活を守る資金と試す資金を分けます。投入前に最大損失、確認日、中止条件を一行ずつ決め、可能性だけで固定費を増やさないようにします。" },
     { title: "人間関係", body: "相手の言葉だけでなく、約束が守られたか、負担が偏っていないか、衝突のあとに説明と修復があったかを見てください。理解と我慢は別です。" },
     { title: `${serviceYear}年の流れ`, body: `個人年 ${display(profile.personalYear.value)} は未来を断定する予言ではありません。今年の予定と選択を見直す問いとして使い、実際の結果が違えば記録された現実を優先します。` },
@@ -89,7 +89,7 @@ export function createJapanesePaidReport(orderId: string, input: PaidReadingInpu
     cautions: ["健康・法律・金融・安全の判断は、資格を持つ専門家と公式資料を優先してください。"],
     disclaimer: "数秘術は自己理解と選択整理のための象徴的なツールです。科学的な予測・診断・治療・結果の保証ではありません。",
     tierLabel: input.productCode === "premium_pdf" ? "プレミアム深層リーディング" : input.productCode === "pro_30d" ? "詳細リーディング" : "基本リーディング",
-    characterLabel: "可能性を形にする人", contentVersion: "japanese-report-composer-1.0.0",
+    characterLabel: "数字と経験を比べるための仮説", contentVersion: "japanese-report-composer-1.1.0",
     calculationBasis: { birthDate: input.birthDate, serviceYear, lifePath: profile.lifePath.value, birthday: profile.birthday.value, attitude: profile.attitude.value, birthYear, personalYear: profile.personalYear.value },
     profileFacts: { birthDate: input.birthDate, ...(input.birthTime ? { birthTime: input.birthTime } : {}), ...(input.gender ? { gender: input.gender } : {}) },
     contentReferences: ["numerology:deterministic", "locale:ja"],

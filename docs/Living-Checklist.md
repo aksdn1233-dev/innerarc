@@ -680,3 +680,12 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Add real order/provider parity, stale/tampered rejection and saved-amount callback regressions; move Japanese intake and guide price prose to server snapshot.
 - [ ] Complete normal CI/deploy and public KO/EN/JA price/health verification; final release PR and ignored pricing artifacts close this item without a documentation-only redeploy.
 - Pricing economics, guardrails and rollback: Report-Price-Revision-2026-10-27.md.
+
+
+## 2026-11-03 — Japanese narrative evidence draft
+
+- [x] Reconcile main/CI/Deploy #91, public health and three-language 5,500/9,800/36,000 price truth; close interrupted pricing reporting on PR #91 without redeploying.
+- [x] Baseline 311 focused checks; reproduce four new Japanese no-biography failures; draft bounded local-hypothesis/counterexample copy. Full 1,446 / focused 315 checks, typecheck, lint and Vinext build pass.
+- [ ] Resolve new Satori/minimatch audit gate with verified compatibility, then normal CI/merge/deploy/live checks. Draft branch codex/japanese-narrative-evidence is not a production fix. Do not add audit ignores, force a major legacy-interface override, or rerun known-failing CI unnecessarily.
+- [ ] Continue remaining long-form/domain/JA depth and year-edition review; do not count old cases as a new GPT benchmark.
+- Evidence, remaining limits and rollback: Report-Japanese-Narrative-Review-2026-11-03.md.

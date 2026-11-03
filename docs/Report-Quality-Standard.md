@@ -169,3 +169,13 @@ numerology's generic ordering/teaser. Introductory guidance is category/question
 while engine evidence remains fixed. Unsupported wording is disclosed, safety comes first,
 and no complete paid topic/answer library belongs in the browser bundle. Regressions cover
 real intake and rendering as well as pure routing, without claiming prediction accuracy.
+
+
+## November 3 Japanese narrative review (draft, not deployed)
+
+Report-Japanese-Narrative-Review-2026-11-03.md records four newly reproduced Japanese
+no-biography assertions and a local 1.1.0 draft with 315 focused checks passing. Normal
+release is held by new Satori/minimatch audit findings; no new ignore or unsafe major
+override was introduced. Production remains on PR #91. Do not call the draft released
+or Japanese narrative parity verified. Resume the existing branch after resolving the
+compatibility/security gate instead of repeating prior cases as new GPT evidence.
