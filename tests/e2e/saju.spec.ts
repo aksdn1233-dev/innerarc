@@ -80,6 +80,7 @@ test("an unknown birth time leaves the hour pillar empty instead of inventing on
 });
 
 for (const entry of [
+  { focus: "돈", question: "돈이 왜 자꾸 새는 걸까요?", title: "돈이 남는 곳과 새는 곳을 나눠봐요", word: "고정 지출" },
   { focus: "일 · 사업", question: "사업을 시작해도 될까요?", title: "사업을 시작하기 전, 먼저 확인해요", word: "고객" },
   { focus: "사람 · 연애", question: "이 사람과 계속 가도 될까요?", title: "마음보다, 반복되는 행동을 봐요", word: "약속" },
   { focus: "몸과 마음", question: "요즘 왜 이렇게 지칠까요?", title: "지친 이유부터 차근차근 살펴봐요", word: "의료진" },

@@ -1984,3 +1984,11 @@
 - Date: 2026-10-27. Direct owner instruction; chart stays 5,500 KRW. Central time-versioned code catalog drives all new prices, KO/EN/JA guidance and checkout. No content/tier ID, historical order/report or entitlement rewrite.
 - Preserve old assertions and charge evidence; stale tabs fail before writes. No migration or new provider/model/fulfillment cost. Detailed receipts -29,200 and Premium -43,000 KRW per undiscounted order; exact net margin depends on real fees/tax/refunds/support and is not claimed.
 - Demand, distribution, reference economics, guardrails, initial regression failures, required checks and pre-change rollback: [Report price revision](Report-Price-Revision-2026-10-27.md). Final CI/deploy/live evidence is recorded on the release PR; do not create a duplicate deployment just to add run IDs.
+
+
+## D-123 — Finish the Japanese report and compatible security release
+
+- Date: 2026-11-03. Owner explicitly asked to fix the audit findings and deploy, and to verify free money/business/love category relevance.
+- Use published patched Satori/minimatch/fflate versions. Preserve actual legacy callers with a private API adapter delegating to the patched engine. No old matcher, invented upstream version, audit-ignore addition, changed customer price, model/provider/fulfillment fee or data migration.
+- Retain Japanese evidence-bounded narrative 1.1.0, old stored purchases and canonical calculation engines. Free guidance was already category/question-specific; add a money UI regression and verify all three areas rather than changing their engine facts.
+- Reduce duplicate browser installation in Space CI; all browser projects, tests and performance gates remain. Final CI/deploy/live proof is required. Baseline source 2b616c0 / Worker fc5a9c66-5981-4aa3-aa93-f810e66a20b4 is the rollback reference; retain security fixes when reverting copy. Demand/cost/claim limits and failure causes: Report-Japanese-Narrative-Review-2026-11-03.md.
