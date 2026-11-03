@@ -62,3 +62,25 @@ describe("patched SVG serialization through the actual OG dependency", () => {
     expect(inner).toContain("&quot;");
   });
 });
+
+
+describe("CI browser preparation contract", () => {
+  it("preserves required check names and the three real browser projects", () => {
+    const eslintrcRequire = createRequire(lintRequire.resolve("@eslint/eslintrc"));
+    const workflow = eslintrcRequire("js-yaml").load(readFileSync(".github/workflows/ci.yml", "utf8"));
+    const job = workflow.jobs["space-browser"];
+    expect(job.name).toBe("space-browser (${{ matrix.project }})");
+    expect(job.strategy.matrix.include).toEqual([
+      { project: "desktop-space", browser: "chromium" },
+      { project: "iphone-space", browser: "webkit" },
+      { project: "android-space", browser: "chromium" },
+    ]);
+    const install = job.steps.find((step: { id?: string }) => step.id === "browser_install");
+    expect(install.run).toContain("install --with-deps ${{ matrix.browser }}");
+    for (const title of ["Run isolated material recovery gate", "Run functional and visual space gates"]) {
+      const step = job.steps.find((step: { name?: string }) => step.name === title);
+      expect(step.if).toContain("!cancelled()");
+      expect(step.if).toContain("steps.browser_install.outcome == 'success'");
+    }
+  });
+});

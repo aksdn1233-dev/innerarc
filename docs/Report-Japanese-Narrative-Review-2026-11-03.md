@@ -130,3 +130,11 @@ All six installed-Chrome desktop/mobile-emulation money/business/love free-resul
 passed without retries. These are synthetic local flows, not physical-device tests or
 production proof. Audit exits zero with the two existing ignored highs unchanged.
 Normal hosted CI and matching production checks remain the release gate.
+
+Final workflow review caught that adding a browser matrix field changed GitHub's default
+check names. A regression failed before adding an explicit original project-only job
+name; keep those required-check identifiers stable. The superseded PR run is cancelled
+to avoid duplicate browser cost; final CI must validate the refined head. A separate
+local parallel quality run passed 314 checks but the 927-year enumeration exceeded its
+unchanged 5-second limit by 142ms. Running the same 315 checks with maxWorkers=1 passed;
+no test/assertion/timeout was weakened, and hosted normal full-suite success is required.

@@ -73,6 +73,7 @@ jobs:
           E2E_PAYMENT_CHECKOUT: "1"
 
   space-browser:
+    name: space-browser (${{ matrix.project }})
     # Functional/asset/geometry gates and current captures on a separate runner.
     # Linux-generated pictures are review artifacts, not automatic premium visual approval.
     strategy:
