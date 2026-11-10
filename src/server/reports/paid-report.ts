@@ -1,3 +1,5 @@
+import { buildSajuChart } from "@/core/saju";
+import { describeSinsal, SINSAL_RULE_VERSION } from "@/core/saju/sinsal";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { PaidReport } from "@/core/paid-reading";
 import { PaidReadingInputSchema } from "@/core/paid-reading";
@@ -10,11 +12,24 @@ import { enhancePaidReport } from "@/server/reports/enhance-report";
 import { verifyPaidReportEvidence } from "@/server/reports/evidence-audit";
 import { applyQuestionGuidance } from "@/server/reports/question-guidance";
 
+
+function addSinsal(report: PaidReport, input: import("@/core/paid-reading").PaidReadingInput): PaidReport {
+  const language = input.displayLocale === "ja" ? "ja" : input.locale;
+  let body: string;
+  try {
+    const chart = buildSajuChart({ birthDate: input.birthDate, birthTime: input.birthTime, sex: input.gender === "male" ? "male" : "female", midnightConvention: input.midnightConvention ?? "야자시" });
+    body = describeSinsal(chart, language, true);
+  } catch {
+    body = language === "ko" ? "입력한 정보로 신살을 확인하지 못했어요." : language === "ja" ? "入力情報から神殺を確認できませんでした。" : "Traditional markers could not be determined from the supplied information.";
+  }
+  return { ...report, sinsal: { title: language === "ko" ? "사주의 신살" : language === "ja" ? "四柱の神殺" : "Four Pillars markers", body, ruleVersion: SINSAL_RULE_VERSION }, contentReferences: [...(report.contentReferences ?? []), SINSAL_RULE_VERSION] };
+}
+
 export function createPaidReport(orderId: string, rawInput: unknown): PaidReport {
   const input = PaidReadingInputSchema.parse(rawInput);
-  if (input.displayLocale === "ja") return verifyPaidReportEvidence(applyQuestionGuidance(createJapanesePaidReport(orderId, input), input), input);
+  if (input.displayLocale === "ja") return verifyPaidReportEvidence(addSinsal(applyQuestionGuidance(createJapanesePaidReport(orderId, input), input), input), input);
   if (input.productCode === "plus_30d" && input.readingKind === "saju_chart") {
-    return verifyPaidReportEvidence(createSajuChartReport(orderId, input), input);
+    return verifyPaidReportEvidence(addSinsal(createSajuChartReport(orderId, input), input), input);
   }
   let report: PaidReport;
   switch (input.productCode) {
@@ -28,7 +43,7 @@ export function createPaidReport(orderId: string, rawInput: unknown): PaidReport
       report = createPremiumPaidReport(orderId, input);
       break;
   }
-  return verifyPaidReportEvidence(applyQuestionGuidance(enhancePaidReport(report, input), input), input);
+  return verifyPaidReportEvidence(addSinsal(applyQuestionGuidance(enhancePaidReport(report, input), input), input), input);
 }
 
 export async function revokeGuestPaidReport(

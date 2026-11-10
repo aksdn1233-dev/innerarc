@@ -1,5 +1,7 @@
 "use client";
 
+import { describeSinsal } from "@/core/saju/sinsal";
+
 import { HydrationGate } from "./hydration-gate";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -508,6 +510,10 @@ export function SajuExperience({
             })}
           </div>
           <p className="saju-story-caption">{L("위 글자가 하늘의 기운(천간), 아래 글자가 땅의 기운(지지)입니다. 가운데 이름표는 그 글자가 님과 어떤 사이인지 알려주는 십성입니다.", "Top: heavenly stems. Bottom: earthly branches. The middle tag is the ten-god relation to you.")}</p>
+          <section className="saju-story-card" aria-label={L("내 사주의 신살", "Traditional markers")}>
+            <h3>{L("내 사주의 신살", "Traditional markers")}</h3>
+            {describeSinsal(chart, locale).split("\n\n").map(line => <p key={line}>{line}</p>)}
+          </section>
           {chart.hour === null && <p className="saju-note">{L("태어난 시간을 몰라 시주는 비워두었습니다. 짐작해서 채우지 않습니다.", "No birth time, so the hour pillar stays empty. We don't guess.")}</p>}
           {chart.termBoundaryWarning && <p className="saju-warning" role="status">{chart.termBoundaryWarning}</p>}
           <div className="saju-story-voice-row">

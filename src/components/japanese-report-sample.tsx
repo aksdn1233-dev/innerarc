@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { buildSajuChart } from "@/core/saju";
+import { describeSinsal } from "@/core/saju/sinsal";
 import Link from "next/link";
 import { getSampleReport, type SampleReportKind } from "@/server/reports/sample-report";
 
@@ -89,6 +91,7 @@ export function JapaneseReportSample({ kind }: { kind: SampleReportKind }) {
       <div className="ed-cover-copy"><p>繰り返す選択を、現実の行動まで整理する</p><h1 id="ja-report-title">{labels[kind]}<br />結果レポート</h1><div className="ed-symbol-mark" aria-hidden="true"><span /></div><h2>可能性を形にする人</h2><p>答えを決めつけず、実際の経験と照らし合わせます。</p></div>
       <dl className="ed-cover-facts"><div><dt>生年月日</dt><dd>1994-11-04</dd></div><div><dt>言語</dt><dd>日本語</dd></div><div><dt>レポート</dt><dd>{kind.toUpperCase()}</dd></div>{basis && <div><dt>個人年</dt><dd>{basis.serviceYear} · {numberDisplay(basis.personalYear)}</dd></div>}</dl>
     </section>
+    <section className="ed-paper-section ed-reading-section"><h2>四柱の神殺</h2>{describeSinsal(buildSajuChart({ birthDate: "1994-11-04", sex: "male" }), "ja", true).split("\n\n").map(line => <p key={line}>{line}</p>)}</section>
     {basis && <section className="ed-paper-section"><p className="ed-kicker">計算された数字</p><div className="ed-number-grid">{[["運命数", basis.lifePath], ["誕生日数", basis.birthday], ["態度数", basis.attitude], ["出生年数", basis.birthYear]].map(([label, value]) => <article key={label}><small>{label}</small><strong>{numberDisplay(Number(value))}</strong><p>{numberMeaning[Number(value)] ?? numberMeaning[9]}</p></article>)}</div></section>}
     {sections.map((section, index) => <section className={index % 4 === 3 ? "ed-ink-section ed-reading-section" : "ed-paper-section ed-reading-section"} key={section.title}><span className="ed-chapter-number">{String(index + 1).padStart(2, "0")}</span><p className="ed-kicker">{kind === "premium" ? "PREMIUM READING" : kind === "saju" ? "FOUR PILLARS" : "PERSONAL PATTERN"}</p><h2>{section.title}</h2><div className="sample-report-body">{section.body.split("\n").map((line) => <p key={line}>{line}</p>)}</div></section>)}
     <section className="ed-paper-section"><h2>現実で確かめてください</h2><p>四柱推命と数秘術は自己理解のための象徴的な道具です。科学的な予測・診断・治療・結果の保証ではありません。</p><p className="payment-result-links"><Link className="primary-button" href="/ja/reading">自分のリーディングを始める</Link></p></section>

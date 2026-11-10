@@ -707,3 +707,10 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Local 327 focused / 1,463 full checks, lint/typecheck/production builds, four reader and six category browser checks pass.
 - [ ] Complete normal hosted release; final CI/Deploy/live evidence on release PR.
 - Review, limits, failure cause and rollback: Report-Work-Money-Review-2026-11-10.md.
+
+## 2026-11-10 — Traditional markers in reports
+
+- [x] Add explicit, versioned day-pillar/day-stem/day-branch conventions and preserve unknown-hour uncertainty; tests cover all Hongyeom stems, four branch groups and seven Baekho day pillars.
+- [x] Store new-report results separately; preserve prior purchases and section/question order; display free, KO/EN/JA paid and download text.
+- [x] Full local unit, quality, lint/typecheck, builds and desktop/mobile-emulated browser checks; no new provider cost or migration.
+- [ ] Normal PR/main CI and production verification. Final release evidence belongs on the PR. Details and rollback: Sinsal-Release-2026-11-10.md.

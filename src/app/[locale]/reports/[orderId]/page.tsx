@@ -299,6 +299,8 @@ export default async function PurchasedReportPage({
           <WebtoonCue />
         </section>
 
+        {report.sinsal && <section className="webtoon-panel webtoon-paper"><div className="webtoon-inner"><h2>{report.sinsal.title}</h2>{report.sinsal.body.split("\n\n").map(line => <p key={line}>{line}</p>)}</div></section>}
+
         {structuredV2 ? (
           <WebtoonPanel
             badge={locale === "ko" ? "계산 기준" : "Basis"}
