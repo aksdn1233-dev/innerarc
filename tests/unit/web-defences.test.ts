@@ -211,6 +211,13 @@ describe("search discovery documents", () => {
     expect(urls.some((url) => url.includes("/reports/"))).toBe(false);
   });
 
+  it("publishes a valid IndexNow ownership file without adding it to the sitemap", async () => {
+    const files = (await readdir("public")).filter(name => /^[a-f0-9]{32}\.txt$/u.test(name));
+    expect(files).toHaveLength(1);
+    expect(await readFile(join("public", files[0]), "utf8")).toBe(files[0].replace(/\.txt$/u, ""));
+    expect(createSitemapDocument(environment).some(entry => entry.url.endsWith(files[0]))).toBe(false);
+  });
+
   it("does not fabricate a fresh modification date on every sitemap request", () => {
     const sitemap = createSitemapDocument(environment);
     expect(sitemap.every((entry) => entry.lastModified === undefined)).toBe(true);
