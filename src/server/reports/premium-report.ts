@@ -22,7 +22,7 @@ import type { Locale } from "@/i18n/config";
 import { createDetailPaidReport } from "@/server/reports/detail-report";
 
 export const PREMIUM_REPORT_SERVICE_YEAR = 2026;
-export const PREMIUM_REPORT_CONTENT_VERSION = "premium-report-composer-2.1.0";
+export const PREMIUM_REPORT_CONTENT_VERSION = "premium-report-composer-2.2.0";
 
 type PremiumDomain =
   | "business"
@@ -416,11 +416,14 @@ export function createPremiumPaidReport(
         body: enrichBody(
           "work_business",
           [
+            localized(locale,
+              "아래 직업은 숫자 상징을 바탕으로 살펴볼 예시이며 적성 검사 결과가 아닙니다. 순서는 취업 가능성이나 능력 순위가 아니에요. 실제 업무를 작게 경험하고 필요한 기술·근무 조건과 비교해보세요. 경험과 다르면 다른 분야도 열어두세요.",
+              "These roles are symbolic exploration examples, not an aptitude assessment. Their order does not rank ability or hiring prospects. Try a small task and compare the required skills and working conditions; keep other fields open if the examples do not fit."),
             integrated.domains.find((item) => item.id === "career")?.personalizedInference ?? integrated.summary,
             ...integrated.careerRecommendations.slice(0, 3).map((role) => localized(
               locale,
-              `• ${role.title}\n  잘 맞는 자리 — ${role.fitReason}\n  피할 자리 — ${role.avoidCondition}`,
-              `• ${role.title}\n  Fits — ${role.fitReason}\n  Avoid — ${role.avoidCondition}`,
+              `• ${role.title}\n  살펴볼 업무 — ${role.fitReason}\n  검토할 환경 — ${role.avoidCondition}`,
+              `• ${role.title}\n  Work to explore — ${role.fitReason}\n  Conditions to check — ${role.avoidCondition}`,
             )),
           ].join("\n\n"),
           addedByCategory.work_business,
@@ -439,11 +442,14 @@ export function createPremiumPaidReport(
           body: enrichBody(
             "work_business",
             [
+              localized(locale,
+                "아래 직업은 숫자 상징을 바탕으로 살펴볼 예시이며 적성 검사 결과가 아닙니다. 순서는 취업 가능성이나 능력 순위가 아니에요. 실제 업무를 작게 경험하고 필요한 기술·근무 조건과 비교해보세요. 경험과 다르면 다른 분야도 열어두세요.",
+                "These roles are symbolic exploration examples, not an aptitude assessment. Their order does not rank ability or hiring prospects. Try a small task and compare the required skills and working conditions; keep other fields open if the examples do not fit."),
               integrated.domains.find((item) => item.id === "career")?.personalizedInference ?? integrated.summary,
               ...integrated.careerRecommendations.slice(0, 3).map((role) => localized(
                 locale,
-                `• ${role.title}\n  잘 맞는 자리 — ${role.fitReason}\n  피할 자리 — ${role.avoidCondition}`,
-                `• ${role.title}\n  Fits — ${role.fitReason}\n  Avoid — ${role.avoidCondition}`,
+                `• ${role.title}\n  살펴볼 업무 — ${role.fitReason}\n  검토할 환경 — ${role.avoidCondition}`,
+                `• ${role.title}\n  Work to explore — ${role.fitReason}\n  Conditions to check — ${role.avoidCondition}`,
               )),
             ].join("\n\n"),
             addedByCategory.work_business,
@@ -620,6 +626,7 @@ export function createPremiumPaidReport(
     contentReferences: [
       ...(detail.contentReferences ?? []),
       `premium-domain:${domain}`,
+      "career-exploration:1.0.0",
       "tier-inheritance:BASIC_19000>DETAIL_39000>PREMIUM_79000",
       "tier:PREMIUM_79000",
     ],

@@ -1,3 +1,7 @@
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { buildDetailEditorialModel } from "@/core/detail-editorial";
+import { DetailEditorialReport } from "@/components/detail-editorial-report";
 import { describe, expect, it } from "vitest";
 import type { PaidReadingInput, PaidReport } from "@/core/paid-reading";
 import { createPaidReport } from "@/server/reports/paid-report";
@@ -61,4 +65,59 @@ describe("long-form symbolic evidence boundaries", () => {
     const temperament = report.sections.find(s => /핵심 성향과 기질|Core temperament/u.test(s.title));
     expect(temperament?.body).toMatch(locale === "ko" ? /가설|상징|질문/u : /hypothesis|symbolic|question/u);
   });
+});
+
+
+describe("work and money require lived evidence", () => {
+  for (const locale of ["ko", "en"] as const) {
+    for (const productCode of ["pro_30d", "premium_pdf"] as const) {
+      it.each(["1988-07-02", "1990-01-01"])(`${locale} ${productCode} does not infer work performance or money habits for %s`, birthDate => {
+        const report = createPaidReport("iasyntheticworkmoney", {
+          ...base, birthDate, locale, productCode,
+        });
+        // Premium consolidates duplicated career prose in its deeper role chapter.
+        const workTitle = productCode === "premium_pdf"
+          ? (locale === "ko" ? /일과 역할/u : /Fitting work and roles/u)
+          : (locale === "ko" ? /직업·사업/u : /Work and business/u);
+        for (const title of [workTitle, locale === "ko" ? /재물/u : /Money flow/u]) {
+          const section = report.sections.find(s => title.test(s.title));
+          expect(section, String(title)).toBeDefined();
+          expect(section?.body).toMatch(locale === "ko" ? /생년월일.*(알|판단|확인).*없/u : /birth date cannot (establish|determine)/iu);
+          expect(section?.body).toMatch(locale === "ko" ? /상징|가설/u : /symbolic|hypothesis/iu);
+          expect(section?.body).toMatch(locale === "ko" ? /반대 사례|맞지 않|다른 결과/u : /counterexample|does not fit|different outcome/iu);
+          expect(section?.body).not.toMatch(/성과로 이어지기 쉬워요|At work, .* turns into results|Around money, .* supports the judgment/u);
+        }
+        if (productCode === "premium_pdf") {
+          const roles = report.sections.find(s => /일과 역할|Fitting work and roles/u.test(s.title));
+          expect(roles?.body).toMatch(locale === "ko" ? /적성.*(검사|확인).*아니|적성.*확인.*없/u : /not (an aptitude assessment|proof of suitability)/iu);
+          expect(roles?.body).not.toMatch(/잘 맞는 자리 —|Fits —/u);
+        }
+      });
+    }
+  }
+
+  it.each([
+    ["career", "work", "지금 이직해도 될까요?"],
+    ["money", "money", "돈 관리를 어떻게 시작할까요?"],
+  ] as const)("does not fabricate %s abilities in the Korean domain answer", (_domain, focusId, concern) => {
+    const report = createPaidReport("iasyntheticdomainfacts", { ...base, birthDate: "1988-07-02", focusId, concern });
+    const section = report.sections.find(s => s.title.startsWith("질문 분야 상세 분석"));
+    expect(section?.body).toMatch(/생년월일.*(알|판단|확인).*없/u);
+    expect(section?.body).not.toMatch(/전략기획.*유리합니다|수익 기회를 빠르게 찾지만/u);
+    expect(section?.body).toMatch(/실제|자료|기록/u);
+  });
+});
+
+
+it.each(["ko", "en"] as const)("shows the bounded role chapter in the real %s premium reader without changing old report selection", locale => {
+  const report = createPaidReport("iasyntheticrolesreader", { ...base, locale, birthDate: "1988-07-02", productCode: "premium_pdf" });
+  const roles = report.sections.find(s => /일과 역할|Fitting work and roles/u.test(s.title))!;
+  const model = buildDetailEditorialModel(report)!;
+  expect(model.career.body).toBe(roles.body);
+  const html = renderToStaticMarkup(createElement(DetailEditorialReport, { report, locale, orderId: report.orderId, signedIn: false }));
+  expect(html).toContain(locale === "ko" ? "적성 검사 결과가 아닙니다" : "not an aptitude assessment");
+  expect(html).toContain(locale === "ko" ? "살펴볼 업무" : "Work to explore");
+  const legacy = { ...report, contentReferences: report.contentReferences?.filter(ref => ref !== "career-exploration:1.0.0") };
+  const previousSection = legacy.sections.find(s => /직업·사업 방향|질문 분야 상세 분석|Work and business|Detailed domain analysis/u.test(s.title))!;
+  expect(buildDetailEditorialModel(legacy)?.career.body).toBe(previousSection.body);
 });

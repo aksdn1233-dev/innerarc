@@ -691,9 +691,19 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - Evidence, remaining limits and rollback: Report-Japanese-Narrative-Review-2026-11-03.md.
 
 
-## 2026-11-03 — Security hold resolution in progress
+## 2026-11-03 — Security hold resolution completed
 
 - [x] Verified published Satori/minimatch fixes; preserve actual legacy callable consumers via private adapter. Actual ESLint diagnostics and SVG escaping regressions pass.
 - [x] Fix Satori's newly exposed fflate ZIP64-loop advisory in the same 0.7 line; audit exits 0 with only the two unchanged existing ignored highs.
 - [x] Add real money free-result E2E beside business/love and keep every calculation/price/history boundary.
-- [ ] Normal PR/main CI, automatic deployment and fresh public free-result/health checks before claiming release. Final proof in release PR. Previous held draft status is superseded only when those gates pass.
+- [x] PR #92 main CI 41569085036, Deploy 41570316957 and six fresh production category interactions passed on 0c863f6. This supersedes the earlier draft hold.
+
+
+## 2026-11-10 — Work and money narrative
+
+- [x] Preserve dirty primary checkout; reconcile latest main, successful CI/deploy and fresh health.
+- [x] Ten new synthetic failures reproduce unsupported KO/EN career/money claims; retain previous cases as regressions only.
+- [x] Replace biography/aptitude claims with actual-record checks and counterexamples; keep engine, roles, prices, history and consent.
+- [x] Local 327 focused / 1,463 full checks, lint/typecheck/production builds, four reader and six category browser checks pass.
+- [ ] Complete normal hosted release; final CI/Deploy/live evidence on release PR.
+- Review, limits, failure cause and rollback: Report-Work-Money-Review-2026-11-10.md.
