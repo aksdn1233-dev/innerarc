@@ -20,7 +20,7 @@ https://sajubam.site/ko/glossary/sinsal/yeokma
 https://hamsaju.com/blog/hongyeom-sal
 
 New reports store an optional `sinsal` field with version and localised text; existing
-stored reports without it render as before and are not regenerated. The free chart,
+stored reports without it render as before and are not regenerated. The free chart and free pattern result,
 KO/EN detailed and premium reader, Japanese reader and fixed sample, chart report, and
 private download display the stored result. An unexpected calculation failure gives an
 explicit unavailable message instead of preventing a paid report. No new API call,
@@ -36,12 +36,14 @@ or misleading content. Pre-change source is c0ff602f60a1893b8639bd80fb58f47209aa
 Worker identity must be checked at deployment. Roll back code through CI and keep data,
 security fixes, catalog prices and dashboard variables (`--keep-vars`).
 
-Local verification: focused report quality 327/327; full unit 1,472/1,472 before
+Local verification: focused report quality 327/327; full unit 1,486/1,486 including
 additional matching-table fixtures; lint zero errors with four existing navigation
-warnings, typecheck, Next and Vinext builds passed. Eight installed-Chrome desktop/mobile
-emulation checks covered free intake and KO/JA report examples; no real customer records
+warnings, typecheck, Next and Vinext builds passed. Ten installed-Chrome desktop/mobile
+emulation checks covered free intake, free pattern and KO/JA report examples; no real customer records
 or payment were used. First test run found that appending a normal section disrupted the
 existing question-answer invariant; the optional field preserves section order. A later
 full run caught a fixed particle and source-order assertion; copy was corrected and the
 download preserves its original section/action order. Neither assertion was weakened.
+The first two free-pattern browser attempts used a test origin of port 3000 while the
+server ran on 3063; rerunning with the actual E2E_BASE_URL passed both environments.
 Final CI, production release and any limitations belong in the PR release record.

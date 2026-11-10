@@ -1,5 +1,7 @@
 "use client";
 
+import { buildSajuChart } from "@/core/saju";
+import { describeSinsal } from "@/core/saju/sinsal";
 import { HydrationGate } from "./hydration-gate";
 import { HARANG_IMAGES } from "@/core/characters/harang";
 import { useEffect, useRef, useState, type FormEvent } from "react";
@@ -88,6 +90,14 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
     captureConversionEvent("free_start", locale, { surface });
   }
 
+  const freeSinsal = (() => {
+    if (!result) return null;
+    try {
+      return describeSinsal(buildSajuChart({ birthDate: result.birthDate, sex: "female" }), locale);
+    } catch {
+      return locale === "ko" ? "입력한 정보로 신살을 확인하지 못했어요." : "Traditional markers could not be determined from the supplied information.";
+    }
+  })();
   const profile = result ? getRuleBasedProfile(result.lifePath.value, locale) : null;
   const integratedProfile = result ? createIntegratedProfile(result, locale) : null;
   const concernReading = context ? createFreeConcernReading({ locale, focusId: context.focusId, concern: context.concern?.text ?? "" }) : null;
@@ -339,6 +349,7 @@ export function OnboardingExperience({ locale, dictionary: d, routeName = "profi
             {concernReading && <FreeConcernReadingCard reading={concernReading} locale={locale} />}
             {concernReading?.scope === "safety" ? <button className="text-button" type="button" onClick={restart}>{d.restart}</button> : <>
             <WebtoonReveal />
+            {freeSinsal && <section className="webtoon-panel webtoon-paper" aria-label={locale === "ko" ? "내 사주의 신살" : "Traditional markers"}><div className="webtoon-inner"><h2>{locale === "ko" ? "내 사주의 신살" : "Traditional markers"}</h2>{freeSinsal.split("\n\n").map(line => <p key={line}>{line}</p>)}</div></section>}
             <NumerologyWebtoonReading
               archetype={profile.archetype}
               context={context}
