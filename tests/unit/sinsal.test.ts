@@ -26,7 +26,8 @@ describe("sinsal in newly generated reports", () => {
     for (const language of ["ko", "en", "ja"] as const) {
       it(`${productCode} ${language} includes explicit evidence and unknown hour`, () => {
         const report = createPaidReport("synthetic-sinsal", { version: 1, locale: language === "ko" ? "ko" : "en", ...(language === "ja" ? { displayLocale: "ja" } : {}), productCode, birthDate: "1994-11-04", name: "", focusId: "growth", concern: "", createdAt: "2026-10-26T00:00:00.000Z" });
-        expect(report.sinsal?.ruleVersion).toBe("sinsal:1.0.0");
+        expect(report.sinsal?.ruleVersion).toBe("sinsal:1.1.0");
+        for (const marker of language === "ko" ? ["화개살", "괴강살", "천을귀인"] : language === "ja" ? ["華蓋殺", "魁罡殺", "天乙貴人"] : ["Hwagae", "Goegang", "Cheoneul"]) expect(report.sinsal?.body).toContain(marker);
         expect(report.sinsal?.body).toMatch(language === "ko" ? /백호살[\s\S]*홍염살[\s\S]*도화살[\s\S]*역마살[\s\S]*시지는 확인하지/u : language === "ja" ? /白虎殺[\s\S]*紅艶殺[\s\S]*桃花殺[\s\S]*駅馬殺[\s\S]*時支は確認できません/u : /Baekho[\s\S]*Hongyeom[\s\S]*Dohwa[\s\S]*Yeokma[\s\S]*hour branch was not checked/u);
       });
     }
@@ -34,7 +35,7 @@ describe("sinsal in newly generated reports", () => {
   it("uses day-branch mappings for peach blossom and travel", () => {
     const chart = buildSajuChart({ birthDate: "1994-11-04", sex: "female" });
     const sample = { ...chart, day: { ...chart.day, branch: "子" as const }, month: { ...chart.month, branch: "酉" as const }, year: { ...chart.year, branch: "寅" as const }, hour: null };
-    expect(identifyBranchSinsal(sample)).toEqual({ dohwa: ["month"], yeokma: ["year"] });
+    expect(identifyBranchSinsal(sample)).toMatchObject({ dohwa: ["month"], yeokma: ["year"] });
   });
 });
 
@@ -56,5 +57,24 @@ describe("declared matching tables", () => {
     const result = identifyBranchSinsal({ ...chart, day: { ...chart.day, branch: basis }, month: { ...chart.month, branch: peach }, year: { ...chart.year, branch: travel }, hour: null });
     expect(result.dohwa).toContain("month");
     expect(result.yeokma).toContain("year");
+  });
+});
+
+
+describe("additional traditional markers", () => {
+  it.each([["子", "辰"], ["午", "戌"], ["酉", "丑"], ["卯", "未"]] as const)("finds Hwagae for %s at %s", (basis, target) => {
+    const chart = buildSajuChart({ birthDate: "1994-11-04", sex: "female" });
+    const result = identifyBranchSinsal({ ...chart, day: { ...chart.day, branch: basis }, month: { ...chart.month, branch: target } });
+    expect(result.hwagae).toContain("month");
+  });
+  it.each(["庚辰", "庚戌", "壬辰", "壬戌"] as const)("finds Goegang day pillar %s", pair => {
+    const chart = buildSajuChart({ birthDate: "1994-11-04", sex: "female" });
+    expect(identifySinsal({ ...chart, day: { ...chart.day, stem: pair[0] as typeof chart.day.stem, branch: pair[1] as typeof chart.day.branch } }).goegang.matched).toBe(true);
+  });
+  it.each([["甲", "丑"], ["戊", "未"], ["庚", "丑"], ["乙", "申"], ["己", "子"], ["丙", "酉"], ["丁", "亥"], ["壬", "巳"], ["癸", "卯"], ["辛", "午"]] as const)("finds Cheoneul for day stem %s and known branch %s", (stem, branch) => {
+    const chart = buildSajuChart({ birthDate: "1994-11-04", sex: "female" });
+    const result = identifySinsal({ ...chart, dayMaster: stem, month: { ...chart.month, branch } });
+    expect(result.cheoneul.positions).toContain("month");
+    expect(result.cheoneul.positions).not.toContain("hour");
   });
 });

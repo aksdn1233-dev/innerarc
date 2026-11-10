@@ -57,7 +57,7 @@ test("Premium sample uses the editorial report and deterministic accessory edit"
   await expect(page.locator(".editorial-report-premium")).toBeVisible();
   await expect(page.locator(".ed-cover h1")).toContainText("프리미엄");
   await expect(page.getByRole("heading", { name: "사주의 신살" })).toBeVisible();
-  for (const marker of ["백호살", "홍염살", "도화살", "역마살"]) await expect(page.locator(".ed-reading-section").filter({ has: page.getByRole("heading", { name: "사주의 신살" }) })).toContainText(marker);
+  for (const marker of ["백호살", "홍염살", "도화살", "역마살", "화개살", "괴강살", "천을귀인"]) await expect(page.locator(".ed-reading-section").filter({ has: page.getByRole("heading", { name: "사주의 신살" }) })).toContainText(marker);
   await expect(page.locator(".ed-premium-feature")).toHaveCount(10);
   await expect(page.locator(".ed-premium-body")).toHaveCount(10);
   await expect(page.locator(".ed-premium-feature details")).toHaveCount(0);
@@ -171,3 +171,16 @@ for (const locale of ["ko", "en"] as const) {
     expect(errors).toEqual([]);
   });
 }
+
+
+test("free, detailed and premium marker examples are directly comparable", async ({ page }) => {
+  for (const width of [1440, 390, 360]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/ko/samples/sinsal");
+    await expect(page.getByRole("heading", { name: "신살 결과 미리보기" })).toBeVisible();
+    for (const title of ["무료 결과", "상세 리포트", "고급 리포트"]) await expect(page.getByRole("heading", { name: title, exact: true })).toBeVisible();
+    for (const marker of ["백호살", "홍염살", "도화살", "역마살", "화개살", "괴강살", "천을귀인"]) await expect(page.getByText(new RegExp(marker)).first()).toBeVisible();
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
+  }
+});

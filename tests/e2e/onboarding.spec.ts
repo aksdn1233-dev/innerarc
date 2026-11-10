@@ -52,7 +52,7 @@ test("Korean guest reaches a deterministic first result", async ({ page }) => {
   await page.getByRole("button", { name: "내 핵심 패턴 보기" }).click();
   await expect(page.getByText("대표 아키타입 · 정의")).toBeVisible();
   const markers = page.getByRole("region", { name: "내 사주의 신살" });
-  for (const marker of ["백호살", "홍염살", "도화살", "역마살"]) await expect(markers).toContainText(marker);
+  for (const marker of ["백호살", "홍염살", "도화살", "역마살", "화개살", "괴강살", "천을귀인"]) await expect(markers).toContainText(marker);
   await expect(markers).toContainText("시지는 확인하지 못했어요");
   await expect(page.locator(".number-tile").first()).toContainText("11");
   await page.getByText("계산 근거 보기").click();

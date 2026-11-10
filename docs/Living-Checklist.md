@@ -714,3 +714,11 @@ Performance follow-up (2026-09-07): a constrained remote Apple-GPU run rendered 
 - [x] Store new-report results separately; preserve prior purchases and section/question order; display free, KO/EN/JA paid and download text.
 - [x] Full local unit, quality, lint/typecheck, builds and desktop/mobile-emulated browser checks; no new provider cost or migration.
 - [ ] Normal PR/main CI and production verification. Final release evidence belongs on the PR. Details and rollback: Sinsal-Release-2026-11-10.md.
+
+## 2026-11-10 — More traditional markers and discovery
+
+- [x] Add explicitly versioned Hwagae, Goegang and Cheoneul; preserve calculated evidence, unverified birth hour and historical paid reports.
+- [x] Provide noindex free/detail/premium synthetic comparison linked from the existing report samples.
+- [x] Remove the sitemap's misleading request-time modification date; current canonical points to mygyeol.kr. The legacy Sites URL still serves old HTML and must not be represented as already removed.
+- [ ] Complete regression/build/browser/hosted release checks; request recrawl only after deployment. Naver Search Advisor requires authentication; confirm actual search-engine responses rather than promising immediate de-indexing.
+- Calculation conventions, sources, cost and rollback: Sinsal-Preview-Search-2026-11-10.md.

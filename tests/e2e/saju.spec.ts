@@ -40,7 +40,7 @@ test("six questions lead to free chapters before any fee", async ({ page }) => {
   await expect(page.locator(".saju-story-chapter")).toHaveText("서막");
   await page.getByRole("button", { name: "다음 챕터" }).click();
   await expect(page.locator(".saju-story-pillar")).toHaveCount(4);
-  for (const marker of ["백호살", "홍염살", "도화살", "역마살"]) await expect(page.getByRole("region", { name: "내 사주의 신살" })).toContainText(marker);
+  for (const marker of ["백호살", "홍염살", "도화살", "역마살", "화개살", "괴강살", "천을귀인"]) await expect(page.getByRole("region", { name: "내 사주의 신살" })).toContainText(marker);
   await page.getByRole("button", { name: "다음 챕터" }).click();
   await expect(page.locator(".saju-story-stages li")).toHaveCount(3);
   await expect(page.locator(".saju-story-evidence").first()).toContainText("📐 근거");

@@ -52,6 +52,7 @@ export function ReportSampleExperience({
         </Link>
       ))}
     </nav>
+    <p><Link href={`/${locale}/samples/sinsal`} prefetch={false}>{ko ? "무료·상세·고급 신살 비교 보기" : "Compare traditional marker examples"}</Link></p>
   </>
   );
 
