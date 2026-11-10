@@ -561,3 +561,13 @@ with artifacts preserved and unavailable-browser cascades suppressed. Detail/evi
 Report-Japanese-Narrative-Review-2026-11-03.md. Final CI/Deploy/Worker/live identities
 belong in the release PR, without another documentation-only deploy. Preserve --keep-vars,
 9800/36000 prices and stored orders/reports. Keep security fixes on narrative rollback.
+
+
+## 2026-11-10 — Work/money evidence wording
+
+PR #92 closed the earlier Japanese/security hold: 0c863f6 / main CI 41569085036 /
+Deploy 41570316957 / Worker ff793673-1cab-47e3-939e-d5ce0343083d. Fresh health is
+normal; do not report the old draft as unreleased. Keep the two existing audit exceptions
+visible, without adding any. New work/money copy is a separate versioned release;
+Report-Work-Money-Review-2026-11-10.md records reproduction, gates and rollback.
+Do not regenerate ready purchases or replace engine facts with subjective interpretation.

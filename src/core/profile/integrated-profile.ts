@@ -2,7 +2,7 @@ import { withParticle } from "@/core/korean-particles";
 import type { NumerologyProfile } from "@/core/numerology";
 import type { Locale } from "@/i18n/config";
 
-export const INTEGRATED_PROFILE_RULE_VERSION = "integrated-profile-1.0.0";
+export const INTEGRATED_PROFILE_RULE_VERSION = "integrated-profile-1.1.0";
 
 export const profileDomainIds = [
   "thinking",
@@ -151,8 +151,8 @@ function domainSentenceKo(id: ProfileDomainId, strength: string, shadow: string)
     action: `실제로 움직일 때 ${lead} 힘을 냅니다. 다만 ${shadow} 속도가 눈에 띄게 떨어질 수 있어요.`,
     relationships: `사람 사이에서는 ${lead} 잘 드러나요. 다만 ${shadow} 거리 조절이 어려워질 수 있어요.`,
     leadership: `누군가를 이끌 때 ${lead} 신뢰를 만듭니다. 다만 ${shadow} 결정을 혼자 떠안게 될 수 있어요.`,
-    career: `일에서는 ${lead} 성과로 이어지기 쉬워요. 다만 ${shadow} 오래 버티기 힘든 자리가 됩니다.`,
-    money: `돈 문제에서는 ${lead} 판단을 도와줍니다. 다만 ${shadow} 결정을 미루거나 반대로 서두르게 될 수 있어요.`,
+    career: `생년월일만으로 업무 능력이나 직무 적성을 확인할 수는 없어요. 상징에서 꺼낸 질문은 ‘${withParticle(strength, "subject")} 필요했던 일이 있었나요?’예요. ‘${shadow}’도 관찰할 가설이에요. 해당 경험이 없다면 맞추려 하지 말고, 잘 풀린 일과 다른 결과가 나온 반대 사례를 함께 비교해보세요.`,
+    money: `생년월일만으로 수입이나 지출 습관을 알 수는 없어요. ‘${strength}’ 및 ‘${shadow}’는 돈을 다루는 능력의 증거가 아닌 상징 가설이에요. 최근 지출에서 실제로 그런 과정이 있었는지 살펴보고, 맞지 않는 반대 사례도 남겨보세요. 판단에는 실제 수입·지출과 감당할 비용이 먼저예요.`,
     stress: `압박을 받을 때도 ${lead} 남아 있는 편이에요. 다만 ${shadow} 회복이 늦어질 수 있어요.`,
     growth: `무언가 바꾸려 할 때 ${lead} 출발점이 됩니다. 다만 ${shadow} 시도가 흐지부지될 수 있어요.`,
   };
@@ -165,8 +165,8 @@ function domainSentenceEn(id: ProfileDomainId, strength: string, shadow: string)
     action: `${strength} carries the actual doing. Pace can drop noticeably while ${shadow}.`,
     relationships: `${strength} shows up most clearly between people. Distance gets harder to set while ${shadow}.`,
     leadership: `${strength} is what builds trust when leading. Decisions can end up carried alone while ${shadow}.`,
-    career: `At work, ${strength} turns into results. A role becomes hard to sustain while ${shadow}.`,
-    money: `Around money, ${strength} supports the judgment. Decisions get postponed or rushed while ${shadow}.`,
+    career: `A birth date cannot establish work performance or job suitability. The symbolic question is whether any actual task called for ${strength}. Consider ${shadow} only as a hypothesis to examine. Compare a task that went well with a counterexample or different outcome; leave the hypothesis aside if it does not fit.`,
+    money: `A birth date cannot establish income or spending habits. The themes of ${strength} and ${shadow} are a symbolic hypothesis, not evidence of financial ability. Check whether either describes a recent expense and retain a counterexample if it does not fit. Actual income, expenses, and affordable costs come first.`,
     stress: `Under pressure, ${strength} usually remains. Recovery takes longer while ${shadow}.`,
     growth: `${strength} is the starting point for changing something. Attempts fade out while ${shadow}.`,
   };

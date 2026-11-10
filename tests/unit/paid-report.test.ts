@@ -119,8 +119,8 @@ describe("paid report delivery", () => {
     });
     const career = premium.sections.find((section) => section.title.includes("일과 역할"));
 
-    expect(career?.body).toContain("잘 맞는 자리 —");
-    expect(career?.body).toContain("피할 자리 —");
+    expect(career?.body).toMatch(/적성 검사 결과가 아닙니다/u);
+    expect(career?.body).toMatch(/업무 —[\s\S]*환경 —/u);
     expect(career?.body.split("\n").length).toBeGreaterThan(5);
   });
 

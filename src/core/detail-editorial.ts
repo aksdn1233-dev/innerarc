@@ -231,6 +231,11 @@ export function buildDetailEditorialModel(report: PaidReport): DetailEditorialMo
   const ability = findSection(report, [/가장 강한 능력/u, /Strongest ability/u]);
   const failures = findSection(report, [/반복되는 실패 패턴/u, /Repeated failure/u]);
   const work = findSection(report, [/직업·사업 방향/u, /질문 분야 상세 분석/u, /Work and business/u, /Detailed domain analysis/u]);
+  // New reports explicitly opt into the complete exploration chapter. Stored reports
+  // without the marker retain their original selection; never regenerate a purchase.
+  const careerExploration = report.contentReferences?.includes("career-exploration:1.0.0")
+    ? findSection(report, [/잘 맞는 일과 역할/u, /Fitting work and roles/u])
+    : undefined;
   const money = findSection(report, [/재물 흐름/u, /Money flow/u]);
   const teamwork = findSection(report, [/인간관계와 협업/u, /People and collaboration/u]);
   const love = findSection(report, [/연애와 가까운 관계/u, /Close relationships/u]);
@@ -377,7 +382,12 @@ export function buildDetailEditorialModel(report: PaidReport): DetailEditorialMo
     recurringPatterns,
     relationships: block(ko ? "사람을 볼 때 반복되는 기준" : "The pattern in reading people", teamwork, paragraphAt(temperament?.body ?? report.summary, 1)),
     money: contrastBlock(moneyBlock, 1, ko ? "수입과 이익을 나눠 적고, 검증 전에는 고정비를 늘리지 않는 보존 기준이 필요합니다." : "Separate revenue from profit and keep fixed costs unchanged until the result is verified."),
-    career: block(ko ? "일에서 맞는 역할과 피할 구조" : "Work roles that fit and structures to avoid", work, ability?.body ?? report.summary),
+    career: block(
+      careerExploration
+        ? (ko ? "관심 있는 일과 확인할 조건" : "Work to explore and conditions to check")
+        : (ko ? "일에서 맞는 역할과 피할 구조" : "Work roles that fit and structures to avoid"),
+      careerExploration ?? work, ability?.body ?? report.summary,
+    ),
     love: contrastBlock(loveBlock, 2, ko ? "마음의 크기보다 함께 보낸 시간, 지킨 약속, 갈등 뒤의 설명을 확인해야 합니다." : "Check shared time, kept promises, and explanations after conflict rather than relying on the size of a feeling."),
     ...(family ? { family: block(ko ? "가족 관계에서 확인할 것" : "What to check in family relationships", family, family.body) } : {}),
     stress: {

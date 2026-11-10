@@ -146,3 +146,26 @@ test("Detailed editorial sample keeps its reading and accessibility contract", a
   });
   expect(violations).toEqual([]);
 });
+
+
+for (const locale of ["ko", "en"] as const) {
+  test(`premium career exploration reaches the actual ${locale} reader`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on("pageerror", error => errors.push(error.message));
+    for (const width of [1440, 360]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(`/${locale}/samples/premium`);
+      const career = page.locator(".ed-reading-block").filter({
+        has: page.getByRole("heading", { name: locale === "ko" ? "관심 있는 일과 확인할 조건" : "Work to explore and conditions to check", exact: true }),
+      });
+      await expect(career).toBeVisible();
+      await expect(career).toContainText(locale === "ko" ? "적성 검사 결과가 아닙니다" : "not an aptitude assessment");
+      await career.locator("summary").click();
+      await expect(career.locator("details")).toHaveAttribute("open", "");
+      await expect(career).toContainText(locale === "ko" ? "살펴볼 업무" : "Work to explore");
+      await expect(career).toContainText(locale === "ko" ? "검토할 환경" : "Conditions to check");
+      expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
+    }
+    expect(errors).toEqual([]);
+  });
+}

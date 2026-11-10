@@ -1992,3 +1992,10 @@
 - Use published patched Satori/minimatch/fflate versions. Preserve actual legacy callers with a private API adapter delegating to the patched engine. No old matcher, invented upstream version, audit-ignore addition, changed customer price, model/provider/fulfillment fee or data migration.
 - Retain Japanese evidence-bounded narrative 1.1.0, old stored purchases and canonical calculation engines. Free guidance was already category/question-specific; add a money UI regression and verify all three areas rather than changing their engine facts.
 - Reduce duplicate browser installation in Space CI; all browser projects, tests and performance gates remain. Final CI/deploy/live proof is required. Baseline source 2b616c0 / Worker fc5a9c66-5981-4aa3-aa93-f810e66a20b4 is the rollback reference; retain security fixes when reverting copy. Demand/cost/claim limits and failure causes: Report-Japanese-Narrative-Review-2026-11-03.md.
+
+
+## D-124 — Separate work/money hypotheses from lived evidence
+
+- Date: 2026-11-10. Standing owner request for objective, question-relevant reports; ten new synthetic failures found fixed career suitability and money-habit claims without a biography.
+- Keep canonical engines, role weights/order, 2026 edition, stored purchases, consent and prices 5,500/9,800/36,000. Shared work/money wording becomes observation questions with counterexamples; premium roles are exploration examples, not aptitude findings. New Detailed/Premium content 2.2.0; no Japanese version change.
+- Same distribution and unit economics; zero new provider/model/fulfillment cost, dependency or migration. Track existing fulfillment, relevance and support signals, not a fabricated outcome accuracy. Limits, recurrence tests, normal release gates and pre-release source/Worker rollback: Report-Work-Money-Review-2026-11-10.md.

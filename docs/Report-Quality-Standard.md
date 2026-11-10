@@ -171,11 +171,19 @@ and no complete paid topic/answer library belongs in the browser bundle. Regress
 real intake and rendering as well as pure routing, without claiming prediction accuracy.
 
 
-## November 3 Japanese narrative review (draft, not deployed)
+## November 3 Japanese narrative and security release — completed
 
-Report-Japanese-Narrative-Review-2026-11-03.md records four newly reproduced Japanese
-no-biography assertions and a local 1.1.0 draft with 315 focused checks passing. Normal
-release is held by new Satori/minimatch audit findings; no new ignore or unsafe major
-override was introduced. Production remains on PR #91. Do not call the draft released
-or Japanese narrative parity verified. Resume the existing branch after resolving the
-compatibility/security gate instead of repeating prior cases as new GPT evidence.
+The earlier draft hold was resolved in PR #92, merged as
+`0c863f6685127b7c4a5ad0ba46c533b67fc3d829`. Main CI 41569085036 and Deploy
+41570316957 succeeded; Worker `ff793673-1cab-47e3-939e-d5ce0343083d` and fresh
+synthetic production interactions confirmed release. Two pre-existing ignored high
+advisories remain; no new ignore was added. Japanese narrative depth parity remains
+unverified. The final PR release record supersedes the earlier held draft notes.
+
+## November 10 work and money evidence review
+
+See `Report-Work-Money-Review-2026-11-10.md`. New KO/EN synthetic regressions cover
+unsupported work-performance, career suitability and money-habit assertions. Keep the
+symbolic themes and role order, but frame them as exploration with actual records and
+counterexamples. Detailed/Premium newly generated content becomes 2.2.0; shared profile
+wording becomes 1.1.0. Historical purchases and the 2026 edition remain unchanged.
