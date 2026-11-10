@@ -211,6 +211,12 @@ describe("search discovery documents", () => {
     expect(urls.some((url) => url.includes("/reports/"))).toBe(false);
   });
 
+  it("does not fabricate a fresh modification date on every sitemap request", () => {
+    const sitemap = createSitemapDocument(environment);
+    expect(sitemap.every((entry) => entry.lastModified === undefined)).toBe(true);
+    expect(sitemap.some((entry) => entry.url.includes("/samples/"))).toBe(false);
+  });
+
   it("maps each localized product page to first-party concept imagery", () => {
     const xml = createImageSitemapXml(environment);
     expect(xml).toContain('xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"');

@@ -83,11 +83,9 @@ export function createSitemapDocument(
   environment: Readonly<Record<string, string | undefined>> = process.env,
 ): MetadataRoute.Sitemap {
   const baseUrl = resolvePublicAppUrl(environment.NEXT_PUBLIC_APP_URL);
-  const lastModified = new Date();
   const establishedRoutes = (["ko", "en"] as const).flatMap((locale) =>
     [...PUBLIC_ROUTES, ...(environment.SPACE_ENABLED === "true" ? ["/space"] : [])].map((route) => ({
       url: new URL(`/${locale}${route}`, baseUrl).toString(),
-      lastModified,
       changeFrequency: route === "/daily-fortune" ? "daily" as const : route === "" ? "weekly" as const : "monthly" as const,
       priority: route === "" ? 1 : route === "/plans" ? 0.9 : route === "/daily-fortune" ? 0.8 : 0.7,
       alternates: {
@@ -102,7 +100,6 @@ export function createSitemapDocument(
   const accessoryProductRoutes = (["ko", "en"] as const).flatMap((locale) =>
     accessoryConceptProducts.map(({ id }) => ({
       url: new URL(`/${locale}/shop/${id}`, baseUrl).toString(),
-      lastModified,
       changeFrequency: "monthly" as const,
       priority: 0.65,
       alternates: {
@@ -118,7 +115,6 @@ export function createSitemapDocument(
     ...accessoryProductRoutes,
     ...japaneseRoutes.map((route) => ({
       url: new URL(`/ja${route}`, baseUrl).toString(),
-      lastModified,
       changeFrequency: route === "" ? "weekly" as const : "monthly" as const,
       priority: route === "" ? 0.9 : route === "/plans" ? 0.85 : 0.8,
       alternates: {
