@@ -77,6 +77,7 @@ export type PaidReport = Readonly<{
   characterLabel?: string;
   sharpInsights?: readonly string[];
   contentVersion?: string;
+  sinsal?: Readonly<{ title: string; body: string; ruleVersion: string }>;
   /**
    * New BASIC_19000 reports carry a compact calculation basis and an explicit
    * layout marker. Both remain optional so reports bought before this composition

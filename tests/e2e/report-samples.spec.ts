@@ -56,6 +56,8 @@ test("Premium sample uses the editorial report and deterministic accessory edit"
   await page.goto("/ko/samples/premium");
   await expect(page.locator(".editorial-report-premium")).toBeVisible();
   await expect(page.locator(".ed-cover h1")).toContainText("프리미엄");
+  await expect(page.getByRole("heading", { name: "사주의 신살" })).toBeVisible();
+  for (const marker of ["백호살", "홍염살", "도화살", "역마살"]) await expect(page.locator(".ed-reading-section").filter({ has: page.getByRole("heading", { name: "사주의 신살" }) })).toContainText(marker);
   await expect(page.locator(".ed-premium-feature")).toHaveCount(10);
   await expect(page.locator(".ed-premium-body")).toHaveCount(10);
   await expect(page.locator(".ed-premium-feature details")).toHaveCount(0);
@@ -66,7 +68,7 @@ test("Premium sample uses the editorial report and deterministic accessory edit"
   await expect(page.locator(".ed-accessory-grid > article small")).toContainText(["운명수 11", "태도수 6", "개인년 7"]);
   await expect(page.locator(".ed-accessory-grid a")).toHaveCount(3);
   await expect(page.locator(".ed-accessory-boundary")).toContainText("주문이나 결제는 진행되지 않습니다");
-  await expect(page.locator(".ed-paper-section, .ed-ink-section, .ed-reality-section, .ed-closing")).toHaveCount(25);
+  await expect(page.locator(".ed-paper-section, .ed-ink-section, .ed-reality-section, .ed-closing")).toHaveCount(26);
 
   const quality = await page.evaluate(() => ({
     brokenImages: [...document.images].filter((image) => image.currentSrc && image.complete && image.naturalWidth === 0).length,
@@ -95,7 +97,7 @@ test("Detailed editorial sample keeps its reading and accessibility contract", a
   await expect(page.locator(".ed-year-grid > article")).toHaveCount(3);
   await expect(page.locator(".ed-reality-section > ol > li")).toHaveCount(6);
   await expect(page.locator(".ed-action-list > li")).toHaveCount(3);
-  await expect(page.locator(".ed-paper-section, .ed-ink-section, .ed-reality-section, .ed-closing")).toHaveCount(20);
+  await expect(page.locator(".ed-paper-section, .ed-ink-section, .ed-reality-section, .ed-closing")).toHaveCount(21);
   await expect(page.locator(".ed-closing h2")).not.toBeEmpty();
 
   const copyQuality = await page.evaluate(() => {

@@ -263,6 +263,8 @@ export function DetailEditorialReport({
         <p>{ko ? "이 문장은 결론이 아니라, 이 리포트 전체에서 확인할 첫 번째 가설입니다." : "This is the first hypothesis to check throughout the report, rather than a final verdict."}</p>
       </section>
 
+      {report.sinsal && <section className="ed-paper-section ed-reading-section"><h2>{report.sinsal.title}</h2>{report.sinsal.body.split("\n\n").map(line => <p key={line}>{line}</p>)}</section>}
+
       <section className="ed-paper-section" aria-labelledby="ed-numbers-title">
         <ChapterNumber value={2} />
         <p className="ed-kicker">{ko ? "계산된 구조" : "Calculated structure"}</p>
